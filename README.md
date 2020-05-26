@@ -1,4 +1,4 @@
-**What's this?
+**What's this?**
 
 Easy, small, straightforward. A bot that responds to ANY "I am X" messages with "Hello, X" 
 
@@ -13,9 +13,9 @@ Add it to pm2 for easy auto restart (I should add a shutdown function that pm2 c
 Feel like contributing? Please help me! :D
 
 
-**Things needed to be done:
+**Things needed to be done:**
 
-Lowercase and Uppercase "I am" prefix *(No idea how to)
+Lowercase and Uppercase "I am" prefix *(No idea how to)*
 
 Shutdown function
 
