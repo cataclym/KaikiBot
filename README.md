@@ -20,3 +20,5 @@ Feel like contributing? Please help me! :D
 ~~Shutdown function~~ //Added
 
 ...
+
+Huge thanks to https://github.com/Arvfitii Arvfitii for helping me implement major functionality <3
