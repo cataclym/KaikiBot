@@ -15,6 +15,6 @@
   "description": "Easy, small, straightforward. A bot that responds to ANY \"I am X\" messages with \"Hello, X\" ",
   "repository": {
     "type": "git",
-    "url": "https://github.com/cataclym/nadekosengokubot"
+    "url": "https://github.com/cataclym/nadekosengokubot.git"
   }
 }
