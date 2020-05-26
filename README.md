@@ -15,7 +15,7 @@ Feel like contributing? Please help me! :D
 
 **Things needed to be done:**
 
-~~Lowercase and Uppercase "I am" prefix *(No idea how to)*~~ //Somewhat implemented
+~~Lowercase and Uppercase "I am" prefix *(No idea how to)*~~ //~~Somewhat implemented~~ Fully implemented
 
 ~~Shutdown function~~ //Added
 
