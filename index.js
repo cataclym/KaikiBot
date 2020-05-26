@@ -11,11 +11,9 @@ const { prefix } = config;
 
 client.on('message', message => {
 
-	const msgcnt = message.content;
-
-	
+	const msgcnt = message.content.toLowerCase();
 		
-	if (message.content.startsWith(`${prefix}`)) {
+	if (message.content.toLowerCase().startsWith(`${prefix}`)) {
 		message.channel.send('Hello,' + (msgcnt.slice(4)));
 }
 });
