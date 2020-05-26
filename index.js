@@ -23,7 +23,7 @@ client.on('message', message => {
 	 
 	const msgcnt = message.content.toLowerCase();
 	
-	var prefixes = ["i'm", "im", "i am"]
+	var prefixes = ["i'm ", "im ", "i am "]
 	var starts = false;
     var prefixLength = 0;
     for( i = 0; i < prefixes.length; i++){
@@ -35,7 +35,7 @@ client.on('message', message => {
 }
 	if (starts) {
 	     //if (msgcnt.startsWith(`${prefix}`)) {
-		message.channel.send('Hello,' + (message.content.slice(prefixLength)));
+		message.channel.send('Hello, ' + (message.content.slice(prefixLength)));
 	   
 }
 });
