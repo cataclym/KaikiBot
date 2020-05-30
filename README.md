@@ -3,12 +3,14 @@
 Easy, small, straightforward. A bot that responds to ANY "I am X" messages with "Hello, X" 
 
 
-1. clone this or type 'npm i nadekosengokubot'.
-2. 'node index.js'
-3. ?
-4. Profit
+1. Clone repo
+2. Edit config.json - Add your bot token.
+3. Edit /commands/variables.js - Replace example emotes or remove them if you don't want it to react.
+4. 'node index.js'
+5. ?
+6. Profit
 
-Add it to pm2 for easy auto restart (I should add a shutdown function that pm2 catches).
+Add it to pm2 for easy auto restart.
 
 Feel like contributing? Please help me! :D
 
@@ -21,4 +23,5 @@ Feel like contributing? Please help me! :D
 
 ...
 
-Huge thanks to https://github.com/Arvfitii Arvfitii for helping me implement major functionality <3
+Huge thanks to https://github.com/Arvfitii Arvfitii for helping me implement major functionality <3 <3
+Thanks to rjt on Discord for the help to better the regex! <3 
