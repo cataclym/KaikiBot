@@ -12,6 +12,8 @@ Easy, small, straightforward. A bot that responds to ANY "I am X" messages with 
 
 Add it to pm2 for easy auto restart.
 
+Having issues? Come join us on discord here https://discord.gg/msNtTYV
+
 Feel like contributing? Please help me! :D
 
 
@@ -23,5 +25,5 @@ Feel like contributing? Please help me! :D
 
 ...
 
-Huge thanks to https://github.com/Arvfitii Arvfitii for helping me implement major functionality <3 <3
+Huge thanks to https://github.com/Arvfitii Arvfitii for helping me implement major functionality <3 <3                           
 Thanks to rjt on Discord for the help to better the regex! <3 
