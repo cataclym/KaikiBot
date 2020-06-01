@@ -34,6 +34,9 @@ for(const item of prefixes){
   const r = new RegExp("(^|\\s|$)(?<statement>(?<prefix>"+item+")\\s*(?<nickname>.*)$)", "mi");
   if(r.test(message.content) && !message.author.bot) {
     const { statement, prefix, nickname } = message.content.match(r).groups;
+    //names of the roles excluded roles
+    if (message.member.roles.cache.some(r => r.name === `${names}`)) { 
+    return; }
     if(nickname.length <= 256) {
       message.channel.send(`Hi, ${nickname}`);
       if(nickname.length <= 32)
