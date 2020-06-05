@@ -1,7 +1,8 @@
 const Discord = require('discord.js');
 const config = require('./config.json');
 const client = new Discord.Client();
-const { names } = require("./commands/variables.js");
+const fs = require('fs');
+//const { names } = require("./commands/variables.js");
 const { prefixes } = require("./commands/variables.js");
 const { prefixes2 } = require("./commands/variables.js");
 const { emotenames } = require("./commands/variables.js");
@@ -16,33 +17,49 @@ client.once('ready', () => {
 const { prefix } = config;
 
 client.on('message', message => {
+
     const member = message.member;
-    const msgcnt = message.content.toLowerCase();
+	const msgcnt = message.content.toLowerCase();
+        try {
+			const specialString = JSON.parse(fs.readFileSync("./storage/names.json", "utf8"));
+			if(message.member.roles.cache.find(r => r.name === specialString.name)) { 
+		
+				console.log("Role checked:", specialString.name);
+				return;
+				}
+			}
+			catch(err) {
+				console.log("Error parsing JSON string:", err);
+			
+			} 
+	
     if (member.hasPermission('ADMINISTRATOR')) {
-    switch(message.content.toUpperCase()) {
-        case 'KILLNEKO':
+		if (!message.content.startsWith(prefix) || message.author.bot) return; {
+			const args = message.content.slice(prefix.length).split(' ');
+			const command = args.shift().toLowerCase();
+			if (command === 'die') {
             resetBot(message.channel);
-            break;
+			}
+		}
     }
-    }
+	
+	
     const user = message.author;
     if (message.mentions.has(client.user)) {
-        message.channel.startTyping()
-        message.channel.send(`Hi ${user}, what is up?`)
-        message.channel.stopTyping(true);
+        message.channel.startTyping(100)
+        .then(message.channel.send(`Hi ${user}, what is up?`))
+        .then(message.channel.stopTyping(true));
     }
 for(const item of prefixes){
   const r = new RegExp("(^|\\s|$)(?<statement>(?<prefix>"+item+")\\s*(?<nickname>.*)$)", "mi");
   if(r.test(message.content) && !message.author.bot) {
-    const { statement, prefix, nickname } = message.content.match(r).groups;
-    //names of the roles excluded roles
-    if (message.member.roles.cache.some(r => r.name === `${names}`)) { 
-    return; }
+	const { statement, prefix, nickname } = message.content.match(r).groups;
     if(nickname.length <= 256) {
       message.channel.send(`Hi, ${nickname}`);
       if(nickname.length <= 32)
         message.member.setNickname(nickname);
-    }
+	}
+
     break;
   }
 }
@@ -64,7 +81,6 @@ let contains2 = false;
 	    message.react(emoji);
        
 }
-
 });
 
 // Turn bot off, then turn it back on.
