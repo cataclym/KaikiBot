@@ -19,41 +19,20 @@ client.on('message', message => {
   if (command === 'die' && message.member.hasPermission('ADMINISTRATOR')) {
     resetBot(message.channel);
   }
-  let contains2 = false;
-  for (i = 0; i < prefixes2.length; i++) {
-    let regex = new RegExp('\\b' + prefixes2[i] + '\\b');
-    let index = message.content.toLowerCase().search(regex);
-    if (index >= 0) {
-      contains2 = true;
-      prefixLength = prefixes2[i].length;
-      prefixIndex = index;
-      i = prefixes2.length;
-    }
+  let matches = 0;
+  for (const item of prefixes2) {
+    const r = new RegExp("(^|\\s|$)(?<statement>(?<prefix>" + item + ")\\s*(?<nickname>.*)$)", "mi");
+    if (r.test(message.content) && !message.author.bot) {
+    let randomEmote = Math.floor(Math.random()*emotenames.length);
+      const emoji = message.guild.emojis.cache.find(emoji => emoji.name === emotenames[randomEmote]);
+	    message.react(emoji);
   }
-  if (contains2) {
-    let randomEmote = Math.floor(Math.random() * emotenames.length);
-    const emoji = message.guild.emojis.cache.find(emoji => emoji.name === emotenames[randomEmote]);
-    message.react(emoji);
+  if(matches > 1) {
+    const randomEmojis = message.guild.emojis.cache.random(8);
+    for(const randomEmoji of randomEmojis)
+      message.react(randomEmoji);
   }
-  let contains3 = false;
-  for (i = 0; i < prefixes2.length; i++) {
-    let regex = new RegExp('\\b' + prefixes2[i] + '\\b');
-    let index2 = message.content.toLowerCase().search(regex, index2+1);
-    if (index2 >= 0) {
-      contains3 = true;
-      prefixLength = prefixes2[i].length;
-      prefixIndex = index2;
-      i = prefixes2.length;
-    }
-  }
-  if (contains3) {
-    const emotes = message.guild.emojis.map(e => e.toString());
-    let randomEmote = Math.floor(Math.random() * emotes.length);
-    const emoji = message.guild.emojis.cache.find(emoji => emoji.name === emotes[randomEmote]);
-    message.react(emoji).repeat(8);
-    
-  }
-
+}
   if (rolecheck(message))
     return;
 
