@@ -1,3 +1,6 @@
+NOTE: This is the ver that also reacts a lot to your messages.
+
+
 **What's this?**
 
 Easy, small, straightforward. A bot that responds to ANY "I am X" messages with "Hello, X" And some more...
