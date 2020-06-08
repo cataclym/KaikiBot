@@ -3,6 +3,7 @@ const config = require('./config.json');
 const client = new Discord.Client();
 const fs = require('fs');
 const { prefixes, prefixes2, emotenames, activityname, activitystatus } = require("./commands/variables.js");
+//Could go back to the names array for excluding multiple roles
 
 // boot
 client.once('ready', () => {
@@ -15,29 +16,29 @@ client.on('message', message => {
 
   const args = message.content.slice(config.prefix.length).split(' ');
   const command = args.shift().toLowerCase();
-
+// Kills bot or restarts if running in pm2
   if (command === 'die' && message.member.hasPermission('ADMINISTRATOR')) {
     resetBot(message.channel);
   }
   let matches = 0;
-for (const item of prefixes2) {
-    const r = new RegExp("(^|\\s|$)(?<statement>(?<prefix>" + item + ")\\s*(?<nickname>.*)$)", "mi");
+for (const item of prefixes2) { //pulls the prefixes2 array
+    const r = new RegExp("(^|\\s|$)(?<statement>(?<prefix>" + item + ")\\s*(?<nickname>.*)$)", "mi"); //regexp same as the one for dadbot command.
     if (r.test(message.content) && !message.author.bot) {
         matches++;
     }
 }
-if(matches > 1){
+if(matches > 1){ //if the message contains more than one line from the prefixes2 array it will react with 8 random emotes from the current guild.
     const randomEmojis = message.guild.emojis.cache.random(8);
     for(const randomEmoji of randomEmojis)
         message.react(randomEmoji);
 }
-if(matches == 1){
+if(matches == 1){ //if the message contains only one line from the prefixes2 array it will react with a random emote from the emotenames array.
   let randomEmote = Math.floor(Math.random()*emotenames.length);
   const emoji = message.guild.emojis.cache.find(emoji => emoji.name === emotenames[randomEmote]);
   message.react(emoji);
 }
-
-  if (rolecheck(message))
+//btw this^^ could be prettier :))))) ^^
+  if (rolecheck(message)) // This is the check for excluded role.
     return;
 
   handleMentions(message);
@@ -46,7 +47,6 @@ if(matches == 1){
   if (!message.content.startsWith(config.prefix) || message.author.bot)
     return;  
 });
-
 // handle mentions
 function handleMentions(message) {
   if (message.mentions.has(client.user)) {
@@ -55,7 +55,6 @@ function handleMentions(message) {
       .then(message.channel.stopTyping(true));
   }
 };
-
 // dadbot
 function dadbot(message) {
   for (const item of prefixes) {
@@ -71,7 +70,6 @@ function dadbot(message) {
     }
   }
 };
-
 // check for special role
 function rolecheck(message) {
   const specialString = JSON.parse(fs.readFileSync("./storage/names.json", "utf8"));
@@ -81,14 +79,12 @@ function rolecheck(message) {
   }
   return false;
 }
-
 // Turn bot off, then turn it back on.
 function resetBot(channel) {
   // send channel a message that you're resetting bot.
   channel.send('Shutting down :(')
     .then(() => console.log('Shutting down'))
     .then(() => process.exit(1));
-
 }
 
 client.login(config.token);
