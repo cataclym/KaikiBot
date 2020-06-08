@@ -20,19 +20,23 @@ client.on('message', message => {
     resetBot(message.channel);
   }
   let matches = 0;
-  for (const item of prefixes2) {
+for (const item of prefixes2) {
     const r = new RegExp("(^|\\s|$)(?<statement>(?<prefix>" + item + ")\\s*(?<nickname>.*)$)", "mi");
     if (r.test(message.content) && !message.author.bot) {
-    let randomEmote = Math.floor(Math.random()*emotenames.length);
-      const emoji = message.guild.emojis.cache.find(emoji => emoji.name === emotenames[randomEmote]);
-	    message.react(emoji);
-  }
-  if(matches > 1) {
+        matches++;
+    }
+}
+if(matches > 1){
     const randomEmojis = message.guild.emojis.cache.random(8);
     for(const randomEmoji of randomEmojis)
-      message.react(randomEmoji);
-  }
+        message.react(randomEmoji);
 }
+if(matches = 1){
+  let randomEmote = Math.floor(Math.random()*emotenames.length);
+  const emoji = message.guild.emojis.cache.find(emoji => emoji.name === emotenames[randomEmote]);
+  message.react(emoji);
+}
+
   if (rolecheck(message))
     return;
 
