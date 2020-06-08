@@ -31,7 +31,7 @@ if(matches > 1){
     for(const randomEmoji of randomEmojis)
         message.react(randomEmoji);
 }
-if(matches = 1){
+if(matches == 1){
   let randomEmote = Math.floor(Math.random()*emotenames.length);
   const emoji = message.guild.emojis.cache.find(emoji => emoji.name === emotenames[randomEmote]);
   message.react(emoji);
