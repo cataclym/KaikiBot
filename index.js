@@ -35,6 +35,24 @@ client.on('message', message => {
     const emoji = message.guild.emojis.cache.find(emoji => emoji.name === emotenames[randomEmote]);
     message.react(emoji);
   }
+  let contains3 = false;
+  for (i = 0; i < prefixes2.length; i++) {
+    let regex = new RegExp('\\b' + prefixes2[i] + '\\b');
+    let index2 = message.content.toLowerCase().search(regex, index2+1);
+    if (index2 >= 0) {
+      contains3 = true;
+      prefixLength = prefixes2[i].length;
+      prefixIndex = index2;
+      i = prefixes2.length;
+    }
+  }
+  if (contains3) {
+    const emotes = message.guild.emojis.map(e => e.toString());
+    let randomEmote = Math.floor(Math.random() * emotes.length);
+    const emoji = message.guild.emojis.cache.find(emoji => emoji.name === emotes[randomEmote]);
+    message.react(emoji).repeat(8);
+    
+  }
 
   if (rolecheck(message))
     return;
