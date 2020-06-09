@@ -3,6 +3,7 @@ const config = require('./config.json');
 const client = new Discord.Client();
 const fs = require('fs');
 const { prefixes, prefixes2, emotenames, activityname, activitystatus } = require("./commands/variables.js");
+//Could go back to the names array for excluding multiple roles
 
 // boot
 client.once('ready', () => {
@@ -15,28 +16,22 @@ client.on('message', message => {
 
   const args = message.content.slice(config.prefix.length).split(' ');
   const command = args.shift().toLowerCase();
-
+// Kills bot or restarts if running in pm2
   if (command === 'die' && message.member.hasPermission('ADMINISTRATOR')) {
     resetBot(message.channel);
   }
-  let contains2 = false;
-  for (i = 0; i < prefixes2.length; i++) {
-    let regex = new RegExp('\\b' + prefixes2[i] + '\\b');
-    let index = message.content.toLowerCase().search(regex);
-    if (index >= 0) {
-      contains2 = true;
-      prefixLength = prefixes2[i].length;
-      prefixIndex = index;
-      i = prefixes2.length;
-    }
-  }
-  if (contains2) {
+  for (const item of prefixes2) 
+  { //pulls the prefixes2 array
+    const r = new RegExp("(^|\\s|$)(?<statement>(?<prefix>" + item + ")\\s*(?<nickname>.*)$)", "mi"); //regexp same as the one for dadbot command.
+    if (r.test(message.content) && !message.author.bot) 
+    {
     let randomEmote = Math.floor(Math.random() * emotenames.length);
     const emoji = message.guild.emojis.cache.find(emoji => emoji.name === emotenames[randomEmote]);
     message.react(emoji);
   }
-
-  if (rolecheck(message))
+}
+//btw this^^ could be prettier :))))) ^^
+  if (rolecheck(message)) // This is the check for excluded role.
     return;
 
   handleMentions(message);
@@ -45,7 +40,6 @@ client.on('message', message => {
   if (!message.content.startsWith(config.prefix) || message.author.bot)
     return;  
 });
-
 // handle mentions
 function handleMentions(message) {
   if (message.mentions.has(client.user)) {
@@ -54,7 +48,6 @@ function handleMentions(message) {
       .then(message.channel.stopTyping(true));
   }
 };
-
 // dadbot
 function dadbot(message) {
   for (const item of prefixes) {
@@ -70,7 +63,6 @@ function dadbot(message) {
     }
   }
 };
-
 // check for special role
 function rolecheck(message) {
   const specialString = JSON.parse(fs.readFileSync("./storage/names.json", "utf8"));
@@ -80,7 +72,6 @@ function rolecheck(message) {
   }
   return false;
 }
-
 // Turn bot off, then turn it back on.
 function resetBot(channel) {
   // send channel a message that you're resetting bot.
