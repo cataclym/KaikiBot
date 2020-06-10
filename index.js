@@ -63,8 +63,15 @@ function dadbot(message) {
       const { nickname } = message.content.match(r).groups;
       if (nickname.length <= 256) {
         message.channel.send(`Hi, ${nickname}`);
-        if (nickname.length <= 32)
-          message.member.setNickname(nickname);
+        const owner = message.guild.owner; 
+        if(nickname.length <= 32 && message.author.id !== owner.id) //Will ignore guild owner
+        message.member.setNickname(nickname).catch(error => {       //
+          if (error.code) {                                         // If any error it will log it in channel, console.
+            console.error('Failed to set nick due to:', error)      // Because owner is ignored already, it wont spam error in chat
+            message.channel.send(`Failed to set nick due to: ${error}`, error);
+          }
+        }
+        )
       }
       break;
     }
