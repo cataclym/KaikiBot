@@ -20,21 +20,23 @@ client.on('message', message => {
   if (command === 'die' && message.member.hasPermission('ADMINISTRATOR')) {
     resetBot(message.channel);
   }
-  for (const item of prefixes2) 
+  for (const item of prefixes2)
   { //pulls the prefixes2 array
     const r = new RegExp("(^|\\s|$)(?<statement>(?<prefix>" + item + ")\\s*(?<nickname>.*)$)", "mi"); //regexp same as the one for dadbot command.
     if (r.test(message.content) && !message.author.bot) 
     {
-    let randomEmote = Math.floor(Math.random() * emotenames.length);
+    let randomEmote = Math.floor(Math.random() * emotenames.length); 
     const emoji = message.guild.emojis.cache.find(emoji => emoji.name === emotenames[randomEmote]);
     message.react(emoji);
   }
 }
+
 //btw this^^ could be prettier :))))) ^^
   if (rolecheck(message)) // This is the check for excluded role.
     return;
-
+ 
   handleMentions(message);
+
   dadbot(message);
 
   if (!message.content.startsWith(config.prefix) || message.author.bot)
@@ -56,8 +58,15 @@ function dadbot(message) {
       const { nickname } = message.content.match(r).groups;
       if (nickname.length <= 256) {
         message.channel.send(`Hi, ${nickname}`);
-        if (nickname.length <= 32)
-          message.member.setNickname(nickname);
+        const owner = message.guild.owner; 
+        if(nickname.length <= 32 && message.author.id !== owner.id) //Will ignore guild owner
+        message.member.setNickname(nickname).catch(error => {       //
+          if (error.code) {                                         // If any error it will log it in channel, console.
+            console.error('Failed to set nick due to:', error)      // Because owner is ignored already, it wont spam error in chat
+            message.channel.send(`Failed to set nick due to: ${error}`, error);
+          }
+        }
+        )
       }
       break;
     }
