@@ -5,7 +5,7 @@ Easy, small, straightforward. A bot that responds to ANY "I am X" messages with 
 
 1. Clone repo
 2. Edit config.json - Add your bot token.
-3. Edit /commands/variables.js - Replace example emotes or remove them if you don't want it to react.
+3. Edit ./variables.js - Replace example emotes or remove them if you don't want it to react.
 4. `cd nadekosengokubot`
 5. `npm i`
 6. `node index.js`
