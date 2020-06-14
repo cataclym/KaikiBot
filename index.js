@@ -3,7 +3,6 @@ const { prefix, token } = require('./config.json');
 const client = new Discord.Client();
 const fs = require('fs');
 const { prefixes2, emotenames, activityname, activitystatus } = require("./variables.js");
-//const functions = require('./functions/functions');
 const { rolecheck, handleMentions, dadbot } = require("./functions/functions");
 //Could go back to the names array for excluding multiple roles
 
