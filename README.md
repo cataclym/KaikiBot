@@ -1,3 +1,5 @@
+This version reacts a whole lot more. Not meant for public use as i will not test this branch further. I will try to keep it updated with merges.
+
 **What's this?**
 
 Easy, small, straightforward. A bot that responds to ANY "I am X" messages with "Hello, X" And some more...
