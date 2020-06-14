@@ -2,8 +2,8 @@ const Discord = require('discord.js');
 const { prefix, token } = require('./config.json');
 const client = new Discord.Client();
 const fs = require('fs');
-const { prefixes2, emotenames, activityname, activitystatus } = require("./variables.js");
-const { rolecheck, handleMentions, dadbot } = require("./functions/functions");
+const { activityname, activitystatus } = require("./variables.js");
+const { emotereact, rolecheck, handleMentions, dadbot } = require("./functions/functions");
 //Could go back to the names array for excluding multiple roles
 
 client.commands = new Discord.Collection();
@@ -21,24 +21,12 @@ client.once('ready', () => {
 });
 
 client.on('message', message => {
-  
 
 if (rolecheck(message)) // This is the check for excluded role.
 return;
-
-(handleMentions(message));
-(dadbot(message));
-
-  for (const item of prefixes2)
-  { //pulls the prefixes2 array
-    const r = new RegExp("(^|\\s|$)(?<statement>(?<prefix>" + item + ")\\s*(?<nickname>.*)$)", "mi"); //regexp same as the one for dadbot command.
-    if (r.test(message.content) && !message.author.bot) 
-    {
-    let randomEmote = Math.floor(Math.random() * emotenames.length); 
-    const emoji = message.guild.emojis.cache.find(emoji => emoji.name === emotenames[randomEmote]);
-    message.react(emoji);
-  }
-}
+(handleMentions(message)); // Responds when pinged
+(dadbot(message)); // Handles "I am" 
+(emotereact(message)); // Reacts to prefixes2 with emotenames
 
   if (!message.content.startsWith(prefix) || message.author.bot) return;
 
@@ -46,9 +34,8 @@ return;
 	const command = args.shift().toLowerCase();
 
 	if (!client.commands.has(command)) return;
-
 	try {
-		client.commands.get(command).execute(message, args);
+		client.commands.get(command).execute(message, args);  
 	} catch (error) {
 		console.error(error);
 		message.reply(`Error, ${error}`);

@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-const { prefixes } = require("../variables");
+const { prefixes, prefixes2, emotenames } = require("../variables");
 const fs = require('fs');
 const {client} = require('../index.js');
 
@@ -43,5 +43,15 @@ function handleMentions(message) {
     }
     return false;
   }
+  //Reacts with emote to specified words
+  function emotereact(message) {
+  const keywords = message.content.toLowerCase().split(" ");
+  keywords.forEach(word => { 
+    if(prefixes2.includes(word)) {
+      const emojiname = emotenames[prefixes2.indexOf(word)];
+      const emoji = message.guild.emojis.cache.find(e => e.name === emojiname);
+      message.react(emoji);
+    }
+  })};
+module.exports = { emotereact, rolecheck, handleMentions, dadbot };
 
-module.exports = { rolecheck, handleMentions, dadbot };

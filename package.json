@@ -1,6 +1,6 @@
 {
   "name": "nadekosengokubot",
-  "version": "1.0.5a",
+  "version": "1.0.6",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -15,6 +15,6 @@
   "description": "Easy, small, straightforward. A bot that responds to ANY \"I am X\" messages with \"Hello, X\" ",
   "repository": {
     "type": "git",
-    "url": "https://github.com/cataclym/nadekosengokubot.git ExportFunc"
+    "url": "https://github.com/cataclym/nadekosengokubot.git"
   }
 }
