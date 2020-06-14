@@ -1,9 +1,7 @@
-NOTE: This is the ver that also reacts a lot to your messages.
-
-
 **What's this?**
 
 Easy, small, straightforward. A bot that responds to ANY "I am X" messages with "Hello, X" And some more...
+
 
 1. Clone repo
 2. Edit config.json - Add your bot token.
@@ -30,3 +28,4 @@ Working on a command to exlude roles. For now use a self assignable role. It is 
 
 Huge thanks to https://github.com/Arvfitii Arvfitii for helping me implement major functionality <3 <3                           
 Thanks to rjt on Discord for the help to better the regex! <3 
+
