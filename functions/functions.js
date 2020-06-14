@@ -35,7 +35,7 @@ function handleMentions(message) {
   };
   // check for special role
   function rolecheck(message) {
-    const specialString = JSON.parse(fs.readFileSync("../storage/names.json", "utf8"));
+    const specialString = JSON.parse(fs.readFileSync("./storage/names.json", "utf8"));
     if (message.member.roles.cache.find(r => r.name === specialString.name)) {
       console.log("Role checked:", specialString.name);
       return true;
@@ -43,5 +43,5 @@ function handleMentions(message) {
     return false;
   }
 
-module.exports = function() { rolecheck, handleMentions, dadbot };
+module.exports = { rolecheck, handleMentions, dadbot };
 
