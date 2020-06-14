@@ -1,11 +1,12 @@
 const Discord = require('discord.js');
-const client = new Discord.Client();
 const { prefixes } = require("../variables");
 const fs = require('fs');
+const {client} = require('../index.js');
 
 // handle mentions
 function handleMentions(message) {
-    if (message.mentions.has(client.user)) {
+  
+    if (message.mentions.has(message.client.user)) {
       message.channel.startTyping(100)
         .then(message.channel.send(`Hi ${message.author}, what is up?`))
         .then(message.channel.stopTyping(true));
@@ -44,4 +45,3 @@ function handleMentions(message) {
   }
 
 module.exports = { rolecheck, handleMentions, dadbot };
-
