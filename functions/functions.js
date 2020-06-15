@@ -50,9 +50,11 @@ If you need help type "${prefix}help".`))
   keywords.forEach(word => { 
     if(prefixes2.includes(word)) {
       const emojiname = emotenames[prefixes2.indexOf(word)];
-      const emoji = message.guild.emojis.cache.find(e => e.name === emojiname);
-      message.react(emoji);
-    }
-  })};
+      if (!message.guild.emojis.cache.find(e => e.name === emojiname)) return console.log("Couldnt react to message. Emote probably doesnt exist on this guild.");
+      const emojiArray = message.guild.emojis.cache.find(e => e.name === emojiname);
+      message.react(emojiArray)
+  }
+}
+  )};
 module.exports = { emotereact, rolecheck, handleMentions, dadbot };
 

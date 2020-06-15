@@ -8,7 +8,7 @@ module.exports = {
         loadTitle(message);
         let color = getRandomColor()
         function loadTitle() {
-            fetch('https://www.reddit.com/r/dadjokes.json?limit=150&?sort=top&t=all')
+            fetch('https://www.reddit.com/r/dadjokes.json?limit=1000&?sort=top&t=all')
               .then(res => res.json())
               .then(json => json.data.children.map(t => t.data))
               .then(data => postRandomTitle(data))
