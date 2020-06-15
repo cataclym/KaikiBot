@@ -22,11 +22,10 @@ client.once('ready', () => {
 
 client.on('message', message => {
 
-if (rolecheck(message)) // This is the check for excluded role.
-return;
 (handleMentions(message)); // Responds when pinged
-(dadbot(message)); // Handles "I am" 
 (emotereact(message)); // Reacts to prefixes2 with emotenames
+if (!rolecheck(message)) // This is the check for excluded role.
+(dadbot(message)); // Handles "I am" 
 
   if (!message.content.startsWith(prefix) || message.author.bot) return;
 
