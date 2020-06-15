@@ -2,13 +2,14 @@ const Discord = require('discord.js');
 const { prefixes, prefixes2, emotenames } = require("../variables");
 const fs = require('fs');
 const {client} = require('../index.js');
+const { prefix } = require('../config.json');
 
 // handle mentions
 function handleMentions(message) {
-  
     if (message.mentions.has(message.client.user)) {
       message.channel.startTyping(100)
-        .then(message.channel.send(`Hi ${message.author}, what is up?`))
+        .then(message.channel.send(`Hi ${message.author}, what is up?
+If you need help type "${prefix}help".`))
         .then(message.channel.stopTyping(true));
     }
   };
