@@ -9,7 +9,6 @@ let list = [];
 for (var i = lowEnd; i <= highEnd; i++) {
     list.push(i);
 }
-//const timeArray = new Array(list);
 
 module.exports = {
     name: "remind",
