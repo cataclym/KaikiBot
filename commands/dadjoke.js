@@ -6,7 +6,7 @@ module.exports = {
     description: '',
     execute(message) {       
         loadTitle(message);
-        let color = getRandomColor()
+        let color = message.member.displayColor
         function loadTitle() {
             fetch('https://www.reddit.com/r/dadjokes.json?limit=1000&?sort=top&t=all')
               .then(res => res.json())

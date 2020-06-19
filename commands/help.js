@@ -5,11 +5,12 @@ module.exports = {
     name: "help",
     description: "Shows command info",
     execute(message) {
+    let color = message.member.displayColor 
     const embed = new Discord.MessageEmbed({
         
             "title": "List of commands for Nadeko",
             "description": `Prefix is currently set to: "${prefix}".`,
-            "color": getRandomColor(),
+            "color": color,
             "fields": [
               {
                 "name": "Help",
@@ -34,15 +35,5 @@ module.exports = {
           }
     )
     message.channel.send(embed)
-    
-    function getRandomColor() {
-        var letters = '0123456789ABCDEF';
-        var color = '#';
-        for (var i = 0; i < 6; i++) {
-          color += letters[Math.floor(Math.random() * 16)];
-        }
-        return color;
-      }
-    
     },
 }
