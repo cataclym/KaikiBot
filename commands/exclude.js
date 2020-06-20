@@ -33,12 +33,10 @@ module.exports = {
             setTimeout(() => {  (message.channel.send(embed2)); }, 2000);
 }
             else if (!message.member.roles.cache.find(r => r.name === specialString.name)) {
-            const excludedRole = specialString.name
             message.member.roles.add(message.guild.roles.cache.find(r => r.name === specialString.name))
             message.channel.send(embed2);
 }
             else if (message.member.roles.cache.find(r => r.name === specialString.name)) {
-            const excludedRole = specialString.name
             message.member.roles.remove(message.guild.roles.cache.find(r => r.name === specialString.name))
             message.channel.send(embed3);
 }

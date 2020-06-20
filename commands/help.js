@@ -13,23 +13,23 @@ module.exports = {
             "color": color,
             "fields": [
               {
-                "name": "Help",
+                "name": `${prefix}Help`,
                 "value": "List of commands for Nadeko."
               },
               {
-                "name": "Die",
+                "name": `${prefix}Die`,
                 "value": "Shuts down the bot.\nRestarts if it is running under PM2."
               },
               {
-                "name": "Ping",
+                "name": `${prefix}Ping`,
                 "value": "Ping the bot to see if there are latency issues."
               },
               {
-                "name": "Dadjoke",
+                "name": `${prefix}Dadjoke`,
                 "value": "Returns a dadjoke."
               },
               {
-                "name": "Exclude",
+                "name": `${prefix}Exclude`,
                 "value": "Adds or removes excluded role from user."
               }
             ],

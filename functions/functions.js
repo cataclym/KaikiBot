@@ -1,6 +1,5 @@
 const Discord = require('discord.js');
 const { prefixes, prefixes2, emotenames } = require("../variables");
-const fs = require('fs');
 const {client} = require('../index.js');
 const { prefix } = require('../config.json');
 
@@ -13,33 +12,31 @@ function handleMentions(message) {
     "color": color
   })
     if (message.mentions.has(message.client.user) && !message.author.bot) {
-      message.channel.startTyping(100)
+      message.channel.startTyping()
         .then(message.channel.send(embed))
         .then(message.channel.stopTyping(true));
     }
   };
-  // dadbot
-  function dadbot(message) {
-    for (const item of prefixes) {
-      const r = new RegExp("(^|\\s|$)(?<statement>(?<prefix>" + item + ")\\s*(?<nickname>.*)$)", "mi");
-      if (r.test(message.content) && !message.author.bot) {
-        const { nickname } = message.content.match(r).groups;
-        if (nickname.length <= 256) {
-          message.channel.send(`Hi, ${nickname}`);
-          const owner = message.guild.owner; 
-          if(nickname.length <= 32 && message.author.id !== owner.id) //Will ignore guild owner
-          message.member.setNickname(nickname).catch(error => {     
-            if (error.code) {                                         // If any error it will log it in channel, console.
-              console.error('Failed to set nick due to:', error)      // Because owner is ignored already, it wont spam error in chat
-              message.channel.send(`Failed to set nick due to: ${error}`, error);
-            }
-          }
-          )
-        }
-        break;
+// dadbot
+function dadbot(message) {
+  for (const item of prefixes) {
+    const r = new RegExp("(^|\\s|$)(?<statement>(?<prefix>" + item + ")\\s*(?<nickname>.*)$)", "mi");
+    if (r.test(message.content) && !message.author.bot) {
+      const { nickname } = message.content.match(r).groups;
+      if (nickname.length <= 256) {
+        message.channel.send(`Hi, ${nickname}`);
+        const owner = message.guild.owner; 
+        if(nickname.length <= 32 && message.author.id !== owner.id) //Will ignore guild owner
+        message.member.setNickname(nickname).catch(error => {     
+          if (error.code) {                                         // If any error it will log it in channel, console.
+          console.error('Failed to set nick due to:', error)      // Because owner is ignored already, it wont spam error in chat
+          message.channel.send(`Failed to set nick due to: ${error}`, error);
+        }})
       }
+      break;
     }
-  };
+  }
+};
   // check for special role
   function rolecheck(message) {
     const specialString = require("../storage/names.json");
