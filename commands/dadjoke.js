@@ -6,6 +6,7 @@ module.exports = {
     description: '',
     execute(message) {       
         loadTitle(message);
+        message.channel.startTyping()
         let color = message.member.displayColor
         function loadTitle() {
             fetch('https://www.reddit.com/r/dadjokes.json?limit=1000&?sort=top&t=all')
@@ -26,6 +27,7 @@ module.exports = {
                   "text": `${randomTitle.ups} updoots`
                 }
               });
+            message.channel.stopTyping(true)
             message.channel.send(embed)
           }
     },
