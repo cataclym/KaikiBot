@@ -20,13 +20,13 @@ Easy, small, straightforward. A bot that responds to ANY "I am X" messages with 
 ## Instructions
 
 1. Clone repo
-2. Edit config.json - Add your bot token.
-3. Edit variables.js - Replace example emotes or remove them if you don't want it to react.
-4. `cd nadekosengokubot`
-5. `npm i`
-6. `node index.js`
-7. ?
-8. Profit
+1. Edit config.json - Add your bot token.
+1. Edit variables.js - Replace example emotes or remove them if you don't want it to react.
+1. `cd nadekosengokubot`
+1. `npm i`
+1. `node index.js`
+1. ?
+1. Profit
 
 Note:
 By default the role that excludes users is currently called `Nadeko-excluded`. It can be changed in `./storage/names.json`.
