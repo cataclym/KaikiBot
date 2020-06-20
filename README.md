@@ -42,4 +42,5 @@ Feel like contributing? Please help me! :D
 
 - Huge thanks to @Arvfitii for helping me whenever im in need!
 - Thanks to @rjt-rockx on Discord for the so much help!
-- Should also mention shivaco for help <3
+- Should also mention @shivaco for help <3
+- Thanks also to @Kwoth <3
