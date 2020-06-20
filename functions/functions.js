@@ -6,9 +6,15 @@ const { prefix } = require('../config.json');
 
 // handle mentions
 function handleMentions(message) {
+  let color = message.member.displayColor 
+  const embed = new Discord.MessageEmbed({
+    "title": `Hi ${message.author.username}, what is up?`,
+    "description": `If you need help type ${prefix}help.`,
+    "color": color
+  })
     if (message.mentions.has(message.client.user) && !message.author.bot) {
       message.channel.startTyping(100)
-        .then(message.channel.send(`Hi ${message.author}, what is up?\nIf you need help type "${prefix}help".`))
+        .then(message.channel.send(embed))
         .then(message.channel.stopTyping(true));
     }
   };
@@ -36,7 +42,7 @@ function handleMentions(message) {
   };
   // check for special role
   function rolecheck(message) {
-    const specialString = JSON.parse(fs.readFileSync("./storage/names.json", "utf8"));
+    const specialString = require("../storage/names.json");
     if (message.member.roles.cache.find(r => r.name === specialString.name)) {
       console.log("Role checked:", specialString.name);
       return true;
