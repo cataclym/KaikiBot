@@ -27,6 +27,10 @@ module.exports = {
               {
                 "name": "Dadjoke",
                 "value": "Returns a dadjoke."
+              },
+              {
+                "name": "Exclude",
+                "value": "Adds or removes excluded role from user."
               }
             ],
             "footer": {
