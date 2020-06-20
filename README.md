@@ -54,7 +54,10 @@ Having issues? Come join us on discord here
 * Read message history
 * Use External Emojis
 * Add Reactions
-Thats it. Don't add any more.
+                                                         
+Thats it. Don't add any more.                                                                         
+You can use the following link to invite with these permissions already defined. Replace `YOUR_BOT_ID_HERE` with your bot id / client id.
+https://discord.com/oauth2/authorize?client_id=YOUR_BOT_ID_HERE&permissions=470092864&scope=bot
 
 Feel like contributing? Please help me! :D
 
