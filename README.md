@@ -12,6 +12,7 @@ Easy, small, straightforward. A bot that responds to ANY "I am X" messages with 
   * Dadjoke
   * Exclude
   * Remind (Does not work).
+  * Yeet
 * Reacts with emotes to message that contain your preferred words
   * See variables.js
 * Irritating dad like responses
@@ -19,6 +20,8 @@ Easy, small, straightforward. A bot that responds to ANY "I am X" messages with 
 
 ## Instructions
 
+### Important: Do not give bot administrator role or the ability to mention @everyone and @here.
+**Details on bot's permissions comes after Instructions, down below.**
 1. Clone repo
 1. Edit config.json - Add your bot token.
 1. Edit variables.js - Replace example emotes or remove them if you don't want it to react.
@@ -28,8 +31,9 @@ Easy, small, straightforward. A bot that responds to ANY "I am X" messages with 
 1. ?
 1. Profit
 
-Note:
-By default the role that excludes users is currently called `Nadeko-excluded`. It can be changed in `./storage/names.json`.
+**Note:** 
+By default the role that excludes users is currently called `Nadeko-excluded`. It can be changed in `./storage/names.json`.              
+It will autocreate the role if it doesnt exist first time you type `+exlude`. And as long as it has "Manage roles" permissions.  
 
 Add it to pm2 for easy auto restart.
 
@@ -37,6 +41,20 @@ Having issues? Come join us on discord here
 <a href="https://discord.gg/msNtTYV">
   <img src="https://discordapp.com/api/guilds/414099963841216512/embed.png?style=banner2" title="Discord Server"/>
 </a>
+
+### Bot permissions:
+* Manage roles
+  * Managing excluded role
+* Change / Manage Nickname 
+  * Setting new nicknames upon dadbot activation
+* Read Text Channels & See Voice Channels 
+  * Listen for events
+* Send Messages
+  * Yep
+* Read message history
+* Use External Emojis
+* Add Reactions
+Thats it. Don't add any more.
 
 Feel like contributing? Please help me! :D
 
