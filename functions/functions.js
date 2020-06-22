@@ -37,25 +37,25 @@ function dadbot(message) {
     }
   }
 };
-  // check for special role
-  function rolecheck(message) {
-    const specialString = require("../storage/names.json");
-    if (message.member.roles.cache.find(r => r.name === specialString.name)) {
-      console.log("Role checked:", specialString.name);
-      return true;
-    }
-    return false;
+// check for special role
+function rolecheck(message) {
+  const specialString = require("../storage/names.json");
+  if (message.member.roles.cache.find(r => r.name === specialString.name)) {
+    //console.log("Role checked:", specialString.name); //For debug.
+    return true;
   }
-  //Reacts with emote to specified words
-  function emotereact(message) {
-  const keywords = message.content.toLowerCase().split(" ");
-  keywords.forEach(word => { 
-    if(prefixes2.includes(word)) {
-      const emojiname = emotenames[prefixes2.indexOf(word)];
-      if (!message.guild.emojis.cache.find(e => e.name === emojiname)) return console.log("Couldnt react to message. Emote probably doesnt exist on this guild.");
-      const emojiArray = message.guild.emojis.cache.find(e => e.name === emojiname);
-      message.react(emojiArray)
-  }
+  return false;
+}
+//Reacts with emote to specified words
+function emotereact(message) {
+const keywords = message.content.toLowerCase().split(" ");
+keywords.forEach(word => { 
+  if(prefixes2.includes(word)) {
+    const emojiname = emotenames[prefixes2.indexOf(word)];
+    if (!message.guild.emojis.cache.find(e => e.name === emojiname)) return console.log("Couldnt react to message. Emote probably doesnt exist on this guild.");
+    const emojiArray = message.guild.emojis.cache.find(e => e.name === emojiname);
+    message.react(emojiArray)
+}
 }
   )};
 module.exports = { emotereact, rolecheck, handleMentions, dadbot };
