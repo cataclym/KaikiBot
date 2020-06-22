@@ -2,7 +2,7 @@
 
 **What's this?**
 
-Easy, small, straightforward. A bot that responds to ANY "I am X" messages with "Hello, X" And some more...
+A bot with fun utility and dadbot responses, and more!
 
 ## Features
 * Commands
@@ -11,14 +11,17 @@ Easy, small, straightforward. A bot that responds to ANY "I am X" messages with 
   * Ping
   * Dadjoke
   * Exclude
-  * Remind (Does not work).
-  * Yeet
+  * Yeet, Yeetkids
+  * Remind (WIP)
+  * Send (WIP)
 * Reacts with emotes to message that contain your preferred words
   * See variables.js
-* Irritating dad like responses
+* Irritating dad like responses, which also rename the user
 <img src="https://i.imgur.com/WsMAKPB.png" title="example"/>
 
 ## Instructions
+Requirements
+* nodejs (also installs npm)
 
 ### Important: Do not give bot administrator role or the ability to mention @everyone and @here.
 **Details on bot's permissions comes after Instructions, down below.**
@@ -61,7 +64,12 @@ https://discord.com/oauth2/authorize?client_id=YOUR_BOT_ID_HERE&permissions=4700
 
 Feel like contributing? Please help me! :D
 
+# I owe some amazing people, thanks, and more!
 - Huge thanks to @Arvfitii for helping me whenever im in need!
-- Thanks to @rjt-rockx on Discord for the so much help!
+- Thanks to @rjt-rockx on Discord for so much help and time!
 - Should also mention @shivaco for help <3
 - Thanks also to @Kwoth <3
+
+# About
+### A bit about this project
+This bot was my first entry into javascript, nodejs, discordjs and programming/coding overall. It has been very fun and also frustrating. If you do find unoptimized code and or flaws or other inherently bad code - I would be very happy to merge changes and try to learn from my own mistakes. Commenting the code helps! I will try to do so as well.
