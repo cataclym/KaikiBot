@@ -23,7 +23,7 @@ const embed2 = new Discord.MessageEmbed({
     "color": color})
 const embed3 = new Discord.MessageEmbed({
     "title": "Example:",
-    "description": "+remind me 69 days ",
+    "description": `${prefix}remind me 69 days`,
     "color": color,
     "author": {
     "name": "You need to specify the amount of time."}})

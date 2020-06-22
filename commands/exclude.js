@@ -15,7 +15,7 @@ module.exports = {
     "text": "Beep boop."}})
     const embed2 = new MessageEmbed({
     "title": "Success!",
-    "description": `Added role\`${excludedRole}\`.\nType the command again to remove.`,
+    "description": `Added role \`${excludedRole}\`.\nType the command again to remove.`,
     "color": color})
     const embed3 = new MessageEmbed({
     "title": "Success!",

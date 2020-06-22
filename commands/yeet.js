@@ -8,20 +8,19 @@ module.exports = {
   description: "Returns yeet...",
   args: false,
   usage: `${prefix}yeet`,
-  execute(message) {
-  let color = message.member.displayColor
-  loadTitle(message)
-  message.channel.startTyping()
-//Functions ->
+execute(message) {
+let color = message.member.displayColor
+loadTitle(message)
+message.channel.startTyping()
 function loadTitle() {
-fetch('https://www.reddit.com/r/DestructiveCriticism.json?limit=1000&?sort=top&t=all')
+fetch('https://www.reddit.com/r/YEET/.json?limit=1000&?sort=top&t=all')
   .then(res => res.json())
   .then(json => json.data.children.map(t => t.data))
   .then(data => postRandomTitle(data))
 }         
 function postRandomTitle(data) {
 const randomTitle = data[Math.floor(Math.random() * data.length) + 1];
-const RTSelftext = randomTitle.selftext.substring(0, 2045);
+let RTSelftext = randomTitle.selftext.substring(0, 2045);
 if(randomTitle.selftext.length > 2048) {
 RTSelftext += "..."; }
 const RTTitle = randomTitle.title.substring(0, 256);
@@ -39,7 +38,6 @@ const embed = new Discord.MessageEmbed({
     "text": `${randomTitle.ups} updoots`
   }
 });
-//Functions <-
   message.channel.stopTyping(true)
   message.channel.send(embed);
         } 

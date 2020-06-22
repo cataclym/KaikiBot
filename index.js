@@ -32,9 +32,11 @@ if (!rolecheck(message)) // This is the check for excluded role.
 	const args = message.content.slice(prefix.length).split(/ +/);
 	const commandName = args.shift().toLowerCase();
 
-	if (!client.commands.has(commandName)) return;
+	//if (!client.commands.has(commandName)) return;
 
-	const command = client.commands.get(commandName);
+	const command = client.commands.get(commandName)|| client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
+
+	if (!command) return;
 
 
     if (command.args && !args.length) {
