@@ -2,6 +2,7 @@
 const prefixes = ["i'm ", "im ", "i am ", "i’m "]; 
 // Change these to words the bot should add reactions to //// You can add as many as you want
 const prefixes2 = ["word1", "word2"]; 
+// Change these to match the emotenames you want to be reacted with, to the message containing the words above.
 const emotenames = ["emotename1", "emotename2", "emotename3", "emotename4"];
 
 //These are role names that the bot will exclude - Members having the roles wont trigger the bot. //Currently not in use go to (../storage/names.json)
