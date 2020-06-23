@@ -43,4 +43,3 @@ message.channel.send(embed);
       } 
 },
 }
-
