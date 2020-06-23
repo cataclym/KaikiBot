@@ -9,8 +9,12 @@
   "author": "Cataclym <ole.kh@hotmail.com>",
   "license": "MIT",
   "dependencies": {
+    "better-sqlite3": "^7.1.0",
+    "bindings": "^1.5.0",
     "discord.js": "^12.2.0",
-    "node-fetch": "^2.6.0"
+    "node-fetch": "^2.6.0",
+    "prebuild-install": "^5.3.4",
+    "quick.db": "^7.1.1"
   },
   "devDependencies": {
     "eslint": "^7.3.0",

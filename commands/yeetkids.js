@@ -21,7 +21,7 @@ fetch('https://www.reddit.com/r/YeetingKids/.json?limit=1000&?sort=top&t=all')
 function postRandomTitle(data) {
 const randomTitle = data[Math.floor(Math.random() * data.length) + 1];
 let RTSelftext = randomTitle.selftext.substring(0, 2045);
-if(randomTitle.selftext.length > 2048) {
+if(randomTitle.selftext.length >= 2048) {
 RTSelftext += "..."; }
 const RTTitle = randomTitle.title.substring(0, 256);
 let RTUrl = randomTitle.url.toString();
