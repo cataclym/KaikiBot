@@ -10,7 +10,7 @@ module.exports = {
     let color = message.member.displayColor 
     const embed = new Discord.MessageEmbed({
             "title": "List of commands for Nadeko Sengoku",
-            "description": `Prefix is currently set to \`${prefix}\``,
+            "description": `Prefix is currently set to \`${prefix}\`.`,
             "author": {
               "name": `Nadeko Sengoku Bot v${version}`,
               "url": "https://github.com/cataclym/nadekosengokubot",
@@ -20,8 +20,8 @@ module.exports = {
             "fields": [
               {
                 "name": `${prefix}Help`,
-                "value": `List of commands for ${message.client.username}.`,
-                "inline": true,
+                "value": "List of commands for Nadeko.",
+                "inline": true
               },
               {
                 "name": `${prefix}Die`,
@@ -59,8 +59,8 @@ module.exports = {
                 "inline": true
               },
               {
-                "name": `${prefix}cmds`,
-                "value": "List of all commands and aliases.",
+                "name": `\u200B`,
+                "value": "\u200B",
                 "inline": true
               }
             ],

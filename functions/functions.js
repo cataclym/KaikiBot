@@ -2,8 +2,6 @@ const Discord = require('discord.js');
 const { prefixes, prefixes2, emotenames } = require("../variables");
 const {client} = require('../index.js');
 const { prefix } = require('../config.json');
-const db = require('quick.db');
-const UserNickTable = new db.table('UserNickTable')
 
 // handle mentions
 function handleMentions(message) {
@@ -21,26 +19,23 @@ function handleMentions(message) {
   };
 // dadbot
 function dadbot(message) {
-for (const item of prefixes) {
-const r = new RegExp("(^|\\s|$)(?<statement>(?<prefix>" + item + ")\\s*(?<nickname>.*)$)", "mi");
-if (r.test(message.content) && !message.author.bot) {
-const { nickname } = message.content.match(r).groups;
-if (nickname.length <= 256) {
-    message.channel.send(`Hi, ${nickname}`);
-  const owner = message.guild.owner; 
-  if(nickname.length <= 32) { 
-    UserNickTable.push(`usernicknames.${message.member}`, nickname)
-     //const FetchDBNames = UserNickTable.fetch(`usernicknames.${message.member}`);
-     //console.log(FetchDBNames); //For debug
-    if(message.author.id !== owner.id) {                      //Ignore guild owner as their nicknames cannot be changed          
-    message.member.setNickname(nickname).catch(error => {     
-    if (error.code) {                                         // If any error it will log it in channel, console.
-      console.error('Failed to set nick due to:', error)      
-      message.channel.send(`Failed to set nick due to: ${error}`, error);
-    }})}}}
-break;
+  for (const item of prefixes) {
+    const r = new RegExp("(^|\\s|$)(?<statement>(?<prefix>" + item + ")\\s*(?<nickname>.*)$)", "mi");
+    if (r.test(message.content) && !message.author.bot) {
+      const { nickname } = message.content.match(r).groups;
+      if (nickname.length <= 256) {
+        message.channel.send(`Hi, ${nickname}`);
+        const owner = message.guild.owner; 
+        if(nickname.length <= 32 && message.author.id !== owner.id) //Will ignore guild owner
+        message.member.setNickname(nickname).catch(error => {     
+          if (error.code) {                                         // If any error it will log it in channel, console.
+          console.error('Failed to set nick due to:', error)      // Because owner is ignored already, it wont spam error in chat
+          message.channel.send(`Failed to set nick due to: ${error}`, error);
+        }})
+      }
+      break;
+    }
   }
- }
 };
 // check for special role
 function rolecheck(message) {
@@ -63,5 +58,5 @@ keywords.forEach(word => {
 }
 }
   )};
-module.exports = { emotereact, rolecheck, handleMentions, dadbot, UserNickTable };
+module.exports = { emotereact, rolecheck, handleMentions, dadbot };
 
