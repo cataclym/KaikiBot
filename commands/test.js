@@ -1,4 +1,4 @@
-const { prefix } = require('../config.json');
+const { prefix } = require("../config.json");
 module.exports = {
 	name: "test",
 	description: "",
@@ -8,4 +8,4 @@ module.exports = {
 		message.channel.send("Fck u want?");
 	}
 	,
-}
+};

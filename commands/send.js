@@ -1,5 +1,5 @@
-const { prefix } = require('../config.json');
-const { MessageEmbed } = require('discord.js');
+const { prefix } = require("../config.json");
+const { MessageEmbed } = require("discord.js");
 
 
 module.exports = {
@@ -8,13 +8,13 @@ module.exports = {
 	args: true,
 	usage: "${stuff_here}",
 	execute(message, args) {
-		let reply = [`${args[0]}`, `${args[1]}`, `${args[2]}`, `${args[3]}`, `${args[4]}`, `${args[5]}`]
+		const reply = [`${args[0]}`, `${args[1]}`, `${args[2]}`, `${args[3]}`, `${args[4]}`, `${args[5]}`];
 		const filtered = reply.filter(word => word.array !== undefined);
-		let embed = new MessageEmbed({
+		const embed = new MessageEmbed({
 			"title": "Success",
 			"description": `${filtered}`,
-		})
+		});
 
 		message.channel.send(embed);
 	},
-}
+};

@@ -1,13 +1,13 @@
-const { prefix } = require('../config.json');
-const Discord = require('discord.js');
-const { version } = require('../package.json');
+const { prefix } = require("../config.json");
+const Discord = require("discord.js");
+const { version } = require("../package.json");
 
 module.exports = {
 	name: "help",
 	description: "Shows command info",
-	aliases: ['commands', 'commandlist', 'commandslist', 'cmds'],
+	aliases: ["commands", "commandlist", "commandslist", "cmds"],
 	execute(message) {
-		let color = message.member.displayColor
+		const color = message.member.displayColor;
 		const embed = new Discord.MessageEmbed({
 			"title": "List of commands for Nadeko Sengoku",
 			"description": `Prefix is currently set to \`${prefix}\`.`,
@@ -16,7 +16,7 @@ module.exports = {
 				"url": "https://github.com/cataclym/nadekosengokubot",
 				"icon_url": message.author.displayAvatarURL(),
 			},
-			"color": color,
+			color,
 			"fields": [
 				{
 					"name": `${prefix}Help`,
@@ -59,7 +59,7 @@ module.exports = {
 					"inline": true
 				},
 				{
-					"name": `\u200B`,
+					"name": "\u200B",
 					"value": "\u200B",
 					"inline": true
 				}
@@ -67,7 +67,7 @@ module.exports = {
 			"footer": {
 				"text": "Made by Cata <3"
 			}
-		})
-		message.channel.send(embed)
+		});
+		message.channel.send(embed);
 	},
-}
+};

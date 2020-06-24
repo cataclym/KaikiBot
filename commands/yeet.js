@@ -1,22 +1,22 @@
 const fetch = require("node-fetch");
-const Discord = require('discord.js');
-const { prefix } = require('../config.json');
+const Discord = require("discord.js");
+const { prefix } = require("../config.json");
 
 module.exports = {
 	name: "yeet",
-	aliases: ['yeets'],
+	aliases: ["yeets"],
 	description: "Returns yeet...",
 	args: false,
 	usage: `${prefix}yeet`,
 	execute(message) {
-		let color = message.member.displayColor
-		loadTitle(message)
-		message.channel.startTyping()
+		const color = message.member.displayColor;
+		loadTitle(message);
+		message.channel.startTyping();
 		function loadTitle() {
-			fetch('https://www.reddit.com/r/YEET/.json?limit=1000&?sort=top&t=all')
+			fetch("https://www.reddit.com/r/YEET/.json?limit=1000&?sort=top&t=all")
 				.then(res => res.json())
 				.then(json => json.data.children.map(t => t.data))
-				.then(data => postRandomTitle(data))
+				.then(data => postRandomTitle(data));
 		}
 		function postRandomTitle(data) {
 			const randomTitle = data[Math.floor(Math.random() * data.length) + 1];
@@ -28,7 +28,7 @@ module.exports = {
 			const embed = new Discord.MessageEmbed({
 				"title": RTTitle,
 				"description": RTSelftext,
-				"color": color,
+				color,
 				"author": {
 					"name": `Submitted by ${randomTitle.author}`
 				},
@@ -39,8 +39,8 @@ module.exports = {
 					"text": `${randomTitle.ups} updoots`
 				}
 			});
-			message.channel.stopTyping(true)
+			message.channel.stopTyping(true);
 			message.channel.send(embed);
 		}
 	},
-}
+};

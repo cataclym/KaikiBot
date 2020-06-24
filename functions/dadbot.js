@@ -12,11 +12,11 @@ module.exports = {
 				if (nickname.length <= 32 && message.author.id !== owner.id) //Will ignore guild owner
 					message.member.setNickname(nickname).catch(error => {       //
 						if (error.code) {                                         // If any error it will log it in channel, console.
-							console.error('Failed to set nick due to:', error)      // Because owner is ignored already, it wont spam error in chat
+							console.error("Failed to set nick due to:", error);      // Because owner is ignored already, it wont spam error in chat
 							message.channel.send(`Failed to set nick due to: ${error}`, error);
 						}
 					});
 			}
 		}
 	}
-}
+};

@@ -1,22 +1,22 @@
-const Discord = require('discord.js');
+const Discord = require("discord.js");
 const { prefixes, prefixes2, emotenames } = require("../variables");
-const { client } = require('../index.js');
-const { prefix } = require('../config.json');
+const { client } = require("../index.js");
+const { prefix } = require("../config.json");
 
 // handle mentions
 function handleMentions(message) {
-	let color = message.member.displayColor
+	const color = message.member.displayColor;
 	const embed = new Discord.MessageEmbed({
 		"title": `Hi ${message.author.username}, what is up?`,
 		"description": `If you need help type ${prefix}help.`,
-		"color": color
-	})
+		color
+	});
 	if (message.mentions.has(message.client.user) && !message.author.bot) {
 		message.channel.startTyping()
 			.then(message.channel.send(embed))
 			.then(message.channel.stopTyping(true));
 	}
-};
+}
 // dadbot
 function dadbot(message) {
 	for (const item of prefixes) {
@@ -29,15 +29,15 @@ function dadbot(message) {
 				if (nickname.length <= 32 && message.author.id !== owner.id) //Will ignore guild owner
 					message.member.setNickname(nickname).catch(error => {
 						if (error.code) {                                         // If any error it will log it in channel, console.
-							console.error('Failed to set nick due to:', error)      // Because owner is ignored already, it wont spam error in chat
+							console.error("Failed to set nick due to:", error);      // Because owner is ignored already, it wont spam error in chat
 							message.channel.send(`Failed to set nick due to: ${error}`, error);
 						}
-					})
+					});
 			}
 			break;
 		}
 	}
-};
+}
 // check for special role
 function rolecheck(message) {
 	const specialString = require("../storage/names.json");
@@ -55,9 +55,9 @@ function emotereact(message) {
 			const emojiname = emotenames[prefixes2.indexOf(word)];
 			if (!message.guild.emojis.cache.find(e => e.name === emojiname)) return console.log("Couldnt react to message. Emote probably doesnt exist on this guild.");
 			const emojiArray = message.guild.emojis.cache.find(e => e.name === emojiname);
-			message.react(emojiArray)
+			message.react(emojiArray);
 		}
 	}
-	)
-};
+	);
+}
 module.exports = { emotereact, rolecheck, handleMentions, dadbot };
