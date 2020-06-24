@@ -115,3 +115,5 @@ dist
 
 # Keyfile
 keyfile.json
+variables.js
+config.json
