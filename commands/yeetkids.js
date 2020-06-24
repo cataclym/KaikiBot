@@ -4,7 +4,7 @@ const { prefix } = require("../config.json");
 
 module.exports = {
 	name: "yeetkids",
-	aliases: ["yeetingkids", "yeet kids", "yeeting kids"],
+	aliases: ["yeetingkids", "yeetkid"],
 	description: "Returns yeet...",
 	args: false,
 	usage: `${prefix}yeetkids`,

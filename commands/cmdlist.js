@@ -3,13 +3,14 @@ const { prefix } = require("../config.json");
 const { version } = require("../package.json");
 
 module.exports = {
-	name: "help",
-	description: "Shows command info",
-	execute(message) {
+	name: "cmdlist",
+	aliases: ["commands", "commandlist", "commandslist", "cmds"],
+	description: "Returns all aliases and commands.",
+	execute(message, cmd) {
 		const color = message.member.displayColor;
 		const embed = new Discord.MessageEmbed({
 			title: "List of commands for Nadeko Sengoku",
-			description: `Prefix is currently set to \`${prefix}\`\nFor a complete list of commands and aliases type \`${prefix}Cmdlist\``,
+			description: `Prefix is currently set to \`${prefix}\`\n`,
 			author: {
 				name: `Nadeko Sengoku Bot v${version}`,
 				url: "https://github.com/cataclym/nadekosengokubot",
@@ -19,47 +20,62 @@ module.exports = {
 			fields: [
 				{
 					name: `${prefix}Help`,
-					value: `List of commands for ${message.client.username}.`,
+					value: "```css\n[help]\n```",
 					inline: true,
 				},
 				{
 					name: `${prefix}Die`,
-					value: "Shuts down the bot.\nRestarts if it is running under PM2.",
+					value: "```css\n[die, kill, murder, shutdown]\n```",
 					inline: true,
 				},
 				{
 					name: `${prefix}Ping`,
-					value: "Ping the bot to see if there are latency issues.",
+					value: "```css\n[ping]\n```",
 					inline: true,
 				},
 				{
 					name: `${prefix}Dadjoke`,
-					value: "Returns a dadjoke.",
+					value: "```css\n[dadjoke, dadjokes]\n```",
 					inline: true,
 				},
 				{
 					name: `${prefix}Exclude`,
-					value: "Adds or removes excluded role from user.",
+					value: "```css\n[exclude]\n```",
 					inline: true,
 				},
 				{
 					name: `${prefix}Yeet`,
-					value: "Returns yeet...",
+					value: "```css\n[yeet, yeets]\n```",
 					inline: true,
 				},
 				{
 					name: `${prefix}Yeetkids`,
-					value: "Returns some more yeet...",
+					value: "```css\n[yeetkids, yeetkid, yeetingkids]\n```",
 					inline: true,
 				},
 				{
 					name: `${prefix}Names`,
-					value: "Get all of your daddy nicknames.",
+					value: "```css\n[names, checknames, getnames, name]\n```",
 					inline: true,
 				},
 				{
 					name: `${prefix}Delnames`,
-					value: "Deletes your name list.",
+					value: "```css\n[delnames, deletenames, namedel, namedelete]\n```",
+					inline: true,
+				},
+				{
+					name: `${prefix}Send`,
+					value: "```css\n[send] #WIP\n```",
+					inline: true,
+				},
+				{
+					name: `${prefix}Test`,
+					value: "```css\n[test] #WIP\n```",
+					inline: true,
+				},
+				{
+					name: `${prefix}Remind`,
+					value: "```css\n[remind] #WIP\n```",
 					inline: true,
 				},
 			],

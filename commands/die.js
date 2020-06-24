@@ -2,6 +2,7 @@ const { MessageEmbed } = require("discord.js");
 
 module.exports = {
 	name: "die",
+	aliases: ["kill", "murder", "shutdown"],
 	description: "Turn bot off, then turn it back on.",
 	execute(message) {
 		const color = message.member.displayColor;
