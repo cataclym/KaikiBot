@@ -28,8 +28,9 @@ const { nickname } = message.content.match(r).groups;
 if (nickname.length <= 256) {
     message.channel.send(`Hi, ${nickname}`);
   const owner = message.guild.owner; 
-  if(nickname.length <= 32) { 
-    UserNickTable.push(`usernicknames.${message.member}`, nickname)
+  if(nickname.length <= 32) {   
+    const guildmemb = message.author;  
+    UserNickTable.push(`usernicknames.${guildmemb.id}`, nickname)
      //const FetchDBNames = UserNickTable.fetch(`usernicknames.${message.member}`);
      //console.log(FetchDBNames); //For debug
     if(message.author.id !== owner.id) {                      //Ignore guild owner as their nicknames cannot be changed          
