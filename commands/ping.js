@@ -7,8 +7,8 @@ module.exports = {
 		const color = message.member.displayColor;
 		const time = Math.round(message.client.ws.ping);
 		const embed = new MessageEmbed({
-			"title": `Ping took ${time} ms`,
-			color
+			title: `Ping took ${time} ms`,
+			color,
 		});
 		message.channel.send(embed);
 	},

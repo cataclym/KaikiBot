@@ -4,7 +4,7 @@ const { prefix } = require("../config.json");
 
 module.exports = {
 	name: "yeetkids",
-	aliases: ["yeetingkids", "yeet kids", "yeeting kids"],
+	aliases: ["yeetingkids", "yeetkid"],
 	description: "Returns yeet...",
 	args: false,
 	usage: `${prefix}yeetkids`,
@@ -14,21 +14,21 @@ module.exports = {
 		message.channel.startTyping();
 		function loadTitle() {
 			fetch("https://www.reddit.com/r/YeetingKids/.json?limit=1000&?sort=top&t=all")
-				.then(res => res.json())
-				.then(json => json.data.children.map(t => t.data))
-				.then(data => postRandomTitle(data));
+				.then((res) => res.json())
+				.then((json) => json.data.children.map((t) => t.data))
+				.then((data) => postRandomTitle(data));
 		}
 		function postRandomTitle(data) {
 			const randomTitle = data[Math.floor(Math.random() * data.length) + 1];
 			let RTSelftext = randomTitle.selftext.substring(0, 2045);
-			if (randomTitle.selftext.length > 2048) {
+			if (randomTitle.selftext.length >= 2048) {
 				RTSelftext += "...";
 			}
 			const RTTitle = randomTitle.title.substring(0, 256);
 			let RTUrl = randomTitle.url.toString();
 			let LinkIfVid = "";
 			const filters = ["webm", "mp4", "gifv", "youtube", "v.redd", "gfycat", "youtu", "news", "wsbtv"];
-			if (filters.some(filter => RTUrl.includes(filter))) {
+			if (filters.some((filter) => RTUrl.includes(filter))) {
 				RTUrl = "";
 				LinkIfVid = "Embed's cannot preview videos. Video will be sent separately.";
 			}

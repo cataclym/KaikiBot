@@ -107,10 +107,20 @@ dist
 
 # Configuration
 /config.js
+<<<<<<< HEAD
+=======
+/variables.js
+>>>>>>> dev
 
 # Database
 /*.db
 /*.sqlite
 
 # Keyfile
+<<<<<<< HEAD
 keyfile.json
+=======
+keyfile.json
+variables.js
+config.json
+>>>>>>> dev
