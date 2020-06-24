@@ -107,6 +107,7 @@ dist
 
 # Configuration
 /config.js
+/variables.js
 
 # Database
 /*.db
