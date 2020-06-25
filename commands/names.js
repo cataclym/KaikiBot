@@ -1,6 +1,6 @@
 const { MessageEmbed } = require("discord.js");
 const { UserNickTable } = require("../functions/functions.js");
-const { prefix } = require("../config.json");
+const { prefix } = require("../config.js");
 
 module.exports = {
 	name: "names",
