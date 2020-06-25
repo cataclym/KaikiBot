@@ -2,10 +2,9 @@
 /* eslint-disable no-restricted-syntax */
 const Discord = require("discord.js");
 const fs = require("fs");
-const { prefix, token } = require("./config.json");
+const { prefix, token, activityname, activitystatus } = require("./config.js");
 
 const client = new Discord.Client();
-const { activityname, activitystatus } = require("./variables.js");
 const {
 	emotereact, rolecheck, handleMentions, dadbot,
 } = require("./functions/functions");

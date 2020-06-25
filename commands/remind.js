@@ -1,7 +1,7 @@
 // const timeArray = ["1d", "2d", "3d", "4d", "5d", "6d", "7d",];
 const eitherDay = ["days", "day"];
 const Discord = require("discord.js");
-const { prefix } = require("../config.json");
+const { prefix } = require("../config.js");
 
 const lowEnd = Number(1);
 const highEnd = Number(999);

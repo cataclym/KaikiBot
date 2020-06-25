@@ -5,8 +5,8 @@ module.exports = {
 	name: "exclude",
 	description: "Adds or removes excluded role from user.",
 	async execute(message) {
-		const specialString = require("../storage/names.json");
-		const excludedRole = specialString.name;
+		const { names } = require("../config.js");
+		const excludedRole = names.toString();
 		const color = message.member.displayColor;
 		// EMBEDS
 		const embed1 = new MessageEmbed({
@@ -26,20 +26,20 @@ module.exports = {
 			color,
 		});
 		// END
-		if (!message.guild.roles.cache.find((r) => r.name === specialString.name)) {
+		if (!message.guild.roles.cache.find((r) => r.name === excludedRole)) {
 			message.guild.roles.create({
-				data: { name: specialString.name },
+				data: { name: excludedRole },
 				reason: "Role didn't exist yet",
 			})
 				.then(message.channel.send(embed1))
 				.catch(console.error);
-			setTimeout(() => { (message.member.roles.add(message.guild.roles.cache.find((r) => r.name === specialString.name))); }, 2000);
+			setTimeout(() => { (message.member.roles.add(message.guild.roles.cache.find((r) => r.name === excludedRole))); }, 2000);
 			setTimeout(() => { (message.channel.send(embed2)); }, 2000);
-		} else if (!message.member.roles.cache.find((r) => r.name === specialString.name)) {
-			message.member.roles.add(message.guild.roles.cache.find((r) => r.name === specialString.name));
+		} else if (!message.member.roles.cache.find((r) => r.name === excludedRole)) {
+			message.member.roles.add(message.guild.roles.cache.find((r) => r.name === excludedRole));
 			message.channel.send(embed2);
-		} else if (message.member.roles.cache.find((r) => r.name === specialString.name)) {
-			message.member.roles.remove(message.guild.roles.cache.find((r) => r.name === specialString.name));
+		} else if (message.member.roles.cache.find((r) => r.name === excludedRole)) {
+			message.member.roles.remove(message.guild.roles.cache.find((r) => r.name === excludedRole));
 			message.channel.send(embed3);
 		}
 	},

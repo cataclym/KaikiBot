@@ -1,8 +1,7 @@
 /* eslint-disable global-require */
 const Discord = require("discord.js");
 const db = require("quick.db");
-const { prefixes, prefixes2, emotenames } = require("../variables");
-const { prefix } = require("../config.json");
+const { prefix, prefixes, prefixes2, emotenames } = require("../config.js");
 
 // eslint-disable-next-line new-cap
 const UserNickTable = new db.table("UserNickTable");
@@ -50,8 +49,8 @@ function dadbot(message) {
 }
 // check for special role
 function rolecheck(message) {
-	const specialString = require("../storage/names.json");
-	if (message.member.roles.cache.find((r) => r.name === specialString.name)) {
+	const { names } = require("../config.js");
+	if (message.member.roles.cache.find((r) => r.name === names.toString())) {
 		// console.log("Role checked:", specialString.name); //For debug.
 		return true;
 	}

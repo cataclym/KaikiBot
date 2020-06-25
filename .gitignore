@@ -106,7 +106,7 @@ dist
 /test*.*
 
 # Configuration
-/config.js
+/config.json
 /variables.js
 
 # Database
