@@ -8,7 +8,7 @@ module.exports = {
 	aliases: ["dadjokes"],
 	description: "Returns a dadjoke.",
 	args: false,
-	usage: `${prefix}dadjoke`,
+	usage: "\u200B",
 	execute(message) {
 		const color = message.member.displayColor;
 		loadTitle(message);

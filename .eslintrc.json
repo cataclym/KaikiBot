@@ -43,8 +43,4 @@
         ],
         "prefer-const": "warn"
     }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> dev

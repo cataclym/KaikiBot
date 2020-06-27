@@ -7,7 +7,7 @@ module.exports = {
 	aliases: ["yeetingkids", "yeetkid"],
 	description: "Returns yeet...",
 	args: false,
-	usage: `${prefix}yeetkids`,
+	usage: "\u200B",
 	execute(message) {
 		const color = message.member.displayColor;
 		loadTitle(message);
@@ -21,7 +21,7 @@ module.exports = {
 		function postRandomTitle(data) {
 			const randomTitle = data[Math.floor(Math.random() * data.length) + 1];
 			let RTSelftext = randomTitle.selftext.substring(0, 2045);
-			if (randomTitle.selftext.length >= 2048) {
+			if (randomTitle.selftext.length > 2048) {
 				RTSelftext += "...";
 			}
 			const RTTitle = randomTitle.title.substring(0, 256);
