@@ -1,13 +1,13 @@
 const fetch = require("node-fetch");
 const Discord = require("discord.js");
-const { prefix } = require("../config.json");
+const { prefix } = require("../config.js");
 
 module.exports = {
 	name: "yeet",
 	aliases: ["yeets"],
 	description: "Returns yeet...",
 	args: false,
-	usage: `${prefix}yeet`,
+	usage: "\u200B",
 	execute(message) {
 		const color = message.member.displayColor;
 		loadTitle(message);

@@ -26,8 +26,7 @@ Requirements
 ### Important: Do not give bot administrator role or the ability to mention @everyone and @here.
 **Details on bot's permissions comes after Instructions, down below.**
 1. Clone repo
-1. Edit config.json - Add your bot token.
-1. Edit variables.js - Replace example emotes or remove them if you don't want it to react.
+1. Edit `config.js` - Add your bot token. Replace example emotes or remove them if you don't want it to react.
 1. `cd nadekosengokubot`
 1. `npm i`
 1. `node index.js`
@@ -35,7 +34,7 @@ Requirements
 1. Profit
 
 **Note:** 
-By default the role that excludes users is currently called `Nadeko-excluded`. It can be changed in `./storage/names.json`.              
+By default the role that excludes users is currently called `Nadeko-excluded`. It can be changed in `./config.js`.              
 It will autocreate the role if it doesnt exist first time you type `+exlude`. And as long as it has "Manage roles" permissions.  
 
 Add it to pm2 for easy auto restart.

@@ -106,7 +106,9 @@ dist
 /test*.*
 
 # Configuration
+
 /config.js
+
 /variables.js
 
 # Database
@@ -117,3 +119,5 @@ dist
 keyfile.json
 variables.js
 config.json
+json.sqlite
+

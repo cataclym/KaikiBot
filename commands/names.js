@@ -1,6 +1,6 @@
 const { MessageEmbed } = require("discord.js");
 const { UserNickTable } = require("../functions/functions.js");
-const { prefix } = require("../config.json");
+const { prefix } = require("../config.js");
 
 module.exports = {
 	name: "names",
@@ -34,8 +34,8 @@ module.exports = {
 		}
 		const AuthorDBName = UserNickTable.fetch(`usernicknames.${message.author.id}`);
 		// Makes it look cleaner
-		let StringsAuthorDBName = AuthorDBName.toString().substring(0, 2045);
-		StringsAuthorDBName = StringsAuthorDBName.replace(/,/g, ", ");
+		let StringsAuthorDBName = AuthorDBName.join("¤").toString();
+		StringsAuthorDBName = StringsAuthorDBName.replace(/¤/g, ", ").substring(0, 2045);
 		StringsAuthorDBName += "...";
 
 		const color = message.member.displayColor;
@@ -58,21 +58,20 @@ module.exports = {
 			const av = message.mentions.users.first();
 			const argsDBName = UserNickTable.fetch(`usernicknames.${av.id}`);
 			// Makes it look cleaner
-			let StringsargsDBName = argsDBName.toString().substring(0, 2045);
-			StringsargsDBName = StringsargsDBName.replace(/,/g, ", ");
+			let StringsargsDBName = argsDBName.join("¤").toString();
+			StringsargsDBName = StringsargsDBName.replace(/¤/g, ", ").substring(0, 2045);
 			StringsargsDBName += "...";
 			embed.setDescription(StringsargsDBName);
 			embed.setTitle(`${av.username}'s past names`);
 			embed.setThumbnail(av.displayAvatarURL());
 		}
-		const AuthorOrMention = args[0] || message.author;
+		const AuthorOrMention = args[0] || message.author; // Probably useless now
 		if (embed.description.includes(undefined)) {
 			embed.setTitle("There is nothing here");
 			embed.setDescription(`${AuthorOrMention} may never have had their name changed by me`);
 			embed.setFooter("\u200B");
 			embed.setAuthor("Oops", "https://cdn.discordapp.com/avatars/714695773534814238/c6b61ba085b7c1ff59716d1238860e0f.png");
 		}
-
 		return message.channel.send(embed);
 	},
 };

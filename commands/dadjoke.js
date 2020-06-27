@@ -1,14 +1,14 @@
 /* eslint-disable linebreak-style */
 const fetch = require("node-fetch");
 const Discord = require("discord.js");
-const { prefix } = require("../config.json");
+const { prefix } = require("../config.js");
 
 module.exports = {
 	name: "dadjoke",
 	aliases: ["dadjokes"],
 	description: "Returns a dadjoke.",
 	args: false,
-	usage: `${prefix}dadjoke`,
+	usage: "\u200B",
 	execute(message) {
 		const color = message.member.displayColor;
 		loadTitle(message);

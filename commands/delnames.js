@@ -6,11 +6,17 @@ module.exports = {
 	description: "Deletes ALL your nicknames.",
 	args: false,
 	// usage: '',
-	execute(message) {
+	async execute(message) {
 		if (UserNickTable.delete(`usernicknames.${message.member.id}`)) {
-			message.channel.send(`Deleted all of ${message.member}'s nicknames.\nWell done, you made daddy forget.`);
-			UserNickTable.push(`usernicknames.${message.member.id}`, message.author.username);
-		} else {
+			try {
+				await message.channel.send(`Deleted all of ${message.member}'s nicknames.\nWell done, you made daddy forget.`);
+				await UserNickTable.push(`usernicknames.${message.member.id}`, message.author.username);
+			}
+			catch(error) {
+				console.log(error);
+			}
+		} 
+		else {
 			message.channel.send("That didn`t work");
 		}
 	},
