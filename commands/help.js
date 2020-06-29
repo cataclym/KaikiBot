@@ -5,10 +5,12 @@ const { command, commandName } = require("../index");
 
 module.exports = {
 	name: "help",
+	aliases: ["h"],
 	description: "Shows command info",
 	async execute(message, args) {
 
 		if (args[0]) {
+
 			const commandName = args.shift().toLowerCase();
 			// eslint-disable-next-line max-len
 			const command = message.client.commands.get(commandName) || message.client.commands.find((cmd) => cmd.aliases && cmd.aliases.includes(commandName));
@@ -20,7 +22,7 @@ module.exports = {
 				if (command.usage) { cmdmsg += `\nUsage: \`${prefix}${command.name} ${command.usage}\``; }
 
 				if (command.aliases) { 
-					cmdmsg += `\nAliases: ${command.aliases}`; }
+					cmdmsg += `\nAliases: ${command.aliases.splice(",").join(", ")}`; }
 				return message.channel.send(cmdmsg);
 			}
 		}

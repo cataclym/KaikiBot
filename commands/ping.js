@@ -4,6 +4,7 @@ module.exports = {
 	name: "ping",
 	args: false,
 	description: "Ping!",
+	aliases: "p",
 	usage: "\u200B",
 	execute(message) {
 		const color = message.member.displayColor;
