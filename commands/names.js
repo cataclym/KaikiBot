@@ -4,7 +4,7 @@ const { prefix } = require("../config.js");
 
 module.exports = {
 	name: "names",
-	aliases: ["checknames", "getnames", "name"],
+	aliases: ["name", "checknames", "getnames", "getname", "checknames"],
 	description: "Returns all your daddy nicknames",
 	// args: true,
 	usage: "@someone",

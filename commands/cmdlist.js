@@ -6,7 +6,11 @@ module.exports = {
 	name: "cmdlist",
 	aliases: ["commands", "commandlist", "commandslist", "cmds"],
 	description: "Returns all aliases and commands.",
-	execute(message, cmd) {
+	async execute(message, cmd, client) {
+
+		const CommandsCollection = message.client.commands;
+		let Cmdslist = CommandsCollection.map(t => t).filter(a => !!a).sort();
+		Cmdslist = [...Cmdslist];
 		const color = message.member.displayColor;
 		const embed = new Discord.MessageEmbed({
 			title: "List of commands for Nadeko Sengoku",
@@ -16,73 +20,20 @@ module.exports = {
 				url: "https://github.com/cataclym/nadekosengokubot",
 				icon_url: message.author.displayAvatarURL(),
 			},
+			thumbnail: {
+				url: "https://cdn.discordapp.com/attachments/717045690022363229/726600392107884646/3391ce4715f3c814d6067911438e5bf7.png",
+			},
 			color,
-			fields: [
-				{
-					name: `${prefix}Help`,
-					value: "```css\n[help]\n```",
-					inline: true,
-				},
-				{
-					name: `${prefix}Die`,
-					value: "```css\n[die, kill, murder, shutdown]\n```",
-					inline: true,
-				},
-				{
-					name: `${prefix}Ping`,
-					value: "```css\n[ping]\n```",
-					inline: true,
-				},
-				{
-					name: `${prefix}Dadjoke`,
-					value: "```css\n[dadjoke, dadjokes]\n```",
-					inline: true,
-				},
-				{
-					name: `${prefix}Exclude`,
-					value: "```css\n[exclude]\n```",
-					inline: true,
-				},
-				{
-					name: `${prefix}Yeet`,
-					value: "```css\n[yeet, yeets]\n```",
-					inline: true,
-				},
-				{
-					name: `${prefix}Yeetkids`,
-					value: "```css\n[yeetkids, yeetkid, yeetingkids]\n```",
-					inline: true,
-				},
-				{
-					name: `${prefix}Names`,
-					value: "```css\n[names, checknames, getnames, name]\n```",
-					inline: true,
-				},
-				{
-					name: `${prefix}Delnames`,
-					value: "```css\n[delnames, deletenames, namedel, namedelete]\n```",
-					inline: true,
-				},
-				{
-					name: `${prefix}Send`,
-					value: "```css\n[send] #WIP\n```",
-					inline: true,
-				},
-				{
-					name: `${prefix}Test`,
-					value: "```css\n[test] #WIP\n```",
-					inline: true,
-				},
-				{
-					name: `${prefix}Remind`,
-					value: "```css\n[remind] #WIP\n```",
-					inline: true,
-				},
-			],
 			footer: {
 				text: "Made by Cata <3",
 			},
 		});
-		message.channel.send(embed);
+		const names = CommandsCollection.map(t => t.name).filter(a => !!a).sort();
+		for (const [i, value] of names.entries()) {
+			const alias = Cmdslist[i].aliases;
+			await embed.addField(prefix+value, alias, true);
+		}
+		await embed.addField("\u200B", "\u200B", true);
+		await message.channel.send(embed);
 	},
 };

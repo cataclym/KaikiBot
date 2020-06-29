@@ -2,7 +2,7 @@ const { UserNickTable } = require("../functions/functions.js");
 
 module.exports = {
 	name: "delnames",
-	aliases: ["deletenames", "namedel", "namedelete"],
+	aliases: ["deletenames", "namedel", "namedelete",],
 	description: "Deletes ALL your nicknames.",
 	args: false,
 	// usage: '',
