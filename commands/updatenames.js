@@ -9,6 +9,10 @@ module.exports = {
 	usage: "50",
 	async execute(message, args) {
 
+		if (!message.member.hasPermission("ADMINISTRATOR")) {
+			return message.channel.send("You do not have permissions to execute this command.");
+		}
+
 		let nr = parseInt(args[0], 10);
 
 		if (isNaN(parseFloat(nr))) {
