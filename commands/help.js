@@ -5,10 +5,11 @@ const { command, commandName } = require("../index");
 
 module.exports = {
 	name: "help",
+	args: false,
 	aliases: ["h",],
 	description: "Shows command info",
 	async execute(message, args) {
-
+		/* Breaks commands
 		if (args[0]) {
 			
 			const commandName = args.shift().toLowerCase();
@@ -25,6 +26,7 @@ module.exports = {
 				return message.channel.send(cmdmsg);
 			}
 		}
+		*/
 		const color = message.member.displayColor;
 		const AvUrl = await message.client.users.fetch("140788173885276160");
 
