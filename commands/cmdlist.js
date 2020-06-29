@@ -6,11 +6,11 @@ module.exports = {
 	name: "cmdlist",
 	aliases: ["commands", "commandlist", "commandslist", "cmds"],
 	description: "Returns all aliases and commands.",
-	async execute(message, cmd, client) {
+	async execute(message) {
 
-		const CommandsCollection = message.client.commands;
-		let Cmdslist = CommandsCollection.map(t => t).filter(a => !!a).sort();
-		Cmdslist = [...Cmdslist];
+		const CommandsCollection = await message.client.commands;
+		const Cmdslist = await CommandsCollection.map(t => t).filter(a => !!a).sort();
+
 		const color = message.member.displayColor;
 		const embed = new Discord.MessageEmbed({
 			title: "List of commands for Nadeko Sengoku",
@@ -28,12 +28,12 @@ module.exports = {
 				text: "Made by Cata <3",
 			},
 		});
-		const names = CommandsCollection.map(t => t.name).filter(a => !!a).sort();
+		const names = await Cmdslist.map(t => t.name).filter(a => !!a).sort(function(a, b){return b-a;});
 		for (const [i, value] of names.entries()) {
 			const alias = Cmdslist[i].aliases;
-			await embed.addField(prefix+value, alias, true);
+			embed.addField(prefix+value, alias, true);
 		}
-		await embed.addField("\u200B", "\u200B", true);
+		embed.addField("\u200B", "\u200B", true);
 		await message.channel.send(embed);
 	},
 };

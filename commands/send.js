@@ -3,6 +3,7 @@ const { MessageEmbed } = require("discord.js");
 module.exports = {
 	name: "send",
 	description: "Sends your desired msg",
+	aliases: ["s",],
 	args: true,
 	usage: "$ {stuff_here}",
 	execute(message, args) {

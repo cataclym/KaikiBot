@@ -4,7 +4,7 @@ const ReminderList = new db.table("ReminderList");
 
 module.exports = {
 	name: "todoremove",
-	aliases: ["remrm"],
+	aliases: ["remrm",],
 	description: "Removes todo entries",
 	args: true,
 	usage: `all | ${prefix}remrm last | ${prefix}remrm 2 | ${prefix}remrm first`,

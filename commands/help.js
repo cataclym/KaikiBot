@@ -5,16 +5,15 @@ const { command, commandName } = require("../index");
 
 module.exports = {
 	name: "help",
-	aliases: ["h"],
+	aliases: ["h",],
 	description: "Shows command info",
 	async execute(message, args) {
 
 		if (args[0]) {
-
+			
 			const commandName = args.shift().toLowerCase();
 			// eslint-disable-next-line max-len
-			const command = message.client.commands.get(commandName) || message.client.commands.find((cmd) => cmd.aliases && cmd.aliases.includes(commandName));
-
+			const command = message.client.commands.get(commandName); // No longer breaks commands like +rng
 			if (!command) return message.channel.send(`Type \`${prefix}cmds\` to see a list of all the commands.`);
 
 			if (command) {
@@ -27,7 +26,7 @@ module.exports = {
 			}
 		}
 		const color = message.member.displayColor;
-		let AvUrl = await message.client.users.fetch("140788173885276160");
+		const AvUrl = await message.client.users.fetch("140788173885276160");
 
 		const embed = new Discord.MessageEmbed({
 			title: `${message.client.user.username} help page`,

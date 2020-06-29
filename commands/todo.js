@@ -4,7 +4,7 @@ const ReminderList = new db.table("ReminderList");
 
 module.exports = {
 	name: "todo",
-	aliases: ["remindme"],
+	aliases: ["remindme",],
 	description: "a todo list",
 	args: true,
 	usage: "make cake sometime",

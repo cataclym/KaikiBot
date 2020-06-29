@@ -5,7 +5,7 @@ const ReminderList = new db.table("ReminderList");
 
 module.exports = {
 	name: "todolist",
-	aliases: ["list", "todolist", "reminder", "remindlist"],
+	aliases: ["list", "todolist", "reminder", "remindlist",],
 	description: "Fetches your list",
 	args: false,
 	usage: "type the command",
@@ -19,6 +19,9 @@ module.exports = {
 			title: "Todo:",
 			description: todolist,
 			color,
+			thumbnail: {
+				url: "https://cdn.discordapp.com/attachments/717045690022363229/726600392107884646/3391ce4715f3c814d6067911438e5bf7.png",
+			},
 		});
 		if (reminder === null){
 			embed.setDescription("You havent added any todo lists, yet.");

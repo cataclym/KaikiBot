@@ -13,6 +13,7 @@ module.exports = {
 	name: "remind",
 	description: "",
 	args: true,
+	aliases: ["rem"],
 	usage: "me 69 days",
 	execute(message, args) {
 		const color = message.member.displayColor;
