@@ -4,14 +4,14 @@ const UserNickTable = new db.table("UserNickTable");
 module.exports = {
 	name: "updatenames",
 	aliases: ["updatename", "up"],
-	description: "",
+	description: "Updates names in the databse for the `names` command",
 	args: true,
-	usage: "type the command",
+	usage: "50",
 	async execute(message, args) {
 
-		args[0] = args[0].substring(0,2);
+		args[0] = await args[0].substring(0,2);	
 
-		const nr = parseInt(args[0], 10);
+		const nr = parseInt(args[0], 10);	// This limits nr to 100
 
 		if (isNaN(parseFloat(nr))) {
 			return message.channel.send("Not a Number");
@@ -22,25 +22,23 @@ module.exports = {
 			limit: nr,
 			user: message.client.user
 		});
-		if (!updates) { 
+		if (!updates) { // Doubt this will ever happen
 			return console.log("Update names: No updates found."); 
 			
 		}
-		const amount = new Array(); 
+
+		const amount = new Array(); // Array to be used for counting
 		for (const [i, x] of updates.entries) {
 			const { executor, target, changes } = x;
 			if (changes.map(c => c.key) != "nick") {
-				continue;
+				continue;	// Skips changes that arent nicknames
 			}
-			UserNickTable.push(`usernicknames.${target.id}`, changes.map(c => c.new));
-			amount.push("Item");
+			await UserNickTable.push(`usernicknames.${target.id}`, changes.map(c => c.new));
+			amount.push("Item"); // Adds to array 
 		}
-	
 		if (updates) {
-
-			const ArrLngth = amount.length;
-			//await ReminderList.push(target.id, changes.new);
-			message.channel.send(`Updated ${ArrLngth} names.`);
+			const ArrLngth = amount.length; // Counts the amount of names that were updated
+			await message.channel.send(`Updated ${ArrLngth} names.`);
 		}
 	},
 };
