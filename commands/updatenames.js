@@ -9,13 +9,12 @@ module.exports = {
 	usage: "50",
 	async execute(message, args) {
 
-		args[0] = await args[0].substring(0,2);	
-
-		const nr = parseInt(args[0], 10);	// This limits nr to 100
+		let nr = parseInt(args[0], 10);
 
 		if (isNaN(parseFloat(nr))) {
 			return message.channel.send("Not a Number");
 		}
+		if (nr > 100) nr = 100; // Can max fetch 100 in one go. Would be nice to grab more...
 
 		const updates = await message.guild.fetchAuditLogs({ 
 			type: "GUILD_MEMBER_UPDATE", 
@@ -24,12 +23,11 @@ module.exports = {
 		});
 		if (!updates) { // Doubt this will ever happen
 			return console.log("Update names: No updates found."); 
-			
 		}
 
 		const amount = new Array(); // Array to be used for counting
 		for (const [i, x] of updates.entries) {
-			const { executor, target, changes } = x;
+			const {target, changes } = x;
 			if (changes.map(c => c.key) != "nick") {
 				continue;	// Skips changes that arent nicknames
 			}
@@ -38,7 +36,7 @@ module.exports = {
 		}
 		if (updates) {
 			const ArrLngth = amount.length; // Counts the amount of names that were updated
-			await message.channel.send(`Updated ${ArrLngth} names.`);
+			await message.channel.send(`Fetched ${nr} updates. Stored ${ArrLngth} names.`);
 		}
 	},
 };
