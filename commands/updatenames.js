@@ -9,6 +9,12 @@ module.exports = {
 	usage: "50",
 	async execute(message, args) {
 
+		if (args[0] === "duplicate") {
+			const fetchd = UserNickTable.get(`usernicknames.${message.member.id}`);
+			const nondup = [...new Set(fetchd)];
+			return UserNickTable.set(`usernicknames.${message.member.id}`, nondup);
+		}
+
 		if (!message.member.hasPermission("ADMINISTRATOR")) {
 			return message.channel.send("You do not have permissions to execute this command.");
 		}
@@ -35,7 +41,7 @@ module.exports = {
 			if (changes.map(c => c.key) != "nick") {
 				continue;	// Skips changes that arent nicknames
 			}
-			await UserNickTable.push(`usernicknames.${target.id}`, changes.map(c => c.new));
+			await UserNickTable.push(`usernicknames.${target.id}`, changes.map(c => c.new).toString());
 			amount.push("Item"); // Adds to array 
 		}
 		if (updates) {

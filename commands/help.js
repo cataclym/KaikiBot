@@ -9,24 +9,23 @@ module.exports = {
 	aliases: ["h",],
 	description: "Shows command info",
 	async execute(message, args) {
-		/* Breaks commands
+	
 		if (args[0]) {
-			
-			const commandName = args.shift().toLowerCase();
+			const ArgCMD = args[0].toLowerCase();
 			// eslint-disable-next-line max-len
-			const command = message.client.commands.get(commandName); // No longer breaks commands like +rng
-			if (!command) return message.channel.send(`Type \`${prefix}cmds\` to see a list of all the commands.`);
+			const ActualCommand = message.client.commands.get(ArgCMD); // Adding aliases to it breaks commands 
+			if (!ActualCommand) return message.channel.send(`Type \`${prefix}cmds\` to see a list of all the commands.`);
 
-			if (command) {
-				let cmdmsg = `Description: ${command.description}`;
-				if (command.usage) { cmdmsg += `\nUsage: \`${prefix}${command.name} ${command.usage}\``; }
+			else {
+				let cmdmsg = `Description: ${ActualCommand.description}`;
+				if (ActualCommand.usage) { cmdmsg += `\nUsage: \`${prefix}${ActualCommand.name} ${ActualCommand.usage}\``; }
 
-				if (command.aliases) { 
-					cmdmsg += `\nAliases: ${command.aliases.splice(",").join(", ")}`; }
+				if (ActualCommand.aliases) { 
+					cmdmsg += `\nAliases: ${ActualCommand.aliases.splice(",").join(", ")}`; }
 				return message.channel.send(cmdmsg);
 			}
 		}
-		*/
+		
 		const color = message.member.displayColor;
 		const AvUrl = await message.client.users.fetch("140788173885276160");
 

@@ -1,14 +1,19 @@
 const { MessageEmbed } = require("discord.js");
 const { UserNickTable } = require("../functions/functions.js");
 const { prefix } = require("../config.js");
+const { set } = require("quick.db");
 
 module.exports = {
 	name: "names",
 	aliases: ["name", "checknames", "getnames", "getname", "checknames"],
 	description: "Returns all your daddy nicknames",
 	// args: true,
-	usage: "@someone",
+	usage: " | @someone",
 	execute(message, args) {
+
+		if (message.member.id == "189704916405714944") {
+			return;
+		} // Dont mind this part
 		// eslint-disable-next-line no-unused-vars
 		function getUserFromMentionRegEx(mention) {
 			if (!mention) return;
@@ -32,7 +37,9 @@ module.exports = {
 				}
 			}
 		}
-		const AuthorDBName = UserNickTable.fetch(`usernicknames.${message.author.id}`);
+		let AuthorDBName = UserNickTable.fetch(`usernicknames.${message.author.id}`);
+		AuthorDBName = [...new Set(AuthorDBName)];	
+		
 		// Makes it look cleaner
 		let StringsAuthorDBName = AuthorDBName.join("¤").toString();
 		StringsAuthorDBName = StringsAuthorDBName.replace(/¤/g, ", ").substring(0, 2045);
@@ -56,7 +63,9 @@ module.exports = {
 		}
 		if (args[0]) {
 			const av = message.mentions.users.first();
-			const argsDBName = UserNickTable.fetch(`usernicknames.${av.id}`);
+			let argsDBName = UserNickTable.fetch(`usernicknames.${av.id}`);
+			argsDBName = [...new Set(argsDBName)];
+
 			// Makes it look cleaner
 			let StringsargsDBName = argsDBName.join("¤").toString();
 			StringsargsDBName = StringsargsDBName.replace(/¤/g, ", ").substring(0, 2045);
