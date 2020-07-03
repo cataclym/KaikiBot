@@ -4,7 +4,7 @@ const { MessageEmbed } = require("discord.js");
 module.exports = {
 	name: "exclude",
 	description: "Adds or removes excluded role from user.",
-	aliases: ["e",],
+	aliases: ["e","excl"],
 	args: false,
 	async execute(message) {
 		const { names } = require("../config.js");

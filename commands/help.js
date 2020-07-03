@@ -1,7 +1,6 @@
 const Discord = require("discord.js");
 const { prefix } = require("../config.js");
 const { version } = require("../package.json");
-const { command, commandName } = require("../index");
 
 module.exports = {
 	name: "help",
@@ -9,20 +8,22 @@ module.exports = {
 	aliases: ["h",],
 	description: "Shows command info",
 	async execute(message, args) {
-	
+		
 		if (args[0]) {
-			const ArgCMD = args[0].toLowerCase();
-			// eslint-disable-next-line max-len
-			const ActualCommand = message.client.commands.get(ArgCMD); // Adding aliases to it breaks commands 
-			if (!ActualCommand) return message.channel.send(`Type \`${prefix}cmds\` to see a list of all the commands.`);
+			
+			const data = [];
+			const { commands } = message.client;
+			const name = args[0].toLowerCase();
+			const command = commands.get(name) || commands.find(c => c.aliases && c.aliases.includes(name));
+			
+			if (!command) return message.channel.send(`Type \`${prefix}cmds\` to see a list of all the commands.`);
 
 			else {
-				let cmdmsg = `Description: ${ActualCommand.description}`;
-				if (ActualCommand.usage) { cmdmsg += `\nUsage: \`${prefix}${ActualCommand.name} ${ActualCommand.usage}\``; }
-
-				if (ActualCommand.aliases) { 
-					cmdmsg += `\nAliases: ${ActualCommand.aliases.splice(",").join(", ")}`; }
-				return message.channel.send(cmdmsg);
+				data.push(`**Name:** ${command.name}`);
+				if (command.description) data.push(`Description: ${command.description}`);
+				if (command.usage) data.push(`Usage: \`${prefix}${command.name} ${command.usage}\``);
+				if (command.aliases) data.push(`Aliases: ${command.aliases.join(", ")}`);
+				return message.channel.send(data, {split: true});
 			}
 		}
 		

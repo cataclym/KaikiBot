@@ -9,19 +9,18 @@ module.exports = {
 	usage: "50",
 	async execute(message, args) {
 
-		if (args[0] === "duplicate") {
-			const fetchd = UserNickTable.get(`usernicknames.${message.member.id}`);
-			const nondup = [...new Set(fetchd)];
-			return UserNickTable.set(`usernicknames.${message.member.id}`, nondup);
-		}
-
 		if (!message.member.hasPermission("ADMINISTRATOR")) {
 			return message.channel.send("You do not have permissions to execute this command.");
 		}
 
+		if (args[0] === "duplicate" || args[0] === "duplicates") {
+			const fetchd = UserNickTable.get(`usernicknames.${message.member.id}`);
+			const nondup = [...new Set(fetchd)];
+			return UserNickTable.set(`usernicknames.${message.member.id}`, nondup);
+		}
 		let nr = parseInt(args[0], 10);
 
-		if (isNaN(parseFloat(nr))) {
+		if (isNaN(parseFloat(nr))) { // The better version of random.js :P
 			return message.channel.send("Not a Number");
 		}
 		if (nr > 100) nr = 100; // Can max fetch 100 in one go. Would be nice to grab more...
