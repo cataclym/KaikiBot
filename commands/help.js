@@ -8,10 +8,13 @@ module.exports = {
 	aliases: ["h",],
 	description: "Shows command info",
 	async execute(message, args) {
+		const color = message.member.displayColor;
 		
 		if (args[0]) {
 			
-			const data = [];
+			const embed = new Discord.MessageEmbed();
+			
+			let data = "";
 			const { commands } = message.client;
 			const name = args[0].toLowerCase();
 			const command = commands.get(name) || commands.find(c => c.aliases && c.aliases.includes(name));
@@ -19,15 +22,16 @@ module.exports = {
 			if (!command) return message.channel.send(`Type \`${prefix}cmds\` to see a list of all the commands.`);
 
 			else {
-				data.push(`**Name:** ${command.name}`);
-				if (command.description) data.push(`Description: ${command.description}`);
-				if (command.usage) data.push(`Usage: \`${prefix}${command.name} ${command.usage}\``);
-				if (command.aliases) data.push(`Aliases: ${command.aliases.join(", ")}`);
-				return message.channel.send(data, {split: true});
+				embed.setTitle(`**Name:** ${command.name}`);
+				if (command.description) data = `Description: ${command.description}`;
+				if (command.usage) data += `\nUsage: \`${prefix}${command.name} ${command.usage}\``;
+				if (command.aliases) data += `\nAliases: ${command.aliases.join(", ")}`;
+				embed.setDescription(data);
+				embed.setColor(color);
+
+				return message.channel.send(embed);
 			}
 		}
-		
-		const color = message.member.displayColor;
 		const AvUrl = await message.client.users.fetch("140788173885276160");
 
 		const embed = new Discord.MessageEmbed({
