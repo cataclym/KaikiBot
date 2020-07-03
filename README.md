@@ -12,6 +12,12 @@ A bot with fun utility and dadbot responses, and more!
   * Dadjoke
   * Exclude
   * Yeet, Yeetkids
+  * Cmdlist
+  * Names
+  * Random
+  * Remindlist
+  * Todo, Todoremove
+  * Updatenames
   * Remind (WIP)
   * Send (WIP)
 * Reacts with emotes to message that contain your preferred words
@@ -41,7 +47,7 @@ Add it to pm2 for easy auto restart.
 
 Having issues? Come join us on discord here                                                                                    
 <a href="https://discord.gg/msNtTYV">
-  <img src="https://discordapp.com/api/guilds/414099963841216512/embed.png?style=banner2" title="Discord Server"/>
+<img src="https://discordapp.com/api/guilds/414099963841216512/embed.png?style=banner2" title="Discord Server"/>
 </a>
 
 ### Bot permissions:
@@ -56,6 +62,8 @@ Having issues? Come join us on discord here
 * Read message history
 * Use External Emojis
 * Add Reactions
+* View Audit log
+  * Fetches update names from audit log
                                                          
 Thats it. Don't add any more.                                                                         
 You can use the following link to invite with these permissions already defined. Replace `YOUR_BOT_ID_HERE` with your bot id / client id.
