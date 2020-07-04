@@ -11,6 +11,7 @@
   "dependencies": {
     "better-sqlite3": "^7.1.0",
     "bindings": "^1.5.0",
+    "canvas": "^2.6.1",
     "discord.js": "^12.2.0",
     "node-fetch": "^2.6.0",
     "prebuild-install": "^5.3.4",

@@ -7,17 +7,17 @@ const { prefix, prefixes, prefixes2, emotenames } = require("../config.js");
 const UserNickTable = new db.table("UserNickTable");
 
 // handle mentions
-function handleMentions(message) {
-	const color = message.member.displayColor;
+async function handleMentions(message) {
+	const color = await message.member.displayColor;
 	const embed = new Discord.MessageEmbed({
 		title: `Hi ${message.author.username}, what is up?`,
 		description: `If you need help type ${prefix}help.`,
 		color,
 	});
 	if (message.mentions.has(message.client.user) && !message.author.bot) {
-		message.channel.startTyping()
-			.then(message.channel.send(embed))
-			.then(message.channel.stopTyping(true));
+		await message.channel.startTyping()
+			.then(message.channel.send(embed));
+		await message.channel.stopTyping(true);
 	}
 }
 // dadbot
@@ -57,7 +57,7 @@ function rolecheck(message) {
 	return false;
 }
 // Reacts with emote to specified words
-function emotereact(message) {
+async function emotereact(message) {
 	const keywords = message.content.toLowerCase().split(" ");
 	// eslint-disable-next-line consistent-return
 	keywords.forEach((word) => {
