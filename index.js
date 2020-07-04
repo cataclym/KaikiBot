@@ -24,7 +24,7 @@ client.once("ready", () => {
 	client.user.setActivity(`${activityname}`, { type: `${activitystatus}` });
 });
 
-client.on("message", (message) => {
+client.on("message", async (message) => {
 	handleMentions(message);
 	emotereact(message);
 	if (!rolecheck(message)) {
