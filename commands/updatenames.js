@@ -29,7 +29,13 @@ module.exports = {
 			type: "GUILD_MEMBER_UPDATE", 
 			limit: nr,
 			user: message.client.user
-		});
+		});/*
+		const IDSort = (a, b) => b.id.localeCompare(a.id, undefined, { numeric: true });
+		const [entry: { id: lastID } ] = [...updates.entries.values()].sort(idSort);
+		const next100Entries = await message.guild.fetchAuditLogs({ 
+			type: "GUILD_MEMBER_UPDATE",
+			limit: nr,
+			user: message.client.user, before: lastID });*/
 		if (!updates) { // Doubt this will ever happen
 			return console.log("Update names: No updates found."); 
 		}

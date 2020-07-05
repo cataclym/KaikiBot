@@ -15,9 +15,8 @@ async function handleMentions(message) {
 		color,
 	});
 	if (message.mentions.has(message.client.user) && !message.author.bot) {
-		await message.channel.startTyping()
-			.then(message.channel.send(embed));
-		await message.channel.stopTyping(true);
+		message.channel.send(embed);
+		
 	}
 }
 // dadbot
