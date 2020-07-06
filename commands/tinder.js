@@ -18,6 +18,7 @@ module.exports = {
 		const married = await Tinder.has(`Tinder.marry.${message.author.id}`);
 		const likes = await Tinder.has(`Tinder.likes.${message.author.id}`);
 		const dislikes = await Tinder.has(`Tinder.dislikes.${message.author.id}`);
+		const dating = await Tinder.has(`Tinder.dating.${message.author.id}`);
 
 		if (!married) {
 			const EmbeDDD = new Discord.MessageEmbed()
@@ -32,23 +33,31 @@ module.exports = {
 				SentMsg.react("🌟");
             
 				const filter = (reaction, user) => {
-					return ["❌", "💚", "🌟"].includes(reaction.emoji.name) && user.id === message.author.id;
+					return ["❌", "💚"].includes(reaction.emoji.name) && user.id === message.author.id;
 				};
 				message.awaitReactions(filter, { max: 1, time: 15000, errors: ["time"] })
 					.then(collected => {
 						const reaction = collected.first();
 
-						if (reaction.emoji.name === "❌") {
-							message.reply("❌");
+						if (reaction.emoji.name == "❌") {
+							message.channel.send(`${RandomUsr.user.username} has been added to dislikes.`);
+							message.react("✅");
 						}
-						if (reaction.emoji.name === "💚") {
-							message.reply("💚");
+						if (reaction.emoji.name == "💚") {
+							if (Tinder.has(`Tinder.likes.${RandomUsr.id}`, message.author.id)) {
+								Tinder.push(`Tinder.dating.${message.author.id}`, RandomUsr.id);
+								Tinder.push(`Tinder.dating.${RandomUsr.id}`, message.author.id);
+								return message.channel.send("It's a match!! ❤️");
+							}
+							Tinder.push(`Tinder.likes.${message.author.id}`, RandomUsr.id);
+							message.channel.send("Aww ❤️");
+							message.react("✅");
 						} else {
-							message.reply("🌟");
+							message.channel.send("WIP");
+							message.react("❌❌❌");
 						}
 					})
 					.catch(collected => {
-						
 						const nwmbed = new Discord.MessageEmbed(EmbeDDD)
 							.setFooter("Timed out");
 						SentMsg.edit(nwmbed);
