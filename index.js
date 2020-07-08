@@ -25,6 +25,8 @@ client.once("ready", () => {
 });
 
 client.on("message", async (message) => {
+
+	if (message.webhookID) return;
 	handleMentions(message);
 	emotereact(message);
 	if (!rolecheck(message)) {

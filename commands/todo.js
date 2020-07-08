@@ -6,8 +6,8 @@ const { prefix } = require("../config.js");
 
 module.exports = {
 	name: "todo",
-	aliases: ["remember","note","notes"],
-	description: "a todo list",
+	aliases: ["remember","note","notes","list","lists"],
+	description: "A personal todo list",
 	//args: true,
 	usage: `(Displays list)\n${prefix}todo add make cake 07/07/2020\n${prefix}todo remove 5\n${prefix}todo remove last\n${prefix}todo remove first\n${prefix}todo remove all`,
 	async execute(message, args) {
@@ -15,8 +15,8 @@ module.exports = {
 		if (args[0] == "add") {
 			try {
 				args.shift();
-				if (args[1] == null) {
-					await message.reply(`**Proper usage would be**:\n${prefix}todo add <item>\n${prefix}todo delete <nr>`);
+				if (args[0] == null) {
+					return message.reply(`**Proper usage would be**:\n${prefix}todo add <item>\n${prefix}todo delete <nr>`);
 				}
 				const guildmemb = message.author;
 				await ReminderList.push(`${guildmemb.id}`, args );
@@ -36,14 +36,14 @@ module.exports = {
 					return message.channel.send("Nothing to delete.");
 				}
 				const combinedReminders = reminder.map(a => a);
-				if (args[1] === "all" || args[1] === "last" || args[1] === "first") {
-					if (args[1] === "all") {
+				switch(args[1]) {
+					case "all": {
 						await ReminderList.delete(guildmemb.id);
 						return message.channel.send("List deleted.").then(SentMsg => {
 							SentMsg.react("✅"); 
 						});
 					}
-					if (args[1] === "last") {
+					case "last": {
 						const removedItem = combinedReminders.pop(); // Assigns the last entry to removedItem
 						await ReminderList.set(guildmemb.id, combinedReminders);
 						const stringified = removedItem.toString().replace(/,/g, " ").substring(0, 46); // Returns removedItem with space
@@ -51,11 +51,11 @@ module.exports = {
 							SentMsg.react("✅"); 
 						});
 					}
-					if (args[1] === "first") { 
-						const removedItem = combinedReminders.shift(); // Assigns the first entry to removedItem
+					case "first": {
+						const firstremovedItem = combinedReminders.shift(); // Assigns the first entry to removedItem
 						await ReminderList.set(guildmemb.id, combinedReminders);
-						const stringified = removedItem.toString().replace(/,/g, " ").substring(0, 46); // Returns removedItem with space
-						return message.channel.send(`Removed \`${stringified}\` from list.`).then(SentMsg => {
+						const firststringified = firstremovedItem.toString().replace(/,/g, " ").substring(0, 46); // Returns removedItem with space
+						return message.channel.send(`Removed \`${firststringified}\` from list.`).then(SentMsg => {
 							SentMsg.react("✅"); 
 						});
 					}
