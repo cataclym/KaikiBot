@@ -14,12 +14,14 @@ module.exports = {
 		const RandomUsr = await message.guild.members.cache.random();
 		const TinderSlogan = ["Match?","Chat?","Date?"];
 		const RandomTinderS = TinderSlogan[Math.floor(Math.random() * TinderSlogan.length)];
-        
 		const married = await Tinder.has(`Tinder.marry.${message.author.id}`);
-		const likes = await Tinder.has(`Tinder.likes.${message.author.id}`);
-		const dislikes = await Tinder.has(`Tinder.dislikes.${message.author.id}`);
-		const dating = await Tinder.has(`Tinder.dating.${message.author.id}`);
 
+		if (!Tinder.has(`Tinder.${message.author.id}.rolls`) && !Tinder.has(`Tinder.${message.author.id}.likes`)) {
+			Tinder.set(`Tinder.${message.author.id}.rolls`, 10);
+			Tinder.set(`Tinder.${message.author.id}.likes`, 3);
+		}
+
+		const RollsLikes = `${Tinder.get(`Tinder.${message.author.id}.rolls`)}`+" rolls "+`${Tinder.get(`Tinder.${message.author.id}.likes`)}`+" likes remaining.";
 		
 		if (!married) {
 			const EmbeDDD = new Discord.MessageEmbed()
@@ -27,17 +29,18 @@ module.exports = {
 				.setAuthor(RandomTinderS)
 				.setTitle(RandomUsr.user.username)
 				.setFooter("React '❌' to dislike. '💚' To like. '🌟' To super like.")
-				.setImage(RandomUsr.user.displayAvatarURL());
+				.setImage(RandomUsr.user.displayAvatarURL())
+				.setFooter(RollsLikes);
 			message.channel.send(EmbeDDD).then(SentMsg => {
 				SentMsg.react("❌");
 				SentMsg.react("💚");
 				SentMsg.react("🌟");
 
 				const filter = (reaction, user) => {
-					return ["❌", "💚"].includes(reaction.emoji.name) && user.id === message.author.id;
+					return ["❌", "💚", "🌟"].includes(reaction.emoji.name) && user.id === message.author.id;
 				};
 		
-				SentMsg.awaitReactions(filter, { max: 1, time: 15000, errors: ["time"] })
+				SentMsg.awaitReactions(filter, { max: 1, time: 25000, errors: ["time"] })
 					.then(collected => {
 						const reaction = collected.first();
 						switch(reaction.emoji.name) { 
@@ -66,10 +69,11 @@ module.exports = {
 								});
 							}
 							case "🌟": {
+								Tinder.push(`Tinder.${message.author.id}.dating`, RandomUsr.id);
+								Tinder.push(`Tinder.${RandomUsr.id}.dating`, message.author.id);
 								SentMsg.reactions.removeAll().catch(error => console.error("Failed to clear reactions: ", error));
-								return message.channel.send("WIP").then(NewReact => {
-									NewReact.react("❌❌❌");
-								});
+								message.channel.send(`${RandomUsr.user.username} is now dating you!\nYou have no rolls and likes remaining.`);
+								return SentMsg.react("✅");
 							}
 						}
 					})
