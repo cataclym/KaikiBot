@@ -6,7 +6,7 @@ const { prefix, token, activityname, activitystatus } = require("./config.js");
 
 const client = new Discord.Client();
 const {
-	emotereact, rolecheck, handleMentions, dadbot,
+	emotereact, rolecheck, handleMentions, dadbot, TiredNadeko,
 } = require("./functions/functions");
 // Could go back to the names array for excluding multiple roles
 
@@ -27,6 +27,7 @@ client.once("ready", () => {
 client.on("message", async (message) => {
 
 	if (message.webhookID) return;
+	TiredNadeko(message);
 	handleMentions(message);
 	emotereact(message);
 	if (!rolecheck(message)) {

@@ -17,25 +17,52 @@ module.exports = {
 	usage: "me 69 days",
 	execute(message, args) {
 		const color = message.member.displayColor;
-		// Embeds
-		const embed2 = new Discord.MessageEmbed({
-			title: "Success!",
-			description: `You want to be notified in ${args[1]} days time.`,
-			color,
-		});
-		const embed3 = new Discord.MessageEmbed({
-			title: "Example:",
-			description: `${prefix}remind me 69 days`,
-			color,
-			author: { name: "You need to specify the amount of time." },
-		});
-		// End
-		if (args[0] === "me" && list.toString().includes(args[1]) && eitherDay.includes(args[2])) {
-			return message.channel.send(embed2);
-		}
-		if (args[0] === "me") {
-			return message.channel.send(embed3);
-		}
-		message.channel.send(`The following: \`${args[0]}\` will not work.\n It needs to be either \`me\` or \`here\`.`);
-	},
+		try {
+
+			// Variables
+			var returntime;
+			var timemeasure;
+			console.log("Message recieved from " + message.author.id + " at " + Date.now().toString());
+
+			// Sets the return time
+			timemeasure = args[1].substring((args[1].length - 1), (args[1].length));
+			returntime = args[1].substring(0, (args[1].length - 1));
+
+			// Based off the delimiter, sets the time
+			switch (timemeasure) {
+				case "s":
+					returntime = returntime * 1000;
+					break;
+
+				case "m":
+					returntime = returntime * 1000 * 60;
+					break;
+
+				case "h":
+					returntime = returntime * 1000 * 60 * 60;
+					break;
+
+				case "d":
+					returntime = returntime * 1000 * 60 * 60 * 24;
+					break;
+
+				default:
+					returntime = returntime * 1000;
+					break;
+			}
+
+			// Returns the Message
+			message.client.setTimeout(function () {
+				// Removes the first array items
+				args.shift();
+
+				// Creates the message
+				var content = args.join(" ");
+				message.reply(content);
+				console.log("Message sent to " + message.author.id + " at " + Date.now().toString());
+			}, returntime);
+		} catch (e) {
+			message.reply("An error has occured, please make sure the command has a time delimiter and message");
+			console.error(e.toString());
+		}	},
 };

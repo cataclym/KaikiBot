@@ -68,6 +68,28 @@ async function emotereact(message) {
 		}
 	});
 }
+// Please don't laugh
+const arr = [];
+async function TiredNadeko(message) {
+	const words = ["shit", "fuck", "stop", "dont", "kill", "don't", "don`t", "fucking", "shut", "up", "shutup"]; // Yes I know
+	const botname = await message.client.user.username.toLowerCase().split(" ");
+	try {
+		if(new RegExp(botname.join("|")).test(message.content.toLowerCase()) && new RegExp(words.join("|")).test(message.content.toLowerCase())) {
+			arr.push("");
+			if (arr.length < 4) {
+				await message.react("😢");
+			}
+			else {
+				await message.channel.send("😢");
+				arr.length = 0; //reset length
+			}
+		}
+	}
+	catch (error) {
+		console.log(error);
+	}		
+}
+
 module.exports = {
-	emotereact, rolecheck, handleMentions, dadbot, UserNickTable,
+	emotereact, rolecheck, handleMentions, dadbot, UserNickTable, TiredNadeko
 };
