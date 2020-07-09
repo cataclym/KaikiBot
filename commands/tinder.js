@@ -21,6 +21,8 @@ module.exports = {
 			Tinder.set(`Tinder.${message.author.id}.likes`, 3);
 		}
 
+		Tinder.subtract(`Tinder.${message.author.id}.rolls`, 1);
+
 		const RollsLikes = `${Tinder.get(`Tinder.${message.author.id}.rolls`)}`+" rolls "+`${Tinder.get(`Tinder.${message.author.id}.likes`)}`+" likes remaining.";
 		
 		if (!married) {
@@ -36,6 +38,8 @@ module.exports = {
 				SentMsg.react("💚");
 				SentMsg.react("🌟");
 
+				
+
 				const filter = (reaction, user) => {
 					return ["❌", "💚", "🌟"].includes(reaction.emoji.name) && user.id === message.author.id;
 				};
@@ -44,24 +48,6 @@ module.exports = {
 					.then(collected => {
 						const reaction = collected.first();
 						switch(reaction.emoji.name) { 
-							case "💚": {
-								const checklike = Tinder.get(`Tinder.${RandomUsr.id}.likes`);
-								if (checklike.includes(`${message.author.id}`)) {
-									Tinder.push(`Tinder.${message.author.id}.dating`, RandomUsr.id);
-									Tinder.push(`Tinder.${RandomUsr.id}.dating`, message.author.id);
-									SentMsg.reactions.removeAll().catch(error => console.error("Failed to clear reactions: ", error));
-									return message.channel.send("It's a match!! ❤️").then(NewReact => {
-										NewReact.react("✅");
-									});
-								}
-								else { 
-									Tinder.push(`Tinder.${message.author.id}.likes`, RandomUsr.id);
-									SentMsg.reactions.removeAll().catch(error => console.error("Failed to clear reactions: ", error));
-									return message.channel.send("Aww ❤️").then(NewReact => {
-										NewReact.react("✅");
-									});
-								}
-							} 
 							case "❌": {
 								SentMsg.reactions.removeAll().catch(error => console.error("Failed to clear reactions: ", error));
 								return message.channel.send(`${RandomUsr.user.username} has been added to dislikes.`).then(NewReact => {
@@ -74,6 +60,27 @@ module.exports = {
 								SentMsg.reactions.removeAll().catch(error => console.error("Failed to clear reactions: ", error));
 								message.channel.send(`${RandomUsr.user.username} is now dating you!\nYou have no rolls and likes remaining.`);
 								return SentMsg.react("✅");
+							}
+							case "💚": {
+								Tinder.subtract(`Tinder.${message.author.id}.likes`, 1);
+								if (Tinder.has(`Tinder.${RandomUsr.id}.likeID`)) { 
+									const checklikeID = Tinder.get(`Tinder.${RandomUsr.id}.likeID`);
+									if (checklikeID.includes(`${message.author.id}`)) {
+										Tinder.push(`Tinder.${message.author.id}.dating`, RandomUsr.id);
+										Tinder.push(`Tinder.${RandomUsr.id}.dating`, message.author.id);
+										SentMsg.reactions.removeAll().catch(error => console.error("Failed to clear reactions: ", error));
+										return message.channel.send("It's a match!! ❤️").then(NewReact => {
+											NewReact.react("✅");
+										});
+									}
+								}
+								else { 
+									Tinder.push(`Tinder.${message.author.id}.likes`, RandomUsr.id);
+									SentMsg.reactions.removeAll().catch(error => console.error("Failed to clear reactions: ", error));
+									return message.channel.send("Aww ❤️").then(NewReact => {
+										NewReact.react("✅");
+									});
+								} 
 							}
 						}
 					})
