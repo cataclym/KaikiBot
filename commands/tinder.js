@@ -10,22 +10,27 @@ module.exports = {
 	usage: "Just try it.",
 	async execute(message) {
 
+		if (!Tinder.has(`rolls.${message.author.id}`)) {
+			await Tinder.add(`rolls.${message.author.id}`, 10);
+			await Tinder.add(`likes.${message.author.id}`, 3);
+			await Tinder.set(`dating.${message.author.id}`, message.author.id);
+			await Tinder.set(`likeID.${message.author.id}`, message.author.id);
+			await Tinder.set(`dislikeID.${message.author.id}`, message.author.id);	
+			await Tinder.set(`married.${message.author.id}`, message.author.id);
+		}
+
 		const color = await message.member.displayColor;
 		const RandomUsr = await message.guild.members.cache.random();
 		const TinderSlogan = ["Match?","Chat?","Date?"];
 		const RandomTinderS = TinderSlogan[Math.floor(Math.random() * TinderSlogan.length)];
-		const married = await Tinder.has(`Tinder.marry.${message.author.id}`);
+		const hasrolls = parseInt(Tinder.get(`rolls.${message.author.id}`), 10);
+		const haslikes = parseInt(Tinder.get(`likes.${message.author.id}`), 10);
+		console.log("Rolls left "+hasrolls+". Likes left "+haslikes);
 
-		if (!Tinder.has(`Tinder.${message.author.id}.rolls`) && !Tinder.has(`Tinder.${message.author.id}.likes`)) {
-			Tinder.set(`Tinder.${message.author.id}.rolls`, 10);
-			Tinder.set(`Tinder.${message.author.id}.likes`, 3);
-		}
-
-		Tinder.subtract(`Tinder.${message.author.id}.rolls`, 1);
-
-		const RollsLikes = `${Tinder.get(`Tinder.${message.author.id}.rolls`)}`+" rolls "+`${Tinder.get(`Tinder.${message.author.id}.likes`)}`+" likes remaining.";
+		Tinder.subtract(`rolls.${message.author.id}`, 1);
+		const RollsLikes = hasrolls + " rolls " + haslikes + " likes remaining.";
 		
-		if (!married) {
+		if (hasrolls > 0) {
 			const EmbeDDD = new Discord.MessageEmbed()
 				.setColor(color)
 				.setAuthor(RandomTinderS)
@@ -38,51 +43,43 @@ module.exports = {
 				SentMsg.react("💚");
 				SentMsg.react("🌟");
 
-				
-
 				const filter = (reaction, user) => {
 					return ["❌", "💚", "🌟"].includes(reaction.emoji.name) && user.id === message.author.id;
 				};
-		
 				SentMsg.awaitReactions(filter, { max: 1, time: 25000, errors: ["time"] })
 					.then(collected => {
 						const reaction = collected.first();
 						switch(reaction.emoji.name) { 
 							case "❌": {
+								Tinder.push(`dislikeID.${message.author.id}`, RandomUsr.id);
 								SentMsg.reactions.removeAll().catch(error => console.error("Failed to clear reactions: ", error));
 								return message.channel.send(`${RandomUsr.user.username} has been added to dislikes.`).then(NewReact => {
 									NewReact.react("✅");
 								});
 							}
 							case "🌟": {
-								Tinder.push(`Tinder.${message.author.id}.dating`, RandomUsr.id);
-								Tinder.push(`Tinder.${RandomUsr.id}.dating`, message.author.id);
+								Tinder.push(`dating.${message.author.id}`, RandomUsr.id);
+								Tinder.push(`dating.${RandomUsr.id}`, message.author.id);
 								SentMsg.reactions.removeAll().catch(error => console.error("Failed to clear reactions: ", error));
-								message.channel.send(`${RandomUsr.user.username} is now dating you!\nYou have no rolls and likes remaining.`);
+								message.channel.send(`${RandomUsr.user.username} is now dating you!\nYou have no rolls or likes remaining.`);
 								return SentMsg.react("✅");
 							}
 							case "💚": {
-								Tinder.subtract(`Tinder.${message.author.id}.likes`, 1);
-								if (Tinder.has(`Tinder.${RandomUsr.id}`)) { 
-									if (Tinder.has(`Tinder.${RandomUsr.id}.likeID`)) { 
-										const checklikeID = Tinder.get(`Tinder.${RandomUsr.id}.likeID`);
-										if (checklikeID.includes(`${message.author.id}`)) {
-											Tinder.push(`Tinder.${message.author.id}.dating`, RandomUsr.id);
-											Tinder.push(`Tinder.${RandomUsr.id}.dating`, message.author.id);
-											SentMsg.reactions.removeAll().catch(error => console.error("Failed to clear reactions: ", error));
-											return message.channel.send("It's a match!! ❤️").then(NewReact => {
-												NewReact.react("✅");
-											});
-										}
-									}
-								}
-								else { 
-									Tinder.push(`Tinder.${message.author.id}.likeID`, RandomUsr.id);
+								Tinder.subtract(`likes.${message.author.id}`, 1);
+								const checklikeID = Tinder.get(`likeID.${RandomUsr.id}`);
+								if (checklikeID.includes(`${message.author.id}`)) {
+									Tinder.push(`dating.${message.author.id}`, RandomUsr.id);
+									Tinder.push(`dating.${RandomUsr.id}`, message.author.id);
 									SentMsg.reactions.removeAll().catch(error => console.error("Failed to clear reactions: ", error));
-									return message.channel.send("Aww ❤️").then(NewReact => {
+									return message.channel.send("It's a match!! ❤️").then(NewReact => {
 										NewReact.react("✅");
 									});
-								} 
+								}
+								Tinder.push(`likeID.${message.author.id}`, RandomUsr.id);
+								SentMsg.reactions.removeAll().catch(error => console.error("Failed to clear reactions: ", error));
+								return message.channel.send("Aww ❤️").then(NewReact => {
+									NewReact.react("✅");
+								});
 							}
 						}
 					})
@@ -92,6 +89,11 @@ module.exports = {
 						SentMsg.edit(nwmbed);
 						SentMsg.reactions.removeAll().catch(error => console.error("Failed to clear reactions: ", error));
 					});
+			});
+		}
+		else {
+			message.reply("You don't have any more rolls").then(msg => {
+				msg.react("⚠️");
 			});
 		}
 	},

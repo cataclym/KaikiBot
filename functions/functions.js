@@ -10,7 +10,7 @@ const UserNickTable = new db.table("UserNickTable");
 async function handleMentions(message) {
 	const color = await message.member.displayColor;
 	const embed = new Discord.MessageEmbed({
-		title: `Hi ${message.author.username}, what is up?`,
+		title: `Hi ${message.author.username}, what's up?`,
 		description: `If you need help type ${prefix}help.`,
 		color,
 	});
