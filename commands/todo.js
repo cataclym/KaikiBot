@@ -95,7 +95,6 @@ module.exports = {
 					thumbnail: {
 						url: "https://cdn.discordapp.com/attachments/717045690022363229/726600392107884646/3391ce4715f3c814d6067911438e5bf7.png",
 					},
-				
 					footer:  {
 						text: `To learn more about the command, type \`${prefix}help todo\``,
 					},

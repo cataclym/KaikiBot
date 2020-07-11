@@ -9,7 +9,7 @@ module.exports = {
 	description: "Returns all your daddy nicknames",
 	// args: true,
 	usage: " | @someone",
-	execute(message, args) {
+	async execute(message, args) {
 
 		if (message.member.id == "189704916405714944") {
 			return;
