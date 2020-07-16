@@ -2,17 +2,18 @@
 const Discord = require("discord.js");
 const db = require("quick.db");
 const { prefix, prefixes, prefixes2, emotenames } = require("../config.js");
+const Tinder = new db.table("Tinder");
 
 // eslint-disable-next-line new-cap
 const UserNickTable = new db.table("UserNickTable");
 
 // handle mentions
 async function handleMentions(message) {
-	const color = await message.member.displayColor;
+	const Mcolor = await message.member.displayColor;
 	const embed = new Discord.MessageEmbed({
 		title: `Hi ${message.author.username}, what's up?`,
 		description: `If you need help type ${prefix}help.`,
-		color,
+		color: Mcolor,
 	});
 	if (message.mentions.has(message.client.user) && !message.author.bot) {
 		message.channel.send(embed);
@@ -89,7 +90,43 @@ async function TiredNadeko(message) {
 		console.log(error);
 	}		
 }
+function getUserFromMention(mention, message) {
+	if (!mention) return;
 
+	if (mention.startsWith("<@") && mention.endsWith(">")) {
+		mention = mention.slice(2, -1);
+
+		if (mention.startsWith("!")) {
+			mention = mention.slice(1);
+		}
+		return message.client.users.cache.get(mention);
+	}
+}
+function ResetRolls() {
+	const likes = Tinder.get("likes");
+	// console.log(likes); Debug
+
+	for (const key of Object.keys(likes)) {
+		Tinder.set(`likes.${key}`, 3);
+		Tinder.set(`rolls.${key}`, 10);
+	}
+	console.log("Rolls and likes have been reset | " + Date() + "\n");
+}
+function DailyResetTimer() {
+	const nd = new Date(); 
+	if (nd.getHours() !== 23) {
+		console.log("Checking hourly for reset at " + nd + "\n" + nd.getHours()); 
+		setTimeout(() => {  {
+			DailyResetTimer();
+		} }, 3600000);
+	}
+	else {
+		ResetRolls();
+		setTimeout(() => {  {
+			DailyResetTimer();
+		} }, 3600000);
+	}
+}
 module.exports = {
-	emotereact, rolecheck, handleMentions, dadbot, UserNickTable, TiredNadeko
+	emotereact, rolecheck, handleMentions, dadbot, UserNickTable, TiredNadeko, getUserFromMention, ResetRolls, DailyResetTimer
 };

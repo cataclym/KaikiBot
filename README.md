@@ -2,26 +2,33 @@
 
 **What's this?**
 
-A bot with fun utility and dadbot responses, and more!
+A bot with fun utility, dadbot responses, and more!
 
 ## Features
-* Commands
+* ### Commands
   * Help
   * Die
   * Ping
   * Dadjoke
   * Exclude
   * Yeet, Yeetkids
+  * Tinder
+    * Rolls
+    * Likes/Dislike/Superlike
+    * Daily reset
+    * Marry
   * Remind (WIP)
   * Send (WIP)
-* Reacts with emotes to message that contain your preferred words
+* ### Reacts with emotes to message that contain your preferred words
   * See variables.js
-* Irritating dad like responses, which also rename the user
+* ### Irritating dad like responses, which also rename the user
+
 <img src="https://i.imgur.com/WsMAKPB.png" title="example"/>
 
 ## Instructions
 Requirements
 * nodejs (also installs npm)
+* build tools (Windows) `npm i --global --production windows-build-tools` | Linux <a href="https://github.com/Automattic/node-canvas/wiki/Installation:-Fedora-and-other-RPM-based-distributions"> Find your distribution and dependencies here </a> 
 
 ### Important: Do not give bot administrator role or the ability to mention @everyone and @here.
 **Details on bot's permissions comes after Instructions, down below.**

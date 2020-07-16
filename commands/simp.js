@@ -3,6 +3,7 @@ const Discord = require("discord.js");
 
 module.exports = {
 	name: "simp",
+	cooldown: 8,
 	aliases: ["simping","simper"],
 	description: "embarass your simp friend",
 	args: true,

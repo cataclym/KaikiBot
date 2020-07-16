@@ -2,14 +2,20 @@ const Discord = require("discord.js");
 const db = require("quick.db");
 const Tinder = new db.table("Tinder");
 const { prefix } = require("../config.js");
+const { getUserFromMention, ResetRolls } = require("../functions/functions.js");
+const embeds = require("../functions/embeds.js");
 
 module.exports = {
 	name: "tinder",
+	cooldown: 2,
 	aliases: ["date","lfd","ons"],
 	description: "Suggests someone to date",
 	args: false,
 	usage: "Just try it.",
 	async execute(message, args) {
+
+		const { poems } = require("../functions/poems.js");
+		const Rpoem = poems[Math.floor(Math.random() * poems.length)];
 
 		if (!Tinder.has(`rolls.${message.author.id}`)) { // So the db/Tinder doesnt choke later...
 			Tinder.add(`rolls.${message.author.id}`, 10); 
@@ -20,38 +26,64 @@ module.exports = {
 			Tinder.push(`married.${message.author.id}`, message.author.id);
 		}
 
-		switch (args[0]) { // Remove at final commit.
+		switch (args[0]) { 
 			case "refill": {
-				Tinder.add(`rolls.${message.author.id}`, 10);
-				Tinder.add(`likes.${message.author.id}`, 3);
-				return message.react("✅");
+				try {
+					if (message.member.hasPermission("ADMINISTRATOR")) {
+						ResetRolls(message);
+						return message.react("✅");
+					}
+					else {
+						return message.channel.send("You do not have sufficient permissions.");
+					}
+				}
+				catch (error) {
+					return console.log("Error :", error);
+				}
 			}
 			case "list": {
 				return list();
 			}
 			case "marry": {
-				return message.channel.send("marry");
+				return marry();
 			}
 			case "help": {
-				return message.channel.send("WIP");
+				return message.channel.send(embeds.TinderHelp);
 			}
-			case "test": {
-				return;
+			case "test": { // remove
+				try {
+					if (message.member.hasPermission("ADMINISTRATOR")) {
+						embeds.DMEMarry.setDescription(Rpoem);
+						return message.channel.send(embeds.DMEMarry);
+						// return message.channel.send(Tinder.get(`dating.${args[1]}`));
+					}
+					else {
+						return message.channel.send("You do not have sufficient permissions.");
+					}
+				}
+				catch (error) {
+					return console.log("Error :", error);
+				}
 			}
 		}
 
 		const likesID = Tinder.get(`likeID.${message.author.id}`);
-		const dislikeID = Tinder.get(`dislikeID.${message.author.id}`);	
+		const dislikeID = Tinder.get(`dislikeID.${message.author.id}`);
+		const dating = 	Tinder.get(`dating.${message.author.id}`);
 		const married = Tinder.get(`married.${message.author.id}`);
-		const combined = new Array().concat(likesID, dislikeID, married);
+		const combined = new Array().concat(likesID, dislikeID, married, dating);
 
 		const arr = await message.guild.members.cache.map(member => member.id),
 			res = arr.filter(f => !combined.includes(f));
+		if (!res.length) {
+			message.channel.send("Looking for people to date... 📡");
+			setTimeout(() => { (message.channel.send("No new potential mates were found.")); }, 5000);
+			return;
+		}
 		const randomUserID = res[Math.floor(Math.random() * res.length)];
 		const RandomUsr = await message.guild.members.cache.get(randomUserID);
 
 		const color = await message.member.displayColor;
-		//const RandomUsr = await message.guild.members.cache.random();
 		const TinderSlogan = ["Match?","Chat?","Date?","Flirt?"];
 		const RandomTinderS = TinderSlogan[Math.floor(Math.random() * TinderSlogan.length)];
 		const hasrolls = parseInt(Tinder.get(`rolls.${message.author.id}`), 10);	
@@ -83,76 +115,13 @@ module.exports = {
 						const Nhasrolls = parseInt(Tinder.get(`rolls.${message.author.id}`), 10); // Updates leftover likes/rolls in real-time /s
 						switch(reaction.emoji.name) { 
 							case "❌": {
-								Tinder.push(`dislikeID.${message.author.id}`, RandomUsr.id);
-								const NewRollsLikes = Nhasrolls + " rolls " + haslikes + " likes remaining.";
-								SentMsg.reactions.removeAll().catch(error => console.error("Failed to clear reactions: ", error));
-								const nwmbed = new Discord.MessageEmbed(EmbeDDD)
-									.setAuthor("❌❌❌")	
-									.setColor("#00FF00")
-									.setTitle(RandomUsr.user.username)
-									.setDescription("has been added to dislikes.")
-									.setFooter(NewRollsLikes);
-								return SentMsg.edit(nwmbed);
+								return Dislike(SentMsg, EmbeDDD, Nhasrolls);
 							}
 							case "🌟": {
-								if (haslikes > 0) {
-									const zero = parseInt(0, 10);
-									Tinder.push(`dating.${message.author.id}`, RandomUsr.id);
-									Tinder.push(`dating.${RandomUsr.id}`, message.author.id);
-									Tinder.set(`rolls.${message.author.id}`, zero);
-									Tinder.set(`likes.${message.author.id}`, zero);
-									SentMsg.reactions.removeAll().catch(error => console.error("Failed to clear reactions: ", error));
-									const nwmbed = new Discord.MessageEmbed(EmbeDDD)
-										.setAuthor("❤️🌟❤️")
-										.setColor("#FFFF00")
-										.setTitle(RandomUsr.user.username)
-										.setDescription("Is now dating you!")
-										.setFooter("You have no rolls or likes remaining.");
-									return SentMsg.edit(nwmbed);
-								}
-								else {
-									SentMsg.reactions.removeAll().catch(error => console.error("Failed to clear reactions: ", error));
-									return message.channel.send("You don't have any more likes!").then(msg => {
-										msg.react("⚠️");
-									});
-								}
+								return SuperLike(SentMsg, EmbeDDD);
 							}
 							case "💚": {
-								if (haslikes > 0) {	
-									Tinder.subtract(`likes.${message.author.id}`, 1);
-									const Nhaslikes = parseInt(Tinder.get(`likes.${message.author.id}`), 10); // Updates leftover likes/rolls in real-time /s
-									const NewRollsLikes = Nhasrolls + " rolls " + Nhaslikes + " likes remaining."; 
-									if (Tinder.has(`likeID.${RandomUsr.id}`)) { // Prevents choke
-										const checklikeID = Tinder.get(`likeID.${RandomUsr.id}`); // Theoretically this part should work 
-										if  (checklikeID.includes(`${message.author.id}`)) {
-											Tinder.push(`dating.${message.author.id}`, RandomUsr.id);
-											Tinder.push(`dating.${RandomUsr.id}`, message.author.id);
-											SentMsg.reactions.removeAll().catch(error => console.error("Failed to clear reactions: ", error));
-											const nwmbed = new Discord.MessageEmbed(EmbeDDD)
-												.setAuthor("❤️❤️❤️")
-												.setColor("#ff00ff")
-												.setTitle(RandomUsr.user.username)
-												.setDescription("It's a match! Congratulations!")
-												.setFooter(NewRollsLikes);
-											return SentMsg.edit(nwmbed);
-										}
-									}
-									Tinder.push(`likeID.${message.author.id}`, RandomUsr.id);
-									SentMsg.reactions.removeAll().catch(error => console.error("Failed to clear reactions: ", error));
-									const nwmbed = new Discord.MessageEmbed(EmbeDDD)
-										.setAuthor("❤️❤️❤️")
-										.setColor("#00FF00")
-										.setTitle(RandomUsr.user.username)
-										.setDescription("has been added to likes!")
-										.setFooter(NewRollsLikes);
-									SentMsg.edit(nwmbed);
-								}
-								else {
-									SentMsg.reactions.removeAll().catch(error => console.error("Failed to clear reactions: ", error));
-									return message.channel.send("You don't have any more likes!").then(msg => {
-										msg.react("⚠️");
-									});
-								}
+								return NormalLike(SentMsg, EmbeDDD, Nhasrolls);
 							}
 						}
 					})
@@ -175,35 +144,171 @@ module.exports = {
 			const listembed = new Discord.MessageEmbed()
 				.setTitle("Your tinder list");
 			const LlikesID = Tinder.get(`likeID.${message.author.id}`);
-			const LdislikeID = Tinder.get(`dislikeID.${message.author.id}`);	
+			const LdislikeID = Tinder.get(`dislikeID.${message.author.id}`);
+			const Ldating = Tinder.get(`dating.${message.author.id}`);		
 			const Lmarried = Tinder.get(`married.${message.author.id}`);
 
 			let datalikesID = "";
 			let datadislikeID = "";
+			let datadating = "";
 			let datamarried = "";
 
 			for (const [i, value] of LlikesID.entries()) { // Yes rjt, I could just use a map instead
-				const Member = message.guild.members.cache.get(value);
-				const indexplus = i+1;
-				datalikesID += indexplus+" "+Member.user.username+"\n";
+				if (i > 0) {
+					const Member = message.client.users.cache.find(member => member.id === value);
+					const indexplus = i;
+					datalikesID += indexplus + ". " + Member.username + "\n";
+				}
+				else {
+					continue;
+				}
 			}
-			for (const [i, value] of LdislikeID.entries()) {	// Maybe I got lost along the way
-				const Member = message.guild.members.cache.get(value);
-				const indexplus = i+1;
-				datadislikeID += indexplus+" "+Member.user.username+"\n";
+			for (const [i, value] of LdislikeID.entries()) { // Maybe I got lost along the way
+				if (i > 0) {
+					const Member = message.client.users.cache.find(member => member.id === value);
+					const indexplus = i;
+					datadislikeID += indexplus + ". " + Member.username + "\n";
+				}
+				else {
+					continue;
+				}
+			}
+			for (const [i, value] of Ldating.entries()) { // Maybe I got lost along the way (x2)
+				if (i > 0) {
+					const Member = message.client.users.cache.find(member => member.id === value);
+					const indexplus = i;
+					datadating += indexplus + ". " + Member.username + "\n";
+				}
+				else {
+					continue;
+				}
 			}
 			for (const [i, value] of Lmarried.entries()) { // Without a map...
-				const Member = message.guild.members.cache.get(value);
-				const indexplus = i+1;
-				datamarried += indexplus+" "+Member.user.username+"\n";
+				if (i > 0) {
+					const Member = message.client.users.cache.find(member => member.id === value);
+					const indexplus = i;
+					datamarried += indexplus + ". " + Member.username + "\n";
+				}
+				else {
+					continue;
+				}
 			}
-			listembed.addFields(
-				{ name: "Likes", value: datalikesID, inline: true, },
-				{ name: "Dislikes", value: datadislikeID, inline: true, },
-				{ name: "Married", value: datamarried, inline: true, },
+			listembed.addFields( // Yeah I know, bad solution, but it doesnt look too bad on Discord.
+				{ name: "Likes", value: datalikesID.substring(0, 1023) + "\u200B", inline: true, },
+				{ name: "Dislikes", value: datadislikeID.substring(0, 1023) + "\u200B", inline: true, },
+				{ name: "Dating", value: datadating.substring(0, 1023) + "\u200B", inline: true, },
+				{ name: "\u200B", value: "\u200B", inline: true, },
+				{ name: "Married", value: datamarried.substring(0, 1023) + "\u200B", inline: true, },
+				{ name: "\u200B", value: "\u200B", inline: true, },
 			);
 			message.channel.send(listembed);
 			return message.channel.stopTyping(true);
+		}
+		function SuperLike(SentMsg, EmbeDDD) {
+			if (haslikes > 0) {
+				const zero = parseInt(0, 10);
+				Tinder.push(`dating.${message.author.id}`, RandomUsr.id);
+				Tinder.push(`dating.${RandomUsr.id}`, message.author.id);
+				Tinder.set(`rolls.${message.author.id}`, zero);
+				Tinder.set(`likes.${message.author.id}`, zero);
+				SentMsg.reactions.removeAll().catch(error => console.error("Failed to clear reactions: ", error));
+				const nwmbed = new Discord.MessageEmbed(EmbeDDD)
+					.setAuthor("❤️🌟❤️")
+					.setColor("#FFFF00")
+					.setTitle(RandomUsr.user.username)
+					.setDescription("Is now dating you!")
+					.setFooter("You have no rolls or likes remaining.");
+				return SentMsg.edit(nwmbed);
+			}
+			else {
+				SentMsg.reactions.removeAll().catch(error => console.error("Failed to clear reactions: ", error));
+				return message.channel.send("You don't have any more likes!").then(msg => {
+					msg.react("⚠️");
+				});
+			}
+		}
+		function NormalLike(SentMsg, EmbeDDD, Nhasrolls) {
+			if (haslikes > 0) {	
+				Tinder.subtract(`likes.${message.author.id}`, 1);
+				const Nhaslikes = parseInt(Tinder.get(`likes.${message.author.id}`), 10); // Updates leftover likes/rolls in real-time /s
+				const NewRollsLikes = Nhasrolls + " rolls " + Nhaslikes + " likes remaining."; 
+				if (Tinder.has(`likeID.${RandomUsr.id}`)) { // Prevents choke
+					const checklikeID = Tinder.get(`likeID.${RandomUsr.id}`); // Theoretically this part should work 
+					if  (checklikeID.includes(`${message.author.id}`)) {
+						Tinder.push(`dating.${message.author.id}`, RandomUsr.id);
+						Tinder.push(`dating.${RandomUsr.id}`, message.author.id);
+						SentMsg.reactions.removeAll().catch(error => console.error("Failed to clear reactions: ", error));
+						const nwmbed = new Discord.MessageEmbed(EmbeDDD)
+							.setAuthor("❤️❤️❤️")
+							.setColor("#ff00ff")
+							.setTitle(RandomUsr.user.username)
+							.setDescription("It's a match! Congratulations!")
+							.setFooter(NewRollsLikes);
+						return SentMsg.edit(nwmbed);
+					}
+				}
+				Tinder.push(`likeID.${message.author.id}`, RandomUsr.id);
+				SentMsg.reactions.removeAll().catch(error => console.error("Failed to clear reactions: ", error));
+				const nwmbed = new Discord.MessageEmbed(EmbeDDD)
+					.setAuthor("❤️❤️❤️")
+					.setColor("#00FF00")
+					.setTitle(RandomUsr.user.username)
+					.setDescription("has been added to likes!")
+					.setFooter(NewRollsLikes);
+				SentMsg.edit(nwmbed);
+			}
+			else {
+				SentMsg.reactions.removeAll().catch(error => console.error("Failed to clear reactions: ", error));
+				return message.channel.send("You don't have any more likes!").then(msg => {
+					msg.react("⚠️");
+				});
+			}
+		}
+		function Dislike(SentMsg, EmbeDDD, Nhasrolls) {
+			Tinder.push(`dislikeID.${message.author.id}`, RandomUsr.id);
+			const NewRollsLikes = Nhasrolls + " rolls " + haslikes + " likes remaining.";
+			SentMsg.reactions.removeAll().catch(error => console.error("Failed to clear reactions: ", error));
+			const nwmbed = new Discord.MessageEmbed(EmbeDDD)
+				.setAuthor("❌❌❌")	
+				.setColor("#00FF00")
+				.setTitle(RandomUsr.user.username)
+				.setDescription("has been added to dislikes.")
+				.setFooter(NewRollsLikes);
+			return SentMsg.edit(nwmbed);
+		}
+		function marry() {
+			const user = getUserFromMention(args[1], message);
+			if (user) {
+				const ArgDates = Tinder.get(`dating.${message.mentions.users.first().id}`);
+				const AuthorDates = Tinder.get(`dating.${message.author.id}`),
+					matches = AuthorDates.filter(f => ArgDates.includes(f));
+				if (matches.includes(message.mentions.users.first().id)) {
+					message.channel.send("Do you want to marry " + message.author.username + `, <@${message.mentions.users.first().id}>?` + "\nReact with a `❤️` to marry!" )
+						.then(heart => {
+							heart.react("❤️");
+							const filter = (reaction, user) => {
+								return reaction.emoji.name === "❤️" && user.id === message.mentions.users.first().id;
+							};
+							heart.awaitReactions(filter, { max: 1, time: 50000, errors: ["time"] })
+								.then(collected => {
+									Tinder.push(`married.${message.author.id}`, message.mentions.users.first().id);
+									Tinder.push(`married.${message.mentions.users.first().id}`, message.author.id);
+									embeds.DMEMarry.setDescription(Rpoem);
+									return message.channel.send(embeds.DMEMarry);
+								})
+								.catch(collected => {
+									heart.reactions.removeAll().catch(error => console.error("Failed to clear reactions: ", error));
+									return heart.edit("Timed out");
+								});
+						});
+				}
+				else {
+					message.channel.send("You are not dating this person");
+				}
+			}
+			else {
+				message.channel.send("Please mention a user!");
+			}
 		}
 	},
 };

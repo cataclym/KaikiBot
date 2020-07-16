@@ -16,23 +16,29 @@ module.exports = {
 		let TDay = today.getDate();
 		let country = "US";
 
-		if (args[3]) {
-			country = args[3];
+		if (holidaykey) {
+
+			if (args[3]) {
+				country = args[3];
+			}
+			if (args[2]) {
+				TYear = args[2];
+				TMonth = args[1];
+				TDay = args[0];
+			}
+			else if (args[1]) {
+				TMonth = args[1];
+				TDay = args[0];
+			}
+			else if (args[0]) {
+				return message.channel.send("Correct usage would be " + prefix + "`holiday <day> <month> (year) (country)`\n`<day>` is numbers between `1-31`\n`<month>` is numbers between `1-12`\n`(year)` can only be previous year: `2019`. **Year is optional.**\n`(country)` can only be 2 letter country codes: `US`. **Country is optional.**\n**Country requires Year.**");
+			}
+			const color = message.member.displayColor;
+			loadTitle(message);
 		}
-		if (args[2]) {
-			TYear = args[2];
-			TMonth = args[1];
-			TDay = args[0];
+		else {
+			return message.channel.send("You need to provide a HolidayAPI token in `config.js`\nThis only applies if you are bot owner.");
 		}
-		else if (args[1]) {
-			TMonth = args[1];
-			TDay = args[0];
-		}
-		else if (args[0]) {
-			return message.channel.send("Correct usage would be " + prefix + "`holiday <day> <month> (year) (country)`\n`<day>` is numbers between `1-31`\n`<month>` is numbers between `1-12`\n`(year)` can only be previous year: `2019`. **Year is optional.**\n`(country)` can only be 2 letter country codes: `US`. **Country is optional.**\n**Country requires Year.**");
-		}
-		const color = message.member.displayColor;
-		loadTitle(message);
 		async function loadTitle() {
 			fetch(`https://holidayapi.com/v1/holidays?pretty&key=${holidaykey}&country=${country}&year=${TYear}&month=${TMonth}&day=${TDay}`)
 				.then((res) => res.json())
