@@ -6,7 +6,7 @@ const { prefix, token, activityname, activitystatus } = require("./config.js");
 
 const client = new Discord.Client();
 const {
-	emotereact, rolecheck, handleMentions, dadbot, TiredNadeko, DailyResetTimer
+	emotereact, rolecheck, handleMentions, dadbot, TiredNadeko, DailyResetTimer, EmoteDBStartup, countEmotes
 } = require("./functions/functions");
 
 client.commands = new Discord.Collection();
@@ -23,12 +23,16 @@ const cooldowns = new Discord.Collection();
 // boot
 client.once("ready", async () => {
 	console.log("Bot has finished booting sequence");
-	client.user.setActivity(`${activityname}`, { type: `${activitystatus}` });
+	client.user.setActivity(activityname, { type: activitystatus });
 	DailyResetTimer();
+});
+client.once("message", async (message) => { // Can't access guilds at boot, next best solution.
+	EmoteDBStartup(message);
 });
 
 client.on("message", async (message) => {
 
+	countEmotes(message);
 	TiredNadeko(message);
 	if(message.channel.name != undefined) { // Guild only
 		if (message.webhookID) return;
