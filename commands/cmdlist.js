@@ -10,6 +10,7 @@ module.exports = {
 
 		const CommandsCollection = await message.client.commands;
 		const Cmdslist = await CommandsCollection.map(t => t).filter(a => !!a).sort();
+		const AvUrl = await message.client.users.fetch("140788173885276160"); // Bot author 
 
 		const color = message.member.displayColor;
 		const embed = new Discord.MessageEmbed({
@@ -26,6 +27,7 @@ module.exports = {
 			color,
 			footer: {
 				text: "Made by Cata <3",
+				icon_url: AvUrl.displayAvatarURL(),
 			},
 		});
 		const names = await Cmdslist.map(t => t.name).filter(a => !!a).sort(function(a, b){return b-a;});

@@ -4,7 +4,7 @@ const { holidaykey, prefix } = require("../config");
 
 module.exports = {
 	name: "holiday",
-	//aliases: [""],
+	aliases: ["holidays"],
 	description: "Check today's holiday",
 	args: false,
 	usage: "| " + prefix + "holiday 24 12 2019",

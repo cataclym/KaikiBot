@@ -1,7 +1,6 @@
 const { MessageEmbed } = require("discord.js");
 const { UserNickTable } = require("../functions/functions.js");
 const { prefix } = require("../config.js");
-const { set } = require("quick.db");
 
 module.exports = {
 	name: "names",

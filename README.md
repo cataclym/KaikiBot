@@ -6,9 +6,10 @@ A bot with fun utility, dadbot responses, and more!
 
 ## Features
 * ### Commands
-  * Help
+  * Help, commands
   * Die
   * Ping
+  * Todo
   * Dadjoke
   * Exclude
   * Yeet, Yeetkids
@@ -17,6 +18,10 @@ A bot with fun utility, dadbot responses, and more!
     * Likes/Dislike/Superlike
     * Daily reset
     * Marry
+  * Holiday info
+  * Names
+  * Deadbeat
+  * Simp
   * Remind (WIP)
   * Send (WIP)
 * ### Reacts with emotes to message that contain your preferred words
@@ -44,7 +49,10 @@ Requirements
 By default the role that excludes users is currently called `Nadeko-excluded`. It can be changed in `./config.js`.              
 It will autocreate the role if it doesnt exist first time you type `+exlude`. And as long as it has "Manage roles" permissions.  
 
-Add it to pm2 for easy auto restart.
+Add it to pm2 for easy auto restart. 
+`pm2 start index.js` |
+`pm2 save` |
+`pm2 logs index --lines 50` 
 
 Having issues? Come join us on discord here                                                                                    
 <a href="https://discord.gg/msNtTYV">
@@ -63,14 +71,15 @@ Having issues? Come join us on discord here
 * Read message history
 * Use External Emojis
 * Add Reactions
+* View audit log
                                                          
 Thats it. Don't add any more.                                                                         
 You can use the following link to invite with these permissions already defined. Replace `YOUR_BOT_ID_HERE` with your bot id / client id.
-https://discord.com/oauth2/authorize?client_id=YOUR_BOT_ID_HERE&permissions=470092864&scope=bot
+https://discord.com/oauth2/authorize?client_id=YOUR_BOT_ID_HERE&permissions=470142144&scope=bot
 
 Feel like contributing? Please help me! :D
 
-# I owe some amazing people, thanks, and more!
+# I owe some amazing people thanks, and more!
 - Huge thanks to @Arvfitii for helping me whenever im in need!
 - Thanks to @rjt-rockx on Discord for so much help and time!
 - Should also mention @shivaco for help <3

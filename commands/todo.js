@@ -19,7 +19,7 @@ module.exports = {
 					return message.reply(`**Proper usage would be**:\n${prefix}todo add <item>\n${prefix}todo delete <nr>`);
 				}
 				const guildmemb = message.author;
-				await ReminderList.push(`${guildmemb.id}`, args );
+				ReminderList.push(`${guildmemb.id}`, args);
 				return message.react("✅");
 			}
 			catch (error) {
@@ -38,14 +38,14 @@ module.exports = {
 				const combinedReminders = reminder.map(a => a);
 				switch(args[1]) {
 					case "all": {
-						await ReminderList.delete(guildmemb.id);
+						ReminderList.delete(guildmemb.id);
 						return message.channel.send("List deleted.").then(SentMsg => {
 							SentMsg.react("✅"); 
 						});
 					}
 					case "last": {
 						const removedItem = combinedReminders.pop(); // Assigns the last entry to removedItem
-						await ReminderList.set(guildmemb.id, combinedReminders);
+						ReminderList.set(guildmemb.id, combinedReminders);
 						const stringified = removedItem.toString().replace(/,/g, " ").substring(0, 46); // Returns removedItem with space
 						return message.channel.send(`Removed \`${stringified}\` from list.`).then(SentMsg => {
 							SentMsg.react("✅"); 
@@ -53,7 +53,7 @@ module.exports = {
 					}
 					case "first": {
 						const firstremovedItem = combinedReminders.shift(); // Assigns the first entry to removedItem
-						await ReminderList.set(guildmemb.id, combinedReminders);
+						ReminderList.set(guildmemb.id, combinedReminders);
 						const firststringified = firstremovedItem.toString().replace(/,/g, " ").substring(0, 46); // Returns removedItem with space
 						return message.channel.send(`Removed \`${firststringified}\` from list.`).then(SentMsg => {
 							SentMsg.react("✅"); 
@@ -66,7 +66,7 @@ module.exports = {
 				if (args[1]) {
 					const index = parseInt(args[1], 10) -1; // Matches given number to array item
 					const removedItem = combinedReminders.splice(index, 1);
-					await ReminderList.set(guildmemb.id, combinedReminders);
+					ReminderList.set(guildmemb.id, combinedReminders);
 					const stringified = removedItem.toString().replace(/,/g, " ").substring(0, 46); // Returns removedItem with space
 					return message.channel.send(`Removed \`${stringified}\` from list.`).then(SentMsg => {
 						SentMsg.react("✅");

@@ -32,7 +32,7 @@ module.exports = {
 				return message.channel.send(embed);
 			}
 		}
-		const AvUrl = await message.client.users.fetch("140788173885276160");
+		const AvUrl = await message.client.users.fetch("140788173885276160"); // Bot author 
 
 		const embed = new Discord.MessageEmbed({
 			title: `${message.client.user.username} help page`,
