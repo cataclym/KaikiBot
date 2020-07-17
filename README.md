@@ -56,7 +56,7 @@ Add it to pm2 for easy auto restart.
 
 Having issues? Come join us on discord here                                                                                    
 <a href="https://discord.gg/msNtTYV">
-  <img src="https://discordapp.com/api/guilds/414099963841216512/embed.png?style=banner2" title="Discord Server"/>
+<img src="https://discordapp.com/api/guilds/414099963841216512/embed.png?style=banner2" title="Discord Server"/>
 </a>
 
 ### Bot permissions:
