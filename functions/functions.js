@@ -2,22 +2,23 @@
 const Discord = require("discord.js");
 const db = require("quick.db");
 const { prefix, prefixes, prefixes2, emotenames } = require("../config.js");
+const Tinder = new db.table("Tinder");
+const Emotes = new db.table("Emotes");
 
 // eslint-disable-next-line new-cap
 const UserNickTable = new db.table("UserNickTable");
 
 // handle mentions
 async function handleMentions(message) {
-	const color = await message.member.displayColor;
+	const Mcolor = await message.member.displayColor;
 	const embed = new Discord.MessageEmbed({
-		title: `Hi ${message.author.username}, what is up?`,
+		title: `Hi ${message.author.username}, what's up?`,
 		description: `If you need help type ${prefix}help.`,
-		color,
+		color: Mcolor,
 	});
 	if (message.mentions.has(message.client.user) && !message.author.bot) {
-		await message.channel.startTyping()
-			.then(message.channel.send(embed));
-		await message.channel.stopTyping(true);
+		message.channel.send(embed);
+		
 	}
 }
 // dadbot
@@ -69,6 +70,81 @@ async function emotereact(message) {
 		}
 	});
 }
+// Please don't laugh
+let i = 0;
+async function TiredNadeko(message) {
+	const words = ["shit", "fuck", "stop", "dont", "kill", "don't", "don`t", "fucking", "shut", "up", "shutup"]; // Yes I know
+	const botname = await message.client.user.username.toLowerCase().split(" ");
+	try {
+		if(new RegExp(botname.join("|")).test(message.content.toLowerCase()) && new RegExp(words.join("|")).test(message.content.toLowerCase())) {
+			i++;
+			if (i < 4) {
+				await message.react("😢");
+			}
+			else {
+				await message.channel.send("😢");
+				i = 0; //reset length
+			}
+		}
+	}
+	catch (error) {
+		console.log(error);
+	}		
+}
+function getUserFromMention(mention, message) {
+	if (!mention) return;
+
+	if (mention.startsWith("<@") && mention.endsWith(">")) {
+		mention = mention.slice(2, -1);
+
+		if (mention.startsWith("!")) {
+			mention = mention.slice(1);
+		}
+		return message.client.users.cache.get(mention);
+	}
+}
+function ResetRolls() { // Tinder reset
+	const likes = Tinder.get("likes");
+	for (const key of Object.keys(likes)) {
+		Tinder.set(`likes.${key}`, 3);
+		Tinder.set(`rolls.${key}`, 10);
+	}
+	console.log("Rolls and likes have been reset | " + Date() + "\n");
+}
+function DailyResetTimer() {
+	const nd = new Date();
+	console.log("Checking for reset at " + nd + "\nResets in " + timeToMidnight() + " milliseconds"); 
+	setTimeout(() => {
+		ResetRolls();
+		DailyResetTimer();
+	}, timeToMidnight());
+}
+function timeToMidnight(){
+	var d = new Date();
+	return (-d + d.setHours(24,0,0,0));
+}
+function EmoteDBStartup(message) {
+	console.log("Emote service: checking for new emotes-");
+	message.guild.emojis.cache.forEach(emote => {
+		if(!Emotes.has(`${message.guild.id}.${emote.name}`)) {
+			Emotes.set(`${message.guild.id}.${emote.name}`, { count: 0 });
+		}
+	});
+	console.log("Emote service: ...done!");
+}
+function countEmotes(message) {
+	const emotes = message.content.match(/<:.+?:\d+>/g);
+	if (emotes) {
+		const ids = emotes.toString().match(/\w+/g);
+		for (const [i, value] of ids.entries()) {
+			const emote = message.guild.emojis.cache.find(emote => emote.name === value);
+			if (emote) {
+				Emotes.add(`${message.guild.id}.${emote.name}.count`, 1);
+			}
+		}
+	}
+}
+
 module.exports = {
-	emotereact, rolecheck, handleMentions, dadbot, UserNickTable,
+	emotereact, rolecheck, handleMentions, dadbot, UserNickTable, TiredNadeko, getUserFromMention, ResetRolls, DailyResetTimer, EmoteDBStartup, countEmotes
 };

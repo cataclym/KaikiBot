@@ -3,6 +3,8 @@ const prefix = "+";
 // Input your bot token here
 const token = "";
 
+const holidaykey = "";
+
 // Dont change
 const prefixes = ["i'm ", "im ", "i am ", "i’m "];
 
@@ -21,5 +23,5 @@ const activityname = "Renai circulation";
 const activitystatus = "LISTENING";
 
 module.exports = {
-	names, prefixes, prefixes2, emotenames, activityname, activitystatus, prefix, token
+	names, prefixes, prefixes2, emotenames, activityname, activitystatus, prefix, token, holidaykey
 };

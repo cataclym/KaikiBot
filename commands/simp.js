@@ -3,6 +3,7 @@ const Discord = require("discord.js");
 
 module.exports = {
 	name: "simp",
+	cooldown: 8,
 	aliases: ["simping","simper"],
 	description: "embarass your simp friend",
 	args: true,
@@ -23,7 +24,6 @@ module.exports = {
 		if (args[0]) {
 			const user = getUserFromMention(args[0]);
 			if (!user) {
-				await message.channel.stopTyping(true);
 				return message.reply("Please tag a user!");
 			}
 			message.channel.startTyping();

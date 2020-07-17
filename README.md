@@ -2,32 +2,38 @@
 
 **What's this?**
 
-A bot with fun utility and dadbot responses, and more!
+A bot with fun utility, dadbot responses, and more!
 
 ## Features
-* Commands
-  * Help
+* ### Commands
+  * Help, commands
   * Die
   * Ping
+  * Todo
   * Dadjoke
   * Exclude
   * Yeet, Yeetkids
-  * Cmdlist
+  * Tinder
+    * Rolls
+    * Likes/Dislike/Superlike
+    * Daily reset
+    * Marry
+  * Holiday info
   * Names
-  * Random
-  * Remindlist
-  * Todo, Todoremove
-  * Updatenames
+  * Deadbeat
+  * Simp
   * Remind (WIP)
   * Send (WIP)
-* Reacts with emotes to message that contain your preferred words
+* ### Reacts with emotes to message that contain your preferred words
   * See variables.js
-* Irritating dad like responses, which also rename the user
+* ### Irritating dad like responses, which also rename the user
+
 <img src="https://i.imgur.com/WsMAKPB.png" title="example"/>
 
 ## Instructions
 Requirements
 * nodejs (also installs npm)
+* build tools (Windows) `npm i --global --production windows-build-tools` | Linux <a href="https://github.com/Automattic/node-canvas/wiki/Installation:-Fedora-and-other-RPM-based-distributions"> Find your distribution and dependencies here </a> 
 
 ### Important: Do not give bot administrator role or the ability to mention @everyone and @here.
 **Details on bot's permissions comes after Instructions, down below.**
@@ -43,7 +49,10 @@ Requirements
 By default the role that excludes users is currently called `Nadeko-excluded`. It can be changed in `./config.js`.              
 It will autocreate the role if it doesnt exist first time you type `+exlude`. And as long as it has "Manage roles" permissions.  
 
-Add it to pm2 for easy auto restart.
+Add it to pm2 for easy auto restart. 
+`pm2 start index.js` |
+`pm2 save` |
+`pm2 logs index --lines 50` 
 
 Having issues? Come join us on discord here                                                                                    
 <a href="https://discord.gg/msNtTYV">
@@ -62,16 +71,15 @@ Having issues? Come join us on discord here
 * Read message history
 * Use External Emojis
 * Add Reactions
-* View Audit log
-  * Fetches update names from audit log
+* View audit log
                                                          
 Thats it. Don't add any more.                                                                         
 You can use the following link to invite with these permissions already defined. Replace `YOUR_BOT_ID_HERE` with your bot id / client id.
-https://discord.com/oauth2/authorize?client_id=YOUR_BOT_ID_HERE&permissions=470092864&scope=bot
+https://discord.com/oauth2/authorize?client_id=YOUR_BOT_ID_HERE&permissions=470142144&scope=bot
 
 Feel like contributing? Please help me! :D
 
-# I owe some amazing people, thanks, and more!
+# I owe some amazing people thanks, and more!
 - Huge thanks to @Arvfitii for helping me whenever im in need!
 - Thanks to @rjt-rockx on Discord for so much help and time!
 - Should also mention @shivaco for help <3

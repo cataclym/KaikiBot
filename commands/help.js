@@ -8,7 +8,7 @@ module.exports = {
 	aliases: ["h",],
 	description: "Shows command info",
 	async execute(message, args) {
-		const color = message.member.displayColor;
+		const Mcolor = await message.member.displayColor;
 		
 		if (args[0]) {
 			
@@ -27,12 +27,12 @@ module.exports = {
 				if (command.usage) data += `\nUsage: \`${prefix}${command.name} ${command.usage}\``;
 				if (command.aliases) data += `\nAliases: ${command.aliases.join(", ")}`;
 				embed.setDescription(data);
-				embed.setColor(color);
+				embed.setColor(Mcolor);
 
 				return message.channel.send(embed);
 			}
 		}
-		const AvUrl = await message.client.users.fetch("140788173885276160");
+		const AvUrl = await message.client.users.fetch("140788173885276160"); // Bot author 
 
 		const embed = new Discord.MessageEmbed({
 			title: `${message.client.user.username} help page`,
@@ -46,7 +46,7 @@ module.exports = {
 				url: "https://github.com/cataclym/nadekosengokubot",
 				icon_url: message.author.displayAvatarURL(),
 			},
-			color,
+			color: Mcolor,
 			footer: {
 				text: "Made by Cata <3", 
 				icon_url: AvUrl.displayAvatarURL(),

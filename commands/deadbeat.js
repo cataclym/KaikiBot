@@ -3,6 +3,7 @@ const Discord = require("discord.js");
 
 module.exports = {
 	name: "deadbeat",
+	cooldown: 8,
 	aliases: ["deadbeats","deadbeating"],
 	description: "Just try it",
 	args: true,

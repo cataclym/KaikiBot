@@ -4,6 +4,7 @@ const { prefix } = require("../config.js");
 
 module.exports = {
 	name: "yeet",
+	cooldown: 8,
 	aliases: ["yeets",],
 	description: "Returns yeet...",
 	args: false,

@@ -1,40 +1,44 @@
 const { MessageEmbed } = require("discord.js");
 const { UserNickTable } = require("../functions/functions.js");
 const { prefix } = require("../config.js");
-const { set } = require("quick.db");
 
 module.exports = {
 	name: "names",
-	aliases: ["name", "checknames", "getnames", "getname", "checknames"],
+	aliases: ["name", "getnames", "getname",],
 	description: "Returns all your daddy nicknames",
 	// args: true,
-	usage: " | @someone",
-	execute(message, args) {
-
-		if (message.member.id == "189704916405714944") {
-			return;
-		} // Dont mind this part
-		// eslint-disable-next-line no-unused-vars
-		function getUserFromMentionRegEx(mention) {
-			if (!mention) return;
-			const matches = mention.match(/^<@!?(\d+)>$/);
-			// The id is the first and only match found by the RegEx.
-			// However the first element in the matches array will be the entire mention, not just the ID,
-			// so use index 1.
-			const id = matches[1];
-			return message.guild.members.cache.get(id);
-		}
-		const user = getUserFromMentionRegEx(args[0]);
-
-		if (!UserNickTable.has(`usernicknames.${message.author.id}`)) {
-			UserNickTable.push(`usernicknames.${message.member.id}`, message.author.username);
-		}
-		if (args) {
-			const av = message.mentions.users.first();
-			if (typeof av !== "undefined") {
-				if (!UserNickTable.has(`usernicknames.${av.id}`)) {
-					UserNickTable.push(`usernicknames.${av.id}`, av.username);
+	usage: " | " + prefix + "names @someone | " + prefix + "names delete",
+	async execute(message, args) {
+		if (args[0]) {
+			switch (args[0]) {
+				case "del":
+				case "delete":
+				case "rem":
+				case "remove": {
+					if (UserNickTable.delete(`usernicknames.${message.member.id}`)) {
+						try {
+							UserNickTable.push(`usernicknames.${message.member.id}`, message.author.username);
+							return message.channel.send(`Deleted all of ${message.member}'s nicknames.\nWell done, you made daddy forget.`);
+						}
+						catch(error) {
+							return console.log(error);
+						}
+					} 
+					else {
+						return message.channel.send("That didn`t work");
+					}
 				}
+			}	
+			const av = message.mentions.users.first();		
+			if (typeof av == "undefined") {
+				return message.reply("Please use a proper mention.");
+			}
+
+			if (!UserNickTable.has(`usernicknames.${message.author.id}`)) {
+				UserNickTable.push(`usernicknames.${message.member.id}`, message.author.username);
+			}
+			if (!UserNickTable.has(`usernicknames.${av.id}`)) {
+				UserNickTable.push(`usernicknames.${av.id}`, av.username);
 			}
 		}
 		let AuthorDBName = UserNickTable.fetch(`usernicknames.${message.author.id}`);
@@ -46,21 +50,15 @@ module.exports = {
 		StringsAuthorDBName += "...";
 
 		const color = message.member.displayColor;
-
-		if (args[0] && !user) {
-			return message.reply("Please use a proper mention.");
-		}
 		const embed = new MessageEmbed()
 			.setTitle(`${message.author.username}'s past names`)
 			.setAuthor("Daddy will never forget", "https://cdn.discordapp.com/avatars/714695773534814238/c6b61ba085b7c1ff59716d1238860e0f.png")
 			.setColor(color)
-			.setDescription("name here")
-			.setFooter(`Delete these with ${prefix}delnames`)
+			.setDescription(StringsAuthorDBName)
+			.setFooter(`Delete these with ${prefix}names delete`)
+			.setThumbnail(message.author.displayAvatarURL())
 			.setTimestamp();
-		if (!args[0]) {
-			embed.setThumbnail(message.author.displayAvatarURL());
-			embed.setDescription(StringsAuthorDBName);
-		}
+
 		if (args[0]) {
 			const av = message.mentions.users.first();
 			let argsDBName = UserNickTable.fetch(`usernicknames.${av.id}`);
