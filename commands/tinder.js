@@ -3,7 +3,7 @@ const db = require("quick.db");
 const Tinder = new db.table("Tinder");
 const { getUserFromMention, ResetRolls } = require("../functions/functions.js");
 const embeds = require("../functions/embeds.js");
-const { TinderStartup, TinderDBService } = require("../functions/tinder.js");
+const { TinderStartup, TinderDBService, NoLikes, NoRolls } = require("../functions/tinder.js");
 const { poems } = require("../functions/poems.js");
 const Rpoem = poems[Math.floor(Math.random() * poems.length)];
 
@@ -110,7 +110,7 @@ module.exports = {
 			});
 		}
 		else {
-			message.reply("You don't have any more rolls").then(msg => {
+			message.reply(NoRolls()).then(msg => {
 				msg.react("⚠️"); });
 		}
 		// Functions
@@ -190,7 +190,7 @@ module.exports = {
 			}
 			else {
 				SentMsg.reactions.removeAll().catch(error => console.error("Failed to clear reactions: ", error));
-				return message.channel.send("You don't have any more likes!").then(msg => {
+				return message.channel.send(NoLikes()).then(msg => {
 					msg.react("⚠️"); });
 			}
 		}
@@ -227,7 +227,7 @@ module.exports = {
 			}
 			else {
 				SentMsg.reactions.removeAll().catch(error => console.error("Failed to clear reactions: ", error));
-				return message.channel.send("You don't have any more likes!").then(msg => {
+				return message.channel.send(NoLikes()).then(msg => {
 					msg.react("⚠️"); });
 			}
 		}

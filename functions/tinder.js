@@ -1,6 +1,10 @@
 const db = require("quick.db");
 const Tinder = new db.table("Tinder");
 const Discord = require("discord.js");
+const { timeToMidnight, msToTime } = require("./functions");
+
+const time2mid = timeToMidnight();
+const time2midHrs = msToTime(time2mid);
 
 function tinderprofile(message) {
 	//...
@@ -21,7 +25,15 @@ function TinderDBService(user) { // This is the peak of JS
 	if (!Tinder.has(`married.${user.id}`)) { Tinder.push(`married.${user.id}`, user.id); i++; }
 	console.log("Tinder Database Service | Ran " + i + " changes.");
 }
+function NoLikes() {
+
+	return "You don't have any more likes!\nLikes and rolls reset in: " + time2midHrs;
+}
+function NoRolls() {
+
+	return "You don't have any more rolls!\nLikes and rolls reset in: " + time2midHrs;
+}
 
 module.exports = {
-	tinderprofile, TinderStartup, TinderDBService
+	tinderprofile, TinderStartup, TinderDBService, NoLikes, NoRolls
 };
