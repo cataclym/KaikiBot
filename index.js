@@ -22,12 +22,10 @@ const cooldowns = new Discord.Collection();
 
 // boot
 client.once("ready", async () => {
-	console.log("Bot has finished booting sequence");
+	console.log("Client ready");
 	client.user.setActivity(activityname, { type: activitystatus });
 	DailyResetTimer();
-});
-client.once("message", async (message) => { // Can't access guilds at boot, next best solution.
-	EmoteDBStartup(message);
+	EmoteDBStartup(client);
 });
 
 client.on("message", async (message) => {
