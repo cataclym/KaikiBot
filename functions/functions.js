@@ -123,14 +123,17 @@ function timeToMidnight(){
 	var d = new Date();
 	return (-d + d.setHours(24,0,0,0));
 }
-function EmoteDBStartup(message) {
+function EmoteDBStartup(client) {
 	console.log("Emote service: checking for new emotes-");
-	message.guild.emojis.cache.forEach(emote => {
-		if(!Emotes.has(`${message.guild.id}.${emote.name}`)) {
-			Emotes.set(`${message.guild.id}.${emote.name}`, { count: 0 });
-		}
+	let i = 0;
+	client.guilds.cache.forEach(guild => {
+		guild.emojis.cache.forEach(emote => {
+			if(!Emotes.has(`${guild.id}.${emote.id}`)) {
+				Emotes.set(`${guild.id}.${emote.id}`, { count: 0 }); i++;
+			}
+		});
 	});
-	console.log("Emote service: ...done!");
+	console.log("Emote service: ...done! " + i + " edits!");
 }
 function countEmotes(message) {
 	const emotes = message.content.match(/<:.+?:\d+>/g);
@@ -139,7 +142,7 @@ function countEmotes(message) {
 		for (const [i, value] of ids.entries()) {
 			const emote = message.guild.emojis.cache.find(emote => emote.name === value);
 			if (emote) {
-				Emotes.add(`${message.guild.id}.${emote.name}.count`, 1);
+				Emotes.add(`${message.guild.id}.${emote.id}.count`, 1);
 			}
 		}
 	}
