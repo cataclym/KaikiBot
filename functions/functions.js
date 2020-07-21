@@ -120,7 +120,7 @@ function DailyResetTimer() {
 	}, timeToMidnight());
 }
 function timeToMidnight(){
-	var d = new Date();
+	const d = new Date();
 	return (-d + d.setHours(24,0,0,0));
 }
 function EmoteDBStartup(client) {
@@ -149,7 +149,7 @@ function countEmotes(message) {
 }
 
 function msToTime(duration) {
-	var milliseconds = parseInt((duration % 1000) / 100),
+	let milliseconds = parseInt((duration % 1000) / 100),
 		seconds = Math.floor((duration / 1000) % 60),
 		minutes = Math.floor((duration / (1000 * 60)) % 60),
 		hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
