@@ -21,17 +21,22 @@ module.exports = {
 		let data4 = "";
 		for (const [key, value] of Object.entries(GuildEmoteCount)) {	
 			const Emote = message.guild.emojis.cache.get(key);	
-			if (data.length < 2000 && Emote) {
+			if (!Emote) { continue; }
+			if (data.length <= 2000) {
 				data += `${Emote} \`${Object.values(value)}\` `;
+				continue;
 			}
-			if (data.length > 2000 && data2.length < 2000 && Emote) {
+			if (data.length >= 2000 && data2.length <= 2000) {
 				data2 += `${Emote} \`${Object.values(value)}\` `;
+				continue;
 			}
-			if (data2.length > 2000 && data3.length < 2000 && Emote) {
+			if (data2.length >= 2000 && data3.length <= 2000) {
 				data3 += `${Emote} \`${Object.values(value)}\` `;
+				continue;
 			}
-			if (data3.length > 2000 && data4.length < 2000 && Emote) {
+			if (data3.length >= 2000 && data4.length <= 2000) {
 				data4 += `${Emote} \`${Object.values(value)}\` `;
+				continue;
 			}
 		}
 		embed.setDescription(data);
