@@ -37,9 +37,10 @@ module.exports = {
 				return message.channel.send(embeds.TinderHelp);
 			}
 			case "test": { // remove
-				try { if (message.member.hasPermission("ADMINISTRATOR")) { return; }
-				////embeds.DMEMarry.setDescription(Rpoem);
-				////return message.channel.send(embeds.DMEMarry);
+				try { if (message.member.hasPermission("ADMINISTRATOR")) { 
+					const list = Tinder.get(`dating.${args[1]}`);
+					return console.log(list); }
+
 				else { return message.channel.send("You do not have sufficient permissions."); }
 				}
 				catch (error) { return console.log("Error :", error); }
@@ -250,13 +251,11 @@ module.exports = {
 			const user = getUserFromMention(args[1], message);
 			if (user) {
 				const ArgDates = Tinder.get(`dating.${message.mentions.users.first().id}`);
-				const AuthorDates = Tinder.get(`dating.${message.author.id}`),
-					matches = AuthorDates.filter(f => ArgDates.includes(f));
-				if (matches.includes(message.mentions.users.first().id)) {
+				if (ArgDates.includes(`${message.author.id}`))  {
 					const ArgMarry = Tinder.get(`married.${message.mentions.users.first().id}`);
 					const AuthorMarry = Tinder.get(`married.${message.author.id}`),
 						MarryMatches = AuthorMarry.filter(f => ArgMarry.includes(f));
-					if (!MarryMatches.includes(message.mentions.users.first().id)) {
+					if (!MarryMatches.includes(`${message.mentions.users.first().id}`)) {
 						message.channel.send("Do you want to marry " + message.author.username + `, <@${message.mentions.users.first().id}>?` + "\nReact with a `❤️` to marry!" )
 							.then(heart => {
 								heart.react("❤️");

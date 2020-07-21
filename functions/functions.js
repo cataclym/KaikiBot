@@ -107,7 +107,7 @@ function ResetRolls() { // Tinder reset
 	const likes = Tinder.get("likes");
 	for (const key of Object.keys(likes)) {
 		Tinder.set(`likes.${key}`, 3);
-		Tinder.set(`rolls.${key}`, 10);
+		Tinder.set(`rolls.${key}`, 15);
 	}
 	console.log("Rolls and likes have been reset | " + Date() + "\n");
 }
