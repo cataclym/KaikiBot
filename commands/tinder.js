@@ -1,7 +1,7 @@
 const Discord = require("discord.js");
 const db = require("quick.db");
 const Tinder = new db.table("Tinder");
-const { getUserFromMention, ResetRolls } = require("../functions/functions.js");
+const { getUserFromMention, ResetRolls, timeToMidnight, msToTime } = require("../functions/functions.js");
 const embeds = require("../functions/embeds.js");
 const { TinderStartup, TinderDBService, NoLikes, NoRolls } = require("../functions/tinder.js");
 const { poems } = require("../functions/poems.js");
@@ -20,7 +20,7 @@ module.exports = {
 			TinderDBService(message.author);
 		}
 		switch (args[0]) { 
-			case "refill": {
+			case "reset": {
 				try { if (message.member.hasPermission("ADMINISTRATOR")) {
 					ResetRolls(message);
 					return message.react("✅"); }
@@ -32,7 +32,9 @@ module.exports = {
 			}
 			case "marry": { return marry();
 			}
-			case "help": { return message.channel.send(embeds.TinderHelp);
+			case "help": { 
+				embeds.TinderHelp.fields[3] = { name: "Reset", value: "Rolls and likes reset every day. Currently resets in: " + msToTime(timeToMidnight()), inline: true };
+				return message.channel.send(embeds.TinderHelp);
 			}
 			case "test": { // remove
 				try { if (message.member.hasPermission("ADMINISTRATOR")) { return; }
