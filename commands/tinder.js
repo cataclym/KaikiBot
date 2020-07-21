@@ -177,6 +177,7 @@ module.exports = {
 		function SuperLike(SentMsg, EmbeDDD) {
 			if (haslikes > 0) {
 				const zero = parseInt(0, 10);
+				TinderDBService(RandomUsr);
 				Tinder.push(`dating.${message.author.id}`, RandomUsr.id);
 				Tinder.push(`dating.${RandomUsr.id}`, message.author.id);
 				Tinder.set(`rolls.${message.author.id}`, zero);
