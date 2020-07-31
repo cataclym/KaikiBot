@@ -26,6 +26,7 @@ A bot with fun utility, dadbot responses, and more!
   * Send (WIP)
 * ### Reacts with emotes to message that contain your preferred words
   * See variables.js
+* ### Emotecount
 * ### Irritating dad like responses, which also rename the user
 
 <img src="https://i.imgur.com/WsMAKPB.png" title="example"/>
