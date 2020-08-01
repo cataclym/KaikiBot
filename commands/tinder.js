@@ -3,6 +3,7 @@ const db = require("quick.db");
 const Tinder = new db.table("Tinder");
 const { getUserFromMention, ResetRolls, timeToMidnight, msToTime } = require("../functions/functions.js");
 const embeds = require("../functions/embeds.js");
+const { prefix } = require("../config");
 const { TinderStartup, TinderDBService, NoLikes, NoRolls } = require("../functions/tinder.js");
 const { poems } = require("../functions/poems.js");
 const Rpoem = poems[Math.floor(Math.random() * poems.length)];
@@ -21,30 +22,75 @@ module.exports = {
 		}
 		switch (args[0]) { 
 			case "reset": {
-				try { if (message.member.hasPermission("ADMINISTRATOR")) {
+				if (message.member.hasPermission("ADMINISTRATOR")) {
 					ResetRolls(message);
-					return message.react("✅"); }
-				else { return message.channel.send("You do not have sufficient permissions."); }
+					return message.react("✅"); 
 				}
-				catch (error) { return console.log("Error :", error); }
+				else { 
+					return message.channel.send("You do not have sufficient permissions."); 
+				}
 			}
-			case "list": { return list();
-			}
-			case "marry": { return marry();
-			}
-			case "help": { 
-				embeds.TinderHelp.fields[3] = { name: "Reset", value: "Rolls and likes reset every day. Currently resets in: " + msToTime(timeToMidnight()), inline: true };
+			case "list": 
+				{ 
+					if (!args[1]) {
+						return list();
+					}
+					else {
+						switch (args[1])
+						{
+							case "l":
+							case "likes": {
+								const likesID = Tinder.get(`likeID.${message.author.id}`);
+								likesID.shift(); // Remove author
+								const CombinedList = likesID.slice(0,100).map((item, i) => `${+i+1}. ${message.client.users.cache.find(member => member.id === item).username}`).join("\n"); // List all members by name
+								return message.channel.send(CombinedList + "\n**Items: " + likesID?.length + "**");
+							}
+							case "dl":
+							case "dislikes": {
+								const dislikeID = Tinder.get(`dislikeID.${message.author.id}`);
+								dislikeID.shift();
+								const CombinedList = dislikeID.slice(0,100).map((item, i) => `${+i+1}. ${message.client.users.cache.find(member => member.id === item)?.username}`).join("\n");
+								return message.channel.send(CombinedList + "\n**Items: " + dislikeID?.length + "**");
+							}
+							case "dating":
+							case "d":
+							case "dates": {
+								const dating = 	Tinder.get(`dating.${message.author.id}`);
+								dating.shift();
+								const CombinedList = dating.slice(0,100).map((item, i) => `${+i+1}. ${message.client.users.cache.find(member => member.id === item)?.username}`).join("\n");
+								return message.channel.send(CombinedList + "\n**Items: " + dating?.length + "**");
+							}
+							case "married":
+							case "marries":
+							case "s":
+							case "spouses": {
+								const married = Tinder.get(`married.${message.author.id}`);
+								married.shift();
+								const CombinedList = married.slice(0,100).map((item, i) => `${+i+1}. ${message.client.users.cache.find(member => member.id === item)?.username}`).join("\n");
+								return message.channel.send(CombinedList + "\n**Items: " + married?.length + "**");
+							}
+							default: {
+								return list();
+							}
+						}
+					}
+				}
+			case "marry":
+				{
+					return marry();
+				}
+			case "help":
+				{ 
+				embeds.TinderHelp.fields[4] = { name: "Reset", value: "Rolls and likes reset every day. Currently resets in: " + msToTime(timeToMidnight()), inline: false };
 				return message.channel.send(embeds.TinderHelp);
-			}
-			case "test": { // remove
-				try { if (message.member.hasPermission("ADMINISTRATOR")) { 
-					const list = Tinder.get(`dating.${args[1]}`);
-					return console.log(list); }
-
-				else { return message.channel.send("You do not have sufficient permissions."); }
 				}
-				catch (error) { return console.log("Error :", error); }
-			}
+			case "del":
+			case "delete":
+			case "rem":
+			case "remove": 
+				{
+					return  RemoveEntryFromList();
+				}
 			case "start": {
 				try { if (message.member.hasPermission("ADMINISTRATOR")) { return TinderStartup(message); } // Shouldnt be necessary anymore, but ill leave it in // Maybe change to bot owner only as well
 				}
@@ -56,7 +102,7 @@ module.exports = {
 		const dislikeID = Tinder.get(`dislikeID.${message.author.id}`);
 		const dating = 	Tinder.get(`dating.${message.author.id}`);
 		const married = Tinder.get(`married.${message.author.id}`);
-		const combined = new Array().concat(likesID, dislikeID, married, dating);
+		const combined = [].concat(likesID, dislikeID, married, dating);
 
 		const arr = await message.guild.members.cache.map(member => member.id),
 			res = arr.filter(f => !combined.includes(f));
@@ -118,62 +164,30 @@ module.exports = {
 		}
 		// Functions
 		function list() {
-			message.channel.startTyping();
 			TinderDBService(message.author);
 			const listembed = new Discord.MessageEmbed()
-				.setTitle("Your tinder list");
-			const LlikesID = Tinder.get(`likeID.${message.author.id}`);
-			const LdislikeID = Tinder.get(`dislikeID.${message.author.id}`);
-			const Ldating = Tinder.get(`dating.${message.author.id}`);		
-			const Lmarried = Tinder.get(`married.${message.author.id}`);
+				.setTitle("Your tinder list")
+				.setFooter(`See specific lists with \`${prefix}tinder list likes | dislikes | dates | spouses\`
+				`);
+			const LlikesID = [...new Set(Tinder.get(`likeID.${message.author.id}`))];
+			const LdislikeID = [...new Set(Tinder.get(`dislikeID.${message.author.id}`))];
+			const Ldating = [...new Set(Tinder.get(`dating.${message.author.id}`))];		
+			const Lmarried = [...new Set(Tinder.get(`married.${message.author.id}`))];
 
-			let datalikesID = "";
-			let datadislikeID = "";
-			let datadating = "";
-			let datamarried = "";
-
-			for (const [i, value] of LlikesID.entries()) { // Yes rjt, I could just use a map instead
-				if (value !== message.author.id) {
-					const Member = message.client.users.cache.find(member => member.id === value);
-					const indexplus = i;
-					datalikesID += indexplus + ". " + Member.username + "\n";
-				}
-				else { continue; }
-			}
-			for (const [i, value] of LdislikeID.entries()) { // Maybe I got lost along the way
-				if (value !== message.author.id) {
-					const Member = message.client.users.cache.find(member => member.id === value);
-					const indexplus = i;
-					datadislikeID += indexplus + ". " + Member.username + "\n";
-				}
-				else { continue; }
-			}
-			for (const [i, value] of Ldating.entries()) { // Maybe I got lost along the way (x2)
-				if (value !== message.author.id) {
-					const Member = message.client.users.cache.find(member => member.id === value);
-					const indexplus = i;
-					datadating += indexplus + ". " + Member.username + "\n";
-				}
-				else { continue; }
-			}
-			for (const [i, value] of Lmarried.entries()) { // Without a map...
-				if (value !== message.author.id) {
-					const Member = message.client.users.cache.find(member => member.id === value);
-					const indexplus = i;
-					datamarried += indexplus + ". " + Member.username + "\n";
-				}
-				else { continue; }
-			}
+			const datalikesID = LlikesID.slice(1,21).map((item, i) => `${+i+1}. ${message.client.users.cache.find(member => member.id === item)?.username}`).join("\n");
+			const datadislikeID = LdislikeID.slice(1,21).map((item, i) => `${+i+1}. ${message.client.users.cache.find(member => member.id === item)?.username}`).join("\n");
+			const datadating = Ldating.slice(1,21).map((item, i) => `${+i+1}. ${message.client.users.cache.find(member => member.id === item)?.username}`).join("\n");
+			const datamarried = Lmarried.slice(1,21).map((item, i) => `${+i+1}. ${message.client.users.cache.find(member => member.id === item)?.username}`).join("\n");
+			
 			listembed.addFields( // Yeah I know, bad solution, but it doesnt look too bad on Discord.
-				{ name: "Likes", value: datalikesID.substring(0, 1023) + "\u200B", inline: true, },
-				{ name: "Dislikes", value: datadislikeID.substring(0, 1023) + "\u200B", inline: true, },
-				{ name: "Dating", value: datadating.substring(0, 1023) + "\u200B", inline: true, },
+				{ name: "Likes", value: datalikesID.substring(0, 660) + "\u200B", inline: true, },
+				{ name: "Dislikes", value: datadislikeID.substring(0, 660) + "\u200B", inline: true, },
+				{ name: "Dating", value: datadating.substring(0, 660) + "\u200B", inline: true, },
 				{ name: "\u200B", value: "\u200B", inline: true, },
-				{ name: "Married", value: datamarried.substring(0, 1023) + "\u200B", inline: true, },
+				{ name: "Married", value: datamarried.substring(0, 660) + "\u200B", inline: true, },
 				{ name: "\u200B", value: "\u200B", inline: true, },
 			);
 			message.channel.send(listembed);
-			return message.channel.stopTyping(true);
 		}
 		function SuperLike(SentMsg, EmbeDDD) {
 			if (haslikes > 0) {
@@ -199,7 +213,7 @@ module.exports = {
 			}
 		}
 		function NormalLike(SentMsg, EmbeDDD, Nhasrolls) {
-			if (haslikes > 0) {	
+			if (haslikes > 0) {
 				Tinder.subtract(`likes.${message.author.id}`, 1);
 				const Nhaslikes = parseInt(Tinder.get(`likes.${message.author.id}`), 10); // Updates leftover likes/rolls in real-time /s
 				const NewRollsLikes = Nhasrolls + " rolls " + Nhaslikes + " likes remaining."; 
@@ -279,6 +293,25 @@ module.exports = {
 				else { message.channel.send("You are not dating this person!"); }
 			}
 			else { message.channel.send("Please mention a user!"); }
+		}
+		function RemoveEntryFromList()
+		{
+			const DLikes = Tinder.fetch(`dislikeID.${message.author.id}`);
+			if (DLikes === null)
+			{
+				return message.channel.send("Nothing to delete.");
+			}
+			const CombinedDLikes = DLikes.map(a => a);
+			if (args[1]) {
+				const index = parseInt(args[1], 10); // Matches given number to array item
+				const removedItem = CombinedDLikes.splice(index, 1);
+				if (removedItem.toString() === message.author.id) return message.channel.send("No can do.")
+				Tinder.set(`dislikeID.${message.author.id}`, CombinedDLikes);
+				const stringified = removedItem.toString().replace(/,/g, " ").substring(0, 46); // Returns removedItem with space
+				return message.channel.send(`Removed \`${stringified}\` from list.`).then(SentMsg => {
+					SentMsg.react("✅");
+				});
+			}
 		}
 	},
 };

@@ -113,7 +113,7 @@ function ResetRolls() { // Tinder reset
 }
 function DailyResetTimer() {
 	const nd = new Date();
-	console.log("Checking for reset at " + nd + "\nResets in " + timeToMidnight() + " milliseconds"); 
+	console.log("Checking for reset at " + nd + "\nResets in " + msToTime(timeToMidnight())); 
 	setTimeout(() => {
 		ResetRolls();
 		DailyResetTimer();
