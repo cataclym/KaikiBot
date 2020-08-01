@@ -109,7 +109,7 @@ module.exports = {
 			}
 			catch (error) {
 				console.error("Error displaying todo");
-				message.channel.send("You havent added any todo lists, yet.");
+				message.channel.send("You haven't added any todo lists, yet.");
 				return message.react("⚠️");
 			}
 		}
