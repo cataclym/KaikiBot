@@ -27,9 +27,10 @@ A bot with fun utility, dadbot responses, and more!
 * ### Reacts with emotes to message that contain your preferred words
   * See variables.js
 * ### Emotecount
+  * Emotecount
 * ### Irritating dad like responses, which also rename the user
 
-<img src="https://i.imgur.com/WsMAKPB.png" title="example"/>
+<img src="https://i.imgur.com/WsMAKPB.png" title="example" alt="alt text"/>
 
 ## Instructions
 Requirements

@@ -1,17 +1,15 @@
 const Discord = require("discord.js");
 const db = require("quick.db");
 const Tinder = new db.table("Tinder");
-const { getUserFromMention, ResetRolls, timeToMidnight, msToTime } = require("../functions/functions.js");
+const { getUserFromMention, ResetRolls, timeToMidnight, msToTime, CommandUsage } = require("../functions/functions.js");
 const embeds = require("../functions/embeds.js");
 const { prefix } = require("../config");
-const { TinderStartup, TinderDBService, NoLikes, NoRolls } = require("../functions/tinder.js");
-const { poems } = require("../functions/poems.js");
-const Rpoem = poems[Math.floor(Math.random() * poems.length)];
+const { TinderStartup, TinderDBService, NoLikes, NoRolls, SeparateTinderList } = require("../functions/tinder.js");
 
 module.exports = {
 	name: "tinder",
 	cooldown: 2,
-	aliases: ["date","lfd","ons"],
+	aliases: ["date","lfd","ons", "t"],
 	description: "Suggests someone to date",
 	args: false,
 	usage: "help",
@@ -40,34 +38,26 @@ module.exports = {
 						{
 							case "l":
 							case "likes": {
-								const likesID = Tinder.get(`likeID.${message.author.id}`);
-								likesID.shift(); // Remove author
-								const CombinedList = likesID.slice(0,100).map((item, i) => `${+i+1}. ${message.client.users.cache.find(member => member.id === item).username}`).join("\n"); // List all members by name
-								return message.channel.send(CombinedList + "\n**Items: " + likesID?.length + "**");
+								const likesID = [...new Set(Tinder.get(`likeID.${message.author.id}`))];
+								return SeparateTinderList(message, likesID);
 							}
 							case "dl":
 							case "dislikes": {
-								const dislikeID = Tinder.get(`dislikeID.${message.author.id}`);
-								dislikeID.shift();
-								const CombinedList = dislikeID.slice(0,100).map((item, i) => `${+i+1}. ${message.client.users.cache.find(member => member.id === item)?.username}`).join("\n");
-								return message.channel.send(CombinedList + "\n**Items: " + dislikeID?.length + "**");
+								const dislikeID = [...new Set(Tinder.get(`dislikeID.${message.author.id}`))];
+								return SeparateTinderList(message, dislikeID);
 							}
 							case "dating":
 							case "d":
 							case "dates": {
-								const dating = 	Tinder.get(`dating.${message.author.id}`);
-								dating.shift();
-								const CombinedList = dating.slice(0,100).map((item, i) => `${+i+1}. ${message.client.users.cache.find(member => member.id === item)?.username}`).join("\n");
-								return message.channel.send(CombinedList + "\n**Items: " + dating?.length + "**");
+								const dating = 	[...new Set(Tinder.get(`dating.${message.author.id}`))];
+								return SeparateTinderList(message, dating);
 							}
 							case "married":
 							case "marries":
 							case "s":
 							case "spouses": {
-								const married = Tinder.get(`married.${message.author.id}`);
-								married.shift();
-								const CombinedList = married.slice(0,100).map((item, i) => `${+i+1}. ${message.client.users.cache.find(member => member.id === item)?.username}`).join("\n");
-								return message.channel.send(CombinedList + "\n**Items: " + married?.length + "**");
+								const married = [...new Set(Tinder.get(`married.${message.author.id}`))];
+								return SeparateTinderList(message, married);
 							}
 							default: {
 								return list();
@@ -280,8 +270,7 @@ module.exports = {
 									.then(collected => {
 										Tinder.push(`married.${message.author.id}`, message.mentions.users.first().id);
 										Tinder.push(`married.${message.mentions.users.first().id}`, message.author.id);
-										embeds.DMEMarry.setDescription(Rpoem);
-										return message.channel.send(embeds.DMEMarry);
+										return message.channel.send(embeds.DMEMarry());
 									})
 									.catch(collected => {
 										heart.reactions.removeAll().catch(error => console.error("Failed to clear reactions: ", error));
@@ -296,21 +285,29 @@ module.exports = {
 		}
 		function RemoveEntryFromList()
 		{
-			const DLikes = Tinder.fetch(`dislikeID.${message.author.id}`);
+			const DLikes = [...new Set(Tinder.fetch(`dislikeID.${message.author.id}`))];
 			if (DLikes === null)
-			{
+			{	// Likely won't happen
 				return message.channel.send("Nothing to delete.");
 			}
 			const CombinedDLikes = DLikes.map(a => a);
+			const ThisCommand = message.client.commands.get("tinder");
 			if (args[1]) {
 				const index = parseInt(args[1], 10); // Matches given number to array item
 				const removedItem = CombinedDLikes.splice(index, 1);
-				if (removedItem.toString() === message.author.id) return message.channel.send("No can do.")
-				Tinder.set(`dislikeID.${message.author.id}`, CombinedDLikes);
-				const stringified = removedItem.toString().replace(/,/g, " ").substring(0, 46); // Returns removedItem with space
-				return message.channel.send(`Removed \`${stringified}\` from list.`).then(SentMsg => {
-					SentMsg.react("✅");
-				});
+				if (!(removedItem.toString() === message.author.id || isNaN(index))) {
+					Tinder.set(`dislikeID.${message.author.id}`, CombinedDLikes);
+					const stringified = removedItem.toString().replace(/,/g, " ").substring(0, 46); // Returns removedItem with space
+					return message.channel.send(`Removed \`${stringified}\` from list.`).then(SentMsg => {
+						SentMsg.react("✅");
+					});
+				}
+				else {
+					return CommandUsage(message, ThisCommand)
+				}
+			}
+			else {
+				return CommandUsage(message, ThisCommand)
 			}
 		}
 	},
