@@ -39,7 +39,7 @@ function NoRolls() {
 function SeparateTinderList(message, Item)
 {
 	Item.shift();
-	const CombinedList = Item.slice(0,100).map((item, i) => `${+i+1}. ${message.client.users.cache.find(member => member.id === item).username}`).join("\n");
+	const CombinedList = Item.slice(0,100).map((item, i) => `${+i+1}. ${message.client.users.cache.find(member => member.id === item)?.username}`).join("\n");
 	return message.channel.send(CombinedList + "\n**Items: " + (Item ? Item.length : undefined) + "**");
 }
 
