@@ -5,7 +5,10 @@ const fs = require("fs");
 const { TinderStartup, TinderDBService} = require("./functions/tinder");
 const { prefix, token, activityname, activitystatus } = require("./config.js");
 
-const client = new Discord.Client();
+const client = new Discord.Client({
+	DisableMentionType : "everyone",
+	shards : "auto"
+});
 const {
 	emotereact, rolecheck, handleMentions, dadbot, TiredNadeko, DailyResetTimer,
 	EmoteDBStartup, countEmotes, CommandUsage
@@ -89,8 +92,9 @@ client.on("message", async (message) => {
 	
 	try {
 		command.execute(message, args);
+		const IsArgs = args.length ? args.join(" ") : ["N/A"];
 		console.log("------------------------------------------------------------------|\n" +
-		message.author.username + " executed " + command.name + " | With args: (" + args + ")\nAt " + Date());
+		message.author.username + " executed " + command.name + " | With args: " + IsArgs + " : In " + message.guild.name + " : " + message.channel.name + "\nAt " + Date());
 	} catch (error) {
 		console.error(error);
 		await message.reply(`Error, ${error}`);

@@ -6,13 +6,20 @@ module.exports = {
 	description: "Ping!",
 	aliases: ["p"],
 	usage: "\u200B",
-	execute(message) {
+	async execute (message) {
+		const InitialMSG = await message.channel.send("Pinging...!");
+
 		const color = message.member.displayColor;
-		const time = Math.abs(message.client.ws.ping);
+		const WSTime = Math.abs(message.client.ws.ping);
+
+		const ClientTime = InitialMSG.createdTimestamp - message.createdTimestamp;
+
 		const embed = new MessageEmbed({
-			title: `Ping took ${time} ms`,
+			fields: [
+				{ name: "WebSocket ping", value: WSTime + " ms", inline: true},
+				{ name: "Client ping", value: ClientTime + " ms", inline: true}],
 			color,
 		});
-		message.channel.send(embed);
+		return InitialMSG.edit(null, embed);
 	},
 };
