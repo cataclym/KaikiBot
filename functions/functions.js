@@ -51,11 +51,8 @@ function dadbot(message) {
 // check for special role
 function rolecheck(message) {
 	const { names } = require("../config.js");
-	if (message.member.roles.cache.find((r) => r.name === names.toString())) {
-		// console.log("Role checked:", specialString.name); //For debug.
-		return true;
-	}
-	return false;
+	return !!message.member.roles.cache.find((r) => r.name === names);
+	
 }
 // Reacts with emote to specified words
 async function emotereact(message) {
@@ -73,7 +70,7 @@ async function emotereact(message) {
 // Please don't laugh
 let i = 0;
 async function TiredNadeko(message) {
-	const words = ["shit", "fuck", "stop", "dont", "kill", "don't", "don`t", "fucking", "shut", "up", "shutup"]; // Yes I know
+	const words = ["shit", "fuck", "stop", "dont", "kill", "don't", "don`t", "fucking", "shut", "up", "shutup", "trash", "bad"]; // Yes I know
 	const botname = await message.client.user.username.toLowerCase().split(" ");
 	try {
 		if(new RegExp(botname.join("|")).test(message.content.toLowerCase()) && new RegExp(words.join("|")).test(message.content.toLowerCase())) {
@@ -158,10 +155,17 @@ function msToTime(duration) {
 	minutes = (minutes < 10) ? "0" + minutes : minutes;
 	seconds = (seconds < 10) ? "0" + seconds : seconds;
 
-	return hours + ":" + minutes + ":" + seconds + "." + milliseconds + " (hrs:min:sec.ms)";
+	return "**" + hours + "** hours **" + minutes + "** minutes **" + seconds + "." + milliseconds + "** seconds";
 }
+function CommandUsage(message, command) {
+	let reply = `You didn't provide any arguments, ${message.author}!`;
 
-
+	if (command.usage) {
+		reply += `\nThe proper usage would be: \`${prefix}${command.name} ${command.usage}\``;
+	}
+	return message.channel.send(reply);
+}
 module.exports = {
-	emotereact, rolecheck, handleMentions, dadbot, UserNickTable, TiredNadeko, getUserFromMention, ResetRolls, DailyResetTimer, EmoteDBStartup, countEmotes, msToTime, timeToMidnight
+	emotereact, rolecheck, handleMentions, dadbot, UserNickTable, TiredNadeko, getUserFromMention,
+	ResetRolls, DailyResetTimer, EmoteDBStartup, countEmotes, msToTime, timeToMidnight, CommandUsage
 };

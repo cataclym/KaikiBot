@@ -2,11 +2,13 @@
 /* eslint-disable no-restricted-syntax */
 const Discord = require("discord.js");
 const fs = require("fs");
+const { TinderStartup, TinderDBService} = require("./functions/tinder");
 const { prefix, token, activityname, activitystatus } = require("./config.js");
 
 const client = new Discord.Client();
 const {
-	emotereact, rolecheck, handleMentions, dadbot, TiredNadeko, DailyResetTimer, EmoteDBStartup, countEmotes
+	emotereact, rolecheck, handleMentions, dadbot, TiredNadeko, DailyResetTimer,
+	EmoteDBStartup, countEmotes, CommandUsage
 } = require("./functions/functions");
 
 client.commands = new Discord.Collection();
@@ -20,22 +22,32 @@ for (const file of commandFiles) {
 
 const cooldowns = new Discord.Collection();
 
-// boot
 client.once("ready", async () => {
 	console.log("Client ready");
-	client.user.setActivity(activityname, { type: activitystatus });
+	await client.user.setActivity(activityname, {type: activitystatus});
 	DailyResetTimer();
 	EmoteDBStartup(client);
+	client.guilds.cache.forEach(g => { // This will spam Console on first boot.
+		TinderStartup(g);
+	});
+});
+
+client.on("guildCreate", async  (guild) => {
+	TinderStartup(guild);
+	EmoteDBStartup(client);
+});
+client.on("guildMemberAdd", async  (member) => {
+	TinderDBService(member);
 });
 
 client.on("message", async (message) => {
 
-	countEmotes(message);
-	TiredNadeko(message);
-	if(message.channel.name != undefined) { // Guild only
+	await TiredNadeko(message);
+	if(message.channel.name !== undefined) { // Guild only 
 		if (message.webhookID) return;
-		handleMentions(message);
-		emotereact(message);
+		countEmotes(message);
+		await handleMentions(message);
+		await emotereact(message);
 		if (!rolecheck(message)) {
 			dadbot(message);
 		}
@@ -45,23 +57,13 @@ client.on("message", async (message) => {
 
 	const args = message.content.slice(prefix.length).split(/ +/);
 	const commandName = args.shift().toLowerCase();
-
-	// eslint-disable-next-line max-len
 	const command = client.commands.get(commandName) || client.commands.find((cmd) => cmd.aliases && cmd.aliases.includes(commandName));
-
 	if (!command) return;
 
 	if (command.args && !args.length) {
-		let reply = `You didn't provide any arguments, ${message.author}!`;
-
-		if (command.usage) {
-			reply += `\nThe proper usage would be: \`${prefix}${command.name} ${command.usage}\``;
-		}
-
-		// eslint-disable-next-line consistent-return
-		return message.channel.send(reply);
+		return CommandUsage(message, command);
 	}
-
+	
 	if (!cooldowns.has(command.name)) {
 		cooldowns.set(command.name, new Discord.Collection());
 	}
@@ -87,10 +89,11 @@ client.on("message", async (message) => {
 	
 	try {
 		command.execute(message, args);
-		console.log(message.author.username + " executed " + command.name + " | With args: (" + args + ")\nAt " + Date());
+		console.log("------------------------------------------------------------------|\n" +
+		message.author.username + " executed " + command.name + " | With args: (" + args + ")\nAt " + Date());
 	} catch (error) {
 		console.error(error);
-		message.reply(`Error, ${error}`);
+		await message.reply(`Error, ${error}`);
 	}
 });
 
