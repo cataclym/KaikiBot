@@ -22,6 +22,10 @@ const activityname = "Renai circulation";
 // change to one of: WATCHING/LISTENING/PLAYING
 const activitystatus = "LISTENING";
 
+// Owner ID (Used for owner only commands)
+const ownerID = "";
+
 module.exports = {
-	names, prefixes, prefixes2, emotenames, activityname, activitystatus, prefix, token, holidaykey
+	names, prefixes, prefixes2, emotenames, activityname, activitystatus,
+	prefix, token, holidaykey, ownerID
 };

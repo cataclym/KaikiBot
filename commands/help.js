@@ -7,8 +7,9 @@ module.exports = {
 	args: false,
 	aliases: ["h",],
 	description: "Shows command info",
+	cmdCategory: "Utility",
 	async execute(message, args) {
-		const Mcolor = await message.member.displayColor;
+		const Mcolor = message.member.displayColor;
 		
 		if (args[0]) {
 			

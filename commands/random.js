@@ -5,8 +5,9 @@ module.exports = {
 	name: "random",
 	description: "Sends a random number between your two inputs.",
 	args: true,
-	aliases: ["rndm","rng","randomnumber"],
+	aliases: ["rng"],
 	usage: `1 10 or ${prefix}random 25`,
+	cmdCategory: "Utility",
 	execute(message, args) {
 		const color = message.member.displayColor;
 		const embed = new MessageEmbed({

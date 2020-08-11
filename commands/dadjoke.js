@@ -10,6 +10,7 @@ module.exports = {
 	description: "Returns a dadjoke.",
 	args: false,
 	usage: "\u200B",
+	cmdCategory: "Fun",
 	execute(message) {
 		const color = message.member.displayColor;
 		loadTitle(message);

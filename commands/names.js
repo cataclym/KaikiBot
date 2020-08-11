@@ -1,13 +1,14 @@
 const { MessageEmbed } = require("discord.js");
-const { UserNickTable } = require("../functions/functions.js");
+const { UserNickTable, ParseUserObject } = require("../functions/functions.js");
 const { prefix } = require("../config.js");
 
 module.exports = {
 	name: "names",
-	aliases: ["name", "getnames", "getname",],
+	aliases: ["name"],
 	description: "Returns all your daddy nicknames",
 	// args: true,
 	usage: " | " + prefix + "names @someone | " + prefix + "names delete",
+	cmdCategory: "Fun",
 	async execute(message, args) {
 		if (args[0]) {
 			switch (args[0]) {
@@ -29,7 +30,11 @@ module.exports = {
 					}
 				}
 			}	
-			const av = message.mentions.users.first();		
+			const av =  
+			message.mentions.users.first() ? message.mentions.users.first() :
+				message.guild.members.cache(m => m.name === args[0]) != undefined ? message.guild.members.cache(m => m.name === args[0]) :
+					message.guild.members.cache(m => m.id === args[0]) != undefined ? message.guild.members.cache(m => m.id === args[0]) :
+						null;
 			if (typeof av == "undefined") {
 				return message.reply("Please use a proper mention.");
 			}
@@ -60,7 +65,11 @@ module.exports = {
 			.setTimestamp();
 
 		if (args[0]) {
-			const av = message.mentions.users.first();
+			const av =  
+			message.mentions.users.first() ? message.mentions.users.first() :
+				message.guild.members.cache(m => m.name === args[0]) != undefined ? message.guild.members.cache(m => m.name === args[0]) :
+					message.guild.members.cache(m => m.id === args[0]) != undefined ? message.guild.members.cache(m => m.id === args[0]) :
+						null;
 			let argsDBName = UserNickTable.fetch(`usernicknames.${av.id}`);
 			argsDBName = [...new Set(argsDBName)];
 

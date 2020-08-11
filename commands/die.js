@@ -2,19 +2,19 @@ const { MessageEmbed } = require("discord.js");
 
 module.exports = {
 	name: "die",
-	aliases: ["kill", "murder", "shutdown"],
+	aliases: ["kill", "shutdown"],
 	description: "Turn bot off, then turn it back on.",
-	execute(message) {
+	ownerOnly: true,
+	cmdCategory: "Owner only",
+	async execute(message) {
 		const color = message.member.displayColor;
 		const embed = new MessageEmbed({
-			title: "Shutting down now! 😦",
+			author: { icon_url: message.client.user.displayAvatarURL(), name: "Dying" },
+			fields: { name: "Shutting down", value: "See you later", inline: false },
 			color,
 		});
-		if (message.member.hasPermission("ADMINISTRATOR")) {
-			// send channel a message that you're resetting bot.
-			message.channel.send(embed)
-				.then(() => console.log("Shutting down"))
-				.then(() => process.exit(1));
-		}
+		await message.channel.send(embed);
+		await console.log("Shutting down");
+		await process.exit(1);
 	},
 };

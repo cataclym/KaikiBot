@@ -1,6 +1,8 @@
 module.exports = {
 	name: "reload",
+	aliases: ["re"],
 	description: "Reloads a command",
+	cmdCategory: "Owner only",
 	async execute(message, args) {
 
 		if (!message.member.hasPermission("ADMINISTRATOR")) {

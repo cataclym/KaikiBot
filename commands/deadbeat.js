@@ -8,6 +8,7 @@ module.exports = {
 	description: "Just try it",
 	args: true,
 	usage: "@dreb",
+	cmdCategory: "Fun",
 	async execute(message, args) {
 		function getUserFromMention(mention) {
 			if (!mention) return;

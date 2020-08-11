@@ -9,6 +9,7 @@ module.exports = {
 	description: "Shows how many times each emote has been used",
 	args: false,
 	usage: "\n",
+	cmdCategory: "Utility",
 	async execute(message) {
 		const embed = new MessageEmbed();
 		const embed2 = new MessageEmbed();

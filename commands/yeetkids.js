@@ -9,6 +9,7 @@ module.exports = {
 	description: "Returns yeet...",
 	args: false,
 	usage: "\u200B",
+	cmdCategory: "Fun",
 	execute(message) {
 		const color = message.member.displayColor;
 		loadTitle(message);
@@ -28,7 +29,7 @@ module.exports = {
 			const RTTitle = randomTitle.title.substring(0, 256);
 			let RTUrl = randomTitle.url.toString();
 			let LinkIfVid = "";
-			const filters = ["webm", "mp4", "gifv", "youtube", "v.redd", "gfycat", "youtu", "news", "wsbtv"];
+			const filters = ["webm", "mp4", "gifv", "youtube", "v.redd", "gfycat", "youtu", "news", "wsbtv"]; // Yes.
 			if (filters.some((filter) => RTUrl.includes(filter))) {
 				RTUrl = "";
 				LinkIfVid = "Embed's cannot preview videos. Video will be sent separately.";

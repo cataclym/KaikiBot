@@ -8,6 +8,7 @@ module.exports = {
 	description: "Check today's holiday",
 	args: false,
 	usage: "| " + prefix + "holiday 24 12 2019",
+	cmdCategory: "Utility",
 	async execute(message, args) {
 
 		const today = new Date();

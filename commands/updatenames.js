@@ -3,10 +3,11 @@ const UserNickTable = new db.table("UserNickTable");
 
 module.exports = {
 	name: "updatenames",
-	aliases: ["updatename", "up",],
-	description: "Updates names in the databse for the `names` command",
+	aliases: ["up"],
+	description: "Updates names in the database for the `names` command",
 	args: true,
 	usage: "50",
+	cmdCategory: "Owner only",
 	async execute(message, args) {
 
 		if (!message.member.hasPermission("ADMINISTRATOR")) {
