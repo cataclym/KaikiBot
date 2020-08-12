@@ -28,7 +28,7 @@ async function ReAssignBirthdays(client)
 	});
 	console.log("Birthday-Role service: Finished checking dates." + 
 	"\nCake Day:" + (ListUserJoinedAt.length ? " Users added: " + ListUserJoinedAt.join(", ") : " No users were added to Cake Day.") +
-	"\nJoin Anniversary:" + (ListUserCreatedAt.length ? " Users added: " + ListUserCreatedAt.join(", ") : "No users were added to Join Anniversary."));
+	"\nJoin Anniversary:" + (ListUserCreatedAt.length ? " Users added: " + ListUserCreatedAt.join(", ") : " No users were added to Join Anniversary."));
 	setTimeout(() => {
 		ReAssignBirthdays(client);
 	}, timeToMidnight());
@@ -45,8 +45,8 @@ async function GuildOnAddBdays(guild) {
 		});
 	}
 	console.log("Birthday-Role service: Finished checking dates." + 
-	"\nCake Day:" + (ListUserJoinedAt.length ? " Users added: " + ListUserJoinedAt.join(", ") : "No users were added to Join Anniversary") +
-	"\nJoin Anniversary:" + (ListUserCreatedAt.length ? " Users added: " + ListUserCreatedAt.join(", ") : "No users were added to Cake Day."));
+	"\nCake Day:" + (ListUserJoinedAt.length ? " Users added: " + ListUserJoinedAt.join(", ") : " No users were added to Join Anniversary") +
+	"\nJoin Anniversary:" + (ListUserCreatedAt.length ? " Users added: " + ListUserCreatedAt.join(", ") : " No users were added to Cake Day."));
 }
 
 function GuildCheckRolesExist(guild)
