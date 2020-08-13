@@ -6,6 +6,7 @@ module.exports = {
 	description: "Ping!",
 	aliases: ["p"],
 	usage: "\u200B",
+	cmdCategory: "Utility",
 	async execute (message) {
 		const InitialMSG = await message.channel.send("Pinging...!");
 

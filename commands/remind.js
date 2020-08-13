@@ -15,6 +15,7 @@ module.exports = {
 	args: true,
 	aliases: ["rem"],
 	usage: "me 69 days",
+	cmdCategory: "WIP (Useless)",
 	execute(message, args) {
 		const color = message.member.displayColor;
 		try {

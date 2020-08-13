@@ -6,7 +6,7 @@ const { timeToMidnight, msToTime } = require("./functions");
 function TinderProfile(message) {
 	//...
 }
-function TinderStartup(message) { // This will spam the console from TinderDBService sadly // Edit: fixed it somewhat.
+async function TinderStartup(message) { // This will spam the console from TinderDBService sadly // Edit: fixed it somewhat.
 	let i = 0;
 	message.client.users.cache.forEach(user => {
 		TinderDBService(user);
@@ -14,7 +14,7 @@ function TinderStartup(message) { // This will spam the console from TinderDBSer
 	});
 	console.log("Tinder Database Service | Tinder has completed startup procedure. | " + i + " Changes registered (This represents one server)");
 }
-function TinderDBService(user) { // This is the peak of JS
+async function TinderDBService(user) { // This is the peak of JS
 	let i = 0;
 	if (!Tinder.has(`rolls.${user.id}`)) { Tinder.add(`rolls.${user.id}`, 15); i++; }	
 	if (!Tinder.has(`likes.${user.id}`)) { Tinder.add(`likes.${user.id}`, 3); i++; }
@@ -39,8 +39,15 @@ function NoRolls() {
 function SeparateTinderList(message, Item)
 {
 	Item.shift();
-	const CombinedList = Item.slice(0,100).map((item, i) => `${+i+1}. ${message.client.users.cache.find(member => member.id === item)?.username}`).join("\n");
-	return message.channel.send(CombinedList + "\n**Items: " + (Item ? Item.length : undefined) + "**");
+	let i = 0;
+	const initialList = Item.map((item, i) => `**${+i + 1}**. ${message.client.users.cache.find(member => member.id === item)?.username}`);
+	let CombinedList = "";
+	do {
+		CombinedList += initialList.slice(i, i+10).join(" ") + "\n";
+		i += 10;
+	}
+	while ( i < Item.length);
+	return message.channel.send(initialList.length ? CombinedList : "N/A");
 }
 
 module.exports = {

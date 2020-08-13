@@ -10,11 +10,12 @@ module.exports = {
 	description: "Returns a dadjoke.",
 	args: false,
 	usage: "\u200B",
+	cmdCategory: "Fun",
 	execute(message) {
 		const color = message.member.displayColor;
 		loadTitle(message);
 		message.channel.startTyping();
-		function loadTitle() {
+		function loadTitle(message) {
 			fetch("https://www.reddit.com/r/dadjokes.json?limit=1000&?sort=top&t=all")
 				.then((res) => res.json())
 				.then((json) => json.data.children.map((t) => t.data))

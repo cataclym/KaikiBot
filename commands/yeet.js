@@ -9,6 +9,7 @@ module.exports = {
 	description: "Returns yeet...",
 	args: false,
 	usage: "\u200B",
+	cmdCategory: "Fun",
 	execute(message) {
 		const color = message.member.displayColor;
 		loadTitle(message);

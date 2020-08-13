@@ -4,6 +4,7 @@ module.exports = {
 	aliases: ["s","eval"],
 	args: false,
 	usage: "$ {stuff_here}",
+	cmdCategory: "WIP (Useless)",
 	execute(message) { // Still have no idea how to do this
 		return message.channel.send("WIP");
 	},

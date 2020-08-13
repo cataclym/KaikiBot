@@ -6,6 +6,7 @@ module.exports = {
 	description: "Adds or removes excluded role from user.",
 	aliases: ["e","excl"],
 	args: false,
+	cmdCategory: "Utility",
 	async execute(message) {
 		const { names } = require("../config.js");
 		const excludedRole = names.toString();

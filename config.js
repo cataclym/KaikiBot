@@ -3,6 +3,7 @@ const prefix = "+";
 // Input your bot token here
 const token = "";
 
+// Grab an API key at https://holidayapi.com/ // Or leave it empty
 const holidaykey = "";
 
 // Dont change
@@ -22,6 +23,10 @@ const activityname = "Renai circulation";
 // change to one of: WATCHING/LISTENING/PLAYING
 const activitystatus = "LISTENING";
 
+// Owner ID (Used for owner only commands)
+const ownerID = "";
+
 module.exports = {
-	names, prefixes, prefixes2, emotenames, activityname, activitystatus, prefix, token, holidaykey
+	names, prefixes, prefixes2, emotenames, activityname, activitystatus,
+	prefix, token, holidaykey, ownerID
 };

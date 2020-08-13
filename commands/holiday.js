@@ -8,6 +8,7 @@ module.exports = {
 	description: "Check today's holiday",
 	args: false,
 	usage: "| " + prefix + "holiday 24 12 2019",
+	cmdCategory: "Utility",
 	async execute(message, args) {
 
 		const today = new Date();
@@ -39,7 +40,7 @@ module.exports = {
 		else {
 			return message.channel.send("You need to provide a HolidayAPI token in `config.js`\nThis only applies if you are bot owner.");
 		}
-		async function loadTitle() {
+		async function loadTitle(message) {
 			fetch(`https://holidayapi.com/v1/holidays?pretty&key=${holidaykey}&country=${country}&year=${TYear}&month=${TMonth}&day=${TDay}`)
 				.then((res) => res.json())
 				.then((date) => PostHoliday(date));

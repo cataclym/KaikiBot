@@ -32,13 +32,14 @@ A bot with fun utility, dadbot responses, and more!
 
 <img src="https://i.imgur.com/WsMAKPB.png" title="example" alt="alt text"/>
 
+***
 ## Instructions
 Requirements
 * nodejs (also installs npm)
 * build tools (Windows) `npm i --global --production windows-build-tools` | Linux <a href="https://github.com/Automattic/node-canvas/wiki/Installation:-Fedora-and-other-RPM-based-distributions"> Find your distribution and dependencies here </a> 
 
-### Important: Do not give bot administrator role or the ability to mention @everyone and @here.
-**Details on bot's permissions comes after Instructions, down below.**
+### ~~Important: Do not give bot administrator role or the ability to mention @everyone and @here~~ No longer something you need to worry about. Bot has had these mentions disabled.
+
 1. Clone repo
 1. Edit `config.js` - Add your bot token. Replace example emotes or remove them if you don't want it to react.
 1. `cd nadekosengokubot`
@@ -60,8 +61,9 @@ Having issues? Come join us on discord here
 <a href="https://discord.gg/msNtTYV">
 <img src="https://discordapp.com/api/guilds/414099963841216512/embed.png?style=banner2" title="Discord Server"/>
 </a>
+***
 
-### Bot permissions:
+### Bot permissions: **You can ignore this part** from v1.3 and forward
 * Manage roles
   * Managing excluded role
 * Change / Manage Nickname 

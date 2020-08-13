@@ -9,10 +9,11 @@ const { TinderStartup, TinderDBService, NoLikes, NoRolls, SeparateTinderList } =
 module.exports = {
 	name: "tinder",
 	cooldown: 2,
-	aliases: ["date","lfd","ons", "t"],
+	aliases: ["date", "t"],
 	description: "Suggests someone to date",
 	args: false,
 	usage: "help",
+	cmdCategory: "Fun",
 	async execute(message, args) {
 
 		if (!Tinder.has(`rolls.${message.author.id}`)) { // So the db/Tinder doesnt choke later...
@@ -21,7 +22,7 @@ module.exports = {
 		switch (args[0]) { 
 			case "reset": {
 				if (message.member.hasPermission("ADMINISTRATOR")) {
-					ResetRolls(message);
+					ResetRolls();
 					return message.react("✅"); 
 				}
 				else { 
@@ -297,8 +298,8 @@ module.exports = {
 				const removedItem = CombinedDLikes.splice(index, 1);
 				if (!(removedItem.toString() === message.author.id || isNaN(index))) {
 					Tinder.set(`dislikeID.${message.author.id}`, CombinedDLikes);
-					const stringified = removedItem.toString().replace(/,/g, " ").substring(0, 46); // Returns removedItem with space
-					return message.channel.send(`Removed \`${stringified}\` from list.`).then(SentMsg => {
+					const RemovedMember = message.client.users.cache.get(removedItem.toString())?.username;
+					return message.channel.send(`Removed \`${RemovedMember}\` from list.`).then(SentMsg => {
 						SentMsg.react("✅");
 					});
 				}
