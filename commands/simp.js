@@ -1,31 +1,23 @@
 const Canvas = require("canvas");
 const Discord = require("discord.js");
+const { ParseMemberObject } = require("../functions/functions");
 
 module.exports = {
 	name: "simp",
 	cooldown: 8,
 	aliases: ["simping","simper"],
 	description: "embarass your simp friend",
-	args: true,
+	args: false,
 	usage: "@dreb",
 	cmdCategory: "Fun",
 	async execute(message, args) {
-		function getUserFromMention(mention) {
-			if (!mention) return;
-		
-			if (mention.startsWith("<@") && mention.endsWith(">")) {
-				mention = mention.slice(2, -1);
-		
-				if (mention.startsWith("!")) {
-					mention = mention.slice(1);
+		try {
+			let member = message.member;
+			if (args[0]) {
+				member = ParseMemberObject(message, args);
+				if (!member) {
+					return message.reply("I couldn't find a user by " + args[0] + ", try using their name/id/@mention.");
 				}
-				return message.client.users.cache.get(mention);
-			}
-		}
-		if (args[0]) {
-			const user = getUserFromMention(args[0]);
-			if (!user) {
-				return message.reply("Please tag a user!");
 			}
 			message.channel.startTyping();
 
@@ -40,8 +32,6 @@ module.exports = {
     
 				return ctx.font;
 			};
-			
-			const av = message.mentions.users.first();
 			const canvas = Canvas.createCanvas(500, 400);
 			const ctx = canvas.getContext("2d");
 
@@ -51,21 +41,25 @@ module.exports = {
 			ctx.strokeStyle = "#000000";
 			ctx.strokeRect(0, 0, canvas.width, canvas.height);
         
-			ctx.font = applyText(canvas, av.username);
+			ctx.font = applyText(canvas, member.user.username);
 			ctx.fillStyle = "#ffffff";
-			ctx.fillText(av.username, 300, canvas.height / 1.25);
+			ctx.fillText(member.user.username, 300, canvas.height / 1.25);
         
 			ctx.beginPath();
 			ctx.arc(360, 220, 50, 0, Math.PI * 2, true); // Coordinates for the avatar cut (Not entirely accurate, I think)
 			ctx.closePath();
 			ctx.clip();
 
-			const avatar = await Canvas.loadImage(av.displayAvatarURL({ format: "jpg" }));
+			const avatar = await Canvas.loadImage(member.user.displayAvatarURL({ format: "jpg" }));
 			ctx.drawImage(avatar, 310, 170, 100, 100);
 
 			const attachment = new Discord.MessageAttachment(canvas.toBuffer(), "Simper.jpg");
-			message.channel.send(`Haha, you're a simp!! ${message.mentions.users.first()}`, attachment);
+			message.channel.send(`Haha, you're a simp!! ${member.user}`, attachment);
 			await message.channel.stopTyping(true);
+		}
+		catch (error) {
+			await message.channel.stopTyping(true);
+			return message.channel.send("An error occured " + error);
 		}
 	},  
 };

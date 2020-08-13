@@ -10,6 +10,7 @@ module.exports = {
 	usage: " | " + prefix + "names @someone | " + prefix + "names delete",
 	cmdCategory: "Fun",
 	async execute(message, args) {
+		let user;
 		if (args[0]) {
 			switch (args[0]) {
 				case "del":
@@ -29,21 +30,15 @@ module.exports = {
 						return message.channel.send("That didn`t work");
 					}
 				}
-			}	
-			const av =  
-			message.mentions.users.first() ? message.mentions.users.first() :
-				message.guild.members.cache(m => m.name === args[0]) != undefined ? message.guild.members.cache(m => m.name === args[0]) :
-					message.guild.members.cache(m => m.id === args[0]) != undefined ? message.guild.members.cache(m => m.id === args[0]) :
-						null;
-			if (typeof av == "undefined") {
-				return message.reply("Please use a proper mention.");
 			}
-
+			user = ParseUserObject(message, args);
+			if (!user) {return message.channel.send("Not a user (?)");}
+			// ez service
 			if (!UserNickTable.has(`usernicknames.${message.author.id}`)) {
 				UserNickTable.push(`usernicknames.${message.member.id}`, message.author.username);
 			}
-			if (!UserNickTable.has(`usernicknames.${av.id}`)) {
-				UserNickTable.push(`usernicknames.${av.id}`, av.username);
+			if (!UserNickTable.has(`usernicknames.${user.id}`)) {
+				UserNickTable.push(`usernicknames.${user.id}`, user.username);
 			}
 		}
 		let AuthorDBName = UserNickTable.fetch(`usernicknames.${message.author.id}`);
@@ -65,12 +60,7 @@ module.exports = {
 			.setTimestamp();
 
 		if (args[0]) {
-			const av =  
-			message.mentions.users.first() ? message.mentions.users.first() :
-				message.guild.members.cache(m => m.name === args[0]) != undefined ? message.guild.members.cache(m => m.name === args[0]) :
-					message.guild.members.cache(m => m.id === args[0]) != undefined ? message.guild.members.cache(m => m.id === args[0]) :
-						null;
-			let argsDBName = UserNickTable.fetch(`usernicknames.${av.id}`);
+			let argsDBName = UserNickTable.fetch(`usernicknames.${user.id}`);
 			argsDBName = [...new Set(argsDBName)];
 
 			// Makes it look cleaner
@@ -78,8 +68,8 @@ module.exports = {
 			StringsargsDBName = StringsargsDBName.replace(/¤/g, ", ").substring(0, 2045);
 			StringsargsDBName += "...";
 			embed.setDescription(StringsargsDBName);
-			embed.setTitle(`${av.username}'s past names`);
-			embed.setThumbnail(av.displayAvatarURL());
+			embed.setTitle(`${user.username}'s past names`);
+			embed.setThumbnail(user.displayAvatarURL());
 		}
 		const AuthorOrMention = args[0] || message.author; // Probably useless now
 		if (embed.description.includes(undefined)) {

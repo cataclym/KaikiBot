@@ -70,7 +70,7 @@ async function emotereact(message) {
 // Please don't laugh
 let i = 0;
 async function TiredNadeko(message) {
-	const words = ["shit", "fuck", "stop", "dont", "kill", "don't", "don`t", "fucking", "shut", "up", "shutup", "trash", "bad", "hate", "stupid"]; // Yes I know
+	const words = ["shit", "fuck", "stop", "dont", "kill", "don't", "don`t", "fucking", "shut", "up", "shutup", "trash", "bad", "hate", "stupid", "dumb"]; // Yes I know
 	const botname = await message.client.user.username.toLowerCase().split(" ");
 	if(new RegExp(botname.join("|")).test(message.content.toLowerCase()) && new RegExp(words.join("|")).test(message.content.toLowerCase())) {
 		i++;
@@ -156,12 +156,42 @@ function CommandUsage(message, command) { // Moved from index - Can be used in c
 }
 
 //Experiments
-async function ParseUserObject(member, client)
+function ParseUserObject(message, args) 
 {
-	return client.users.get(member) ? client.users.get(member) : null;
+	let discordUser = message.mentions.users.first(); // returns the user object if a user mention exists
+	if (!discordUser) { // Check if a user mention exists in this message	
+		// Check if a valid userID has been entered instead of a Discord user mention
+		if (message.client.users.cache.find(user => user.id === args.join(" "))) { 
+			// If the client (bot) can get a user with this userID, it overwrites the current user variable to the user object that the client fetched
+			discordUser = message.client.users.cache.find(user => user.id === args.join(" "));
+		}	
+		if (!discordUser && message.client.users.cache.find(user => user.username.toLowerCase() === args.join(" ").toLowerCase())) { 
+			discordUser = message.client.users.cache.find(user => user.username.toLowerCase() === args.join(" ").toLowerCase());
+		}	
+	}
+	if (!discordUser) { return message.reply("Couldn't get a Discord user with this ID/Name/Mention!");
+	}
+	return discordUser;	
+}
+function ParseMemberObject(message, args)
+{
+	let discordUser = message.mentions.members.first(); // returns the user object if a user mention exists
+	if (!discordUser) { // Check if a user mention exists in this message	
+		// Check if a valid userID has been entered instead of a Discord user mention
+		if (message.guild.members.cache.find(member => member.id === args.join(" "))) { 
+			// If the client (bot) can get a user with this userID, it overwrites the current user variable to the user object that the client fetched
+			discordUser = message.guild.members.cache.find(member => member.id === args.join(" "));
+		}	
+		if (!discordUser && message.guild.members.cache.find(member => member.user.username.toLowerCase() === args.join(" ").toLowerCase())) { 
+			discordUser = message.guild.members.cache.find(member => member.user.username.toLowerCase() === args.join(" ").toLowerCase());
+		}	
+	}
+	if (!discordUser) { return false && message.reply("Couldn't get a Discord user with this ID/Name/Mention!");
+	}
+	return discordUser;	
 }
 module.exports = {
 	emotereact, rolecheck, handleMentions, dadbot, UserNickTable, TiredNadeko, getUserFromMention,
 	ResetRolls, DailyResetTimer, EmoteDBStartup, countEmotes, msToTime, timeToMidnight, CommandUsage,
-	ParseUserObject
+	ParseUserObject, ParseMemberObject
 };

@@ -1,4 +1,5 @@
 const { MessageEmbed } = require("discord.js");
+const { ParseMemberObject } = require("../functions/functions");
 
 module.exports = {
 	name: "uinfo",
@@ -8,16 +9,19 @@ module.exports = {
 	args: false,
 	usage: "\u200B",
 	cmdCategory: "WIP (Useless)",
-	execute(message) {
-		const color = message.member.displayColor;
+	execute(message, args) {
+		let member;
+		if (!args[0]) { member = message.member; }
+		else { ParseMemberObject(message, args) ? member = ParseMemberObject(message, args) : member = message.member; }
+		const color = member.displayColor;
 		const embed = new MessageEmbed()
 			.setColor(color)
-			.setDescription(message.member.displayName)
-			.setThumbnail(message.member.user.displayAvatarURL())
-			.setTitle(message.member.user.username + "#" + message.member.user.discriminator)
+			.setDescription(member.displayName)
+			.setThumbnail(member.user.displayAvatarURL())
+			.setTitle(member.user.username + "#" + member.user.discriminator)
 			.addFields(
-				{ name: "Account date/Join date", value: message.member.user.createdAt + "\n" + message.member.joinedAt, inline: true },
-				{ name: "Presence", value: message.member.presence.activities, inline: true },
+				{ name: "Account date/Join date", value: member.user.createdAt + "\n" + member.joinedAt, inline: true },
+				{ name: "Presence", value: member.presence.length ? member.presence.activities : "N/A", inline: true },
 				{ name: "WIP", value: "More to come", inline: true },
 			);
 		message.channel.send(embed);
