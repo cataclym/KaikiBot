@@ -3,6 +3,7 @@ const prefix = "+";
 // Input your bot token here
 const token = "";
 
+// Grab an API key at https://holidayapi.com/ // Or leave it empty
 const holidaykey = "";
 
 // Dont change
