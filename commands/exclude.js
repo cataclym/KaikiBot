@@ -4,7 +4,7 @@ const { MessageEmbed } = require("discord.js");
 module.exports = {
 	name: "exclude",
 	description: "Adds or removes excluded role from user.",
-	aliases: ["e","excl"],
+	aliases: ["e", "excl"],
 	args: false,
 	cmdCategory: "Utility",
 	async execute(message) {
@@ -38,10 +38,12 @@ module.exports = {
 				.catch(console.error);
 			setTimeout(() => { (message.member.roles.add(message.guild.roles.cache.find((r) => r.name === excludedRole))); }, 2000);
 			setTimeout(() => { (message.channel.send(embed2)); }, 2000);
-		} else if (!message.member.roles.cache.find((r) => r.name === excludedRole)) {
+		}
+		else if (!message.member.roles.cache.find((r) => r.name === excludedRole)) {
 			message.member.roles.add(message.guild.roles.cache.find((r) => r.name === excludedRole));
 			message.channel.send(embed2);
-		} else if (message.member.roles.cache.find((r) => r.name === excludedRole)) {
+		}
+		else if (message.member.roles.cache.find((r) => r.name === excludedRole)) {
 			message.member.roles.remove(message.guild.roles.cache.find((r) => r.name === excludedRole));
 			message.channel.send(embed3);
 		}

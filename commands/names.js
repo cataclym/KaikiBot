@@ -13,23 +13,23 @@ module.exports = {
 		let user;
 		if (args[0]) {
 			switch (args[0]) {
-				case "del":
-				case "delete":
-				case "rem":
-				case "remove": {
-					if (UserNickTable.delete(`usernicknames.${message.member.id}`)) {
-						try {
-							UserNickTable.push(`usernicknames.${message.member.id}`, message.author.username);
-							return message.channel.send(`Deleted all of ${message.member}'s nicknames.\nWell done, you made daddy forget.`);
-						}
-						catch(error) {
-							return console.log(error);
-						}
-					} 
-					else {
-						return message.channel.send("That didn`t work");
+			case "del":
+			case "delete":
+			case "rem":
+			case "remove": {
+				if (UserNickTable.delete(`usernicknames.${message.member.id}`)) {
+					try {
+						UserNickTable.push(`usernicknames.${message.member.id}`, message.author.username);
+						return message.channel.send(`Deleted all of ${message.member}'s nicknames.\nWell done, you made daddy forget.`);
+					}
+					catch(error) {
+						return console.log(error);
 					}
 				}
+				else {
+					return message.channel.send("That didn`t work");
+				}
+			}
 			}
 			user = ParseUserObject(message, args);
 			if (!user) {return message.channel.send("Not a user (?)");}
@@ -42,8 +42,8 @@ module.exports = {
 			}
 		}
 		let AuthorDBName = UserNickTable.fetch(`usernicknames.${message.author.id}`);
-		AuthorDBName = [...new Set(AuthorDBName)];	
-		
+		AuthorDBName = [...new Set(AuthorDBName)];
+
 		// Makes it look cleaner
 		let StringsAuthorDBName = AuthorDBName.join("¤").toString();
 		StringsAuthorDBName = StringsAuthorDBName.replace(/¤/g, ", ").substring(0, 2045);
@@ -71,7 +71,8 @@ module.exports = {
 			embed.setTitle(`${user.username}'s past names`);
 			embed.setThumbnail(user.displayAvatarURL());
 		}
-		const AuthorOrMention = args[0] || message.author; // Probably useless now
+		const AuthorOrMention = args[0] || message.author;
+		// Probably useless now
 		if (embed.description.includes(undefined)) {
 			embed.setTitle("There is nothing here");
 			embed.setDescription(`${AuthorOrMention} may never have had their name changed by me`);

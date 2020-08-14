@@ -18,7 +18,6 @@ async function handleMentions(message) {
 	});
 	if (message.mentions.has(message.client.user) && !message.author.bot) {
 		message.channel.send(embed);
-		
 	}
 }
 // dadbot
@@ -34,7 +33,8 @@ async function dadbot(message) {
 				if (nickname.length <= 32) {
 					const guildmemb = message.author;
 					UserNickTable.push(`usernicknames.${guildmemb.id}`, nickname);
-					if (message.author.id !== owner.id) { // Avoids setting nickname on Server owners
+					if (message.author.id !== owner.id) {
+						// Avoids setting nickname on Server owners
 						message.member.setNickname(nickname).catch((error) => {
 							if (error.code) {
 								console.error("Failed to set nick due to:", error);
@@ -52,7 +52,6 @@ async function dadbot(message) {
 function rolecheck(message) {
 	const { names } = require("../config.js");
 	return !!message.member.roles.cache.find((r) => r.name === names);
-	
 }
 // Reacts with emote to specified words
 async function emotereact(message) {
@@ -70,11 +69,13 @@ async function emotereact(message) {
 // Please don't laugh
 let i = 0;
 async function TiredNadeko(message) {
-	const words = ["shit", "fuck", "stop", "dont", "kill", "don't", "don`t", "fucking", "shut", "up", "shutup", "trash", "bad", "hate", "stupid", "dumb"]; // Yes I know
+	const words = ["shit", "fuck", "stop", "dont", "kill", "don't", "don`t", "fucking", "shut", "shutup", "trash", "bad", "hate", "stupid", "dumb"];
+	// Yes I know
 	const botname = await message.client.user.username.toLowerCase().split(" ");
 	if(new RegExp(botname.join("|")).test(message.content.toLowerCase()) && new RegExp(words.join("|")).test(message.content.toLowerCase())) {
 		i++;
-		i < 4 ? await message.react("😢") : await message.channel.send("😢").then(i = 0); //reset length
+		i < 4 ? await message.react("😢") : await message.channel.send("😢").then(i = 0);
+		// reset length
 	}
 }
 function getUserFromMention(mention, message) {
@@ -89,7 +90,8 @@ function getUserFromMention(mention, message) {
 		return message.client.users.cache.get(mention);
 	}
 }
-function ResetRolls() { // Tinder reset
+function ResetRolls() {
+	// Tinder reset
 	const likes = Tinder.get("likes");
 	for (const key of Object.keys(likes)) {
 		Tinder.set(`likes.${key}`, 3);
@@ -99,34 +101,35 @@ function ResetRolls() { // Tinder reset
 }
 async function DailyResetTimer() {
 	const nd = new Date();
-	console.log("Checking for reset at " + nd + "\nResets in " + msToTime(timeToMidnight())); 
+	console.log("Checking for reset at " + nd + "\nResets in " + msToTime(timeToMidnight()));
 	setTimeout(() => {
 		ResetRolls();
 		DailyResetTimer();
 	}, timeToMidnight());
 }
-function timeToMidnight(){
+function timeToMidnight() {
 	const d = new Date();
-	return (-d + d.setHours(24,0,0,0));
+	return (-d + d.setHours(24, 0, 0, 0));
 }
 async function EmoteDBStartup(client) {
 	console.log("Emote service: checking for new emotes-");
-	let i = 0;
+	let index = 0;
 	client.guilds.cache.forEach(guild => {
 		guild.emojis.cache.forEach(emote => {
 			if(!Emotes.has(`${guild.id}.${emote.id}`)) {
-				Emotes.set(`${guild.id}.${emote.id}`, { count: 0 }); i++;
+				Emotes.set(`${guild.id}.${emote.id}`, { count: 0 }); index++;
 			}
 		});
 	});
-	console.log("Emote service: ...done! " + i + " edits!");
+	console.log("Emote service: ...done! " + index + " edits!");
 }
-async function countEmotes(message) { // Well I would like to make this better
+async function countEmotes(message) {
+	// Well I would like to make this better
 	const emotes = message.content.match(/<:.+?:\d+>/g);
 	if (emotes) {
 		const ids = emotes.toString().match(/\w+/g);
-		for (const [i, value] of ids.entries()) {
-			const emote = message.guild.emojis.cache.find(emote => emote.name === value);
+		for (const value of ids.entries()) {
+			const emote = message.guild.emojis.cache.find(FEmote => FEmote.name === value);
 			if (emote) {
 				Emotes.add(`${message.guild.id}.${emote.id}.count`, 1);
 			}
@@ -135,8 +138,8 @@ async function countEmotes(message) { // Well I would like to make this better
 }
 
 function msToTime(duration) {
-	let milliseconds = parseInt((duration % 1000) / 100),
-		seconds = Math.floor((duration / 1000) % 60),
+	const milliseconds = parseInt((duration % 1000) / 100);
+	let seconds = Math.floor((duration / 1000) % 60),
 		minutes = Math.floor((duration / (1000 * 60)) % 60),
 		hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
 
@@ -146,7 +149,8 @@ function msToTime(duration) {
 
 	return "**" + hours + "** hours **" + minutes + "** minutes **" + seconds + "." + milliseconds + "** seconds";
 }
-function CommandUsage(message, command) { // Moved from index - Can be used in commands for more args[1++]
+function CommandUsage(message, command) {
+	// Moved from index - Can be used in commands for more args[1++]
 	let reply = `You didn't provide any arguments, ${message.author}!`;
 
 	if (command.usage) {
@@ -155,43 +159,47 @@ function CommandUsage(message, command) { // Moved from index - Can be used in c
 	return message.channel.send(reply);
 }
 
-//Experiments
-function ParseUserObject(message, args) 
-{
-	let discordUser = message.mentions.users.first(); // returns the user object if a user mention exists
-	if (!discordUser) { // Check if a user mention exists in this message	
+// Experiments
+function ParseUserObject(message, args) {
+	let discordUser = message.mentions.users.first();
+	// returns the user object if a user mention exists
+	if (!discordUser) {
+		// Check if a user mention exists in this message
 		// Check if a valid userID has been entered instead of a Discord user mention
-		if (message.client.users.cache.find(user => user.id === args.join(" "))) { 
+		if (message.client.users.cache.find(user => user.id === args.join(" "))) {
 			// If the client (bot) can get a user with this userID, it overwrites the current user variable to the user object that the client fetched
 			discordUser = message.client.users.cache.find(user => user.id === args.join(" "));
-		}	
-		if (!discordUser && message.client.users.cache.find(user => user.username.toLowerCase() === args.join(" ").toLowerCase())) { 
+		}
+		if (!discordUser && message.client.users.cache.find(user => user.username.toLowerCase() === args.join(" ").toLowerCase())) {
 			discordUser = message.client.users.cache.find(user => user.username.toLowerCase() === args.join(" ").toLowerCase());
-		}	
+		}
 	}
-	if (!discordUser) { return message.reply("Couldn't get a Discord user with this ID/Name/Mention!");
+	if (!discordUser) {
+		return message.reply("Couldn't get a Discord user with this ID/Name/Mention!");
 	}
-	return discordUser;	
+	return discordUser;
 }
-function ParseMemberObject(message, args)
-{
-	let discordUser = message.mentions.members.first(); // returns the user object if a user mention exists
-	if (!discordUser) { // Check if a user mention exists in this message	
+function ParseMemberObject(message, args) {
+	let discordUser = message.mentions.members.first();
+	// returns the user object if a user mention exists
+	if (!discordUser) {
+		// Check if a user mention exists in this message
 		// Check if a valid userID has been entered instead of a Discord user mention
-		if (message.guild.members.cache.find(member => member.id === args.join(" "))) { 
+		if (message.guild.members.cache.find(member => member.id === args.join(" "))) {
 			// If the client (bot) can get a user with this userID, it overwrites the current user variable to the user object that the client fetched
 			discordUser = message.guild.members.cache.find(member => member.id === args.join(" "));
-		}	
-		if (!discordUser && message.guild.members.cache.find(member => member.user.username.toLowerCase() === args.join(" ").toLowerCase())) { 
+		}
+		if (!discordUser && message.guild.members.cache.find(member => member.user.username.toLowerCase() === args.join(" ").toLowerCase())) {
 			discordUser = message.guild.members.cache.find(member => member.user.username.toLowerCase() === args.join(" ").toLowerCase());
-		}	
+		}
 	}
-	if (!discordUser) { return false && message.reply("Couldn't get a Discord user with this ID/Name/Mention!");
+	if (!discordUser) {
+		return false && message.reply("Couldn't get a Discord user with this ID/Name/Mention!");
 	}
-	return discordUser;	
+	return discordUser;
 }
 module.exports = {
 	emotereact, rolecheck, handleMentions, dadbot, UserNickTable, TiredNadeko, getUserFromMention,
 	ResetRolls, DailyResetTimer, EmoteDBStartup, countEmotes, msToTime, timeToMidnight, CommandUsage,
-	ParseUserObject, ParseMemberObject
+	ParseUserObject, ParseMemberObject,
 };

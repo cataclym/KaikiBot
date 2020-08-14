@@ -5,7 +5,7 @@ const { ParseMemberObject } = require("../functions/functions");
 module.exports = {
 	name: "simp",
 	cooldown: 8,
-	aliases: ["simping","simper"],
+	aliases: ["simping", "simper"],
 	description: "embarass your simp friend",
 	args: false,
 	usage: "@dreb",
@@ -23,13 +23,13 @@ module.exports = {
 
 			const applyText = (canvas, text) => {
 				const ctx = canvas.getContext("2d");
-        
+
 				let fontSize = 60;
-        
+
 				do {
 					ctx.font = `${fontSize -= 10}px sans-serif`;
 				} while (ctx.measureText(text).width > canvas.width - 300);
-    
+
 				return ctx.font;
 			};
 			const canvas = Canvas.createCanvas(500, 400);
@@ -37,16 +37,17 @@ module.exports = {
 
 			const background = await Canvas.loadImage("./images/simp.jpg");
 			ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
-        
+
 			ctx.strokeStyle = "#000000";
 			ctx.strokeRect(0, 0, canvas.width, canvas.height);
-        
+
 			ctx.font = applyText(canvas, member.user.username);
 			ctx.fillStyle = "#ffffff";
 			ctx.fillText(member.user.username, 300, canvas.height / 1.25);
-        
+
 			ctx.beginPath();
-			ctx.arc(360, 220, 50, 0, Math.PI * 2, true); // Coordinates for the avatar cut (Not entirely accurate, I think)
+			ctx.arc(360, 220, 50, 0, Math.PI * 2, true);
+			// Coordinates for the avatar cut (Not entirely accurate, I think)
 			ctx.closePath();
 			ctx.clip();
 
@@ -61,5 +62,5 @@ module.exports = {
 			await message.channel.stopTyping(true);
 			return message.channel.send("An error occured " + error);
 		}
-	},  
+	},
 };

@@ -3,7 +3,7 @@
 const Discord = require("discord.js");
 const fs = require("fs");
 const { ReAssignBirthdays, GuildOnAddBdays } = require("./functions/AnniversaryRoles");
-const { TinderStartup, TinderDBService} = require("./functions/tinder");
+const { TinderStartup, TinderDBService } = require("./functions/tinder");
 const { prefix, token, activityname, activitystatus, ownerID } = require("./config.js");
 const client = new Discord.Client({
 	"shards" : "auto",
@@ -11,7 +11,7 @@ const client = new Discord.Client({
 });
 const {
 	emotereact, rolecheck, handleMentions, dadbot, TiredNadeko, DailyResetTimer,
-	EmoteDBStartup, countEmotes, CommandUsage, 
+	EmoteDBStartup, countEmotes, CommandUsage,
 } = require("./functions/functions");
 
 client.commands = new Discord.Collection();
@@ -27,31 +27,31 @@ const cooldowns = new Discord.Collection();
 
 client.once("ready", async () => {
 	console.log("Client ready");
-	await client.user.setActivity(activityname, {type: activitystatus});
+	await client.user.setActivity(activityname, { type: activitystatus });
 	await DailyResetTimer();
 	await EmoteDBStartup(client);
 	await ReAssignBirthdays(client);
-	client.guilds.cache.forEach(g => { 
+	client.guilds.cache.forEach(g => {
 		// This will spam Console on first boot.
 		TinderStartup(g);
 	});
 });
 
-client.on("guildCreate", async  (guild) => {
+client.on("guildCreate", async (guild) => {
 	console.log("\nBot was added to " + guild.name + "!! " + guild.memberCount + " members!\n");
 	await TinderStartup(guild);
 	await EmoteDBStartup(client);
 	await GuildOnAddBdays(guild);
 });
-client.on("guildMemberAdd", async  (member) => {
+client.on("guildMemberAdd", async (member) => {
 	TinderDBService(member);
 });
 
 client.on("message", async (message) => {
 
 	await TiredNadeko(message);
-	if(message.channel.name !== undefined) { 
-		// Guild only 
+	if(message.channel.name !== undefined) {
+		// Guild only
 		if (message.webhookID) return;
 		await countEmotes(message);
 		await handleMentions(message);
@@ -71,7 +71,7 @@ client.on("message", async (message) => {
 	if (command.args && !args.length) {
 		return CommandUsage(message, command);
 	}
-	
+
 	if (!cooldowns.has(command.name)) {
 		cooldowns.set(command.name, new Discord.Collection());
 	}
@@ -94,13 +94,14 @@ client.on("message", async (message) => {
 
 	timestamps.set(message.author.id, now);
 	setTimeout(() => timestamps.delete(message.author.id), cooldownAmount);
-	
+
 	try {
 		command.execute(message, args);
 		const IsArgs = args.length ? "With args: " + args.join(" ") : "No args";
 		console.log("------------------------------------------------------------------|\n" +
 		message.author.username + " executed " + command.name + " | " + IsArgs + "\nIn " + message.guild.name + " : " + message.channel.name + "\nAt " + Date());
-	} catch (error) {
+	}
+	catch (error) {
 		console.error(error);
 		await message.reply(`Error, ${error}`);
 	}

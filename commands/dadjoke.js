@@ -1,12 +1,11 @@
 /* eslint-disable linebreak-style */
 const fetch = require("node-fetch");
 const Discord = require("discord.js");
-const { prefix } = require("../config.js");
 
 module.exports = {
 	name: "dadjoke",
 	cooldown: 8,
-	aliases: ["dadjokes",],
+	aliases: ["dadjokes"],
 	description: "Returns a dadjoke.",
 	args: false,
 	usage: "\u200B",
@@ -15,7 +14,7 @@ module.exports = {
 		const color = message.member.displayColor;
 		loadTitle(message);
 		message.channel.startTyping();
-		function loadTitle(message) {
+		function loadTitle() {
 			fetch("https://www.reddit.com/r/dadjokes.json?limit=1000&?sort=top&t=all")
 				.then((res) => res.json())
 				.then((json) => json.data.children.map((t) => t.data))

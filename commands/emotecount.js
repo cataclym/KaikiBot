@@ -20,8 +20,8 @@ module.exports = {
 		let data2 = "";
 		let data3 = "";
 		let data4 = "";
-		for (const [key, value] of Object.entries(GuildEmoteCount)) {	
-			const Emote = message.guild.emojis.cache.get(key);	
+		for (const [key, value] of Object.entries(GuildEmoteCount)) {
+			const Emote = message.guild.emojis.cache.get(key);
 			if (!Emote) { continue; }
 			if (data.length <= 2000) {
 				data += `${Emote} \`${Object.values(value)}\` `;
@@ -50,13 +50,13 @@ module.exports = {
 			message.channel.send(embed);
 		}
 		if (data2) {
-			setTimeout(() => {  message.channel.send(embed2); }, 2000);
+			setTimeout(() => { message.channel.send(embed2); }, 2000);
 		}
 		if (data3) {
-			setTimeout(() => {  message.channel.send(embed3); }, 3000);
+			setTimeout(() => { message.channel.send(embed3); }, 3000);
 		}
 		if (data4) {
-			setTimeout(() => {  message.channel.send(embed4); }, 4000);
+			setTimeout(() => { message.channel.send(embed4); }, 4000);
 		}
 	},
 };

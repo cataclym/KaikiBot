@@ -1,11 +1,10 @@
 const fetch = require("node-fetch");
 const Discord = require("discord.js");
-const { prefix } = require("../config.js");
 
 module.exports = {
 	name: "yeetkids",
 	cooldown: 8,
-	aliases: ["yeetingkids", "yeetkid",],
+	aliases: ["yeetingkids", "yeetkid"],
 	description: "Returns yeet...",
 	args: false,
 	usage: "\u200B",
@@ -29,7 +28,8 @@ module.exports = {
 			const RTTitle = randomTitle.title.substring(0, 256);
 			let RTUrl = randomTitle.url.toString();
 			let LinkIfVid = "";
-			const filters = ["webm", "mp4", "gifv", "youtube", "v.redd", "gfycat", "youtu", "news", "wsbtv"]; // Yes.
+			const filters = ["webm", "mp4", "gifv", "youtube", "v.redd", "gfycat", "youtu", "news", "wsbtv"];
+			// Yes.
 			if (filters.some((filter) => RTUrl.includes(filter))) {
 				RTUrl = "";
 				LinkIfVid = "Embed's cannot preview videos. Video will be sent separately.";

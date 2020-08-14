@@ -1,4 +1,4 @@
-const poems = 
+const poems =
 [`Let me put it this way:
 if you came to lay
 your sleeping head
@@ -10,7 +10,7 @@ cleave it from the joint or seam
 than make a scene
 or bring you round.
 There,
-how does that sound?`, 
+how does that sound?`,
 
 `A marriage makes of two fractional lives a whole;
 It gives two purposeless lives a work,
@@ -27,8 +27,8 @@ and also, I love you in a way that no one loves you,
 or has loved you, or will love you, and also,
 I love you in a way that I love no one else,
 and never have loved anyone else,
-and never will love anyone else.`,];
+and never will love anyone else.`];
 
 module.exports = {
-	poems
+	poems,
 };
