@@ -1,4 +1,3 @@
-const Discord = require("discord.js");
 const fetch = require("node-fetch");
 const { holidaykey, prefix } = require("../config");
 
@@ -34,18 +33,17 @@ module.exports = {
 			else if (args[0]) {
 				return message.channel.send("Correct usage would be " + prefix + "`holiday <day> <month> (year) (country)`\n`<day>` is numbers between `1-31`\n`<month>` is numbers between `1-12`\n`(year)` can only be previous year: `2019`. **Year is optional.**\n`(country)` can only be 2 letter country codes: `US`. **Country is optional.**\n**Country requires Year.**");
 			}
-			const color = message.member.displayColor;
 			loadTitle(message);
 		}
 		else {
 			return message.channel.send("You need to provide a HolidayAPI token in `config.js`\nThis only applies if you are bot owner.");
 		}
-		async function loadTitle(message) {
+		async function loadTitle() {
 			fetch(`https://holidayapi.com/v1/holidays?pretty&key=${holidaykey}&country=${country}&year=${TYear}&month=${TMonth}&day=${TDay}`)
 				.then((res) => res.json())
 				.then((date) => PostHoliday(date));
 		}
-		async function PostHoliday(date) {	
+		async function PostHoliday(date) {
 			try {
 				message.channel.send("Today is " + date.holidays[0].name + "\n" + "Country: " + (":flag_" + date.holidays[0].country + ":").toLowerCase());
 			}

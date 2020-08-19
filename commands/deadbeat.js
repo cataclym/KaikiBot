@@ -5,7 +5,7 @@ const { ParseMemberObject } = require("../functions/functions");
 module.exports = {
 	name: "deadbeat",
 	cooldown: 8,
-	aliases: ["deadbeats","deadbeating"],
+	aliases: ["deadbeats", "deadbeating"],
 	description: "Just try it",
 	args: false,
 	usage: "@dreb",
@@ -23,13 +23,13 @@ module.exports = {
 
 			const applyText = (canvas, text) => {
 				const ctx = canvas.getContext("2d");
-        
+
 				let fontSize = 70;
-        
+
 				do {
 					ctx.font = `${fontSize -= 10}px sans-serif`;
 				} while (ctx.measureText(text).width > 240);
-    
+
 				return ctx.font;
 			};
 			const canvas = Canvas.createCanvas(960, 540);
@@ -37,14 +37,15 @@ module.exports = {
 
 			const background = await Canvas.loadImage("./images/deadbeats.jpg");
 			ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
-        
+
 			ctx.font = applyText(canvas, `${member.user.username}`);
 			ctx.fillStyle = "#ffffff";
-			ctx.textAlign = "center"; 
+			ctx.textAlign = "center";
 			ctx.fillText(`${member.user.username}`, 670, canvas.height / 2.10);
-        
+
 			ctx.beginPath();
-			ctx.arc(670, 160, 50, 0, Math.PI * 2, true); // Coordinates for the avatar cut (Not entirely accurate)
+			ctx.arc(670, 160, 50, 0, Math.PI * 2, true);
+			// Coordinates for the avatar cut (Not entirely accurate)
 			ctx.closePath();
 			ctx.clip();
 
@@ -59,5 +60,5 @@ module.exports = {
 			await message.channel.stopTyping(true);
 			return message.channel.send("An error occured " + error);
 		}
-	},  
+	},
 };

@@ -6,13 +6,13 @@ const { prefix } = require("../config.js");
 
 module.exports = {
 	name: "todo",
-	aliases: ["note","list"],
+	aliases: ["note", "list"],
 	description: "A personal todo list",
-	//args: true,
+	// args: true,
 	usage: `(Displays list)\n${prefix}todo add make cake 07/07/2020\n${prefix}todo remove 5\n${prefix}todo remove last\n${prefix}todo remove first\n${prefix}todo remove all`,
 	cmdCategory: "Utility",
 	async execute(message, args) {
-		
+
 		if (args[0] === "add") {
 			try {
 				args.shift();
@@ -30,15 +30,16 @@ module.exports = {
 				return message.react("⚠️");
 			}
 		}
-		if (args[0] === "rem"||args[0] === "remove"||args[0] === "delete"||args[0] === "del") {
+		if (args[0] === "rem" || args[0] === "remove" || args[0] === "delete" || args[0] === "del") {
 			try {
 				const guildmemb = message.author;
 				const reminder = ReminderList.fetch(`${message.author.id}`);
-				if (reminder === null || !Array.isArray(reminder)){
+				if (reminder === null || !Array.isArray(reminder)) {
 					return message.channel.send("Nothing to delete.");
 				}
-				switch(args[1]) {
-					case "all": { // This first so we dont run into the map shit...
+				switch (args[1]) {
+					case "all": {
+					// This first so we dont run into the map shit...
 						if (ReminderList.delete(`${message.author.id}`)) {
 							return message.channel.send("List deleted.").then(SentMsg => {
 								SentMsg.react("✅");
@@ -46,25 +47,31 @@ module.exports = {
 						}
 						else {
 							console.log(Error);
-							return message.channel.send(Error); // Stop execution here if errored
+							return message.channel.send(Error);
+						// Stop execution here if errored
 						}
 					}
 					case "last": {
-						const combinedReminders = reminder.map(a => a); // This gets repeated unnecessarily 
-						const removedItem = combinedReminders.pop(); // Assigns the last entry to removedItem
+						const combinedReminders = reminder.map(a => a);
+						// This gets repeated unnecessarily
+						const removedItem = combinedReminders.pop();
+						// Assigns the last entry to removedItem
 						ReminderList.set(guildmemb.id, combinedReminders);
-						const stringified = removedItem.toString().replace(/,/g, " ").substring(0, 46); // Returns removedItem with space
+						const stringified = removedItem.toString().replace(/,/g, " ").substring(0, 46);
+						// Returns removedItem with space
 						return message.channel.send(`Removed \`${stringified}\` from list.`).then(SentMsg => {
-							SentMsg.react("✅"); 
+							SentMsg.react("✅");
 						});
 					}
 					case "first": {
 						const combinedReminders = reminder.map(a => a);
-						const firstremovedItem = combinedReminders.shift(); // Assigns the first entry to removedItem
+						const firstremovedItem = combinedReminders.shift();
+						// Assigns the first entry to removedItem
 						ReminderList.set(guildmemb.id, combinedReminders);
-						const firststringified = firstremovedItem.toString().replace(/,/g, " ").substring(0, 46); // Returns removedItem with space
+						const firststringified = firstremovedItem.toString().replace(/,/g, " ").substring(0, 46);
+						// Returns removedItem with space
 						return message.channel.send(`Removed \`${firststringified}\` from list.`).then(SentMsg => {
-							SentMsg.react("✅"); 
+							SentMsg.react("✅");
 						});
 					}
 				}
@@ -73,16 +80,18 @@ module.exports = {
 				}
 				if (args[1]) {
 					const combinedReminders = reminder.map(a => a);
-					const index = parseInt(args[1], 10) -1; // Matches given number to array item
+					const index = parseInt(args[1], 10) - 1;
+					// Matches given number to array item
 					const removedItem = combinedReminders.splice(index, 1);
 					ReminderList.set(guildmemb.id, combinedReminders);
-					const stringified = removedItem.toString().replace(/,/g, " ").substring(0, 46); // Returns removedItem with space
+					const stringified = removedItem.toString().replace(/,/g, " ").substring(0, 46);
+					// Returns removedItem with space
 					return message.channel.send(`Removed \`${stringified}\` from list.`).then(SentMsg => {
 						SentMsg.react("✅");
 					});
 				}
 			}
-			catch(error) {
+			catch (error) {
 				return console.log("Failed to remove todo...", error);
 			}
 		}
@@ -93,10 +102,10 @@ module.exports = {
 		else {
 			try {
 				const color = message.member.displayColor;
-				const guildmemb = message.author;        
+				const guildmemb = message.author;
 				const reminder = ReminderList.fetch(`${guildmemb.id}`);
 				const combinedParentArray = reminder.map(a => a.join(" "));
-				const todolist = combinedParentArray.map((item, i) => `${+i+1}. ${item}`).join("\n");
+				const todolist = combinedParentArray.map((item, i) => `${+i + 1}. ${item}`).join("\n");
 				const embed = new Discord.MessageEmbed({
 					title: "Todo:",
 					description: todolist,
@@ -108,10 +117,12 @@ module.exports = {
 						text: `To learn more about the command, type \`${prefix}help todo\``,
 					},
 				});
-				if (combinedParentArray.toString().length > 2048) {	// Embed limits
+				if (combinedParentArray.toString().length > 2048) {
+					// Embed limits
 					const surplus = embed.description.toString().substring(2045, 2300);
 					embed.description = embed.description.toString().substring(0, 2045);
-					embed.addField("\u200B", surplus); // Maybe iterate something here.
+					embed.addField("\u200B", surplus);
+					// Maybe iterate something here.
 					embed.setFooter("Your list is limited to 2048 characters.");
 				}
 				return message.channel.send(embed);

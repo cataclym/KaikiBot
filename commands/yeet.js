@@ -1,11 +1,10 @@
 const fetch = require("node-fetch");
 const Discord = require("discord.js");
-const { prefix } = require("../config.js");
 
 module.exports = {
 	name: "yeet",
 	cooldown: 8,
-	aliases: ["yeets",],
+	aliases: ["yeets"],
 	description: "Returns yeet...",
 	args: false,
 	usage: "\u200B",

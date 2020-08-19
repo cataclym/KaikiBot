@@ -1,10 +1,9 @@
-/* eslint-disable max-len */
 const { MessageEmbed } = require("discord.js");
 
 module.exports = {
 	name: "exclude",
 	description: "Adds or removes excluded role from user.",
-	aliases: ["e","excl"],
+	aliases: ["e", "excl"],
 	args: false,
 	cmdCategory: "Utility",
 	async execute(message) {
@@ -38,10 +37,12 @@ module.exports = {
 				.catch(console.error);
 			setTimeout(() => { (message.member.roles.add(message.guild.roles.cache.find((r) => r.name === excludedRole))); }, 2000);
 			setTimeout(() => { (message.channel.send(embed2)); }, 2000);
-		} else if (!message.member.roles.cache.find((r) => r.name === excludedRole)) {
+		}
+		else if (!message.member.roles.cache.find((r) => r.name === excludedRole)) {
 			message.member.roles.add(message.guild.roles.cache.find((r) => r.name === excludedRole));
 			message.channel.send(embed2);
-		} else if (message.member.roles.cache.find((r) => r.name === excludedRole)) {
+		}
+		else if (message.member.roles.cache.find((r) => r.name === excludedRole)) {
 			message.member.roles.remove(message.guild.roles.cache.find((r) => r.name === excludedRole));
 			message.channel.send(embed3);
 		}
@@ -49,10 +50,8 @@ module.exports = {
 };
 // We want to adapt it into the rewrite rjt did
 // Not in use yet as it doesnt work perfectly
+// Edit: This didn't work 18/08/2020.
 /*
-module.exports = {
-    name: 'exclude',
-    description: 'Adds or removes excluded role from user.',
     async execute(message) {
     const specialString = require("../storage/names.json");
     let excludedRole = message.guild.roles.cache.find(r => r.name === specialString.name);

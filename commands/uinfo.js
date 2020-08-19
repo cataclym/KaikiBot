@@ -18,10 +18,13 @@ module.exports = {
 			.setColor(color)
 			.setDescription(member.displayName)
 			.setThumbnail(member.user.displayAvatarURL())
-			.setTitle(member.user.username + "#" + member.user.discriminator)
+			.setTitle(member.user.tag)
 			.addFields(
-				{ name: "Account date/Join date", value: member.user.createdAt + "\n" + member.joinedAt, inline: true },
-				{ name: "Presence", value: member.presence.length ? member.presence.activities : "N/A", inline: true },
+				{ name: "ID", value: member.user.id, inline: true },
+				{ name: "Account date/Join date", value: member.user.createdAt.toDateString() + "\n" + member.joinedAt.toDateString(), inline: true },
+				{ name: "Presence", value: member.user?.presence?.activities?.length ? member.user?.presence?.activities : "N/A", inline: true },
+				{ name: "Last seen", value: member?.lastMessage?.createdAt?.toDateString(), inline: true },
+				{ name: "Boosting?", value: member?.user?.premiumSince?.toDateString(), inline: true },
 				{ name: "WIP", value: "More to come", inline: true },
 			);
 		message.channel.send(embed);
