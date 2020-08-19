@@ -37,7 +37,7 @@ module.exports = {
 		cat.map((CommandCategory) => array1.push(CommandCategory));
 		array1.map((x) => embed.addField(x, "\u200B", true));
 
-		for (const item of CmdsList.entries()) {
+		for (const [, item] of CmdsList.entries()) {
 			const index = array1.indexOf(item.cmdCategory);
 			embed.fields[index].value += "**" + prefix + item.name + "**\n" + item.aliases.join("\n") + "\n";
 		}

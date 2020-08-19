@@ -46,7 +46,7 @@ module.exports = {
 			return console.log("Update names: No updates found.");
 		}
 
-		const amount = new Array();
+		const amount = [];
 		// Array to be used for counting
 		for (const x of updates.entries) {
 			const { target, changes } = x;

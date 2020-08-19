@@ -12,16 +12,20 @@ const ListUserJoinedAt = [];
 const ListUserCreatedAt = [];
 
 async function ReAssignBirthdays(client) {
-	console.log("Birthday-Role service: Checking dates-");
-	client.guilds.cache.forEach(guild => {
-		GuildCheckRolesExist(guild);
-		if (guild.me.hasPermission("MANAGE_ROLES")) {
-			guild.members.cache.forEach(member => {
-				MemberCheckAnniversaryJ(guild, member);
-				MemberCheckAnniversaryC(guild, member);
-			});
-		}
-	});
+	try {
+		console.log("Birthday-Role service: Checking dates-");
+		client.guilds.cache.forEach(guild => {
+			GuildCheckRolesExist(guild);
+			if (guild.me.hasPermission("MANAGE_ROLES")) {
+				guild.members.cache.forEach(member => {
+					MemberCheckAnniversary(guild, member);
+				});
+			}
+		});
+	}
+	catch (err) {
+		console.log(err);
+	}
 	console.log(`Cake Day:${ListUserJoinedAt.length ? " Users added: " + ListUserJoinedAt.join(", ") : " No users were added to Join Anniversary."}
 Join Anniversary:${ListUserCreatedAt.length ? " Users added: " + ListUserCreatedAt.join(", ") : " No users were added to Cake Day."}
 Birthday-Role service: Finished checking dates.`);
@@ -35,12 +39,10 @@ async function GuildOnAddBdays(guild) {
 	GuildCheckRolesExist(guild);
 	if (guild.me.hasPermission("MANAGE_ROLES") || guild.me.hasPermission("ADMINISTRATOR")) {
 		guild.members.cache.forEach(member => {
-			MemberCheckAnniversaryJ(guild, member);
-			MemberCheckAnniversaryC(guild, member);
+			MemberCheckAnniversary(guild, member);
 		});
 	}
-	console.log(`
-Cake Day:${ListUserJoinedAt.length ? " Users added: " + ListUserJoinedAt.join(", ") : " No users were added to Join Anniversary."}
+	console.log(`Cake Day:${ListUserJoinedAt.length ? " Users added: " + ListUserJoinedAt.join(", ") : " No users were added to Join Anniversary."}
 Join Anniversary:${ListUserCreatedAt.length ? " Users added: " + ListUserCreatedAt.join(", ") : " No users were added to Cake Day."}
 Birthday-Role service: Finished checking dates.`);
 }
@@ -66,25 +68,28 @@ function GuildCheckRolesExist(guild) {
 // Add role when date is right
 // Removes role when date isnt right
 // Its a clusterfuck
+// Fixed ? I think so 19/08/2020
 
-function MemberCheckAnniversaryC(guild, member) {
+function MemberCheckAnniversary(guild, member) {
 	const AnniversaryRoleC = guild.roles.cache.find(r => r.name === RoleNameCreated);
-	if (member.user.createdAt.getMonth() === Month && [Day, Day - 1, Day + 1].includes(member.joinedAt.getDate()) && !member.roles.cache.some((r) => r.name === RoleNameCreated)) {
-		member.roles.add(AnniversaryRoleC);
-		ListUserJoinedAt.push(`${member.user.username}#${member.user.discriminator}`);
-	}
-	else {
-		member.roles.remove(AnniversaryRoleC);
-	}
-}
-function MemberCheckAnniversaryJ(guild, member) {
 	const AnniversaryRoleJ = guild.roles.cache.find(r => r.name === RoleNameJoin);
-	if (member.joinedAt.getMonth() === Month && [Day, Day - 1, Day + 1].includes(member.joinedAt.getDate()) && !member.roles.cache.some((r) => r.name === RoleNameJoin)) {
-		member.roles.add(AnniversaryRoleJ);
-		ListUserCreatedAt.push(`${member.user.username}#${member.user.discriminator}`);
+	if (member.user.createdAt.getMonth() === Month && !member.roles.cache.has(AnniversaryRoleC)) {
+		if ([Day, Day - 1, Day + 1].includes(member.user.createdAt.getDate())) {
+			member.roles.add(AnniversaryRoleC);
+			ListUserJoinedAt.push(member.user.tag);
+		}
+		else {
+			member.roles.remove(AnniversaryRoleC);
+		}
 	}
-	else {
-		member.roles.remove(AnniversaryRoleJ);
+	if (member.joinedAt.getMonth() === Month && !member.roles.cache.has(AnniversaryRoleJ)) {
+		if ([Day, Day - 1, Day + 1].includes(member.joinedAt.getDate())) {
+			member.roles.add(AnniversaryRoleJ);
+			return ListUserCreatedAt.push(member.user.tag);
+		}
+		else {
+			member.roles.remove(AnniversaryRoleJ);
+		}
 	}
 }
 

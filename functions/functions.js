@@ -1,11 +1,8 @@
-/* eslint-disable global-require */
 const Discord = require("discord.js");
 const db = require("quick.db");
 const { prefix, prefixes, prefixes2, emotenames } = require("../config.js");
 const Tinder = new db.table("Tinder");
 const Emotes = new db.table("Emotes");
-
-// eslint-disable-next-line new-cap
 const UserNickTable = new db.table("UserNickTable");
 
 // handle mentions
@@ -35,12 +32,7 @@ async function dadbot(message) {
 					UserNickTable.push(`usernicknames.${guildmemb.id}`, nickname);
 					if (message.author.id !== owner.id) {
 						// Avoids setting nickname on Server owners
-						message.member.setNickname(nickname).catch((error) => {
-							if (error.code) {
-								console.error("Failed to set nick due to:", error);
-								message.channel.send(`Failed to set nick due to: ${error}`, error);
-							}
-						});
+						message.member.setNickname(nickname);
 					}
 				}
 			}
@@ -69,25 +61,19 @@ async function emotereact(message) {
 // Please don't laugh
 let i = 0;
 async function TiredNadeko(message) {
-	const words = ["shit", "fuck", "stop", "dont", "kill", "don't", "don`t", "fucking", "shut", "shutup", "trash", "bad", "hate", "stupid", "dumb"];
+	const words = ["shit", "fuck", "stop", "dont", "kill", "don't", "don`t", "fucking", "shut", "shutup", "trash", "bad", "hate", "stupid", "dumb", "suck", "sucks"];
 	// Yes I know
 	const botname = await message.client.user.username.toLowerCase().split(" ");
-	if(new RegExp(botname.join("|")).test(message.content.toLowerCase()) && new RegExp(words.join("|")).test(message.content.toLowerCase())) {
+	if (new RegExp(botname.join("|")).test(message.content.toLowerCase()) && new RegExp(words.join("|")).test(message.content.toLowerCase())) {
 		i++;
-		i < 4 ? await message.react("😢") : await message.channel.send("😢").then(i = 0);
-		// reset length
-	}
-}
-function getUserFromMention(mention, message) {
-	if (!mention) return;
-
-	if (mention.startsWith("<@") && mention.endsWith(">")) {
-		mention = mention.slice(2, -1);
-
-		if (mention.startsWith("!")) {
-			mention = mention.slice(1);
+		if (i < 4) {
+			await message.react("😢");
 		}
-		return message.client.users.cache.get(mention);
+		else {
+			// reset length
+			await message.channel.send("😢");
+			i = 0;
+		}
 	}
 }
 function ResetRolls() {
@@ -100,8 +86,6 @@ function ResetRolls() {
 	console.log("Rolls and likes have been reset | " + Date() + "\n");
 }
 async function DailyResetTimer() {
-	const nd = new Date();
-	console.log("Checking for reset at " + nd + "\nResets in " + msToTime(timeToMidnight()));
 	setTimeout(() => {
 		ResetRolls();
 		DailyResetTimer();
@@ -116,7 +100,7 @@ async function EmoteDBStartup(client) {
 	let index = 0;
 	client.guilds.cache.forEach(guild => {
 		guild.emojis.cache.forEach(emote => {
-			if(!Emotes.has(`${guild.id}.${emote.id}`)) {
+			if (!Emotes.has(`${guild.id}.${emote.id}`)) {
 				Emotes.set(`${guild.id}.${emote.id}`, { count: 0 }); index++;
 			}
 		});
@@ -136,7 +120,6 @@ async function countEmotes(message) {
 		}
 	}
 }
-
 function msToTime(duration) {
 	const milliseconds = parseInt((duration % 1000) / 100);
 	let seconds = Math.floor((duration / 1000) % 60),
@@ -158,7 +141,6 @@ function CommandUsage(message, command) {
 	}
 	return message.channel.send(reply);
 }
-
 // Experiments
 function ParseUserObject(message, args) {
 	let discordUser = message.mentions.users.first();
@@ -175,7 +157,7 @@ function ParseUserObject(message, args) {
 		}
 	}
 	if (!discordUser) {
-		return message.reply("Couldn't get a Discord user with this ID/Name/Mention!");
+		return false && message.reply("Couldn't get a Discord user with this ID/Name/Mention!");
 	}
 	return discordUser;
 }
@@ -199,7 +181,7 @@ function ParseMemberObject(message, args) {
 	return discordUser;
 }
 module.exports = {
-	emotereact, rolecheck, handleMentions, dadbot, UserNickTable, TiredNadeko, getUserFromMention,
+	emotereact, rolecheck, handleMentions, dadbot, UserNickTable, TiredNadeko,
 	ResetRolls, DailyResetTimer, EmoteDBStartup, countEmotes, msToTime, timeToMidnight, CommandUsage,
 	ParseUserObject, ParseMemberObject,
 };

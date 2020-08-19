@@ -44,11 +44,10 @@ client.on("guildCreate", async (guild) => {
 	await GuildOnAddBdays(guild);
 });
 client.on("guildMemberAdd", async (member) => {
-	TinderDBService(member);
+	TinderDBService(member.user);
 });
 
 client.on("message", async (message) => {
-
 	await TiredNadeko(message);
 	if(message.channel.name !== undefined) {
 		// Guild only

@@ -26,7 +26,7 @@ async function TinderDBService(user) {
 	if (!Tinder.has(`dislikeID.${user.id}`)) { Tinder.push(`dislikeID.${user.id}`, user.id); i++; }
 	if (!Tinder.has(`married.${user.id}`)) { Tinder.push(`married.${user.id}`, user.id); i++; }
 	if (i > 0) {
-		console.log("Tinder Database Service | Checking " + user.username + " | Ran " + i + " changes.");
+		console.log("Tinder Database Service | Checking " + (user?.username?.length ? user?.username : user?.user?.username) + " | Ran " + i + " changes.");
 	}
 }
 function NoLikes() {

@@ -37,43 +37,43 @@ module.exports = {
 				if (reminder === null || !Array.isArray(reminder)) {
 					return message.channel.send("Nothing to delete.");
 				}
-				switch(args[1]) {
-				case "all": {
+				switch (args[1]) {
+					case "all": {
 					// This first so we dont run into the map shit...
-					if (ReminderList.delete(`${message.author.id}`)) {
-						return message.channel.send("List deleted.").then(SentMsg => {
+						if (ReminderList.delete(`${message.author.id}`)) {
+							return message.channel.send("List deleted.").then(SentMsg => {
+								SentMsg.react("✅");
+							});
+						}
+						else {
+							console.log(Error);
+							return message.channel.send(Error);
+						// Stop execution here if errored
+						}
+					}
+					case "last": {
+						const combinedReminders = reminder.map(a => a);
+						// This gets repeated unnecessarily
+						const removedItem = combinedReminders.pop();
+						// Assigns the last entry to removedItem
+						ReminderList.set(guildmemb.id, combinedReminders);
+						const stringified = removedItem.toString().replace(/,/g, " ").substring(0, 46);
+						// Returns removedItem with space
+						return message.channel.send(`Removed \`${stringified}\` from list.`).then(SentMsg => {
 							SentMsg.react("✅");
 						});
 					}
-					else {
-						console.log(Error);
-						return message.channel.send(Error);
-						// Stop execution here if errored
+					case "first": {
+						const combinedReminders = reminder.map(a => a);
+						const firstremovedItem = combinedReminders.shift();
+						// Assigns the first entry to removedItem
+						ReminderList.set(guildmemb.id, combinedReminders);
+						const firststringified = firstremovedItem.toString().replace(/,/g, " ").substring(0, 46);
+						// Returns removedItem with space
+						return message.channel.send(`Removed \`${firststringified}\` from list.`).then(SentMsg => {
+							SentMsg.react("✅");
+						});
 					}
-				}
-				case "last": {
-					const combinedReminders = reminder.map(a => a);
-					// This gets repeated unnecessarily
-					const removedItem = combinedReminders.pop();
-					// Assigns the last entry to removedItem
-					ReminderList.set(guildmemb.id, combinedReminders);
-					const stringified = removedItem.toString().replace(/,/g, " ").substring(0, 46);
-					// Returns removedItem with space
-					return message.channel.send(`Removed \`${stringified}\` from list.`).then(SentMsg => {
-						SentMsg.react("✅");
-					});
-				}
-				case "first": {
-					const combinedReminders = reminder.map(a => a);
-					const firstremovedItem = combinedReminders.shift();
-					// Assigns the first entry to removedItem
-					ReminderList.set(guildmemb.id, combinedReminders);
-					const firststringified = firstremovedItem.toString().replace(/,/g, " ").substring(0, 46);
-					// Returns removedItem with space
-					return message.channel.send(`Removed \`${firststringified}\` from list.`).then(SentMsg => {
-						SentMsg.react("✅");
-					});
-				}
 				}
 				if (isNaN(args[1])) {
 					return message.channel.send("Please provide a valid number.");
@@ -91,7 +91,7 @@ module.exports = {
 					});
 				}
 			}
-			catch(error) {
+			catch (error) {
 				return console.log("Failed to remove todo...", error);
 			}
 		}

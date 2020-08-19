@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 const { MessageEmbed } = require("discord.js");
 
 module.exports = {
@@ -51,10 +50,8 @@ module.exports = {
 };
 // We want to adapt it into the rewrite rjt did
 // Not in use yet as it doesnt work perfectly
+// Edit: This didn't work 18/08/2020.
 /*
-module.exports = {
-    name: 'exclude',
-    description: 'Adds or removes excluded role from user.',
     async execute(message) {
     const specialString = require("../storage/names.json");
     let excludedRole = message.guild.roles.cache.find(r => r.name === specialString.name);

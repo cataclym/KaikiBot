@@ -24,25 +24,25 @@ module.exports = {
 
 			// Based off the delimiter, sets the time
 			switch (timemeasure) {
-			case "s":
-				returntime = returntime * 1000;
-				break;
+				case "s":
+					returntime = returntime * 1000;
+					break;
 
-			case "m":
-				returntime = returntime * 1000 * 60;
-				break;
+				case "m":
+					returntime = returntime * 1000 * 60;
+					break;
 
-			case "h":
-				returntime = returntime * 1000 * 60 * 60;
-				break;
+				case "h":
+					returntime = returntime * 1000 * 60 * 60;
+					break;
 
-			case "d":
-				returntime = returntime * 1000 * 60 * 60 * 24;
-				break;
+				case "d":
+					returntime = returntime * 1000 * 60 * 60 * 24;
+					break;
 
-			default:
-				returntime = returntime * 1000;
-				break;
+				default:
+					returntime = returntime * 1000;
+					break;
 			}
 
 			// Returns the Message
