@@ -104,6 +104,6 @@ client.on("message", async (message) => {
 	}
 });
 process.on("unhandledRejection", error => console.error("Uncaught Promise Rejection", error));
-// Thanks D.js guide
+// Thanks D.js guide // Does this even work? xd
 
 client.login(token);
