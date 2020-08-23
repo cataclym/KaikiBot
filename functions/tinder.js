@@ -47,13 +47,13 @@ function SeparateTinderList(message, Item) {
 
 	const color = message.member.displayColor;
 	const pages = [];
-	const MappedStrings = Item.map((item, i) => `**${+i + 1}**. ${message.client.users.cache.find(member => member.id === item) ? message.client.users.cache.find(member => member.id === item).username : "`User has left guild`"}`);
-	for (let i = 1200, p = 0; p < MappedStrings.length; i = i + 1200, p = p + 1200) {
+	for (let i = 30, p = 0; p < Item.length; i = i + 30, p = p + 30) {
 		const dEmbed = new MessageEmbed()
-			.setTitle("There are " + Item.length + " users in this list.")
+			.setTitle("There are **" + Item.length + "** users in this list.")
 			.setColor(color)
 			.setThumbnail(message.author.displayAvatarURL({ dynamic: true }))
-			.setDescription(MappedStrings.slice(p, i).length ? MappedStrings.slice(p, i) : "There doesn't seem to be anyone here");
+			// Edited for 30 items pr page with correct index number
+			.setDescription(Item.slice(p, i).length ? Item.map((item, i) => `**${+i + 1}**. ${message.client.users.cache.find(member => member.id === item) ? message.client.users.cache.find(member => member.id === item).username : "`User has left guild`"}`).slice(p, i) : "There doesn't seem to be anyone here");
 		pages.push(dEmbed);
 	}
 	paginationEmbed(message, pages);
