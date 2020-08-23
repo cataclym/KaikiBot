@@ -13,6 +13,7 @@ module.exports = {
 	cmdCategory: "Utility",
 	async execute(message) {
 
+		const color = await message.member.displayColor;
 		const GuildEmoteCount = Emotes.get(`${message.guild.id}`);
 		const data = [];
 		for (const [key, value] of Object.entries(GuildEmoteCount)) {
@@ -25,6 +26,7 @@ module.exports = {
 			const dEmbed = new MessageEmbed()
 				.setTitle("Emoji count list")
 				.setAuthor(message.author.tag)
+				.setColor(color)
 				.setDescription(data.slice(p, i).join(""));
 			pages.push(dEmbed);
 		}

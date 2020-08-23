@@ -9,7 +9,7 @@ module.exports = {
 	async execute(message) {
 		const color = message.member.displayColor;
 		const embed = new MessageEmbed({
-			author: { icon_url: message.client.user.displayAvatarURL(), name: "Dying" },
+			author: { icon_url: message.client.user.displayAvatarURL({ dynamic: true }), name: "Dying" },
 			fields: { name: "Shutting down", value: "See you later", inline: false },
 			color,
 		});

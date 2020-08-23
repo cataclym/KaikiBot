@@ -30,7 +30,7 @@ module.exports = {
 				const dEmbed = new MessageEmbed()
 					.setTitle(`${message.author.username}'s past names`)
 					.setColor(color)
-					.setThumbnail(message.author.displayAvatarURL())
+					.setThumbnail(message.author.displayAvatarURL({ dynamic: true }))
 					.setDescription(StringsAuthorDBName.slice(p, i));
 				pages.push(dEmbed);
 			}
@@ -73,7 +73,7 @@ module.exports = {
 					const dEmbed = new MessageEmbed()
 						.setTitle(`${user.username}'s past names`)
 						.setColor(color)
-						.setThumbnail(user.displayAvatarURL())
+						.setThumbnail(user.displayAvatarURL({ dynamic: true }))
 						.setDescription(StringsargsDBName.slice(p, i));
 					pages.push(dEmbed);
 				}

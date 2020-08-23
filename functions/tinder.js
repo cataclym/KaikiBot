@@ -3,6 +3,8 @@
 const db = require("quick.db");
 const Tinder = new db.table("Tinder");
 const { timeToMidnight, msToTime } = require("./functions");
+const paginationEmbed = require("discord.js-pagination");
+const { MessageEmbed } = require("discord.js");
 
 // function TinderProfile(message) {
 // 	//...
@@ -14,7 +16,7 @@ async function TinderStartup(message) {
 		TinderDBService(user);
 		i++;
 	});
-	console.log("Tinder Database Service | Tinder has completed startup procedure. | " + i + " Changes registered (This represents one server)");
+	console.log("Tinder Database Service | Tinder has completed startup procedure. | " + i + " users registered in Tinder DB");
 }
 async function TinderDBService(user) {
 	// This is the peak of JS
@@ -41,17 +43,48 @@ function NoRolls() {
 }
 function SeparateTinderList(message, Item) {
 	Item.shift();
-	let i = 0;
-	const initialList = Item.map((item, i) => `**${+i + 1}**. ${message.client.users.cache.find(member => member.id === item) ? message.client.users.cache.find(member => member.id === item).username : "`User has left guild`"}`);
-	let CombinedList = "";
-	do {
-		CombinedList += initialList.slice(i, i + 10).join(" ") + "\n";
-		i += 10;
-	}
-	while (i < Item.length);
-	return message.channel.send(initialList.length ? CombinedList : "N/A");
-}
+	if (!Item.length) { return message.reply("There doesn't seem to be anyone here"); }
 
+	const color = message.member.displayColor;
+	const pages = [];
+	const MappedStrings = Item.map((item, i) => `**${+i + 1}**. ${message.client.users.cache.find(member => member.id === item) ? message.client.users.cache.find(member => member.id === item).username : "`User has left guild`"}`);
+	for (let i = 1200, p = 0; p < MappedStrings.length; i = i + 1200, p = p + 1200) {
+		const dEmbed = new MessageEmbed()
+			.setTitle("There are " + Item.length + " users in this list.")
+			.setColor(color)
+			.setThumbnail(message.author.displayAvatarURL({ dynamic: true }))
+			.setDescription(MappedStrings.slice(p, i).length ? MappedStrings.slice(p, i) : "There doesn't seem to be anyone here");
+		pages.push(dEmbed);
+	}
+	paginationEmbed(message, pages);
+}
+function fetchUserList(message, user) {
+	TinderDBService(user);
+	const listembed = new MessageEmbed()
+		.setTitle(user.username + "'s tinder list")
+		.setColor(message.member.displayColor);
+	const LlikesID = [...new Set(Tinder.get(`likeID.${user.id}`))];
+	const LdislikeID = [...new Set(Tinder.get(`dislikeID.${user.id}`))];
+	const Ldating = [...new Set(Tinder.get(`dating.${user.id}`))];
+	const Lmarried = [...new Set(Tinder.get(`married.${user.id}`))];
+
+	function allListMap(DataAndID) {
+		return DataAndID.slice(1, 21).map((item, i) => `${+i + 1}. ${message.client.users.cache.find(user => user.id === item) ? message.client.users.cache.find(user => user.id === item).username : "User left guild"}`).join("\n");
+	}
+
+	listembed.addFields(
+		{ name: "Likes", value: LlikesID.slice(1).length ? allListMap(LlikesID).substring(0, 660) : "N/A", inline: true },
+		{ name: "Dislikes", value: LdislikeID.slice(1).length ? allListMap(LdislikeID).substring(0, 660) : "N/A", inline: true },
+		{ name: "Dating", value: Ldating.slice(1).length ? allListMap(Ldating).substring(0, 660) : "N/A", inline: true });
+	if (Lmarried.slice(1).length) {
+		listembed.addFields(
+			{ name: "\u200B", value: "\u200B", inline: true },
+			{ name: "Married", value: allListMap(Lmarried).substring(0, 660) + "\u200B", inline: true },
+			{ name: "\u200B", value: "\u200B", inline: true },
+		);
+	}
+	message.channel.send(listembed);
+}
 module.exports = {
-	TinderStartup, TinderDBService, NoLikes, NoRolls, SeparateTinderList,
+	TinderStartup, TinderDBService, NoLikes, NoRolls, SeparateTinderList, fetchUserList,
 };
