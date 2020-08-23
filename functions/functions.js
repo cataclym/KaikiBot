@@ -159,7 +159,7 @@ function ParseUserObject(message, args) {
 	if (!discordUser) {
 		return false && message.reply("Couldn't get a Discord user with this ID/Name/Mention!");
 	}
-	return discordUser;
+	return true && discordUser;
 }
 function ParseMemberObject(message, args) {
 	let discordUser = message.mentions.members.first();

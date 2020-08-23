@@ -46,12 +46,12 @@ module.exports = {
 			author: {
 				name: `Nadeko Sengoku Bot v${version}`,
 				url: "https://github.com/cataclym/nadekosengokubot",
-				icon_url: message.author.displayAvatarURL(),
+				icon_url: message.author.displayAvatarURL({ dynamic: true }),
 			},
 			color: Mcolor,
 			footer: {
 				text: "Made by Cata <3",
-				icon_url: AvUrl.displayAvatarURL(),
+				icon_url: AvUrl.displayAvatarURL({ dynamic: true }),
 			},
 		});
 		message.channel.send(embed);

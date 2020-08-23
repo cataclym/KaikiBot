@@ -31,10 +31,8 @@ client.once("ready", async () => {
 	await DailyResetTimer();
 	await EmoteDBStartup(client);
 	await ReAssignBirthdays(client);
-	client.guilds.cache.forEach(g => {
-		// This will spam Console on first boot.
-		TinderStartup(g);
-	});
+	// This will spam Console on first boot.
+	TinderStartup(client.user);
 });
 
 client.on("guildCreate", async (guild) => {
@@ -49,7 +47,7 @@ client.on("guildMemberAdd", async (member) => {
 
 client.on("message", async (message) => {
 	await TiredNadeko(message);
-	if(message.channel.name !== undefined) {
+	if (message.channel.name !== undefined) {
 		// Guild only
 		if (message.webhookID) return;
 		await countEmotes(message);
@@ -105,5 +103,7 @@ client.on("message", async (message) => {
 		await message.reply(`Error, ${error}`);
 	}
 });
+process.on("unhandledRejection", error => console.error("Uncaught Promise Rejection", error));
+// Thanks D.js guide
 
 client.login(token);

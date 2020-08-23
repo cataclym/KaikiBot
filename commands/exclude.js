@@ -7,67 +7,45 @@ module.exports = {
 	args: false,
 	cmdCategory: "Utility",
 	async execute(message) {
+		if (!message.guild.me.hasPermission("MANAGE_ROLES")) {
+			return (message.reply("I don't have `MANAGE_ROLES` permission."));
+		}
+
 		const { names } = require("../config.js");
-		const excludedRole = names.toString();
-		const color = message.member.displayColor;
+		let excludedRole = await message.guild.roles.cache.find((r) => r.name === names);
+		const color = await message.member.displayColor;
 		// EMBEDS
 		const embed1 = new MessageEmbed({
 			title: "Error!",
-			description: `\`${excludedRole}\` was not found in guild. Creating... `,
+			description: `A role with name \`${names}\` was not found in guild. Creating... `,
 			color,
-			footer: { text: "Beep boop." },
+			footer: { text: "Beep boop..." },
 		});
 		const embed2 = new MessageEmbed({
 			title: "Success!",
-			description: `Added role \`${excludedRole}\`.\nType the command again to remove.`,
+			description: `Added role \`${names}\`.\nType the command again to remove.`,
 			color,
 		});
 		const embed3 = new MessageEmbed({
 			title: "Success!",
-			description: `Removed role \`${excludedRole}\`.\nType the command again to add it back.`,
+			description: `Removed role \`${names}\`.\nType the command again to add it back.`,
 			color,
 		});
 		// END
-		if (!message.guild.roles.cache.find((r) => r.name === excludedRole)) {
-			message.guild.roles.create({
-				data: { name: excludedRole },
+		if (!message.guild.roles.cache.find((r) => r === excludedRole)) {
+			excludedRole = await message.guild.roles.create({
+				data: { name: names },
 				reason: "Role didn't exist yet",
-			})
-				.then(message.channel.send(embed1))
-				.catch(console.error);
-			setTimeout(() => { (message.member.roles.add(message.guild.roles.cache.find((r) => r.name === excludedRole))); }, 2000);
-			setTimeout(() => { (message.channel.send(embed2)); }, 2000);
+			}).catch(console.error);
+			await (message.channel.send(embed1));
 		}
-		else if (!message.member.roles.cache.find((r) => r.name === excludedRole)) {
-			message.member.roles.add(message.guild.roles.cache.find((r) => r.name === excludedRole));
-			message.channel.send(embed2);
+		if (!message.member.roles.cache.find((r) => r === excludedRole)) {
+			await message.member.roles.add(excludedRole);
+			return message.channel.send(embed2);
 		}
-		else if (message.member.roles.cache.find((r) => r.name === excludedRole)) {
-			message.member.roles.remove(message.guild.roles.cache.find((r) => r.name === excludedRole));
-			message.channel.send(embed3);
+		if (message.member.roles.cache.find((r) => r === excludedRole)) {
+			await message.member.roles.remove(excludedRole);
+			return message.channel.send(embed3);
 		}
 	},
 };
-// We want to adapt it into the rewrite rjt did
-// Not in use yet as it doesnt work perfectly
-// Edit: This didn't work 18/08/2020.
-/*
-    async execute(message) {
-    const specialString = require("../storage/names.json");
-    let excludedRole = message.guild.roles.cache.find(r => r.name === specialString.name);
-
-    if(!excludedRole)excludedRole = await message.guild.roles.create
-    ({ data: { name: specialString.name }, reason: "Role didn't exist yet." })
-    .catch(console.error);
-
-    if(!message.member.roles.cache.has(excludedRole)) {
-        message.member.roles.add(excludedRole);
-        return message.channel.send(`Added role \`${specialString.name}\`.\nType the command again to add it back.`);
-}
-    if(message.member.roles.cache.has(excludedRole)) {
-        message.member.roles.remove(excludedRole);
-        return message.channel.send(`Removed role \`${specialString.name}\`.\nType the command again to add it back.`);
-}
-    },
-};
-*/

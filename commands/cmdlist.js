@@ -17,7 +17,7 @@ module.exports = {
 			author: {
 				name: `Nadeko Sengoku Bot v${version}`,
 				url: "https://github.com/cataclym/nadekosengokubot",
-				icon_url: message.author.displayAvatarURL(),
+				icon_url: message.author.displayAvatarURL({ dynamic: true }),
 			},
 			thumbnail: {
 				url: "https://cdn.discordapp.com/attachments/717045690022363229/726600392107884646/3391ce4715f3c814d6067911438e5bf7.png",
@@ -25,7 +25,7 @@ module.exports = {
 			color,
 			footer: {
 				text: "Made by Cata <3",
-				icon_url: AvUrl.displayAvatarURL(),
+				icon_url: AvUrl.displayAvatarURL({ dynamic: true }),
 			},
 		});
 		const CommandsCollection = await message.client.commands;

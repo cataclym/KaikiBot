@@ -1,4 +1,3 @@
-/* eslint-disable no-useless-escape */
 const { MessageEmbed } = require("discord.js");
 const { prefix } = require("../config.js");
 const { poems } = require("../functions/poems.js");
@@ -12,7 +11,7 @@ const TinderHelp = new MessageEmbed()
 		{ name: "How to marry", value: "You can only marry someone you are dating.\nMarrying is simple, type `" + prefix + "tinder marry @someone`\nThey will have to react with a ❤️, to complete the process!", inline: true },
 		{ name: "Check status", value: "You can check who you have liked, disliked and who you are currently dating as well as who you have married.\n`" + prefix + "tinder list`", inline: true },
 		{ name: "Dislikes", value: "You have unlimited dislikes. You can never draw someone you have disliked.\n" +
-				"If you accidentally disliked someone, you can delete them from dislikes with\n\`" + prefix + "tinder remove (user_list_nr)\`. Obtain their number through the list.", inline: false },
+				"If you accidentally disliked someone, you can delete them from dislikes with\n`" + prefix + "tinder remove (user_list_nr)`. Obtain their number through the list.", inline: false },
 	)
 	.setColor("#31e387");
 
@@ -34,6 +33,17 @@ function DMEMarry() {
 		.setImage(RandomWeddingImg)
 		.setDescription(Rpoem);
 }
+function tinderRollEmbed(message, RandomUsr, RollsLikes) {
+	const TinderSlogan = ["Match?", "Chat?", "Date?", "Flirt?", "Text?", "Tease?", "Chat up?", "Take a risk?"];
+	const RandomTinderS = TinderSlogan[Math.floor(Math.random() * TinderSlogan.length)];
+	return new MessageEmbed()
+		.setColor(message.member.displayColor)
+		.setAuthor(RandomTinderS)
+		.setTitle(RandomUsr.username)
+		.setDescription(message.guild.members.cache.find(u => u.id === RandomUsr.id) ? message.guild.members.cache.find(u => u.id === RandomUsr.id).displayName : "\u200B")
+		.setFooter(RollsLikes ? "React '❌' to dislike. '💚' To like. '🌟' To super like.\n" + RollsLikes : RandomUsr.tag)
+		.setImage(RandomUsr.displayAvatarURL({ dynamic: true }));
+}
 module.exports = {
-	DMEMarry, TinderHelp,
+	DMEMarry, TinderHelp, tinderRollEmbed,
 };
