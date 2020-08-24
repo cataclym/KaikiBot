@@ -32,7 +32,7 @@ client.once("ready", async () => {
 	await EmoteDBStartup(client);
 	await ReAssignBirthdays(client);
 	// This will spam Console on first boot.
-	TinderStartup(client.user);
+	await TinderStartup(client.user);
 });
 
 client.on("guildCreate", async (guild) => {
@@ -42,7 +42,7 @@ client.on("guildCreate", async (guild) => {
 	await GuildOnAddBdays(guild);
 });
 client.on("guildMemberAdd", async (member) => {
-	TinderDBService(member.user);
+	await TinderDBService(member.user);
 });
 
 client.on("message", async (message) => {
@@ -50,11 +50,11 @@ client.on("message", async (message) => {
 	if (message.channel.name !== undefined) {
 		// Guild only
 		if (message.webhookID) return;
-		await countEmotes(message);
+		countEmotes(message);
 		await handleMentions(message);
 		await emotereact(message);
 		if (!rolecheck(message)) {
-			dadbot(message);
+			await dadbot(message);
 		}
 	}
 

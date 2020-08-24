@@ -14,25 +14,24 @@ async function handleMentions(message) {
 		color: Mcolor,
 	});
 	if (message.mentions.has(message.client.user) && !message.author.bot) {
-		message.channel.send(embed);
+		await message.channel.send(embed);
 	}
 }
 // dadbot
 async function dadbot(message) {
-	// eslint-disable-next-line no-restricted-syntax
 	for (const item of prefixes) {
 		const r = new RegExp(`(^|\\s|$)(?<statement>(?<prefix>${item})\\s*(?<nickname>.*)$)`, "mi");
 		if (r.test(message.content) && !message.author.bot) {
 			const { nickname } = message.content.match(r).groups;
 			if (nickname.length <= 256) {
-				message.channel.send(`Hi, ${nickname}`);
+				await message.channel.send(`Hi, ${nickname}`);
 				const { owner } = message.guild;
 				if (nickname.length <= 32) {
 					const guildmemb = message.author;
 					UserNickTable.push(`usernicknames.${guildmemb.id}`, nickname);
 					if (message.author.id !== owner.id) {
 						// Avoids setting nickname on Server owners
-						message.member.setNickname(nickname);
+						await message.member.setNickname(nickname);
 					}
 				}
 			}
@@ -48,7 +47,6 @@ function rolecheck(message) {
 // Reacts with emote to specified words
 async function emotereact(message) {
 	const keywords = message.content.toLowerCase().split(" ");
-	// eslint-disable-next-line consistent-return
 	keywords.forEach((word) => {
 		if (prefixes2.includes(word)) {
 			const emojiname = emotenames[prefixes2.indexOf(word)];
@@ -76,7 +74,7 @@ async function TiredNadeko(message) {
 		}
 	}
 }
-function ResetRolls() {
+async function ResetRolls() {
 	// Tinder reset
 	const likes = Tinder.get("likes");
 	for (const key of Object.keys(likes)) {
@@ -112,12 +110,12 @@ async function countEmotes(message) {
 	const emotes = message.content.match(/<:.+?:\d+>/g);
 	if (emotes) {
 		const ids = emotes.toString().match(/\w+/g);
-		for (const value of ids.entries()) {
+		ids.forEach(value => {
 			const emote = message.guild.emojis.cache.find(FEmote => FEmote.name === value);
 			if (emote) {
-				Emotes.add(`${message.guild.id}.${emote.id}.count`, 1);
+				return Emotes.add(`${message.guild.id}.${emote.id}.count`, 1);
 			}
-		}
+		});
 	}
 }
 function msToTime(duration) {
@@ -132,7 +130,7 @@ function msToTime(duration) {
 
 	return "**" + hours + "** hours **" + minutes + "** minutes **" + seconds + "." + milliseconds + "** seconds";
 }
-function CommandUsage(message, command) {
+async function CommandUsage(message, command) {
 	// Moved from index - Can be used in commands for more args[1++]
 	let reply = `You didn't provide any arguments, ${message.author}!`;
 
