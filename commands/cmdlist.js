@@ -30,18 +30,17 @@ module.exports = {
 		});
 		const CommandsCollection = await message.client.commands;
 		// Gets all command objects
-		const CmdsList = await CommandsCollection.map(t => t.cmdCategory ? t : null).filter(a => !!a).sort();
+		const commandsList = await CommandsCollection.map(t => t.cmdCategory ? t : null).filter(a => !!a).sort();
 		// Filter out the nulls
 		const array1 = [];
-		const cat = [...new Set(CmdsList.map(item => item.cmdCategory).sort())];
+		const cat = [...new Set(commandsList.map(item => item.cmdCategory).sort())];
 		cat.map((CommandCategory) => array1.push(CommandCategory));
 		array1.map((x) => embed.addField(x, "\u200B", true));
 
-		for (const [, item] of CmdsList.entries()) {
+		for (const [, item] of commandsList.entries()) {
 			const index = array1.indexOf(item.cmdCategory);
 			embed.fields[index].value += "**" + prefix + item.name + "**\n" + item.aliases.join("\n") + "\n";
 		}
-
 		embed.addField("\u200B", "\u200B", true);
 		await message.channel.send(embed);
 	},

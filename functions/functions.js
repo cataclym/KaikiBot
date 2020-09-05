@@ -7,18 +7,18 @@ const UserNickTable = new db.table("UserNickTable");
 
 // handle mentions
 async function handleMentions(message) {
-	const Mcolor = await message.member.displayColor;
+	const memberColor = message.member.displayColor;
 	const embed = new Discord.MessageEmbed({
 		title: `Hi ${message.author.username}, what's up?`,
 		description: `If you need help type ${prefix}help.`,
-		color: Mcolor,
+		color: memberColor,
 	});
 	if (message.mentions.has(message.client.user) && !message.author.bot) {
 		await message.channel.send(embed);
 	}
 }
-// dadbot
-async function dadbot(message) {
+// dad bot
+async function dadBot(message) {
 	for (const item of prefixes) {
 		const r = new RegExp(`(^|\\s|$)(?<statement>(?<prefix>${item})\\s*(?<nickname>.*)$)`, "mi");
 		if (r.test(message.content) && !message.author.bot) {
@@ -27,8 +27,8 @@ async function dadbot(message) {
 				await message.channel.send(`Hi, ${nickname}`);
 				const { owner } = message.guild;
 				if (nickname.length <= 32) {
-					const guildmemb = message.author;
-					UserNickTable.push(`usernicknames.${guildmemb.id}`, nickname);
+					const guildMember = message.author;
+					UserNickTable.push(`usernicknames.${guildMember.id}`, nickname);
 					if (message.author.id !== owner.id) {
 						// Avoids setting nickname on Server owners
 						await message.member.setNickname(nickname);
@@ -40,12 +40,12 @@ async function dadbot(message) {
 	}
 }
 // check for special role
-function rolecheck(message) {
+function roleCheck(message) {
 	const { names } = require("../config.js");
 	return !!message.member.roles.cache.find((r) => r.name === names);
 }
 // Reacts with emote to specified words
-async function emotereact(message) {
+async function emoteReact(message) {
 	const keywords = message.content.toLowerCase().split(" ");
 	keywords.forEach((word) => {
 		if (prefixes2.includes(word)) {
@@ -58,7 +58,7 @@ async function emotereact(message) {
 }
 // Please don't laugh
 let i = 0;
-async function TiredNadeko(message) {
+async function tiredNadekoReact(message) {
 	const words = ["shit", "fuck", "stop", "dont", "kill", "don't", "don`t", "fucking", "shut", "shutup", "trash", "bad", "hate", "stupid", "dumb", "suck", "sucks"];
 	// Yes I know
 	const botname = await message.client.user.username.toLowerCase().split(" ");
@@ -106,14 +106,15 @@ async function EmoteDBStartup(client) {
 	console.log("Emote service: ...done! " + index + " edits!");
 }
 async function countEmotes(message) {
-	// Well I would like to make this better
-	const emotes = message.content.match(/<:.+?:\d+>/g);
+	// Well I would like to make this better // Edited for animated emojies and only match with id
+	// const emotes = Discord.Util.parseEmoji(message.content); // Single emotes only.
+	const emotes = message.content.match(/<?(a)?:.+?:\d+>/g);
 	if (emotes) {
-		const ids = emotes.toString().match(/\w+/g);
-		ids.forEach(value => {
-			const emote = message.guild.emojis.cache.find(FEmote => FEmote.name === value);
+		const ids = emotes.toString().match(/\d+/g);
+		ids.forEach(id => {
+			const emote = message.guild.emojis.cache.find(emoji => emoji.id === id);
 			if (emote) {
-				return Emotes.add(`${message.guild.id}.${emote.id}.count`, 1);
+				Emotes.add(`${message.guild.id}.${emote.id}.count`, 1);
 			}
 		});
 	}
@@ -178,8 +179,9 @@ function ParseMemberObject(message, args) {
 	}
 	return discordUser;
 }
+
 module.exports = {
-	emotereact, rolecheck, handleMentions, dadbot, UserNickTable, TiredNadeko,
+	emoteReact, roleCheck, handleMentions, dadBot, UserNickTable, tiredNadekoReact,
 	ResetRolls, DailyResetTimer, EmoteDBStartup, countEmotes, msToTime, timeToMidnight, CommandUsage,
 	ParseUserObject, ParseMemberObject,
 };

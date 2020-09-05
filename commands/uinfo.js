@@ -35,14 +35,17 @@ module.exports = {
 			.setDescription(member.displayName)
 			.setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
 			.setTitle(member.user.tag)
-			.addFields(
+			.addFields([
 				{ name: "ID", value: member.user.id, inline: true },
 				{ name: "Account date/Join date", value: member.user.createdAt.toDateString() + "\n" + member.joinedAt.toDateString(), inline: true },
 				{ name: "Presence", value: (member.user?.presence?.activities?.length ? member.user?.presence?.activities.join(", ") : "N/A") + "\n" + (member.user.presence.status !== "offline" ? Object.entries(member.user.presence.clientStatus).join(", ") : "Offline"), inline: true },
-				{ name: "Boosting?", value: member?.premiumSince ? member?.premiumSince.toDateString() : "No", inline: true },
-				{ name: "Bot?", value: member.user.bot ? "Yes" : "No", inline: true },
 				{ name: "Flags", value: userFlags.length ? userFlags.map(flag => flags[flag]).join(", ") : "None", inline: true },
+				{ name: "Roles (" + member.roles.cache.array().length + ")", value: member.roles.cache.array().sort((a, b) => b.position - a.position || b.id - a.id).slice(1, 10).join(", "), inline: true }],
 			);
-		message.channel.send(embed);
+		member?.premiumSince ? embed.addField("Boosting", "Since " + member.premiumSince.toDateString() + " ✅", true) : null;
+		member.user.bot ? embed.addField("Bot", "✅", true) : null;
+		message.channel.send(embed).catch(err => {
+			console.log(err);
+		});
 	},
 };

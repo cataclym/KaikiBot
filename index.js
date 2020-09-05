@@ -1,16 +1,15 @@
-/* eslint-disable global-require */
-/* eslint-disable no-restricted-syntax */
+"use strict";
 const Discord = require("discord.js");
 const fs = require("fs");
-const { ReAssignBirthdays, GuildOnAddBdays } = require("./functions/AnniversaryRoles");
+const { ReAssignBirthdays, GuildOnAddBirthdays } = require("./functions/AnniversaryRoles");
 const { TinderStartup, TinderDBService } = require("./functions/tinder");
-const { prefix, token, activityname, activitystatus, ownerID } = require("./config.js");
+const { prefix, token, activityName, activityStatus, ownerID } = require("./config.js");
 const client = new Discord.Client({
 	"shards" : "auto",
 	"disableMentions": "everyone",
 });
 const {
-	emotereact, rolecheck, handleMentions, dadbot, TiredNadeko, DailyResetTimer,
+	emoteReact, roleCheck, handleMentions, dadBot, tiredNadekoReact, DailyResetTimer,
 	EmoteDBStartup, countEmotes, CommandUsage,
 } = require("./functions/functions");
 
@@ -23,11 +22,11 @@ for (const file of commandFiles) {
 	client.commands.set(command.name, command);
 }
 
-const cooldowns = new Discord.Collection();
+const coolDowns = new Discord.Collection();
 
 client.once("ready", async () => {
 	console.log("Client ready");
-	await client.user.setActivity(activityname, { type: activitystatus });
+	await client.user.setActivity(activityName, { type: activityStatus });
 	await DailyResetTimer();
 	await EmoteDBStartup(client);
 	await ReAssignBirthdays(client);
@@ -39,22 +38,22 @@ client.on("guildCreate", async (guild) => {
 	console.log("\nBot was added to " + guild.name + "!! " + guild.memberCount + " members!\n");
 	await TinderStartup(guild);
 	await EmoteDBStartup(client);
-	await GuildOnAddBdays(guild);
+	await GuildOnAddBirthdays(guild);
 });
 client.on("guildMemberAdd", async (member) => {
 	await TinderDBService(member.user);
 });
 
 client.on("message", async (message) => {
-	await TiredNadeko(message);
+	await tiredNadekoReact(message);
 	if (message.channel.name !== undefined) {
 		// Guild only
-		if (message.webhookID) return;
-		countEmotes(message);
+		if (message.webhookID || message.author.bot) return;
+		await countEmotes(message);
 		await handleMentions(message);
-		await emotereact(message);
-		if (!rolecheck(message)) {
-			await dadbot(message);
+		await emoteReact(message);
+		if (!roleCheck(message)) {
+			await dadBot(message);
 		}
 	}
 
@@ -69,12 +68,12 @@ client.on("message", async (message) => {
 		return CommandUsage(message, command);
 	}
 
-	if (!cooldowns.has(command.name)) {
-		cooldowns.set(command.name, new Discord.Collection());
+	if (!coolDowns.has(command.name)) {
+		coolDowns.set(command.name, new Discord.Collection());
 	}
 
 	const now = Date.now();
-	const timestamps = cooldowns.get(command.name);
+	const timestamps = coolDowns.get(command.name);
 	const cooldownAmount = (command.cooldown || 3) * 1000;
 
 	if (timestamps.has(message.author.id)) {
@@ -106,4 +105,6 @@ client.on("message", async (message) => {
 process.on("unhandledRejection", error => console.error("Uncaught Promise Rejection", error));
 // Thanks D.js guide // Does this even work? xd
 
-client.login(token);
+client.login(token).catch(err => {
+	console.log(err);
+});
