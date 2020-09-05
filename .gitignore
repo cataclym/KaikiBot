@@ -121,3 +121,5 @@ variables.js
 config.json
 json.sqlite
 
+*.xml
+.idea/nadekosengokubot.iml

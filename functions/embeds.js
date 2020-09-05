@@ -1,7 +1,13 @@
 const { MessageEmbed } = require("discord.js");
 const { prefix } = require("../config.js");
 const { poems } = require("../functions/poems.js");
-
+const db = require("quick.db");
+const Tinder = new db.table("Tinder");
+const tinderSlogan = ["Match?", "Chat?", "Date?", "Flirt?", "Text?", "Tease?", "Chat up?", "Take a risk?"];
+// TODO: Create a working role thingy...
+// const characterRoles = ["Izuko Gaen", "Yozuru Kagenui", "Yotsugi Ononoki", "Ougi Oshino", "Senjougahara Hitagi", "Shinobu Oshino", "Nadeko Sengoku", "Mayoi Hachikuji",
+// 	"Hanekawa Tsubasa", "Sodachi Oikura", "‌‌Tsukihi Araragi", "Karen Araragi", "Suruga Kanbaru", "Meme Oshino", "Rouka Numachi", "Kaiki Deishu",
+// 	"‌‌Tooe Gaen", "Kiss-Shot Acerola-Orion Heart-Under-Blade", "Seiu Higasa"];
 const TinderHelp = new MessageEmbed()
 	.setTitle("Tinder help page")
 	.addFields(
@@ -16,34 +22,44 @@ const TinderHelp = new MessageEmbed()
 	.setColor("#31e387");
 
 // Some cringe anime wedding pictures // Some will likely stop loading within a year lol
-// todo re-upload images to imgur or discord.
-
+// TODO: re-upload images to imgur or discord.
 function DMEMarry() {
-	const WeddingIMGArray = ["https://i.imgur.com/L4jgWKm.jpg", "https://images8.alphacoders.com/714/714738.jpg", "https://images7.alphacoders.com/408/408146.jpg",
+	const weddingImageArray = ["https://i.imgur.com/L4jgWKm.jpg", "https://images8.alphacoders.com/714/714738.jpg", "https://images7.alphacoders.com/408/408146.jpg",
 		"http://images6.fanpop.com/image/photos/33500000/Anime-Wedding-runochan97-33554809-1280-720.jpg", "http://images6.fanpop.com/image/photos/33500000/Anime-Wedding-runochan97-33554796-800-600.jpg",
 		"https://cdn.discordapp.com/attachments/717045059215687691/739277167455633438/4525190-short-hair-long-hair-brunette-anime-anime-girls-love-live-love-live-sunshine-wedding-dress-b.jpg"];
 
-	const RandomWeddingImg = WeddingIMGArray[Math.floor(Math.random() * WeddingIMGArray.length)];
-	const Rpoem = poems[Math.floor(Math.random() * poems.length)];
+	const randomWeddingImage = weddingImageArray[Math.floor(Math.random() * weddingImageArray.length)];
+	const randomPoem = poems[Math.floor(Math.random() * poems.length)];
 
 	return new MessageEmbed()
 		.setTitle("The wedding ceremony has begun!")
 		.setColor("#e746da")
-		.setURL(RandomWeddingImg)
-		.setImage(RandomWeddingImg)
-		.setDescription(Rpoem);
+		.setURL(randomWeddingImage)
+		.setImage(randomWeddingImage)
+		.setDescription(randomPoem);
 }
-function tinderRollEmbed(message, RandomUsr, RollsLikes) {
-	const TinderSlogan = ["Match?", "Chat?", "Date?", "Flirt?", "Text?", "Tease?", "Chat up?", "Take a risk?"];
-	const RandomTinderS = TinderSlogan[Math.floor(Math.random() * TinderSlogan.length)];
-	return new MessageEmbed()
+function tinderRollEmbed(message, randomUsr, RollsLikes) {
+	const randomTinderS = tinderSlogan[Math.floor(Math.random() * tinderSlogan.length)];
+	const waifuIDs = Tinder.get(`married.${randomUsr.id}`).length,
+		likeIDs = Tinder.get("likeID");
+	const likeIDValues = Object.values(likeIDs),
+		flattArray = likeIDValues.reduce((a, b) => a.concat(b), []),
+		finalNumber = flattArray.filter(id => id === randomUsr.id).length;
+	// TODO: make a service to get all likes of the randomUsr // No.
+	const tinderEmbed = new MessageEmbed()
 		.setColor(message.member.displayColor)
-		.setAuthor(RandomTinderS)
-		.setTitle(RandomUsr.username)
-		.setDescription(message.guild.members.cache.find(u => u.id === RandomUsr.id) ? message.guild.members.cache.find(u => u.id === RandomUsr.id).displayName : "\u200B")
-		.setFooter(RollsLikes ? "React '❌' to dislike. '💚' To like. '🌟' To super like.\n" + RollsLikes : RandomUsr.tag)
-		.setImage(RandomUsr.displayAvatarURL({ dynamic: true }));
+		.setAuthor(randomTinderS)
+		.setTitle(randomUsr.username)
+		.addFields(
+			{ name: "**Likes**", value: finalNumber - 1, inline: true },
+			{ name: "**Waifus**", value: waifuIDs - 1, inline: true },
+		)
+		.setFooter(RollsLikes ? "React '❌' to dislike. '💚' To like. '🌟' To super like.\n" + RollsLikes : randomUsr.tag)
+		.setImage(randomUsr.displayAvatarURL({ dynamic: true }));
+	message.guild.members.cache.get(randomUsr.id)?.nickname ? tinderEmbed.setDescription("**Nickname**\n" + message.guild.members.cache.get(randomUsr.id)?.nickname) : null ;
+	return tinderEmbed;
 }
 module.exports = {
+
 	DMEMarry, TinderHelp, tinderRollEmbed,
 };
