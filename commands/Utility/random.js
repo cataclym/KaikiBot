@@ -1,5 +1,5 @@
 const { MessageEmbed } = require("discord.js");
-const { prefix } = require("../config.js");
+const { prefix } = require("../../config.js");
 
 module.exports = {
 	name: "random",

@@ -1,6 +1,6 @@
 const { MessageEmbed } = require("discord.js");
-const { UserNickTable, ParseUserObject } = require("../functions/functions.js");
-const { prefix } = require("../config.js");
+const { UserNickTable, ParseUserObject } = require("../../functions/functions.js");
+const { prefix } = require("../../config.js");
 const paginationEmbed = require("discord.js-pagination");
 
 module.exports = {

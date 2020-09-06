@@ -89,15 +89,13 @@ function fetchUserList(message, user) {
 async function tinderNodeCanvasImage(message, randomUser) {
 
 	const userStates = {
-		"online" : "#00FF00", "offline" : "#6E0DD0", "idle" : "#FF0099", "dnd" : "FD1C03",
+		"online" : "#00FF00", "offline" : "#6E0DD0", "idle" : "#FF0099", "dnd" : "#FD1C03",
 	};
 
 	const applyText = (canvas, text) => {
 		const ctx = canvas.getContext("2d");
-
 		// Declare a base size of the font
 		let fontSize = 40;
-
 		do {
 			// Assign the font to the context and decrement it so it can be measured again
 			ctx.font = `${fontSize -= 10}px sans-serif`;

@@ -1,10 +1,10 @@
 const Discord = require("discord.js");
 const db = require("quick.db");
 const Tinder = new db.table("Tinder");
-const { prefix, ownerID } = require("../config");
-const { ResetRolls, timeToMidnight, msToTime, CommandUsage, ParseUserObject } = require("../functions/functions.js");
-const { TinderStartup, TinderDBService, NoLikes, NoRolls, SeparateTinderList, fetchUserList } = require("../functions/tinder.js");
-const embeds = require("../functions/embeds.js");
+const { prefix, ownerID } = require("../../config");
+const { ResetRolls, timeToMidnight, msToTime, CommandUsage, ParseUserObject } = require("../../functions/functions.js");
+const { TinderStartup, TinderDBService, NoLikes, NoRolls, SeparateTinderList, fetchUserList } = require("../../functions/tinder.js");
+const embeds = require("../../functions/embeds.js");
 // tinderNodeCanvasImage
 module.exports = {
 	name: "tinder",

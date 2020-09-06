@@ -1,5 +1,5 @@
 const Discord = require("discord.js");
-const { ParseMemberObject } = require("../functions/functions");
+const { ParseMemberObject } = require("../../functions/functions");
 const flags = {
 	DISCORD_EMPLOYEE: "Discord Employee 👨‍💼",
 	DISCORD_PARTNER: "Discord Partner ❤️",

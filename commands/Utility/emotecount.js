@@ -2,18 +2,21 @@ const db = require("quick.db");
 const { MessageEmbed } = require("discord.js");
 const Emotes = new db.table("Emotes");
 const paginationEmbed = require("discord.js-pagination");
+const { Command } = require("discord-akairo");
 
-module.exports = {
-	name: "emotecount",
-	cooldown: 15,
-	aliases: ["emojicount"],
-	description: "Shows amount of times each emote has been used",
-	args: false,
-	usage: "\n",
-	cmdCategory: "Utility",
-	async execute(message) {
+module.exports = class EmoteCount extends Command {
+	constructor() {
+		super("emotecount", {
+			name: "emotecount",
+			cooldown: 15000,
+			aliases: ["emotecount", "emojicount"],
+			description: "Shows amount of times each emote has been used",
+		});
+	}
 
-		const color = await message.member.displayColor;
+	async exec(message) {
+
+		const color = message.member.displayColor;
 		const GuildEmoteCount = Emotes.get(`${message.guild.id}`);
 		const data = [];
 		for (const [key, value] of Object.entries(GuildEmoteCount)) {
@@ -30,6 +33,6 @@ module.exports = {
 				.setDescription(data.slice(p, i).join(""));
 			pages.push(dEmbed);
 		}
-		paginationEmbed(message, pages);
-	},
+		await paginationEmbed(message, pages);
+	}
 };

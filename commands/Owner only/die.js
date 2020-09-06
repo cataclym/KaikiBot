@@ -1,12 +1,16 @@
 const { MessageEmbed } = require("discord.js");
+const { Command } = require("discord-akairo");
 
-module.exports = {
-	name: "die",
-	aliases: ["kill", "shutdown"],
-	description: "Turn bot off, then turn it back on.",
-	ownerOnly: true,
-	cmdCategory: "Owner only",
-	async execute(message) {
+module.exports = class KillBotProcess extends Command {
+	constructor() {
+		super("die", {
+			name: "die",
+			aliases: ["die", "kill", "shutdown"],
+			description: "Turn bot off, then turn it back on.",
+			ownerOnly: true,
+		});
+	}
+	async exec(message) {
 		const color = message.member.displayColor;
 		const embed = new MessageEmbed({
 			author: { icon_url: message.client.user.displayAvatarURL({ dynamic: true }), name: "Dying" },
@@ -16,5 +20,5 @@ module.exports = {
 		await message.channel.send(embed);
 		await console.log("Shutting down");
 		await process.exit(1);
-	},
+	}
 };

@@ -1,7 +1,7 @@
 const db = require("quick.db");
 const ReminderList = new db.table("ReminderList");
 const Discord = require("discord.js");
-const { prefix } = require("../config.js");
+const { prefix } = require("../../config.js");
 
 
 module.exports = {

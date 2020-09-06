@@ -1,13 +1,17 @@
-module.exports = {
-	name: "reload",
-	aliases: ["re"],
-	description: "Reloads a command",
-	cmdCategory: "Owner only",
-	async execute(message, args) {
+const { Command } = require("discord-akairo");
 
-		if (!message.member.hasPermission("ADMINISTRATOR")) {
-			return;
-		}
+module.exports = class ReloadCommand extends Command {
+	constructor() {
+		super("reload", {
+			name: "reload",
+			aliases: ["re", "reload"],
+			description: "Reloads a command",
+			ownerOnly: true,
+		});
+	}
+	async exec(message, args) {
+		return;
+		// TODO: Convert to Akairo reload
 		if (!args.length) return message.channel.send(`You didn't pass any command to reload, ${message.author}!`);
 		const commandName = await args[0].toLowerCase();
 		const command = await message.client.commands.get(commandName) || message.client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
@@ -25,5 +29,5 @@ module.exports = {
 			console.log(error);
 			await message.channel.send(`There was an error while reloading a command \`${command.name}\`:\n\`${error.message}\``);
 		}
-	},
+	}
 };

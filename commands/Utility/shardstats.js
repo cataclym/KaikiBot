@@ -1,4 +1,4 @@
-const { msToTime } = require("../functions/functions");
+const { msToTime } = require("../../functions/functions");
 
 module.exports = {
 	name: "shardstats",
