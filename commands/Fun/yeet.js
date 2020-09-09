@@ -1,47 +1,50 @@
 const fetch = require("node-fetch");
 const Discord = require("discord.js");
+const { Command } = require("discord-akairo");
 
-module.exports = {
-	name: "yeet",
-	cooldown: 8,
-	aliases: ["yeets"],
-	description: "Returns yeet...",
-	args: false,
-	usage: "\u200B",
-	cmdCategory: "Fun",
-	execute(message) {
+module.exports = class YeetCommand extends Command {
+	constructor() {
+		super("yeet", {
+			name: "yeet",
+			cooldown: 8000,
+			aliases: ["yeet"],
+			typing: true,
+			description: { description: "Returns yeet..." },
+		});
+	}
+
+	async exec(message) {
 		const color = message.member.displayColor;
-		loadTitle(message);
-		message.channel.startTyping();
-		function loadTitle() {
+		await loadTitle(message);
+		async function loadTitle() {
 			fetch("https://www.reddit.com/r/YEET/.json?limit=1000&?sort=top&t=all")
 				.then((res) => res.json())
 				.then((json) => json.data.children.map((t) => t.data))
 				.then((data) => postRandomTitle(data));
 		}
-		function postRandomTitle(data) {
-			const randomTitle = data[Math.floor(Math.random() * data.length) + 1];
-			let RTSelftext = randomTitle.selftext.substring(0, 2045);
-			if (randomTitle.selftext.length > 2048) {
-				RTSelftext += "...";
+		async function postRandomTitle(data) {
+			const randomRedditPost = data[Math.floor(Math.random() * data.length) + 1];
+			let randomTitleSelfText = randomRedditPost.selftext.substring(0, 2045);
+			if (randomRedditPost.selftext.length > 2048) {
+				randomTitleSelfText += "...";
 			}
-			const RTTitle = randomTitle.title.substring(0, 256);
+			const RTTitle = randomRedditPost.title.substring(0, 256);
 			const embed = new Discord.MessageEmbed({
 				title: RTTitle,
-				description: RTSelftext,
+				description: randomTitleSelfText,
 				color,
 				author: {
-					name: `Submitted by ${randomTitle.author}`,
+					name: `Submitted by ${randomRedditPost.author}`,
+					url: randomRedditPost.url,
 				},
 				image: {
-					url: `${randomTitle.url}`,
+					url: `${randomRedditPost.url}`,
 				},
 				footer: {
-					text: `${randomTitle.ups} updoots`,
+					text: `${randomRedditPost.ups} updoots`,
 				},
 			});
-			message.channel.stopTyping(true);
-			message.channel.send(embed);
+			return message.util.send(embed);
 		}
-	},
+	}
 };

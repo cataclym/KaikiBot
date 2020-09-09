@@ -17,6 +17,8 @@ this.commandHandler = new Akairo.CommandHandler(client, {
 	directory: join(__dirname, "commands"),
 	allowMention: false,
 	automateCategories: true,
+	commandUtil: true,
+	handleEdits: true,
 });
 this.listenerHandler = new Akairo.ListenerHandler(client, {
 	directory: join(__dirname, "listeners"),

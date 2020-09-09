@@ -14,7 +14,7 @@ module.exports = class HelpCommand extends Command {
 				default: null,
 			}],
 			aliases: ["help", "h"],
-			description: "Shows command info",
+			description: { description: "Shows command info", usage: "ping" },
 		});
 	}
 	async exec(message, args) {
@@ -22,8 +22,9 @@ module.exports = class HelpCommand extends Command {
 
 		if (args.command) {
 			embed.setTitle(`**Name:** ${args.command.id}`);
-			embed.setDescription(`**Aliases:** \`${args.command.aliases.join("`, `")}\`\n**Description:** ${args.command.description}`);
-			return message.channel.send(embed);
+			embed.setDescription(`**Aliases:** \`${args.command.aliases.join("`, `")}\`\n**Description:** ${args.command.description.description}\n
+			${(args.command?.description.usage ? "**Usage:** " + prefix + args.command.id + " " + args.command.description.usage : "")}`);
+			return message.util.send(embed);
 		}
 		const AvUrl = await message.client.users.fetch("140788173885276160");
 		// Bot author
@@ -35,6 +36,6 @@ module.exports = class HelpCommand extends Command {
 		]);
 		embed.setAuthor(`Nadeko Sengoku Bot v${version}`, message.author.displayAvatarURL({ dynamic: true }), "https://github.com/cataclym/nadekosengokubot");
 		embed.setFooter("Made by Cata <3", AvUrl.displayAvatarURL({ dynamic: true }));
-		message.channel.send(embed);
+		await message.util.send(embed);
 	}
 };

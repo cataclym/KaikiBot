@@ -1,5 +1,6 @@
 const Discord = require("discord.js");
-const { ParseMemberObject } = require("../../functions/functions");
+const { prefix } = require("../../config.js");
+const { Command } = require("discord-akairo");
 const flags = {
 	DISCORD_EMPLOYEE: "Discord Employee 👨‍💼",
 	DISCORD_PARTNER: "Discord Partner ❤️",
@@ -16,36 +17,56 @@ const flags = {
 	VERIFIED_DEVELOPER: "Verified Bot Developer ✅",
 };
 
-module.exports = {
-	name: "uinfo",
-	cooldown: 5,
-	aliases: ["user"],
-	description: "Shows relevant user info",
-	args: false,
-	usage: "\u200B",
-	cmdCategory: "WIP (Useless)",
-	execute(message, args) {
-		let member = Discord.GuildMember;
-		if (!args[0]) { member = message.member; }
-		else { ParseMemberObject(message, args) ? member = ParseMemberObject(message, args) : member = message.member; }
-		const userFlags = member.user.flags ? member.user.flags.toArray() : [];
-		const color = member.displayColor;
-		const embed = new Discord.MessageEmbed()
-			.setColor(color)
-			.setDescription(member.displayName)
-			.setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
-			.setTitle(member.user.tag)
-			.addFields([
-				{ name: "ID", value: member.user.id, inline: true },
-				{ name: "Account date/Join date", value: member.user.createdAt.toDateString() + "\n" + member.joinedAt.toDateString(), inline: true },
-				{ name: "Presence", value: (member.user?.presence?.activities?.length ? member.user?.presence?.activities.join(", ") : "N/A") + "\n" + (member.user.presence.status !== "offline" ? Object.entries(member.user.presence.clientStatus).join(", ") : "Offline"), inline: true },
-				{ name: "Flags", value: userFlags.length ? userFlags.map(flag => flags[flag]).join(", ") : "None", inline: true },
-				{ name: "Roles (" + member.roles.cache.array().length + ")", value: member.roles.cache.array().sort((a, b) => b.position - a.position || b.id - a.id).slice(1, 10).join(", "), inline: true }],
-			);
+module.exports = class UserInfoCommand extends Command {
+	constructor() {
+		super("uinfo", {
+			name: "uinfo",
+			cooldown: 5000,
+			aliases: ["user", "uinfo"],
+			description: { description: "Shows relevant user info", usage: "<user>" },
+			args: [{
+				id: "user",
+				type: "member",
+				default: (message) => message.member,
+			}],
+
+		});
+	}
+	exec(message, args) {
+		const member = args.user;
+		const userFlags = member.user.flags ? member.user.flags.toArray() : [], color = member.displayColor,
+			embed = new Discord.MessageEmbed()
+				.setColor(color)
+				.setDescription(member.displayName)
+				.setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
+				.setTitle(member.user.tag)
+				.addFields([
+					{ name: "ID", value: member.user.id, inline: true },
+					{
+						name: "Account date/Join date",
+						value: member.user.createdAt.toDateString() + "\n" + member.joinedAt.toDateString(),
+						inline: true,
+					},
+					{
+						name: "Presence",
+						value: (member.user?.presence?.activities?.length ? member.user?.presence?.activities.join(", ") : "N/A") + "\n" + (member.user.presence.status !== "offline" ? Object.entries(member.user.presence.clientStatus).join(", ") : "Offline"),
+						inline: true,
+					},
+					{
+						name: "Flags",
+						value: userFlags.length ? userFlags.map(flag => flags[flag]).join(", ") : "None",
+						inline: true,
+					},
+					{
+						name: "Roles (" + member.roles.cache.size + ")",
+						value: member.roles.cache.array().sort((a, b) => b.position - a.position || b.id - a.id).slice(0, 10).join(", "),
+						inline: true,
+					}],
+				);
 		member?.premiumSince ? embed.addField("Boosting", "Since " + member.premiumSince.toDateString() + " ✅", true) : null;
 		member.user.bot ? embed.addField("Bot", "✅", true) : null;
 		message.channel.send(embed).catch(err => {
 			console.log(err);
 		});
-	},
+	}
 };

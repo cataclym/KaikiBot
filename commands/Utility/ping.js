@@ -5,7 +5,7 @@ module.exports = class PingCommand extends Command {
 	constructor() {
 		super("ping", {
 			name: "ping",
-			description: "Ping!",
+			description: { description: "Ping!" },
 			aliases: ["p", "ping"],
 		});
 	}

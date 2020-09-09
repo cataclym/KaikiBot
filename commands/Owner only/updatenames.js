@@ -7,7 +7,7 @@ module.exports = class UpdateNames extends Command {
 		super("updatenames", {
 			name: "updatenames",
 			aliases: ["updatenames", "up"],
-			description: "Redundant command.",
+			description: { description: "Redundant command." },
 			ownerOnly: true,
 		});
 	}

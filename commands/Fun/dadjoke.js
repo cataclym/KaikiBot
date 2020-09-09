@@ -1,16 +1,19 @@
 /* eslint-disable linebreak-style */
 const fetch = require("node-fetch");
 const Discord = require("discord.js");
+const { Command } = require("discord-akairo");
 
-module.exports = {
-	name: "dadjoke",
-	cooldown: 8,
-	aliases: ["dadjokes"],
-	description: "Returns a dadjoke.",
-	args: false,
-	usage: "\u200B",
-	cmdCategory: "Fun",
-	execute(message) {
+module.exports = class DadJokeCommand extends Command {
+	constructor() {
+		super("dadjoke", {
+			name: "dadjoke",
+			cooldown: 8000,
+			aliases: ["dadjoke", "dadjokes"],
+			description: { description: "Returns a dadjoke." },
+		});
+	}
+
+	exec(message) {
 		const color = message.member.displayColor;
 		loadTitle(message);
 		message.channel.startTyping();
@@ -22,14 +25,14 @@ module.exports = {
 		}
 		function postRandomTitle(data) {
 			const randomTitle = data[Math.floor(Math.random() * data.length) + 1];
-			let RTSelftext = randomTitle.selftext.substring(0, 2045);
+			let randomTitleSelfText = randomTitle.selftext.substring(0, 2045);
 			if (randomTitle.selftext.length > 2048) {
-				RTSelftext += "...";
+				randomTitleSelfText += "...";
 			}
 			const RTTitle = randomTitle.title.substring(0, 256);
 			const embed = new Discord.MessageEmbed({
 				title: RTTitle,
-				description: RTSelftext,
+				description: randomTitleSelfText,
 				color,
 				author: {
 					name: `Submitted by ${randomTitle.author}`,
@@ -42,7 +45,7 @@ module.exports = {
 				},
 			});
 			message.channel.stopTyping(true);
-			message.channel.send(embed);
+			return message.util.send(embed);
 		}
-	},
+	}
 };

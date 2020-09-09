@@ -1,6 +1,6 @@
 const Discord = require("discord.js");
 const db = require("quick.db");
-const { prefix, prefixes, prefixes2, emotenames } = require("../config.js");
+const { prefix, prefixes, prefixes2, emoteNames } = require("../config.js");
 const Tinder = new db.table("Tinder");
 const Emotes = new db.table("Emotes");
 const UserNickTable = new db.table("UserNickTable");
@@ -49,9 +49,9 @@ async function emoteReact(message) {
 	const keywords = message.content.toLowerCase().split(" ");
 	keywords.forEach((word) => {
 		if (prefixes2.includes(word)) {
-			const emojiname = emotenames[prefixes2.indexOf(word)];
-			if (!message.guild.emojis.cache.find((e) => e.name === emojiname)) return console.log("Couldn't react to message. Emote probably doesnt exist on this guild.");
-			const emojiArray = message.guild.emojis.cache.find((e) => e.name === emojiname);
+			const emojiName = emoteNames[prefixes2.indexOf(word)];
+			if (!message.guild.emojis.cache.find((e) => e.name === emojiName)) return console.log("Couldn't react to message. Emote probably doesnt exist on this guild.");
+			const emojiArray = message.guild.emojis.cache.find((e) => e.name === emojiName);
 			message.react(emojiArray);
 		}
 	});
@@ -59,10 +59,10 @@ async function emoteReact(message) {
 // Please don't laugh
 let i = 0;
 async function tiredNadekoReact(message) {
-	const words = ["shit", "fuck", "stop", "dont", "kill", "don't", "don`t", "fucking", "shut", "shutup", "trash", "bad", "hate", "stupid", "dumb", "suck", "sucks"];
+	const words = ["shit", "fuck", "stop", "dont", "kill", "don't", "don`t", "fucking", "shut", "shutup", "shuttup", "trash", "bad", "hate", "stupid", "dumb", "suck", "sucks"];
 	// Yes I know
-	const botname = await message.client.user.username.toLowerCase().split(" ");
-	if (new RegExp(botname.join("|")).test(message.content.toLowerCase()) && new RegExp(words.join("|")).test(message.content.toLowerCase())) {
+	const botName = await message.client.user.username.toLowerCase().split(" ");
+	if (new RegExp(botName.join("|")).test(message.content.toLowerCase()) && new RegExp(words.join("|")).test(message.content.toLowerCase())) {
 		i++;
 		if (i < 4) {
 			await message.react("😢");
@@ -103,10 +103,10 @@ async function EmoteDBStartup(client) {
 			}
 		});
 	});
-	console.log("Emote service: ...done! " + index + " edits!");
+	console.log("Emote service: ...done! " + index + " new emotes added!");
 }
 async function countEmotes(message) {
-	// Well I would like to make this better // Edited for animated emojies and only match with id
+	// Well I would like to make this better // Edited for animated emojis and only match with id
 	// const emotes = Discord.Util.parseEmoji(message.content); // Single emotes only.
 	const emotes = message.content.match(/<?(a)?:.+?:\d+>/g);
 	if (emotes) {
@@ -140,48 +140,8 @@ async function CommandUsage(message, command) {
 	}
 	return message.channel.send(reply);
 }
-// Experiments
-function ParseUserObject(message, args) {
-	let discordUser = message.mentions.users.first();
-	// returns the user object if a user mention exists
-	if (!discordUser) {
-		// Check if a user mention exists in this message
-		// Check if a valid userID has been entered instead of a Discord user mention
-		if (message.client.users.cache.find(user => user.id === args.join(" "))) {
-			// If the client (bot) can get a user with this userID, it overwrites the current user variable to the user object that the client fetched
-			discordUser = message.client.users.cache.find(user => user.id === args.join(" "));
-		}
-		if (!discordUser && message.client.users.cache.find(user => user.username.toLowerCase() === args.join(" ").toLowerCase())) {
-			discordUser = message.client.users.cache.find(user => user.username.toLowerCase() === args.join(" ").toLowerCase());
-		}
-	}
-	if (!discordUser) {
-		return false && message.reply("Couldn't get a Discord user with this ID/Name/Mention!");
-	}
-	return true && discordUser;
-}
-function ParseMemberObject(message, args) {
-	let discordUser = message.mentions.members.first();
-	// returns the user object if a user mention exists
-	if (!discordUser) {
-		// Check if a user mention exists in this message
-		// Check if a valid userID has been entered instead of a Discord user mention
-		if (message.guild.members.cache.find(member => member.id === args.join(" "))) {
-			// If the client (bot) can get a user with this userID, it overwrites the current user variable to the user object that the client fetched
-			discordUser = message.guild.members.cache.find(member => member.id === args.join(" "));
-		}
-		if (!discordUser && message.guild.members.cache.find(member => member.user.username.toLowerCase() === args.join(" ").toLowerCase())) {
-			discordUser = message.guild.members.cache.find(member => member.user.username.toLowerCase() === args.join(" ").toLowerCase());
-		}
-	}
-	if (!discordUser) {
-		return false && message.reply("Couldn't get a Discord user with this ID/Name/Mention!");
-	}
-	return discordUser;
-}
 
 module.exports = {
 	emoteReact, roleCheck, handleMentions, dadBot, UserNickTable, tiredNadekoReact,
 	ResetRolls, DailyResetTimer, EmoteDBStartup, countEmotes, msToTime, timeToMidnight, CommandUsage,
-	ParseUserObject, ParseMemberObject,
 };

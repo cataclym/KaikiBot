@@ -5,7 +5,7 @@ module.exports = class ReloadCommand extends Command {
 		super("reload", {
 			name: "reload",
 			aliases: ["re", "reload"],
-			description: "Reloads a command",
+			description: { description: "Reloads a command" },
 			ownerOnly: true,
 		});
 	}

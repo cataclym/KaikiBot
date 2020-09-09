@@ -6,7 +6,7 @@ module.exports = class KillBotProcess extends Command {
 		super("die", {
 			name: "die",
 			aliases: ["die", "kill", "shutdown"],
-			description: "Turn bot off, then turn it back on.",
+			description: { description: "Turn bot off, then turn it back on." },
 			ownerOnly: true,
 		});
 	}

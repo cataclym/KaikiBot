@@ -1,49 +1,47 @@
 const { MessageEmbed } = require("discord.js");
 const { prefix } = require("../../config.js");
+const { Command } = require("discord-akairo");
 
-module.exports = {
-	name: "random",
-	description: "Sends a random number between your two inputs.",
-	args: true,
-	aliases: ["rng"],
-	usage: `1 10 or ${prefix}random 25`,
-	cmdCategory: "Utility",
-	execute(message, args) {
-		const color = message.member.displayColor;
-		const embed = new MessageEmbed({
-			title: "Result:",
-			description: "number goes here",
-			// Placeholder, will not be seen
-			color,
+module.exports = class RandomNumberCommand extends Command {
+	constructor() {
+		super("random", {
+			name: "random",
+			description:  {
+				usage: `1 10 or ${prefix}random 25`,
+				description: "Sends a random number between your two inputs.",
+			},
+			args: [{
+				id: "int",
+				type: "integer",
+				default: 1,
+			},
+			{
+				id: "int2",
+				type: "integer",
+				default: 100,
+			}],
+			aliases: ["random", "rng"],
 		});
+	}
+	exec(message, args) {
+		const color = message.member.displayColor,
+			embed = new MessageEmbed({
+				title: "Result:",
+				color,
+			});
 		function getRndInteger(min, max) {
 			return Math.floor(Math.random() * (max - min + 1)) + min;
 		}
-		if (args[1]) {
-			// Wait do I even need this one anymore?
-			if (args[1] && !args[2]) {
-				const number1 = parseInt(args[0], 10);
-				// Parse or it will spew out wrong numbers
-				const number2 = parseInt(args[1], 10);
-				embed.setDescription(getRndInteger(number1, number2));
-				embed.setFooter(`Random number between ${args[0]} and ${args[1]}`);
-				if (number1 > number2) {
-					embed.setDescription(getRndInteger(number2, number1));
-				}
-			}
+		const number1 = parseInt(args.int, 10),
+			number2 = parseInt(args.int2, 10);
+		embed.setFooter(`Random number between ${number1} and ${number2}`);
+		if (number1 > number2) {
+			embed.setDescription(getRndInteger(number2, number1));
 		}
-		else if (args[0] && !args[1]) {
-			const number1 = parseInt(args[0], 10);
-			embed.setDescription(getRndInteger(1, number1));
-			embed.setFooter(`Random number between 1 and ${args[0]}`);
+		else {
+			embed.setDescription(getRndInteger(number1, number2));
 		}
-		if (embed.description.includes(NaN)) {
-			// Easiest solution I found that worked
-			embed.setTitle("Error");
-			embed.setDescription("I accept only numbers and a maximum of 2 inputs.");
-			embed.setFooter("Try again.");
-		}
-		return message.channel.send(embed);
+		return message.util.send(embed);
 
-	},
+	}
 };
