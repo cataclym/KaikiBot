@@ -41,7 +41,8 @@ function NoRolls() {
 	const time2midHrs = msToTime(time2mid);
 	return "You don't have any more rolls!\nLikes and rolls reset in: " + time2midHrs;
 }
-function SeparateTinderList(message, Item) {
+function SeparateTinderList(message, Item, ListName = "Tinder list") {
+
 	Item.shift();
 	if (!Item.length) { return message.reply("There doesn't seem to be anyone here"); }
 
@@ -49,7 +50,8 @@ function SeparateTinderList(message, Item) {
 	const pages = [];
 	for (let i = 30, p = 0; p < Item.length; i = i + 30, p = p + 30) {
 		const dEmbed = new MessageEmbed()
-			.setTitle("There are **" + Item.length + "** users in this list.")
+			.setAuthor(`Users (${Item.length})`)
+			.setTitle(ListName)
 			.setColor(color)
 			.setThumbnail(message.author.displayAvatarURL({ dynamic: true }))
 			// Edited for 30 items pr page with correct index number
@@ -58,32 +60,33 @@ function SeparateTinderList(message, Item) {
 	}
 	paginationEmbed(message, pages);
 }
-function fetchUserList(message, user) {
-	TinderDBService(user);
-	const listembed = new MessageEmbed()
+
+const allListMap = async (message, DataAndID) => {
+	return DataAndID.slice(1, 21).map((item, i) => `${+i + 1}. ${message.client.users.cache.find(_user => _user.id === item) ? message.client.users.cache.find(_user => _user.id === item).username : "User left guild"}`).join("\n");
+};
+
+async function fetchUserList(message, user) {
+	await TinderDBService(user);
+	this.embed = new MessageEmbed()
 		.setTitle(user.username + "'s tinder list")
 		.setColor(message.member.displayColor);
-	const LlikesID = [...new Set(Tinder.get(`likeID.${user.id}`))];
-	const LdislikeID = [...new Set(Tinder.get(`dislikeID.${user.id}`))];
-	const Ldating = [...new Set(Tinder.get(`dating.${user.id}`))];
-	const Lmarried = [...new Set(Tinder.get(`married.${user.id}`))];
+	const LikesID = [...new Set(Tinder.get(`likeID.${user.id}`))];
+	const DislikeID = [...new Set(Tinder.get(`dislikeID.${user.id}`))];
+	const Dating = [...new Set(Tinder.get(`dating.${user.id}`))];
+	const Married = [...new Set(Tinder.get(`married.${user.id}`))];
 
-	function allListMap(DataAndID) {
-		return DataAndID.slice(1, 21).map((item, i) => `${+i + 1}. ${message.client.users.cache.find(_user => _user.id === item) ? message.client.users.cache.find(_user => _user.id === item).username : "User left guild"}`).join("\n");
-	}
-
-	listembed.addFields(
-		{ name: "Likes", value: LlikesID.slice(1).length ? allListMap(LlikesID).substring(0, 660) : "N/A", inline: true },
-		{ name: "Dislikes", value: LdislikeID.slice(1).length ? allListMap(LdislikeID).substring(0, 660) : "N/A", inline: true },
-		{ name: "Dating", value: Ldating.slice(1).length ? allListMap(Ldating).substring(0, 660) : "N/A", inline: true });
-	if (Lmarried.slice(1).length) {
-		listembed.addFields(
+	this.embed.addFields(
+		{ name: "Likes", value: LikesID.slice(1).length ? await allListMap(message, LikesID) : "N/A", inline: true },
+		{ name: "Dislikes", value: DislikeID.slice(1).length ? await allListMap(message, DislikeID) : "N/A", inline: true },
+		{ name: "Dating", value: Dating.slice(1).length ? await allListMap(message, Dating) : "N/A", inline: true });
+	if (Married.slice(1).length) {
+		this.embed.addFields(
 			{ name: "\u200B", value: "\u200B", inline: true },
-			{ name: "Married", value: allListMap(Lmarried).substring(0, 660) + "\u200B", inline: true },
+			{ name: "Married", value: await allListMap(message, Married) + "\u200B", inline: true },
 			{ name: "\u200B", value: "\u200B", inline: true },
 		);
 	}
-	message.channel.send(listembed);
+	await message.util.send(this.embed);
 }
 
 async function tinderNodeCanvasImage(message, randomUser) {
@@ -92,7 +95,7 @@ async function tinderNodeCanvasImage(message, randomUser) {
 		"online" : "#00FF00", "offline" : "#6E0DD0", "idle" : "#FF0099", "dnd" : "#FD1C03",
 	};
 
-	const applyText = (canvas, text) => {
+	const applyText = async (canvas, text) => {
 		const ctx = canvas.getContext("2d");
 		// Declare a base size of the font
 		let fontSize = 40;

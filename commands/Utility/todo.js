@@ -10,7 +10,7 @@ module.exports = class TodoCommand extends Command {
 	constructor() {
 		super("todo", {
 			name: "todo",
-			aliases: ["todo", "note", "list"],
+			aliases: ["todo", "note"],
 			description: {
 				description: "A personal todo list",
 				usage: `(Displays list)\n${prefix}todo add make cake 07/07/2020\n${prefix}todo remove 5\n${prefix}todo remove last\n${prefix}todo remove first\n${prefix}todo remove all`,

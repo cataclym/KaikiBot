@@ -17,7 +17,8 @@ module.exports = class YeetCommand extends Command {
 		const color = message.member.displayColor;
 		await loadTitle(message);
 		async function loadTitle() {
-			fetch("https://www.reddit.com/r/YEET/.json?limit=1000&?sort=top&t=all")
+			const promise = async () => fetch("https://www.reddit.com/r/YEET/.json?limit=1000&?sort=top&t=all");
+			promise()
 				.then((res) => res.json())
 				.then((json) => json.data.children.map((t) => t.data))
 				.then((data) => postRandomTitle(data));

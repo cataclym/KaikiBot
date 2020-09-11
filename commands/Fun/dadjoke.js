@@ -1,4 +1,3 @@
-/* eslint-disable linebreak-style */
 const fetch = require("node-fetch");
 const Discord = require("discord.js");
 const { Command } = require("discord-akairo");
@@ -8,22 +7,23 @@ module.exports = class DadJokeCommand extends Command {
 		super("dadjoke", {
 			name: "dadjoke",
 			cooldown: 8000,
+			typing: true,
 			aliases: ["dadjoke", "dadjokes"],
 			description: { description: "Returns a dadjoke." },
 		});
 	}
 
-	exec(message) {
+	async exec(message) {
 		const color = message.member.displayColor;
-		loadTitle(message);
-		message.channel.startTyping();
-		function loadTitle() {
-			fetch("https://www.reddit.com/r/dadjokes.json?limit=1000&?sort=top&t=all")
+		await loadTitle(message);
+		async function loadTitle() {
+			const promise = async () => fetch("https://www.reddit.com/r/dadjokes.json?limit=1000&?sort=top&t=all");
+			promise()
 				.then((res) => res.json())
 				.then((json) => json.data.children.map((t) => t.data))
 				.then((data) => postRandomTitle(data));
 		}
-		function postRandomTitle(data) {
+		async function postRandomTitle(data) {
 			const randomTitle = data[Math.floor(Math.random() * data.length) + 1];
 			let randomTitleSelfText = randomTitle.selftext.substring(0, 2045);
 			if (randomTitle.selftext.length > 2048) {
@@ -38,13 +38,12 @@ module.exports = class DadJokeCommand extends Command {
 					name: `Submitted by ${randomTitle.author}`,
 				},
 				image: {
-					url: `${randomTitle.url}`,
+					url: randomTitle.url,
 				},
 				footer: {
 					text: `${randomTitle.ups} updoots`,
 				},
 			});
-			message.channel.stopTyping(true);
 			return message.util.send(embed);
 		}
 	}

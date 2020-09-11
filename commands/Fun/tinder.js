@@ -5,118 +5,45 @@ const { prefix, ownerID } = require("../../config");
 const { ResetRolls, timeToMidnight, msToTime, CommandUsage, ParseUserObject } = require("../../functions/functions.js");
 const { TinderStartup, TinderDBService, NoLikes, NoRolls, SeparateTinderList, fetchUserList } = require("../../functions/tinder.js");
 const embeds = require("../../functions/embeds.js");
-// tinderNodeCanvasImage
-module.exports = {
-	name: "tinder",
-	cooldown: 1,
-	aliases: ["t"],
-	description: "Suggests someone to date",
-	args: false,
-	usage: "help",
-	cmdCategory: "Fun",
-	async execute(message, args) {
+const { Command, Argument, Flag } = require("discord-akairo");
 
-		const color = message.member.displayColor;
-		if (!Tinder.has(`rolls.${message.author.id}`)) {
-			// So the db/Tinder doesnt choke later...
-			await TinderDBService(message.author);
+// tinderNodeCanvasImage
+module.exports = class TinderMain extends Command {
+	constructor() {
+		super("tinder", {
+			name: "tinder",
+			cooldown: 1000,
+			aliases: ["t", "tinder"],
+			description: { description: "Suggests someone to date", usage: "help" },
+		});
+	}
+	*args() {
+		const method = yield {
+			type: [["tinderlist", "list"]],
+		};
+		if (!Argument.isFailure(method)) {
+			return Flag.continue(method);
 		}
+		const user = yield {
+			index: 0,
+			type: Argument.union("member", "user"),
+		};
+		return { user };
+	}
+	async exec(message, args) {
+		await TinderDBService(message.author);
+		// So the db/Tinder doesnt choke later...
 		const hasRolls = parseInt(Tinder.get(`rolls.${message.author.id}`), 10);
 		const hasLikes = parseInt(Tinder.get(`likes.${message.author.id}`), 10);
 		const RollsLikes = (hasRolls - 1) + " rolls " + hasLikes + " likes remaining.";
-		const tinderCardUser = ParseUserObject(message, args);
-		if (tinderCardUser && !args[1]) {
-			return message.channel.send(embeds.tinderRollEmbed(message, tinderCardUser));
+		const tinderCardUser = args?.user?.user;
+		if (tinderCardUser) {
+			return message.util.send(embeds.tinderRollEmbed(message, tinderCardUser));
 			// return tinderNodeCanvasImage(message, tinderCardUser);
 		}
-		switch (args[0]) {
-			case "reset": {
-				if (message.member.id === ownerID) {
-					await ResetRolls();
-					return message.react("✅");
-				}
-				else {
-					return message.channel.send("Not bot owner.");
-				}
-			}
-			case "list":
-			{
-				if (!args[1]) {
-					return list();
-				}
-				else {
-					const newArgs = args.slice(1);
-					const listUser = ParseUserObject(message, newArgs);
-					if (listUser) {
-						return fetchUserList(message, listUser);
-					}
-					switch (args[1]) {
-						case "l":
-						case "like":
-						case "likes": {
-							const likesID = [...new Set(Tinder.get(`likeID.${message.author.id}`))];
-							return SeparateTinderList(message, likesID);
-						}
-						case "dl":
-						case "dislike":
-						case "dislikes": {
-							const dislikeID = [...new Set(Tinder.get(`dislikeID.${message.author.id}`))];
-							return SeparateTinderList(message, dislikeID);
-						}
-						case "d":
-						case "date":
-						case "dates":
-						case "dating": {
-							const dating = 	[...new Set(Tinder.get(`dating.${message.author.id}`))];
-							return SeparateTinderList(message, dating);
-						}
-						case "s":
-						case "marry":
-						case "married":
-						case "marries":
-						case "spouses": {
-							const married = [...new Set(Tinder.get(`married.${message.author.id}`))];
-							return SeparateTinderList(message, married);
-						}
-						default: {
-							return list();
-						}
-					}
-				}
-			}
-			case "marry":
-			{
-				return marry();
-			}
-			case "help":
-			{
-				embeds.TinderHelp.fields[4] = { name: "Reset", value: "Rolls and likes reset every day. Currently resets in: " + msToTime(timeToMidnight()), inline: false };
-				return message.channel.send(embeds.TinderHelp);
-			}
-			case "del":
-			case "delete":
-			case "rem":
-			case "remove":
-			{
-				return RemoveEntryFromList();
-			}
-			case "start": {
-				try {
-					if (message.member.id === ownerID) { return TinderStartup(message); }
-					// Shouldn't be necessary anymore, but ill leave it in // Maybe change to bot owner only as well // Added as of 1.3.2
-					else {
-						return message.channel.send("Not bot owner.");
-					}
-				}
-				catch (error) {
-					return console.log("Error :", error);
-				}
-			}
-		}
-
 		const likesID = Tinder.get(`likeID.${message.author.id}`);
 		const dislikeID = Tinder.get(`dislikeID.${message.author.id}`);
-		const dating = 	Tinder.get(`dating.${message.author.id}`);
+		const dating = Tinder.get(`dating.${message.author.id}`);
 		const married = Tinder.get(`married.${message.author.id}`);
 		const combined = [].concat(likesID, dislikeID, married, dating);
 
@@ -125,7 +52,7 @@ module.exports = {
 			filtered = userIDArray.filter(f => !combined.includes(f));
 		if (!filtered.length) {
 			// When there are no more people left
-			return message.channel.send("Looking for people to date... 📡").then(sentMsg => {
+			return message.util.send("Looking for people to date... 📡").then(sentMsg => {
 				setTimeout(() => {
 					(sentMsg.edit(sentMsg.content + "\nNo new potential mates were found."));
 				}, 5000);
@@ -137,7 +64,8 @@ module.exports = {
 		if (hasRolls > 0) {
 			Tinder.subtract(`rolls.${message.author.id}`, 1);
 			const randomUserEmbed = embeds.tinderRollEmbed(message, randomUsr, RollsLikes);
-			message.channel.send(randomUserEmbed).then(SentMsg => {
+			await message.delete();
+			await message.util.sendNew(randomUserEmbed).then(SentMsg => {
 				Promise.all([
 					SentMsg.react("❌"),
 					SentMsg.react("💚"),
@@ -154,9 +82,15 @@ module.exports = {
 						const newHasRolls = parseInt(Tinder.get(`rolls.${message.author.id}`), 10);
 						// Updates leftover likes/rolls in real-time /s
 						switch (reaction.emoji.name) {
-							case "❌": { return Dislike(SentMsg, randomUserEmbed, newHasRolls); }
-							case "🌟": { return SuperLike(SentMsg, randomUserEmbed); }
-							case "💚": { return NormalLike(SentMsg, randomUserEmbed, newHasRolls); }
+							case "❌": {
+								return Dislike(SentMsg, randomUserEmbed, newHasRolls);
+							}
+							case "🌟": {
+								return SuperLike(SentMsg, randomUserEmbed);
+							}
+							case "💚": {
+								return NormalLike(SentMsg, randomUserEmbed, newHasRolls);
+							}
 						}
 					})
 					.catch(() => {
@@ -171,35 +105,7 @@ module.exports = {
 				msg.react("⚠️");
 			});
 		}
-		// Functions
-		function list() {
-			TinderDBService(message.author);
-			const listEmbed = new Discord.MessageEmbed()
-				.setTitle("Your tinder list")
-				.setColor(color)
-				.setFooter(`See specific lists with \`${prefix}tinder list likes | dislikes | dates | spouses\`
-				`);
-			const ListOfLikesID = [...new Set(Tinder.get(`likeID.${message.author.id}`))];
-			const ListOfDislikeID = [...new Set(Tinder.get(`dislikeID.${message.author.id}`))];
-			const ListOfDating = [...new Set(Tinder.get(`dating.${message.author.id}`))];
-			const ListOfMarried = [...new Set(Tinder.get(`married.${message.author.id}`))];
 
-			function allListMap(DataAndID) {
-				return DataAndID.slice(1, 21).map((item, i) => `${+i + 1}. ${message.client.users.cache.find(user => user.id === item) ? message.client.users.cache.find(user => user.id === item).username : "User left guild"}`).join("\n");
-			}
-			listEmbed.addFields(
-				{ name: "Likes", value: ListOfLikesID.slice(1).length ? allListMap(ListOfLikesID).substring(0, 660) : "N/A", inline: true },
-				{ name: "Dislikes", value: ListOfDislikeID.slice(1).length ? allListMap(ListOfDislikeID).substring(0, 660) : "N/A", inline: true },
-				{ name: "Dating", value: ListOfDating.slice(1).length ? allListMap(ListOfDating).substring(0, 660) : "N/A", inline: true });
-			if (ListOfMarried.slice(1).length) {
-				listEmbed.addFields(
-					{ name: "\u200B", value: "\u200B", inline: true },
-					{ name: "Married", value: allListMap(ListOfMarried).substring(0, 660) + "\u200B", inline: true },
-					{ name: "\u200B", value: "\u200B", inline: true },
-				);
-			}
-			message.channel.send(listEmbed);
-		}
 		function SuperLike(SentMsg, genericEmbed) {
 			if (hasLikes > 0) {
 				const zero = parseInt(0, 10);
@@ -224,6 +130,7 @@ module.exports = {
 				});
 			}
 		}
+
 		function NormalLike(SentMsg, genericEmbed, newHasRolls) {
 			if (hasLikes > 0) {
 				Tinder.subtract(`likes.${message.author.id}`, 1);
@@ -265,6 +172,7 @@ module.exports = {
 				});
 			}
 		}
+
 		function Dislike(SentMsg, genericEmbed, newHasRolls) {
 			Tinder.push(`dislikeID.${message.author.id}`, randomUsr.id);
 			const NewRollsLikes = newHasRolls + " rolls " + hasLikes + " likes remaining.";
@@ -275,8 +183,9 @@ module.exports = {
 				.setTitle(randomUsr.username)
 				.setDescription("has been added to dislikes.")
 				.setFooter(NewRollsLikes);
-			return SentMsg.edit(newEmbed);
+			return SentMsg.util.edit(newEmbed);
 		}
+
 		function marry() {
 			args.shift();
 			const dUser = ParseUserObject(message, args);
@@ -305,20 +214,26 @@ module.exports = {
 									});
 							});
 					}
-					else { message.channel.send("Not allowed to marry this person!"); }
+					else {
+						return message.util.send("Not allowed to marry this person!");
+					}
 				}
-				else { message.channel.send("You are not dating this person!"); }
+				else {
+					return message.util.send("You are not dating this person!");
+				}
 			}
-			else { message.channel.send("Try marrying a valid member!"); }
+			else {
+				return message.util.send("Try marrying a valid member!");
+			}
 		}
+
 		function RemoveEntryFromList() {
 			const DLikes = [...new Set(Tinder.fetch(`dislikeID.${message.author.id}`))];
 			if (!DLikes) {
 				// Likely won't happen
-				return message.channel.send("Nothing to delete.");
+				return message.util.send("Nothing to delete.");
 			}
 			const CombinedDLikes = DLikes.map(a => a);
-			const ThisCommand = message.client.commands.get("tinder");
 			if (args[1]) {
 				const index = parseInt(args[1], 10);
 				// Matches given number to array item
@@ -326,17 +241,11 @@ module.exports = {
 				if (!(removedItem.toString() === message.author.id)) {
 					Tinder.set(`dislikeID.${message.author.id}`, CombinedDLikes);
 					const RemovedMember = message.client.users.cache.get(removedItem.toString());
-					return message.channel.send(`Removed \`${RemovedMember?.username}\` from list.`).then(SentMsg => {
+					return message.util.send(`Removed \`${RemovedMember?.username}\` from list.`).then(SentMsg => {
 						SentMsg.react("✅");
 					});
 				}
-				else {
-					return CommandUsage(message, ThisCommand);
-				}
-			}
-			else {
-				return CommandUsage(message, ThisCommand);
 			}
 		}
-	},
+	}
 };
