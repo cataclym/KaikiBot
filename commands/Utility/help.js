@@ -2,7 +2,6 @@ const Discord = require("discord.js");
 const { prefix } = require("../../config.js");
 const { version } = require("../../package.json");
 const { Command } = require("discord-akairo");
-const embed = new Discord.MessageEmbed();
 
 module.exports = class HelpCommand extends Command {
 	constructor() {
@@ -18,6 +17,7 @@ module.exports = class HelpCommand extends Command {
 		});
 	}
 	async exec(message, args) {
+		const embed = new Discord.MessageEmbed();
 		embed.setColor(message.member.displayColor);
 
 		if (args.command) {

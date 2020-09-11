@@ -22,9 +22,11 @@ module.exports = class Ready extends Listener {
 		await EmoteDBStartup(this.client).catch((e) => {
 			console.log(e);
 		});
+		/*
 		await ReAssignBirthdays(this.client).catch((e) => {
 			console.log(e);
 		});
+		 */
 		// This will spam Console on first boot.
 		await TinderStartup(this.client.user).catch((e) => {
 			console.log(e);
