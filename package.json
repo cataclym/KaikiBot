@@ -14,7 +14,7 @@
     "canvas": "^2.6.1",
     "discord.js": "^12.3.1",
     "discord.js-pagination": "^1.0.2",
-    "node-fetch": "^2.6.0",
+    "node-fetch": "^2.6.1",
     "prebuild-install": "^5.3.4",
     "quick.db": "^7.1.1"
   },

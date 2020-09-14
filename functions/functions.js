@@ -1,6 +1,6 @@
 const Discord = require("discord.js");
 const db = require("quick.db");
-const { prefix, prefixes, prefixes2, emotenames } = require("../config.js");
+const { prefix, prefixes, prefixes2, emoteNames } = require("../config.js");
 const Tinder = new db.table("Tinder");
 const Emotes = new db.table("Emotes");
 const UserNickTable = new db.table("UserNickTable");
@@ -49,7 +49,7 @@ async function emoteReact(message) {
 	const keywords = message.content.toLowerCase().split(" ");
 	keywords.forEach((word) => {
 		if (prefixes2.includes(word)) {
-			const emojiname = emotenames[prefixes2.indexOf(word)];
+			const emojiname = emoteNames[prefixes2.indexOf(word)];
 			if (!message.guild.emojis.cache.find((e) => e.name === emojiname)) return console.log("Couldn't react to message. Emote probably doesnt exist on this guild.");
 			const emojiArray = message.guild.emojis.cache.find((e) => e.name === emojiname);
 			message.react(emojiArray);
