@@ -4,7 +4,7 @@ const { timeToMidnight } = require("./functions"),
 	RoleNameJoin = "Join Anniversary",
 	RoleNameCreated = "Cake Day";
 function DateObject() {
-	const d = new Date(2019, 2, 25);
+	const d = new Date();
 	const Month = d.getMonth();
 	const Day = d.getDate();
 	return { d, Month, Day };
@@ -27,7 +27,7 @@ async function ReAssignBirthdays(client) {
 	await Promise.all(asyncPromise, ListUserCreatedAt, ListUserJoinedAt);
 	console.timeEnd("anniroles");
 	// What a long line
-	console.log(`🟩 Cake Day:${ListUserJoinedAt.length ? " Users added: " + ListUserJoinedAt.join(", ") : " No users were added to Join Anniversary."}\n🟩 Join Anniversary:${ListUserCreatedAt.length ? " Users added: " + ListUserCreatedAt.join(", ") : " No users were added to Cake Day."}\n🟩 Birthday-Role service: Finished checking dates.`);
+	console.log(`🟩 Cake Day:${ListUserCreatedAt.length ? " Users added: " + ListUserCreatedAt.join(", ") : " No users were added to Cake Day."}\n🟩 Join Anniversary:${ListUserJoinedAt.length ? " Users added: " + ListUserJoinedAt.join(", ") : " No users were added to Join Anniversary."}\n🟩 Birthday-Role service: Finished checking dates.`);
 	ListUserJoinedAt = [],
 	ListUserCreatedAt = [];
 	setTimeout(async () => {
