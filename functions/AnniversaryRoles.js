@@ -4,7 +4,7 @@ const { timeToMidnight } = require("./functions"),
 	RoleNameJoin = "Join Anniversary",
 	RoleNameCreated = "Cake Day";
 function DateObject() {
-	const d = new Date();
+	const d = new Date(2019, 2, 25);
 	const Month = d.getMonth();
 	const Day = d.getDate();
 	return { d, Month, Day };
@@ -13,16 +13,19 @@ let ListUserCreatedAt = [],
 	ListUserJoinedAt = [];
 
 async function ReAssignBirthdays(client) {
+	console.time("anniroles");
 	console.log("🟩 Birthday-Role service: Checking dates-");
-	await Promise.all(await client.guilds.cache.map(async (guild) => {
+	const asyncPromise = await client.guilds.cache.map(async (guild) => {
 		await GuildCheckRolesExist(guild);
 		if (guild.me.hasPermission("MANAGE_ROLES")) {
 			const { AnniversaryRoleC, AnniversaryRoleJ } = await GuildCheckRolesExist(guild);
 			await Promise.all(await guild.members.cache.map(async (member) => {
-				await MemberCheckAnniversary(member, AnniversaryRoleC, AnniversaryRoleJ);
+				MemberCheckAnniversary(member, AnniversaryRoleC, AnniversaryRoleJ);
 			}));
 		}
-	}));
+	});
+	await Promise.all(asyncPromise, ListUserCreatedAt, ListUserJoinedAt);
+	console.timeEnd("anniroles");
 	// What a long line
 	console.log(`🟩 Cake Day:${ListUserJoinedAt.length ? " Users added: " + ListUserJoinedAt.join(", ") : " No users were added to Join Anniversary."}\n🟩 Join Anniversary:${ListUserCreatedAt.length ? " Users added: " + ListUserCreatedAt.join(", ") : " No users were added to Cake Day."}\n🟩 Birthday-Role service: Finished checking dates.`);
 	ListUserJoinedAt = [],
@@ -48,19 +51,19 @@ async function GuildCheckRolesExist(guild) {
 		return console.log(guild.name + " can't add anniversary roles due to missing permissions: 'MANAGE_ROLES'");
 	}
 	if (!guild.roles.cache.some(r => r.name === RoleNameJoin)) {
-		await guild.roles.create({
+		guild.roles.create({
 			data: { name: RoleNameJoin },
 			reason: "Role didn't exist yet",
 		}).catch(err => console.log(err));
 	}
 	if (!guild.roles.cache.some(r => r.name === RoleNameCreated)) {
-		await guild.roles.create({
+		guild.roles.create({
 			data: { name: RoleNameCreated },
 			reason: "Role didn't exist yet",
 		}).catch(err => console.log(err));
 	}
-	const AnniversaryRoleJ = await guild.roles.cache.find((r => r.name === RoleNameJoin));
-	const AnniversaryRoleC = await guild.roles.cache.find((r => r.name === RoleNameCreated));
+	const AnniversaryRoleJ = guild.roles.cache.find((r => r.name === RoleNameJoin));
+	const AnniversaryRoleC = guild.roles.cache.find((r => r.name === RoleNameCreated));
 
 	return { AnniversaryRoleC, AnniversaryRoleJ };
 }
@@ -79,15 +82,15 @@ async function MemberCheckAnniversary(member, AnniversaryRoleC, AnniversaryRoleJ
 		if ([Day, Day - 1, Day + 1].includes(member.user.createdAt.getDate())) {
 			if (!member.roles.cache.has(AnniversaryRoleC.id)) {
 				ListUserCreatedAt.push(member.user.tag);
-				await member.roles.add(AnniversaryRoleC);
+				member.roles.add(AnniversaryRoleC);
 			}
 		}
 		else {
-			await member.roles.remove(AnniversaryRoleC).catch(err => console.log(err));
+			member.roles.remove(AnniversaryRoleC).catch(err => console.log(err));
 		}
 	}
 	else {
-		await member.roles.remove(AnniversaryRoleC).catch(err => console.log(err));
+		member.roles.remove(AnniversaryRoleC).catch(err => console.log(err));
 	}
 	if (member.joinedAt.getMonth() === Month) {
 		if ([Day, Day - 1, Day + 1].includes(member.joinedAt.getDate())) {
