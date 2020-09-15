@@ -25,6 +25,7 @@ for (const file of commandFiles) {
 const coolDowns = new Discord.Collection();
 
 client.once("ready", async () => {
+	console.time("anniroles");
 	console.log("Client ready");
 	await client.user.setActivity(activityName, { type: activityStatus });
 	await DailyResetTimer();
