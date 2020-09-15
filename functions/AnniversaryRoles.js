@@ -4,7 +4,7 @@ const { timeToMidnight } = require("./functions"),
 	RoleNameJoin = "Join Anniversary",
 	RoleNameCreated = "Cake Day";
 function DateObject() {
-	const d = new Date(2019, 2, 25);
+	const d = new Date();
 	const Month = d.getMonth();
 	const Day = d.getDate();
 	return { d, Month, Day };
