@@ -13,9 +13,8 @@ let ListUserCreatedAt = [],
 	ListUserJoinedAt = [];
 
 async function ReAssignBirthdays(client) {
-	console.time("anniroles");
 	console.log("🟩 Birthday-Role service: Checking dates-");
-	const asyncPromise = await client.guilds.cache.map(async (guild) => {
+	await Promise.all(await client.guilds.cache.map(async (guild) => {
 		await GuildCheckRolesExist(guild);
 		if (guild.me.hasPermission("MANAGE_ROLES")) {
 			const { AnniversaryRoleC, AnniversaryRoleJ } = await GuildCheckRolesExist(guild);
@@ -23,15 +22,15 @@ async function ReAssignBirthdays(client) {
 				MemberCheckAnniversary(member, AnniversaryRoleC, AnniversaryRoleJ);
 			}));
 		}
-	});
-	await Promise.all(asyncPromise, ListUserCreatedAt, ListUserJoinedAt);
+	}));
+	await Promise.all(ListUserCreatedAt, ListUserJoinedAt);
 	console.timeEnd("anniroles");
 	// What a long line
 	console.log(`🟩 Cake Day:${ListUserCreatedAt.length ? " Users added: " + ListUserCreatedAt.join(", ") : " No users were added to Cake Day."}\n🟩 Join Anniversary:${ListUserJoinedAt.length ? " Users added: " + ListUserJoinedAt.join(", ") : " No users were added to Join Anniversary."}\n🟩 Birthday-Role service: Finished checking dates.`);
 	ListUserJoinedAt = [],
 	ListUserCreatedAt = [];
 	setTimeout(async () => {
-		await ReAssignBirthdays(client);
+		ReAssignBirthdays(client);
 	}, timeToMidnight());
 }
 
@@ -76,7 +75,7 @@ async function GuildCheckRolesExist(guild) {
 // REWRITE AS OF 15/09/2020
 
 async function MemberCheckAnniversary(member, AnniversaryRoleC, AnniversaryRoleJ) {
-
+	console.timeLog("anniroles");
 	const { Day, Month } = DateObject();
 	if (member.user.createdAt.getMonth() === DateObject().Month) {
 		if ([Day, Day - 1, Day + 1].includes(member.user.createdAt.getDate())) {
