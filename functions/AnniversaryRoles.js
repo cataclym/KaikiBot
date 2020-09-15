@@ -3,23 +3,23 @@
 const { timeToMidnight } = require("./functions"),
 	RoleNameJoin = "Join Anniversary",
 	RoleNameCreated = "Cake Day";
-function DateObject() {
+async function DateObject() {
 	const d = new Date();
 	const Month = d.getMonth();
 	const Day = d.getDate();
-	return { d, Month, Day };
+	return { Month, Day };
 }
 let ListUserCreatedAt = [],
 	ListUserJoinedAt = [];
 
 async function ReAssignBirthdays(client) {
 	console.log("🟩 Birthday-Role service: Checking dates-");
+	const { Day, Month } = await DateObject();
 	await Promise.all(await client.guilds.cache.map(async (guild) => {
-		await GuildCheckRolesExist(guild);
 		if (guild.me.hasPermission("MANAGE_ROLES")) {
 			const { AnniversaryRoleC, AnniversaryRoleJ } = await GuildCheckRolesExist(guild);
 			await Promise.all(await guild.members.cache.map(async (member) => {
-				MemberCheckAnniversary(member, AnniversaryRoleC, AnniversaryRoleJ);
+				MemberCheckAnniversary(member, AnniversaryRoleC, AnniversaryRoleJ, Day, Month);
 			}));
 		}
 	}));
@@ -36,11 +36,11 @@ async function ReAssignBirthdays(client) {
 
 async function GuildOnAddBirthdays(guild) {
 	console.log("🟩 Birthday-Role service: Checking new user!");
-	await GuildCheckRolesExist(guild);
+	const { Day, Month } = await DateObject();
 	if (guild.me.hasPermission("MANAGE_ROLES")) {
 		const { AnniversaryRoleC, AnniversaryRoleJ } = await GuildCheckRolesExist(guild);
 		guild.members.cache.forEach(async (member) => {
-			await MemberCheckAnniversary(member, AnniversaryRoleC, AnniversaryRoleJ);
+			MemberCheckAnniversary(member, AnniversaryRoleC, AnniversaryRoleJ, Day, Month);
 		});
 	}
 }
@@ -74,9 +74,8 @@ async function GuildCheckRolesExist(guild) {
 // OFC NOT.
 // REWRITE AS OF 15/09/2020
 
-async function MemberCheckAnniversary(member, AnniversaryRoleC, AnniversaryRoleJ) {
+async function MemberCheckAnniversary(member, AnniversaryRoleC, AnniversaryRoleJ, Day, Month) {
 	console.timeLog("anniroles");
-	const { Day, Month } = DateObject();
 	if (member.user.createdAt.getMonth() === DateObject().Month) {
 		if ([Day, Day - 1, Day + 1].includes(member.user.createdAt.getDate())) {
 			if (!member.roles.cache.has(AnniversaryRoleC.id)) {
@@ -84,12 +83,6 @@ async function MemberCheckAnniversary(member, AnniversaryRoleC, AnniversaryRoleJ
 				member.roles.add(AnniversaryRoleC);
 			}
 		}
-		else {
-			member.roles.remove(AnniversaryRoleC).catch(err => console.log(err));
-		}
-	}
-	else {
-		member.roles.remove(AnniversaryRoleC).catch(err => console.log(err));
 	}
 	if (member.joinedAt.getMonth() === Month) {
 		if ([Day, Day - 1, Day + 1].includes(member.joinedAt.getDate())) {
@@ -98,12 +91,14 @@ async function MemberCheckAnniversary(member, AnniversaryRoleC, AnniversaryRoleJ
 				return member.roles.add(AnniversaryRoleJ);
 			}
 		}
-		else {
-			return member.roles.remove(AnniversaryRoleJ).catch(err => console.log(err));
-		}
 	}
-	else {
-		return member.roles.remove(AnniversaryRoleJ).catch(err => console.log(err));
+	if (!ListUserCreatedAt.includes(member.user.tag)) {
+		if (member.roles.cache.has(AnniversaryRoleC.id)) {
+			member.roles.remove(AnniversaryRoleC.id, AnniversaryRoleJ.id).catch(err => console.log(err));
+		}
+		if (member.roles.cache.has(AnniversaryRoleJ.id)) {
+			member.roles.remove(AnniversaryRoleJ.id);
+		}
 	}
 }
 
