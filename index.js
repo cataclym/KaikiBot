@@ -23,7 +23,11 @@ this.commandHandler = new Akairo.CommandHandler(client, {
 this.listenerHandler = new Akairo.ListenerHandler(client, {
 	directory: join(__dirname, "listeners"),
 });
+this.listenerHandler.setEmitters({
+	commandHandler: this.commandHandler,
+});
 this.commandHandler.useListenerHandler(this.listenerHandler);
+
 this.listenerHandler.loadAll();
 this.commandHandler.loadAll();
 

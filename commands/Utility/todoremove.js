@@ -1,8 +1,7 @@
 "use strict";
-const { Argument } = require("discord-akairo");
 const db = require("quick.db");
 const ReminderList = new db.table("ReminderList");
-const { Command } = require("discord-akairo");
+const { Command, Argument } = require("discord-akairo");
 module.exports = class todoRemoveCommand extends Command {
 	constructor() {
 		super("remove", {
@@ -25,16 +24,16 @@ module.exports = class todoRemoveCommand extends Command {
 		}
 		switch (args.toRemove) {
 			case "all": {
+				try {
 				// This first so we dont run into the map shit...
-				if (ReminderList.delete(`${message.author.id}`)) {
+					ReminderList.delete(`${message.author.id}`);
 					return message.channel.send("List deleted.").then(SentMsg => {
 						SentMsg.react("✅");
 					});
 				}
-				else {
-					console.log(Error);
-					return message.util.reply(Error);
-					// Stop execution here if errored
+				catch (error) {
+					console.log(error);
+					return message.util.reply(error);
 				}
 			}
 			case "last": {

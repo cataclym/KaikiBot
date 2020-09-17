@@ -33,7 +33,7 @@ module.exports = class commandsList extends Command {
 			},
 		});
 		for (const category of this.handler.categories.values()) {
-			if (["default"].includes(category.id)) continue;
+			if (["default", "tinder"].includes(category.id)) continue;
 
 			embed.addField(category.id, category
 				.filter(cmd => cmd.aliases.length > 0)

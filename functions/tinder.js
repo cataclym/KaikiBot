@@ -50,7 +50,6 @@ function SeparateTinderList(message, Item, ListName = "Tinder list") {
 	const pages = [];
 	for (let i = 30, p = 0; p < Item.length; i = i + 30, p = p + 30) {
 		const dEmbed = new MessageEmbed()
-			.setAuthor(`Users (${Item.length})`)
 			.setTitle(ListName)
 			.setColor(color)
 			.setThumbnail(message.author.displayAvatarURL({ dynamic: true }))
@@ -76,17 +75,17 @@ async function fetchUserList(message, user) {
 	const Married = [...new Set(Tinder.get(`married.${user.id}`))];
 
 	this.embed.addFields(
-		{ name: "Likes", value: LikesID.slice(1).length ? await allListMap(message, LikesID) : "N/A", inline: true },
-		{ name: "Dislikes", value: DislikeID.slice(1).length ? await allListMap(message, DislikeID) : "N/A", inline: true },
-		{ name: "Dating", value: Dating.slice(1).length ? await allListMap(message, Dating) : "N/A", inline: true });
-	if (Married.slice(1).length) {
+		{ name: "Liked 👍", value: LikesID.slice(1)?.length ? await allListMap(message, LikesID) : "N/A", inline: true },
+		{ name: "Disliked ❌", value: DislikeID.slice(1)?.length ? await allListMap(message, DislikeID) : "N/A", inline: true },
+		{ name: "Dating ❤️", value: Dating.slice(1)?.length ? await allListMap(message, Dating) : "N/A", inline: true });
+	if (Married.slice(1)?.length) {
 		this.embed.addFields(
 			{ name: "\u200B", value: "\u200B", inline: true },
-			{ name: "Married", value: await allListMap(message, Married) + "\u200B", inline: true },
+			{ name: "Married 🌟", value: await allListMap(message, Married) + "\u200B", inline: true },
 			{ name: "\u200B", value: "\u200B", inline: true },
 		);
 	}
-	await message.util.send(this.embed);
+	return message.util.send(this.embed);
 }
 
 async function tinderNodeCanvasImage(message, randomUser) {
@@ -158,6 +157,81 @@ async function tinderNodeCanvasImage(message, randomUser) {
 	const fileAttachment = new MessageAttachment(canvas.toBuffer(), "tinderProfile.png");
 	return message.channel.send(new MessageEmbed().attachFiles([fileAttachment]).setImage("attachment://tinderProfile.png").setColor(message.member.displayColor));
 }
+async function NormalLike(message, SentMsg, genericEmbed, newHasRolls, hasLikes, randomUsr) {
+	if (hasLikes > 0) {
+		Tinder.subtract(`likes.${message.author.id}`, 1);
+		const newHasLikes = parseInt(Tinder.get(`likes.${message.author.id}`), 10);
+		// Updates leftover likes/rolls in real-time /s
+		const NewRollsLikes = newHasRolls + " rolls " + newHasLikes + " likes remaining.";
+		if (Tinder.has(`likeID.${randomUsr.id}`)) {
+			// Prevents choke
+			const checkLikeIDs = Tinder.get(`likeID.${randomUsr.id}`);
+			// Theoretically this part should work
+			if (checkLikeIDs.includes(`${message.author.id}`)) {
+				Tinder.push(`dating.${message.author.id}`, randomUsr.id);
+				Tinder.push(`dating.${randomUsr.id}`, message.author.id);
+				SentMsg.reactions.removeAll();
+				const newEmbed = new MessageEmbed(genericEmbed)
+					.setAuthor("❤️❤️❤️")
+					.setColor("#ff00ff")
+					.setTitle(randomUsr.user.username)
+					.setDescription("It's a match! Congratulations!")
+					.setFooter(NewRollsLikes);
+				return SentMsg.edit(newEmbed);
+			}
+		}
+		await TinderDBService(randomUsr);
+		Tinder.push(`likeID.${message.author.id}`, randomUsr.id);
+		SentMsg.reactions.removeAll();
+		const newEmbed = new MessageEmbed(genericEmbed)
+			.setAuthor("❤️❤️❤️")
+			.setColor("#00FF00")
+			.setTitle(randomUsr.username)
+			.setDescription("has been added to likes!")
+			.setFooter(NewRollsLikes);
+		return SentMsg.edit(newEmbed);
+	}
+	else {
+		SentMsg.reactions.removeAll();
+		return message.channel.send(NoLikes());
+	}
+}
+
+async function Dislike(message, SentMsg, genericEmbed, newHasRolls, hasLikes, randomUsr) {
+	Tinder.push(`dislikeID.${message.author.id}`, randomUsr.id);
+	const NewRollsLikes = newHasRolls + " rolls " + hasLikes + " likes remaining.";
+	SentMsg.reactions.removeAll();
+	const newEmbed = new MessageEmbed(genericEmbed)
+		.setAuthor("❌❌❌")
+		.setColor("#00FF00")
+		.setTitle(randomUsr.username)
+		.setDescription("has been added to dislikes.")
+		.setFooter(NewRollsLikes);
+	return SentMsg.edit(newEmbed);
+}
+async function SuperLike(message, SentMsg, genericEmbed, hasLikes, randomUsr) {
+	if (hasLikes > 0) {
+		const zero = parseInt(0, 10);
+		await TinderDBService(randomUsr);
+		Tinder.push(`dating.${message.author.id}`, randomUsr.id);
+		Tinder.push(`dating.${randomUsr.id}`, message.author.id);
+		Tinder.set(`rolls.${message.author.id}`, zero);
+		Tinder.set(`likes.${message.author.id}`, zero);
+		SentMsg.reactions.removeAll();
+		const newEmbed = new MessageEmbed(genericEmbed)
+			.setAuthor("❤️🌟❤️")
+			.setColor("#FFFF00")
+			.setTitle(randomUsr.username)
+			.setDescription("Is now dating you!")
+			.setFooter("You have no rolls or likes remaining.");
+		return SentMsg.edit(newEmbed);
+	}
+	else {
+		SentMsg.reactions.removeAll();
+		return message.channel.send(NoLikes());
+	}
+}
+
 module.exports = {
-	TinderStartup, TinderDBService, NoLikes, NoRolls, SeparateTinderList, fetchUserList, tinderNodeCanvasImage,
+	TinderStartup, TinderDBService, NoLikes, NoRolls, SeparateTinderList, fetchUserList, tinderNodeCanvasImage, Dislike, NormalLike, SuperLike,
 };

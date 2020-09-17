@@ -5,7 +5,6 @@ const { MessageEmbed } = require("discord.js");
 const { prefix } = require("../../config.js");
 const { Command, Flag, Argument } = require("discord-akairo");
 const paginationEmbed = require("discord.js-pagination");
-
 module.exports = class TodoCommand extends Command {
 	constructor() {
 		super("todo", {

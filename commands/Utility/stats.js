@@ -1,6 +1,7 @@
 const Discord = require("discord.js");
-const { version } = require("../../package.json");
+const npm = require("../../package.json");
 const { Command } = require("discord-akairo");
+const paginationEmbed = require("discord.js-pagination");
 
 async function formatBytes(a, b = 2) {
 	if (a === 0) return "0 Bytes";
@@ -17,30 +18,39 @@ module.exports = class StatsCommand extends Command {
 	}
 	async exec(message) {
 
+		const pages = [];
 		const guilds = message.client.guilds.cache.array();
 		const channels = {
 			textChannels: 0,
 			voiceChannels: 0,
 		};
-		guilds.map(g => g.channels.cache.filter(channel => (channel.type !== "voice") && channel.type !== "category").map(() => channels.textChannels++));
-		guilds.map(g => g.channels.cache.filter(channel => channel.type === "voice").map(() => channels.voiceChannels++));
+		guilds.map(g => g.channels.cache.filter(channel => (channel.type !== "voice") && channel.type !== "category").map(async () => channels.textChannels++));
+		guilds.map(g => g.channels.cache.filter(channel => channel.type === "voice").map(async () => channels.voiceChannels++));
 		const embed = new Discord.MessageEmbed();
 		embed.setColor(message.member.displayColor);
+		embed.setAuthor(`Nadeko Sengoku Bot v${npm.version}`, message.client.user.displayAvatarURL({ dynamic: true }), "https://github.com/cataclym/nadekosengokubot");
 		embed.setDescription("**Built using**:");
 		embed.addFields([
-			{ name: "Discord.js library", value: "[Discord.js](https://discord.js.org/#/ 'Discord.js website')", inline: true },
-			{ name: "Discord-Akairo library", value: "[Discord-Akairo](https://discord-akairo.github.io/#/ 'Discord-Akairo website')", inline: true },
-			{ name: "Running on Node.js", value: "[Node.js](https://nodejs.org/en/ 'Node.js website')", inline: true },
+			{ name: "Discord.js library", value: `[Discord.js](https://discord.js.org/#/ 'Discord.js website') v${npm.dependencies["discord.js"]}`, inline: true },
+			{ name: "Discord-Akairo framework", value: `[Discord-Akairo](https://discord-akairo.github.io/#/ 'Discord-Akairo website') v${npm.dependencies["discord-akairo"]}`, inline: true },
+			{ name: "Running on Node.js", value: `[Node.js](https://nodejs.org/en/ 'Node.js website') ${process.version}`, inline: true },
 			{ name: "Memory: heap used", value: await formatBytes(process.memoryUsage().heapUsed), inline: true },
 			{ name: "Memory: heap total", value: await formatBytes(process.memoryUsage().heapTotal), inline: true },
 			{ name: "Memory: rss", value: await formatBytes(process.memoryUsage().rss), inline: true },
 			{ name: "Uptime", value: new Date(1000 * process.uptime()).toISOString().substr(11, 8), inline: true },
+			{ name: "Users", value: message.client.users.cache.size, inline: true },
 			{ name: "Presence", value: "Guilds: " + guilds.length +
 					"\nText channels: " + channels.textChannels +
 				"\nVoice channels: " + channels.voiceChannels, inline: true },
 		]);
-		embed.setAuthor(`Nadeko Sengoku Bot v${version}`, message.author.displayAvatarURL({ dynamic: true }), "https://github.com/cataclym/nadekosengokubot");
-		embed.setFooter("❤", message.client.user.displayAvatarURL({ dynamic: true }));
-		await message.util.send(embed);
+		const embed2 = new Discord.MessageEmbed()
+			.setColor(message.member.displayColor)
+			.setAuthor("Made with ❤ by Cata", message.client.user.displayAvatarURL({ dynamic: true }), "https://github.com/cataclym/nadekosengokubot");
+		for (const [key, value] of Object.entries(process.resourceUsage())) {
+			embed2.addField(key, value, true);
+		}
+		pages.push(embed, embed2);
+		await Promise.resolve(pages);
+		return paginationEmbed(message, pages);
 	}
 };

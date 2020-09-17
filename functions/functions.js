@@ -77,6 +77,7 @@ async function tiredNadekoReact(message) {
 async function ResetRolls() {
 	// Tinder reset
 	const likes = Tinder.get("likes");
+	Tinder.delete("temporary");
 	for (const key of Object.keys(likes)) {
 		Tinder.set(`likes.${key}`, 3);
 		Tinder.set(`rolls.${key}`, 15);

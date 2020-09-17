@@ -20,9 +20,16 @@ module.exports = class TinderListCommand extends Command {
 		if (!Argument.isFailure(method)) {
 			return Flag.continue(method);
 		}
+		const user = yield {
+			type: "user",
+			flag: ["u", "-u"],
+			default: (message) => message.author,
+		};
+		return user;
 	}
 
-	async exec(message) {
-		return fetchUserList(message, message.author);
+	async exec(message, args) {
+
+		return fetchUserList(message, args);
 	}
 };
