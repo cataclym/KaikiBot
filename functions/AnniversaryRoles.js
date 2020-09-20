@@ -13,6 +13,7 @@ let ListUserCreatedAt = [],
 	ListUserJoinedAt = [];
 
 async function ReAssignBirthdays(client) {
+	console.time("Anniversary roles");
 	console.log("🟩 Birthday-Role service: Checking dates-");
 	const { Day, Month } = await DateObject();
 	await Promise.all(await client.guilds.cache.map(async (guild) => {
@@ -35,6 +36,7 @@ async function ReAssignBirthdays(client) {
 }
 
 async function GuildOnAddBirthdays(guild) {
+	console.time("Anniversary roles");
 	console.log("🟩 Birthday-Role service: Checking new user!");
 	const { Day, Month } = await DateObject();
 	if (guild.me.hasPermission("MANAGE_ROLES")) {
@@ -43,6 +45,7 @@ async function GuildOnAddBirthdays(guild) {
 			MemberCheckAnniversary(member, AnniversaryRoleC, AnniversaryRoleJ, Day, Month);
 		});
 	}
+	console.timeEnd("Anniversary roles");
 }
 
 async function GuildCheckRolesExist(guild) {

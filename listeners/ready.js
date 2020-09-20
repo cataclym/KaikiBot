@@ -13,7 +13,6 @@ module.exports = class Ready extends Listener {
 	}
 
 	async exec() {
-		console.time("Anniversary roles");
 		await this.client.user.setActivity(activityName, { type: activityStatus }).then(r => {
 			console.log(`🟦 Client ready | Status: ${r.status}`);
 		});
@@ -23,9 +22,9 @@ module.exports = class Ready extends Listener {
 		EmoteDBStartup(this.client).catch((e) => {
 			console.log(e);
 		});
-		ReAssignBirthdays(this.client).catch((e) => {
-			console.log(e);
-		});
+		// ReAssignBirthdays(this.client).catch((e) => {
+		// console.log(e);
+		// });
 		// This will spam Console on first boot.
 		await TinderStartup(this.client.user).catch((e) => {
 			console.log(e);
