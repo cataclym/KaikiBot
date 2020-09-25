@@ -1,9 +1,10 @@
 {
   "name": "nadekosengokubot",
-  "version": "2.0",
+  "version": "2.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ."
   },
   "keywords": [],
   "author": "Cataclym <ole.kh@hotmail.com>",
@@ -20,7 +21,7 @@
     "quick.db": "^7.1.1"
   },
   "devDependencies": {
-    "eslint": "^7.7.0",
+    "eslint": "^7.9.0",
     "eslint-config-airbnb-base": "^14.2.0",
     "eslint-plugin-import": "^2.22.0"
   },

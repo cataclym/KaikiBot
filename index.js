@@ -32,7 +32,7 @@ this.listenerHandler.loadAll();
 this.commandHandler.loadAll();
 
 process.on("unhandledRejection", error => console.error("Uncaught Promise Rejection", error));
-// Thanks D.js guide // Does this even work? xd
+// Thanks D.js guide // Does this even work? xd // Ayy it worked once
 
 client.login(token).catch(err => {
 	console.log(err);
