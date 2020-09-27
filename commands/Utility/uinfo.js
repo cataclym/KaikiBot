@@ -1,5 +1,4 @@
 const Discord = require("discord.js");
-const { prefix } = require("../../config.js");
 const { Command } = require("discord-akairo");
 const flags = {
 	DISCORD_EMPLOYEE: "Discord Employee 👨‍💼",

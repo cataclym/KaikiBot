@@ -24,6 +24,8 @@ module.exports = class HelpCommand extends Command {
 			embed.setTitle(`**Name:** ${args.command.id}`);
 			embed.setDescription(`**Aliases:** \`${args.command.aliases.join("`, `")}\`\n**Description:** ${args.command.description.description}\n
 			${(args.command?.description.usage ? "**Usage:** " + prefix + args.command.id + " " + args.command.description.usage : "")}`);
+			args.command.userPermissions ? embed.addField("Requires", args.command.userPermissions, false) : null;
+			args.command.ownerOnly ? embed.addField("Owner only", "✅", false) : null;
 			return message.util.send(embed);
 		}
 		const AvUrl = await message.client.users.fetch("140788173885276160");
