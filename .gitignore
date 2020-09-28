@@ -124,5 +124,4 @@ json.sqlite
 *.xml
 .idea/nadekosengokubot.iml
 json.sqlite
-config.js
 .idea/nadekosengokubotAkairo.iml
