@@ -32,6 +32,7 @@ async function ReAssignBirthdays(client) {
 	}));
 	await Promise.all(ListUserCreatedAt, ListUserJoinedAt);
 	console.timeEnd("Anniversary roles");
+
 	// What a long line
 	console.log(`🟩 Cake Day:${ListUserCreatedAt.length ? " Users added: " + ListUserCreatedAt.join(", ") : " No users were added to Cake Day."}\n🟩 Join Anniversary:${ListUserJoinedAt.length ? " Users added: " + ListUserJoinedAt.join(", ") : " No users were added to Join Anniversary."}\n🟩 Birthday-Role service: Finished checking dates.`);
 	ListUserJoinedAt = [],
