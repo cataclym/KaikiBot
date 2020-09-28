@@ -1,4 +1,7 @@
-// Fuck this
+"use strict";
+const db = require("quick.db");
+const guildConfig = new db.table("guildConfig");
+// Fuck this-
 // 5/8/2020 DDMMYYYY
 const { timeToMidnight } = require("./functions"),
 	RoleNameJoin = "Join Anniversary",
@@ -13,18 +16,23 @@ let ListUserCreatedAt = [],
 	ListUserJoinedAt = [];
 
 async function ReAssignBirthdays(client) {
+	const enabledGuilds = guildConfig.get("anniversary");
+	console.time("Anniversary roles");
 	console.log("🟩 Birthday-Role service: Checking dates-");
 	const { Day, Month } = await DateObject();
 	await Promise.all(await client.guilds.cache.map(async (guild) => {
-		if (guild.me.hasPermission("MANAGE_ROLES")) {
-			const { AnniversaryRoleC, AnniversaryRoleJ } = await GuildCheckRolesExist(guild);
-			await Promise.all(await guild.members.cache.map(async (member) => {
-				MemberCheckAnniversary(member, AnniversaryRoleC, AnniversaryRoleJ, Day, Month);
-			}));
+		if (enabledGuilds.includes(guild.id)) {
+			if (guild.me.hasPermission("MANAGE_ROLES")) {
+				const { AnniversaryRoleC, AnniversaryRoleJ } = await GuildCheckRolesExist(guild);
+				await Promise.all(await guild.members.cache.map(async (member) => {
+					MemberCheckAnniversary(member, AnniversaryRoleC, AnniversaryRoleJ, Day, Month);
+				}));
+			}
 		}
 	}));
 	await Promise.all(ListUserCreatedAt, ListUserJoinedAt);
-	console.timeEnd("anniroles");
+	console.timeEnd("Anniversary roles");
+
 	// What a long line
 	console.log(`🟩 Cake Day:${ListUserCreatedAt.length ? " Users added: " + ListUserCreatedAt.join(", ") : " No users were added to Cake Day."}\n🟩 Join Anniversary:${ListUserJoinedAt.length ? " Users added: " + ListUserJoinedAt.join(", ") : " No users were added to Join Anniversary."}\n🟩 Birthday-Role service: Finished checking dates.`);
 	ListUserJoinedAt = [],
@@ -35,13 +43,16 @@ async function ReAssignBirthdays(client) {
 }
 
 async function GuildOnAddBirthdays(guild) {
+	const enabledGuilds = guildConfig.get("anniversary");
 	console.log("🟩 Birthday-Role service: Checking new user!");
 	const { Day, Month } = await DateObject();
-	if (guild.me.hasPermission("MANAGE_ROLES")) {
-		const { AnniversaryRoleC, AnniversaryRoleJ } = await GuildCheckRolesExist(guild);
-		guild.members.cache.forEach(async (member) => {
-			MemberCheckAnniversary(member, AnniversaryRoleC, AnniversaryRoleJ, Day, Month);
-		});
+	if (enabledGuilds.includes(guild.id)) {
+		if (guild.me.hasPermission("MANAGE_ROLES")) {
+			const { AnniversaryRoleC, AnniversaryRoleJ } = await GuildCheckRolesExist(guild);
+			guild.members.cache.forEach(async (member) => {
+				MemberCheckAnniversary(member, AnniversaryRoleC, AnniversaryRoleJ, Day, Month);
+			});
+		}
 	}
 }
 
@@ -75,19 +86,18 @@ async function GuildCheckRolesExist(guild) {
 // REWRITE AS OF 15/09/2020
 
 async function MemberCheckAnniversary(member, AnniversaryRoleC, AnniversaryRoleJ, Day, Month) {
-	console.timeLog("anniroles");
 	if (member.user.createdAt.getMonth() === DateObject().Month) {
 		if ([Day, Day - 1, Day + 1].includes(member.user.createdAt.getDate())) {
+			ListUserCreatedAt.push(member.user.tag);
 			if (!member.roles.cache.has(AnniversaryRoleC.id)) {
-				ListUserCreatedAt.push(member.user.tag);
 				member.roles.add(AnniversaryRoleC);
 			}
 		}
 	}
 	if (member.joinedAt.getMonth() === Month) {
 		if ([Day, Day - 1, Day + 1].includes(member.joinedAt.getDate())) {
+			ListUserJoinedAt.push(member.user.tag);
 			if (!member.roles.cache.has(AnniversaryRoleJ.id)) {
-				ListUserJoinedAt.push(member.user.tag);
 				return member.roles.add(AnniversaryRoleJ);
 			}
 		}
