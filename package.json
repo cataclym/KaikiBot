@@ -10,20 +10,20 @@
   "author": "Cataclym <ole.kh@hotmail.com>",
   "license": "MIT",
   "dependencies": {
-    "better-sqlite3": "^7.1.0",
+    "better-sqlite3": "^7.1.1",
     "bindings": "^1.5.0",
     "canvas": "^2.6.1",
     "discord-akairo": "^8.1.0",
     "discord.js": "^12.3.1",
     "discord.js-pagination": "^1.0.2",
     "node-fetch": "^2.6.1",
-    "prebuild-install": "^5.3.4",
-    "quick.db": "^7.1.1"
+    "prebuild-install": "^5.3.5",
+    "quick.db": "^7.1.2"
   },
   "devDependencies": {
-    "eslint": "^7.9.0",
+    "eslint": "^7.10.0",
     "eslint-config-airbnb-base": "^14.2.0",
-    "eslint-plugin-import": "^2.22.0"
+    "eslint-plugin-import": "^2.22.1"
   },
   "description": "Discord bot built with Akairo and quick.db",
   "repository": {

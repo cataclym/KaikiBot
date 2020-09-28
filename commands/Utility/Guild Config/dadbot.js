@@ -40,9 +40,8 @@ module.exports = class DadBotConfigCommand extends Command {
 			case ("disable"):
 			case ("false"): {
 				if (enabledGuilds.includes(message.guild.id)) {
-					const removed = await enabledGuilds.splice(enabledGuilds.indexOf(message.guild.id), 1);
+					await enabledGuilds.splice(enabledGuilds.indexOf(message.guild.id), 1);
 					updateVar(enabledGuilds);
-					console.log(removed);
 					guildConfig.set("dadbot", enabledGuilds);
 					return message.util.send(new MessageEmbed().setDescription(`DadBot functionality has been disabled in ${message.guild.name}!`));
 				}

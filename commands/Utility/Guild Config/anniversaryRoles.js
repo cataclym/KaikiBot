@@ -39,8 +39,7 @@ module.exports = class AnniversaryRolesConfigCommand extends Command {
 			case ("disable"):
 			case ("false"): {
 				if (enabledGuilds.includes(message.guild.id)) {
-					const removed = enabledGuilds.splice(enabledGuilds.indexOf(message.guild.id), 1);
-					console.log(removed);
+					await enabledGuilds.splice(enabledGuilds.indexOf(message.guild.id), 1);
 					guildConfig.set("anniversary", enabledGuilds);
 					return message.util.send(new MessageEmbed().setDescription(`Anniversary-roles functionality has been disabled in ${message.guild.name}!`));
 				}

@@ -1,10 +1,9 @@
 "use strict";
 const { Command, Flag, Argument } = require("discord-akairo");
 const { MessageEmbed } = require("discord.js");
-const { enabledGuilds } = require("../../listeners/message");
 const db = require("quick.db");
 const guildConfig = new db.table("guildConfig");
-const embed = new MessageEmbed();
+
 module.exports = class ConfigCommand extends Command {
 	constructor() {
 		super("config", {
@@ -29,11 +28,13 @@ module.exports = class ConfigCommand extends Command {
 
 	async exec(message) {
 
+		const enabledDadBotGuilds = guildConfig.get("dadbot");
+		const embed = new MessageEmbed();
 		const enabledAnniversaryGuilds = guildConfig.get("anniversary");
 		let dadbotEnabled = false;
 		let anniversaryRolesEnabled = false;
 
-		if (enabledGuilds.includes(message.guild.id)) {
+		if (enabledDadBotGuilds.includes(message.guild.id)) {
 			dadbotEnabled = true;
 		}
 		if (enabledAnniversaryGuilds.includes(message.guild.id)) {

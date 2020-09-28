@@ -50,6 +50,7 @@ async function tinderRollEmbed(message, randomUsr, RollsLikes) {
 		.addFields(
 			{ name: "**Likes**", value: finalNumber - 1, inline: true },
 			{ name: "**Waifus**", value: waifuIDs - 1, inline: true },
+			// In order to negate the user itself in the list
 		)
 		.setFooter(RollsLikes ? "React '❌' to dislike. '💚' To like. '🌟' To super like.\n" + RollsLikes : randomUsr.tag)
 		.setImage(randomUsr.displayAvatarURL({ dynamic: true }));

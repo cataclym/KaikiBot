@@ -1,5 +1,10 @@
 # Nadeko Sengoku Bot
 
+# Update: Bot has been rewritten with the Akairo discord.js bot framework.
+## This readme is not up to date with the rewrite as of 2.0.
+
+***
+
 **What's this?**
 
 A bot with fun utility, dadbot responses, and more!
