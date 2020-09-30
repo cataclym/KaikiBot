@@ -1,7 +1,7 @@
 const { MessageEmbed } = require("discord.js");
 const { Command } = require("discord-akairo");
 
-module.exports = class PingCommand extends Command {
+module.exports = class VPingCommand extends Command {
 	constructor() {
 		super("ping", {
 			name: "ping",
