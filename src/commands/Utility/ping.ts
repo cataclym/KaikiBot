@@ -12,7 +12,7 @@ export default class PingCommand extends Command {
 		const InitialMSG: Message = await message.channel.send("Pinging...!"),
 			WSTime: Number = Math.abs(message.client.ws.ping),
 			ClientTime: Number = InitialMSG.createdTimestamp - message.createdTimestamp;
-		const color: ColorResolvable = message.member.displayColor,
+		const color: ColorResolvable = message!.member!.displayColor,
 			embed: MessageEmbed = new MessageEmbed()
 				.addFields([
 					{ name: "WebSocket ping", value: WSTime + " ms", inline: true },

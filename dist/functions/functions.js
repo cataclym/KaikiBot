@@ -7,9 +7,11 @@ const Emotes = new db.table("Emotes");
 const guildConfig = new db.table("guildConfig");
 const UserNickTable = new db.table("UserNickTable");
 
+const words = ["shit", "fuck", "stop", "dont", "kill", "don't", "don`t", "fucking", "shut", "shutup", "shuttup", "trash", "bad", "hate", "stupid", "dumb", "suck", "sucks"];
+
 // handle mentions
 async function handleMentions(message) {
-	if (message.mentions.has(message.client.user) && !message.author.bot && !message.mentions.everyone && !message.mentions.roles) {
+	if (message.mentions.has(message.client.user) && (!message.author.bot || !message.mentions.everyone || !message.mentions.roles)) {
 		const embed = new Discord.MessageEmbed({
 			title: `Hi ${message.author.username}, what's up?`,
 			description: `If you need help type ${prefix}help.`,
@@ -63,7 +65,6 @@ async function emoteReact(message) {
 // Please don't laugh
 let i = 0;
 async function tiredNadekoReact(message) {
-	const words = ["shit", "fuck", "stop", "dont", "kill", "don't", "don`t", "fucking", "shut", "shutup", "shuttup", "trash", "bad", "hate", "stupid", "dumb", "suck", "sucks"];
 	// Yes I know
 	const botName = await message.client.user.username.toLowerCase().split(" ");
 	if (new RegExp(botName.join("|")).test(message.content.toLowerCase()) && new RegExp(words.join("|")).test(message.content.toLowerCase())) {

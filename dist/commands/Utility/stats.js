@@ -1,5 +1,5 @@
 const Discord = require("discord.js");
-const npm = require("../../package.json");
+const npm = require("../../../package.json");
 const { Command } = require("discord-akairo");
 const paginationEmbed = require("discord.js-pagination");
 

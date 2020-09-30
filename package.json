@@ -1,16 +1,18 @@
 {
   "name": "nadekosengokubot",
   "version": "2.0.0",
-  "main": "index.js",
+  "main": "./dist/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "npm run build && node .",
-    "build": "npm run build-ts"
+    "start": "npm run build && node ./dist/index.js",
+    "build": "tsc"
   },
   "keywords": [],
   "author": "Cataclym <ole.kh@hotmail.com>",
   "license": "MIT",
   "dependencies": {
+    "@types/node-fetch": "^2.5.7",
+    "@types/ws": "^7.2.7",
     "better-sqlite3": "^7.1.1",
     "bindings": "^1.5.0",
     "canvas": "^2.6.1",
@@ -24,6 +26,7 @@
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^4.2.0",
     "@typescript-eslint/parser": "^4.2.0",
+    "@types/node": "^13.5.0",
     "eslint": "^7.10.0",
     "eslint-config-airbnb-base": "^14.2.0",
     "eslint-plugin-import": "^2.22.1",

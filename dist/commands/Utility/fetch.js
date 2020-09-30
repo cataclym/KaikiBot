@@ -1,5 +1,5 @@
-const Discord = require("discord.js");
 const { Command } = require("discord-akairo");
+const { MessageEmbed } = require("discord.js");
 const flags = {
 	DISCORD_EMPLOYEE: "Discord Employee 👨‍💼",
 	DISCORD_PARTNER: "Discord Partner ❤️",
@@ -19,13 +19,12 @@ const flags = {
 module.exports = class FetchUserCommand extends Command {
 	constructor() {
 		super("fetch", {
-			name: "fetch",
 			args: [{
 				id: "user",
 				type: "user",
 			}],
 			aliases: ["fu", "fetch"],
-			description: "Fetches a discord user, shows relevant information",
+			description: { description: "Fetches a discord user, shows relevant information" },
 		});
 	}
 	async exec(message, args) {
@@ -35,12 +34,12 @@ module.exports = class FetchUserCommand extends Command {
 		const color = message.member.displayColor;
 		let presenceString = "";
 		if (userObject?.presence?.activities?.length || userObject?.presence?.clientStatus) {
-			presenceString += await userObject?.presence?.activities.join(", ") + "\n" + await Object.entries(userObject?.presence?.clientStatus).join(", ");
+			presenceString += await userObject?.presence?.activities.join(", ") + "\n" + Object.entries(userObject?.presence?.clientStatus).join(", ");
 		}
 		else if (userObject.presence.status) {
 			presenceString += userObject.presence.status;
 		}
-		const embed = new Discord.MessageEmbed()
+		const embed = new MessageEmbed()
 			.setColor(color)
 			.setDescription(userObject.username)
 			.setThumbnail(userObject?.displayAvatarURL({ dynamic: true }))
@@ -49,8 +48,8 @@ module.exports = class FetchUserCommand extends Command {
 				{ name: "ID", value: userObject.id, inline: true },
 				{ name: "Account date/Join date", value: userObject?.createdAt?.toDateString(), inline: true }],
 			);
-		await message.client.users.cache.has(userObject.id) ? embed.addField("Presence", presenceString, true) : null;
-		userFlags.length ? embed.addField("Flags", userFlags.map(flag => flags[flag]).join(", "), true) : null;
+		message.client.users.cache.has(userObject.id) ? embed.addField("Presence", presenceString, true) : null;
+		userFlags.length ? embed.addField("Flags", userFlags.map((flag) => flags[flag]).join(", "), true) : null;
 		userObject.bot ? embed.addField("Bot", "✅", true) : null;
 		message.channel.send(embed).catch(err => {
 			console.log(err);

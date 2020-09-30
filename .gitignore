@@ -79,7 +79,6 @@ typings/
 
 # Nuxt.js build / generate output
 .nuxt
-dist
 
 # Gatsby files
 .cache/
@@ -125,3 +124,5 @@ json.sqlite
 .idea/nadekosengokubot.iml
 json.sqlite
 .idea/nadekosengokubotAkairo.iml
+
+dist/smoljson.sqlite

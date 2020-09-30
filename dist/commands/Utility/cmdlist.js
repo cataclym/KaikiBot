@@ -1,6 +1,6 @@
 const Discord = require("discord.js");
 const { prefix } = require("../../config.js");
-const { version } = require("../../package.json");
+const { version } = require("../../../package.json");
 const { Command } = require("discord-akairo");
 
 module.exports = class commandsList extends Command {
