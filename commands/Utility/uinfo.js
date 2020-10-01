@@ -53,12 +53,12 @@ module.exports = class UserInfoCommand extends Command {
 					},
 					{
 						name: "Flags",
-						value: userFlags.length ? userFlags.map(flag => flags[flag]).join(", ") : "None",
+						value: userFlags.length ? userFlags.map(flag => flags[flag]).join("\n") : "None",
 						inline: true,
 					},
 					{
 						name: "Roles (" + member.roles.cache.size + ")",
-						value: member.roles.cache.array().sort((a, b) => b.position - a.position || b.id - a.id).slice(0, 10).join(", "),
+						value: member.roles.cache.array().sort((a, b) => b.position - a.position || b.id - a.id).slice(0, 10).join("\n"),
 						inline: true,
 					}],
 				);

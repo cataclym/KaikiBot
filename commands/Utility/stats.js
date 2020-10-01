@@ -13,7 +13,7 @@ module.exports = class StatsCommand extends Command {
 		super("stats", {
 			name: "stats",
 			aliases: ["stats"],
-			description: { description: "Shows basic statistics" },
+			description: { description: "Statistics and information" },
 		});
 	}
 	async exec(message) {

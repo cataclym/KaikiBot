@@ -19,13 +19,12 @@ const flags = {
 module.exports = class FetchUserCommand extends Command {
 	constructor() {
 		super("fetch", {
-			name: "fetch",
+			aliases: ["fu", "fetch"],
 			args: [{
 				id: "user",
 				type: "user",
 			}],
-			aliases: ["fu", "fetch"],
-			description: "Fetches a discord user, shows relevant information",
+			description: { description: "Fetches a discord user, shows relevant information" },
 		});
 	}
 	async exec(message, args) {
@@ -35,7 +34,7 @@ module.exports = class FetchUserCommand extends Command {
 		const color = message.member.displayColor;
 		let presenceString = "";
 		if (userObject?.presence?.activities?.length || userObject?.presence?.clientStatus) {
-			presenceString += await userObject?.presence?.activities.join(", ") + "\n" + await Object.entries(userObject?.presence?.clientStatus).join(", ");
+			presenceString += await userObject?.presence?.activities.join(", ") + "\n" + Object.entries(userObject?.presence?.clientStatus).join(", ");
 		}
 		else if (userObject.presence.status) {
 			presenceString += userObject.presence.status;
@@ -50,7 +49,7 @@ module.exports = class FetchUserCommand extends Command {
 				{ name: "Account date/Join date", value: userObject?.createdAt?.toDateString(), inline: true }],
 			);
 		await message.client.users.cache.has(userObject.id) ? embed.addField("Presence", presenceString, true) : null;
-		userFlags.length ? embed.addField("Flags", userFlags.map(flag => flags[flag]).join(", "), true) : null;
+		userFlags.length ? embed.addField("Flags", userFlags.map(flag => flags[flag]).join("\n"), true) : null;
 		userObject.bot ? embed.addField("Bot", "✅", true) : null;
 		message.channel.send(embed).catch(err => {
 			console.log(err);
