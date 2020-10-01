@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const node_fetch_1 = __importDefault(require("node-fetch"));
 const discord_js_1 = require("discord.js");
 const discord_akairo_1 = require("discord-akairo");
-module.exports = class DadJokeCommand extends discord_akairo_1.Command {
+class DadJokeCommand extends discord_akairo_1.Command {
     constructor() {
         super("dadjoke", {
             cooldown: 8000,
@@ -64,5 +64,7 @@ module.exports = class DadJokeCommand extends discord_akairo_1.Command {
             }
         });
     }
-};
+}
+exports.default = DadJokeCommand;
+;
 //# sourceMappingURL=dadjoke.js.map

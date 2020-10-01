@@ -2,7 +2,7 @@ import fetch from "node-fetch";
 import { MessageEmbed, Message } from "discord.js";
 import { Command } from "discord-akairo";
 
-module.exports = class DadJokeCommand extends Command {
+export default class DadJokeCommand extends Command {
 	constructor() {
 		super("dadjoke", {
 			cooldown: 8000,
