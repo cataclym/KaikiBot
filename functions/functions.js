@@ -6,10 +6,13 @@ const Tinder = new db.table("Tinder");
 const Emotes = new db.table("Emotes");
 const guildConfig = new db.table("guildConfig");
 const UserNickTable = new db.table("UserNickTable");
+const words = ["shit", "fuck", "stop", "dont", "kill", "don't", "don`t", "fucking", "shut", "shutup", "shuttup", "trash", "bad", "hate", "stupid", "dumb", "suck", "sucks"];
+// Yes I know
 
 // handle mentions
 async function handleMentions(message) {
-	if (message.mentions.has(message.client.user) && !message.author.bot && !message.mentions.everyone && !message.mentions.roles) {
+	if (message.mentions.has(message.client.user, { ignoreDirect: false, ignoreRoles: true, ignoreEveryone: true }) && !message.author.bot) {
+		// Cool method has options to disable other mentions! 👍
 		const embed = new Discord.MessageEmbed({
 			title: `Hi ${message.author.username}, what's up?`,
 			description: `If you need help type ${prefix}help.`,
@@ -60,21 +63,22 @@ async function emoteReact(message) {
 		}
 	});
 }
+
+const index = {
+	i: 0,
+};
 // Please don't laugh
-let i = 0;
 async function tiredNadekoReact(message) {
-	const words = ["shit", "fuck", "stop", "dont", "kill", "don't", "don`t", "fucking", "shut", "shutup", "shuttup", "trash", "bad", "hate", "stupid", "dumb", "suck", "sucks"];
-	// Yes I know
 	const botName = await message.client.user.username.toLowerCase().split(" ");
 	if (new RegExp(botName.join("|")).test(message.content.toLowerCase()) && new RegExp(words.join("|")).test(message.content.toLowerCase())) {
-		i++;
-		if (i < 4) {
-			await message.react("😢");
+		index.i++;
+		if (index.i < 4) {
+			message.react("😢");
 		}
 		else {
 			// reset length
-			await message.channel.send("😢");
-			i = 0;
+			message.channel.send("😢");
+			index.i = 0;
 		}
 	}
 }
@@ -89,7 +93,7 @@ async function ResetRolls() {
 	console.log("Rolls and likes have been reset | " + Date() + "\n");
 }
 async function DailyResetTimer() {
-	setTimeout(() => {
+	setTimeout(async () => {
 		ResetRolls();
 		DailyResetTimer();
 	}, timeToMidnight());
@@ -100,15 +104,15 @@ function timeToMidnight() {
 }
 async function EmoteDBStartup(client) {
 	console.log("Emote service: checking for new emotes-");
-	let index = 0;
+	let i = 0;
 	client.guilds.cache.forEach(guild => {
 		guild.emojis.cache.forEach(emote => {
 			if (!Emotes.has(`${guild.id}.${emote.id}`)) {
-				Emotes.set(`${guild.id}.${emote.id}`, { count: 0 }); index++;
+				Emotes.set(`${guild.id}.${emote.id}`, { count: 0 }); i++;
 			}
 		});
 	});
-	console.log("Emote service: ...done! " + index + " new emotes added!");
+	console.log("Emote service: ...done! " + i + " new emotes added!");
 }
 
 const startUp = async () => {
