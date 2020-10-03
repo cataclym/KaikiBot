@@ -1,3 +1,4 @@
+import { getMemberColorAsync } from "../../functions/Util";
 import fetch from "node-fetch";
 import { MessageEmbed, Message } from "discord.js";
 import { Command } from "discord-akairo";
@@ -12,8 +13,7 @@ export default class DadJokeCommand extends Command {
 		});
 	}
 
-	async exec(message: Message) {
-		const color: number = message!.member!.displayColor;
+	async exec(message: Message): Promise<Message | void> {
 		await loadTitle();
 		async function loadTitle() {
 			const promise = async () => fetch("https://www.reddit.com/r/dadjokes.json?limit=1000&?sort=top&t=all");
@@ -32,7 +32,7 @@ export default class DadJokeCommand extends Command {
 			const embed: MessageEmbed = new MessageEmbed({
 				title: RTTitle,
 				description: randomTitleSelfText,
-				color,
+				color: await getMemberColorAsync(message),
 				author: {
 					name: `Submitted by ${randomTitle.author}`,
 				},
@@ -43,7 +43,7 @@ export default class DadJokeCommand extends Command {
 					text: `${randomTitle.ups} updoots`,
 				},
 			});
-			return message!.util!.send(embed);
+			return message?.util?.send(embed);
 		}
 	}
-};
+}

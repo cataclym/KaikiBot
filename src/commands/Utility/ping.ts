@@ -1,4 +1,5 @@
-import { ColorResolvable, MessageEmbed, Message } from "discord.js";
+import { getMemberColorAsync } from "../../functions/Util";
+import { MessageEmbed, Message } from "discord.js";
 import { Command } from "discord-akairo";
 
 export default class PingCommand extends Command {
@@ -8,16 +9,15 @@ export default class PingCommand extends Command {
 			aliases: ["p", "ping"],
 		});
 	}
-	public async exec(message: Message) {
+	public async exec(message: Message): Promise<Message> {
 		const InitialMSG: Message = await message.channel.send("Pinging...!"),
-			WSTime: Number = Math.abs(message.client.ws.ping),
-			ClientTime: Number = InitialMSG.createdTimestamp - message.createdTimestamp;
-		const color: ColorResolvable = message!.member!.displayColor,
-			embed: MessageEmbed = new MessageEmbed()
+			WSTime: number = Math.abs(message.client.ws.ping),
+			ClientTime: number = InitialMSG.createdTimestamp - message.createdTimestamp,
+			embed = new MessageEmbed()
 				.addFields([
 					{ name: "WebSocket ping", value: WSTime + " ms", inline: true },
 					{ name: "Client ping", value: ClientTime + " ms", inline: true }])
-				.setColor(color);
+				.setColor(await getMemberColorAsync(message));
 		return InitialMSG.edit(null, embed);
 	}
-};
+}
