@@ -10,6 +10,7 @@ export default class HentaiCommand extends Command {
 		super("hentai", {
 			aliases: ["hentai"],
 			description: { description: "Fetches hentai images from" },
+			cooldown: 6000,
 			args: [{
 				id: "tags",
 				match: "rest",
@@ -24,10 +25,9 @@ export default class HentaiCommand extends Command {
 				const messageArguments: string[] = message.content.slice().split(/ +/);
 				messageArguments.shift();
 				console.log(messageArguments);
-				const result: Image = (await grabHentaiPictureAsync(messageArguments.length ? messageArguments : undefined).catch((e: Error) => {
+				const result: Image = (await grabHentaiPictureAsync(messageArguments).catch((e: Error) => {
 					throw e;
 				}));
-				await Promise.resolve(result);
 				return message.util?.send(new MessageEmbed({
 					author: { name: result.createdAt?.toLocaleString() },
 					title: "Score: " + result.score,
