@@ -11,6 +11,7 @@ export default class HentaiCommand extends Command {
 			aliases: ["hentai"],
 			description: { description: "Fetches hentai images from" },
 			cooldown: 6000,
+			typing: true,
 			args: [{
 				id: "tags",
 				match: "rest",
@@ -25,17 +26,20 @@ export default class HentaiCommand extends Command {
 				const messageArguments: string[] = message.content.slice().split(/ +/);
 				messageArguments.shift();
 				console.log(messageArguments);
-				const result: Image = (await grabHentaiPictureAsync(messageArguments).catch((e: Error) => {
-					throw e;
-				}));
-				return message.util?.send(new MessageEmbed({
-					author: { name: result.createdAt?.toLocaleString() },
-					title: "Score: " + result.score,
-					description: `[Source](${result.source} "${result.source}")`,
-					image: { url: result.fileURL },
-					footer: { text: result.tags.join(", ") },
-					color: await getMemberColorAsync(message),
-				}));
+				const result: Image = (await grabHentaiPictureAsync(messageArguments));
+				if (result) {
+					return message.util?.send(result.sampleURL, new MessageEmbed({
+						author: { name: result.createdAt?.toLocaleString() },
+						title: "Score: " + result.score,
+						description: `[Source](${result.source} "${result.source}")`,
+						image: { url: result.fileURL },
+						footer: { text: result.tags.join(", ") },
+						color: await getMemberColorAsync(message),
+					}));
+				}
+				else {
+					return message.util?.send("No images found...");
+				}
 			}
 			else {
 				throw "Channel is not NSFW.";
