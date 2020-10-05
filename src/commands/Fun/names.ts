@@ -1,21 +1,22 @@
-const { MessageEmbed } = require("discord.js");
-const { UserNickTable } = require("../../functions/functions.js");
-const { prefix } = require("../../config.js");
-const paginationEmbed = require("discord.js-pagination");
-const { Command, Argument } = require("discord-akairo");
+import { MessageEmbed, Message } from "discord.js";
+import { UserNickTable } from "../../functions/functions";
+import { prefix } from "../../config";
+import paginationEmbed from "discord.js-pagination";
+import { Command, Argument } from "discord-akairo";
+import { getMemberColorAsync } from "../../functions/Util";
 
 
 module.exports = class NamesCommand extends Command {
 	constructor() {
 		super("names", {
-			name: "names",
 			aliases: ["name", "names"],
 			description: { description: "Returns all your daddy nicknames", usage: " | " + prefix + "names @someone | " + prefix + "names delete" },
 		});
 	}
 	*args() {
 		const method = yield {
-			type: async (message, phrase) => {
+			// TODO: figure out type of phrase
+			type: async (message: Message, phrase: any) => {
 				const arr = ["remove", "rem", "delete", "del"];
 				if (arr.includes(phrase)) {
 					return true;
@@ -29,16 +30,16 @@ module.exports = class NamesCommand extends Command {
 		return { user, method };
 	}
 
-	async exec(message, args) {
-		const color = message.member.displayColor;
+	async exec(message: Message, args: any) {
+		const color = await getMemberColorAsync(message);
 		const user = args?.user?.user || message.author;
 
 		if (args.method) {
 			try {
-				if (UserNickTable.delete(`usernicknames.${message.member.id}`)) {
+				if (UserNickTable.delete(`usernicknames.${message.member?.id}`)) {
 
-					UserNickTable.push(`usernicknames.${message.member.id}`, message.author.username);
-					return message.util.send(`Deleted all of ${message.member}'s nicknames.\nWell done, you made daddy forget.`);
+					UserNickTable.push(`usernicknames.${message.member?.id}`, message.author.username);
+					return message.util?.send(`Deleted all of ${message.member}'s nicknames.\nWell done, you made daddy forget.`);
 				}
 			}
 			catch (error) {

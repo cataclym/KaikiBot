@@ -1,7 +1,7 @@
 // Change to whatever you like
-const prefix = "";
+const prefix = "-";
 // Input your bot token here
-const token = "";
+const token = "NjQ5MzM3MzU1Mjk1MjYwNjkz.Xd7UiQ.gCdufb8gTl9c5P9KBvOTi5m62Ps";
 
 // Grab an API key at https://holidayapi.com/ // Or leave it empty
 const holidayKey = "";
@@ -19,12 +19,12 @@ const names = "Nadeko-excluded";
 
 // Bot activity status
 // Edit for song/game/media
-const activityName = "Renai circulation";
+const activityName = "Platinum Disco";
 // change to one of: WATCHING/LISTENING/PLAYING
 const activityStatus = 1;
 
 // Owner ID (Used for owner only commands)
-const ownerID = "";
+const ownerID = "140788173885276160";
 export {
 	names, prefixes, prefixes2, emoteNames, activityName, activityStatus,
 	prefix, token, holidayKey, ownerID,

@@ -143,7 +143,7 @@ function msToTime(duration: number) {
 	return "**" + hours + "** hours **" + minutes + "** minutes **" + seconds + "." + milliseconds + "** seconds";
 }
 
-module.exports = {
+export {
 	emoteReact, roleCheck, handleMentions, dadBot, UserNickTable, tiredNadekoReact,
 	ResetRolls, DailyResetTimer, EmoteDBStartup, countEmotes, msToTime, timeToMidnight, startUp,
 };
