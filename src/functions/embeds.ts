@@ -1,11 +1,12 @@
-import { MessageEmbed } from "discord.js";
 import { prefix } from "../config";
 import { poems } from "../functions/poems";
-import db from "quick.db";
-import { Message } from "discord.js";
-import { User } from "discord.js";
+import { MessageEmbed, Message, User } from "discord.js";
 import { getMemberColorAsync } from "./Util";
-const Tinder = db.table("Tinder");
+import db from "quick.db";
+// fuck me, fuck quick.db
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore-next-line
+const Tinder = new db.table("Tinder");
 const tinderSlogan = ["Match?", "Chat?", "Date?", "Flirt?", "Text?", "Tease?", "Chat up?", "Take a risk?"];
 // Some cringe anime wedding pictures
 const weddingImageArray = ["https://media.discordapp.net/attachments/717045059215687691/754790776893997134/L4jgWKm.jpg", "https://media.discordapp.net/attachments/717045059215687691/754790949216845824/714738.jpg", "https://media.discordapp.net/attachments/717045059215687691/754791292646457474/408146.jpg",
@@ -28,7 +29,7 @@ const TinderHelp = new MessageEmbed()
 	)
 	.setColor("#31e387");
 
-function DMEMarry() {
+async function DMEMarry(): Promise<MessageEmbed> {
 	const randomWeddingImage = weddingImageArray[Math.floor(Math.random() * weddingImageArray.length)];
 	const randomPoem = poems[Math.floor(Math.random() * poems.length)];
 
@@ -39,7 +40,7 @@ function DMEMarry() {
 		.setImage(randomWeddingImage)
 		.setDescription(randomPoem);
 }
-async function tinderRollEmbed(message: Message, randomUsr: User, RollsLikes: string) {
+async function tinderRollEmbed(message: Message, randomUsr: User, RollsLikes: string): Promise<MessageEmbed> {
 	const randomTinderS = tinderSlogan[Math.floor(Math.random() * tinderSlogan.length)];
 	const waifuIDs = Tinder.get(`married.${randomUsr.id}`).length,
 		likeIDs = Tinder.get("likeID");
@@ -60,7 +61,6 @@ async function tinderRollEmbed(message: Message, randomUsr: User, RollsLikes: st
 		.setDescription("**Nickname**\n" + message.guild?.members.cache.get(randomUsr.id)?.nickname);
 	return tinderEmbed;
 }
-module.exports = {
-
+export {
 	DMEMarry, TinderHelp, tinderRollEmbed,
 };
