@@ -40,7 +40,7 @@ async function DMEMarry(): Promise<MessageEmbed> {
 		.setImage(randomWeddingImage)
 		.setDescription(randomPoem);
 }
-async function tinderRollEmbed(message: Message, randomUsr: User, RollsLikes: string): Promise<MessageEmbed> {
+async function tinderRollEmbed(message: Message, randomUsr: User, RollsLikes?: string): Promise<MessageEmbed> {
 	const randomTinderS = tinderSlogan[Math.floor(Math.random() * tinderSlogan.length)];
 	const waifuIDs = Tinder.get(`married.${randomUsr.id}`).length,
 		likeIDs = Tinder.get("likeID");
@@ -61,6 +61,6 @@ async function tinderRollEmbed(message: Message, randomUsr: User, RollsLikes: st
 		.setDescription("**Nickname**\n" + message.guild?.members.cache.get(randomUsr.id)?.nickname);
 	return tinderEmbed;
 }
-export {
+export default {
 	DMEMarry, TinderHelp, tinderRollEmbed,
 };

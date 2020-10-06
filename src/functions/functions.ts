@@ -11,7 +11,7 @@ import { names } from "../config";
 const words = ["shit", "fuck", "stop", "dont", "kill", "don't", "don`t", "fucking", "shut", "shutup", "shuttup", "trash", "bad", "hate", "stupid", "dumb", "suck", "sucks"];
 
 // handle mentions
-async function handleMentions(message: Message) {
+async function handleMentions(message: Message): Promise<Message | void> {
 	if (message.mentions.has(message.client.user as User, { ignoreDirect: false, ignoreEveryone: true, ignoreRoles: true }) && !message.author.bot) {
 		const embed = new Discord.MessageEmbed({
 			title: `Hi ${message.author.username}, what's up?`,
@@ -22,7 +22,7 @@ async function handleMentions(message: Message) {
 	}
 }
 // dad bot
-async function dadBot(message: Message) {
+async function dadBot(message: Message): Promise<void> {
 	for (const item of prefixes) {
 		const r = new RegExp(`(^|\\s|$)(?<statement>(?<prefix>${item})\\s*(?<nickname>.*)$)`, "mi");
 		if (r.test(message.content) && !message.author.bot) {
@@ -46,11 +46,11 @@ async function dadBot(message: Message) {
 	}
 }
 // check for special role
-function roleCheck(message: Message) {
+async function roleCheck(message: Message): Promise<boolean> {
 	return !!message.member?.roles.cache.find((r) => r.name === names);
 }
 // Reacts with emote to specified words
-async function emoteReact(message: Message) {
+async function emoteReact(message: Message): Promise<void> {
 	const keywords = message.content.toLowerCase().split(" ");
 	keywords.forEach(async (word) => {
 		if (prefixes2.includes(word)) {
@@ -64,9 +64,12 @@ async function emoteReact(message: Message) {
 }
 // Please don't laugh
 let i = 0;
-async function tiredNadekoReact(message: Message) {
+async function tiredNadekoReact(message: Message): Promise<void | Message> {
 	// Yes I know
-	const botName = message.client.user!.username.toLowerCase().split(" ");
+	const botName = message.client.user?.username.toLowerCase().split(" ");
+	if (!botName) {
+		return;
+	}
 	if (new RegExp(botName.join("|")).test(message.content.toLowerCase()) && new RegExp(words.join("|")).test(message.content.toLowerCase())) {
 		i++;
 		if (i < 4) {
@@ -79,7 +82,7 @@ async function tiredNadekoReact(message: Message) {
 		}
 	}
 }
-async function ResetRolls() {
+async function ResetRolls(): Promise<void> {
 	// Tinder reset
 	const likes = Tinder.get("likes");
 	Tinder.delete("temporary");
@@ -89,17 +92,17 @@ async function ResetRolls() {
 	}
 	console.log("Rolls and likes have been reset | " + Date() + "\n");
 }
-async function DailyResetTimer() {
-	setTimeout(() => {
+async function DailyResetTimer(): Promise<any> {
+	setTimeout(async () => {
 		ResetRolls();
 		DailyResetTimer();
 	}, timeToMidnight());
 }
-function timeToMidnight() {
+function timeToMidnight(): number {
 	const d = new Date();
 	return (-d + d.setHours(24, 0, 0, 0));
 }
-async function EmoteDBStartup(client: Client) {
+async function EmoteDBStartup(client: Client): Promise<void> {
 	console.log("Emote service: checking for new emotes-");
 	let index = 0;
 	client.guilds.cache.forEach(guild => {
@@ -112,13 +115,13 @@ async function EmoteDBStartup(client: Client) {
 	console.log("Emote service: ...done! " + index + " new emotes added!");
 }
 
-const startUp = async () => {
+const startUp = async (): Promise<void> => {
 	if (!guildConfig.get("dadbot")) { guildConfig.set("dadbot", ["10000000"]); }
 	if (!guildConfig.get("anniversary")) { guildConfig.set("anniversary", ["10000000"]); }
 	console.log("🟩 Startup finished.");
 };
 
-async function countEmotes(message: Message) {
+async function countEmotes(message: Message): Promise<void> {
 	const emotes = message.content.match(/<?(a)?:.+?:\d+>/g);
 	if (emotes) {
 		const ids = emotes.toString().match(/\d+/g);
@@ -130,7 +133,7 @@ async function countEmotes(message: Message) {
 		});
 	}
 }
-function msToTime(duration: number) {
+function msToTime(duration: number): string {
 	const milliseconds: number = Math.floor((duration % 1000) / 100);
 	let seconds: number | string = Math.floor((duration / 1000) % 60),
 		minutes: number | string = Math.floor((duration / (1000 * 60)) % 60),
