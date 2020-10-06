@@ -1,11 +1,12 @@
-const fetch = require("node-fetch");
-const Discord = require("discord.js");
-const { Command } = require("discord-akairo");
+import fetch from "node-fetch";
+import Discord from "discord.js";
+import { Command } from "discord-akairo";
+import { Message } from "discord.js";
+import { getMemberColorAsync } from "../../functions/Util";
 
 module.exports = class YeetCommand extends Command {
 	constructor() {
 		super("yeetkids", {
-			name: "yeetkids",
 			cooldown: 8000,
 			aliases: ["yeetkids"],
 			typing: true,
@@ -13,17 +14,16 @@ module.exports = class YeetCommand extends Command {
 		});
 	}
 
-	async exec(message) {
-		const color = message.member.displayColor;
-		await loadTitle(message);
+	async exec(message: Message) {
+		await loadTitle();
 		async function loadTitle() {
 			const promise = async () => fetch("https://www.reddit.com/r/YeetingKids/.json?limit=1000&?sort=top&t=all");
 			promise()
 				.then((res) => res.json())
-				.then((json) => json.data.children.map((t) => t.data))
+				.then((json) => json.data.children.map((t: any) => t.data))
 				.then((data) => postRandomTitle(data));
 		}
-		async function postRandomTitle(data) {
+		async function postRandomTitle(data: any) {
 			const randomTitle = data[Math.floor(Math.random() * data.length) + 1];
 			let randomRedditPost = randomTitle.selftext.substring(0, 2045);
 			if (randomTitle.selftext.length > 2048) {
@@ -39,11 +39,11 @@ module.exports = class YeetCommand extends Command {
 			const yeetEmbed = new Discord.MessageEmbed()
 				.setTitle(RTTitle)
 				.setDescription(randomRedditPost)
-				.setColor(color)
+				.setColor(await getMemberColorAsync(message))
 				.setAuthor(`Submitted by ${randomTitle.author}`, "", "")
 				.setImage(RTUrl)
 				.setFooter(`${randomTitle.ups} updoots`);
-			await message.util.send("", { split: true, embed: yeetEmbed, content: (!RTUrl ? randomTitle.url : "") });
+			await message.util?.send("", { split: true, embed: yeetEmbed, content: (!RTUrl ? randomTitle.url : "") });
 		}
 	}
 };

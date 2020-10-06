@@ -1,11 +1,11 @@
-const Canvas = require("canvas");
-const Discord = require("discord.js");
-const { Command } = require("discord-akairo");
+import Canvas from "canvas";
+import Discord from "discord.js";
+import { Command } from "discord-akairo";
+import { Message } from "discord.js";
 
 module.exports = class SimpCommand extends Command {
 	constructor() {
 		super("simp", {
-			id: "simp",
 			aliases: ["simp"],
 			description: { description: "Embarrass your simp friend", usage: "@dreb" },
 			cooldown: 8000,
@@ -14,15 +14,15 @@ module.exports = class SimpCommand extends Command {
 				id: "member",
 				type: "member",
 				match: "rest",
-				default: (message) => {
+				default: (message: Message) => {
 					return message.member;
 				},
 			}],
 		});
 	}
-	async exec(message, args) {
+	async exec(message: Message, args: any) {
 		const member = args.member || args.default;
-		const applyText = (canvas, text) => {
+		const applyText = (canvas: Canvas.Canvas, text: string) => {
 			const ctx = canvas.getContext("2d");
 			// Declare a base size of the font
 			let fontSize = 60;
@@ -54,6 +54,6 @@ module.exports = class SimpCommand extends Command {
 		ctx.drawImage(avatar, 300, 140, 100, 100);
 
 		const attachment = new Discord.MessageAttachment(canvas.toBuffer(), "Simper.jpg");
-		await message.util.send(`Haha, you're a simp!! ${member.user}`, attachment);
+		await message.util?.send(`Haha, you're a simp!! ${member.user}`, attachment);
 	}
 };

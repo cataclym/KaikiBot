@@ -1,7 +1,7 @@
 import { MessageEmbed, Message } from "discord.js";
 import { UserNickTable } from "../../functions/functions";
 import { prefix } from "../../config";
-import paginationEmbed from "discord.js-pagination";
+import { paginationEmbed } from "discord.js-pagination";
 import { Command, Argument } from "discord-akairo";
 import { getMemberColorAsync } from "../../functions/Util";
 
