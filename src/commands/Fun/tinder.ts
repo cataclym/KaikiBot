@@ -1,10 +1,14 @@
-const db = require("quick.db");
+import db from "quick.db";
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
 const Tinder = new db.table("Tinder");
-const { NoRolls, Dislike, SuperLike, NormalLike } = require("../../functions/tinder.js");
-const embeds = require("../../functions/embeds.js");
-const { Command, Argument, Flag } = require("discord-akairo");
-const { MessageEmbed } = require("discord.js");
-const reactPromises = async (SentMsg) => {
+import { NoRolls, Dislike, SuperLike, NormalLike } from "../../functions/tinder";
+import embeds from "../../functions/embeds";
+import { Command, Argument, Flag } from "discord-akairo";
+import { MessageEmbed } from "discord.js";
+import { Message, User, MessageReaction } from "discord.js";
+import { ownerID } from "../../config";
+const reactPromises = async (SentMsg: Message) => {
 	SentMsg.react("❌");
 	SentMsg.react("💚");
 	SentMsg.react("🌟");
@@ -14,7 +18,6 @@ const reactPromises = async (SentMsg) => {
 module.exports = class TinderMain extends Command {
 	constructor() {
 		super("tinder", {
-			name: "tinder",
 			cooldown: 2,
 			aliases: ["t", "tinder"],
 			description: { description: "Suggests someone to date", usage: "help" },
@@ -38,10 +41,10 @@ module.exports = class TinderMain extends Command {
 		};
 		return user;
 	}
-	async exec(message, args) {
+	async exec(message: Message, args: any) {
 
 		if (args) {
-			return message.util.send(await embeds.tinderRollEmbed(message, args));
+			return message.util?.send(await embeds.tinderRollEmbed(message, args));
 			// return tinderNodeCanvasImage(message, tinderCardUser);
 		}
 		const hasRolls = parseInt(Tinder.get(`rolls.${message.author.id}`), 10);
@@ -52,30 +55,30 @@ module.exports = class TinderMain extends Command {
 		const dislikeID = Tinder.get(`dislikeID.${message.author.id}`);
 		const dating = Tinder.get(`dating.${message.author.id}`);
 		const married = Tinder.get(`married.${message.author.id}`);
-		const combined = [].concat(likesID, dislikeID, married, dating, rolledIDs);
+		const combined: string[] = [].concat(likesID, dislikeID, married, dating, rolledIDs);
 
-		const userIDArray = await message.client.users.cache.map(user => !user.bot ? user.id : message.member.id),
+		const userIDArray = message.client.users.cache.map(user => !user.bot ? user.id : message.member?.id),
 			// This is how I filter out bot users. Please let me know if it can be done better
-			filtered = userIDArray.filter(f => !combined.includes(f));
+			filtered = userIDArray.filter((f: string) => !combined.includes(f));
 		if (!filtered.length) {
 			// When there are no more people left
-			return message.util.send("Looking for people to date... 📡").then((sentMsg) => {
+			return message.util?.send("Looking for people to date... 📡").then((sentMsg) => {
 				setTimeout(async () => {
 					(sentMsg.edit(sentMsg.content + "\nNo new potential mates were found."));
 				}, 5000);
 			});
 		}
 		const randomUserID = filtered[Math.floor(Math.random() * filtered.length)];
-		const randomUsr = await message.client.users.cache.get(randomUserID);
+		const randomUsr = message.client.users.cache.get(randomUserID ? randomUserID : ownerID);
 
-		if (hasRolls > 0) {
+		if (hasRolls > 0 && randomUsr) {
 			Tinder.subtract(`rolls.${message.author.id}`, 1);
 			Tinder.push(`temporary.${message.author.id}`, randomUserID);
 			const randomUserEmbed = await embeds.tinderRollEmbed(message, randomUsr, RollsLikes);
-			const SentMsg = await message.util.send(randomUserEmbed);
+			const SentMsg = await message.channel.send(randomUserEmbed);
 			reactPromises(SentMsg)
 				.catch(err => console.log(err));
-			const filter = async (reaction, user) => {
+			const filter = async (reaction: MessageReaction, user: User) => {
 				return ["❌", "💚", "🌟"].includes(reaction.emoji.name) && user.id === message.author.id;
 			};
 			SentMsg.awaitReactions(filter, { max: 1, time: 25000, errors: ["time"] })
@@ -83,7 +86,7 @@ module.exports = class TinderMain extends Command {
 					const reaction = collected.first();
 					const newHasRolls = parseInt(Tinder.get(`rolls.${message.author.id}`), 10);
 					// Updates leftover likes/rolls in real-time /s
-					switch (reaction.emoji.name) {
+					switch (reaction?.emoji.name) {
 						case "❌": {
 							return Dislike(message, SentMsg, randomUserEmbed, newHasRolls, hasLikes, randomUsr);
 						}
