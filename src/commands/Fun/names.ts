@@ -1,7 +1,7 @@
 import { MessageEmbed, Message } from "discord.js";
 import { UserNickTable } from "../../functions/functions";
 import { prefix } from "../../config";
-import { paginationEmbed } from "discord.js-pagination";
+import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
 import { Command, Argument } from "discord-akairo";
 import { getMemberColorAsync } from "../../functions/Util";
 
@@ -65,6 +65,6 @@ module.exports = class NamesCommand extends Command {
 				.setDescription(StringsAuthorDBName.slice(p, i));
 			pages.push(dEmbed);
 		}
-		return paginationEmbed(message, pages);
+		return editMessageWithPaginatedEmbeds(message, pages, {});
 	}
 };
