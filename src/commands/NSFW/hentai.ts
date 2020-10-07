@@ -42,7 +42,7 @@ export default class HentaiCommand extends Command {
 				}
 			}
 			else {
-				throw "Channel is not NSFW.";
+				throw new Error ("Channel is not NSFW.");
 			}
 		}
 		catch (e) {
