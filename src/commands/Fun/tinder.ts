@@ -3,11 +3,12 @@ import db from "quick.db";
 // @ts-ignore
 const Tinder = new db.table("Tinder");
 import { NoRolls, Dislike, SuperLike, NormalLike } from "../../functions/tinder";
-import embeds from "../../functions/embeds";
+import { tinderRollEmbed } from "../../functions/embeds";
 import { Command, Argument, Flag } from "discord-akairo";
 import { MessageEmbed } from "discord.js";
 import { Message, User, MessageReaction } from "discord.js";
 import { ownerID } from "../../config";
+
 const reactPromises = async (SentMsg: Message) => {
 	SentMsg.react("❌");
 	SentMsg.react("💚");
@@ -44,8 +45,8 @@ module.exports = class TinderMain extends Command {
 	async exec(message: Message, args: any) {
 
 		if (args) {
-			return message.util?.send(await embeds.tinderRollEmbed(message, args));
-			// return tinderNodeCanvasImage(message, tinderCardUser);
+			return message.util?.send(await tinderRollEmbed(message, args));
+		// return tinderNodeCanvasImage(message, tinderCardUser);
 		}
 		const hasRolls = parseInt(Tinder.get(`rolls.${message.author.id}`), 10);
 		const hasLikes = parseInt(Tinder.get(`likes.${message.author.id}`), 10);
@@ -74,7 +75,9 @@ module.exports = class TinderMain extends Command {
 		if (hasRolls > 0 && randomUsr) {
 			Tinder.subtract(`rolls.${message.author.id}`, 1);
 			Tinder.push(`temporary.${message.author.id}`, randomUserID);
-			const randomUserEmbed = await embeds.tinderRollEmbed(message, randomUsr, RollsLikes);
+			console.log(await tinderRollEmbed(message, randomUsr, RollsLikes));
+
+			const randomUserEmbed = await tinderRollEmbed(message, randomUsr, RollsLikes);
 			const SentMsg = await message.channel.send(randomUserEmbed);
 			reactPromises(SentMsg)
 				.catch(err => console.log(err));
@@ -100,7 +103,7 @@ module.exports = class TinderMain extends Command {
 				}).catch(async () => SentMsg.edit(new MessageEmbed(randomUserEmbed).setFooter("Timed out")).then(msg => msg.reactions.removeAll()));
 		}
 		else {
-			return message.reply(NoRolls());
+			return message.reply(await NoRolls());
 		}
 	}
 };

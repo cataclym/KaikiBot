@@ -1,20 +1,25 @@
-/* eslint-disable max-statements-per-line */
 import db from "quick.db";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 const Tinder = new db.table("Tinder");
 import { timeToMidnight, msToTime } from "./functions";
-import paginationEmbed from "discord.js-pagination";
+import paginationEmbed from "@cataclym/discord.js-pagination-ts-nsb";
 import { MessageEmbed, MessageAttachment } from "discord.js";
 import Canvas from "canvas";
 import { Message } from "discord.js";
 import { User } from "discord.js";
 import { getMemberColorAsync } from "./Util";
+const userStates: any = {
+	"online" : "#00FF00",
+	"offline" : "#6E0DD0",
+	"idle" : "#FF0099",
+	"dnd" : "#FD1C03",
+};
 
 // function TinderProfile(message) {
 // 	//...
 // }
-async function TinderStartup(message: Message) {
+async function TinderStartup(message: Message): Promise<void> {
 	// This will spam the console from TinderDBService sadly // Edit: fixed it somewhat.
 	let i = 0;
 	message.client.users.cache.forEach(user => {
@@ -23,20 +28,38 @@ async function TinderStartup(message: Message) {
 	});
 	console.log("Tinder Database Service | Tinder has completed startup procedure. | " + i + " users registered in Tinder DB");
 }
-async function TinderDBService(user: User) {
+async function TinderDBService(user: User): Promise<void> {
 	// This is the peak of JS
 	let i = 0;
-	if (!Tinder.has(`rolls.${user.id}`)) { Tinder.add(`rolls.${user.id}`, 15); i++; }
-	if (!Tinder.has(`likes.${user.id}`)) { Tinder.add(`likes.${user.id}`, 3); i++; }
-	if (!Tinder.has(`dating.${user.id}`)) { Tinder.push(`dating.${user.id}`, user.id); i++; }
-	if (!Tinder.has(`likeID.${user.id}`)) { Tinder.push(`likeID.${user.id}`, user.id); i++; }
-	if (!Tinder.has(`dislikeID.${user.id}`)) { Tinder.push(`dislikeID.${user.id}`, user.id); i++; }
-	if (!Tinder.has(`married.${user.id}`)) { Tinder.push(`married.${user.id}`, user.id); i++; }
+	if (!Tinder.has(`rolls.${user.id}`)) {
+		Tinder.add(`rolls.${user.id}`, 15);
+		i++;
+	}
+	if (!Tinder.has(`likes.${user.id}`)) {
+		Tinder.add(`likes.${user.id}`, 3);
+		i++;
+	}
+	if (!Tinder.has(`dating.${user.id}`)) {
+		Tinder.push(`dating.${user.id}`, user.id);
+		i++;
+	}
+	if (!Tinder.has(`likeID.${user.id}`)) {
+		Tinder.push(`likeID.${user.id}`, user.id);
+		i++;
+	}
+	if (!Tinder.has(`dislikeID.${user.id}`)) {
+		Tinder.push(`dislikeID.${user.id}`, user.id);
+		i++;
+	}
+	if (!Tinder.has(`married.${user.id}`)) {
+		Tinder.push(`married.${user.id}`, user.id);
+		i++;
+	}
 	if (i > 0) {
 		console.log("Tinder Database Service | Checking " + user?.username + " | Ran " + i + " changes.");
 	}
 }
-function NoLikes() {
+function NoLikes(): string {
 	const time2mid = timeToMidnight();
 	const time2midHrs = msToTime(time2mid);
 	return "You don't have any more likes!\nLikes and rolls reset in: " + time2midHrs;
@@ -61,7 +84,7 @@ async function SeparateTinderList(message: Message, Item: string[], ListName = "
 			.setDescription(Item.slice(p, i).length ? Item.map((item, itemIndex) => `**${+itemIndex + 1}**. ${message.client.users.cache.find(member => member.id === item) ? message.client.users.cache.find(member => member.id === item)?.username : "`User has left guild`"}`).slice(p, i) : "There doesn't seem to be anyone here");
 		pages.push(dEmbed);
 	}
-	return paginationEmbed.paginationEmbed(message, pages);
+	return paginationEmbed.editMessageWithPaginatedEmbeds(message, pages, {});
 }
 
 const allListMap = async (message: Message, DataAndID: unknown[]) => {
@@ -93,10 +116,6 @@ async function fetchUserList(message: Message, user: User): Promise<Message> {
 }
 
 async function tinderNodeCanvasImage(message: Message, randomUser: User): Promise<Message> {
-
-	const userStates = {
-		"online" : "#00FF00", "offline" : "#6E0DD0", "idle" : "#FF0099", "dnd" : "#FD1C03",
-	};
 
 	const applyText = (canvas: Canvas.Canvas, text: string) => {
 		const ctx = canvas.getContext("2d");
@@ -156,12 +175,12 @@ async function tinderNodeCanvasImage(message: Message, randomUser: User): Promis
 	ctx.fillStyle = userStates[randomUser.presence.status];
 	circlePath.fillStyle = userStates[randomUser.presence.status];
 	circlePath.arc(40, 360, 25, 0, 2 * Math.PI);
-	circlePath.fill(circlePath);
+	circlePath.fill();
 
 	const fileAttachment = new MessageAttachment(canvas.toBuffer(), "tinderProfile.png");
-	return message.channel.send(new MessageEmbed().attachFiles([fileAttachment]).setImage("attachment://tinderProfile.png").setColor(message.member.displayColor));
+	return message.channel.send(new MessageEmbed().attachFiles([fileAttachment]).setImage("attachment://tinderProfile.png").setColor(await getMemberColorAsync(message)));
 }
-async function NormalLike(message, SentMsg, genericEmbed, newHasRolls, hasLikes, randomUsr) {
+async function NormalLike(message: Message, SentMsg: Message, genericEmbed: MessageEmbed, newHasRolls: number, hasLikes: number, randomUsr: User): Promise<Message> {
 	if (hasLikes > 0) {
 		Tinder.subtract(`likes.${message.author.id}`, 1);
 		const newHasLikes = parseInt(Tinder.get(`likes.${message.author.id}`), 10);
@@ -178,7 +197,7 @@ async function NormalLike(message, SentMsg, genericEmbed, newHasRolls, hasLikes,
 				const newEmbed = new MessageEmbed(genericEmbed)
 					.setAuthor("❤️❤️❤️")
 					.setColor("#ff00ff")
-					.setTitle(randomUsr.user.username)
+					.setTitle(randomUsr.username)
 					.setDescription("It's a match! Congratulations!")
 					.setFooter(NewRollsLikes);
 				return SentMsg.edit(newEmbed);
@@ -201,7 +220,7 @@ async function NormalLike(message, SentMsg, genericEmbed, newHasRolls, hasLikes,
 	}
 }
 
-async function Dislike(message, SentMsg, genericEmbed, newHasRolls, hasLikes, randomUsr) {
+async function Dislike(message: Message, SentMsg: Message, genericEmbed: MessageEmbed, newHasRolls: number, hasLikes: number, randomUsr: User): Promise<Message> {
 	Tinder.push(`dislikeID.${message.author.id}`, randomUsr.id);
 	const NewRollsLikes = newHasRolls + " rolls " + hasLikes + " likes remaining.";
 	SentMsg.reactions.removeAll();
@@ -213,9 +232,9 @@ async function Dislike(message, SentMsg, genericEmbed, newHasRolls, hasLikes, ra
 		.setFooter(NewRollsLikes);
 	return SentMsg.edit(newEmbed);
 }
-async function SuperLike(message, SentMsg, genericEmbed, hasLikes, randomUsr) {
+async function SuperLike(message: Message, SentMsg: Message, genericEmbed: MessageEmbed, hasLikes: number, randomUsr: User): Promise<Message> {
 	if (hasLikes > 0) {
-		const zero = parseInt(0, 10);
+		const zero = Math.floor(0);
 		await TinderDBService(randomUsr);
 		Tinder.push(`dating.${message.author.id}`, randomUsr.id);
 		Tinder.push(`dating.${randomUsr.id}`, message.author.id);
@@ -236,6 +255,6 @@ async function SuperLike(message, SentMsg, genericEmbed, hasLikes, randomUsr) {
 	}
 }
 
-export = {
+export {
 	TinderStartup, TinderDBService, NoLikes, NoRolls, SeparateTinderList, fetchUserList, tinderNodeCanvasImage, Dislike, NormalLike, SuperLike,
 };
