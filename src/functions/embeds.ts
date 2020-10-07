@@ -51,16 +51,16 @@ async function tinderRollEmbed(message: Message, randomUsr: User, RollsLikes?: s
 		.setColor(await getMemberColorAsync(message))
 		.setAuthor(randomTinderS)
 		.setTitle(randomUsr.username)
+		.setDescription("**Nickname**\n" + message.guild?.members.cache.get(randomUsr.id)?.displayName)
 		.addFields(
 			{ name: "**Likes**", value: finalNumber - 1, inline: true },
 			{ name: "**Waifus**", value: waifuIDs - 1, inline: true },
 			// In order to negate the user itself in the list
 		)
 		.setFooter(RollsLikes ? "React '❌' to dislike. '💚' To like. '🌟' To super like.\n" + RollsLikes : randomUsr.tag)
-		.setImage(randomUsr.displayAvatarURL({ dynamic: true }))
-		.setDescription("**Nickname**\n" + message.guild?.members.cache.get(randomUsr.id)?.nickname);
+		.setImage(randomUsr.displayAvatarURL({ dynamic: true, size: 128 }));
 	return tinderEmbed;
 }
-export default {
+export {
 	DMEMarry, TinderHelp, tinderRollEmbed,
 };
