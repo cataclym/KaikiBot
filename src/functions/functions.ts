@@ -62,23 +62,24 @@ async function emoteReact(message: Message): Promise<void> {
 		}
 	});
 }
+const index = {
+	i: 0,
+};
 // Please don't laugh
-let i = 0;
 async function tiredNadekoReact(message: Message): Promise<void | Message> {
-	// Yes I know
 	const botName = message.client.user?.username.toLowerCase().split(" ");
 	if (!botName) {
 		return;
 	}
 	if (new RegExp(botName.join("|")).test(message.content.toLowerCase()) && new RegExp(words.join("|")).test(message.content.toLowerCase())) {
-		i++;
-		if (i < 4) {
-			await message.react("😢");
+		index.i++;
+		if (index.i < 4) {
+			message.react("😢");
 		}
 		else {
 			// reset length
-			await message.channel.send("😢");
-			i = 0;
+			message.channel.send("😢");
+			index.i = 0;
 		}
 	}
 }
@@ -104,15 +105,15 @@ function timeToMidnight(): number {
 }
 async function EmoteDBStartup(client: Client): Promise<void> {
 	console.log("Emote service: checking for new emotes-");
-	let index = 0;
+	let i = 0;
 	client.guilds.cache.forEach(guild => {
 		guild.emojis.cache.forEach(emote => {
 			if (!Emotes.has(`${guild.id}.${emote.id}`)) {
-				Emotes.set(`${guild.id}.${emote.id}`, { count: 0 }); index++;
+				Emotes.set(`${guild.id}.${emote.id}`, { count: 0 }); i++;
 			}
 		});
 	});
-	console.log("Emote service: ...done! " + index + " new emotes added!");
+	console.log("Emote service: ...done! " + i + " new emotes added!");
 }
 
 const startUp = async (): Promise<void> => {
