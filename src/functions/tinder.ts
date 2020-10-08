@@ -9,6 +9,7 @@ import Canvas from "canvas";
 import { Message } from "discord.js";
 import { User } from "discord.js";
 import { getMemberColorAsync } from "./Util";
+import { Guild } from "discord.js";
 const userStates: any = {
 	"online" : "#00FF00",
 	"offline" : "#6E0DD0",
@@ -19,7 +20,7 @@ const userStates: any = {
 // function TinderProfile(message) {
 // 	//...
 // }
-async function TinderStartup(message: Message): Promise<void> {
+async function TinderStartup(message: Message | User | Guild): Promise<void> {
 	// This will spam the console from TinderDBService sadly // Edit: fixed it somewhat.
 	let i = 0;
 	message.client.users.cache.forEach(user => {

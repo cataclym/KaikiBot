@@ -3,7 +3,6 @@ import { Util, Message, User, Client } from "discord.js";
 import db from "quick.db";
 import { prefix, prefixes, prefixes2, emoteNames } from "../config.js";
 import { getMemberColorAsync } from "./Util";
-
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 const Tinder = new db.table("Tinder"), Emotes = new db.table("Emotes"), guildConfig = new db.table("guildConfig"), UserNickTable = new db.table("UserNickTable");
@@ -28,9 +27,8 @@ async function dadBot(message: Message): Promise<void> {
 		if (r.test(message.content) && !message.author.bot) {
 			const { nickname } : any = message.content.match(r)?.groups;
 			if (nickname.length <= 256) {
-				Util.removeMentions(nickname);
 				// Incase of roles being mentionable.
-				message.channel.send(`Hi, ${nickname}`);
+				message.channel.send(`Hi, ${Util.removeMentions(nickname)}`);
 				const owner = message.guild?.owner;
 				if (nickname.length <= 32) {
 					const guildMember = message.author;
@@ -47,7 +45,7 @@ async function dadBot(message: Message): Promise<void> {
 }
 // check for special role
 async function roleCheck(message: Message): Promise<boolean> {
-	return !!message.member?.roles.cache.find((r) => r.name === names);
+	return !message.member?.roles.cache.find((r) => r.name === names);
 }
 // Reacts with emote to specified words
 async function emoteReact(message: Message): Promise<void> {
@@ -116,6 +114,7 @@ async function EmoteDBStartup(client: Client): Promise<void> {
 	console.log("Emote service: ...done! " + i + " new emotes added!");
 }
 
+// Yeah this is stupid.
 const startUp = async (): Promise<void> => {
 	if (!guildConfig.get("dadbot")) { guildConfig.set("dadbot", ["10000000"]); }
 	if (!guildConfig.get("anniversary")) { guildConfig.set("anniversary", ["10000000"]); }
