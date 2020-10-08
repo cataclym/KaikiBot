@@ -2,12 +2,13 @@
     "compilerOptions": {
       "strictNullChecks": true, // enable strict null checks as a best practice
       "allowJs": true,
-      "module": "commonjs",
+      "module": "commonJS",
       "esModuleInterop": true,
-      "target": "es2020",
+      "target": "ESNext",
       "noImplicitAny": true,
       "moduleResolution": "node",
       "sourceMap": true,
+      "resolveJsonModule": true,
       "rootDir": "src",
       "outDir": "dist",
       "baseUrl": ".",
