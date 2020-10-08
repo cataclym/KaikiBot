@@ -1,5 +1,8 @@
-const { Listener } = require("discord-akairo");
-const { TinderStartup, EmoteDBStartup, GuildOnAddBirthdays } = require("../functions/functions");
+import { Listener } from "discord-akairo";
+import { Guild } from "discord.js";
+import { EmoteDBStartup } from "../functions/functions";
+import { TinderStartup } from "../functions/tinder";
+import { GuildOnAddBirthdays } from "../functions/AnniversaryRoles";
 
 module.exports = class GuildCreate extends Listener {
 	constructor() {
@@ -9,7 +12,7 @@ module.exports = class GuildCreate extends Listener {
 		});
 	}
 
-	async exec(guild) {
+	async exec(guild: Guild) {
 		console.log("\nBot was added to " + guild.name + "!! " + guild.memberCount + " members!\n");
 		await TinderStartup(guild);
 		await EmoteDBStartup(this.client);
