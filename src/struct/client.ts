@@ -4,7 +4,6 @@ import { prefix, ownerID } from "../config";
 
 export class customClient extends AkairoClient {
 	commandHandler: CommandHandler;
-	eventHandler: ListenerHandler;
 	inhibitorHandler: InhibitorHandler;
 	listenerHandler: ListenerHandler;
 	constructor() {
