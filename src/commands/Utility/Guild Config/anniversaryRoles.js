@@ -2,7 +2,7 @@
 const { Command } = require("discord-akairo");
 const { MessageEmbed } = require("discord.js");
 const db = require("quick.db");
-const { prefix } = require("../../../config.js");
+const { config } = require("../../../config.js");
 const { GuildOnAddBirthdays } = require("../../../functions/AnniversaryRoles.js");
 const guildConfig = new db.table("guildConfig");
 
@@ -28,7 +28,7 @@ module.exports = class AnniversaryRolesConfigCommand extends Command {
 					enabledGuilds.push(message.guild.id);
 					guildConfig.set("anniversary", enabledGuilds);
 					GuildOnAddBirthdays(message.guild);
-					return message.util.send(new MessageEmbed().setDescription(`Anniversary-roles functionality has been enabled in ${message.guild.name}!\nIndividual users can still disable dadbot on themselves with ${prefix}exclude.`));
+					return message.util.send(new MessageEmbed().setDescription(`Anniversary-roles functionality has been enabled in ${message.guild.name}!\nIndividual users can still disable dadbot on themselves with ${config.prefix}exclude.`));
 				}
 				else {
 					return message.util.send(new MessageEmbed().setDescription("You have already enabled Anniversary-roles."));

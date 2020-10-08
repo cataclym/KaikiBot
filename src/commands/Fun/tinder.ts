@@ -7,7 +7,7 @@ import { tinderRollEmbed } from "../../functions/embeds";
 import { Command, Argument, Flag } from "discord-akairo";
 import { MessageEmbed } from "discord.js";
 import { Message, User, MessageReaction } from "discord.js";
-import { ownerID } from "../../config";
+import { config } from "../../config";
 
 const reactPromises = async (SentMsg: Message) => {
 	SentMsg.react("❌");
@@ -70,7 +70,7 @@ module.exports = class TinderMain extends Command {
 			});
 		}
 		const randomUserID = filtered[Math.floor(Math.random() * filtered.length)];
-		const randomUsr = message.client.users.cache.get(randomUserID ? randomUserID : ownerID);
+		const randomUsr = message.client.users.cache.get(randomUserID ? randomUserID : config.ownerID);
 
 		if (hasRolls > 0 && randomUsr) {
 			Tinder.subtract(`rolls.${message.author.id}`, 1);

@@ -1,6 +1,6 @@
 import { MessageEmbed, Message } from "discord.js";
 import { UserNickTable } from "../../functions/functions";
-import { prefix } from "../../config";
+import { config } from "../../config";
 import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
 import { Command, Argument } from "discord-akairo";
 import { getMemberColorAsync } from "../../functions/Util";
@@ -10,7 +10,7 @@ module.exports = class NamesCommand extends Command {
 	constructor() {
 		super("names", {
 			aliases: ["name", "names"],
-			description: { description: "Returns all your daddy nicknames", usage: " | " + prefix + "names @someone | " + prefix + "names delete" },
+			description: { description: "Returns all your daddy nicknames", usage: " | " + config.prefix + "names @someone | " + config.prefix + "names delete" },
 		});
 	}
 	*args() {

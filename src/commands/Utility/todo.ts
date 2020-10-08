@@ -4,7 +4,7 @@ import db from "quick.db";
 // @ts-ignore
 const ReminderList = new db.table("ReminderList");
 import { MessageEmbed } from "discord.js";
-import { prefix } from "../../config.js";
+import { config } from "../../config.js";
 import { Command, Flag, Argument } from "discord-akairo";
 import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
 import { getMemberColorAsync } from "../../functions/Util.js";
@@ -15,7 +15,7 @@ module.exports = class TodoCommand extends Command {
 			aliases: ["todo", "note"],
 			description: {
 				description: "A personal todo list",
-				usage: `(Displays list)\n${prefix}todo add make cake 07/07/2020\n${prefix}todo remove 5\n${prefix}todo remove last\n${prefix}todo remove first\n${prefix}todo remove all`,
+				usage: `(Displays list)\n${config.prefix}todo add make cake 07/07/2020\n${config.prefix}todo remove 5\n${config.prefix}todo remove last\n${config.prefix}todo remove first\n${config.prefix}todo remove all`,
 			},
 		});
 	}
@@ -42,7 +42,7 @@ module.exports = class TodoCommand extends Command {
 				.setAuthor(message.author.tag)
 				.setThumbnail("https://cdn.discordapp.com/attachments/717045690022363229/726600392107884646/3391ce4715f3c814d6067911438e5bf7.png")
 				.setColor(color)
-				.setDescription(reminderArray.slice(p, index).map((item: string, i: number) => `${+i + 1}. ${item}`).join("\n") + `\n\nTo learn more about the command, type \`${prefix}help todo\``);
+				.setDescription(reminderArray.slice(p, index).map((item: string, i: number) => `${+i + 1}. ${item}`).join("\n") + `\n\nTo learn more about the command, type \`${config.prefix}help todo\``);
 			pages.push(embed);
 		}
 		await editMessageWithPaginatedEmbeds(message, pages, {});

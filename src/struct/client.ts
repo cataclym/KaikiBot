@@ -1,6 +1,6 @@
 import { AkairoClient, CommandHandler, InhibitorHandler, ListenerHandler } from "discord-akairo";
 import { join } from "path";
-import { prefix, ownerID } from "../config";
+import { config } from "../config";
 
 export class customClient extends AkairoClient {
 	commandHandler: CommandHandler;
@@ -8,7 +8,7 @@ export class customClient extends AkairoClient {
 	listenerHandler: ListenerHandler;
 	constructor() {
 		super({
-			"ownerID": ownerID,
+			"ownerID": config.ownerID,
 		},
 		{
 			"shards": "auto",
@@ -16,7 +16,7 @@ export class customClient extends AkairoClient {
 		});
 
 		this.commandHandler = new CommandHandler(this, {
-			prefix: prefix,
+			prefix: config.prefix,
 			blockBots: true,
 			defaultCooldown: 3000,
 			blockClient: true,

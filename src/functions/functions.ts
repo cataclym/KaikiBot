@@ -1,12 +1,11 @@
 import Discord from "discord.js";
 import { Util, Message, User, Client } from "discord.js";
-import db from "quick.db";
-import { prefix, prefixes, prefixes2, emoteNames } from "../config.js";
 import { getMemberColorAsync } from "./Util";
+import { config } from "../config";
+import db from "quick.db";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 const Tinder = new db.table("Tinder"), Emotes = new db.table("Emotes"), guildConfig = new db.table("guildConfig"), UserNickTable = new db.table("UserNickTable");
-import { names } from "../config";
 const words = ["shit", "fuck", "stop", "dont", "kill", "don't", "don`t", "fucking", "shut", "shutup", "shuttup", "trash", "bad", "hate", "stupid", "dumb", "suck", "sucks"];
 
 // handle mentions
@@ -14,7 +13,7 @@ async function handleMentions(message: Message): Promise<Message | void> {
 	if (message.mentions.has(message.client.user as User, { ignoreDirect: false, ignoreEveryone: true, ignoreRoles: true }) && !message.author.bot) {
 		const embed = new Discord.MessageEmbed({
 			title: `Hi ${message.author.username}, what's up?`,
-			description: `If you need help type ${prefix}help.`,
+			description: `If you need help type ${config.prefix}help.`,
 			color: await getMemberColorAsync(message),
 		});
 		return message.channel.send(embed);
@@ -22,7 +21,7 @@ async function handleMentions(message: Message): Promise<Message | void> {
 }
 // dad bot
 async function dadBot(message: Message): Promise<void> {
-	for (const item of prefixes) {
+	for (const item of config.prefixes) {
 		const r = new RegExp(`(^|\\s|$)(?<statement>(?<prefix>${item})\\s*(?<nickname>.*)$)`, "mi");
 		if (r.test(message.content) && !message.author.bot) {
 			const { nickname } : any = message.content.match(r)?.groups;
@@ -45,15 +44,15 @@ async function dadBot(message: Message): Promise<void> {
 }
 // check for special role
 async function roleCheck(message: Message): Promise<boolean> {
-	return !message.member?.roles.cache.find((r) => r.name === names);
+	return !message.member?.roles.cache.find((r) => r.name === config.names);
 }
 // Reacts with emote to specified words
 async function emoteReact(message: Message): Promise<void> {
 	const keywords = message.content.toLowerCase().split(" ");
 	keywords.forEach(async (word) => {
-		if (prefixes2.includes(word)) {
+		if (config.prefixes2.includes(word)) {
 			// TODO: Able to add more words, select random word, store in db
-			const emojiName = emoteNames[prefixes2.indexOf(word)];
+			const emojiName = config.emoteNames[config.prefixes2.indexOf(word)];
 			if (!message.guild?.emojis.cache.find((e) => e.name === emojiName)) return console.log("Couldn't react to message. Emote probably doesnt exist on this guild.");
 			const emojiArray = message.guild.emojis.cache.find((e) => e.name === emojiName);
 			message.react(emojiArray ? emojiArray : "⚠");

@@ -2,7 +2,7 @@ import { Listener } from "discord-akairo";
 import { ReAssignBirthdays } from "../functions/AnniversaryRoles";
 import { TinderStartup } from "../functions/tinder";
 import { DailyResetTimer, EmoteDBStartup, startUp } from "../functions/functions";
-import { activityName, activityStatus } from "../config.js";
+import { config } from "../config.js";
 
 export default class ReadyListener extends Listener {
 	constructor() {
@@ -13,7 +13,7 @@ export default class ReadyListener extends Listener {
 	}
 
 	public async exec(): Promise<void> {
-		await this.client.user?.setActivity(activityName, { type: activityStatus }).then(r => {
+		await this.client.user?.setActivity(config.activityName, { type: config.activityStatus }).then(r => {
 			console.log(`🟦 Client ready | Status: ${r.status}`);
 		});
 		await startUp();

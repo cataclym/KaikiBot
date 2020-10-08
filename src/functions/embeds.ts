@@ -1,4 +1,4 @@
-import { prefix } from "../config";
+import { config } from "../config";
 import { poems } from "../functions/poems";
 import { MessageEmbed, Message, User } from "discord.js";
 import { getMemberColorAsync } from "./Util";
@@ -19,13 +19,13 @@ const weddingImageArray = ["https://media.discordapp.net/attachments/71704505921
 const TinderHelp = new MessageEmbed()
 	.setTitle("Tinder help page")
 	.addFields(
-		{ name: "Rolls and likes", value: "Using the main command (`" + prefix + "tinder`), costs a roll!\n" +
+		{ name: "Rolls and likes", value: "Using the main command (`" + config.prefix + "tinder`), costs a roll!\n" +
 				"If you decide to react with a 💚, you spend 1 like.\n" +
 				"If you react with a 🌟, you spend all your rolls and likes.", inline: true },
-		{ name: "How to marry", value: "You can only marry someone you are dating.\nMarrying is simple, type `" + prefix + "tinder marry @someone`\nThey will have to react with a ❤️, to complete the process!", inline: true },
-		{ name: "Check status", value: "You can check who you have liked, disliked and who you are currently dating as well as who you have married.\n`" + prefix + "tinder list` / `" + prefix + "tinder list dislikes`", inline: true },
+		{ name: "How to marry", value: "You can only marry someone you are dating.\nMarrying is simple, type `" + config.prefix + "tinder marry @someone`\nThey will have to react with a ❤️, to complete the process!", inline: true },
+		{ name: "Check status", value: "You can check who you have liked, disliked and who you are currently dating as well as who you have married.\n`" + config.prefix + "tinder list` / `" + config.prefix + "tinder list dislikes`", inline: true },
 		{ name: "Dislikes", value: "You have unlimited dislikes. You can never draw someone you have disliked.", inline: false },
-		{ name: "Manage your list", value: "You can remove dislikes/likes/dates and even divorce with\n`" + prefix + "tinder remove dislikes (user_list_nr)`. Obtain their number through the list.", inline: false },
+		{ name: "Manage your list", value: "You can remove dislikes/likes/dates and even divorce with\n`" + config.prefix + "tinder remove dislikes (user_list_nr)`. Obtain their number through the list.", inline: false },
 	)
 	.setColor("#31e387");
 

@@ -1,5 +1,5 @@
 import Discord from "discord.js";
-import { prefix } from "../../config.js";
+import { config } from "../../config";
 import { Command } from "discord-akairo";
 import { Message } from "discord.js";
 import { getMemberColorAsync } from "../../functions/Util.js";
@@ -18,7 +18,7 @@ module.exports = class commandsList extends Command {
 		const color = await getMemberColorAsync(message);
 		const embed = new Discord.MessageEmbed({
 			title: "List of commands for Nadeko Sengoku",
-			description: `Prefix is currently set to \`${prefix}\`\n`,
+			description: `Prefix is currently set to \`${config.prefix}\`\n`,
 			author: {
 				name: `Nadeko Sengoku Bot v${process.env.npm_package_version}`,
 				url: "https://github.com/cataclym/nadekosengokubot",

@@ -1,31 +1,43 @@
-// Change to whatever you like
-const prefix = "";
-// Input your bot token here
-const token = "";
+import { ActivityType } from "discord.js";
 
-// Grab an API key at https://holidayapi.com/ // Or leave it empty
-const holidayKey = "";
+export type BotConfig = {
+	prefix: string,
+	token: string,
+	holidayKey: string,
+	prefixes: string[],
+	prefixes2: string[],
+	emoteNames: string[],
+	names: string,
+	activityName: string,
+	activityStatus: ActivityType | number,
+	ownerID: string,
+}
 
-// Dont change
-const prefixes = ["i'm ", "im ", "i am ", "i’m "];
+export const config: BotConfig = {
+	// Change to whatever you like
+	prefix: "",
+	// Input your bot token here
+	token: "",
 
-// Change these to words the bot should add reactions to
-// You can add as many as you want
-const prefixes2 = ["word1", "word2"];
-// Change these to match the emotenames to be reacted with
-const emoteNames = ["emotename1", "emotename2", "emotename3", "emotename4"];
-// This is the role that the bot will exclude
-const names = "Nadeko-excluded";
+	// Grab an API key at https://holidayapi.com/ // Or leave it empty
+	holidayKey: "",
+	// Dont change
+	prefixes: ["i'm ", "im ", "i am ", "i’m "],
 
-// Bot activity status
-// Edit for song/game/media
-const activityName = "Renai circulation";
-// change to one of: WATCHING/LISTENING/PLAYING
-const activityStatus = 1;
+	// Change these to words the bot should add reactions to
+	// You can add as many as you want
+	prefixes2: ["word1", "word2"],
+	// Change these to match the emotenames to be reacted with
+	emoteNames: ["emotename1", "emotename2", "emotename3", "emotename4"],
+	// This is the role that the bot will exclude
+	names: "Nadeko-excluded",
 
-// Owner ID (Used for owner only commands)
-const ownerID = "";
-export {
-	names, prefixes, prefixes2, emoteNames, activityName, activityStatus,
-	prefix, token, holidayKey, ownerID,
+	// Bot activity status
+	// Edit for song/game/media
+	activityName: "Renai Circulation",
+	// change to one of: WATCHING/LISTENING/PLAYING
+	activityStatus: "LISTENING",
+
+	// Owner ID (Used for owner only commands)
+	ownerID: "140788173885276160",
 };
