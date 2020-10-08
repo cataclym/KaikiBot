@@ -1,8 +1,8 @@
-import Canvas from "canvas";
+import Canvas, { loadImage } from "canvas";
 import Discord from "discord.js";
 import { Command } from "discord-akairo";
 import { Message } from "discord.js";
-
+const background = async () => await loadImage("https://cdn.discordapp.com/attachments/717045059215687691/763459005137420328/simp.jpg");
 module.exports = class SimpCommand extends Command {
 	constructor() {
 		super("simp", {
@@ -38,8 +38,7 @@ module.exports = class SimpCommand extends Command {
 		const canvas = Canvas.createCanvas(500, 400);
 		const ctx = canvas.getContext("2d");
 
-		const background = await Canvas.loadImage("./images/simp.jpg");
-		ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
+		ctx.drawImage(await background(), 0, 0, canvas.width, canvas.height);
 
 		ctx.strokeStyle = "#000000";
 		ctx.strokeRect(0, 0, canvas.width, canvas.height);
