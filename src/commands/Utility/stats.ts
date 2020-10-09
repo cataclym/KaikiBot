@@ -1,11 +1,7 @@
-import Discord from "discord.js";
+import Discord, { Message } from "discord.js";
 import { Command } from "discord-akairo";
 import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
-import { Message } from "discord.js";
 import { getMemberColorAsync } from "../../functions/Util";
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-import * as npm from "../../../package.json";
 
 async function formatBytes(a: number, b = 2) {
 	if (a === 0) return "0 Bytes";
@@ -35,8 +31,8 @@ module.exports = class StatsCommand extends Command {
 		embed.setAuthor(`Nadeko Sengoku Bot v${process.env.npm_package_version}`, message.client.user?.displayAvatarURL({ dynamic: true }), "https://github.com/cataclym/nadekosengokubot");
 		embed.setDescription("**Built using**:");
 		embed.addFields([
-			{ name: "Discord.js library", value: `[Discord.js](https://discord.js.org/#/ 'Discord.js website') v${npm.dependencies["discord.js"]}`, inline: true },
-			{ name: "Discord-Akairo framework", value: `[Discord-Akairo](https://discord-akairo.github.io/#/ 'Discord-Akairo website') v${npm.dependencies["discord-akairo"]}`, inline: true },
+			{ name: "Discord.js library", value: "[Discord.js](https://discord.js.org/#/ 'Discord.js website') v12.3+", inline: true },
+			{ name: "Discord-Akairo framework", value: "[Discord-Akairo](https://discord-akairo.github.io/#/ 'Discord-Akairo website') v8.1+", inline: true },
 			{ name: "Running on Node.js", value: `[Node.js](https://nodejs.org/en/ 'Node.js website') ${process.version}`, inline: true },
 			{ name: "Memory: heap used", value: await formatBytes(process.memoryUsage().heapUsed), inline: true },
 			{ name: "Memory: heap total", value: await formatBytes(process.memoryUsage().heapTotal), inline: true },
