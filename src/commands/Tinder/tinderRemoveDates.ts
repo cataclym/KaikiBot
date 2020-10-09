@@ -10,7 +10,6 @@ import { Message } from "discord.js";
 module.exports = class TinderRemoveDates extends Command {
 	constructor() {
 		super("tinderremovedates", {
-			aliases: ["tinderremovedates"],
 			args: [
 				{
 					id: "integer",

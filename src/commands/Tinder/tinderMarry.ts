@@ -6,14 +6,11 @@ const Tinder = new db.table("Tinder");
 import { Command } from "discord-akairo";
 import { DMEMarry } from "../../functions/embeds.js";
 import { MessageEmbed } from "discord.js";
-import { Message } from "discord.js";
-import { MessageReaction } from "discord.js";
-import { User } from "discord.js";
+import { Message, MessageReaction, User } from "discord.js";
 
 module.exports = class TinderMarryCommand extends Command {
 	constructor() {
 		super("marry", {
-			aliases: ["marry"],
 			args: [
 				{
 					id: "user",

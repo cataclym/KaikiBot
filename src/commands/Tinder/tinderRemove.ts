@@ -6,7 +6,6 @@ import { config } from "../../config";
 module.exports = class TinderRemove extends Command {
 	constructor() {
 		super("tinderremove", {
-			aliases: ["tinderremove"],
 		});
 	}
 	*args() {

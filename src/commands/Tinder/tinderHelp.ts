@@ -5,6 +5,7 @@ import { TinderHelp } from "../../functions/embeds";
 module.exports = class TinderHelpCommand extends Command {
 	constructor() {
 		super("tinderhelp", {
+			aliases: ["tinderhelp"],
 		});
 	}
 	async exec(message: Message) {

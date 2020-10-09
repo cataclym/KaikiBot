@@ -6,15 +6,14 @@ import { SeparateTinderList } from "../../functions/tinder.js";
 import { Command } from "discord-akairo";
 import { Message } from "discord.js";
 
-module.exports = class TinderListMarriesCommand extends Command {
+module.exports = class TinderListDatesCommand extends Command {
 	constructor() {
-		super("tinderlistmarries", {
-			aliases: ["tinderlistmarries"],
+		super("tinderlistdates", {
 		});
 	}
 
 	async exec(message: Message) {
-		const married = <string[]> [...new Set(Tinder.get(`married.${message.author.id}`))];
-		return SeparateTinderList(message, married, `Spouses (${married.length - 1})`);
+		const dating = <string[]> [...new Set(Tinder.get(`dating.${message.author.id}`))];
+		return SeparateTinderList(message, dating, `Dates (${dating.length - 1})`);
 	}
 };

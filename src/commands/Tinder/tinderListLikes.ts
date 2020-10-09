@@ -9,7 +9,6 @@ import { Message } from "discord.js";
 module.exports = class TinderListLikesCommand extends Command {
 	constructor() {
 		super("tinderlistlikes", {
-			aliases: ["tinderlistlikes"],
 		});
 	}
 	async exec(message: Message) {
