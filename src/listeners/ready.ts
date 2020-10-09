@@ -13,6 +13,11 @@ export default class ReadyListener extends Listener {
 	}
 
 	public async exec(): Promise<void> {
+
+		if (!config.prefix) {
+			throw new Error("Missing prefix! Set a prefix in src/config.ts");
+		}
+
 		await this.client.user?.setActivity(config.activityName, { type: config.activityStatus }).then(r => {
 			console.log(`🟦 Client ready | Status: ${r.status}`);
 		});

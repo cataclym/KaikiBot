@@ -11,8 +11,7 @@ module.exports = class errorListener extends Listener {
 
 	public async exec(error: Error, message: Message, command: Command) {
 		if (message.channel.type !== "dm") {
-			console.log(`🔴 Error: ${message.guild?.name} | ${message.channel.name} | ${message.author.username} executed ${command?.id}
-        \n🔴 ${error}`);
+			console.log(`🔴 Error: ${message.guild?.name} | ${message.channel.name} | ${message.author.username} executed ${command?.id}\n🔴 ${error.stack}\n${error}`);
 		}
 	}
 };
