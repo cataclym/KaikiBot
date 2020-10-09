@@ -25,15 +25,14 @@ module.exports = class UserInfoCommand extends Command {
 			aliases: ["user", "uinfo"],
 			description: { description: "Shows relevant user info", usage: "<user>" },
 			args: [{
-				id: "user",
+				id: "member",
 				type: "member",
 				default: (message: Message) => message.member,
 			}],
 
 		});
 	}
-	exec(message: Message, args: GuildMember) {
-		const member = args;
+	public async exec(message: Message, { member }: { member: GuildMember}): Promise<Message> {
 		const userFlags = member.user.flags ? member.user.flags.toArray() : [], color = member.displayColor,
 			embed = new Discord.MessageEmbed()
 				.setColor(color)
@@ -65,8 +64,6 @@ module.exports = class UserInfoCommand extends Command {
 				);
 		member?.premiumSince ? embed.addField("Boosting", "Since " + member.premiumSince.toDateString() + " ✅", true) : null;
 		member.user.bot ? embed.addField("Bot", "✅", true) : null;
-		message.channel.send(embed).catch((err: Error) => {
-			console.log(err);
-		});
+		return message.channel.send(embed);
 	}
 };
