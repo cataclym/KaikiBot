@@ -1,7 +1,7 @@
 import { Command, Flag } from "discord-akairo";
 import { Message } from "discord.js";
 import { MessageEmbed } from "discord.js";
-import { prefix } from "../../config";
+import { config } from "../../config";
 
 module.exports = class TinderRemove extends Command {
 	constructor() {
@@ -17,7 +17,7 @@ module.exports = class TinderRemove extends Command {
 				["tinderremovedates", "dates", "d", "dating", "date"],
 				["tinderremovemarries", "married", "marries", "spouses", "s", "m"],
 			],
-			otherwise: new MessageEmbed().setDescription("Provide a list to remove an item from: [`dislikes`, `likes`, `dates`, `marries`] \nExample: `" + prefix + "tinder remove dislikes 69`").setColor("#ff0000"),
+			otherwise: new MessageEmbed().setDescription("Provide a list to remove an item from: [`dislikes`, `likes`, `dates`, `marries`] \nExample: `" + config.prefix + "tinder remove dislikes 69`").setColor("#ff0000"),
 		};
 		return Flag.continue(method);
 	}

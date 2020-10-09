@@ -22,13 +22,12 @@ module.exports = class TinderRemoveMarries extends Command {
 	}
 	async exec(message: Message, args: any) {
 		const marries = [...new Set(Tinder.fetch(`married.${message.author.id}`))];
-		if (marries === null || !Array.isArray(marries)) {
+		if (!marries[1]) {
 			return message.util?.send("Nothing to delete.");
 		}
-		const combinedMarries = marries.map(a => a);
-		const removedItem = combinedMarries.splice(args.integer, 1);
-		if (!(removedItem.toString() === message.author.id && removedItem)) {
-			Tinder.set(`married.${message.author.id}`, combinedMarries);
+		const removedItem = marries.splice(args.integer, 1);
+		if (!(removedItem.toString() === message.author.id) && removedItem) {
+			Tinder.set(`married.${message.author.id}`, marries);
 			const RemovedMember = message.client.users.cache.get(removedItem.toString());
 			const userList = [...new Set(Tinder.fetch(`dating.${removedItem}`))].map(a => a);
 			if (!userList || !Array.isArray(userList)) {

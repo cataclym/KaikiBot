@@ -22,14 +22,12 @@ module.exports = class TinderRemoveLikes extends Command {
 	}
 	async exec(message: Message, args: any) {
 		const likes = [...new Set(Tinder.fetch(`likeID.${message.author.id}`))];
-		if (likes === null || !Array.isArray(likes)) {
+		if (!likes[1]) {
 			return message.util?.send("Nothing to delete.");
 		}
-		const combinedLikes = likes.map(a => a);
-		// Matches given number to array item
-		const removedItem = combinedLikes.splice(args.integer, 1);
-		if (!(removedItem.toString() === message.author.id)) {
-			Tinder.set(`likeID.${message.author.id}`, combinedLikes);
+		const removedItem = likes.splice(args.integer, 1);
+		if (!(removedItem.toString() === message.author.id) && removedItem) {
+			Tinder.set(`likeID.${message.author.id}`, likes);
 			const RemovedMember = message.client.users.cache.get(removedItem.toString());
 			return message.util?.send(`Removed \`${RemovedMember ? RemovedMember?.username : "Uncached user"}\` from list.`).then(SentMsg => {
 				SentMsg.react("✅");
