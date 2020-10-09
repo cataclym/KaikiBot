@@ -2,6 +2,7 @@ import Canvas, { loadImage } from "canvas";
 import Discord from "discord.js";
 import { Command } from "discord-akairo";
 import { Message } from "discord.js";
+import { GuildMember } from "discord.js";
 const background = async () => await loadImage("https://cdn.discordapp.com/attachments/717045059215687691/763459005137420328/simp.jpg");
 module.exports = class SimpCommand extends Command {
 	constructor() {
@@ -13,15 +14,13 @@ module.exports = class SimpCommand extends Command {
 			args: [{
 				id: "member",
 				type: "member",
-				match: "rest",
 				default: (message: Message) => {
 					return message.member;
 				},
 			}],
 		});
 	}
-	async exec(message: Message, args: any) {
-		const member = args.member || args.default;
+	async exec(message: Message, { member }: { member: GuildMember }) {
 		const applyText = (canvas: Canvas.Canvas, text: string) => {
 			const ctx = canvas.getContext("2d");
 			// Declare a base size of the font

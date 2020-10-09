@@ -1,4 +1,4 @@
-import { MessageEmbed, Message } from "discord.js";
+import { MessageEmbed, Message, User } from "discord.js";
 import { UserNickTable } from "../../functions/functions";
 import { config } from "../../config";
 import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
@@ -23,18 +23,20 @@ module.exports = class NamesCommand extends Command {
 				}
 			},
 		};
-		const user = yield {
+		const unionUser = yield {
 			index: 0,
 			type: Argument.union("member", "user"),
 		};
-		return { user, method };
+
+		return { unionUser, method };
 	}
 
-	async exec(message: Message, args: any) {
+	async exec(message: Message, { method, unionUser }: { method: boolean, unionUser: any}) {
 		const color = await getMemberColorAsync(message);
-		const user = args?.user?.user || message.author;
-
-		if (args.method) {
+		const user = unionUser?.user || message.author;
+		// I hate this
+		// ??????????? // Guess this works.
+		if (method) {
 			try {
 				if (UserNickTable.delete(`usernicknames.${message.member?.id}`)) {
 
@@ -46,6 +48,7 @@ module.exports = class NamesCommand extends Command {
 				return console.log(error);
 			}
 		}
+
 		if (!UserNickTable.has(`usernicknames.${user.id}`)) {
 			UserNickTable.push(`usernicknames.${user.id}`, user.username);
 		}
@@ -58,12 +61,11 @@ module.exports = class NamesCommand extends Command {
 
 		const pages = [];
 		for (let i = 2047, p = 0; p < StringsAuthorDBName.length; i = i + 2047, p = p + 2047) {
-			const dEmbed = new MessageEmbed()
+			pages.push(new MessageEmbed()
 				.setTitle(`${user.username}'s past names`)
 				.setColor(color)
 				.setThumbnail(user.displayAvatarURL({ dynamic: true }))
-				.setDescription(StringsAuthorDBName.slice(p, i));
-			pages.push(dEmbed);
+				.setDescription(StringsAuthorDBName.slice(p, i)));
 		}
 		return editMessageWithPaginatedEmbeds(message, pages, {});
 	}
