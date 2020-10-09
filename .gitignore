@@ -126,3 +126,5 @@ json.sqlite
 .idea/nadekosengokubotAkairo.iml
 
 dist/smoljson.sqlite
+
+dist/
