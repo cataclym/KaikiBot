@@ -1,13 +1,16 @@
 "use strict";
-const { Command, Flag, Argument } = require("discord-akairo");
-const { MessageEmbed } = require("discord.js");
-const db = require("quick.db");
+import { Command, Flag, Argument } from "discord-akairo";
+import { Message } from "discord.js";
+import { MessageEmbed } from "discord.js";
+import db from "quick.db";
+import { getMemberColorAsync } from "../../../functions/Util";
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
 const guildConfig = new db.table("guildConfig");
 
 module.exports = class ConfigCommand extends Command {
 	constructor() {
 		super("config", {
-			name: "config",
 			aliases: ["config", "configure"],
 			description: {
 				description: "Configure guild settings",
@@ -26,23 +29,23 @@ module.exports = class ConfigCommand extends Command {
 		}
 	}
 
-	async exec(message) {
+	async exec(message: Message) {
 
 		const enabledDadBotGuilds = guildConfig.get("dadbot");
-		const embed = new MessageEmbed();
+		const embed = new MessageEmbed().setColor(await getMemberColorAsync(message));
 		const enabledAnniversaryGuilds = guildConfig.get("anniversary");
 		let dadbotEnabled = false;
 		let anniversaryRolesEnabled = false;
 
-		if (enabledDadBotGuilds.includes(message.guild.id)) {
+		if (enabledDadBotGuilds.includes(message.guild?.id)) {
 			dadbotEnabled = true;
 		}
-		if (enabledAnniversaryGuilds.includes(message.guild.id)) {
+		if (enabledAnniversaryGuilds.includes(message.guild?.id)) {
 			anniversaryRolesEnabled = true;
 		}
 		embed.addField("DadBot", dadbotEnabled, true);
 		embed.addField("Anniversary-Roles", anniversaryRolesEnabled, true);
-		message.util.send(embed);
+		message.util?.send(embed);
 	// Execute message to show what is enabled/disabled
 	// TODO: rename some things
 	}
