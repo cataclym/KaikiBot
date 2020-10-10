@@ -1,10 +1,10 @@
-import { MessageEmbed, Message, User } from "discord.js";
+import { MessageEmbed, Message } from "discord.js";
 import { UserNickTable } from "../../functions/functions";
 import { config } from "../../config";
 import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
 import { Command, Argument } from "discord-akairo";
 import { getMemberColorAsync } from "../../functions/Util";
-
+const arr = ["remove", "rem", "delete", "del"];
 
 module.exports = class NamesCommand extends Command {
 	constructor() {
@@ -17,7 +17,6 @@ module.exports = class NamesCommand extends Command {
 		const method = yield {
 			// TODO: figure out type of phrase
 			type: async (message: Message, phrase: any) => {
-				const arr = ["remove", "rem", "delete", "del"];
 				if (arr.includes(phrase)) {
 					return true;
 				}
