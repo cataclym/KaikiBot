@@ -11,7 +11,7 @@ module.exports = class EmoteCount extends Command {
 	constructor() {
 		super("emotecount", {
 			cooldown: 15000,
-			aliases: ["emotecount", "emojicount"],
+			aliases: ["emotecount", "emojicount", "countemotes", "countemoji"],
 			description: "Shows amount of times each emote has been used",
 		});
 	}

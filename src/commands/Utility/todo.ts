@@ -32,9 +32,9 @@ module.exports = class TodoCommand extends Command {
 	}
 
 	async exec(message: Message) {
-		const color = await getMemberColorAsync(message), reminder: unknown[] = ReminderList.fetch(`${message.author.id}`);
+		const color = await getMemberColorAsync(message), reminder: unknown[] | undefined = ReminderList.fetch(`${message.author.id}`);
 		let reminderArray;
-		reminder ? reminderArray = reminder.map((a: unknown[]) => a.join(" ")) : reminderArray = ["Empty list"];
+		reminder?.length ? reminderArray = reminder.map((a: unknown[]) => a.join(" ")) : reminderArray = ["Empty list"];
 		const pages = [];
 		for (let index = 30, p = 0; p < reminderArray.length; index = index + 30, p = p + 30) {
 			const embed = new MessageEmbed()
