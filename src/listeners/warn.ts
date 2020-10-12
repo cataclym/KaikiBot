@@ -11,7 +11,7 @@ export default class WarnListener extends Listener {
 
 	public async exec(info: string): Promise<void> {
 
-		console.warn(`🟧 ${info}`);
+		console.warn(`🟧 warn | ${info}`);
 
 	}
 }

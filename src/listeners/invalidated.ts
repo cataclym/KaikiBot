@@ -11,7 +11,7 @@ export default class InvalidatedListener extends Listener {
 
 	public async exec(): Promise<never> {
 
-		console.error("🟥 Session has become invalidated. Shutting down client.");
+		console.error("🟥 invalidated | Session has become invalidated. Shutting down client.");
 
 		return process.exit(1);
 

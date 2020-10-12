@@ -18,7 +18,7 @@ module.exports = class errorListener extends Listener {
 	Guild: ${message.guild?.name} [${message.guild?.id}]
 	Channel: #${message.channel.name} [${message.channel.id}]
 	User: ${message.author.username} [${message.author.id}]
-	Executed ${command.id} | "${message.content}"` +
+	Executed ${command.id} | "${message.content}"\n` +
 	`🔴 ${error.stack}`);
 		}
 	}
