@@ -4,10 +4,9 @@ import db from "quick.db";
 // @ts-ignore
 const Tinder = new db.table("Tinder");
 import { Command } from "discord-akairo";
-import { MessageEmbed } from "discord.js";
-import { Message } from "discord.js";
+import { Message, MessageEmbed, MessageReaction } from "discord.js";
 
-module.exports = class TinderRemoveMarries extends Command {
+export default class TinderRemoveMarries extends Command {
 	constructor() {
 		super("tinderremovemarries", {
 			args: [
@@ -19,12 +18,12 @@ module.exports = class TinderRemoveMarries extends Command {
 			],
 		});
 	}
-	async exec(message: Message, args: any) {
+	async exec(message: Message, { integer }: { integer: number }): Promise<Message | MessageReaction | null> {
 		const marries = [...new Set(Tinder.fetch(`married.${message.author.id}`))];
 		if (!marries[1]) {
-			return message.util?.send("Nothing to delete.");
+			return message.channel.send("Nothing to delete.");
 		}
-		const removedItem = marries.splice(args.integer, 1);
+		const removedItem = marries.splice(integer, 1);
 		if (!(removedItem.toString() === message.author.id) && removedItem) {
 			Tinder.set(`married.${message.author.id}`, marries);
 			const RemovedMember = message.client.users.cache.get(removedItem.toString());
@@ -36,10 +35,13 @@ module.exports = class TinderRemoveMarries extends Command {
 			userList.splice(userNumber, 1);
 			Tinder.set(`married.${removedItem}`, userList);
 
-			return message.util?.send(`You divorced \`${RemovedMember ? RemovedMember?.username : "Uncached user"}\`!`).then(SentMsg => {
+			return message.channel.send(`You divorced \`${RemovedMember ? RemovedMember?.username : "Uncached user"}\`!`).then(SentMsg => {
 				SentMsg.react("✅");
-				SentMsg.react("💔");
+				return SentMsg.react("💔");
 			});
 		}
+		else {
+			return message.channel.send("Something went wrong.");
+		}
 	}
-};
+}
