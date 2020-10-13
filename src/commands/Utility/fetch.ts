@@ -51,7 +51,7 @@ export default class FetchUserCommand extends Command {
 		userObject.locale?.length ? embed.addField("Locale", userObject.locale, true) : null;
 		presenceString.length > 5 ? embed.addField("Presence", presenceString, true) : null;
 		// Some presence can be more than 1 length but not contain anything...?
-		userFlags.length ? embed.addField("Flags", userFlags.map((flag) => flags[flag]).join(", "), true) : null;
+		userFlags.length ? embed.addField("Flags", userFlags.map((flag) => flags[flag]).join("\n"), true) : null;
 		userObject.bot ? embed.addField("Bot", "✅", true) : null;
 		return message.channel.send(embed);
 	}

@@ -43,11 +43,6 @@ Requirements
 By default the role that excludes users is currently called `Nadeko-excluded`. It can be changed in `./config.js`.              
 It will autocreate the role if it doesnt exist first time you type `+exlude`. And as long as it has "Manage roles" permissions.  
 
-Add it to pm2 for easy auto restart. 
-`pm2 start index.js` |
-`pm2 save` |
-`pm2 logs index --lines 50` 
-
 Having issues? Come join us on discord here                                                                                    
 <a href="https://discord.gg/msNtTYV">
 <img src="https://discordapp.com/api/guilds/414099963841216512/embed.png?style=banner2" title="Discord Server"/>

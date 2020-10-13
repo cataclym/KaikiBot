@@ -53,15 +53,16 @@ module.exports = class UserInfoCommand extends Command {
 					},
 					{
 						name: "Flags",
-						value: userFlags.length ? userFlags.map((flag: string) => flags[flag]).join(", ") : "None",
+						value: userFlags.length ? userFlags.map((flag: string) => flags[flag]).join("\n") : "None",
 						inline: true,
 					},
 					{
 						name: "Roles (" + member.roles.cache.size + ")",
-						value: member.roles.cache.array().sort((a: any, b: any) => b.position - a.position || b.id - a.id).slice(0, 10).join(", "),
+						value: member.roles.cache.array().sort((a: any, b: any) => b.position - a.position || b.id - a.id).slice(0, 10).join("\n"),
 						inline: true,
 					}],
 				);
+		member.lastMessage ? embed.addField("Last (seen) message", member.lastMessage?.createdAt.toLocaleString(), true) : null;
 		member?.premiumSince ? embed.addField("Boosting", "Since " + member.premiumSince.toDateString() + " ✅", true) : null;
 		member.user.bot ? embed.addField("Bot", "✅", true) : null;
 		return message.channel.send(embed);
