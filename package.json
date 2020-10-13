@@ -5,6 +5,7 @@
   "scripts": {
     "test": "echo \"Bypass build\" && node ./dist/index.js",
     "start": "npm run build && node ./dist/index.js",
+    "pm2": "NODE_ENV=production pm2 start node run ./dist/index.js --watch",
     "build": "tsc"
   },
   "keywords": [],
