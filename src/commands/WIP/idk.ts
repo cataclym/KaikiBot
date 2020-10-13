@@ -18,7 +18,7 @@ export default class what extends Command {
 	public async exec(message: Message, { member }: { member: GuildMember}): Promise<Message> {
 		const picture = canvas.createCanvas(256, 256);
 		const squishImage = picture.getContext("2d");
-		squishImage.setTransform(new canvas.DOMMatrix("");
+		squishImage.setTransform(1, 2, 3, 4, 5, 6);
 		const avatar = await canvas.loadImage(member.user.displayAvatarURL({ dynamic: true, size: 256, format: "png" }));
 		squishImage.drawImage(avatar, 0, 0, 256, 256);
 		const attachment: MessageAttachment = new MessageAttachment(picture.toBuffer("image/jpeg", { quality: 0.5 }), "edit.jpg");

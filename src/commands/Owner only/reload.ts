@@ -7,7 +7,7 @@ export default class ReloadCommand extends Command {
 	constructor() {
 		super("reload", {
 			aliases: ["re", "reload"],
-			description: { description: "Reloads a command" },
+			description: { description: "Reloads a command. Note: It does not run the TypeScript compiler." },
 			ownerOnly: true,
 			args: [
 				{
@@ -22,8 +22,9 @@ export default class ReloadCommand extends Command {
 		command.reload();
 		return message.channel.send(new MessageEmbed({
 			title: "Command reloaded",
+			description: command.filepath,
+			footer: { text: "Command: " + command.id },
 			color: await getMemberColorAsync(message),
 		}));
-		// TODO: Convert to Akairo reload
 	}
 }
