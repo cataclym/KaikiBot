@@ -3,7 +3,7 @@ import db from "quick.db";
 // @ts-ignore
 const Tinder = new db.table("Tinder");
 import { timeToMidnight, msToTime } from "./functions";
-import paginationEmbed from "@cataclym/discord.js-pagination-ts-nsb";
+import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
 import { MessageEmbed, MessageAttachment } from "discord.js";
 import Canvas from "canvas";
 import { Message } from "discord.js";
@@ -85,7 +85,7 @@ async function SeparateTinderList(message: Message, Item: string[], ListName = "
 			.setDescription(Item.slice(p, i).length ? Item.map((item, itemIndex) => `**${+itemIndex + 1}**. ${message.client.users.cache.find(member => member.id === item) ? message.client.users.cache.find(member => member.id === item)?.username : "`User has left guild`"}`).slice(p, i) : "There doesn't seem to be anyone here");
 		pages.push(dEmbed);
 	}
-	return paginationEmbed.editMessageWithPaginatedEmbeds(message, pages, {});
+	return editMessageWithPaginatedEmbeds(message, pages, {});
 }
 
 const allListMap = async (message: Message, DataAndID: unknown[]) => {
