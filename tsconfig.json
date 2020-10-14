@@ -1,0 +1,27 @@
+{
+    "compilerOptions": {
+      "strictNullChecks": true, // enable strict null checks as a best practice
+      "allowJs": true,
+      "module": "commonJS",
+      "esModuleInterop": true,
+      "target": "ESNext",
+      "noImplicitAny": true,
+      "moduleResolution": "node",
+      "sourceMap": true,
+      "resolveJsonModule": true,
+      "rootDir": "src",
+      "outDir": "dist",
+      "baseUrl": ".",
+      "paths": {
+        "*": ["node_modules/*"]
+      },
+      "declaration": false,
+      // "emitDecoratorMetadata": true,
+      // "experimentalDecorators": true,
+      "typeRoots": ["types/", "node_modules/@types"],
+      "lib": ["ES2020", "ES2019", "ES2018", "es2017", "es2016", "es2015", "dom"]
+    },
+    "include": ["src/**/*", "src/.eslintrc.js", "jest.config.js", "src/*"],
+    "exclude": ["node_modules/*", "types/*"]
+  }
+  
