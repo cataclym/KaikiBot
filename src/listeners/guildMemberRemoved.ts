@@ -5,14 +5,14 @@ import db from "quick.db";
 // @ts-ignore;
 const leaveRoleTable = new db.table("leaveRoleTable");
 
-module.exports = class GuildMemberRemovedListener extends Listener {
+export default class GuildMemberRemovedListener extends Listener {
 	constructor() {
 		super("guildMemberRemove", {
 			event: "guildMemberRemove",
 			emitter: "client",
 		});
 	}
-	async exec(member: GuildMember) {
+	async exec(member: GuildMember): Promise<void> {
 		leaveRoleTable.set(`${member.guild.id}.${member.id}`, member.roles.cache.map(role => role.id));
 	}
-};
+}

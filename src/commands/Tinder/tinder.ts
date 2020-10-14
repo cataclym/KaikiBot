@@ -42,7 +42,7 @@ module.exports = class TinderMain extends Command {
 		};
 		return user;
 	}
-	async exec(message: Message, args: any) {
+	async exec(message: Message, args: User) {
 
 		if (args) {
 			return message.util?.send(await tinderRollEmbed(message, args));
@@ -75,7 +75,6 @@ module.exports = class TinderMain extends Command {
 		if (hasRolls > 0 && randomUsr) {
 			Tinder.subtract(`rolls.${message.author.id}`, 1);
 			Tinder.push(`temporary.${message.author.id}`, randomUserID);
-			console.log(await tinderRollEmbed(message, randomUsr, RollsLikes));
 
 			const randomUserEmbed = await tinderRollEmbed(message, randomUsr, RollsLikes);
 			const SentMsg = await message.channel.send(randomUserEmbed);

@@ -3,7 +3,7 @@
 ### A simple bot Written in TypeScript with lots of unique commands and features.
 ***
 ## Features
-* ### Some commands
+### Some commands:
   * Todo
   * Dadjoke
   * Yeet, Yeetkids
@@ -15,11 +15,11 @@
   * Deadbeat
   * Simp
   * Compress, Squish, Stretch
-* ### Reacts with emotes to message that contain your preferred words
-  * See variables.js
-* ### Emotecount
+### Reacts with emotes to specified words
+  * Specify in `src/config.ts`
+### Emotecount
   * Emotecount
-* ### Irritating dad like responses, which also rename the user
+### Irritating dad like responses, which also rename the user
   * Toggleable per guild and per user
 ### And much more
 
@@ -28,19 +28,19 @@
 ***
 ## Instructions
 Requirements
-* nodejs (also installs npm)
-* build tools (Windows) `npm i --global --production windows-build-tools` | Linux <a href="https://github.com/Automattic/node-canvas/wiki/Installation:-Fedora-and-other-RPM-based-distributions"> Find your distribution and dependencies here </a> 
+* Nodejs https://nodejs.org/en/
+* Build tools (Windows) `npm i --global --production windows-build-tools` | (Linux) <a href="https://github.com/Automattic/node-canvas/wiki/Installation:-Fedora-and-other-RPM-based-distributions"> Find your distribution and dependencies here </a> 
 
 1. Clone repo
 1. Go into `src` folder. Edit`config.ts` - Add your bot token and edit the other inputs. // Need help? Join my server. 
 1. Terminal: `cd nadekosengokubot`
 1. Terminal: `npm i`
-1. Terminal: `node run start`
+1. Terminal: `npm start`
 1. ?
 1. Profit
 
 **Note:** 
-By default the role that excludes users is currently called `Nadeko-excluded`. It can be changed in `./config.js`.              
+By default the role that excludes users is currently called `Nadeko-excluded`. It can be changed in `src/config.ts`.              
 It will autocreate the role if it doesnt exist first time you type `+exlude`. And as long as it has "Manage roles" permissions.  
 
 Having issues? Come join us on discord here                                                                                    

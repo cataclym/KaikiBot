@@ -4,12 +4,9 @@ import db from "quick.db";
 const Tinder = new db.table("Tinder");
 import { timeToMidnight, msToTime } from "./functions";
 import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
-import { MessageEmbed, MessageAttachment } from "discord.js";
+import { MessageEmbed, MessageAttachment, Message, User, Guild } from "discord.js";
 import Canvas from "canvas";
-import { Message } from "discord.js";
-import { User } from "discord.js";
 import { getMemberColorAsync } from "./Util";
-import { Guild } from "discord.js";
 const userStates: any = {
 	"online" : "#00FF00",
 	"offline" : "#6E0DD0",

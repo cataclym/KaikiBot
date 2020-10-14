@@ -19,7 +19,7 @@ const embed3 = new MessageEmbed({
 module.exports = class ExcludeCommand extends Command {
 	constructor() {
 		super("exclude", {
-			description: "Adds or removes excluded role from user.",
+			description: { description: "Adds or removes excluded role from user." },
 			aliases: ["exclude", "e", "excl"],
 		});
 	}
