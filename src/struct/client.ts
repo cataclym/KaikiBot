@@ -11,8 +11,11 @@ export class customClient extends AkairoClient {
 			"ownerID": config.ownerID,
 		},
 		{
-			"shards": "auto",
-			"disableMentions": "everyone",
+			shards: "auto",
+			disableMentions: "everyone",
+			presence: {
+				activity: { type: config.activityStatus, name: config.activityName },
+			},
 		});
 
 		this.commandHandler = new CommandHandler(this, {

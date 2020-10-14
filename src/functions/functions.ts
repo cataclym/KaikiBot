@@ -24,17 +24,20 @@ async function dadBot(message: Message): Promise<void> {
 	for (const item of config.prefixes) {
 		const r = new RegExp(`(^|\\s|$)(?<statement>(?<prefix>${item})\\s*(?<nickname>.*)$)`, "mi");
 		if (r.test(message.content) && !message.author.bot) {
-			const { nickname } : any = message.content.match(r)?.groups;
-			if (nickname.length <= 256) {
-				// Incase of roles being mentionable.
-				message.channel.send(`Hi, ${Util.removeMentions(nickname)}`);
-				const owner = message.guild?.owner;
-				if (nickname.length <= 32) {
-					const guildMember = message.author;
-					UserNickTable.push(`usernicknames.${guildMember.id}`, nickname);
-					if (message.author.id !== owner?.id) {
+			const match = message.content.match(r)?.groups;
+			if (match?.nickname) {
+				// Strict null check
+				if (match.nickname.length <= 256) {
+					message.channel.send(`Hi, ${Util.removeMentions(match.nickname)}`);
+					// In case of roles being mentionable.
+					const owner = message.guild?.owner;
+					if (match.nickname.length <= 32) {
+						const guildMember = message.author;
+						UserNickTable.push(`usernicknames.${guildMember.id}`, match.nickname);
+						if (message.author.id !== owner?.id) {
 						// Avoids setting nickname on Server owners
-						await message.member?.setNickname(nickname);
+							await message.member?.setNickname(match.nickname);
+						}
 					}
 				}
 			}
@@ -90,7 +93,7 @@ async function ResetRolls(): Promise<void> {
 	}
 	console.log("Rolls and likes have been reset | " + Date() + "\n");
 }
-async function DailyResetTimer(): Promise<any> {
+async function DailyResetTimer(): Promise<void> {
 	setTimeout(async () => {
 		ResetRolls();
 		DailyResetTimer();

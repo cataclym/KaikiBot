@@ -17,7 +17,7 @@ export default class MessageListener extends Listener {
 		});
 	}
 
-	public async exec(message: Message): Promise<void | Message> {
+	public async exec(message: Message): Promise<void> {
 
 		tiredNadekoReact(message);
 		if (message.channel.type !== "dm") {
@@ -26,7 +26,7 @@ export default class MessageListener extends Listener {
 			countEmotes(message);
 			handleMentions(message);
 			emoteReact(message);
-			if (enabledDadBotGuilds.includes(message.guild?.id)) {
+			if (enabledDadBotGuilds?.includes(message.guild?.id)) {
 				if (await roleCheck(message)) {
 					dadBot(message);
 				}

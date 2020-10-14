@@ -2,7 +2,7 @@ import { Listener } from "discord-akairo";
 import { ReAssignBirthdays } from "../functions/AnniversaryRoles";
 import { TinderStartup } from "../functions/tinder";
 import { DailyResetTimer, EmoteDBStartup, startUp } from "../functions/functions";
-import { config } from "../config.js";
+import { config } from "../config";
 
 export default class ReadyListener extends Listener {
 	constructor() {

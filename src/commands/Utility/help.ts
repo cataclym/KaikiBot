@@ -3,7 +3,7 @@ import { config } from "../../config.js";
 import { Command } from "discord-akairo";
 import { getMemberColorAsync } from "../../functions/Util.js";
 
-module.exports = class HelpCommand extends Command {
+export default class HelpCommand extends Command {
 	constructor() {
 		super("help", {
 			args: [{
@@ -15,19 +15,19 @@ module.exports = class HelpCommand extends Command {
 			description: { description: "Shows command info", usage: "ping" },
 		});
 	}
-	async exec(message: Message, args: any) {
+	async exec(message: Message, { command }: { command: Command }): Promise<Message | void> {
 		const embed = new Discord.MessageEmbed()
 			.setColor(await getMemberColorAsync(message));
 
-		if (args.command) {
-			embed.setTitle(`**Name:** ${args.command.id}`);
-			embed.setDescription(`**Aliases:** \`${args.command.aliases.join("`, `")}\`\n**Description:** ${args.command.description.description}\n
-			${(args.command?.description.usage ? "**Usage:** " + config.prefix + args.command.id + " " + args.command.description.usage : "")}`);
-			args.command.userPermissions ? embed.addField("Requires", args.command.userPermissions, false) : null;
-			args.command.ownerOnly ? embed.addField("Owner only", "✅", false) : null;
+		if (command) {
+			embed.setTitle(`**Name:** ${command.id}`);
+			embed.setDescription(`**Aliases:** \`${command.aliases.join("`, `")}\`\n**Description:** ${command.description.description}\n
+			${(command?.description.usage ? "**Usage:** " + config.prefix + command.id + " " + command.description.usage : "")}`);
+			command.userPermissions ? embed.addField("Requires", command.userPermissions, false) : null;
+			command.ownerOnly ? embed.addField("Owner only", "✅", false) : null;
 			return message.util?.send(embed);
 		}
-		const AvUrl = await message.client.users.fetch("140788173885276160");
+		const AvUrl = await message.client.users.fetch("140788173885276160", true);
 		// Bot author
 		embed.setTitle(`${message.client.user?.username} help page`);
 		embed.setDescription(`Prefix is currently set to \`${config.prefix}\``);
@@ -39,4 +39,4 @@ module.exports = class HelpCommand extends Command {
 		embed.setFooter("Made by Cata <3", AvUrl.displayAvatarURL({ dynamic: true }));
 		await message.util?.send(embed);
 	}
-};
+}
