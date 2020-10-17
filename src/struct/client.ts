@@ -8,7 +8,7 @@ export class customClient extends AkairoClient {
 	listenerHandler: ListenerHandler;
 	constructor() {
 		super({
-			"ownerID": config.ownerID,
+			ownerID: config.ownerID,
 		},
 		{
 			shards: "auto",

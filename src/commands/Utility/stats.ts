@@ -12,7 +12,7 @@ module.exports = class StatsCommand extends Command {
 	constructor() {
 		super("stats", {
 			aliases: ["stats"],
-			description: { description: "Shows basic statistics" },
+			description: { description: "Statistics and information" },
 		});
 	}
 	async exec(message: Message) {

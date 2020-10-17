@@ -6,7 +6,7 @@ export default class ServerInfoCommand extends Command {
 	constructor() {
 		super("serverinfo", {
 			aliases: ["serverinfo", "sinfo"],
-			description: {},
+			description: { description: "Shows information about the current server." },
 		});
 	}
 	public async exec(message: Message): Promise<Message> {

@@ -18,12 +18,14 @@ module.exports = class todoRemoveCommand extends Command {
 			],
 		});
 	}
-	async exec(message: Message, args: any) {
-		const guildMember = message.author, reminder = ReminderList.fetch(`${message.author.id}`);
-		if (reminder === null || !Array.isArray(reminder)) {
+	async exec(message: Message, { toRemove }: { toRemove: number | string }) {
+		const guildMember = message.author;
+		const reminder: { todo: string[] | undefined } = ReminderList.fetch(`${message.author.id}`);
+		const combinedReminders = reminder?.todo?.map(a => a);
+		if (reminder.todo === null || !Array.isArray(reminder.todo) || !reminder.todo[0]) {
 			return message.channel.send("Nothing to delete.");
 		}
-		switch (args.toRemove) {
+		switch (toRemove) {
 			case "all": {
 				try {
 				// This first so we dont run into the map shit...
@@ -39,31 +41,31 @@ module.exports = class todoRemoveCommand extends Command {
 			}
 			case "last": {
 				// This gets repeated unnecessarily
-				const combinedReminders = reminder.map(a => a), removedItem = combinedReminders.pop();
+				const removedItem = combinedReminders?.pop();
 				// Assigns the last entry to removedItem
-				ReminderList.set(guildMember.id, combinedReminders);
-				const stringified = removedItem.toString().replace(/,/g, " ").substring(0, 46);
+				ReminderList.set(`${guildMember.id}.todo`, combinedReminders);
+				const stringified = removedItem?.toString().replace(/,/g, " ").substring(0, 46);
 				// Returns removedItem with space
 				return message.util?.reply(`Removed \`${stringified}\` from list.`).then(SentMsg => {
 					SentMsg.react("✅");
 				});
 			}
 			case "first": {
-				const combinedReminders = reminder.map(a => a), shiftedItem = combinedReminders.shift();
-				ReminderList.set(guildMember.id, combinedReminders);
-				const firstRemovedItem = shiftedItem.toString().replace(/,/g, " ").substring(0, 46);
+				const shiftedItem = combinedReminders?.shift();
+				ReminderList.set(`${guildMember.id}.todo`, combinedReminders);
+				const firstRemovedItem = shiftedItem?.toString().replace(/,/g, " ").substring(0, 46);
 				// Returns removedItem with space
 				return message.util?.reply(`Removed \`${firstRemovedItem}\` from list.`).then(SentMsg => {
 					SentMsg.react("✅");
 				});
 			}
 		}
-		if (Number.isInteger(args.toRemove)) {
+		if (typeof toRemove === "number") {
 			// Matches given number to array item
-			const combinedReminders = reminder.map(a => a), index = parseInt(args.toRemove, 10) - 1,
-				removedItem = combinedReminders.splice(index, 1);
-			ReminderList.set(guildMember.id, combinedReminders);
-			const removedString = removedItem.toString().replace(/,/g, " ").substring(0, 46);
+			const index = Math.floor(toRemove - 1),
+				removedItem = combinedReminders?.splice(index, 1);
+			ReminderList.set(`${guildMember.id}.todo`, combinedReminders);
+			const removedString = removedItem?.toString().replace(/,/g, " ").substring(0, 46);
 			// Returns removedItem with space
 			return message.util?.reply(`Removed \`${removedString}\` from list.`).then(SentMsg => {
 				SentMsg.react("✅");

@@ -91,7 +91,7 @@ async function ResetRolls(): Promise<void> {
 		Tinder.set(`likes.${key}`, 3);
 		Tinder.set(`rolls.${key}`, 15);
 	}
-	console.log("Rolls and likes have been reset | " + Date() + "\n");
+	console.log("🟦 resetRolls | Rolls and likes have been reset | " + Date() + "\n");
 }
 async function DailyResetTimer(): Promise<void> {
 	setTimeout(async () => {
