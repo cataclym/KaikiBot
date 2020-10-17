@@ -32,9 +32,9 @@ module.exports = class TodoCommand extends Command {
 	}
 
 	async exec(message: Message) {
-		const color = await getMemberColorAsync(message), reminder: unknown[] | undefined = ReminderList.fetch(`${message.author.id}`);
+		const color = await getMemberColorAsync(message), reminder: { todo: unknown[] | undefined } = ReminderList.fetch(`${message.author.id}`);
 		let reminderArray;
-		reminder?.length ? reminderArray = reminder.map((a: unknown[]) => a.join(" ")) : reminderArray = ["Empty list"];
+		reminder?.todo?.length ? reminderArray = reminder.todo.map((a: unknown[]) => a.join(" ")) : reminderArray = ["Empty list"];
 		const pages = [];
 		for (let index = 30, p = 0; p < reminderArray.length; index = index + 30, p = p + 30) {
 			const embed = new MessageEmbed()
@@ -42,7 +42,7 @@ module.exports = class TodoCommand extends Command {
 				.setAuthor(message.author.tag)
 				.setThumbnail("https://cdn.discordapp.com/attachments/717045690022363229/726600392107884646/3391ce4715f3c814d6067911438e5bf7.png")
 				.setColor(color)
-				.setDescription(reminderArray.slice(p, index).map((item: string, i: number) => `${+i + 1}. ${item}`).join("\n") + `\n\nTo learn more about the command, type \`${config.prefix}help todo\``);
+				.setDescription(reminderArray.map((item: string, i: number) => `${+i + 1}. ${item}`).slice(p, index).join("\n") + `\n\nTo learn more about the command, type \`${config.prefix}help todo\``);
 			pages.push(embed);
 		}
 		await editMessageWithPaginatedEmbeds(message, pages, {});

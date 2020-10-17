@@ -18,7 +18,7 @@ module.exports = class todoAddCommand extends Command {
 		});
 	}
 	async exec(message: Message, { toAdd }: { toAdd: string}) {
-		ReminderList.push(`${message.author.id}`, toAdd.split(/ +/));
+		ReminderList.push(`${message.author.id}.todo`, toAdd.split(/ +/));
 		return message.react("✅");
 	}
 };
