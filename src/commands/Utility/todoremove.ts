@@ -43,7 +43,7 @@ module.exports = class todoRemoveCommand extends Command {
 				// This gets repeated unnecessarily
 				const removedItem = combinedReminders?.pop();
 				// Assigns the last entry to removedItem
-				ReminderList.set(`${guildMember.id}.todo`, combinedReminders);
+				combinedReminders ? ReminderList.set(`${guildMember.id}.todo`, combinedReminders) : null;
 				const stringified = removedItem?.toString().replace(/,/g, " ").substring(0, 46);
 				// Returns removedItem with space
 				return message.util?.reply(`Removed \`${stringified}\` from list.`).then(SentMsg => {
@@ -52,7 +52,7 @@ module.exports = class todoRemoveCommand extends Command {
 			}
 			case "first": {
 				const shiftedItem = combinedReminders?.shift();
-				ReminderList.set(`${guildMember.id}.todo`, combinedReminders);
+				combinedReminders ? ReminderList.set(`${guildMember.id}.todo`, combinedReminders) : null;
 				const firstRemovedItem = shiftedItem?.toString().replace(/,/g, " ").substring(0, 46);
 				// Returns removedItem with space
 				return message.util?.reply(`Removed \`${firstRemovedItem}\` from list.`).then(SentMsg => {
@@ -64,7 +64,7 @@ module.exports = class todoRemoveCommand extends Command {
 			// Matches given number to array item
 			const index = Math.floor(toRemove - 1),
 				removedItem = combinedReminders?.splice(index, 1);
-			ReminderList.set(`${guildMember.id}.todo`, combinedReminders);
+			combinedReminders ? ReminderList.set(`${guildMember.id}.todo`, combinedReminders) : null;
 			const removedString = removedItem?.toString().replace(/,/g, " ").substring(0, 46);
 			// Returns removedItem with space
 			return message.util?.reply(`Removed \`${removedString}\` from list.`).then(SentMsg => {
