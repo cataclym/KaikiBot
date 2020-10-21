@@ -1,6 +1,4 @@
 import db from "quick.db";
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
 const Tinder = new db.table("Tinder");
 import { NoRolls, Dislike, SuperLike, NormalLike } from "../../functions/tinder";
 import { tinderRollEmbed } from "../../functions/embeds";
@@ -74,7 +72,7 @@ export default class TinderMain extends Command {
 
 		if (hasRolls > 0 && randomUsr) {
 			Tinder.subtract(`rolls.${message.author.id}`, 1);
-			Tinder.push(`temporary.${message.author.id}`, randomUserID);
+			Tinder.push(`temporary.${message.author.id}`, randomUsr.id);
 
 			const randomUserEmbed = await tinderRollEmbed(message, randomUsr, RollsLikes);
 			const SentMsg = await message.channel.send(randomUserEmbed);
