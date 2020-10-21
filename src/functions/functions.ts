@@ -2,8 +2,7 @@ import Discord from "discord.js";
 import { Util, Message, User, Client } from "discord.js";
 import { getMemberColorAsync } from "./Util";
 import { config } from "../config";
-import SQLite from "better-sqlite3";
-export const sql = new SQLite("../../json.sqlite");
+import db from "quick.db";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 const Tinder = new db.table("Tinder"), Emotes = new db.table("Emotes"), guildConfig = new db.table("guildConfig"), UserNickTable = new db.table("UserNickTable");
@@ -151,6 +150,5 @@ function msToTime(duration: number): string {
 
 export {
 	emoteReact, roleCheck, handleMentions, dadBot, UserNickTable, tiredNadekoReact,
-	ResetRolls, DailyResetTimer, EmoteDBStartup, countEmotes, msToTime, timeToMidnight,
-	startUp,
+	ResetRolls, DailyResetTimer, EmoteDBStartup, countEmotes, msToTime, timeToMidnight, startUp,
 };

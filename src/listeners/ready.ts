@@ -23,7 +23,7 @@ export default class ReadyListener extends Listener {
 		});
 		await startUp();
 		await DailyResetTimer().then(() => {
-			console.log("🟩 dailyResetTimer | Reset timer initiated.");
+			console.log("🟩 Reset timer initiated.");
 		});
 		EmoteDBStartup(this.client);
 		ReAssignBirthdays(this.client);
