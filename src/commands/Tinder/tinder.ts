@@ -12,7 +12,7 @@ import { config } from "../../config";
 const reactPromises = async (SentMsg: Message) => {
 	await SentMsg.react("❌");
 	setTimeout(async () => await SentMsg.react("💚"), 750);
-	setTimeout(async () => await SentMsg.react("🌟"), 750);
+	setTimeout(async () => await SentMsg.react("🌟"), 1500);
 };
 
 // tinderNodeCanvasImage
