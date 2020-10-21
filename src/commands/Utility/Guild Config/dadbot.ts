@@ -5,8 +5,6 @@ import { MessageEmbed } from "discord.js";
 import db from "quick.db";
 import { getMemberColorAsync } from "../../../functions/Util.js";
 import { config } from "../../../config.js";
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
 const guildConfig = new db.table("guildConfig");
 import { updateVar } from "../../../listeners/message";
 

@@ -7,7 +7,16 @@ async function formatBytes(a: number, b = 2) {
 	if (a === 0) return "0 Bytes";
 	const c = b < 0 ? 0 : b, d = Math.floor(Math.log(a) / Math.log(1024));return parseFloat((a / Math.pow(1024, d)).toFixed(c)) + " " + ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][d];
 }
+function format(seconds: number) {
 
+	const days = Math.floor(seconds / (60 * 60 * 24));
+	seconds %= (60 * 60 * 24);
+	const hours = Math.floor(seconds / (60 * 60));
+	seconds %= (60 * 60);
+	const minutes = Math.floor(seconds / 60);
+	const actualSeconds = Math.floor(seconds % 60);
+	return days + "** days**\n" + hours + "** hours**\n" + minutes + "** minutes**\n" + actualSeconds + "** seconds**";
+}
 module.exports = class StatsCommand extends Command {
 	constructor() {
 		super("stats", {
@@ -37,7 +46,7 @@ module.exports = class StatsCommand extends Command {
 			{ name: "Memory: heap used", value: await formatBytes(process.memoryUsage().heapUsed), inline: true },
 			{ name: "Memory: heap total", value: await formatBytes(process.memoryUsage().heapTotal), inline: true },
 			{ name: "Memory: rss", value: await formatBytes(process.memoryUsage().rss), inline: true },
-			{ name: "Uptime", value: new Date(1000 * process.uptime()).toISOString().substr(11, 8), inline: true },
+			{ name: "Uptime", value: format(process.uptime()), inline: true },
 			{ name: "Users", value: message.client.users.cache.size, inline: true },
 			{ name: "Presence", value: "Guilds: " + guilds.length +
 					"\nText channels: " + channels.textChannels +

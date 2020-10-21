@@ -1,8 +1,6 @@
 import { Command } from "discord-akairo";
 import { Message, MessageReaction } from "discord.js";
 import db from "quick.db";
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
 const ReminderList = new db.table("ReminderList");
 
 export default class TodoRestoreCommand extends Command {

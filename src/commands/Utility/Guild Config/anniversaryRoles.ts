@@ -5,8 +5,6 @@ import { getMemberColorAsync } from "../../../functions/Util";
 import { Command } from "discord-akairo";
 import db from "quick.db";
 import { GuildOnAddBirthdays } from "../../../functions/AnniversaryRoles.js";
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
 const guildConfig = new db.table("guildConfig");
 
 module.exports = class AnniversaryRolesConfigCommand extends Command {

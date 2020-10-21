@@ -1,7 +1,5 @@
 "use strict";
 import db from "quick.db";
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
 const ReminderList = new db.table("ReminderList");
 import { MessageEmbed } from "discord.js";
 import { config } from "../../config.js";

@@ -2,6 +2,7 @@ import Discord from "discord.js";
 import { Command } from "discord-akairo";
 import { Message } from "discord.js";
 import { GuildMember } from "discord.js";
+import { Role } from "discord.js";
 const flags: any = {
 	DISCORD_EMPLOYEE: "Discord Employee 👨‍💼",
 	DISCORD_PARTNER: "Discord Partner ❤️",
@@ -58,7 +59,7 @@ module.exports = class UserInfoCommand extends Command {
 					},
 					{
 						name: "Roles (" + member.roles.cache.size + ")",
-						value: member.roles.cache.array().sort((a: any, b: any) => b.position - a.position || b.id - a.id).slice(0, 10).join("\n"),
+						value: member.roles.cache.array().sort((a: Role, b: Role) => b.position - a.position || (b.id as unknown as number) - (a.id as unknown as number)).slice(0, 10).join("\n"),
 						inline: true,
 					}],
 				);

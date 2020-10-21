@@ -1,7 +1,5 @@
 "use strict";
 import db from "quick.db";
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
 const Tinder = new db.table("Tinder");
 import { Command } from "discord-akairo";
 import { DMEMarry } from "../../functions/embeds.js";
@@ -21,23 +19,23 @@ module.exports = class TinderMarryCommand extends Command {
 			],
 		});
 	}
-	async exec(message: Message, args: any) {
-		const ArgDates = Tinder.get(`dating.${args.user.id}`);
+	async exec(message: Message, { user }: { user: User}) {
+		const ArgDates = Tinder.get(`dating.${user.id}`);
 		if (ArgDates.includes(`${message.author.id}`)) {
-			const ArgMarry = Tinder.get(`married.${args.user.id}`);
+			const ArgMarry = Tinder.get(`married.${user.id}`);
 			const AuthorMarry = Tinder.get(`married.${message.author.id}`),
 				MarryMatches = AuthorMarry.filter((f: string) => ArgMarry.includes(f));
-			if (!MarryMatches.includes(`${args.user.id}`)) {
-				message.channel.send("Do you want to marry " + message.author.username + `, <@${args.user.id}>?` + "\nReact with a ❤️ to marry!")
+			if (!MarryMatches.includes(`${user.id}`)) {
+				message.channel.send("Do you want to marry " + message.author.username + `, <@${user.id}>?` + "\nReact with a ❤️ to marry!")
 					.then(heart => {
 						heart.react("❤️");
-						const filter = (reaction: MessageReaction, user: User) => {
-							return reaction.emoji.name === "❤️" && user.id === args.user.id;
+						const filter = (reaction: MessageReaction, reactionUser: User) => {
+							return reaction.emoji.name === "❤️" && reactionUser.id === user.id;
 						};
 						heart.awaitReactions(filter, { max: 1, time: 50000, errors: ["time"] })
 							.then(() => {
-								Tinder.push(`married.${message.author.id}`, args.user.id);
-								Tinder.push(`married.${args.user.id}`, message.author.id);
+								Tinder.push(`married.${message.author.id}`, user.id);
+								Tinder.push(`married.${user.id}`, message.author.id);
 								return message.channel.send(DMEMarry());
 							})
 							.catch(() => {

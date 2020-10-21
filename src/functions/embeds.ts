@@ -3,9 +3,6 @@ import { poems } from "../functions/poems";
 import { MessageEmbed, Message, User } from "discord.js";
 import { getMemberColorAsync } from "./Util";
 import db from "quick.db";
-// fuck me, fuck quick.db
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore-next-line
 const Tinder = new db.table("Tinder");
 const tinderSlogan = ["Match?", "Chat?", "Date?", "Flirt?", "Text?", "Tease?", "Chat up?", "Take a risk?"];
 // Some cringe anime wedding pictures

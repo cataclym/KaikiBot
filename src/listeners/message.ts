@@ -2,8 +2,6 @@ import { Listener } from "discord-akairo";
 import { emoteReact, roleCheck, handleMentions, dadBot, tiredNadekoReact, countEmotes } from "../functions/functions";
 import { Message } from "discord.js";
 import db from "quick.db";
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
 const guildConfig = new db.table("guildConfig");
 let enabledDadBotGuilds = guildConfig.get("dadbot");
 export async function updateVar(value: string[]): Promise<void> {

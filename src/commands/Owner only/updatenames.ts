@@ -1,6 +1,4 @@
 import db from "quick.db";
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
 const UserNickTable = new db.table("UserNickTable");
 import { Command } from "discord-akairo";
 import { Message } from "discord.js";
@@ -23,7 +21,7 @@ module.exports = class UpdateNames extends Command {
 		});
 		if (!updates?.entries.size) {
 			// Doubt this will ever happen
-			return console.log("Update names: No updates found.");
+			return console.warn(this.id + " | No updates found.");
 		}
 
 		let i = 0;
@@ -34,7 +32,7 @@ module.exports = class UpdateNames extends Command {
 				// Skips changes that aren't nicknames
 			}
 			else if (target instanceof User) {
-				await UserNickTable.push(`usernicknames.${target?.id}`, changes.map(c => c.new).toString());
+				UserNickTable.push(`usernicknames.${target?.id}`, changes.map(c => c.new).toString());
 				return i++;
 			// Adds to array
 			}

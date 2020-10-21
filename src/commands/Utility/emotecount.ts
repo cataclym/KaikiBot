@@ -1,13 +1,11 @@
 import db from "quick.db";
 import { MessageEmbed, Message } from "discord.js";
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
 const Emotes = new db.table("Emotes");
 import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
 import { Command } from "discord-akairo";
 import { getMemberColorAsync } from "../../functions/Util";
 
-module.exports = class EmoteCount extends Command {
+export default class EmoteCount extends Command {
 	constructor() {
 		super("emotecount", {
 			cooldown: 15000,
@@ -16,7 +14,7 @@ module.exports = class EmoteCount extends Command {
 		});
 	}
 
-	async exec(message: Message) {
+	async exec(message: Message): Promise<Message> {
 
 		const color = await getMemberColorAsync(message);
 		const GuildEmoteCount = Emotes.get(`${message.guild?.id}`);
@@ -24,7 +22,7 @@ module.exports = class EmoteCount extends Command {
 		for (const [key, value] of Object.entries(GuildEmoteCount)) {
 			const Emote = message.guild?.emojis.cache.get(key);
 			if (!Emote) { continue; }
-			data.push(`${Emote} \`${Object.values(value as any)}\` `);
+			data.push(`${Emote} \`${Object.values(value as string)}\` `);
 		}
 		const pages = [];
 		for (let i = 50, p = 0; p < data.length; i = i + 50, p = p + 50) {
@@ -35,6 +33,6 @@ module.exports = class EmoteCount extends Command {
 				.setDescription(data.slice(p, i).join(""));
 			pages.push(dEmbed);
 		}
-		await editMessageWithPaginatedEmbeds(message, pages, {});
+		return editMessageWithPaginatedEmbeds(message, pages, {});
 	}
-};
+}
