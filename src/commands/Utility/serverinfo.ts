@@ -1,4 +1,5 @@
 import { Command } from "discord-akairo";
+import { Guild } from "discord.js";
 import { MessageEmbed, Message } from "discord.js";
 import { config } from "../../config";
 
@@ -7,10 +8,16 @@ export default class ServerInfoCommand extends Command {
 		super("serverinfo", {
 			aliases: ["serverinfo", "sinfo"],
 			description: { description: "Shows information about the current server." },
+			args: [
+				{
+					id: "guild",
+					type: "guild",
+					default: (message: Message) => message.guild,
+				}
+			]
 		});
 	}
-	public async exec(message: Message): Promise<Message> {
-		const guild = message.guild;
+	public async exec(message: Message, { guild }: { guild: Guild }): Promise<Message> {
 		return message.channel.send(new MessageEmbed({
 			thumbnail: { url: <string> guild?.iconURL({ size: 2048, dynamic: true }) },
 			title: guild?.name,
