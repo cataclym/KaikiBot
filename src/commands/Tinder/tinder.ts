@@ -17,7 +17,7 @@ const reactPromises = async (SentMsg: Message) => {
 export default class TinderMain extends Command {
 	constructor() {
 		super("tinder", {
-			cooldown: 3000,
+			cooldown: 6500,
 			ratelimit: 2,
 			aliases: ["t", "tinder"],
 			description: { description: "Suggests someone to date", usage: "help" },

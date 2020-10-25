@@ -20,6 +20,12 @@ export default class HentaiCommand extends Command {
 	public async exec(message: Message, { tags }: { tags: string }): Promise<Message | void> {
 		if (message.channel.type === "text" && message.channel.nsfw) {
 			const messageArguments: string[] | undefined = tags?.split(/ +/);
+			postHentai(messageArguments);
+		}
+		else {
+			throw new Error ("Channel is not NSFW.");
+		}
+		async function postHentai(messageArguments: string[] | undefined): Promise<Message | void> {
 			const awaitResult = async () => (await grabHentaiPictureAsync(messageArguments));
 			const result: Image = await awaitResult();
 			if (result) {
@@ -33,11 +39,8 @@ export default class HentaiCommand extends Command {
 				}));
 			}
 			else {
-				return message.util?.send("No images found...");
+				return postHentai(messageArguments);
 			}
-		}
-		else {
-			throw new Error ("Channel is not NSFW.");
 		}
 	}
 }
