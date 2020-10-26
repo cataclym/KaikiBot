@@ -40,11 +40,16 @@ export default class KickCommand extends Command {
 			}));
 		}
 
-		await message.guild?.members.ban(user, { reason: reason });
-		await user.send(new MessageEmbed({
-			color: errorColor,
-			description: `You have been kicked from ${message.guild?.name}.\nReason: ${reason ? reason : "kicked"}`,
-		}));
+		await guildMember.kick(reason);
+		try {
+			await user.send(new MessageEmbed({
+				color: errorColor,
+				description: `You have been kicked from ${message.guild?.name}.\nReason: ${reason ? reason : "kicked"}`,
+			}));
+		}
+		catch {
+			// ignored
+		}
 		return message.channel.send(new MessageEmbed({
 			title: "Kicked user",
 			color: await getMemberColorAsync(message),

@@ -22,33 +22,43 @@ export default class BanCommand extends Command {
 			],
 		});
 	}
-	async exec(message: Message, { user, reason }: { user: User, reason: string}): Promise<Message | void | string | User | GuildMember> {
+	async exec(message: Message, { user, reason }: { user: User, reason: string}): Promise<Message> {
 
+		const successBan = new MessageEmbed({
+			title: "Banned user",
+			color: await getMemberColorAsync(message),
+			fields: [
+				{ name: "Username", value: user.username, inline: true },
+				{ name: "ID", value: user.id, inline: true },
+			],
+		});
+
+		// If uses is currently in the guild
 		const guildMember = message.guild?.members.cache.get(user.id);
 
 		if (!guildMember) {
-			return message.guild?.members.ban(user, { reason: reason });
+			await message.guild?.members.ban(user, { reason: reason });
+			return message.channel.send(successBan);
 		}
 
+		// Check if member is bannable
 		if (message.author.id != message.guild?.ownerID && (message.member as GuildMember).roles.highest.comparePositionTo(guildMember.roles.highest) > 0) {
 			return message.channel.send(new MessageEmbed({
-				color: await getMemberColorAsync(message),
+				color: errorColor,
 				description: "You don't have permissions to ban this member.",
 			}));
 		}
 
 		await message.guild?.members.ban(user, { reason: reason });
-		await user.send(new MessageEmbed({
-			color: errorColor,
-			description: `You have been banned from ${message.guild?.name}.\nReason: ${reason ? reason : "banned"}`,
-		}));
-		return message.channel.send(new MessageEmbed({
-			title: "Banned user",
-			color: await getMemberColorAsync(message),
-			fields: [
-				{ name: "Username", value: guildMember.user.username, inline: true },
-				{ name: "ID", value: guildMember.user.id, inline: true },
-			],
-		}));
+		try {
+			await user.send(new MessageEmbed({
+				color: errorColor,
+				description: `You have been banned from ${message.guild?.name}.\nReason: ${reason ? reason : "banned"}`,
+			}));
+		}
+		catch {
+			// ignored
+		}
+		return message.channel.send(successBan);
 	}
 }
