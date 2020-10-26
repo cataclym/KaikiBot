@@ -3,8 +3,7 @@ const Tinder = new db.table("Tinder");
 import { NoRolls, Dislike, SuperLike, NormalLike } from "../../functions/tinder";
 import { tinderRollEmbed } from "../../functions/embeds";
 import { Command, Argument, Flag } from "discord-akairo";
-import { MessageEmbed } from "discord.js";
-import { Message, User, MessageReaction } from "discord.js";
+import { MessageEmbed, Message, User, MessageReaction } from "discord.js";
 import { config } from "../../config";
 
 const reactPromises = async (SentMsg: Message) => {
