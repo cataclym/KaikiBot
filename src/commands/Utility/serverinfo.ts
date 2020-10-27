@@ -13,8 +13,8 @@ export default class ServerInfoCommand extends Command {
 					id: "guild",
 					type: "guild",
 					default: (message: Message) => message.guild,
-				}
-			]
+				},
+			],
 		});
 	}
 	public async exec(message: Message, { guild }: { guild: Guild }): Promise<Message> {

@@ -22,12 +22,12 @@ export default class KickCommand extends Command {
 			],
 		});
 	}
-	async exec(message: Message, { user, reason }: { user: User, reason: string}): Promise<Message | void | string | User | GuildMember> {
+	async exec(message: Message, { user, reason }: { user: User, reason: string}): Promise<Message> {
 
 		const guildMember = message.guild?.members.cache.get(user.id);
 
 		if (!guildMember) {
-			return message.util?.send(new MessageEmbed({
+			return message.channel.send(new MessageEmbed({
 				color: errorColor,
 				description: "Can't find this user.",
 			}));
