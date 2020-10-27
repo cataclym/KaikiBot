@@ -14,7 +14,7 @@ export default class EvalCommand extends Command {
 	constructor() {
 		super("eval", {
 			aliases: ["eval"],
-			clientPermissions: "ADMINISTRATOR",
+			clientPermissions: "KICK_MEMBERS",
 			ownerOnly: true,
 			args: [
 				{

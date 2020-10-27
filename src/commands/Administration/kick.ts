@@ -1,5 +1,5 @@
 import { Command } from "discord-akairo";
-import { MessageEmbed, User, Message, GuildMember } from "discord.js";
+import { MessageEmbed, Message, GuildMember } from "discord.js";
 import { errorColor, getMemberColorAsync } from "../../functions/Util";
 
 export default class KickCommand extends Command {
@@ -11,51 +11,49 @@ export default class KickCommand extends Command {
 			channel: "guild",
 			args: [
 				{
-					id: "user",
-					type: "user",
+					id: "member",
+					type: "member",
+					otherwise: new MessageEmbed({
+						color: errorColor,
+						description: "Can't find this user.",
+					}),
 				},
 				{
 					id: "reason",
 					type: "string",
-					default: null,
+					match: "content",
+					default: "kicked",
 				},
 			],
 		});
 	}
-	async exec(message: Message, { user, reason }: { user: User, reason: string}): Promise<Message> {
+	async exec(message: Message, { member, reason }: { member: GuildMember, reason: string}): Promise<Message> {
 
-		const guildMember = message.guild?.members.cache.get(user.id);
-
-		if (!guildMember) {
-			return message.channel.send(new MessageEmbed({
-				color: errorColor,
-				description: "Can't find this user.",
-			}));
-		}
-
-		if (message.author.id != message.guild?.ownerID && (message.member as GuildMember).roles.highest.comparePositionTo(guildMember.roles.highest) > 0) {
+		if (message.author.id != message.guild?.ownerID && (message.member as GuildMember).roles.highest.comparePositionTo(member.roles.highest) > 0) {
 			return message.channel.send(new MessageEmbed({
 				color: errorColor,
 				description: "You don't have permissions to ban this member.",
 			}));
 		}
 
-		await guildMember.kick(reason);
 		try {
-			await user.send(new MessageEmbed({
+			await member.user.send(new MessageEmbed({
 				color: errorColor,
-				description: `You have been kicked from ${message.guild?.name}.\nReason: ${reason ? reason : "kicked"}`,
+				description: `You have been kicked from ${message.guild?.name}.\nReason: ${reason}`,
 			}));
 		}
 		catch {
 			// ignored
 		}
+
+		await member.kick(reason);
+
 		return message.channel.send(new MessageEmbed({
 			title: "Kicked user",
 			color: await getMemberColorAsync(message),
 			fields: [
-				{ name: "Username", value: guildMember.user.username, inline: true },
-				{ name: "ID", value: guildMember.user.id, inline: true },
+				{ name: "Username", value: member.user.username, inline: true },
+				{ name: "ID", value: member.user.id, inline: true },
 			],
 		}));
 	}

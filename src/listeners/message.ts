@@ -2,6 +2,9 @@ import { Listener } from "discord-akairo";
 import { emoteReact, roleCheck, handleMentions, dadBot, tiredNadekoReact, countEmotes } from "../functions/functions";
 import { Message } from "discord.js";
 import db from "quick.db";
+import { MessageEmbed } from "discord.js";
+import { config } from "../config";
+import { standardColor } from "../functions/Util";
 const guildConfig = new db.table("guildConfig");
 let enabledDadBotGuilds = guildConfig.get("dadbot");
 export async function updateVar(value: string[]): Promise<void> {
@@ -15,12 +18,14 @@ export default class MessageListener extends Listener {
 		});
 	}
 
-	public async exec(message: Message): Promise<void> {
+	public async exec(message: Message): Promise<void | Message> {
+
+		if (message.webhookID || message.author.bot) return;
 
 		tiredNadekoReact(message);
+
 		if (message.channel.type !== "dm") {
 			// Guild only
-			if (message.webhookID || message.author.bot) return;
 			countEmotes(message);
 			handleMentions(message);
 			emoteReact(message);
@@ -29,6 +34,20 @@ export default class MessageListener extends Listener {
 					dadBot(message);
 				}
 			}
+		}
+		else {
+
+			console.log("message | DM from " + message.author.tag);
+
+			const embed = new MessageEmbed({
+				color: standardColor,
+				author: { name: message.author.tag },
+				description: message.content.substring(0, 2047),
+			});
+
+			message.attachments.first()?.url ? embed.setImage(message.attachments.first()?.url as string).setTitle(message.attachments.first()?.url as string) : null;
+
+			return this.client.users.cache.get(config.ownerID)?.send(embed);
 		}
 	}
 }

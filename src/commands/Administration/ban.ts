@@ -8,16 +8,22 @@ export default class BanCommand extends Command {
 			aliases: ["ban", "bean", "b"],
 			userPermissions: ["BAN_MEMBERS"],
 			clientPermissions: "BAN_MEMBERS",
+			description: { description: "Bans a user by ID or name with an optional message.", usage: ".b <@some Guy> Your behaviour is harmful." },
 			channel: "guild",
 			args: [
 				{
 					id: "user",
 					type: "user",
+					otherwise: new MessageEmbed({
+						color: errorColor,
+						description: "Can't find this user.",
+					}),
 				},
 				{
 					id: "reason",
 					type: "string",
-					default: null,
+					match: "content",
+					default: "banned",
 				},
 			],
 		});
@@ -49,16 +55,18 @@ export default class BanCommand extends Command {
 			}));
 		}
 
-		await message.guild?.members.ban(user, { reason: reason });
 		try {
 			await user.send(new MessageEmbed({
 				color: errorColor,
-				description: `You have been banned from ${message.guild?.name}.\nReason: ${reason ? reason : "banned"}`,
+				description: `You have been banned from ${message.guild?.name}.\nReason: ${reason}`,
 			}));
 		}
 		catch {
 			// ignored
 		}
+
+		await message.guild?.members.ban(user, { reason: reason });
+
 		return message.channel.send(successBan);
 	}
 }

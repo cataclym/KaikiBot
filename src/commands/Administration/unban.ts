@@ -12,24 +12,30 @@ export default class UnbanCommand extends Command {
 				{
 					id: "user",
 					type: "user",
-					default: (message: Message) => message.channel.send("Specify a user to unban."),
+					otherwise: new MessageEmbed({
+						color: errorColor,
+						description: "Can't find this user.",
+					}),
 				},
 			],
 		});
 	}
 	async exec(message: Message, { user }: { user: User }): Promise<Message> {
-		if (message.guild?.fetchBan(user)) {
-			{await message.guild?.members.unban(user);}
+
+		const bans = await message.guild?.fetchBans();
+
+		if (bans?.find((u) => u.user.id === user.id)) {
+			await message.guild?.members.unban(user);
 			return message.channel.send(new MessageEmbed({
 				color: await getMemberColorAsync(message),
 				description: `Unbanned ${user.tag}.`,
 			}));
 		}
 		else {
-			return message.channel.send({
+			return message.channel.send(new MessageEmbed({
 				color: errorColor,
 				description: "This user is not banned.",
-			});
+			}));
 		}
 	}
 }

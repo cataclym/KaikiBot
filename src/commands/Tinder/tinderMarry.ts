@@ -33,10 +33,10 @@ module.exports = class TinderMarryCommand extends Command {
 							return reaction.emoji.name === "❤️" && reactionUser.id === user.id;
 						};
 						heart.awaitReactions(filter, { max: 1, time: 50000, errors: ["time"] })
-							.then(() => {
+							.then(async () => {
 								Tinder.push(`married.${message.author.id}`, user.id);
 								Tinder.push(`married.${user.id}`, message.author.id);
-								return message.channel.send(DMEMarry());
+								return message.channel.send(await DMEMarry());
 							})
 							.catch(() => {
 								heart.reactions.removeAll().catch(error => console.error("Failed to clear reactions: ", error));
