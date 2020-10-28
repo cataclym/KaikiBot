@@ -20,6 +20,7 @@ export default class EvalCommand extends Command {
 				{
 					id: "code",
 					type: "string",
+					match: "rest",
 				},
 			],
 		});
