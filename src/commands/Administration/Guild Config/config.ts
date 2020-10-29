@@ -1,12 +1,11 @@
 "use strict";
 import { Command, Flag, Argument } from "discord-akairo";
-import { Message } from "discord.js";
-import { MessageEmbed } from "discord.js";
+import { Message, MessageEmbed } from "discord.js";
 import db from "quick.db";
 import { getMemberColorAsync } from "../../../functions/Util";
 const guildConfig = new db.table("guildConfig");
 
-module.exports = class ConfigCommand extends Command {
+export default class ConfigCommand extends Command {
 	constructor() {
 		super("config", {
 			aliases: ["config", "configure"],
@@ -16,7 +15,7 @@ module.exports = class ConfigCommand extends Command {
 			},
 		});
 	}
-	*args() {
+	*args(): unknown {
 		const method = yield {
 			type: [
 				["config-dadbot", "dadbot", "dad"],
@@ -28,7 +27,7 @@ module.exports = class ConfigCommand extends Command {
 		}
 	}
 
-	async exec(message: Message) {
+	async exec(message: Message): Promise<Message | void> {
 
 		const enabledDadBotGuilds = guildConfig.get("dadbot");
 		const embed = new MessageEmbed().setColor(await getMemberColorAsync(message));
@@ -48,4 +47,4 @@ module.exports = class ConfigCommand extends Command {
 	// Execute message to show what is enabled/disabled
 	// TODO: rename some things
 	}
-};
+}

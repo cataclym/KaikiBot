@@ -1,7 +1,7 @@
 import { config } from "../config";
 import { poems } from "../functions/poems";
 import { MessageEmbed, Message, User } from "discord.js";
-import { getMemberColorAsync } from "./Util";
+import { errorColor, getMemberColorAsync } from "./Util";
 import db from "quick.db";
 const Tinder = new db.table("Tinder");
 const tinderSlogan = ["Match?", "Chat?", "Date?", "Flirt?", "Text?", "Tease?", "Chat up?", "Take a risk?"];
@@ -58,6 +58,12 @@ async function tinderRollEmbed(message: Message, randomUsr: User, RollsLikes?: s
 		.setImage(randomUsr.displayAvatarURL({ dynamic: true, size: 128 }));
 	return tinderEmbed;
 }
+
+const noArgRole = new MessageEmbed({
+	color: errorColor,
+	description: "Can't find this role. Make sure you inputted it correctly.",
+});
+
 export {
-	DMEMarry, TinderHelp, tinderRollEmbed,
+	DMEMarry, TinderHelp, tinderRollEmbed, noArgRole,
 };
