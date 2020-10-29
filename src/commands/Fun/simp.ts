@@ -1,10 +1,8 @@
 import Canvas, { loadImage } from "canvas";
-import Discord from "discord.js";
 import { Command } from "discord-akairo";
-import { Message } from "discord.js";
-import { GuildMember } from "discord.js";
+import { Message, GuildMember, MessageAttachment } from "discord.js";
 const background = async () => await loadImage("https://cdn.discordapp.com/attachments/717045059215687691/763459005137420328/simp.jpg");
-module.exports = class SimpCommand extends Command {
+export default class SimpCommand extends Command {
 	constructor() {
 		super("simp", {
 			aliases: ["simp"],
@@ -20,7 +18,7 @@ module.exports = class SimpCommand extends Command {
 			}],
 		});
 	}
-	async exec(message: Message, { member }: { member: GuildMember }) {
+	async exec(message: Message, { member }: { member: GuildMember }): Promise<Message | void> {
 		const applyText = (canvas: Canvas.Canvas, text: string) => {
 			const ctx = canvas.getContext("2d");
 			// Declare a base size of the font
@@ -51,7 +49,7 @@ module.exports = class SimpCommand extends Command {
 		const avatar = await Canvas.loadImage(member.user.displayAvatarURL({ format: "png" }));
 		ctx.drawImage(avatar, 300, 140, 100, 100);
 
-		const attachment = new Discord.MessageAttachment(canvas.toBuffer(), "Simper.jpg");
+		const attachment = new MessageAttachment(canvas.toBuffer(), "Simper.jpg");
 		await message.util?.send(`Haha, you're a simp!! ${member.user}`, attachment);
 	}
-};
+}
