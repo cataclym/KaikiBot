@@ -11,7 +11,8 @@ module.exports = class ConfigCommand extends Command {
 		super("config", {
 			aliases: ["config", "configure"],
 			description: {
-				description: "Configure guild settings",
+				description: "Configure guild specific settings",
+				usage: "dadbot enable",
 			},
 		});
 	}

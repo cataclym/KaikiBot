@@ -8,7 +8,7 @@ export default class BanCommand extends Command {
 			aliases: ["ban", "bean", "b"],
 			userPermissions: ["BAN_MEMBERS"],
 			clientPermissions: "BAN_MEMBERS",
-			description: { description: "Bans a user by ID or name with an optional message.", usage: ".b <@some Guy> Your behaviour is harmful." },
+			description: { description: "Bans a user by ID or name with an optional message.", usage: "<@some Guy> Your behaviour is harmful." },
 			channel: "guild",
 			args: [
 				{

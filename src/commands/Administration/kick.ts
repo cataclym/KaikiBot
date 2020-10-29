@@ -8,6 +8,7 @@ export default class KickCommand extends Command {
 			aliases: ["kick", "k"],
 			userPermissions: ["KICK_MEMBERS"],
 			clientPermissions: "KICK_MEMBERS",
+			description: { description: "Kicks a user by ID or name with an optional message.", usage: "<@some Guy> Your behaviour is harmful." },
 			channel: "guild",
 			args: [
 				{
