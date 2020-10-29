@@ -1,4 +1,3 @@
-import { Activity } from "discord.js";
 import { User } from "discord.js";
 import { Message, ColorResolvable } from "discord.js";
 
