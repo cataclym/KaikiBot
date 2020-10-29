@@ -1,5 +1,6 @@
 import { Command } from "discord-akairo";
 import { MessageEmbed, User, Message, GuildMember } from "discord.js";
+import { config } from "../../config";
 import { errorColor, getMemberColorAsync } from "../../functions/Util";
 
 export default class BanCommand extends Command {
@@ -8,7 +9,7 @@ export default class BanCommand extends Command {
 			aliases: ["ban", "bean", "b"],
 			userPermissions: ["BAN_MEMBERS"],
 			clientPermissions: "BAN_MEMBERS",
-			description: { description: "Bans a user by ID or name with an optional message.", usage: ".b <@some Guy> Your behaviour is harmful." },
+			description: { description: "Bans a user by ID or name with an optional message.", usage: config.prefix + "b <@some Guy> Your behaviour is harmful." },
 			channel: "guild",
 			args: [
 				{

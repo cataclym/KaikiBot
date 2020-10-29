@@ -1,5 +1,6 @@
 import { Command } from "discord-akairo";
 import { MessageEmbed, Message, GuildMember } from "discord.js";
+import { config } from "../../config";
 import { errorColor, getMemberColorAsync } from "../../functions/Util";
 
 export default class KickCommand extends Command {
@@ -8,6 +9,7 @@ export default class KickCommand extends Command {
 			aliases: ["kick", "k"],
 			userPermissions: ["KICK_MEMBERS"],
 			clientPermissions: "KICK_MEMBERS",
+			description: { description: "Kicks a user by ID or name with an optional message.", usage: config.prefix + "k <@some Guy> Your behaviour is harmful." },
 			channel: "guild",
 			args: [
 				{
