@@ -26,7 +26,7 @@ export default class what extends Command {
 		const embed = new MessageEmbed({
 			title: "wtf?",
 			image: { url: "attachment://edit.jpg" },
-			color: member.displayColor,
+			color: "RANDOM",
 		});
 
 
