@@ -3,7 +3,9 @@ import { Command } from "discord-akairo";
 import { Message } from "discord.js";
 import { GuildMember } from "discord.js";
 import { Role } from "discord.js";
-const flags: any = {
+import { UserFlagsString } from "discord.js";
+import { getUserPresenceAsync } from "../../functions/Util";
+const flags: Record<UserFlagsString, string> = {
 	DISCORD_EMPLOYEE: "Discord Employee 👨‍💼",
 	DISCORD_PARTNER: "Discord Partner ❤️",
 	BUGHUNTER_LEVEL_1: "Bug Hunter (Level 1) 🐛",
@@ -34,6 +36,9 @@ module.exports = class UserInfoCommand extends Command {
 		});
 	}
 	public async exec(message: Message, { member }: { member: GuildMember}): Promise<Message> {
+
+		const presence = await getUserPresenceAsync(member.user);
+
 		const userFlags = member.user.flags ? member.user.flags.toArray() : [], color = member.displayColor,
 			embed = new Discord.MessageEmbed()
 				.setColor(color)
@@ -48,13 +53,8 @@ module.exports = class UserInfoCommand extends Command {
 						inline: true,
 					},
 					{
-						name: "Presence",
-						value: (member.user?.presence?.activities?.length ? member.user?.presence?.activities.join(", ") : "N/A") + "\n" + (member.user.presence.status !== "offline" ? Object.entries(member.user.presence.clientStatus as any).join(", ") : "Offline"),
-						inline: true,
-					},
-					{
 						name: "Flags",
-						value: userFlags.length ? userFlags.map((flag: string) => flags[flag]).join("\n") : "None",
+						value: userFlags.length ? userFlags.map((flag: UserFlagsString) => flags[flag]).join("\n") : "None",
 						inline: true,
 					},
 					{
@@ -63,9 +63,16 @@ module.exports = class UserInfoCommand extends Command {
 						inline: true,
 					}],
 				);
+
 		member.lastMessage ? embed.addField("Last (seen) message", member.lastMessage?.createdAt.toLocaleString(), true) : null;
 		member?.premiumSince ? embed.addField("Boosting", "Since " + member.premiumSince.toDateString() + " ✅", true) : null;
 		member.user.bot ? embed.addField("Bot", "✅", true) : null;
+
+		embed.addField("Presence", presence.main, false);
+
+		presence.richPresence[0] ? embed.setImage(presence.richPresence[0]) : null;
+		presence.richPresence[1] ? embed.addField("Game details", `${presence.richPresence.slice(1, 3).join("\n")}`) : null;
+
 		return message.channel.send(embed);
 	}
 };
