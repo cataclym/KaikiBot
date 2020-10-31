@@ -3,14 +3,14 @@ const Tinder = new db.table("Tinder");
 import { timeToMidnight, msToTime } from "./functions";
 import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
 import { MessageEmbed, MessageAttachment, Message, User, Guild } from "discord.js";
-import Canvas from "canvas";
+// import Canvas from "jimp";
 import { getMemberColorAsync } from "./Util";
-const userStates: any = {
-	"online" : "#00FF00",
-	"offline" : "#6E0DD0",
-	"idle" : "#FF0099",
-	"dnd" : "#FD1C03",
-};
+// const userStates: any = {
+// 	"online" : "#00FF00",
+// 	"offline" : "#6E0DD0",
+// 	"idle" : "#FF0099",
+// 	"dnd" : "#FD1C03",
+// };
 
 // function TinderProfile(message) {
 // 	//...
@@ -111,71 +111,71 @@ async function fetchUserList(message: Message, user: User): Promise<Message> {
 	return message.channel.send(this.embed);
 }
 
-async function tinderNodeCanvasImage(message: Message, randomUser: User): Promise<Message> {
+// async function tinderNodeCanvasImage(message: Message, randomUser: User): Promise<Message> {
 
-	const applyText = (canvas: Canvas.Canvas, text: string) => {
-		const ctx = canvas.getContext("2d");
-		// Declare a base size of the font
-		let fontSize = 40;
-		do {
-			// Assign the font to the context and decrement it so it can be measured again
-			ctx.font = `${fontSize -= 10}px sans-serif`;
-			// Compare pixel width of the text to the canvas minus the approximate avatar size
-		} while (ctx.measureText(text).width > canvas.width);
+// 	const applyText = (canvas: Canvas.Canvas, text: string) => {
+// 		const ctx = canvas.getContext("2d");
+// 		// Declare a base size of the font
+// 		let fontSize = 40;
+// 		do {
+// 			// Assign the font to the context and decrement it so it can be measured again
+// 			ctx.font = `${fontSize -= 10}px sans-serif`;
+// 			// Compare pixel width of the text to the canvas minus the approximate avatar size
+// 		} while (ctx.measureText(text).width > canvas.width);
 
-		// Return the result to use in the actual canvas
-		return ctx.font;
-	};
+// 		// Return the result to use in the actual canvas
+// 		return ctx.font;
+// 	};
 
-	const canvas = Canvas.createCanvas(400, 400);
-	const ctx = canvas.getContext("2d");
+// 	const canvas = Canvas.createCanvas(400, 400);
+// 	const ctx = canvas.getContext("2d");
 
-	const tinderBackground = await Canvas.loadImage("./images/wallhaven-621410.png");
-	const tinderTemplate = await Canvas.loadImage("./images/tinderTemplate.png");
-	const avatar = await Canvas.loadImage(randomUser.displayAvatarURL({ format: "png" }));
+// 	const tinderBackground = await Canvas.loadImage("./images/wallhaven-621410.png");
+// 	const tinderTemplate = await Canvas.loadImage("./images/tinderTemplate.png");
+// 	const avatar = await Canvas.loadImage(randomUser.displayAvatarURL({ format: "png" }));
 
-	// base image
-	ctx.drawImage(tinderBackground, -100, 0, 768, 432);
-	ctx.drawImage(tinderTemplate, 0, 0, 400, 400);
-	ctx.drawImage(avatar, 10, 10, 168, 168);
-	// text box
-	ctx.beginPath();
-	ctx.rect(4, 240, 392, 156);
-	ctx.fillStyle = "rgba(249,25,145,0.7)";
-	ctx.fill();
-	// lots of text with shadow
-	ctx.textBaseline = "middle";
-	ctx.fillStyle = "#000000";
-	ctx.textAlign = "start";
-	ctx.font = "28px Bahnschrift";
-	ctx.fillText(randomUser.presence.status, 76, 359);
-	ctx.font = "24px Bahnschrift";
-	ctx.fillText("This text box is lonely, and so are you.", 7, 263, 379);
-	ctx.font = "40px Bahnschrift";
-	ctx.textAlign = "center";
-	ctx.font = applyText(canvas, randomUser.username);
-	ctx.fillText(randomUser.username, 202, canvas.height / 1.95);
-	ctx.fillStyle = "#7eaaff";
-	ctx.fillText(randomUser.username, 200, canvas.height / 1.95);
-	ctx.textAlign = "start";
-	ctx.font = "24px Bahnschrift";
-	ctx.fillText("This text box is lonely, and so are you.", 6, 264, 380);
-	ctx.fillStyle = userStates[randomUser.presence.status];
-	// userState text
-	ctx.font = "28px Bahnschrift";
-	ctx.fillStyle = userStates[randomUser.presence.status];
-	ctx.fillText(randomUser.presence.status, 75, 360);
-	// userState circle
-	const circlePath = canvas.getContext("2d");
-	circlePath.beginPath();
-	ctx.fillStyle = userStates[randomUser.presence.status];
-	circlePath.fillStyle = userStates[randomUser.presence.status];
-	circlePath.arc(40, 360, 25, 0, 2 * Math.PI);
-	circlePath.fill();
+// 	// base image
+// 	ctx.drawImage(tinderBackground, -100, 0, 768, 432);
+// 	ctx.drawImage(tinderTemplate, 0, 0, 400, 400);
+// 	ctx.drawImage(avatar, 10, 10, 168, 168);
+// 	// text box
+// 	ctx.beginPath();
+// 	ctx.rect(4, 240, 392, 156);
+// 	ctx.fillStyle = "rgba(249,25,145,0.7)";
+// 	ctx.fill();
+// 	// lots of text with shadow
+// 	ctx.textBaseline = "middle";
+// 	ctx.fillStyle = "#000000";
+// 	ctx.textAlign = "start";
+// 	ctx.font = "28px Bahnschrift";
+// 	ctx.fillText(randomUser.presence.status, 76, 359);
+// 	ctx.font = "24px Bahnschrift";
+// 	ctx.fillText("This text box is lonely, and so are you.", 7, 263, 379);
+// 	ctx.font = "40px Bahnschrift";
+// 	ctx.textAlign = "center";
+// 	ctx.font = applyText(canvas, randomUser.username);
+// 	ctx.fillText(randomUser.username, 202, canvas.height / 1.95);
+// 	ctx.fillStyle = "#7eaaff";
+// 	ctx.fillText(randomUser.username, 200, canvas.height / 1.95);
+// 	ctx.textAlign = "start";
+// 	ctx.font = "24px Bahnschrift";
+// 	ctx.fillText("This text box is lonely, and so are you.", 6, 264, 380);
+// 	ctx.fillStyle = userStates[randomUser.presence.status];
+// 	// userState text
+// 	ctx.font = "28px Bahnschrift";
+// 	ctx.fillStyle = userStates[randomUser.presence.status];
+// 	ctx.fillText(randomUser.presence.status, 75, 360);
+// 	// userState circle
+// 	const circlePath = canvas.getContext("2d");
+// 	circlePath.beginPath();
+// 	ctx.fillStyle = userStates[randomUser.presence.status];
+// 	circlePath.fillStyle = userStates[randomUser.presence.status];
+// 	circlePath.arc(40, 360, 25, 0, 2 * Math.PI);
+// 	circlePath.fill();
 
-	const fileAttachment = new MessageAttachment(canvas.toBuffer(), "tinderProfile.png");
-	return message.channel.send(new MessageEmbed().attachFiles([fileAttachment]).setImage("attachment://tinderProfile.png").setColor(await getMemberColorAsync(message)));
-}
+// 	const fileAttachment = new MessageAttachment(canvas.toBuffer(), "tinderProfile.png");
+// 	return message.channel.send(new MessageEmbed().attachFiles([fileAttachment]).setImage("attachment://tinderProfile.png").setColor(await getMemberColorAsync(message)));
+// }
 async function NormalLike(message: Message, SentMsg: Message, genericEmbed: MessageEmbed, newHasRolls: number, hasLikes: number, randomUsr: User): Promise<Message> {
 	if (hasLikes > 0) {
 		Tinder.subtract(`likes.${message.author.id}`, 1);
@@ -252,5 +252,7 @@ async function SuperLike(message: Message, SentMsg: Message, genericEmbed: Messa
 }
 
 export {
-	TinderStartup, TinderDBService, NoLikes, NoRolls, SeparateTinderList, fetchUserList, tinderNodeCanvasImage, Dislike, NormalLike, SuperLike,
+	TinderStartup, TinderDBService, NoLikes, NoRolls, SeparateTinderList, fetchUserList,
+	// tinderNodeCanvasImage,
+	Dislike, NormalLike, SuperLike,
 };

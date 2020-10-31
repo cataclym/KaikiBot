@@ -1,5 +1,4 @@
-import { User } from "discord.js";
-import { Message, ColorResolvable } from "discord.js";
+import { Message, ColorResolvable, UserFlagsString, User } from "discord.js";
 
 export async function getMemberColorAsync(message: Message): Promise<ColorResolvable> {
 	return <ColorResolvable> message?.member?.displayColor || "#f47fff";
@@ -25,3 +24,21 @@ export async function getUserPresenceAsync(user: User): Promise<{ main: string; 
 
 	return presence;
 }
+
+export const flags: Record<UserFlagsString, string> = {
+	DISCORD_EMPLOYEE: "Discord Employee 👨‍💼",
+	DISCORD_PARTNER: "Discord Partner ❤️",
+	BUGHUNTER_LEVEL_1: "Bug Hunter (Level 1) 🐛",
+	BUGHUNTER_LEVEL_2: "Bug Hunter (Level 2) 🐛",
+	HYPESQUAD_EVENTS: "HypeSquad Events 🎊",
+	HOUSE_BRAVERY: "House of Bravery 🏠",
+	HOUSE_BRILLIANCE: "House of Brilliance 🏠",
+	HOUSE_BALANCE: "House of Balance 🏠",
+	EARLY_SUPPORTER: "Early Supporter 👍",
+	TEAM_USER: "Team User 🏁",
+	SYSTEM: "System ⚙️",
+	VERIFIED_BOT: "Verified Bot ☑️",
+	VERIFIED_DEVELOPER: "Verified Developer ✅",
+	PARTNERED_SERVER_OWNER : "Partnered Server Owner ♾️",
+	EARLY_VERIFIED_DEVELOPER: "Early Verified Developer ✅",
+};

@@ -31,5 +31,9 @@ export default class ReadyListener extends Listener {
 		if (this.client.user) {
 			await TinderStartup(this.client.user);
 		}
+
+		if (["Tsukihi Araragi", "Kaiki Deishuu"].includes(this.client.user?.username as string)) {
+			(await this.client.users.fetch("140788173885276160")).send("I am alive.");
+		}
 	}
 }
