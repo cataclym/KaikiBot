@@ -1,25 +1,7 @@
-import Discord from "discord.js";
 import { Command } from "discord-akairo";
-import { Message } from "discord.js";
-import { GuildMember } from "discord.js";
-import { Role } from "discord.js";
-import { UserFlagsString } from "discord.js";
-import { getUserPresenceAsync } from "../../functions/Util";
-const flags: Record<UserFlagsString, string> = {
-	DISCORD_EMPLOYEE: "Discord Employee 👨‍💼",
-	DISCORD_PARTNER: "Discord Partner ❤️",
-	BUGHUNTER_LEVEL_1: "Bug Hunter (Level 1) 🐛",
-	BUGHUNTER_LEVEL_2: "Bug Hunter (Level 2) 🐛",
-	HYPESQUAD_EVENTS: "HypeSquad Events 🎊",
-	HOUSE_BRAVERY: "House of Bravery 🏠",
-	HOUSE_BRILLIANCE: "House of Brilliance 🏠",
-	HOUSE_BALANCE: "House of Balance 🏠",
-	EARLY_SUPPORTER: "Early Supporter 👍",
-	TEAM_USER: "Team User 🏁",
-	SYSTEM: "System ⚙️",
-	VERIFIED_BOT: "Verified Bot ☑️",
-	VERIFIED_DEVELOPER: "Verified Bot Developer ✅",
-};
+import { Message, GuildMember, Role, UserFlagsString, MessageEmbed } from "discord.js";
+import { getUserPresenceAsync, flags } from "../../functions/Util";
+
 
 module.exports = class UserInfoCommand extends Command {
 	constructor() {
@@ -40,7 +22,7 @@ module.exports = class UserInfoCommand extends Command {
 		const presence = await getUserPresenceAsync(member.user);
 
 		const userFlags = member.user.flags ? member.user.flags.toArray() : [], color = member.displayColor,
-			embed = new Discord.MessageEmbed()
+			embed = new MessageEmbed()
 				.setColor(color)
 				.setDescription(member.displayName)
 				.setThumbnail(member.user.displayAvatarURL({ dynamic: true }))

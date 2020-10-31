@@ -12,13 +12,14 @@ export default class ClearCommand extends Command {
 				{
 					id: "int",
 					type: "integer",
+					default: 1,
 				},
 			],
 		});
 	}
 	async exec({ channel }: { channel: Channel }, { int }: { int: number }): Promise<void> {
 
-		(channel as TextChannel).bulkDelete(int)
+		(channel as TextChannel).bulkDelete(int + 1)
 			.catch((r) => console.error(r));
 
 	}

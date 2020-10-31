@@ -27,7 +27,7 @@ export default class ChannelNsfwCommand extends Command {
 
 		return message.channel.send(new MessageEmbed({
 			color: await getMemberColorAsync(message),
-			description: `Toggled ${guidlChnl.name}'s NSFW status to ${guidlChnl.nsfw}.`,
+			description: `Toggled ${guidlChnl.name}'s NSFW status to ${!guidlChnl.nsfw}.`,
 		}));
 	}
 }
