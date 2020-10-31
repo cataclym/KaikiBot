@@ -15,6 +15,7 @@ export default class RoleDeleteCommand extends Command {
 				{
 					id: "roles",
 					type: "roles",
+					match: "separate",
 					otherwise: noArgRole,
 				},
 			],
