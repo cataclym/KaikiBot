@@ -1,8 +1,7 @@
 import { Listener } from "discord-akairo";
 import { emoteReact, roleCheck, handleMentions, dadBot, tiredNadekoReact, countEmotes } from "../functions/functions";
-import { Message } from "discord.js";
+import { Message, MessageEmbed } from "discord.js";
 import db from "quick.db";
-import { MessageEmbed } from "discord.js";
 import { config } from "../config";
 import { standardColor } from "../functions/Util";
 const guildConfig = new db.table("guildConfig");
@@ -36,6 +35,8 @@ export default class MessageListener extends Listener {
 			}
 		}
 		else {
+			// I wont wanna see my own msgs, thank u
+			if (message.author.id === config.ownerID) return;
 
 			console.log("message | DM from " + message.author.tag);
 
