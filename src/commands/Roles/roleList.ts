@@ -14,18 +14,19 @@ export default class RoleListCommand extends Command {
 
 	async exec(message: Message): Promise<Message> {
 
-		const data: Role[] = [];
-		message.guild?.roles.cache.forEach((r: Role) => data.push(r));
+		const data: Role[] | undefined = message.guild?.roles.cache.array().sort((a: Role, b: Role) => b.position - a.position || (b.id as unknown as number) - (a.id as unknown as number));
 
 		const pages: MessageEmbed[] = [];
 
-		for (let i = 50, p = 0; p < data.length; i = i + 50, p = p + 50) {
-			const dEmbed = new MessageEmbed()
-				.setTitle("Role list")
-				.setAuthor(message.author.tag)
-				.setColor(await getMemberColorAsync(message))
-				.setDescription(data.slice(p, i).join(", "));
-			pages.push(dEmbed);
+		if (data) {
+			for (let i = 50, p = 0; p < data.length; i = i + 50, p = p + 50) {
+				const dEmbed = new MessageEmbed()
+					.setTitle("Role list")
+					.setAuthor(message.author.tag)
+					.setColor(await getMemberColorAsync(message))
+					.setDescription(data.slice(p, i).join(", "));
+				pages.push(dEmbed);
+			}
 		}
 		return editMessageWithPaginatedEmbeds(message, pages, {});
 	}
