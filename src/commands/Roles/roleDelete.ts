@@ -25,14 +25,10 @@ export default class RoleDeleteCommand extends Command {
 
 		const rolesArray: string[] = [];
 
-		roles.forEach(async (role: Role) => {
-			try {
-				rolesArray.push((await role.delete()).name);
-			}
-			catch (err) {
-				console.error(err);
-			}
-		});
+		await Promise.resolve(roles.forEach(async (role: Role) => {
+			role = await role.delete();
+			return rolesArray.push(role.name);
+		}));
 		if (rolesArray.length) {
 			return message.channel.send(new MessageEmbed({
 				color: await getMemberColorAsync(message),
