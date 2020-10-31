@@ -32,7 +32,7 @@ export default class RoleHoistCommand extends Command {
 
 		return message.channel.send(new MessageEmbed({
 			color: await getMemberColorAsync(message),
-			description: `Toggled ${role.name}'s hoist status to ${role.hoist}.`,
+			description: `Toggled ${role.name}'s hoist status to ${!role.hoist}.`,
 		}));
 
 	}

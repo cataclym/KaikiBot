@@ -25,9 +25,9 @@ export default class RoleDeleteCommand extends Command {
 
 		const rolesArray: string[] = [];
 
-		roles.forEach((role: Role) => {
+		roles.forEach(async (role: Role) => {
 			try {
-				role.delete().then((r: Role) => rolesArray.push(r.name));
+				rolesArray.push((await role.delete()).name);
 			}
 			catch (err) {
 				console.error(err);
