@@ -16,22 +16,26 @@ export default class EmoteCount extends Command {
 
 	async exec(message: Message): Promise<Message> {
 
+		const data = [];
+		const pages = [];
 		const color = await getMemberColorAsync(message);
 		const GuildEmoteCount = Emotes.get(`${message.guild?.id}`);
-		const data = [];
-		for (const [key, value] of Object.entries(GuildEmoteCount)) {
-			const Emote = message.guild?.emojis.cache.get(key);
-			if (!Emote) { continue; }
-			data.push(`${Emote} \`${Object.values(value as string)}\` `);
-		}
-		const pages = [];
-		for (let i = 50, p = 0; p < data.length; i = i + 50, p = p + 50) {
-			const dEmbed = new MessageEmbed()
-				.setTitle("Emoji count list")
-				.setAuthor(message.author.tag)
-				.setColor(color)
-				.setDescription(data.slice(p, i).join(""));
-			pages.push(dEmbed);
+
+		if (GuildEmoteCount) {
+
+			for (const [key, value] of Object.entries(GuildEmoteCount)) {
+				const Emote = message.guild?.emojis.cache.get(key);
+				if (!Emote) { continue; }
+				data.push(`${Emote} \`${Object.values(value as string)}\` `);
+			}
+			for (let i = 50, p = 0; p < data.length; i = i + 50, p = p + 50) {
+				const dEmbed = new MessageEmbed()
+					.setTitle("Emoji count list")
+					.setAuthor(message.author.tag)
+					.setColor(color)
+					.setDescription(data.slice(p, i).join(""));
+				pages.push(dEmbed);
+			}
 		}
 		return editMessageWithPaginatedEmbeds(message, pages, {});
 	}
