@@ -6,7 +6,7 @@ import { errorColor, getMemberColorAsync } from "../../functions/Util";
 export default class RoleDeleteCommand extends Command {
 	constructor() {
 		super("roledelete", {
-			aliases: ["deleterole", "roledelete", "dr"],
+			aliases: ["roledelete", "deleterole", "dr"],
 			clientPermissions: "MANAGE_ROLES",
 			userPermissions: "MANAGE_ROLES",
 			description: { description: "Deletes one or more roles", usage: "@gamers @streamers @weebs" },
@@ -15,22 +15,23 @@ export default class RoleDeleteCommand extends Command {
 				{
 					id: "roles",
 					type: "roles",
-					match: "separate",
 					otherwise: noArgRole,
 				},
 			],
 		});
 	}
 
-	async exec(message: Message, { roles }: { roles: Role[]}): Promise<Message> {
+	async exec(message: Message, { roles }: { roles: Role[]}): Promise<Message | void> {
 
-		await Promise.resolve(roles.forEach(async (role: Role) => {
-			return role.delete();
-		}));
-		if (roles.map((r: Role) => r.deleted)) {
+		const rolesArray: string[] = [];
+
+		roles.forEach(async (role: Role) => {
+			return rolesArray.push((await role.delete()).name);
+		});
+		if (rolesArray.length > 0) {
 			return message.channel.send(new MessageEmbed({
 				color: await getMemberColorAsync(message),
-				description: `Deleted: ${roles.map((r: Role) => r.name).join(", ")}`,
+				description: `Deleted: ${rolesArray.join(", ")}`,
 			}));
 		}
 		else {
