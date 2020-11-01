@@ -14,7 +14,7 @@ export default class EmoteCount extends Command {
 		});
 	}
 
-	async exec(message: Message): Promise<Message> {
+	async exec(message: Message): Promise<Message | void> {
 
 		const data = [];
 		const pages = [];
@@ -36,7 +36,7 @@ export default class EmoteCount extends Command {
 					.setDescription(data.slice(p, i).join(""));
 				pages.push(dEmbed);
 			}
+			return editMessageWithPaginatedEmbeds(message, pages, {});
 		}
-		return editMessageWithPaginatedEmbeds(message, pages, {});
 	}
 }
