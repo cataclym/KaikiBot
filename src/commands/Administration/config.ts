@@ -2,7 +2,7 @@
 import { Command, Flag, Argument } from "discord-akairo";
 import { Message, MessageEmbed } from "discord.js";
 import db from "quick.db";
-import { getMemberColorAsync } from "../../../functions/Util";
+import { getMemberColorAsync } from "../../functions/Util";
 const guildConfig = new db.table("guildConfig");
 
 export default class ConfigCommand extends Command {
