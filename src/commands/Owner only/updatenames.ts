@@ -9,6 +9,7 @@ module.exports = class UpdateNames extends Command {
 		super("updatenames", {
 			aliases: ["updatenames", "up"],
 			description: { description: "Redundant command." },
+			channel: "guild",
 			ownerOnly: true,
 		});
 	}
