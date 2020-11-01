@@ -3,10 +3,10 @@ import { Command } from "discord-akairo";
 import { Message } from "discord.js";
 import { MessageEmbed } from "discord.js";
 import db from "quick.db";
-import { getMemberColorAsync } from "../../../functions/Util.js";
-import { config } from "../../../config.js";
+import { getMemberColorAsync } from "../../functions/Util.js";
+import { config } from "../../config.js";
 const guildConfig = new db.table("guildConfig");
-import { updateVar } from "../../../listeners/message";
+import { updateVar } from "../../listeners/message";
 
 module.exports = class DadBotConfigCommand extends Command {
 	constructor() {

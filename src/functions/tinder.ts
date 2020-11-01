@@ -2,7 +2,7 @@ import db from "quick.db";
 const Tinder = new db.table("Tinder");
 import { timeToMidnight, msToTime } from "./functions";
 import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
-import { MessageEmbed, MessageAttachment, Message, User, Guild } from "discord.js";
+import { MessageEmbed, Message, User, Guild } from "discord.js";
 // import Canvas from "jimp";
 import { getMemberColorAsync } from "./Util";
 // const userStates: any = {
@@ -65,9 +65,18 @@ async function NoRolls(): Promise<string> {
 	const time2midHrs = msToTime(time2mid);
 	return "You don't have any more rolls!\nLikes and rolls reset in: " + time2midHrs;
 }
+/**
+  * Function to return a specific tinder list.
+  *
+  * @param {Message} message Context
+  * @param {string[]} Item User's specific tinder array
+  * @param {string} ListName Embed title
+  * @return {Message} editMessageWithPaginatedEmbeds
+  */
 async function SeparateTinderList(message: Message, Item: string[], ListName = "Tinder list"): Promise<Message> {
 
 	Item.shift();
+	// Remove self
 	if (!Item.length) { return message.reply("There doesn't seem to be anyone here"); }
 
 	const pages = [];
