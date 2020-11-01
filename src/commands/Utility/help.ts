@@ -21,7 +21,7 @@ export default class HelpCommand extends Command {
 
 		if (command) {
 			embed.setTitle(`**Name:** ${command.id}`);
-			embed.setDescription(`**Aliases:** \`${command.aliases.join("`, `")}\`\n**Description:** ${command.description.description}\n
+			embed.setDescription(`**Aliases:** \`${command.aliases.join("`, `")}\`\n**Description:** ${(command.description.description || command.description)}\n
 			${(command?.description.usage ? "**Usage:** " + config.prefix + command.id + " " + command.description.usage : "")}`);
 			command.userPermissions ? embed.addField("Requires", command.userPermissions, false) : null;
 			command.ownerOnly ? embed.addField("Owner only", "✅", false) : null;
