@@ -1,8 +1,6 @@
 import { Listener } from "discord-akairo";
 import { GuildMember } from "discord.js";
 import db from "quick.db";
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore;
 const leaveRoleTable = new db.table("leaveRoleTable");
 
 export default class GuildMemberRemovedListener extends Listener {

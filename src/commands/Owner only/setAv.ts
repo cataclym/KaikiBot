@@ -35,10 +35,8 @@ export default class SetAvatarCommand extends Command {
 			this.client.user?.setAvatar(buffer);
 		}
 		catch (error) {
-			if (error) {
-				return message.channel.send("Unsupported image type. Please use PNG, JPEG or GIF.");
-			}
 			console.error(error);
+			return message.channel.send("Unsupported image type. Please use PNG, JPEG or GIF.");
 		}
 
 		return message.channel.send("Avatar set.", new MessageAttachment(buffer));

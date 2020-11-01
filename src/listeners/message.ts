@@ -43,7 +43,7 @@ export default class MessageListener extends Listener {
 			const embed = new MessageEmbed({
 				color: standardColor,
 				author: { name: message.author.tag },
-				description: message.content.substring(0, 2047),
+				description: message.content.substring(0, 2048),
 			});
 
 			message.attachments.first()?.url ? embed.setImage(message.attachments.first()?.url as string).setTitle(message.attachments.first()?.url as string) : null;
