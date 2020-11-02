@@ -59,3 +59,7 @@ export function calculateAspectRatioFit(srcWidth: number, srcHeight: number, max
 
 	return { width: srcWidth * ratio, height: srcHeight * ratio };
 }
+
+export function trim(str: string, max: number): string {
+	return (str.length > max) ? `${str.slice(0, max - 3)}...` : str;
+}

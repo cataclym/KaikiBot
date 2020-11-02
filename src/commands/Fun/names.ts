@@ -2,8 +2,9 @@ import { MessageEmbed, Message } from "discord.js";
 import { UserNickTable } from "../../functions/functions";
 import { config } from "../../config";
 import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
-import { Command, Argument } from "discord-akairo";
+import { Command } from "discord-akairo";
 import { getMemberColorAsync } from "../../functions/Util";
+import { User } from "discord.js";
 const arr = ["remove", "rem", "delete", "del"];
 
 module.exports = class NamesCommand extends Command {
@@ -16,7 +17,7 @@ module.exports = class NamesCommand extends Command {
 	*args() {
 		const method = yield {
 			// TODO: figure out type of phrase
-			type: async (message: Message, phrase: any) => {
+			type: async (message: Message, phrase: string) => {
 				if (arr.includes(phrase)) {
 					return true;
 				}
@@ -24,15 +25,15 @@ module.exports = class NamesCommand extends Command {
 		};
 		const unionUser = yield {
 			index: 0,
-			type: Argument.union("member", "user"),
+			type: "user",
 		};
 
 		return { unionUser, method };
 	}
 
-	async exec(message: Message, { method, unionUser }: { method: boolean, unionUser: any}) {
+	async exec(message: Message, { method, unionUser }: { method: boolean, unionUser: User}) {
 		const color = await getMemberColorAsync(message);
-		const user = unionUser?.user || message.author;
+		const user = unionUser || message.author;
 		// I hate this
 		// ??????????? // Guess this works.
 		if (method) {
