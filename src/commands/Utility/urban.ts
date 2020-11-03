@@ -34,6 +34,8 @@ export default class UrbanDictCommand extends Command {
 		const pages: MessageEmbed[] = [];
 		list.forEach(async (result: Record<string, string>) => {
 			return pages.push(new MessageEmbed()
+				.setTitle(result.word)
+				.setURL(result.permalink)
 				.addFields(
 					{ name: "Definition", value: trim(result.definition, 1024) },
 					{ name: "Example", value: trim(result.example, 1024) },
