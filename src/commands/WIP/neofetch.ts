@@ -14,9 +14,8 @@ export default class NeofetchCommand extends Command {
 		});
 	}
 	async exec(): Promise<void> {
+
 		// Putting this one ice
-		// Temp storage
-		// message.guild?.members.cache.get("")?.user.presence.activities.map((t) => t.assets?.largeImageURL()).join("");
-		//
+
 	}
 }
