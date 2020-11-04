@@ -7,8 +7,9 @@ import { getMemberColorAsync, flags } from "../../functions/Util";
 export default class FetchUserCommand extends Command {
 	constructor() {
 		super("fetch", {
+			cooldown: 30000,
 			aliases: ["fu", "fetch"],
-			description: { description: "Fetches a discord user, shows relevant information", usage: "<id>" },
+			description: { description: "Fetches a discord user, shows relevant information. 30sec cooldown.", usage: "<id>" },
 		});
 	}
 	async exec(message: Message): Promise<Message> {
