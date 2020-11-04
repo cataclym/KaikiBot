@@ -6,7 +6,7 @@ const winningCombos = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2
 
 let gameActive = true;
 let firstPlayer = true;
-const gameState = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+const gameStateP1 = new Array(9), gameStateP2 = new Array(9);
 
 const currentPlayerTurn = `It's ${this}'s turn`;
 const winningMessage = `Player ${this} has won!`;
@@ -29,11 +29,11 @@ export default async function init(message: Message, playerOne: GuildMember, pla
 	const mainMessage = await message.channel.send("Play game!", new MessageEmbed());
 
 	do {
-		getInput(firstPlayer ? playerOne : playerTwo);
+		getInput(firstPlayer ? playerOne : playerTwo, firstPlayer ? gameStateP1 : gameStateP2);
 	} while (gameActive);
 
 	// Meant to parse every input in loop. // Do, While loop? ^
-	async function getInput(player: GuildMember) {
+	async function getInput(player: GuildMember, gameState: number[]) {
 
 		const filter = async (awaitingMessage: Message, user: User) => ((new RegExp(numbers.join("|")).test(awaitingMessage.content)) && user.id === player.id);
 
@@ -49,10 +49,10 @@ export default async function init(message: Message, playerOne: GuildMember, pla
 			// Switch between users.
 			firstPlayer ? firstPlayer = false : firstPlayer = true;
 
-			const int = parseInt(input);
-			gameState[int] = int;
+			const int = parseInt(input, 10);
+			gameState[int - 1] = int;
 
-			checkGameCondition();
+			checkGameCondition(gameState);
 
 			if (gameState) {
 				// TODO: Continue new input, next player.
@@ -65,7 +65,13 @@ export default async function init(message: Message, playerOne: GuildMember, pla
 			return mainMessage.edit(`Timed out. ${this} won the game.`);
 		}
 	}
-	function checkGameCondition() {
+	function checkGameCondition(gameState: number[]) {
 		// TODO: Test combos / check if draw.
+		winningCombos.forEach((a: number[]) => {
+			if (gameState) return true;
+			else return false;
+		});
+		// AAAAAAAAAAAAAAAAAAAAAAAAAAAAAaaaaa
+		return false;
 	}
 }
