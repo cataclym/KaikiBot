@@ -8,16 +8,19 @@ export default class ClearCommand extends Command {
 			userPermissions: "MANAGE_MESSAGES",
 			clientPermissions: "MANAGE_MESSAGES",
 			channel: "guild",
+			description: { description: "Clears up to 100 messages in the current channel.", usage: "69" },
 			args: [
 				{
 					id: "int",
 					type: "integer",
-					default: 1,
+					default: 0,
 				},
 			],
 		});
 	}
 	async exec({ channel }: { channel: Channel }, { int }: { int: number }): Promise<void> {
+
+		int >= 99 ? int = 99 : null;
 
 		(channel as TextChannel).bulkDelete(int + 1)
 			.catch((r) => console.error(r));
