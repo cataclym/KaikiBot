@@ -1,52 +1,52 @@
 import { Command } from "discord-akairo";
 import { config } from "../../config.js";
-import { MessageEmbed, Message, Role } from "discord.js";
-import { getMemberColorAsync } from "../../functions/Util";
-const embed1 = new MessageEmbed({
+import { MessageEmbed, Message } from "discord.js";
+import { errorColor, getMemberColorAsync } from "../../functions/Util";
+
+const errorEmbed = new MessageEmbed({
 	title: "Error!",
+	color: errorColor,
 	description: `A role with name \`${config.names}\` was not found in guild. Creating... `,
 	footer: { text: "Beep boop..." },
 });
-const embed2 = new MessageEmbed({
+const addedRoleEmbed = new MessageEmbed({
 	title: "Success!",
 	description: `Added role \`${config.names}\`.\nType the command again to remove.`,
 });
-const embed3 = new MessageEmbed({
+const removedRoleEmbed = new MessageEmbed({
 	title: "Success!",
 	description: `Removed role \`${config.names}\`.\nType the command again to add it back.`,
 });
 
-module.exports = class ExcludeCommand extends Command {
+export default class ExcludeCommand extends Command {
 	constructor() {
 		super("exclude", {
-			description: { description: "Adds or removes excluded role from user." },
+			description: { description: "Adds or removes excluded role from user. Excludes the user from being targeted by dadbot." },
 			aliases: ["exclude", "e", "excl"],
+			clientPermissions: "MANAGE_ROLES",
 		});
 	}
-	async exec(message: Message) {
+
+	async exec(message: Message): Promise<Message | void> {
 		const color = await getMemberColorAsync(message);
-		embed1.setColor(color);
-		embed2.setColor(color);
-		embed3.setColor(color);
+		addedRoleEmbed.setColor(color);
+		removedRoleEmbed.setColor(color);
 		let excludedRole = message.guild?.roles.cache.find((r) => r.name === config.names);
 
-		if (!message.guild?.me?.hasPermission("MANAGE_ROLES")) {
-			return (message.reply("I don't have `MANAGE_ROLES` permission."));
-		}
-		if (!message.guild.roles.cache.some(r => r.name === excludedRole?.name)) {
-			excludedRole = <Role> await message.guild?.roles.create({
+		if (!message.guild?.roles.cache.some(r => r.name === excludedRole?.name)) {
+			excludedRole = await message.guild?.roles.create({
 				data: { name: config.names },
-				reason: "Role didn't exist yet",
-			}).catch(console.error);
-			await (message.channel.send(embed1));
+				reason: "Role didn't exist yet.",
+			});
+			await (message.channel.send(errorEmbed));
 		}
 		if (!message.member?.roles.cache.find((r) => r === excludedRole) && excludedRole) {
 			await message.member?.roles.add(excludedRole);
-			return message.channel.send(embed2);
+			return message.channel.send(addedRoleEmbed);
 		}
 		if (message.member?.roles.cache.find((r) => r === excludedRole) && excludedRole) {
 			await message.member?.roles.remove(excludedRole);
-			return message.channel.send(embed3);
+			return message.channel.send(removedRoleEmbed);
 		}
 	}
-};
+}

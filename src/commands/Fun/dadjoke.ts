@@ -1,4 +1,4 @@
-import { getMemberColorAsync } from "../../functions/Util";
+import { getMemberColorAsync, trim } from "../../functions/Util";
 import fetch from "node-fetch";
 import { MessageEmbed, Message } from "discord.js";
 import { Command } from "discord-akairo";
@@ -14,6 +14,7 @@ export default class DadJokeCommand extends Command {
 	}
 
 	async exec(message: Message): Promise<Message | void> {
+
 		await loadTitle();
 		async function loadTitle() {
 			const promise = async () => fetch("https://www.reddit.com/r/dadjokes.json?limit=1000&?sort=top&t=all");
@@ -22,27 +23,27 @@ export default class DadJokeCommand extends Command {
 				.then((json) => json.data.children.map((t: any) => t.data))
 				.then((data) => postRandomTitle(data));
 		}
+
 		async function postRandomTitle(data: any) {
-			const randomTitle = data[Math.floor(Math.random() * data.length) + 1];
-			let randomTitleSelfText = randomTitle.selftext.substring(0, 2045);
-			if (randomTitle.selftext.length > 2048) {
-				randomTitleSelfText += "...";
-			}
-			const RTTitle = randomTitle.title.substring(0, 256);
+			const randomRedditPost = data[Math.floor(Math.random() * data.length) + 1];
+			const randomTitleSelfText = trim(randomRedditPost.selftext, 2048);
+			const RTTitle = trim(randomRedditPost.title, 256);
+
 			const embed: MessageEmbed = new MessageEmbed({
 				title: RTTitle,
 				description: randomTitleSelfText,
 				color: await getMemberColorAsync(message),
 				author: {
-					name: `Submitted by ${randomTitle.author}`,
+					name: `Submitted by ${randomRedditPost.author}`,
 				},
 				image: {
-					url: randomTitle.url,
+					url: randomRedditPost.url,
 				},
 				footer: {
-					text: `${randomTitle.ups} updoots`,
+					text: `${randomRedditPost.ups} updoots`,
 				},
 			});
+
 			return message?.util?.send(embed);
 		}
 	}

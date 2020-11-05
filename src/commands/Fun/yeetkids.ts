@@ -2,9 +2,9 @@ import fetch from "node-fetch";
 import Discord from "discord.js";
 import { Command } from "discord-akairo";
 import { Message } from "discord.js";
-import { getMemberColorAsync } from "../../functions/Util";
+import { getMemberColorAsync, trim } from "../../functions/Util";
 
-module.exports = class YeetCommand extends Command {
+export default class YeetCommand extends Command {
 	constructor() {
 		super("yeetkids", {
 			cooldown: 8000,
@@ -14,7 +14,8 @@ module.exports = class YeetCommand extends Command {
 		});
 	}
 
-	async exec(message: Message) {
+	async exec(message: Message): Promise<Message | void> {
+
 		await loadTitle();
 		async function loadTitle() {
 			const promise = async () => fetch("https://www.reddit.com/r/YeetingKids/.json?limit=1000&?sort=top&t=all");
@@ -23,27 +24,28 @@ module.exports = class YeetCommand extends Command {
 				.then((json) => json.data.children.map((t: any) => t.data))
 				.then((data) => postRandomTitle(data));
 		}
+
 		async function postRandomTitle(data: any) {
-			const randomTitle = data[Math.floor(Math.random() * data.length) + 1];
-			let randomRedditPost = randomTitle.selftext.substring(0, 2045);
-			if (randomTitle.selftext.length > 2048) {
-				randomRedditPost += "...";
-			}
-			const RTTitle = randomTitle.title.substring(0, 256);
-			let RTUrl = randomTitle.url.toString();
+			const randomRedditPost = data[Math.floor(Math.random() * data.length) + 1];
+			const randomTitleSelfText = trim(randomRedditPost.selftext, 2048);
+			const RTTitle = trim(randomRedditPost.title, 256);
+
+			let RTUrl = randomRedditPost.url.toString();
 			const filters = ["webm", "mp4", "gifv", "youtube", "v.redd", "gfycat", "youtu", "news", "wsbtv"];
 			// Yes.
 			if (filters.some((filter) => RTUrl.includes(filter))) {
 				RTUrl = undefined;
 			}
+
 			const yeetEmbed = new Discord.MessageEmbed()
 				.setTitle(RTTitle)
-				.setDescription(randomRedditPost)
+				.setDescription(randomTitleSelfText)
 				.setColor(await getMemberColorAsync(message))
-				.setAuthor(`Submitted by ${randomTitle.author}`, "", "")
+				.setAuthor(`Submitted by ${randomRedditPost.author}`)
 				.setImage(RTUrl)
-				.setFooter(`${randomTitle.ups} updoots`);
-			await message.util?.send("", { split: true, embed: yeetEmbed, content: (!RTUrl ? randomTitle.url : "") });
+				.setFooter(`${randomRedditPost.ups} updoots`);
+
+			await message.util?.send("", { split: true, embed: yeetEmbed, content: (!RTUrl ? randomRedditPost.url : "") });
 		}
 	}
-};
+}
