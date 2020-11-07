@@ -3,14 +3,16 @@ import { Message, GuildMember, Role, UserFlagsString, MessageEmbed } from "disco
 import { getUserPresenceAsync, flags } from "../../functions/Util";
 
 
-module.exports = class UserInfoCommand extends Command {
+export default class UserInfoCommand extends Command {
 	constructor() {
 		super("uinfo", {
 			cooldown: 5000,
 			aliases: ["user", "uinfo"],
-			description: { description: "Shows relevant user info", usage: "<user>" },
+			description: { description: "Shows relevant member info", usage: "<member>" },
+			channel: "guild",
 			args: [{
 				id: "member",
+				match: "content",
 				type: "member",
 				default: (message: Message) => message.member,
 			}],
@@ -28,7 +30,9 @@ module.exports = class UserInfoCommand extends Command {
 				.setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
 				.setTitle(member.user.tag)
 				.addFields([
-					{ name: "ID", value: member.user.id, inline: true },
+					{
+						name: "ID", value: member.user.id, inline: true,
+					},
 					{
 						name: "Account date/Join date",
 						value: member.user.createdAt.toDateString() + "\n" + member.joinedAt?.toDateString(),
@@ -57,4 +61,4 @@ module.exports = class UserInfoCommand extends Command {
 
 		return message.channel.send(embed);
 	}
-};
+}
