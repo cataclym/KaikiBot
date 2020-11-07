@@ -20,7 +20,7 @@ export default class ClearCommand extends Command {
 	}
 	async exec({ channel }: { channel: Channel }, { int }: { int: number }): Promise<void> {
 
-		int >= 99 ? int = 99 : null;
+		int > 99 ? int = 99 : null;
 
 		(channel as TextChannel).bulkDelete(int + 1)
 			.catch((r) => console.error(r));
