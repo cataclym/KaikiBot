@@ -36,7 +36,8 @@ export default class TinderMain extends Command {
 		}
 		const user = yield {
 			type: "user",
-			flag: ["u", "-u"],
+			Math: "content",
+			flag: ["u", "-u", "--user"],
 		};
 		return user;
 	}
