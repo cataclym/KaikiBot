@@ -28,7 +28,7 @@ module.exports = class StatsCommand extends Command {
 		const guild = this.client.guilds.cache;
 		const embed = new MessageEmbed();
 		embed.setColor(color);
-		embed.setAuthor(`Nadeko Sengoku Bot v${process.env.npm_package_version}`, message.client.user?.displayAvatarURL({ dynamic: true }), "https://github.com/cataclym/nadekosengokubot");
+		embed.setAuthor(`Nadeko Sengoku Bot v${process.env.npm_package_version}`, message.client.user?.displayAvatarURL({ dynamic: true }), "https://gitlab.com/cataclym/nadekosengokubot");
 		embed.setDescription("**Built using**:");
 		embed.addFields([
 			{ name: "Discord.js library", value: `[Discord.js](https://discord.js.org/#/ 'Discord.js website') v${Discord.version}`, inline: true },
@@ -44,7 +44,7 @@ module.exports = class StatsCommand extends Command {
 
 		const embed2 = new MessageEmbed()
 			.setColor(color)
-			.setAuthor(`© 2020 ${this.client.users.cache.get(config.ownerID ?? "")?.tag}`, message.client.user?.displayAvatarURL({ dynamic: true }), "https://github.com/cataclym/nadekosengokubot");
+			.setAuthor(`© 2020 ${this.client.users.cache.get(config.ownerID ?? "")?.tag}`, message.client.user?.displayAvatarURL({ dynamic: true }), "https://gitlab.com/cataclym/nadekosengokubot");
 		for (const [key, value] of Object.entries(process.resourceUsage())) {
 			embed2.addField(key, value, true);
 		}

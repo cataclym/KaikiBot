@@ -21,7 +21,7 @@ module.exports = class commandsList extends Command {
 			description: `Prefix is currently set to \`${config.prefix}\`\n`,
 			author: {
 				name: `Nadeko Sengoku Bot v${process.env.npm_package_version}`,
-				url: "https://github.com/cataclym/nadekosengokubot",
+				url: "https://gitlab.com/cataclym/nadekosengokubot",
 				icon_url: message.author.displayAvatarURL({ dynamic: true }),
 			},
 			thumbnail: {

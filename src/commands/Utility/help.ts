@@ -35,7 +35,7 @@ export default class HelpCommand extends Command {
 			{ name: "📋 Command list", value: `For a complete list of commands; type \`${config.prefix}Cmdlist\``, inline: true },
 			{ name: "🔍 Command Info", value: `Use \`${config.prefix}help [command]\` to get more help! Example: \`${config.prefix}help ping\``, inline: true },
 		]);
-		embed.setAuthor(`Nadeko Sengoku Bot v${process.env.npm_package_version}`, message.author.displayAvatarURL({ dynamic: true }), "https://github.com/cataclym/nadekosengokubot");
+		embed.setAuthor(`Nadeko Sengoku Bot v${process.env.npm_package_version}`, message.author.displayAvatarURL({ dynamic: true }), "https://gitlab.com/cataclym/nadekosengokubot");
 		embed.setFooter("Made by Cata <3", AvUrl.displayAvatarURL({ dynamic: true }));
 		await message.util?.send(embed);
 	}

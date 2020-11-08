@@ -11,7 +11,7 @@
   "author": "Cataclym <ole.kh@hotmail.com>",
   "license": "MIT",
   "dependencies": {
-    "@cataclym/discord.js-pagination-ts-nsb": "git+https://github.com/cataclym/discord.js-pagination.git",
+    "@cataclym/discord.js-pagination-ts-nsb": "git+https://gitlab.com/cataclym/discord-js-pagination.git",
     "@types/node": "^13.13.30",
     "@types/node-fetch": "^2.5.7",
     "@types/ws": "^7.2.9",
@@ -35,6 +35,6 @@
   "description": "Discord bot built with Akairo and quick.db",
   "repository": {
     "type": "git",
-    "url": "https://github.com/cataclym/nadekosengokubot.git"
+    "url": "https://gitlab.com/cataclym/nadekosengokubot.git"
   }
 }
