@@ -54,6 +54,13 @@ https://discord.com/oauth2/authorize?client_id=YOUR_BOT_ID_HERE&permissions=4701
 
 Feel like contributing? Please help me! :D I have not written any guides, but I'll review all MRs.
 
+# Cotributing
+  1. Fork the bot!
+  1. Create your feature branch: `git checkout -b cool-new-branch`
+  1. Commit your changes: `git commit -am "Added x feature!"`
+  1. Push to the branch: `git push origin My-new-feature`
+  1. Submit a pull request!
+
 # I owe some amazing people thanks, and more!
 - Huge thanks to @Arvfitii for helping me whenever im in need!
 - Thanks to @rjt-rockx on Discord for so much help and time!

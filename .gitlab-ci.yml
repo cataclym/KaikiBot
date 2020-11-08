@@ -6,6 +6,3 @@ before_script:
 build:
   script:
   - npm run
-test:
-  script:
-  - npm run start
