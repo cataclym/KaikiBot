@@ -1,7 +1,8 @@
-image: node:latest
+image: node:14
 
 before_script:
 - npm install
+
 build:
   script:
   - npm run
