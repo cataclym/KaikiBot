@@ -1,0 +1,9 @@
+image: node:14.0
+before_script:
+- npm install
+build:
+  script:
+  - npm run
+test:
+  script:
+  - npm run test
