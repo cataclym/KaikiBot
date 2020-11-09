@@ -13,7 +13,7 @@ export default class NeofetchCommand extends Command {
 			}],
 		});
 	}
-	async exec(): Promise<void> {
+	public async exec(): Promise<void> {
 
 		// Putting this one ice
 

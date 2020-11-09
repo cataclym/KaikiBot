@@ -21,7 +21,7 @@ module.exports = class DeadbeatCommand extends Command {
 		});
 	}
 
-	async exec(message: Message, args: any) {
+	public async exec(message: Message, args: any) {
 		const member = args.member || args.default;
 		const applyText = (canvas: Canvas.Canvas, text: string) => {
 			const ctx = canvas.getContext("2d");

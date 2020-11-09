@@ -29,7 +29,7 @@ module.exports = class TodoCommand extends Command {
 		}
 	}
 
-	async exec(message: Message) {
+	public async exec(message: Message) {
 		const color = await getMemberColorAsync(message), reminder: { todo: unknown[] | undefined } = ReminderList.fetch(`${message.author.id}`);
 		let reminderArray;
 		reminder?.todo?.length ? reminderArray = reminder.todo.map((a: unknown[]) => a.join(" ")) : reminderArray = ["Empty list"];

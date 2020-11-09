@@ -16,7 +16,7 @@ export default class TinderRemoveDates extends Command {
 			],
 		});
 	}
-	async exec(message: Message, { integer }: { integer: number }): Promise<Message | MessageReaction | null> {
+	public async exec(message: Message, { integer }: { integer: number }): Promise<Message | MessageReaction | null> {
 		const authorList = [...new Set(Tinder.fetch(`dating.${message.author.id}`))];
 		if (!authorList[1]) {
 			return message.channel.send("Nothing to delete.");

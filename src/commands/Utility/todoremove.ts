@@ -16,7 +16,7 @@ module.exports = class todoRemoveCommand extends Command {
 			],
 		});
 	}
-	async exec(message: Message, { toRemove }: { toRemove: number | string }) {
+	public async exec(message: Message, { toRemove }: { toRemove: number | string }) {
 		const guildMember = message.author;
 		const reminder: { todo: string[] | undefined } = ReminderList.fetch(`${message.author.id}`);
 		const combinedReminders = reminder?.todo?.map(a => a);

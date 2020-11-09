@@ -18,7 +18,7 @@ export default class ClearCommand extends Command {
 			],
 		});
 	}
-	async exec({ channel }: { channel: Channel }, { int }: { int: number }): Promise<void> {
+	public async exec({ channel }: { channel: Channel }, { int }: { int: number }): Promise<void> {
 
 		int > 99 ? int = 99 : null;
 

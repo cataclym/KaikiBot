@@ -28,7 +28,7 @@ export default class BanCommand extends Command {
 			],
 		});
 	}
-	async exec(message: Message, { user, reason }: { user: User, reason: string}): Promise<Message> {
+	public async exec(message: Message, { user, reason }: { user: User, reason: string}): Promise<Message> {
 
 		const successBan = new MessageEmbed({
 			title: "Banned user",

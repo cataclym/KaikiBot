@@ -20,7 +20,7 @@ export default class EmitCommand extends Command {
 			],
 		});
 	}
-	async exec(message: Message, { event, eventArguments }: { event: Listener, eventArguments: string[] }): Promise<Message | void> {
+	public async exec(message: Message, { event, eventArguments }: { event: Listener, eventArguments: string[] }): Promise<Message | void> {
 
 		if (!event) return;
 

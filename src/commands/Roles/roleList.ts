@@ -12,7 +12,7 @@ export default class RoleListCommand extends Command {
 		});
 	}
 
-	async exec(message: Message): Promise<Message> {
+	public async exec(message: Message): Promise<Message> {
 
 		const data: Role[] | undefined = message.guild?.roles.cache.array().sort((a: Role, b: Role) => b.position - a.position || (b.id as unknown as number) - (a.id as unknown as number));
 

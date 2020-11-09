@@ -12,7 +12,7 @@ module.exports = class commandsList extends Command {
 		});
 	}
 
-	async exec(message: Message) {
+	public async exec(message: Message) {
 		const AvUrl = await message.client.users.fetch("140788173885276160");
 		// Bot author
 		const color = await getMemberColorAsync(message);

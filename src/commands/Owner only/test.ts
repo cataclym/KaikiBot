@@ -10,7 +10,7 @@ module.exports = class TestCommand extends Command {
 			ownerOnly: false,
 		});
 	}
-	async exec(message: Message) {
+	public async exec(message: Message) {
 		await message.channel.send("test message").then((thing)=> thing.react("❌").then(() => thing.react("💚").then(() => thing.react("🌟"))));
 
 	}

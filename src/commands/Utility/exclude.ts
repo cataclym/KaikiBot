@@ -27,7 +27,7 @@ export default class ExcludeCommand extends Command {
 		});
 	}
 
-	async exec(message: Message): Promise<Message | void> {
+	public async exec(message: Message): Promise<Message | void> {
 		const color = await getMemberColorAsync(message);
 		addedRoleEmbed.setColor(color);
 		removedRoleEmbed.setColor(color);

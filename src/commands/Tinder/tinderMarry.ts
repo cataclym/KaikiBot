@@ -19,7 +19,7 @@ module.exports = class TinderMarryCommand extends Command {
 			],
 		});
 	}
-	async exec(message: Message, { user }: { user: User}) {
+	public async exec(message: Message, { user }: { user: User}) {
 		const ArgDates = Tinder.get(`dating.${user.id}`);
 		if (ArgDates.includes(`${message.author.id}`)) {
 			const ArgMarry = Tinder.get(`married.${user.id}`);

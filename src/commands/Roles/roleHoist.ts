@@ -21,7 +21,7 @@ export default class RoleHoistCommand extends Command {
 		});
 	}
 
-	async exec(message: Message, { role }: { role: Role}): Promise<Message> {
+	public async exec(message: Message, { role }: { role: Role}): Promise<Message> {
 
 		if (role.hoist) {
 			role.setHoist(false);

@@ -20,7 +20,7 @@ export default class RedditCommand extends Command {
 		});
 	}
 
-	async exec(message: Message, { sub }: { sub: string }): Promise<Message | void> {
+	public async exec(message: Message, { sub }: { sub: string }): Promise<Message | void> {
 
 		loadTitle();
 		const color = await getMemberColorAsync(message);

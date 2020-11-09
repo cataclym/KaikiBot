@@ -21,7 +21,7 @@ export default class RoleDeleteCommand extends Command {
 		});
 	}
 
-	async exec(message: Message, { roles }: { roles: Role[]}): Promise<Message | void> {
+	public async exec(message: Message, { roles }: { roles: Role[]}): Promise<Message | void> {
 
 		const rolesArray: string[] = [];
 

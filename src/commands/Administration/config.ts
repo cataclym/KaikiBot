@@ -27,7 +27,7 @@ export default class ConfigCommand extends Command {
 		}
 	}
 
-	async exec(message: Message): Promise<Message | void> {
+	public async exec(message: Message): Promise<Message | void> {
 
 		const enabledDadBotGuilds = guildConfig.get("dadbot");
 		const embed = new MessageEmbed().setColor(await getMemberColorAsync(message));

@@ -13,7 +13,7 @@ export default class DadJokeCommand extends Command {
 		});
 	}
 
-	async exec(message: Message): Promise<Message | void> {
+	public async exec(message: Message): Promise<Message | void> {
 
 		await loadTitle();
 		async function loadTitle() {

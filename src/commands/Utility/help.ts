@@ -15,7 +15,7 @@ export default class HelpCommand extends Command {
 			description: { description: "Shows command info", usage: "ping" },
 		});
 	}
-	async exec(message: Message, { command }: { command: Command }): Promise<Message | void> {
+	public async exec(message: Message, { command }: { command: Command }): Promise<Message | void> {
 		const embed = new Discord.MessageEmbed()
 			.setColor(await getMemberColorAsync(message));
 

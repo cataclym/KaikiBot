@@ -21,7 +21,7 @@ export default class RoleMentionableCommand extends Command {
 		});
 	}
 
-	async exec(message: Message, { role }: { role: Role}): Promise<Message> {
+	public async exec(message: Message, { role }: { role: Role}): Promise<Message> {
 
 		if (role.mentionable) {
 			role.setMentionable(false);

@@ -31,7 +31,7 @@ module.exports = class NamesCommand extends Command {
 		return { unionUser, method };
 	}
 
-	async exec(message: Message, { method, unionUser }: { method: boolean, unionUser: User}) {
+	public async exec(message: Message, { method, unionUser }: { method: boolean, unionUser: User}) {
 		const color = await getMemberColorAsync(message);
 		const user = unionUser || message.author;
 		// I hate this

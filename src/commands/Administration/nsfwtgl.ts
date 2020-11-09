@@ -13,7 +13,7 @@ export default class ChannelNsfwCommand extends Command {
 		});
 	}
 
-	async exec(message: Message): Promise<Message> {
+	public async exec(message: Message): Promise<Message> {
 
 		const guidlChnl = message.channel as TextChannel;
 

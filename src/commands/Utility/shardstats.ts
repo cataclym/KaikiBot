@@ -16,7 +16,7 @@ module.exports = class ShardStatisticsCommand extends Command {
 			description: "Shows state of shards, if any",
 		});
 	}
-	async exec(message: Message) {
+	public async exec(message: Message) {
 		const pages: string[] = [];
 		pages.push("WebSocket: " + shardStats[message.client.ws.status]);
 		// Why doesnt this show up??

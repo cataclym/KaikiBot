@@ -12,7 +12,7 @@ module.exports = class GuildCreate extends Listener {
 		});
 	}
 
-	async exec(guild: Guild) {
+	public async exec(guild: Guild) {
 		console.log("\nBot was added to " + guild.name + "!! " + guild.memberCount + " members!\n");
 		await TinderStartup(guild);
 		await EmoteDBStartup(this.client);

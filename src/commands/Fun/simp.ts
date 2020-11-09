@@ -19,7 +19,7 @@ export default class SimpCommand extends Command {
 			}],
 		});
 	}
-	async exec(message: Message, { member }: { member: GuildMember }): Promise<Message | void> {
+	public async exec(message: Message, { member }: { member: GuildMember }): Promise<Message | void> {
 
 		const applyText = (canvas: Canvas.Canvas, text: string) => {
 			const ctx = canvas.getContext("2d");

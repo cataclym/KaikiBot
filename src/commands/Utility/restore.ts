@@ -21,7 +21,7 @@ module.exports = class RestoreUserRoles extends Command {
 			],
 		});
 	}
-	async exec(message: Message, { member }: { member: GuildMember }) {
+	public async exec(message: Message, { member }: { member: GuildMember }) {
 		if (leaveRoleTable.get(`${member.guild.id}.${member.id}`)) {
 			const savedRoles = leaveRoleTable.get(`${member.guild.id}.${member.id}`);
 			member.roles.add(savedRoles);

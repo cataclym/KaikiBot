@@ -21,7 +21,7 @@ module.exports = class StatsCommand extends Command {
 			description: { description: "Statistics and information" },
 		});
 	}
-	async exec(message: Message) {
+	public async exec(message: Message) {
 
 		const color = await getMemberColorAsync(message);
 		const pages = [];

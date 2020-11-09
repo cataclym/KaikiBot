@@ -27,7 +27,7 @@ export default class FetchUserCommand extends Command {
 			],
 		});
 	}
-	async exec(message: Message, { userObject }: { userObject: User}): Promise<Message | void> {
+	public async exec(message: Message, { userObject }: { userObject: User}): Promise<Message | void> {
 
 		const userinfo = this.handler.modules.get("uinfo");
 

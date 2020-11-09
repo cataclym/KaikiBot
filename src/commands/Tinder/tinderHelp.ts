@@ -8,7 +8,7 @@ module.exports = class TinderHelpCommand extends Command {
 			aliases: ["tinderhelp"],
 		});
 	}
-	async exec(message: Message) {
+	public async exec(message: Message) {
 		return message.util?.send(TinderHelp);
 	}
 };

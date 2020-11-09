@@ -28,7 +28,7 @@ module.exports = class TinderListCommand extends Command {
 		return user;
 	}
 
-	async exec(message: Message, args: User) {
+	public async exec(message: Message, args: User) {
 
 		return fetchUserList(message, args);
 	}

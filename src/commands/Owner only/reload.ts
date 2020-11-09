@@ -17,7 +17,7 @@ export default class ReloadCommand extends Command {
 			],
 		});
 	}
-	async exec(message: Message, { command }: { command: Command}): Promise<Message> {
+	public async exec(message: Message, { command }: { command: Command}): Promise<Message> {
 
 		command.reload();
 		return message.channel.send(new MessageEmbed({

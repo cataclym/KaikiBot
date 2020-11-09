@@ -20,7 +20,7 @@ export default class UnbanCommand extends Command {
 			],
 		});
 	}
-	async exec(message: Message, { user }: { user: User }): Promise<Message> {
+	public async exec(message: Message, { user }: { user: User }): Promise<Message> {
 
 		const bans = await message.guild?.fetchBans();
 

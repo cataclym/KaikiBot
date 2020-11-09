@@ -18,7 +18,7 @@ export default class TinderRemoveLikes extends Command {
 			],
 		});
 	}
-	async exec(message: Message, { integer }: { integer: number }): Promise<Message | MessageReaction> {
+	public async exec(message: Message, { integer }: { integer: number }): Promise<Message | MessageReaction> {
 		const likes = [...new Set(Tinder.fetch(`likeID.${message.author.id}`))];
 		if (!likes[1]) {
 			return message.channel.send("Nothing to delete.");

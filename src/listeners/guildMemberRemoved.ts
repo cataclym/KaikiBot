@@ -10,7 +10,7 @@ export default class GuildMemberRemovedListener extends Listener {
 			emitter: "client",
 		});
 	}
-	async exec(member: GuildMember): Promise<void> {
+	public async exec(member: GuildMember): Promise<void> {
 		leaveRoleTable.set(`${member.guild.id}.${member.id}`, member.roles.cache.map(role => role.id));
 	}
 }

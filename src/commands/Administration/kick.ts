@@ -28,7 +28,7 @@ export default class KickCommand extends Command {
 			],
 		});
 	}
-	async exec(message: Message, { member, reason }: { member: GuildMember, reason: string}): Promise<Message> {
+	public async exec(message: Message, { member, reason }: { member: GuildMember, reason: string}): Promise<Message> {
 
 		if (message.author.id != message.guild?.ownerID && (message.member as GuildMember).roles.highest.comparePositionTo(member.roles.highest) > 0) {
 			return message.channel.send(new MessageEmbed({

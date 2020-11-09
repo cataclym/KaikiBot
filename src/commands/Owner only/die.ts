@@ -11,7 +11,7 @@ module.exports = class KillBotProcess extends Command {
 			ownerOnly: true,
 		});
 	}
-	async exec(message: Message) {
+	public async exec(message: Message) {
 		const embed = new MessageEmbed()
 			.setAuthor("Dying", message.client.user?.displayAvatarURL({ dynamic: true }))
 			.addField("Shutting down", "See you later", false)

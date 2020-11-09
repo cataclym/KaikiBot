@@ -13,7 +13,7 @@ module.exports = class UpdateNames extends Command {
 			ownerOnly: true,
 		});
 	}
-	async exec(message: Message) {
+	public async exec(message: Message) {
 		// Can max fetch 100 in one go. Would be nice to grab more...
 		const updates = await message.guild?.fetchAuditLogs({
 			type: "MEMBER_UPDATE",

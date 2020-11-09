@@ -41,7 +41,7 @@ export default class TinderMain extends Command {
 		};
 		return user;
 	}
-	async exec(message: Message, args: User): Promise<Message | void> {
+	public async exec(message: Message, args: User): Promise<Message | void> {
 
 		if (args) {
 			return message.channel.send(await tinderRollEmbed(message, args));

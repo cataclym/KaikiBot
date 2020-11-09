@@ -25,7 +25,7 @@ export default class EvalCommand extends Command {
 			],
 		});
 	}
-	async exec(message: Message, { code }: { code: string }): Promise<Message | void> {
+	public async exec(message: Message, { code }: { code: string }): Promise<Message | void> {
 		try {
 			let evaled = eval(code);
 

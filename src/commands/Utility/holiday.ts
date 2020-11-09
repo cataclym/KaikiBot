@@ -24,7 +24,7 @@ module.exports = class HolidayAPICommand extends Command {
 		});
 	}
 
-	async exec(message: Message, args: any) {
+	public async exec(message: Message, args: any) {
 		const today = new Date(), TYear = args.year || today.getFullYear() - 1,
 			TMonth = args.month || today.getMonth() + 1, TDay = args.month || today.getDate(),
 			country = args.country || "US";
