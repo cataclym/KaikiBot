@@ -2,6 +2,7 @@ import { getMemberColorAsync, trim } from "../../functions/Util";
 import fetch from "node-fetch";
 import { MessageEmbed, Message } from "discord.js";
 import { Command } from "discord-akairo";
+import { ChildrenEntity, Data1 } from "../../struct/redditModel";
 
 export default class DadJokeCommand extends Command {
 	constructor() {
@@ -20,18 +21,17 @@ export default class DadJokeCommand extends Command {
 			const promise = async () => fetch("https://www.reddit.com/r/dadjokes.json?limit=1000&?sort=top&t=all");
 			promise()
 				.then((res) => res.json())
-				.then((json) => json.data.children.map((t: any) => t.data))
+				.then((json) => json.data.children.map((t: ChildrenEntity) => t.data))
 				.then((data) => postRandomTitle(data));
 		}
 
-		async function postRandomTitle(data: any) {
+		async function postRandomTitle(data: Data1[]) {
+
 			const randomRedditPost = data[Math.floor(Math.random() * data.length) + 1];
-			const randomTitleSelfText = trim(randomRedditPost.selftext, 2048);
-			const RTTitle = trim(randomRedditPost.title, 256);
 
 			const embed: MessageEmbed = new MessageEmbed({
-				title: RTTitle,
-				description: randomTitleSelfText,
+				title: trim(randomRedditPost.title, 256),
+				description: trim(randomRedditPost.selftext, 2048),
 				color: await getMemberColorAsync(message),
 				author: {
 					name: `Submitted by ${randomRedditPost.author}`,

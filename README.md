@@ -1,38 +1,16 @@
 #  Welcome to Nadeko Sengoku Bot
 
 ### A simple bot Written in TypeScript with lots of unique commands and features.
-***
-## Features
-### Some commands:
-  * Todo
-  * Dadjoke
-  * Yeet, Yeetkids
-  * Tinder
-    * Rolls
-    * Likes/Dislike/Superlike
-    * Daily reset
-    * Marry
-  * Deadbeat
-  * Simp
-  * Compress, Squish, Stretch
-### Reacts with emotes to specified words
-  * Specify in `src/config.ts`
-### Emotecount
-  * Emotecount
-### Irritating dad like responses, which also rename the user
-  * Toggleable per guild and per user
-### And much more
-
-<img src="https://i.imgur.com/WsMAKPB.png" title="example" alt="example pic"/>
 
 ***
 ## Instructions
 Requirements
 * Nodejs https://nodejs.org/en/
+* TypeScript `npm install -g typescript` https://www.npmjs.com/package/typescript
 * Build tools (Windows) `npm i --global --production windows-build-tools` | (Linux) <a href="https://github.com/Automattic/node-canvas/wiki/Installation:-Fedora-and-other-RPM-based-distributions"> Find your distribution and dependencies here </a> 
 
 1. Clone repo
-1. Go into `src` folder. Edit`config.ts` - Add your bot token and edit the other inputs. // Need help? Join my server. 
+1. Go into `src` folder. Edit`config.ts` - Add your bot token and edit the other inputs. // Need help? Come join our server!
 1. Terminal: `cd nadekosengokubot`
 1. Terminal: `npm i`
 1. Terminal: `npm start`
@@ -49,7 +27,7 @@ Having issues? Come join us on discord here
 </a>
 ***
                                                          
-You can use the following link to invite with these permissions already defined. Replace `YOUR_BOT_ID_HERE` with your bot id / client id.
+You can use the following link to invite with necessary permissions already defined. Replace `YOUR_BOT_ID_HERE` with your bot id / client id.
 https://discord.com/oauth2/authorize?client_id=YOUR_BOT_ID_HERE&permissions=470142144&scope=bot
 
 Feel like contributing? Please help me! :D I have not written any guides, but I'll review all MRs.

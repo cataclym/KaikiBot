@@ -3,6 +3,7 @@ import Discord from "discord.js";
 import { Command } from "discord-akairo";
 import { Message } from "discord.js";
 import { getMemberColorAsync, trim } from "../../functions/Util";
+import { ChildrenEntity, Data1 } from "../../struct/redditModel";
 
 export default class YeetCommand extends Command {
 	constructor() {
@@ -21,31 +22,34 @@ export default class YeetCommand extends Command {
 			const promise = async () => fetch("https://www.reddit.com/r/YeetingKids/.json?limit=1000&?sort=top&t=all");
 			promise()
 				.then((res) => res.json())
-				.then((json) => json.data.children.map((t: any) => t.data))
+				.then((json) => json.data.children.map((t: ChildrenEntity) => t.data))
 				.then((data) => postRandomTitle(data));
 		}
 
-		async function postRandomTitle(data: any) {
-			const randomRedditPost = data[Math.floor(Math.random() * data.length) + 1];
-			const randomTitleSelfText = trim(randomRedditPost.selftext, 2048);
-			const RTTitle = trim(randomRedditPost.title, 256);
+		async function postRandomTitle(data: Data1[]) {
 
-			let RTUrl = randomRedditPost.url.toString();
+			const randomRedditPost = data[Math.floor(Math.random() * data.length) + 1];
+
 			const filters = ["webm", "mp4", "gifv", "youtube", "v.redd", "gfycat", "youtu", "news", "wsbtv"];
 			// Yes.
-			if (filters.some((filter) => RTUrl.includes(filter))) {
-				RTUrl = undefined;
-			}
+			const isVideo = () => {
+				if (filters.some((filter) => randomRedditPost.url.includes(filter))) {
+					return true;
+				}
+				return false;
+			};
 
 			const yeetEmbed = new Discord.MessageEmbed()
-				.setTitle(RTTitle)
-				.setDescription(randomTitleSelfText)
+				.setTitle(trim(randomRedditPost.title, 256))
+				.setDescription(trim(randomRedditPost.selftext, 2048))
 				.setColor(await getMemberColorAsync(message))
 				.setAuthor(`Submitted by ${randomRedditPost.author}`)
-				.setImage(RTUrl)
+				.setImage(randomRedditPost.url)
 				.setFooter(`${randomRedditPost.ups} updoots`);
 
-			await message.util?.send("", { split: true, embed: yeetEmbed, content: (!RTUrl ? randomRedditPost.url : "") });
+			isVideo() ? await message.util?.send(randomRedditPost.url) : "";
+
+			return message.util?.send("", { split: true, embed: yeetEmbed });
 		}
 	}
 }

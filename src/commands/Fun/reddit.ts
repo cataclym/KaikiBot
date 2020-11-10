@@ -1,12 +1,13 @@
 import fetch from "node-fetch";
 import { Command } from "discord-akairo";
-import Discord, { Message } from "discord.js";
-import { getMemberColorAsync } from "../../functions/Util";
+import { Message, MessageEmbed } from "discord.js";
+import { errorColor, getMemberColorAsync, trim } from "../../functions/Util";
+import { redditData, Data1 } from "../../struct/redditModel";
 
 export default class RedditCommand extends Command {
 	constructor() {
 		super("reddit", {
-			cooldown: 8000,
+			cooldown: 6000,
 			aliases: ["reddit"],
 			typing: true,
 			description: { description: "Returns a random reddit post, from a specified subreddit.", usage: "anime" },
@@ -23,32 +24,40 @@ export default class RedditCommand extends Command {
 	public async exec(message: Message, { sub }: { sub: string }): Promise<Message | void> {
 
 		loadTitle();
+
 		const color = await getMemberColorAsync(message);
 
 		async function loadTitle() {
-			const promise = async () => fetch(`https://www.reddit.com/r/${sub}/random/.json?limit=1000&?sort=top&t=all`);
-			promise()
-				.then((res) => res.json())
-				.then((json) => json[0].data.children.map((t: any) => t.data))
-				.then((data: any) => postRandomTitle(data));
+			const file: redditData = await fetch(`https://www.reddit.com/r/${sub}/random/.json`)
+				.then(response => response.json());
+			if (file) {
+				const data = file.data.children?.map(a => a.data);
+				if (data) {
+					return postRandomTitle(data[Math.floor(Math.random() * data.length) + 1]);
+				}
+			}
+			else {
+				return message.util?.send(new MessageEmbed({
+					title: "Error",
+					description: "No data received...",
+					color: errorColor,
+				}));
+			}
 		}
-		async function postRandomTitle(data: any) {
 
-			data = data[0];
+		async function postRandomTitle(data: Data1) {
 
-			console.log(data);
-			console.log(typeof (data));
-
-			const embed = new Discord.MessageEmbed({
+			const embed = new MessageEmbed({
 				color: color,
 				author: {
 					name: `Submitted by ${data.author}`,
 					url: data.url,
 				},
-				footer: { text: `${data.ups} updoots / ${data.downs} downdoots` },
+				footer: { text: `${data.ups} updoots / ${data.upvote_ratio} updoot ratio` },
 			});
-			data.title?.length ? embed.setTitle(data.title.substring(0, 256)) : null;
-			data.selftext?.length ? embed.setDescription(data.selftext.substring(0, 2047)) : null;
+
+			data.title?.length ? embed.setTitle(trim(data.title, 256)) : null;
+			data.selftext?.length ? embed.setDescription(trim(data.selftext, 2047)) : null;
 			!data.is_video ? embed.setImage(data.url) : message.channel.send(data.url);
 
 			return message.util?.send(embed);
