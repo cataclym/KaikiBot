@@ -1,0 +1,14 @@
+// import { Command } from "discord-akairo";
+// import { Message} from "discord.js";
+
+// export default class AvatarCommand extends Command {
+// 	constructor() {
+// 		super("", {
+// 			aliases: [""],
+// 			description: { description: "", usage: "" },
+// 		});
+// 	}
+// 	public async exec(message: Message): Promise<Message> {
+// 		return message.channel.send();
+// 	}
+// }
