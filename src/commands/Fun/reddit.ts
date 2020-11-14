@@ -1,6 +1,6 @@
 import fetch from "node-fetch";
 import { Command } from "discord-akairo";
-import { Message, MessageEmbed } from "discord.js";
+import { Message, MessageEmbed, TextChannel } from "discord.js";
 import { errorColor, getMemberColorAsync, trim } from "../../functions/Util";
 import { redditData, Data1 } from "../../struct/redditModel";
 
@@ -47,6 +47,11 @@ export default class RedditCommand extends Command {
 
 		async function postRandomTitle(data: Data1) {
 
+			// We don´t want nsfw in normal channels, do we?
+			if (data.over_18 && (!(message.channel as TextChannel)?.nsfw ||	message.channel.type !== "dm")) {
+				return null;
+			}
+
 			const embed = new MessageEmbed({
 				color: color,
 				author: {
@@ -56,11 +61,11 @@ export default class RedditCommand extends Command {
 				footer: { text: `${data.ups} updoots / ${data.upvote_ratio} updoot ratio` },
 			});
 
-			data.title?.length ? embed.setTitle(trim(data.title, 256)) : null;
-			data.selftext?.length ? embed.setDescription(trim(data.selftext, 2047)) : null;
+			if (data.title?.length) { embed.setTitle(trim(data.title, 256)); }
+			if (data.selftext?.length) { embed.setDescription(trim(data.selftext, 2048)); }
 			!data.is_video ? embed.setImage(data.url) : message.channel.send(data.url);
 
-			return message.util?.send(embed);
+			return message.channel.send(embed);
 		}
 	}
 }
