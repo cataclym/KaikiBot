@@ -1,7 +1,9 @@
-import { createCanvas, loadImage } from "canvas";
-import { Command } from "discord-akairo";
-import { Message, Emoji } from "discord.js";
-
+import { Argument, Command } from "discord-akairo";
+import { Message } from "discord.js";
+import sizeOf from "image-size";
+import { deleteImage, getFileOut, resizeImage, saveEmoji, saveFile } from "../../functions/Emote";
+const imgRegex = /(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|gif|png)/g;
+// Credit to https://github.com/Snitt/emojibotten/blob/master/commands/management/emoji.js
 export default class AddEmotesCommand extends Command {
 	constructor() {
 		super("addemotes", {
@@ -12,36 +14,32 @@ export default class AddEmotesCommand extends Command {
 			channel: "guild",
 			args: [
 				{
-					id: "emotes",
-					type: "emojis",
+					id: "url",
+					type: Argument.union(imgRegex),
+					match: "separate",
 				},
 			],
 		});
 	}
-	public async exec(message: Message, { emote: emotes }: { emote: Emoji[] }): Promise<Message | void> {
+	public async exec(message: Message, { urls }: { urls: string[] }): Promise<Message | void> {
 
-		console.log(emotes);
+		urls.forEach(async (url) => {
 
-		if (emotes) {
-			emotes.forEach(async emoji => {
-				if (emoji.url) {
-					const img = await loadImage(emoji.url);
-					const canv = createCanvas(img.width, img.height);
-					const ctx = canv.getContext("2d");
-					ctx.drawImage(img, img.width, img.height);
-					const buffer = canv.toBuffer();
+			const file = getFileOut(message);
+			await saveFile(url, file);
 
-					try {
-						await message.guild?.emojis.create(buffer, emoji.name);
-					}
-					catch {
-						//
-					}
-				}
-			});
-			return message.channel.send("✨");
+			// Example output: { width: 240, height: 240, type: 'gif' }
+			const imgDimensions = sizeOf(file);
 
-		}
-
+			if ((imgDimensions.width && imgDimensions.height) && imgDimensions.width <= 128 && imgDimensions.height <= 128) {
+				await saveEmoji(message, url, name);
+			}
+			else if (imgDimensions.type) {
+				const img = await resizeImage(file, imgDimensions.type, 128, message);
+				await saveEmoji(message, img, name);
+			}
+			deleteImage(file);
+		});
 	}
 }
+
