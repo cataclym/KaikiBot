@@ -14,25 +14,29 @@ export default class AddEmotesCommand extends Command {
 			channel: "guild",
 			args: [
 				{
-					id: "url",
+					id: "urls",
 					type: Argument.union(imgRegex),
 					match: "separate",
 				},
 			],
 		});
 	}
-	public async exec(message: Message, { urls }: { urls: string[] }): Promise<Message | void> {
+	public async exec(message: Message, { urls }: { urls: { match: string[], matches: [][] }[] }): Promise<Message | void> {
+
+		if (!urls) return;
 
 		urls.forEach(async (url) => {
+			const msNow = Date.now().toString();
+			const file = getFileOut(msNow);
+			await saveFile(url.match[0], file);
 
-			const file = getFileOut(message);
-			await saveFile(url, file);
+			const name = msNow.substring(7, 39);
 
 			// Example output: { width: 240, height: 240, type: 'gif' }
 			const imgDimensions = sizeOf(file);
 
 			if ((imgDimensions.width && imgDimensions.height) && imgDimensions.width <= 128 && imgDimensions.height <= 128) {
-				await saveEmoji(message, url, name);
+				await saveEmoji(message, url.match[0], name);
 			}
 			else if (imgDimensions.type) {
 				const img = await resizeImage(file, imgDimensions.type, 128, message);

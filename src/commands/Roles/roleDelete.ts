@@ -1,5 +1,5 @@
 import { Command } from "discord-akairo";
-import { Role, Message, MessageEmbed } from "discord.js";
+import { Collection, Role, Message, MessageEmbed } from "discord.js";
 import { noArgRole } from "../../functions/embeds";
 import { errorColor, getMemberColorAsync } from "../../functions/Util";
 
@@ -15,29 +15,40 @@ export default class RoleDeleteCommand extends Command {
 				{
 					id: "roles",
 					type: "roles",
+					match: "separate",
 					otherwise: noArgRole,
 				},
 			],
 		});
 	}
 
-	public async exec(message: Message, { roles }: { roles: Role[]}): Promise<Message | void> {
+	public async exec(message: Message, { roles }: { roles: Collection<string, Role>[]}): Promise<Message | void> {
 
-		const rolesArray: string[] = [];
+		const every = roles.every(async (collection) => {
 
-		roles.forEach(async (role: Role) => {
-			return rolesArray.push((await role.delete()).name);
+			const role = collection.map((r) => r)[0];
+
+			const dr = await role.delete().then(() => {
+				return Promise.resolve(true);
+			});
+
+			if (dr.valueOf()) {
+				return true;
+			}
+			else {
+				return message.channel.send(new MessageEmbed({
+					color: errorColor,
+					description: "Couldn't delete roles!",
+				})) && false;
+			}
 		});
-		if (rolesArray.length > 0) {
+
+		await Promise.all([every]);
+
+		if (every.valueOf()) {
 			return message.channel.send(new MessageEmbed({
 				color: await getMemberColorAsync(message),
-				description: `Deleted: ${rolesArray.join(", ")}`,
-			}));
-		}
-		else {
-			return message.channel.send(new MessageEmbed({
-				color: errorColor,
-				description: "Couldn't delete roles!",
+				description: `Deleted: ${roles.map(coll => coll.map(role => role.name)).join(", ")}`,
 			}));
 		}
 	}
