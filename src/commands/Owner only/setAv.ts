@@ -3,6 +3,7 @@ import { Message } from "discord.js";
 import Canvas from "canvas";
 import { MessageAttachment } from "discord.js";
 import { calculateAspectRatioFit } from "../../functions/Util";
+import { noArgGeneric } from "../../functions/embeds";
 
 export default class SetAvatarCommand extends Command {
 	constructor() {
@@ -14,6 +15,7 @@ export default class SetAvatarCommand extends Command {
 				{
 					id: "url",
 					type: "url",
+					otherwise: (msg: Message) => noArgGeneric(msg.util!.parsed!.command!),
 				},
 			],
 		});

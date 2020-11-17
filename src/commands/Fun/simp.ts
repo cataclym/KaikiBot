@@ -13,9 +13,7 @@ export default class SimpCommand extends Command {
 			args: [{
 				id: "member",
 				type: "member",
-				default: (message: Message) => {
-					return message.member;
-				},
+				default: (message: Message) => message.member,
 			}],
 		});
 	}

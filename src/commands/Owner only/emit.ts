@@ -1,5 +1,6 @@
 import { Command, Listener } from "discord-akairo";
 import { MessageEmbed, Message } from "discord.js";
+import { noArgGeneric } from "../../functions/embeds";
 
 export default class EmitCommand extends Command {
 	constructor() {
@@ -12,6 +13,8 @@ export default class EmitCommand extends Command {
 					index: 0,
 					id: "event",
 					type: "listener",
+					otherwise: (msg: Message) => noArgGeneric(msg.util!.parsed!.command!),
+
 				},
 				{
 					id: "eventArguments",
@@ -21,12 +24,6 @@ export default class EmitCommand extends Command {
 		});
 	}
 	public async exec(message: Message, { event, eventArguments }: { event: Listener, eventArguments: string[] }): Promise<Message | void> {
-
-		if (!event) return;
-
-		console.log(eventArguments);
-
-		// process.emit(event);
 
 		const value = this.client.emit(event.id, eventArguments);
 

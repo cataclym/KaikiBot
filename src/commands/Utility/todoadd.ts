@@ -3,6 +3,7 @@ import db from "quick.db";
 const ReminderList = new db.table("ReminderList");
 import { Command } from "discord-akairo";
 import { Message } from "discord.js";
+import { noArgGeneric } from "../../functions/embeds";
 module.exports = class todoAddCommand extends Command {
 	constructor() {
 		super("add", {
@@ -11,6 +12,7 @@ module.exports = class todoAddCommand extends Command {
 					id: "toAdd",
 					type: "string",
 					match: "rest",
+					otherwise: (msg: Message) => noArgGeneric(msg.util!.parsed!.command!),
 				},
 			],
 		});

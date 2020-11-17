@@ -3,6 +3,7 @@ import { poems } from "../functions/poems";
 import { MessageEmbed, Message, User } from "discord.js";
 import { errorColor, getMemberColorAsync } from "./Util";
 import db from "quick.db";
+import { Command } from "discord-akairo";
 const Tinder = new db.table("Tinder");
 const tinderSlogan = ["Match?", "Chat?", "Date?", "Flirt?", "Text?", "Tease?", "Chat up?", "Take a risk?"];
 // Some cringe anime wedding pictures
@@ -64,6 +65,12 @@ const noArgRole = new MessageEmbed({
 	description: "Can't find this role. Make sure you inputted it correctly.",
 });
 
+const noArgGeneric = (cmd: Command): MessageEmbed => new MessageEmbed({
+	color: errorColor,
+	description: "Please provide arguments.",
+	fields: [{ name: "Usage", value: (cmd?.description.usage ? `${config.prefix}${cmd.id} ${cmd.description.usage}` : "<any>") }],
+});
+
 export {
-	DMEMarry, TinderHelp, tinderRollEmbed, noArgRole,
+	DMEMarry, TinderHelp, tinderRollEmbed, noArgRole, noArgGeneric,
 };

@@ -1,6 +1,6 @@
 import { Command } from "discord-akairo";
-import { MessageEmbed } from "discord.js";
-import { Message } from "discord.js";
+import { Message, MessageEmbed } from "discord.js";
+import { noArgGeneric } from "../../functions/embeds";
 import { getMemberColorAsync } from "../../functions/Util";
 
 export default class ReloadCommand extends Command {
@@ -13,6 +13,7 @@ export default class ReloadCommand extends Command {
 				{
 					id: "command",
 					type: "command",
+					otherwise: (msg: Message) => noArgGeneric(msg.util!.parsed!.command!),
 				},
 			],
 		});

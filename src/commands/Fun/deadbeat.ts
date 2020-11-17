@@ -14,9 +14,7 @@ module.exports = class DeadbeatCommand extends Command {
 				id: "member",
 				type: "member",
 				match: "rest",
-				default: (message: Message) => {
-					return message.member;
-				},
+				default: (message: Message) => message.member,
 			}],
 		});
 	}
