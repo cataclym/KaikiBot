@@ -13,6 +13,7 @@ export class customClient extends AkairoClient {
 		{
 			shards: "auto",
 			disableMentions: "everyone",
+			partials: ["REACTION"],
 			presence: {
 				activity: { type: config.activityStatus, name: config.activityName },
 			},
