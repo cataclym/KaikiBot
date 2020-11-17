@@ -11,7 +11,7 @@ module.exports = class NamesCommand extends Command {
 	constructor() {
 		super("names", {
 			aliases: ["name", "names"],
-			description: { description: "Returns all your daddy nicknames", usage: " | " + config.prefix + "names @someone | " + config.prefix + "names delete" },
+			description: { description: "Returns all your daddy nicknames", usage: "@dreb" },
 		});
 	}
 	*args() {
