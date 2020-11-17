@@ -1,5 +1,6 @@
 import { Command } from "discord-akairo";
 import { Message } from "discord.js";
+import { noArgGeneric } from "../../functions/embeds";
 
 export default class SetNameCommand extends Command {
 	constructor() {
@@ -11,6 +12,7 @@ export default class SetNameCommand extends Command {
 				{
 					id: "name",
 					match: "separate",
+					otherwise: (msg: Message) => noArgGeneric(msg.util!.parsed!.command!),
 				},
 			],
 		});
