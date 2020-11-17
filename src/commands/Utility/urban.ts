@@ -4,6 +4,7 @@ import { Command } from "discord-akairo";
 import { MessageEmbed, Message } from "discord.js";
 import querystring from "querystring";
 import { errorColor, getMemberColorAsync, trim } from "../../functions/Util";
+import { noArgGeneric } from "../../functions/embeds";
 
 export default class UrbanDictCommand extends Command {
 	constructor() {
@@ -14,6 +15,7 @@ export default class UrbanDictCommand extends Command {
 				{
 					id: "term",
 					match: "rest",
+					otherwise: (msg: Message) => noArgGeneric(msg.util!.parsed!.command!),
 				},
 			],
 		});

@@ -1,13 +1,14 @@
-import { Command } from "discord-akairo";
 import { GuildEmoji, Message, MessageEmbed } from "discord.js";
 import { errorColor, getMemberColorAsync, trim } from "../../functions/Util";
 import { Collection } from "discord.js";
+import { Command } from "discord-akairo";
+import { noArgGeneric } from "../../functions/embeds";
 const timer = (ms: number) => new Promise(res => setTimeout(res, ms));
 export default class DeleteEmoteCommand extends Command {
 	constructor() {
 		super("deleteemote", {
 			aliases: ["deleteemote", "de"],
-			description: { description: "", usage: "" },
+			description: { description: "Deletes one or multiple emotes/emoji", usage: "<:NadekoSip:>" },
 			clientPermissions: "MANAGE_EMOJIS",
 			userPermissions: "MANAGE_EMOJIS",
 			channel: "guild",
@@ -16,9 +17,11 @@ export default class DeleteEmoteCommand extends Command {
 				id: "emotes",
 				match: "separate",
 				type: "emojis",
+				otherwise: (msg: Message) => noArgGeneric(msg.util!.parsed!.command!),
 			}],
 		});
 	}
+
 	public async exec(message: Message, { emotes }: { emotes: Collection<string, GuildEmoji>[]}): Promise<Message> {
 
 		async function run() {

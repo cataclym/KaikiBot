@@ -1,6 +1,7 @@
 import { Argument, Command } from "discord-akairo";
 import { Message } from "discord.js";
 import sizeOf from "image-size";
+import { noArgGeneric } from "../../functions/embeds";
 import { deleteImage, getFileOut, resizeImage, saveEmoji, saveFile } from "../../functions/Emote";
 const imgRegex = /(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|gif|png)/g;
 // Credit to https://github.com/Snitt/emojibotten/blob/master/commands/management/emoji.js
@@ -17,13 +18,12 @@ export default class AddEmotesCommand extends Command {
 					id: "urls",
 					type: Argument.union(imgRegex),
 					match: "separate",
+					otherwise: (msg: Message) => noArgGeneric(msg.util!.parsed!.command!),
 				},
 			],
 		});
 	}
 	public async exec(message: Message, { urls }: { urls: { match: string[], matches: [][] }[] }): Promise<Message | void> {
-
-		if (!urls) return;
 
 		urls.forEach(async (url) => {
 			const msNow = Date.now().toString();
