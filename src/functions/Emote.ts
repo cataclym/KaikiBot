@@ -5,7 +5,7 @@ import { GuildEmoji } from "discord.js";
 import util from "util";
 import { Message } from "discord.js";
 import cp = require("child_process")
-const execFile = util.promisify(cp.execFileSync);
+const execFile = util.promisify(cp.execFile);
 
 export async function deleteImage(file: fs.PathLike): Promise<void> {
 	fs.unlink(file, err => {
@@ -22,7 +22,11 @@ export async function resizeImage(file: string, type: string, imgSize: number, m
 		if (msg) {
 			msg.channel.send("Processing...");
 		}
+		// This one is broken! Not sure how to fix...
+		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+		// @ts-ignore
 		await execFile(gifsicle, ["--resize-fit-width", imgSize, "-o", file, file]);
+
 		const fileSize = await getFilesizeInBytes(file);
 		if (fileSize > 256000) {
 			return Promise.resolve(resizeImage(file, type, imgSize / 2));
@@ -46,7 +50,7 @@ export function getFilesizeInBytes(filename: fs.PathLike): Promise<number> {
 	return Promise.resolve(fileSizeInBytes);
 }
 
-export async function saveEmoji(message: Message, file: string | Buffer, name: never): Promise<Message | void> {
+export async function saveEmoji(message: Message, file: string | Buffer, name: string): Promise<Message | void> {
 	return message.guild?.emojis
 		.create(file, name)
 		.then((emoji: GuildEmoji) => {
@@ -60,9 +64,9 @@ export async function saveEmoji(message: Message, file: string | Buffer, name: n
 }
 
 // Takes a message and returns the output location for saved files
-export function getFileOut(message: Message): string {
+export function getFileOut(name: string): string {
 	// Need to check for file extensions
-	return `./images${message.id}`;
+	return `./images${name}`;
 }
 
 // Takes a URL and a directory+filename and saves to that directory with that
@@ -72,6 +76,8 @@ export async function saveFile(url: string, saveAs: fs.PathLike): Promise<void> 
 		return;
 	}
 	else {
+		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+		// @ts-ignore
 		await execFile("curl", [url, "-o", saveAs]);
 		return Promise.resolve();
 	}
