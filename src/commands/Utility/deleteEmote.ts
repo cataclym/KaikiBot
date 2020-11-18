@@ -24,16 +24,17 @@ export default class DeleteEmoteCommand extends Command {
 
 	public async exec(message: Message, { emotes }: { emotes: Collection<string, GuildEmoji>[]}): Promise<Message> {
 
-		async function run() {
+		return (async function() {
+			let i = 0;
 			for (const emote of emotes) {
 
 				const newEmote = message.guild?.emojis.cache.get(emote.map(e => e.id)[0]);
 
 				if (newEmote) {
 
-					const deleted = await newEmote.delete();
+					i > 0 ? await timer(3500) && i++ : i++;
 
-					await timer(3500);
+					const deleted = await newEmote.delete();
 
 					if (!deleted) {
 						return message.channel.send(new MessageEmbed({
@@ -55,10 +56,8 @@ export default class DeleteEmoteCommand extends Command {
 			return message.channel.send(new MessageEmbed({
 				title: "Success!",
 				color: await getMemberColorAsync(message),
-				description: `Deleted ${trim(emotes.map((es) => es.map((e) => e.identifier)).join("\n"), 2048)}`,
+				description: `Deleted:\n${trim(emotes.map((es) => es.map((e) => e)).join("\n"), 2048)}`,
 			}));
-		}
-
-		return run();
+		})();
 	}
 }

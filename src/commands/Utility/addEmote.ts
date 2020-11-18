@@ -5,7 +5,7 @@ import { noArgGeneric } from "../../functions/embeds";
 import { deleteImage, getFileOut, resizeImage, saveEmoji, saveFile } from "../../functions/Emote";
 import { trim } from "../../functions/Util";
 
-// const emoteRegex = /<(a?)((!?\d+)|(:.+?:\d+))>/g;
+const emoteRegex = /<(a?)((!?\d+)|(:.+?:\d+))>/g;
 const imgRegex = /(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|gif|png)/g;
 // Credit to https://github.com/Snitt/emojibotten/blob/master/commands/management/emoji.js
 export default class AddEmoteCommand extends Command {
@@ -19,7 +19,7 @@ export default class AddEmoteCommand extends Command {
 			args: [
 				{
 					id: "url",
-					type: Argument.union(imgRegex),
+					type: Argument.union(imgRegex, emoteRegex),
 					otherwise: (msg: Message) => noArgGeneric(msg.util!.parsed!.command!),
 				},
 				{
@@ -30,11 +30,25 @@ export default class AddEmoteCommand extends Command {
 			],
 		});
 	}
-	public async exec(message: Message, { url, name }: { url: { match: string[], matches: [][] }, name: string | undefined }): Promise<Message | void> {
+	public async exec(message: Message, { url, name }: { url: { match: RegExpMatchArray, matches: [][] }, name: string | undefined }): Promise<Message | void> {
+
+		const match = url.match.toString();
+		let emote = undefined;
+		const urlMatch = url.match[0].toString();
+
+		if (match.startsWith("<") && match.endsWith(">")) {
+
+			const emoteID = match.match(/\d+/g);
+
+			if (emoteID) {
+				emote = `https://cdn.discordapp.com/emojis/${emoteID.toString()}.${match.indexOf("a") === 1 ? "gif" : "png"}`;
+				name = name ?? urlMatch.slice(2, urlMatch.lastIndexOf(":"));
+			}
+		}
 
 		const msNow = Date.now().toString();
 		const file = getFileOut(msNow);
-		await saveFile(url.match[0], file);
+		await saveFile(emote || urlMatch, file);
 
 		name = trim(name || msNow, 32);
 
@@ -42,7 +56,7 @@ export default class AddEmoteCommand extends Command {
 		const imgDimensions = sizeOf(file);
 
 		if ((imgDimensions.width && imgDimensions.height) && imgDimensions.width <= 128 && imgDimensions.height <= 128) {
-			await saveEmoji(message, url.match[0], name);
+			await saveEmoji(message, emote || urlMatch, name);
 		}
 		else if (imgDimensions.type) {
 			const img = await resizeImage(file, imgDimensions.type, 128, message);
