@@ -20,7 +20,7 @@ export default class AddEmoteCommand extends Command {
 				{
 					id: "url",
 					type: Argument.union(imgRegex, emoteRegex),
-					otherwise: (msg: Message) => noArgGeneric(msg.util!.parsed!.command!),
+					otherwise: (msg: Message) => noArgGeneric(msg.util?.parsed?.command),
 				},
 				{
 					id: "name",
@@ -32,16 +32,15 @@ export default class AddEmoteCommand extends Command {
 	}
 	public async exec(message: Message, { url, name }: { url: { match: RegExpMatchArray, matches: [][] }, name: string | undefined }): Promise<Message | void> {
 
-		const match = url.match.toString();
 		let emote = undefined;
 		const urlMatch = url.match[0].toString();
 
-		if (match.startsWith("<") && match.endsWith(">")) {
+		if (urlMatch.startsWith("<") && urlMatch.endsWith(">")) {
 
-			const emoteID = match.match(/\d+/g);
+			const emoteID = urlMatch.match(/\d+/g);
 
 			if (emoteID) {
-				emote = `https://cdn.discordapp.com/emojis/${emoteID.toString()}.${match.indexOf("a") === 1 ? "gif" : "png"}`;
+				emote = `https://cdn.discordapp.com/emojis/${emoteID.toString()}.${urlMatch.indexOf("a") === 1 ? "gif" : "png"}`;
 				name = name ?? urlMatch.slice(2, urlMatch.lastIndexOf(":"));
 			}
 		}
