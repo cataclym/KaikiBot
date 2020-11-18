@@ -8,7 +8,7 @@ export default class DeleteEmoteCommand extends Command {
 	constructor() {
 		super("deleteemote", {
 			aliases: ["deleteemote", "de"],
-			description: { description: "Deletes one or multiple emotes/emoji", usage: "<:NadekoSip:>" },
+			description: { description: "Deletes one or multiple emotes/emoji. Multiple emotes take longer, to avoid ratelimits.", usage: "<:NadekoSip:>" },
 			clientPermissions: "MANAGE_EMOJIS",
 			userPermissions: "MANAGE_EMOJIS",
 			channel: "guild",
@@ -17,7 +17,7 @@ export default class DeleteEmoteCommand extends Command {
 				id: "emotes",
 				match: "separate",
 				type: "emojis",
-				otherwise: (msg: Message) => noArgGeneric(msg.util!.parsed!.command!),
+				otherwise: (msg: Message) => noArgGeneric(msg.util?.parsed?.command),
 			}],
 		});
 	}

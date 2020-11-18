@@ -65,7 +65,7 @@ const noArgRole = new MessageEmbed({
 	description: "Can't find this role. Make sure you inputted it correctly.",
 });
 
-const noArgGeneric = (cmd: Command): MessageEmbed => new MessageEmbed({
+const noArgGeneric = (cmd: Command | undefined): MessageEmbed => new MessageEmbed({
 	color: errorColor,
 	description: "Please provide arguments.",
 	fields: [{ name: "Usage", value: (cmd?.description.usage ? `${config.prefix}${cmd.id} ${cmd.description.usage}` : "<any>") }],

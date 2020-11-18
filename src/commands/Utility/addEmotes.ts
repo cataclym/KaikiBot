@@ -18,7 +18,7 @@ export default class AddEmotesCommand extends Command {
 					id: "urls",
 					type: Argument.union(imgRegex),
 					match: "separate",
-					otherwise: (msg: Message) => noArgGeneric(msg.util!.parsed!.command!),
+					otherwise: (msg: Message) => noArgGeneric(msg.util?.parsed?.command),
 				},
 			],
 		});

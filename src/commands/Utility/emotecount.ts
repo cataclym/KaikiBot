@@ -11,6 +11,7 @@ export default class EmoteCount extends Command {
 			cooldown: 15000,
 			aliases: ["emotecount", "emojicount", "countemotes", "countemoji"],
 			description: "Shows amount of times each emote has been used",
+			channel: "guild",
 		});
 	}
 
@@ -31,7 +32,7 @@ export default class EmoteCount extends Command {
 			for (let i = 50, p = 0; p < data.length; i = i + 50, p = p + 50) {
 				const dEmbed = new MessageEmbed()
 					.setTitle("Emoji count list")
-					.setAuthor(message.author.tag)
+					.setAuthor(message.guild?.name)
 					.setColor(color)
 					.setDescription(data.slice(p, i).join(""));
 				pages.push(dEmbed);

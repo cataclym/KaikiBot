@@ -12,7 +12,7 @@ module.exports = class todoAddCommand extends Command {
 					id: "toAdd",
 					type: "string",
 					match: "rest",
-					otherwise: (msg: Message) => noArgGeneric(msg.util!.parsed!.command!),
+					otherwise: (msg: Message) => noArgGeneric(msg.util?.parsed?.command),
 				},
 			],
 		});
