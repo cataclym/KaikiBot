@@ -39,25 +39,25 @@ async function DMEMarry(): Promise<MessageEmbed> {
 		.setDescription(randomPoem);
 }
 async function tinderRollEmbed(message: Message, randomUsr: User, RollsLikes?: string): Promise<MessageEmbed> {
-	const randomTinderS = tinderSlogan[Math.floor(Math.random() * tinderSlogan.length)];
 	const waifuIDs = Tinder.get(`married.${randomUsr.id}`)?.length,
 		likeIDs = Tinder.get("likeID");
 	const likeIDValues = Object.values(likeIDs),
 		flattArray = <string[]> likeIDValues.reduce((a: string, b: string) => a.concat(b), []),
-		finalNumber = flattArray.filter((id: string) => id === randomUsr.id).length;
-	const tinderEmbed = new MessageEmbed()
+		finalNumber = flattArray.filter((id: string) => id === randomUsr.id).length,
+		member = message.guild?.members.cache.get(randomUsr.id);
+
+	return new MessageEmbed()
 		.setColor(await getMemberColorAsync(message))
-		.setAuthor(randomTinderS)
+		.setAuthor(tinderSlogan[Math.floor(Math.random() * tinderSlogan.length)])
 		.setTitle(randomUsr.username)
-		.setDescription("**Nickname**\n" + message.guild?.members.cache.get(randomUsr.id)?.displayName)
+		.setDescription(member ? "**Nickname**\n" + member?.displayName : "🌐")
 		.addFields(
 			{ name: "**Likes**", value: finalNumber > 1 ? finalNumber - 1 : "None", inline: true },
-			{ name: "**Waifus**", value: waifuIDs ? waifuIDs - 1 : "None", inline: true },
+			{ name: "**Waifus**", value: waifuIDs > 1 ? waifuIDs - 1 : "None", inline: true },
 			// In order to negate the user itself in the list
 		)
 		.setFooter(RollsLikes ? "React '❌' to dislike. '💚' To like. '🌟' To super like.\n" + RollsLikes : randomUsr.tag)
 		.setImage(randomUsr.displayAvatarURL({ dynamic: true, size: 128 }));
-	return tinderEmbed;
 }
 
 const noArgRole = new MessageEmbed({
@@ -65,7 +65,7 @@ const noArgRole = new MessageEmbed({
 	description: "Can't find this role. Make sure you inputted it correctly.",
 });
 
-const noArgGeneric = (cmd: Command): MessageEmbed => new MessageEmbed({
+const noArgGeneric = (cmd: Command | undefined): MessageEmbed => new MessageEmbed({
 	color: errorColor,
 	description: "Please provide arguments.",
 	fields: [{ name: "Usage", value: (cmd?.description.usage ? `${config.prefix}${cmd.id} ${cmd.description.usage}` : "<any>") }],

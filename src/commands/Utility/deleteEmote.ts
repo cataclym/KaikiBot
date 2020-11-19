@@ -8,7 +8,7 @@ export default class DeleteEmoteCommand extends Command {
 	constructor() {
 		super("deleteemote", {
 			aliases: ["deleteemote", "de"],
-			description: { description: "Deletes one or multiple emotes/emoji", usage: "<:NadekoSip:>" },
+			description: { description: "Deletes one or multiple emotes/emoji. Multiple emotes take longer, to avoid ratelimits.", usage: "<:NadekoSip:>" },
 			clientPermissions: "MANAGE_EMOJIS",
 			userPermissions: "MANAGE_EMOJIS",
 			channel: "guild",
@@ -17,23 +17,24 @@ export default class DeleteEmoteCommand extends Command {
 				id: "emotes",
 				match: "separate",
 				type: "emojis",
-				otherwise: (msg: Message) => noArgGeneric(msg.util!.parsed!.command!),
+				otherwise: (msg: Message) => noArgGeneric(msg.util?.parsed?.command),
 			}],
 		});
 	}
 
 	public async exec(message: Message, { emotes }: { emotes: Collection<string, GuildEmoji>[]}): Promise<Message> {
 
-		async function run() {
+		return (async function() {
+			let i = 0;
 			for (const emote of emotes) {
 
 				const newEmote = message.guild?.emojis.cache.get(emote.map(e => e.id)[0]);
 
 				if (newEmote) {
 
-					const deleted = await newEmote.delete();
+					i > 0 ? await timer(3500) && i++ : i++;
 
-					await timer(3500);
+					const deleted = await newEmote.delete();
 
 					if (!deleted) {
 						return message.channel.send(new MessageEmbed({
@@ -55,10 +56,8 @@ export default class DeleteEmoteCommand extends Command {
 			return message.channel.send(new MessageEmbed({
 				title: "Success!",
 				color: await getMemberColorAsync(message),
-				description: `Deleted ${trim(emotes.map((es) => es.map((e) => e.identifier)).join("\n"), 2048)}`,
+				description: `Deleted:\n${trim(emotes.map((es) => es.map((e) => e)).join("\n"), 2048)}`,
 			}));
-		}
-
-		return run();
+		})();
 	}
 }

@@ -8,8 +8,8 @@ const imgRegex = /(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|gif|png)/g;
 export default class AddEmotesCommand extends Command {
 	constructor() {
 		super("addemotes", {
-			aliases: ["addemotes"],
-			description: { description: "", usage: "" },
+			aliases: ["addemotes", "aes"],
+			description: { description: "Adds multiple emotes. Cannot specify names.", usage: "https://discord.com/assets/28174a34e77bb5e5310ced9f95cb480b.png https://cdn.discordapp.com/avatars/140788173885276160/a_a8c1ebfb526b8850b2f125c440e8f6b7.gif" },
 			clientPermissions: "MANAGE_EMOJIS",
 			userPermissions: "MANAGE_EMOJIS",
 			channel: "guild",
@@ -18,7 +18,7 @@ export default class AddEmotesCommand extends Command {
 					id: "urls",
 					type: Argument.union(imgRegex),
 					match: "separate",
-					otherwise: (msg: Message) => noArgGeneric(msg.util!.parsed!.command!),
+					otherwise: (msg: Message) => noArgGeneric(msg.util?.parsed?.command),
 				},
 			],
 		});

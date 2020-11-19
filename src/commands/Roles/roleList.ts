@@ -22,7 +22,7 @@ export default class RoleListCommand extends Command {
 			for (let i = 50, p = 0; p < data.length; i = i + 50, p = p + 50) {
 				const dEmbed = new MessageEmbed()
 					.setTitle("Role list")
-					.setAuthor(message.author.tag)
+					.setAuthor(message.guild?.name)
 					.setColor(await getMemberColorAsync(message))
 					.setDescription(data.slice(p, i).join(", "));
 				pages.push(dEmbed);

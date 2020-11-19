@@ -12,7 +12,7 @@ export default class SetNameCommand extends Command {
 				{
 					id: "name",
 					match: "separate",
-					otherwise: (msg: Message) => noArgGeneric(msg.util!.parsed!.command!),
+					otherwise: (msg: Message) => noArgGeneric(msg.util?.parsed?.command),
 				},
 			],
 		});

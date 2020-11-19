@@ -13,7 +13,7 @@ export default class EmitCommand extends Command {
 					index: 0,
 					id: "event",
 					type: "listener",
-					otherwise: (msg: Message) => noArgGeneric(msg.util!.parsed!.command!),
+					otherwise: (msg: Message) => noArgGeneric(msg.util?.parsed?.command),
 
 				},
 				{
