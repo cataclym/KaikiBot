@@ -14,35 +14,36 @@ export default class RoleInRoleCommand extends Command {
 				{
 					id: "role",
 					type: "role",
-					otherwise: async (message: Message) => message.member?.roles.highest,
+					default: (message: Message) => message.member?.roles.highest,
 				},
 			],
 		});
 	}
 
-	public async exec(message: Message, { role }: { role: Role }): Promise<Message | void> {
+	public async exec(message: Message, { role }: { role: Role }): Promise<Message> {
 
-		const data = role.members.array().sort((a: GuildMember, b: GuildMember) => b.roles.highest.position - a.roles.highest.position || (b.id as unknown as number) - (a.id as unknown as number));
+		const data = role.members.array().sort((a: GuildMember, b: GuildMember) => b.roles.highest.position - a.roles.highest.position || (a.id as unknown as number) - (b.id as unknown as number));
 
 		const pages: MessageEmbed[] = [];
 
 		if (data && data.length) {
 
-			for (let i = 50, p = 0; p < data.length; i = i + 50, p = p + 50) {
+			for (let i = 40, p = 0; p < data.length; i = i + 40, p = p + 40) {
 
 				const currentPageUsers = data.slice(p, i);
 
-				pages.push(new MessageEmbed()
-					.setTitle(`Users in ${role.name} (${currentPageUsers.length})`)
+				const emb = new MessageEmbed()
+					.setTitle(`Users in ${role.name} (${data.length})`)
 					.setAuthor(message.guild?.name)
 					.setColor(await getMemberColorAsync(message))
 					// .setDescription(data.slice(p, i).join(", "))
 					.addFields([
-						{ name: "•", value: currentPageUsers.slice(0, currentPageUsers.length / 3).join("\n") + "\n-", inline: true },
-						{ name: "•", value: currentPageUsers.slice(currentPageUsers.length / 3, (currentPageUsers.length / 3) + (currentPageUsers.length / 3)).join("\n") + "\n-", inline: true },
-						{ name: "•", value: currentPageUsers.slice(currentPageUsers.length - currentPageUsers.length / 3).join("\n") + "\n-", inline: true },
-					]),
-				);
+						{ name: "•", value: currentPageUsers.slice(0, 20).map(u => `${u.user} - ${u.user.username}`).join("\n"), inline: true },
+					]);
+				if (currentPageUsers.length > 20) {
+					emb.addField("•", currentPageUsers.slice(20, 40).map(u => `${u.user} - ${u.user.username}`).join("\n"), true);
+				}
+				pages.push(emb);
 			}
 			return editMessageWithPaginatedEmbeds(message, pages, {});
 		}

@@ -1,9 +1,10 @@
 import { Command } from "discord-akairo";
 import { Message, MessageEmbed, GuildMember } from "discord.js";
 import db from "quick.db";
+import { errorColor, getMemberColorAsync } from "../../functions/Util";
 const leaveRoleTable = new db.table("leaveRoleTable");
 
-module.exports = class RestoreUserRoles extends Command {
+export default class RestoreUserRoles extends Command {
 	constructor() {
 		super("restore", {
 			aliases: ["restore"],
@@ -21,14 +22,16 @@ module.exports = class RestoreUserRoles extends Command {
 			],
 		});
 	}
-	public async exec(message: Message, { member }: { member: GuildMember }) {
+	public async exec(message: Message, { member }: { member: GuildMember }): Promise<Message> {
+
 		if (leaveRoleTable.get(`${member.guild.id}.${member.id}`)) {
 			const savedRoles = leaveRoleTable.get(`${member.guild.id}.${member.id}`);
 			member.roles.add(savedRoles);
-			return message.util?.send(new MessageEmbed().setColor("#14eb00").setDescription(`Restored roles of ${member.user.tag}`));
+			return message.channel.send(new MessageEmbed().setColor(await getMemberColorAsync(message)).setDescription(`Restored roles of ${member.user.tag}`));
 		}
+
 		else {
-			return message.util?.send(new MessageEmbed().setColor("#e60000").setDescription("This user's roles have not been saved, or user has never left the guild."));
+			return message.channel.send(new MessageEmbed().setColor(errorColor).setDescription("This user's roles have not been saved, or user has never left the guild."));
 		}
 	}
-};
+}
