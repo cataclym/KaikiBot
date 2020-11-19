@@ -1,14 +1,26 @@
-import { Message, ColorResolvable, UserFlagsString, User } from "discord.js";
+import { ClientUser, Message, ColorResolvable, UserFlagsString, User } from "discord.js";
 
 export async function getMemberColorAsync(message: Message): Promise<ColorResolvable> {
 	return <ColorResolvable> message?.member?.displayColor || "#f47fff";
 }
+
 export const errorColor: ColorResolvable = "#ee281f";
+
 export const standardColor: ColorResolvable = "#32CD32";
 
+export type presenceType = {
+	main: string,
+	richPresence: string[],
+}
+
 // This section is awful
-export async function getUserPresenceAsync(user: User): Promise<{ main: string; richPresence: (string | null | undefined)[]; }> {
-	const presence = { main: "", richPresence: ["" as string | null | undefined] };
+export async function getUserPresenceAsync(user: User): Promise<presenceType> {
+
+	const presence: presenceType = { main: "", richPresence: [] };
+
+	if (user instanceof ClientUser) {
+		return Promise.resolve(presence);
+	}
 
 	presence.main =
 	(user.presence?.activities?.length ?
@@ -20,7 +32,7 @@ export async function getUserPresenceAsync(user: User): Promise<{ main: string; 
 
 	const uPActivities = user?.presence?.activities;
 
-	presence.richPresence = [uPActivities.map((e) => e.assets?.largeImageURL({ size: 128 }))[0], uPActivities.map((e) => e.details)[0], uPActivities.map((e) => e.assets?.largeText)[0], uPActivities.map((e) => e.assets?.smallText)[0] ];
+	presence.richPresence = [uPActivities.map((e) => e.assets?.largeImageURL({ size: 128 }))[0] ?? "", uPActivities.map((e) => e.details)[0] ?? "", uPActivities.map((e) => e.assets?.largeText)[0] ?? "", uPActivities.map((e) => e.assets?.smallText)[0] ?? ""] ?? "";
 
 	return presence;
 }
