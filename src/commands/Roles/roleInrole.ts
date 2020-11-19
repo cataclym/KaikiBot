@@ -14,13 +14,13 @@ export default class RoleInRoleCommand extends Command {
 				{
 					id: "role",
 					type: "role",
-					otherwise: async (message: Message) => message.member?.roles.highest,
+					default: (message: Message) => message.member?.roles.highest,
 				},
 			],
 		});
 	}
 
-	public async exec(message: Message, { role }: { role: Role }): Promise<Message | void> {
+	public async exec(message: Message, { role }: { role: Role }): Promise<Message> {
 
 		const data = role.members.array().sort((a: GuildMember, b: GuildMember) => b.roles.highest.position - a.roles.highest.position || (a.id as unknown as number) - (b.id as unknown as number));
 

@@ -2,6 +2,10 @@ import { Command } from "discord-akairo";
 import { Collection, Role, Message, MessageEmbed } from "discord.js";
 import { noArgRole } from "../../functions/embeds";
 import { errorColor, getMemberColorAsync } from "../../functions/Util";
+const embed = new MessageEmbed({
+	color: errorColor,
+	description: "Couldn't delete roles!",
+});
 
 export default class RoleDeleteCommand extends Command {
 	constructor() {
@@ -22,7 +26,7 @@ export default class RoleDeleteCommand extends Command {
 		});
 	}
 
-	public async exec(message: Message, { roles }: { roles: Collection<string, Role>[]}): Promise<Message | void> {
+	public async exec(message: Message, { roles }: { roles: Collection<string, Role>[]}): Promise<Message> {
 
 		const every = roles.every(async (collection) => {
 
@@ -36,10 +40,7 @@ export default class RoleDeleteCommand extends Command {
 				return true;
 			}
 			else {
-				return message.channel.send(new MessageEmbed({
-					color: errorColor,
-					description: "Couldn't delete roles!",
-				})) && false;
+				return message.channel.send(embed) && false;
 			}
 		});
 
@@ -50,6 +51,9 @@ export default class RoleDeleteCommand extends Command {
 				color: await getMemberColorAsync(message),
 				description: `Deleted: ${roles.map(coll => coll.map(role => role.name)).join(", ")}`,
 			}));
+		}
+		else {
+			return message.channel.send(embed);
 		}
 	}
 }
