@@ -35,7 +35,7 @@ export const config: BotConfig = {
 	// Bot activity status
 	// Edit for song/game/media
 	activityName: "Renai Circulation",
-	// change to one of: WATCHING/LISTENING/PLAYING
+	// change to one of: "PLAYING" | "STREAMING" | "LISTENING" | "WATCHING" | "COMPETING"
 	activityStatus: "LISTENING",
 
 	// Owner ID (Used for owner only commands)
