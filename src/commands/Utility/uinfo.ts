@@ -57,7 +57,7 @@ export default class UserInfoCommand extends Command {
 		embed.addField("Presence", presence.main || "❌", false);
 
 		presence.richPresence[0] ? embed.setImage(presence.richPresence[0]) : null;
-		presence.richPresence[1] ? embed.addField("Game details", `${presence.richPresence.slice(1, 3).join("\n")}`) : null;
+		presence.richPresence[1] ? embed.addField("Details", `${presence.richPresence.slice(1, 3).join("\n")}`) : null;
 
 		return message.channel.send(embed);
 	}
