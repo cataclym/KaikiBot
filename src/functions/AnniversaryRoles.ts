@@ -64,9 +64,13 @@ async function GuildOnAddBirthdays(guild: Guild): Promise<void> {
 	if (enabledGuilds.includes(guild.id)) {
 		if (guild.me?.hasPermission("MANAGE_ROLES")) {
 			const [AnniversaryRoleC, AnniversaryRoleJ] = <Role[]> await GuildCheckRolesExist(guild);
-			guild.members.cache.forEach(async (member) => {
-				MemberCheckAnniversary(member, AnniversaryRoleC, AnniversaryRoleJ, Day, Month);
-			});
+			// Get roles from the result of checking if guild has the roles at all / after creating them.
+			await Promise.all(guild.members.cache.map(async (member) => {
+				if (!member.user.bot) {
+					// Don't assign special roles to bots.
+					MemberCheckAnniversary(member, AnniversaryRoleC, AnniversaryRoleJ, Day, Month);
+				}
+			}));
 		}
 		else {
 			return console.log(guild.name + " can't add anniversary roles due to missing permissions: 'MANAGE_ROLES'");
