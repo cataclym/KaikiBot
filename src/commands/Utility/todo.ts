@@ -5,7 +5,7 @@ import { MessageEmbed } from "discord.js";
 import { config } from "../../config.js";
 import { Command, Flag, Argument } from "discord-akairo";
 import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
-import { getMemberColorAsync } from "../../functions/Util.js";
+import { getMemberColorAsync, trim } from "../../functions/Util.js";
 import { Message } from "discord.js";
 module.exports = class TodoCommand extends Command {
 	constructor() {
@@ -40,7 +40,7 @@ module.exports = class TodoCommand extends Command {
 				.setAuthor(message.author.tag)
 				.setThumbnail("https://cdn.discordapp.com/attachments/717045690022363229/726600392107884646/3391ce4715f3c814d6067911438e5bf7.png")
 				.setColor(color)
-				.setDescription(reminderArray.map((item: string, i: number) => `${+i + 1}. ${item}`).slice(p, index).join("\n") + `\n\nTo learn more about the command, type \`${config.prefix}help todo\``);
+				.setDescription(trim(reminderArray.map((item: string, i: number) => `${+i + 1}. ${item}`).slice(p, index).join("\n") + `\n\nTo learn more about the command, type \`${config.prefix}help todo\``, 2048));
 			pages.push(embed);
 		}
 		await editMessageWithPaginatedEmbeds(message, pages, {});
