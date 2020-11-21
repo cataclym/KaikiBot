@@ -75,3 +75,53 @@ export function calculateAspectRatioFit(srcWidth: number, srcHeight: number, max
 export function trim(str: string, max: number): string {
 	return (str.length > max) ? `${str.slice(0, max - 3)}...` : str;
 }
+/**
+ * Create codeblocks ready to be sent to discord.
+ * @param language
+ 		| "asciidoc"
+        | "autohotkey"
+        | "bash"
+        | "coffeescript"
+        | "cpp"
+        | "cs"
+        | "css"
+        | "diff"
+        | "fix"
+        | "glsl"
+        | "ini"
+        | "json"
+        | "md"
+        | "ml"
+        | "prolog"
+        | "py"
+        | "tex"
+        | "xl"
+		| "xml"
+ * @param code
+ string
+ */
+export async function codeblock(
+	language:
+        | "asciidoc"
+        | "autohotkey"
+        | "bash"
+        | "coffeescript"
+        | "cpp"
+        | "cs"
+        | "css"
+        | "diff"
+        | "fix"
+        | "glsl"
+        | "ini"
+        | "json"
+        | "md"
+        | "ml"
+        | "prolog"
+        | "py"
+        | "tex"
+        | "xl"
+        | "xml",
+	code: string,
+): Promise<string> {
+	return `\`\`\`${language}\n${code}\`\`\``;
+}
