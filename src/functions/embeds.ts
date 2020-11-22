@@ -71,6 +71,12 @@ const noArgGeneric = (cmd: Command | undefined): MessageEmbed => new MessageEmbe
 	fields: [{ name: "Usage", value: (cmd?.description.usage ? `${config.prefix}${cmd.id} ${cmd.description.usage}` : "<any>") }],
 });
 
+const errorMessage = async (msg: string): Promise<MessageEmbed> => new MessageEmbed({
+	title: "Error",
+	description: msg,
+	color: errorColor,
+});
+
 export {
-	DMEMarry, TinderHelp, tinderRollEmbed, noArgRole, noArgGeneric,
+	DMEMarry, TinderHelp, tinderRollEmbed, noArgRole, noArgGeneric, errorMessage,
 };

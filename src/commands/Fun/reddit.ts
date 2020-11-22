@@ -2,7 +2,7 @@ import fetch from "node-fetch";
 import { Command } from "discord-akairo";
 import { Message, MessageEmbed, TextChannel } from "discord.js";
 import { errorColor, getMemberColorAsync, trim } from "../../functions/Util";
-import { redditData, Data1 } from "../../struct/redditModel";
+import { redditData, Data1, ChildrenEntity } from "../../struct/redditModel";
 
 export default class RedditCommand extends Command {
 	constructor() {
@@ -30,10 +30,10 @@ export default class RedditCommand extends Command {
 		async function loadTitle() {
 			const file: redditData = await fetch(`https://www.reddit.com/r/${sub}/random/.json`)
 				.then(response => response.json());
-			if (file) {
-				const data = file.data.children?.map(a => a.data);
+			if (file?.data?.children?.length) {
+				const data = file.data.children.map(a => a.data);
 				if (data) {
-					return postRandomTitle(data[Math.floor(Math.random() * data.length) + 1]);
+					return postRandomTitle(data[Math.floor(Math.random() * data.length)]);
 				}
 			}
 			else {

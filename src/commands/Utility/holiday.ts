@@ -2,51 +2,61 @@ import fetch from "node-fetch";
 import { config } from "../../config";
 import { Command } from "discord-akairo";
 import { Message } from "discord.js";
+import { errorMessage } from "../../functions/embeds";
 // const otherWiseText = "Correct usage would be " + prefix + "`holiday <day> <month> (last year) (country)`\n`<day>` is numbers between `1-31`\n`<month>` is numbers between `1-12`\n`(year)` can only be previous year: `2019`." + "**Year is optional.**\n`(country)` can only be 2 letter country codes: `US`. **Country is optional.**\n**Country requires Year.**";
 
-module.exports = class HolidayAPICommand extends Command {
+export default class HolidayAPICommand extends Command {
 	constructor() {
 		super("holiday", {
 			aliases: ["holidays", "holiday"],
-			description: "Check today's holiday",
+			description: { description: "Check today's holiday", usage: "4 6" },
 			args: [{
 				id: "day",
-				type: "integer" },
+				type: "integer",
+				default: async () => new Date().getDay(),
+			},
 			{
 				id: "month",
-				type: "integer" },
+				type: "integer",
+				default: async () => new Date().getMonth() - 1,
+			},
 			{
 				id: "year",
-				type: "integer" },
+				type: "integer",
+				default: async () => new Date().getFullYear() - 1,
+			},
 			{
 				id: "country",
-				type: "string" }],
+				type: "string",
+				default: "US",
+			}],
 		});
 	}
 
-	public async exec(message: Message, args: any) {
-		const today = new Date(), TYear = args.year || today.getFullYear() - 1,
-			TMonth = args.month || today.getMonth() + 1, TDay = args.month || today.getDate(),
-			country = args.country || "US";
+	public async exec(message: Message, args: any): Promise<Message> {
+		const TYear = args.year,
+			TMonth = args.month,
+			TDay = args.month,
+			country = args.country;
 
 		if (config.holidayKey) {
-			await loadTitle();
+			return loadTitle();
 		}
 		else {
-			return message.channel.send("You need to provide a HolidayAPI token in `config.js`\nThis only applies if you are bot owner.");
+			return message.channel.send(await errorMessage("You need to provide a HolidayAPI token in `config.ts`\nThis only applies if you are bot owner."));
 		}
 		async function loadTitle() {
-			fetch(`https://holidayapi.com/v1/holidays?pretty&key=${config.holidayKey}&country=${country}&year=${TYear}&month=${TMonth}&day=${TDay}`)
+			return fetch(`https://holidayapi.com/v1/holidays?pretty&key=${config.holidayKey}&country=${country}&year=${TYear}&month=${TMonth}&day=${TDay}`)
 				.then((res) => res.json())
 				.then((date) => PostHoliday(date));
 		}
 		async function PostHoliday(date: any) {
 			try {
-				message.channel.send("Today is " + date.holidays[0].name + "\n" + "Country: " + (":flag_" + date.holidays[0].country + ":").toLowerCase());
+				return message.channel.send("Today is " + date.holidays[0].name + "\n" + "Country: " + (":flag_" + date.holidays[0].country + ":").toLowerCase());
 			}
 			catch {
-				message.channel.send("No holiday on this date.");
+				return message.channel.send("No holiday on this date.");
 			}
 		}
 	}
-};
+}
