@@ -33,8 +33,14 @@ export default class EmoteCount extends Command {
 
 		if (GuildEmoteCount) {
 
-			for (const [key, value] of Object.entries(GuildEmoteCount).sort((a, b) => Object.values(b[1] as number)[0] - Object.values(a[1] as number)[0] || (a[1] as number) - (b[1] as number))) {
+			const emoteDataPair = Object
+				.entries(GuildEmoteCount)
+				.sort((a, b) => Object.values(b[1] as number)[0] - Object.values(a[1] as number)[0] || (a[1] as number) - (b[1] as number));
+
+			for (const [key, value] of emoteDataPair) {
+
 				const Emote = message.guild?.emojis.cache.get(key);
+
 				if (!Emote) {
 					continue;
 				}
