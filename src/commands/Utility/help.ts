@@ -2,6 +2,7 @@ import Discord, { Message } from "discord.js";
 import { config } from "../../config.js";
 import { Command } from "discord-akairo";
 import { getMemberColorAsync } from "../../functions/Util.js";
+import { noArgGeneric } from "../../functions/embeds.js";
 
 export default class HelpCommand extends Command {
 	constructor() {
@@ -9,13 +10,16 @@ export default class HelpCommand extends Command {
 			args: [{
 				id: "command",
 				type: "commandAlias",
-				default: null,
 			}],
 			aliases: ["help", "h"],
 			description: { description: "Shows command info", usage: "ping" },
 		});
 	}
-	public async exec(message: Message, { command }: { command: Command }): Promise<Message | void> {
+
+	public async exec(message: Message, args: { command: Command } | undefined): Promise<Message | void> {
+
+		const msgLength = message.content.split(" ").length;
+		const command = args?.command;
 		const embed = new Discord.MessageEmbed()
 			.setColor(await getMemberColorAsync(message));
 
@@ -25,8 +29,13 @@ export default class HelpCommand extends Command {
 			${(command?.description.usage ? "**Usage:** " + config.prefix + command.id + " " + command.description.usage : "")}`);
 			command.userPermissions ? embed.addField("Requires", command.userPermissions, false) : null;
 			command.ownerOnly ? embed.addField("Owner only", "✅", false) : null;
+
 			return message.util?.send(embed);
 		}
+		else if (msgLength > 1) {
+			return message.channel.send(noArgGeneric(message.util?.parsed?.command));
+		}
+
 		const AvUrl = await message.client.users.fetch("140788173885276160", true);
 		// Bot author
 		embed.setTitle(`${message.client.user?.username} help page`);

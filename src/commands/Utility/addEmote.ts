@@ -41,7 +41,7 @@ export default class AddEmoteCommand extends Command {
 
 			if (emoteID) {
 				emote = `https://cdn.discordapp.com/emojis/${emoteID.toString()}.${urlMatch.indexOf("a") === 1 ? "gif" : "png"}`;
-				name = name ?? urlMatch.slice(2, urlMatch.lastIndexOf(":"));
+				name = name ?? urlMatch.slice(2, urlMatch.lastIndexOf(":")).replace(":", "");
 			}
 		}
 
