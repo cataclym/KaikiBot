@@ -15,6 +15,7 @@ export default class EmoteCount extends Command {
 			args: [{
 				id: "flag",
 				flag: ["--small", "-s"],
+				match: "flag",
 			}],
 		});
 	}
@@ -25,10 +26,14 @@ export default class EmoteCount extends Command {
 		const pages = [];
 		const color = await getMemberColorAsync(message);
 		const GuildEmoteCount = Emotes.get(`${message.guild?.id}`);
+		const baseEmbed = new MessageEmbed()
+			.setTitle("Emote count")
+			.setAuthor(message.guild?.name)
+			.setColor(color);
 
 		if (GuildEmoteCount) {
 
-			for (const [key, value] of Object.entries(GuildEmoteCount).sort((a: [string, number], b: [string, number]) => a[1] - b[1])) {
+			for (const [key, value] of Object.entries(GuildEmoteCount).sort((a, b) => Object.values(b[1] as number)[0] - Object.values(a[1] as number)[0] || (a[1] as number) - (b[1] as number))) {
 				const Emote = message.guild?.emojis.cache.get(key);
 				if (!Emote) {
 					continue;
@@ -42,24 +47,18 @@ export default class EmoteCount extends Command {
 
 				for (let i = 25, p = 0; p < data.length; i = i + 25, p = p + 25) {
 
-					const dEmbed = new MessageEmbed()
-						.setTitle("Emoji count list")
-						.setAuthor(message.guild?.name)
-						.setColor(color)
-						.setDescription(trim(data.slice(p, i).join("\n"), 2048));
-					pages.push(dEmbed);
+					pages.push(new MessageEmbed(baseEmbed)
+						.setDescription(trim(data.slice(p, i).join("\n"), 2048)),
+					);
 				}
 			}
 			else {
 
 				for (let i = 50, p = 0; p < data.length; i = i + 50, p = p + 50) {
 
-					const dEmbed = new MessageEmbed()
-						.setTitle("Emoji count list")
-						.setAuthor(message.guild?.name)
-						.setColor(color)
-						.setDescription(trim(data.slice(p, i).join(""), 2048));
-					pages.push(dEmbed);
+					pages.push(new MessageEmbed(baseEmbed)
+						.setDescription(trim(data.slice(p, i).join(""), 2048)),
+					);
 				}
 			}
 			return editMessageWithPaginatedEmbeds(message, pages, {});
