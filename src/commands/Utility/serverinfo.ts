@@ -18,7 +18,7 @@ export default class ServerInfoCommand extends Command {
 		});
 	}
 	public async exec(message: Message, { guild }: { guild: Guild }): Promise<Message> {
-		return message.channel.send(new MessageEmbed({
+		const emb = new MessageEmbed({
 			thumbnail: { url: <string> guild?.iconURL({ size: 2048, dynamic: true }) },
 			title: guild?.name,
 			color: guild?.owner?.displayColor,
@@ -40,6 +40,14 @@ export default class ServerInfoCommand extends Command {
 				{ name: "Custom Emojis", value: "Count: **" + guild?.emojis.cache.size +
                     "**\nSee them with `" + config.prefix + "emotecount`", inline: true },
 			],
-		}));
+		});
+
+		guild.systemChannel ? emb.addField("System channel", guild.systemChannel, true) : null;
+		guild.rulesChannel ? emb.addField("Rules channel", guild.rulesChannel, true) : null;
+		guild.embedChannel ? emb.addField("Embed channel", guild.embedChannel, true) : null;
+		guild.publicUpdatesChannel ? emb.addField("Public Updates channel", guild.publicUpdatesChannel, true) : null;
+		guild.widgetChannel ? emb.addField("Widget channel", guild.widgetChannel, true) : null;
+
+		return message.channel.send(emb);
 	}
 }
