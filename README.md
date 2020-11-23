@@ -1,5 +1,15 @@
 #  Welcome to Nadeko Sengoku Bot
 
+***
+
+## ////////////////////////////////////////////////////////////////////////
+
+# Project has moved to <a href="https://gitlab.com/cataclym/nadekosengokubot">GitLab</a> 
+
+## ////////////////////////////////////////////////////////////////////////
+
+***
+
 ### A simple bot Written in TypeScript with lots of unique commands and features.
 ***
 ## Features
