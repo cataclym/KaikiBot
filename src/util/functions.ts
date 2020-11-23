@@ -1,5 +1,4 @@
-import Discord from "discord.js";
-import { Util, Message, User, Client } from "discord.js";
+import { Util, Message, MessageEmbed, User, Client, Guild } from "discord.js";
 import { getMemberColorAsync } from "./Util";
 import { config } from "../config";
 import db from "quick.db";
@@ -9,7 +8,7 @@ const words = ["shit", "fuck", "stop", "dont", "kill", "don't", "don`t", "fuckin
 // handle mentions
 async function handleMentions(message: Message): Promise<Message | void> {
 	if (message.mentions.has(message.client.user as User, { ignoreDirect: false, ignoreEveryone: true, ignoreRoles: true }) && !message.author.bot) {
-		const embed = new Discord.MessageEmbed({
+		const embed = new MessageEmbed({
 			title: `Hi ${message.author.username}, what's up?`,
 			description: `If you need help type ${config.prefix}help.`,
 			color: await getMemberColorAsync(message),
@@ -64,7 +63,7 @@ const index = {
 	i: 0,
 };
 // Please don't laugh
-async function tiredNadekoReact(message: Message): Promise<void | Message> {
+async function tiredNadekoReact(message: Message): Promise<void> {
 	const botName = message.client.user?.username.toLowerCase().split(" ");
 	if (!botName) {
 		return;
@@ -101,17 +100,29 @@ function timeToMidnight(): number {
 	const d = new Date();
 	return (-d + d.setHours(24, 0, 0, 0));
 }
-async function EmoteDBStartup(client: Client): Promise<void> {
-	console.log("Emote service: checking for new emotes-");
+async function emoteDataBaseService(input: Client | Guild): Promise<void> {
+	console.log("🟦 emoteDataBaseService | Checking for new emotes-");
 	let i = 0;
-	client.guilds.cache.forEach(guild => {
-		guild.emojis.cache.forEach(emote => {
-			if (!Emotes.has(`${guild.id}.${emote.id}`)) {
-				Emotes.set(`${guild.id}.${emote.id}`, { count: 0 }); i++;
+	if (input instanceof Client) {
+		input.guilds.cache.forEach(guild => {
+			guild.emojis.cache.forEach(emote => {
+				if (!Emotes.has(`${guild.id}.${emote.id}`)) {
+					Emotes.set(`${guild.id}.${emote.id}`, { count: 0 }); i++;
+				}
+			});
+		});
+	}
+	else if (input instanceof Guild) {
+		input.emojis.cache.forEach(emote => {
+			if (!Emotes.has(`${input.id}.${emote.id}`)) {
+				Emotes.set(`${input.id}.${emote.id}`, { count: 0 }); i++;
 			}
 		});
-	});
-	console.log("Emote service: ...done! " + i + " new emotes added!");
+	}
+	else {
+		return console.error("🔴 emoteDataBaseService | error");
+	}
+	console.log("🟩 emoteDataBaseService | ...done! " + i + " new emotes added!");
 }
 
 // Yeah this is stupid.
@@ -148,5 +159,5 @@ function msToTime(duration: number): string {
 
 export {
 	emoteReact, roleCheck, handleMentions, dadBot, UserNickTable, tiredNadekoReact,
-	ResetRolls, DailyResetTimer, EmoteDBStartup, countEmotes, msToTime, timeToMidnight, startUp,
+	ResetRolls, DailyResetTimer, emoteDataBaseService, countEmotes, msToTime, timeToMidnight, startUp,
 };

@@ -17,12 +17,12 @@ let ListUserCreatedAt: string[] = [],
 // Fuck this-
 // 5/8/2020 DDMMYYYY
 
-async function ReAssignBirthdays(client: Client): Promise<void> {
+async function birthdayService(client: Client): Promise<void> {
 
 	const enabledGuilds = guildConfig.get("anniversary");
 
 	console.time("Anniversary roles");
-	console.log("🟩 Birthday-Role service: Checking dates-");
+	console.log("🟦 birthdayService | Checking dates-");
 
 	const { Day, Month } = await DateObject();
 
@@ -49,17 +49,18 @@ async function ReAssignBirthdays(client: Client): Promise<void> {
 	console.timeEnd("Anniversary roles");
 
 	// What a long line
-	console.log(`🟩 Cake Day:${ListUserCreatedAt.length ? " Users added: " + ListUserCreatedAt.join(", ") : " No users were added to Cake Day."}\n🟩 Join Anniversary:${ListUserJoinedAt.length ? " Users added: " + ListUserJoinedAt.join(", ") : " No users were added to Join Anniversary."}\n🟩 Birthday-Role service: Finished checking dates.`);
+	console.log(`🟦 Cake Day:${ListUserCreatedAt.length ? " Users added: " + ListUserCreatedAt.join(", ") : " No users were added to Cake Day."}\n🟦 Join Anniversary:${ListUserJoinedAt.length ? " Users added: " + ListUserJoinedAt.join(", ") : " No users were added to Join Anniversary."}`);
+	console.log("🟩 birthdayService | Finished checking dates!");
 	ListUserJoinedAt = [],
 	ListUserCreatedAt = [];
 	setTimeout(async () => {
-		ReAssignBirthdays(client);
+		birthdayService(client);
 	}, timeToMidnight());
 }
 
 async function GuildOnAddBirthdays(guild: Guild): Promise<void> {
 	const enabledGuilds = guildConfig.get("anniversary");
-	console.log("🟩 Birthday-Role service: Checking new user!");
+	console.log("🟦 birthdayService | Checking new user!");
 	const { Day, Month } = await DateObject();
 	if (enabledGuilds.includes(guild.id)) {
 		if (guild.me?.hasPermission("MANAGE_ROLES")) {
@@ -133,5 +134,5 @@ async function MemberCheckAnniversary(member: GuildMember, AnniversaryRoleC: Rol
 }
 
 export {
-	ReAssignBirthdays, GuildOnAddBirthdays,
+	birthdayService, GuildOnAddBirthdays,
 };

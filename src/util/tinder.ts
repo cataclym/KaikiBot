@@ -15,14 +15,14 @@ import { getMemberColorAsync } from "./Util";
 // function TinderProfile(message) {
 // 	//...
 // }
-async function TinderStartup(message: Message | User | Guild): Promise<void> {
+async function tinderStartupService(message: Message | User | Guild): Promise<void> {
 	// This will spam the console from TinderDBService sadly // Edit: fixed it somewhat.
 	let i = 0;
 	message.client.users.cache.forEach(user => {
 		TinderDBService(user);
 		i++;
 	});
-	console.log("Tinder Database Service | Tinder has completed startup procedure. | " + i + " users registered in Tinder DB");
+	console.log("🟩 tinderStartupService | Tinder has completed startup procedure. | " + i + " users registered in Tinder DB");
 }
 async function TinderDBService(user: User): Promise<void> {
 	// This is the peak of JS
@@ -52,7 +52,7 @@ async function TinderDBService(user: User): Promise<void> {
 		i++;
 	}
 	if (i > 0) {
-		console.log("Tinder Database Service | Checking " + user?.username + " | Ran " + i + " changes.");
+		console.log("🟦 tinderStartupService | Checking " + user?.username + " | Ran " + i + " changes.");
 	}
 }
 function NoLikes(): string {
@@ -261,7 +261,7 @@ async function SuperLike(message: Message, SentMsg: Message, genericEmbed: Messa
 }
 
 export {
-	TinderStartup, TinderDBService, NoLikes, NoRolls, SeparateTinderList, fetchUserList,
+	tinderStartupService, TinderDBService, NoLikes, NoRolls, SeparateTinderList, fetchUserList,
 	// tinderNodeCanvasImage,
 	Dislike, NormalLike, SuperLike,
 };
