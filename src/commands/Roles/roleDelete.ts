@@ -1,7 +1,7 @@
 import { Command } from "discord-akairo";
 import { Collection, Role, Message, MessageEmbed } from "discord.js";
-import { noArgRole } from "../../functions/embeds";
-import { errorColor, getMemberColorAsync } from "../../functions/Util";
+import { noArgRole } from "../../util/embeds";
+import { errorColor, getMemberColorAsync } from "../../util/Util";
 const embed = new MessageEmbed({
 	color: errorColor,
 	description: "Couldn't delete roles!",

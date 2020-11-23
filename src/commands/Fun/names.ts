@@ -1,9 +1,9 @@
 import { MessageEmbed, Message } from "discord.js";
-import { UserNickTable } from "../../functions/functions";
+import { UserNickTable } from "../../util/functions";
 import { config } from "../../config";
 import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
 import { Command } from "discord-akairo";
-import { getMemberColorAsync } from "../../functions/Util";
+import { getMemberColorAsync } from "../../util/Util";
 import { User } from "discord.js";
 const arr = ["remove", "rem", "delete", "del"];
 

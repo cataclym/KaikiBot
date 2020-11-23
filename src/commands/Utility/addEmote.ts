@@ -1,9 +1,9 @@
 import { Argument, Command } from "discord-akairo";
 import { Message } from "discord.js";
 import sizeOf from "image-size";
-import { noArgGeneric } from "../../functions/embeds";
-import { deleteImage, getFileOut, resizeImage, saveEmoji, saveFile } from "../../functions/Emote";
-import { trim } from "../../functions/Util";
+import { noArgGeneric } from "../../util/embeds";
+import { deleteImage, getFileOut, resizeImage, saveEmoji, saveFile } from "../../util/Emote";
+import { trim } from "../../util/Util";
 
 const emoteRegex = /<(a?)((!?\d+)|(:.+?:\d+))>/g;
 const imgRegex = /(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|gif|png)/g;

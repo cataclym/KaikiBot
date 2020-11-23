@@ -1,10 +1,10 @@
 "use strict";
 
 import { Guild, Message, MessageEmbed } from "discord.js";
-import { getMemberColorAsync } from "../../functions/Util";
+import { getMemberColorAsync } from "../../util/Util";
 import { Command } from "discord-akairo";
 import db from "quick.db";
-import { GuildOnAddBirthdays } from "../../functions/AnniversaryRoles.js";
+import { GuildOnAddBirthdays } from "../../util/AnniversaryRoles.js";
 const guildConfig = new db.table("guildConfig");
 
 export default class AnniversaryRolesConfigCommand extends Command {

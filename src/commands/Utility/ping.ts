@@ -1,4 +1,4 @@
-import { getMemberColorAsync } from "../../functions/Util";
+import { getMemberColorAsync } from "../../util/Util";
 import { MessageEmbed, Message } from "discord.js";
 import { Command } from "discord-akairo";
 

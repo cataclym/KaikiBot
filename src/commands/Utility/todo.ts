@@ -5,7 +5,7 @@ import { MessageEmbed } from "discord.js";
 import { config } from "../../config.js";
 import { Command, Flag, Argument } from "discord-akairo";
 import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
-import { getMemberColorAsync, trim } from "../../functions/Util.js";
+import { getMemberColorAsync, trim } from "../../util/Util.js";
 import { Message } from "discord.js";
 module.exports = class TodoCommand extends Command {
 	constructor() {

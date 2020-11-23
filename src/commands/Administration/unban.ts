@@ -1,6 +1,6 @@
 import { Command } from "discord-akairo";
 import { Message, MessageEmbed, User } from "discord.js";
-import { errorColor, getMemberColorAsync } from "../../functions/Util";
+import { errorColor, getMemberColorAsync } from "../../util/Util";
 
 export default class UnbanCommand extends Command {
 	constructor() {

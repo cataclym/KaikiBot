@@ -1,7 +1,7 @@
 import { Command } from "discord-akairo";
 import { Message, MessageEmbed, GuildMember } from "discord.js";
 import db from "quick.db";
-import { errorColor, getMemberColorAsync } from "../../functions/Util";
+import { errorColor, getMemberColorAsync } from "../../util/Util";
 const leaveRoleTable = new db.table("leaveRoleTable");
 
 export default class RestoreUserRoles extends Command {

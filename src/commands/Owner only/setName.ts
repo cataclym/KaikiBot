@@ -1,6 +1,6 @@
 import { Command } from "discord-akairo";
 import { Message } from "discord.js";
-import { noArgGeneric } from "../../functions/embeds";
+import { noArgGeneric } from "../../util/embeds";
 
 export default class SetNameCommand extends Command {
 	constructor() {

@@ -1,6 +1,6 @@
 import { Command } from "discord-akairo";
 import { MessageEmbed, Message, GuildMember } from "discord.js";
-import { errorColor, getMemberColorAsync } from "../../functions/Util";
+import { errorColor, getMemberColorAsync } from "../../util/Util";
 
 export default class KickCommand extends Command {
 	constructor() {

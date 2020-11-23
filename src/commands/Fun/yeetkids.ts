@@ -2,7 +2,7 @@ import fetch from "node-fetch";
 import Discord from "discord.js";
 import { Command } from "discord-akairo";
 import { Message } from "discord.js";
-import { getMemberColorAsync, trim } from "../../functions/Util";
+import { getMemberColorAsync, trim } from "../../util/Util";
 import { ChildrenEntity, Data1 } from "../../struct/redditModel";
 
 export default class YeetCommand extends Command {

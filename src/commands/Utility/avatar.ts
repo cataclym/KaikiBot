@@ -1,6 +1,6 @@
 import { Command } from "discord-akairo";
 import { User, Message, MessageEmbed } from "discord.js";
-import { getMemberColorAsync } from "../../functions/Util";
+import { getMemberColorAsync } from "../../util/Util";
 
 export default class AvatarCommand extends Command {
 	constructor() {

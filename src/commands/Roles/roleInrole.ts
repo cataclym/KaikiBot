@@ -2,7 +2,7 @@ import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-
 import { Command } from "discord-akairo";
 import { GuildMember } from "discord.js";
 import { Role, MessageEmbed, Message } from "discord.js";
-import { errorColor, getMemberColorAsync } from "../../functions/Util";
+import { errorColor, getMemberColorAsync } from "../../util/Util";
 
 export default class RoleInRoleCommand extends Command {
 	constructor() {

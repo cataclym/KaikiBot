@@ -1,7 +1,7 @@
 import { MessageEmbed } from "discord.js";
 import { Command } from "discord-akairo";
 import { Message } from "discord.js";
-import { getMemberColorAsync } from "../../functions/Util";
+import { getMemberColorAsync } from "../../util/Util";
 
 module.exports = class KillBotProcess extends Command {
 	constructor() {

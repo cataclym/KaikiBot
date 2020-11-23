@@ -1,7 +1,7 @@
 import Discord, { Message, MessageEmbed } from "discord.js";
 import Akairo, { Command } from "discord-akairo";
 import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
-import { getMemberColorAsync } from "../../functions/Util";
+import { getMemberColorAsync } from "../../util/Util";
 import { config } from "../../config";
 
 function format(seconds: number) {

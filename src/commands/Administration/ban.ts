@@ -1,6 +1,6 @@
 import { Command } from "discord-akairo";
 import { MessageEmbed, User, Message, GuildMember } from "discord.js";
-import { errorColor, getMemberColorAsync } from "../../functions/Util";
+import { errorColor, getMemberColorAsync } from "../../util/Util";
 
 export default class BanCommand extends Command {
 	constructor() {

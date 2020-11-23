@@ -1,6 +1,6 @@
 import { Command } from "discord-akairo";
 import { TextChannel, Message, MessageEmbed } from "discord.js";
-import { getMemberColorAsync } from "../../functions/Util";
+import { getMemberColorAsync } from "../../util/Util";
 
 export default class ChannelNsfwCommand extends Command {
 	constructor() {

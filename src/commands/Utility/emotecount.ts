@@ -3,7 +3,7 @@ import { MessageEmbed, Message } from "discord.js";
 const Emotes = new db.table("Emotes");
 import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
 import { Command } from "discord-akairo";
-import { getMemberColorAsync, trim } from "../../functions/Util";
+import { getMemberColorAsync, trim } from "../../util/Util";
 
 export default class EmoteCount extends Command {
 	constructor() {

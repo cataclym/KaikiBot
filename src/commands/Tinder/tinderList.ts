@@ -1,4 +1,4 @@
-import { fetchUserList } from "../../functions/tinder.js";
+import { fetchUserList } from "../../util/tinder.js";
 import { Command, Flag, Argument } from "discord-akairo";
 import { Message, User } from "discord.js";
 

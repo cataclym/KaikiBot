@@ -1,9 +1,9 @@
 import { Listener } from "discord-akairo";
-import { emoteReact, roleCheck, handleMentions, dadBot, tiredNadekoReact, countEmotes } from "../functions/functions";
+import { emoteReact, roleCheck, handleMentions, dadBot, tiredNadekoReact, countEmotes } from "../util/functions";
 import { Message, MessageEmbed } from "discord.js";
 import db from "quick.db";
 import { config } from "../config";
-import { standardColor } from "../functions/Util";
+import { standardColor } from "../util/Util";
 const guildConfig = new db.table("guildConfig");
 let enabledDadBotGuilds = guildConfig.get("dadbot");
 export async function updateVar(value: string[]): Promise<void> {

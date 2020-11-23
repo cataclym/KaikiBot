@@ -1,6 +1,6 @@
 import db from "quick.db";
 const Tinder = new db.table("Tinder");
-import { SeparateTinderList } from "../../functions/tinder.js";
+import { SeparateTinderList } from "../../util/tinder.js";
 import { Command } from "discord-akairo";
 import { Message } from "discord.js";
 

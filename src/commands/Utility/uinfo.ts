@@ -1,6 +1,6 @@
 import { Command } from "discord-akairo";
 import { Message, GuildMember, Role, UserFlagsString, MessageEmbed } from "discord.js";
-import { getUserPresenceAsync, flags } from "../../functions/Util";
+import { getUserPresenceAsync, flags } from "../../util/Util";
 
 
 export default class UserInfoCommand extends Command {

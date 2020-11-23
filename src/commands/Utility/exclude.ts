@@ -1,7 +1,7 @@
 import { Command } from "discord-akairo";
 import { config } from "../../config.js";
 import { MessageEmbed, Message } from "discord.js";
-import { errorColor, getMemberColorAsync } from "../../functions/Util";
+import { errorColor, getMemberColorAsync } from "../../util/Util";
 
 const errorEmbed = new MessageEmbed({
 	title: "Error!",

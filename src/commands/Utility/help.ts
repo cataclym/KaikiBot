@@ -1,8 +1,8 @@
 import Discord, { Message } from "discord.js";
 import { config } from "../../config.js";
 import { Command } from "discord-akairo";
-import { getMemberColorAsync } from "../../functions/Util.js";
-import { noArgGeneric } from "../../functions/embeds.js";
+import { getMemberColorAsync } from "../../util/Util.js";
+import { noArgGeneric } from "../../util/embeds.js";
 
 export default class HelpCommand extends Command {
 	constructor() {

@@ -1,7 +1,7 @@
 import { Argument, Command } from "discord-akairo";
 import { User } from "discord.js";
 import { MessageEmbed, Message } from "discord.js";
-import { getMemberColorAsync, flags } from "../../functions/Util";
+import { getMemberColorAsync, flags } from "../../util/Util";
 
 
 export default class FetchUserCommand extends Command {

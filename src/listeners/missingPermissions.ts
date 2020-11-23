@@ -1,6 +1,6 @@
 import { Command, Listener } from "discord-akairo";
 import { MessageEmbed, Message, PermissionString, BitFieldResolvable } from "discord.js";
-import { errorColor } from "../functions/Util";
+import { errorColor } from "../util/Util";
 
 export default class missingPermissionsListener extends Listener {
 	constructor() {

@@ -1,5 +1,5 @@
 import { config } from "../config";
-import { poems } from "../functions/poems";
+import { poems } from "../util/poems";
 import { MessageEmbed, Message, User } from "discord.js";
 import { errorColor, getMemberColorAsync } from "./Util";
 import db from "quick.db";

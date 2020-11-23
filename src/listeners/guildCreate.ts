@@ -1,8 +1,8 @@
 import { Listener } from "discord-akairo";
 import { Guild } from "discord.js";
-import { EmoteDBStartup } from "../functions/functions";
-import { TinderStartup } from "../functions/tinder";
-import { GuildOnAddBirthdays } from "../functions/AnniversaryRoles";
+import { EmoteDBStartup } from "../util/functions";
+import { TinderStartup } from "../util/tinder";
+import { GuildOnAddBirthdays } from "../util/AnniversaryRoles";
 
 module.exports = class GuildCreate extends Listener {
 	constructor() {

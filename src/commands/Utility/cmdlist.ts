@@ -2,7 +2,7 @@ import Discord from "discord.js";
 import { config } from "../../config";
 import { Command } from "discord-akairo";
 import { Message } from "discord.js";
-import { getMemberColorAsync } from "../../functions/Util.js";
+import { getMemberColorAsync } from "../../util/Util.js";
 
 module.exports = class commandsList extends Command {
 	constructor() {

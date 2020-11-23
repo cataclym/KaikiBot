@@ -1,7 +1,7 @@
 import { Listener } from "discord-akairo";
-import { ReAssignBirthdays } from "../functions/AnniversaryRoles";
-import { TinderStartup } from "../functions/tinder";
-import { DailyResetTimer, EmoteDBStartup, startUp } from "../functions/functions";
+import { ReAssignBirthdays } from "../util/AnniversaryRoles";
+import { TinderStartup } from "../util/tinder";
+import { DailyResetTimer, EmoteDBStartup, startUp } from "../util/functions";
 import { config } from "../config";
 
 export default class ReadyListener extends Listener {

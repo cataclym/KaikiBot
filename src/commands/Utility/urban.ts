@@ -3,8 +3,8 @@ import fetch from "node-fetch";
 import { Command } from "discord-akairo";
 import { MessageEmbed, Message } from "discord.js";
 import querystring from "querystring";
-import { errorColor, getMemberColorAsync, trim } from "../../functions/Util";
-import { noArgGeneric } from "../../functions/embeds";
+import { errorColor, getMemberColorAsync, trim } from "../../util/Util";
+import { noArgGeneric } from "../../util/embeds";
 
 export default class UrbanDictCommand extends Command {
 	constructor() {

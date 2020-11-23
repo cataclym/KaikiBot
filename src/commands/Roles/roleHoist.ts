@@ -1,7 +1,7 @@
 import { Command } from "discord-akairo";
 import { MessageEmbed, Message, Role } from "discord.js";
-import { noArgRole } from "../../functions/embeds";
-import { getMemberColorAsync } from "../../functions/Util";
+import { noArgRole } from "../../util/embeds";
+import { getMemberColorAsync } from "../../util/Util";
 
 export default class RoleHoistCommand extends Command {
 	constructor() {

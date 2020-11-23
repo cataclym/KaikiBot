@@ -3,7 +3,7 @@ import { Command } from "discord-akairo";
 import { Message } from "discord.js";
 import { MessageEmbed } from "discord.js";
 import db from "quick.db";
-import { getMemberColorAsync } from "../../functions/Util.js";
+import { getMemberColorAsync } from "../../util/Util.js";
 import { config } from "../../config.js";
 const guildConfig = new db.table("guildConfig");
 import { updateVar } from "../../listeners/message";
