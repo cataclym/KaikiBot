@@ -1,7 +1,7 @@
 import { Listener } from "discord-akairo";
 import { Guild } from "discord.js";
-import { EmoteDBStartup } from "../util/functions";
-import { TinderStartup } from "../util/tinder";
+import { emoteDataBaseService } from "../util/functions";
+import { tinderStartupService } from "../util/tinder";
 import { GuildOnAddBirthdays } from "../util/AnniversaryRoles";
 
 module.exports = class GuildCreate extends Listener {
@@ -14,8 +14,8 @@ module.exports = class GuildCreate extends Listener {
 
 	public async exec(guild: Guild) {
 		console.log("\nBot was added to " + guild.name + "!! " + guild.memberCount + " members!\n");
-		await TinderStartup(guild);
-		await EmoteDBStartup(this.client);
+		await tinderStartupService(guild);
+		await emoteDataBaseService(guild);
 		await GuildOnAddBirthdays(guild);
 	}
 };
