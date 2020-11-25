@@ -33,21 +33,17 @@ export default class SetUserRoleCommand extends Command {
 
 		const { role, member } = args;
 
-		async function embedFail(text: string) {
-			const embed = new MessageEmbed()
+		const embedFail = async (text: string) => {
+			return new MessageEmbed()
 				.setColor(errorColor)
 				.setDescription(text);
+		};
 
-			return embed;
-		}
-
-		async function embedSuccess(text: string) {
-			const embed = new MessageEmbed()
+		const embedSuccess = async (text: string) => {
+			return new MessageEmbed()
 				.setColor(await getMemberColorAsync(message))
 				.setDescription(text);
-
-			return embed;
-		}
+		};
 
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		const botRole = message.guild?.me?.roles.highest;
