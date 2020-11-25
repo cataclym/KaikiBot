@@ -5,7 +5,7 @@ import DB from "quick.db";
 const userRoles = new DB.table("userRoles");
 
 //
-// Rewrite of Miyano's setuserrole command
+// Rewrite of Miyano's setuserrole comman
 //
 
 export default class SetUserRoleCommand extends Command {
@@ -70,7 +70,7 @@ export default class SetUserRoleCommand extends Command {
 		}
 		else if (!res[0]) {
 
-			const added = userRoles.push(`${message.guild?.id}`, `${member.id}`);
+			const added = userRoles.push(`${message.guild?.id}.${member.id}`, `${role.id}`);
 
 			console.log(added);
 
