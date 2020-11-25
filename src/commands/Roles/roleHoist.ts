@@ -6,7 +6,7 @@ import { getMemberColorAsync } from "../../util/Util";
 export default class RoleHoistCommand extends Command {
 	constructor() {
 		super("rolehoist", {
-			aliases: ["rolehoist", "hoist"],
+			aliases: ["rolehoist", "hoistrole", "hoist"],
 			clientPermissions: "MANAGE_ROLES",
 			userPermissions: "MANAGE_ROLES",
 			description: { description: "Hoists or unhoists a role", usage: "@gamers" },
