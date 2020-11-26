@@ -1,6 +1,6 @@
 import { Command } from "discord-akairo";
 import { GuildMember, MessageEmbed, Message, Role } from "discord.js";
-import { errorColor, getMemberColorAsync } from "../../util/Util";
+import { codeblock, errorColor, getMemberColorAsync } from "../../util/Util";
 import DB from "quick.db";
 const userRoles = new DB.table("userRoles");
 
@@ -12,9 +12,10 @@ export default class SetUserRoleCommand extends Command {
 	constructor() {
 		super("setuserrole", {
 			aliases: ["setuserrole"],
-			description: { description: "Assigns a role to a user.", usage: "setuserrole @Platinum [role]" },
+			description: { description: "Assigns a role to a user.", usage: "@Platinum [role]" },
 			clientPermissions: ["MANAGE_ROLES"],
 			userPermissions: ["MANAGE_ROLES"],
+			channel: "guild",
 			args: [
 				{
 					id: "member",
@@ -54,9 +55,11 @@ export default class SetUserRoleCommand extends Command {
 		// const res = await query(`SELECT * FROM user_roles WHERE role_id='${myRole.id}'`);
 		const res = userRoles.get(`${message.guild?.id}.${member.id}`);
 
+		message.reply(await codeblock("css", JSON.stringify(res, undefined, " ")));
+
 		console.log(res);
 
-		if (res[0]) {
+		if (res) {
 			if (userRoles.delete(`${message.guild?.id}.${member.id}`)) {
 
 				// await query(`DELETE FROM user_roles where role_id='${myRole.id}'`);
@@ -68,11 +71,13 @@ export default class SetUserRoleCommand extends Command {
 				throw new Error("Failed to delete user role...?");
 			}
 		}
-		else if (!res[0]) {
+		else if (!res) {
 
 			const added = userRoles.push(`${message.guild?.id}.${member.id}`, `${role.id}`);
 
 			console.log(added);
+
+			message.reply(await codeblock("css", JSON.stringify(added, undefined, " ")));
 
 			member.roles.add(role);
 			message.channel.send(await embedSuccess(`Adding role ${role.name} to ${member.user.username}`));
