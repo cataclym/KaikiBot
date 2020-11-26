@@ -20,7 +20,7 @@ async function handleMentions(message: Message): Promise<Message | void> {
 async function dadBot(message: Message): Promise<void> {
 	for (const item of config.prefixes) {
 		const r = new RegExp(`(^|\\s|$)(?<statement>(?<prefix>${item})\\s*(?<nickname>.*)$)`, "mi");
-		if (r.test(message.content) && !message.author.bot) {
+		if (r.test(message.content) && !message.author.bot && !message.content.includes("||")) {
 			const match = message.content.match(r)?.groups;
 			if (match?.nickname) {
 				// Strict null check
@@ -31,7 +31,7 @@ async function dadBot(message: Message): Promise<void> {
 					if (match.nickname.length <= 32) {
 						const guildMember = message.author;
 						UserNickTable.push(`usernicknames.${guildMember.id}`, match.nickname);
-						if (message.author.id !== owner?.id) {
+						if (guildMember.id !== owner?.id) {
 						// Avoids setting nickname on Server owners
 							await message.member?.setNickname(match.nickname);
 						}
