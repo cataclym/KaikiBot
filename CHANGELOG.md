@@ -1,4 +1,13 @@
-de7dc51 (HEAD -> master, origin/master) Edit: Emote DB check doesnt check every server when new server is added.
+6407154 (HEAD -> master, origin/master) ✅ Added: myrole (mr), setuserrole (sur). With custom prefix (;).
+e410609 Fix: Dadbot ignores spoiler messages.
+f45a127 WIP: Miyano roles almost working
+618285e WIP: Miyano roles
+2839ace WIP: myrole
+a036397 Merge remote-tracking branch 'origin/master'
+9a8cc5d WIP: setuserrole
+236dc7a Edit: alias ""hoistrole".
+d6cf0f1 Added: Changelog.
+de7dc51 Edit: Emote DB check doesnt check every server when new server is added.
 1374eac Edit: Streamlined console logging a bit
 2e9c4e5 Edit: functions => util
 5ca4c0a Edit: holiday
@@ -343,7 +352,7 @@ e1a233b Testing DB
 0110332 +++
 bec1cd0 Update yeet.js
 7f4be5c Update variables.js
-fa5d7e6 (tag: v.1.6) Permission invite link
+fa5d7e6 Permission invite link
 e0e1e2f thx + yeet + perms
 bd1e1c5 Thx <3
 15653bf Update dadjoke.js
