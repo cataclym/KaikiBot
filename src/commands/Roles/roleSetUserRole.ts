@@ -15,7 +15,11 @@ export default class SetUserRoleCommand extends Command {
 			description: { description: "Assigns a role to a user.", usage: "@Platinum [role]" },
 			clientPermissions: ["MANAGE_ROLES"],
 			userPermissions: ["MANAGE_ROLES"],
-			prefix: ";",
+			prefix: (msg: Message) => {
+				const prefix = typeof msg.util?.handler.prefix === "string" ? [msg.util?.handler.prefix] : msg.util?.handler.prefix as string[];
+				prefix.push(";");
+				return prefix;
+			},
 			channel: "guild",
 			args: [
 				{

@@ -11,7 +11,11 @@ export default class MyRoleCommand extends Command {
 			aliases: ["myrole", "mr"],
 			clientPermissions: ["MANAGE_ROLES"],
 			channel: "guild",
-			prefix: ";",
+			prefix: (msg: Message) => {
+				const prefix = typeof msg.util?.handler.prefix === "string" ? [msg.util?.handler.prefix] : msg.util?.handler.prefix as string[];
+				prefix.push(";");
+				return prefix;
+			},
 			description: {
 				description: "Checks your assigned user role. Add a hexcode to change the colour.",
 				usage: "name/color FF0000",
