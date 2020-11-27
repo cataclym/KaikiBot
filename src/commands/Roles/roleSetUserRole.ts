@@ -1,20 +1,21 @@
 import { Command } from "discord-akairo";
 import { GuildMember, MessageEmbed, Message, Role } from "discord.js";
-import { codeblock, errorColor, getMemberColorAsync } from "../../util/Util";
+import { errorColor, getMemberColorAsync } from "../../util/Util";
 import DB from "quick.db";
 const userRoles = new DB.table("userRoles");
 
 //
-// Rewrite of Miyano's setuserrole comman
-//
+// Rewrite of Miyano's setuserrole command
+// Thanks Plat.
 
 export default class SetUserRoleCommand extends Command {
 	constructor() {
 		super("setuserrole", {
-			aliases: ["setuserrole"],
+			aliases: ["setuserrole", "sur"],
 			description: { description: "Assigns a role to a user.", usage: "@Platinum [role]" },
 			clientPermissions: ["MANAGE_ROLES"],
 			userPermissions: ["MANAGE_ROLES"],
+			prefix: ";",
 			channel: "guild",
 			args: [
 				{
@@ -46,23 +47,15 @@ export default class SetUserRoleCommand extends Command {
 				.setDescription(text);
 		};
 
-		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		const botRole = message.guild?.me?.roles.highest;
 		const isPosition = botRole?.comparePositionTo(role);
 
 		if (isPosition && isPosition <= 0) return message.channel.send(await embedFail("This role is higher than me, I cannot add this role!"));
 
-		// const res = await query(`SELECT * FROM user_roles WHERE role_id='${myRole.id}'`);
 		const res = userRoles.get(`${message.guild?.id}.${member.id}`);
-
-		message.reply(await codeblock("css", JSON.stringify(res, undefined, " ")));
-
-		console.log(res);
 
 		if (res) {
 			if (userRoles.delete(`${message.guild?.id}.${member.id}`)) {
-
-				// await query(`DELETE FROM user_roles where role_id='${myRole.id}'`);
 
 				member.roles.remove(role);
 				message.channel.send(await embedSuccess(`Removed role ${role.name} from ${member.user.username}`));
@@ -73,11 +66,7 @@ export default class SetUserRoleCommand extends Command {
 		}
 		else if (!res) {
 
-			const added = userRoles.push(`${message.guild?.id}.${member.id}`, `${role.id}`);
-
-			console.log(added);
-
-			message.reply(await codeblock("css", JSON.stringify(added, undefined, " ")));
+			userRoles.push(`${message.guild?.id}.${member.id}`, `${role.id}`);
 
 			member.roles.add(role);
 			message.channel.send(await embedSuccess(`Adding role ${role.name} to ${member.user.username}`));
