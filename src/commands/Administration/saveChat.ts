@@ -1,6 +1,5 @@
 import { Command } from "discord-akairo";
 import { Message, MessageReaction } from "discord.js";
-import { codeblock } from "../../util/Util";
 import { noArgGeneric } from "../../util/embeds";
 
 export default class SaveChatCommand extends Command {
