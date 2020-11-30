@@ -5,7 +5,7 @@ import { Command } from "discord-akairo";
 export default class PingCommand extends Command {
 	public constructor() {
 		super("ping", {
-			description: { description: "Ping!" },
+			description: { description: "Ping the bot and websocket to see if there are latency issues." },
 			aliases: ["p", "ping"],
 		});
 	}
