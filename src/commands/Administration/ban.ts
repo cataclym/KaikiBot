@@ -1,5 +1,5 @@
 import { Command } from "discord-akairo";
-import { MessageEmbed, User, Message, GuildMember } from "discord.js";
+import { Guild, MessageEmbed, User, Message, GuildMember } from "discord.js";
 import { errorColor, getMemberColorAsync } from "../../util/Util";
 
 export default class BanCommand extends Command {
@@ -22,13 +22,16 @@ export default class BanCommand extends Command {
 				{
 					id: "reason",
 					type: "string",
-					match: "content",
+					match: "restContent",
 					default: "banned",
 				},
 			],
 		});
 	}
 	public async exec(message: Message, { user, reason }: { user: User, reason: string}): Promise<Message> {
+
+		const guild = message.guild as Guild;
+		const guildClientMember = guild.me as GuildMember;
 
 		const successBan = new MessageEmbed({
 			title: "Banned user",
@@ -39,7 +42,7 @@ export default class BanCommand extends Command {
 			],
 		});
 
-		// If uses is currently in the guild
+		// If user is currently in the guild
 		const guildMember = message.guild?.members.cache.get(user.id);
 
 		if (!guildMember) {
@@ -55,17 +58,27 @@ export default class BanCommand extends Command {
 			}));
 		}
 
-		try {
-			await user.send(new MessageEmbed({
+		// x2
+		else if (guildClientMember.roles.highest.position < guildMember.roles.highest.position) {
+			return message.channel.send(new MessageEmbed({
 				color: errorColor,
-				description: `You have been banned from ${message.guild?.name}.\nReason: ${reason}`,
+				description: "Sorry, I don't have permissions to ban this member.",
 			}));
 		}
-		catch {
-			// ignored
-		}
 
-		await message.guild?.members.ban(user, { reason: reason });
+		await message.guild?.members.ban(user, { reason: reason }).then(m => {
+			if (m instanceof User || m instanceof GuildMember) {
+				try {
+					m.send(new MessageEmbed({
+						color: errorColor,
+						description: `You have been banned from ${message.guild?.name}.\nReason: ${reason}`,
+					}));
+				}
+				catch {
+				// ignored
+				}
+			}
+		});
 
 		return message.channel.send(successBan);
 	}

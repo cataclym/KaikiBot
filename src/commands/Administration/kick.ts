@@ -1,4 +1,5 @@
 import { Command } from "discord-akairo";
+import { Guild } from "discord.js";
 import { MessageEmbed, Message, GuildMember } from "discord.js";
 import { errorColor, getMemberColorAsync } from "../../util/Util";
 
@@ -22,7 +23,7 @@ export default class KickCommand extends Command {
 				{
 					id: "reason",
 					type: "string",
-					match: "content",
+					match: "restContent",
 					default: "kicked",
 				},
 			],
@@ -30,24 +31,33 @@ export default class KickCommand extends Command {
 	}
 	public async exec(message: Message, { member, reason }: { member: GuildMember, reason: string}): Promise<Message> {
 
-		if (message.author.id != message.guild?.ownerID && (message.member as GuildMember).roles.highest.comparePositionTo(member.roles.highest) > 0) {
+		const guild = message.guild as Guild;
+		const guildClientMember = guild.me as GuildMember;
+
+		if (message.author.id != guild.ownerID && (message.member as GuildMember).roles.highest.comparePositionTo(member.roles.highest) > 0) {
 			return message.channel.send(new MessageEmbed({
 				color: errorColor,
-				description: "You don't have permissions to ban this member.",
+				description: "You don't have permissions to kick this member.",
 			}));
 		}
-
-		try {
-			await member.user.send(new MessageEmbed({
+		else if (guildClientMember.roles.highest.position < member.roles.highest.position) {
+			return message.channel.send(new MessageEmbed({
 				color: errorColor,
-				description: `You have been kicked from ${message.guild?.name}.\nReason: ${reason}`,
+				description: "Sorry, I don't have permissions to kick this member.",
 			}));
 		}
-		catch {
-			// ignored
-		}
 
-		await member.kick(reason);
+		await member.kick(reason).then(m => {
+			try {
+				m.user.send(new MessageEmbed({
+					color: errorColor,
+					description: `You have been kicked from ${message.guild?.name}.\nReason: ${reason}`,
+				}));
+			}
+			catch {
+				// ignored
+			}
+		});
 
 		return message.channel.send(new MessageEmbed({
 			title: "Kicked user",
