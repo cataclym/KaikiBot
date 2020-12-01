@@ -1,8 +1,6 @@
 import { Listener } from "discord-akairo";
 import { GuildMember } from "discord.js";
 import db from "quick.db";
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore;
 const leaveRoleTable = new db.table("leaveRoleTable");
 
 export default class GuildMemberRemovedListener extends Listener {
@@ -12,7 +10,7 @@ export default class GuildMemberRemovedListener extends Listener {
 			emitter: "client",
 		});
 	}
-	async exec(member: GuildMember): Promise<void> {
+	public async exec(member: GuildMember): Promise<void> {
 		leaveRoleTable.set(`${member.guild.id}.${member.id}`, member.roles.cache.map(role => role.id));
 	}
 }

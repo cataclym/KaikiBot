@@ -1,7 +1,7 @@
 import { Command } from "discord-akairo";
-import { MessageEmbed } from "discord.js";
-import { Message } from "discord.js";
-import { getMemberColorAsync } from "../../functions/Util";
+import { Message, MessageEmbed } from "discord.js";
+import { noArgGeneric } from "../../util/embeds";
+import { getMemberColorAsync } from "../../util/Util";
 
 export default class ReloadCommand extends Command {
 	constructor() {
@@ -13,11 +13,12 @@ export default class ReloadCommand extends Command {
 				{
 					id: "command",
 					type: "command",
+					otherwise: (msg: Message) => noArgGeneric(msg.util?.parsed?.command),
 				},
 			],
 		});
 	}
-	async exec(message: Message, { command }: { command: Command}): Promise<Message> {
+	public async exec(message: Message, { command }: { command: Command}): Promise<Message> {
 
 		command.reload();
 		return message.channel.send(new MessageEmbed({

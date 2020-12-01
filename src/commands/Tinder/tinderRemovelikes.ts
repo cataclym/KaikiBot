@@ -1,7 +1,5 @@
 "use strict";
 import db from "quick.db";
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
 const Tinder = new db.table("Tinder");
 import { Command } from "discord-akairo";
 import { MessageEmbed } from "discord.js";
@@ -20,7 +18,7 @@ export default class TinderRemoveLikes extends Command {
 			],
 		});
 	}
-	async exec(message: Message, { integer }: { integer: number }): Promise<Message | MessageReaction> {
+	public async exec(message: Message, { integer }: { integer: number }): Promise<Message | MessageReaction> {
 		const likes = [...new Set(Tinder.fetch(`likeID.${message.author.id}`))];
 		if (!likes[1]) {
 			return message.channel.send("Nothing to delete.");

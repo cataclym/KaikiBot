@@ -1,4 +1,4 @@
-import { fetchUserList } from "../../functions/tinder.js";
+import { fetchUserList } from "../../util/tinder.js";
 import { Command, Flag, Argument } from "discord-akairo";
 import { Message, User } from "discord.js";
 
@@ -28,7 +28,7 @@ module.exports = class TinderListCommand extends Command {
 		return user;
 	}
 
-	async exec(message: Message, args: User) {
+	public async exec(message: Message, args: User) {
 
 		return fetchUserList(message, args);
 	}

@@ -1,7 +1,7 @@
 import { Listener } from "discord-akairo";
-import { ReAssignBirthdays } from "../functions/AnniversaryRoles";
-import { TinderStartup } from "../functions/tinder";
-import { DailyResetTimer, EmoteDBStartup, startUp } from "../functions/functions";
+import { birthdayService } from "../util/AnniversaryRoles";
+import { tinderStartupService } from "../util/tinder";
+import { DailyResetTimer, emoteDataBaseService, startUp } from "../util/functions";
 import { config } from "../config";
 
 export default class ReadyListener extends Listener {
@@ -21,15 +21,23 @@ export default class ReadyListener extends Listener {
 		await this.client.user?.setActivity(config.activityName, { type: config.activityStatus }).then(r => {
 			console.log(`🟦 Client ready | Status: ${r.status}`);
 		});
+
 		await startUp();
 		await DailyResetTimer().then(() => {
 			console.log("🟩 Reset timer initiated.");
 		});
-		EmoteDBStartup(this.client);
-		ReAssignBirthdays(this.client);
+
+		emoteDataBaseService(this.client);
+		birthdayService(this.client);
+
 		// This will spam Console on first boot.
 		if (this.client.user) {
-			await TinderStartup(this.client.user);
+			await tinderStartupService(this.client.user);
+		}
+
+		// Let myself know when my bot goes online.
+		if (["Tsukihi Araragi", "Kaiki Deishuu"].includes(this.client.user?.username as string)) {
+			(await this.client.users.fetch("140788173885276160")).send("Bot is online.");
 		}
 	}
 }

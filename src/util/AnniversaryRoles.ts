@@ -1,14 +1,11 @@
 "use strict";
 import { Client, Guild, GuildMember, Role } from "discord.js";
 import db from "quick.db";
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
 const guildConfig = new db.table("guildConfig");
-// Fuck this-
-// 5/8/2020 DDMMYYYY
 import { timeToMidnight } from "./functions";
 const RoleNameJoin = "Join Anniversary",
 	RoleNameCreated = "Cake Day";
+
 async function DateObject() {
 	const d = new Date();
 	const Month = d.getMonth();
@@ -17,18 +14,30 @@ async function DateObject() {
 }
 let ListUserCreatedAt: string[] = [],
 	ListUserJoinedAt: string[] = [];
+// Fuck this-
+// 5/8/2020 DDMMYYYY
 
-async function ReAssignBirthdays(client: Client): Promise<void> {
+async function birthdayService(client: Client): Promise<void> {
+
 	const enabledGuilds = guildConfig.get("anniversary");
+
 	console.time("Anniversary roles");
-	console.log("🟩 Birthday-Role service: Checking dates-");
+	console.log("🟦 birthdayService | Checking dates-");
+
 	const { Day, Month } = await DateObject();
-	await Promise.all(await client.guilds.cache.map(async (guild) => {
+
+	await Promise.all(client.guilds.cache.map(async (guild) => {
 		if (enabledGuilds.includes(guild.id)) {
+			// Check if guild is enabled.
 			if (guild.me?.hasPermission("MANAGE_ROLES")) {
+				// Check if perms.
 				const [AnniversaryRoleC, AnniversaryRoleJ] = <Role[]> await GuildCheckRolesExist(guild);
+				// Get roles from the result of checking if guild has the roles at all / after creating them.
 				await Promise.all(guild.members.cache.map(async (member) => {
-					MemberCheckAnniversary(member, AnniversaryRoleC, AnniversaryRoleJ, Day, Month);
+					if (!member.user.bot) {
+						// Don't assign special roles to bots.
+						MemberCheckAnniversary(member, AnniversaryRoleC, AnniversaryRoleJ, Day, Month);
+					}
 				}));
 			}
 			else {
@@ -40,24 +49,29 @@ async function ReAssignBirthdays(client: Client): Promise<void> {
 	console.timeEnd("Anniversary roles");
 
 	// What a long line
-	console.log(`🟩 Cake Day:${ListUserCreatedAt.length ? " Users added: " + ListUserCreatedAt.join(", ") : " No users were added to Cake Day."}\n🟩 Join Anniversary:${ListUserJoinedAt.length ? " Users added: " + ListUserJoinedAt.join(", ") : " No users were added to Join Anniversary."}\n🟩 Birthday-Role service: Finished checking dates.`);
+	console.log(`🟦 Cake Day:${ListUserCreatedAt.length ? " Users added: " + ListUserCreatedAt.join(", ") : " No users were added to Cake Day."}\n🟦 Join Anniversary:${ListUserJoinedAt.length ? " Users added: " + ListUserJoinedAt.join(", ") : " No users were added to Join Anniversary."}`);
+	console.log("🟩 birthdayService | Finished checking dates!");
 	ListUserJoinedAt = [],
 	ListUserCreatedAt = [];
 	setTimeout(async () => {
-		ReAssignBirthdays(client);
+		birthdayService(client);
 	}, timeToMidnight());
 }
 
 async function GuildOnAddBirthdays(guild: Guild): Promise<void> {
 	const enabledGuilds = guildConfig.get("anniversary");
-	console.log("🟩 Birthday-Role service: Checking new user!");
+	console.log("🟦 birthdayService | Checking new user!");
 	const { Day, Month } = await DateObject();
 	if (enabledGuilds.includes(guild.id)) {
 		if (guild.me?.hasPermission("MANAGE_ROLES")) {
 			const [AnniversaryRoleC, AnniversaryRoleJ] = <Role[]> await GuildCheckRolesExist(guild);
-			guild.members.cache.forEach(async (member) => {
-				MemberCheckAnniversary(member, AnniversaryRoleC, AnniversaryRoleJ, Day, Month);
-			});
+			// Get roles from the result of checking if guild has the roles at all / after creating them.
+			await Promise.all(guild.members.cache.map(async (member) => {
+				if (!member.user.bot) {
+					// Don't assign special roles to bots.
+					MemberCheckAnniversary(member, AnniversaryRoleC, AnniversaryRoleJ, Day, Month);
+				}
+			}));
 		}
 		else {
 			return console.log(guild.name + " can't add anniversary roles due to missing permissions: 'MANAGE_ROLES'");
@@ -120,5 +134,5 @@ async function MemberCheckAnniversary(member: GuildMember, AnniversaryRoleC: Rol
 }
 
 export {
-	ReAssignBirthdays, GuildOnAddBirthdays,
+	birthdayService, GuildOnAddBirthdays,
 };

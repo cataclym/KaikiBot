@@ -9,9 +9,9 @@ export default class SquishCommand extends Command {
 			description: { description: "Stretches given member's avatar", usage: "@dreb" },
 			args: [
 				{
-					"id": "member",
-					"type": "member",
-					"default": (message: Message) => message.member,
+					id: "member",
+					type: "member",
+					default: (message: Message) => message.member,
 				},
 			],
 		});

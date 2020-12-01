@@ -1,6 +1,6 @@
 import { Command } from "discord-akairo";
 import { User, Message, MessageEmbed } from "discord.js";
-import { getMemberColorAsync } from "../../functions/Util";
+import { getMemberColorAsync } from "../../util/Util";
 
 export default class AvatarCommand extends Command {
 	constructor() {
@@ -17,11 +17,12 @@ export default class AvatarCommand extends Command {
 		});
 	}
 	public async exec(message: Message, { user }: { user: User }): Promise<Message> {
+		const av = user.avatarURL({ size: 2048, dynamic: true, format: "png" || "gif" }) || user.displayAvatarURL({ size: 2048, dynamic: true, format: "png" || "gif" });
 		return message.channel.send(new MessageEmbed({
 			color: await getMemberColorAsync(message),
 			title: user.tag,
-			description: `[Link](${user.displayAvatarURL({ size: 2048, dynamic: true })})`,
-			image: { url: user.displayAvatarURL({ size: 2048, dynamic: true }) },
+			description: `[Link](${av})`,
+			image: { url: av },
 			footer: { text: "ID: " + user.id },
 		}));
 	}

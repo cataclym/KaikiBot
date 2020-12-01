@@ -1,15 +1,13 @@
 "use strict";
 
 import { Guild, Message, MessageEmbed } from "discord.js";
-import { getMemberColorAsync } from "../../../functions/Util";
+import { getMemberColorAsync } from "../../util/Util";
 import { Command } from "discord-akairo";
 import db from "quick.db";
-import { GuildOnAddBirthdays } from "../../../functions/AnniversaryRoles.js";
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
+import { GuildOnAddBirthdays } from "../../util/AnniversaryRoles.js";
 const guildConfig = new db.table("guildConfig");
 
-module.exports = class AnniversaryRolesConfigCommand extends Command {
+export default class AnniversaryRolesConfigCommand extends Command {
 	constructor() {
 		super("config-anniversary", {
 			userPermissions: "ADMINISTRATOR",
@@ -22,7 +20,7 @@ module.exports = class AnniversaryRolesConfigCommand extends Command {
 			],
 		});
 	}
-	public async exec(message: Message, { value }: { value: string}) {
+	public async exec(message: Message, { value }: { value: string}): Promise<Message | void> {
 		const enabledGuilds = guildConfig.get("anniversary");
 		const embed = new MessageEmbed().setColor(await getMemberColorAsync(message));
 		switch (value) {
@@ -51,4 +49,4 @@ module.exports = class AnniversaryRolesConfigCommand extends Command {
 			}
 		}
 	}
-};
+}

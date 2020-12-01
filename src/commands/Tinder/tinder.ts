@@ -1,30 +1,28 @@
 import db from "quick.db";
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
 const Tinder = new db.table("Tinder");
-import { NoRolls, Dislike, SuperLike, NormalLike } from "../../functions/tinder";
-import { tinderRollEmbed } from "../../functions/embeds";
+import { NoRolls, Dislike, SuperLike, NormalLike } from "../../util/tinder";
+import { tinderRollEmbed } from "../../util/embeds";
 import { Command, Argument, Flag } from "discord-akairo";
-import { MessageEmbed } from "discord.js";
-import { Message, User, MessageReaction } from "discord.js";
+import { MessageEmbed, Message, User, MessageReaction } from "discord.js";
 import { config } from "../../config";
 
 const reactPromises = async (SentMsg: Message) => {
-	SentMsg.react("❌");
-	SentMsg.react("💚");
-	SentMsg.react("🌟");
+	await SentMsg.react("❌");
+	setTimeout(async () => await SentMsg.react("💚"), 750);
+	setTimeout(async () => await SentMsg.react("🌟"), 1500);
 };
 
 // tinderNodeCanvasImage
-module.exports = class TinderMain extends Command {
+export default class TinderMain extends Command {
 	constructor() {
 		super("tinder", {
-			cooldown: 2,
+			cooldown: 6500,
+			ratelimit: 2,
 			aliases: ["t", "tinder"],
 			description: { description: "Suggests someone to date", usage: "help" },
 		});
 	}
-	*args() {
+	*args(): unknown {
 		const method = yield {
 			type: [
 				["tinderlist", "list"],
@@ -38,14 +36,15 @@ module.exports = class TinderMain extends Command {
 		}
 		const user = yield {
 			type: "user",
-			flag: ["u", "-u"],
+			Math: "content",
+			flag: ["u", "-u", "--user"],
 		};
 		return user;
 	}
-	async exec(message: Message, args: User) {
+	public async exec(message: Message, args: User): Promise<Message | void> {
 
 		if (args) {
-			return message.util?.send(await tinderRollEmbed(message, args));
+			return message.channel.send(await tinderRollEmbed(message, args));
 		// return tinderNodeCanvasImage(message, tinderCardUser);
 		}
 		const hasRolls = parseInt(Tinder.get(`rolls.${message.author.id}`), 10);
@@ -63,7 +62,7 @@ module.exports = class TinderMain extends Command {
 			filtered = userIDArray.filter((f: string) => !combined.includes(f));
 		if (!filtered.length) {
 			// When there are no more people left
-			return message.util?.send("Looking for people to date... 📡").then((sentMsg) => {
+			return message.channel.send("Looking for people to date... 📡").then((sentMsg) => {
 				setTimeout(async () => {
 					(sentMsg.edit(sentMsg.content + "\nNo new potential mates were found."));
 				}, 5000);
@@ -74,7 +73,7 @@ module.exports = class TinderMain extends Command {
 
 		if (hasRolls > 0 && randomUsr) {
 			Tinder.subtract(`rolls.${message.author.id}`, 1);
-			Tinder.push(`temporary.${message.author.id}`, randomUserID);
+			Tinder.push(`temporary.${message.author.id}`, randomUsr.id);
 
 			const randomUserEmbed = await tinderRollEmbed(message, randomUsr, RollsLikes);
 			const SentMsg = await message.channel.send(randomUserEmbed);
@@ -105,4 +104,4 @@ module.exports = class TinderMain extends Command {
 			return message.reply(await NoRolls());
 		}
 	}
-};
+}

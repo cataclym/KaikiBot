@@ -1,7 +1,5 @@
 "use strict";
 import db from "quick.db";
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
 const Tinder = new db.table("Tinder");
 import { Command } from "discord-akairo";
 import { Message, MessageEmbed, MessageReaction } from "discord.js";
@@ -18,7 +16,7 @@ export default class TinderRemoveMarries extends Command {
 			],
 		});
 	}
-	async exec(message: Message, { integer }: { integer: number }): Promise<Message | MessageReaction | null> {
+	public async exec(message: Message, { integer }: { integer: number }): Promise<Message | MessageReaction | null> {
 		const marries = [...new Set(Tinder.fetch(`married.${message.author.id}`))];
 		if (!marries[1]) {
 			return message.channel.send("Nothing to delete.");

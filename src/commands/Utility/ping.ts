@@ -1,11 +1,11 @@
-import { getMemberColorAsync } from "../../functions/Util";
+import { getMemberColorAsync } from "../../util/Util";
 import { MessageEmbed, Message } from "discord.js";
 import { Command } from "discord-akairo";
 
 export default class PingCommand extends Command {
 	public constructor() {
 		super("ping", {
-			description: { description: "Ping!" },
+			description: { description: "Ping the bot and websocket to see if there are latency issues." },
 			aliases: ["p", "ping"],
 		});
 	}

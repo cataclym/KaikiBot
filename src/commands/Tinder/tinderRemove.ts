@@ -20,7 +20,7 @@ export default class TinderRemove extends Command {
 		};
 		if (!Argument.isFailure(method)) {return Flag.continue(method);}
 	}
-	async exec(message: Message): Promise<Message | void> {
+	public async exec(message: Message): Promise<Message | void> {
 		message.util?.send("Fell through");
 		throw new Error("Error: Fell through in " + this.filepath);
 	}

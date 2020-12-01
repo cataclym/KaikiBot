@@ -1,10 +1,9 @@
 "use strict";
 import db from "quick.db";
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
 const ReminderList = new db.table("ReminderList");
 import { Command } from "discord-akairo";
 import { Message } from "discord.js";
+import { noArgGeneric } from "../../util/embeds";
 module.exports = class todoAddCommand extends Command {
 	constructor() {
 		super("add", {
@@ -13,11 +12,12 @@ module.exports = class todoAddCommand extends Command {
 					id: "toAdd",
 					type: "string",
 					match: "rest",
+					otherwise: (msg: Message) => noArgGeneric(msg.util?.parsed?.command),
 				},
 			],
 		});
 	}
-	async exec(message: Message, { toAdd }: { toAdd: string}) {
+	public async exec(message: Message, { toAdd }: { toAdd: string}) {
 		ReminderList.push(`${message.author.id}.todo`, toAdd.split(/ +/));
 		return message.react("✅");
 	}

@@ -2,7 +2,7 @@ import Discord from "discord.js";
 import { config } from "../../config";
 import { Command } from "discord-akairo";
 import { Message } from "discord.js";
-import { getMemberColorAsync } from "../../functions/Util.js";
+import { getMemberColorAsync } from "../../util/Util.js";
 
 module.exports = class commandsList extends Command {
 	constructor() {
@@ -12,7 +12,7 @@ module.exports = class commandsList extends Command {
 		});
 	}
 
-	async exec(message: Message) {
+	public async exec(message: Message) {
 		const AvUrl = await message.client.users.fetch("140788173885276160");
 		// Bot author
 		const color = await getMemberColorAsync(message);
@@ -21,7 +21,7 @@ module.exports = class commandsList extends Command {
 			description: `Prefix is currently set to \`${config.prefix}\`\n`,
 			author: {
 				name: `Nadeko Sengoku Bot v${process.env.npm_package_version}`,
-				url: "https://github.com/cataclym/nadekosengokubot",
+				url: "https://gitlab.com/cataclym/nadekosengokubot",
 				icon_url: message.author.displayAvatarURL({ dynamic: true }),
 			},
 			thumbnail: {

@@ -1,6 +1,6 @@
 import { Command } from "discord-akairo";
 import { Message } from "discord.js";
-import { TinderHelp } from "../../functions/embeds";
+import { TinderHelp } from "../../util/embeds";
 
 module.exports = class TinderHelpCommand extends Command {
 	constructor() {
@@ -8,7 +8,7 @@ module.exports = class TinderHelpCommand extends Command {
 			aliases: ["tinderhelp"],
 		});
 	}
-	async exec(message: Message) {
+	public async exec(message: Message) {
 		return message.util?.send(TinderHelp);
 	}
 };

@@ -1,4 +1,5 @@
 import { Command } from "discord-akairo";
+import { Guild } from "discord.js";
 import { MessageEmbed, Message } from "discord.js";
 import { config } from "../../config";
 
@@ -7,11 +8,17 @@ export default class ServerInfoCommand extends Command {
 		super("serverinfo", {
 			aliases: ["serverinfo", "sinfo"],
 			description: { description: "Shows information about the current server." },
+			args: [
+				{
+					id: "guild",
+					type: "guild",
+					default: (message: Message) => message.guild,
+				},
+			],
 		});
 	}
-	public async exec(message: Message): Promise<Message> {
-		const guild = message.guild;
-		return message.channel.send(new MessageEmbed({
+	public async exec(message: Message, { guild }: { guild: Guild }): Promise<Message> {
+		const emb = new MessageEmbed({
 			thumbnail: { url: <string> guild?.iconURL({ size: 2048, dynamic: true }) },
 			title: guild?.name,
 			color: guild?.owner?.displayColor,
@@ -21,11 +28,11 @@ export default class ServerInfoCommand extends Command {
 				{ name: "Owner", value: guild?.owner?.user.tag, inline: true },
 				{ name: "Members", value: guild?.memberCount, inline: true },
 				{ name:
-                    "Channels", value: "Text: " + guild?.channels.cache.filter((channel) => channel.type === "text").size +
-                    "\nVoice: " + guild?.channels.cache.filter((channel) => channel.type === "voice").size +
-                    "\nCategories: " + guild?.channels.cache.filter((channel) => channel.type === "category").size +
-                    "\nNews: " + guild?.channels.cache.filter((channel) => channel.type === "news").size +
-                    "\nStore: " + guild?.channels.cache.filter((channel) => channel.type === "store").size, inline: true },
+                    "Channels", value: "Text: **" + guild?.channels.cache.filter((channel) => channel.type === "text").size +
+                    "**\nVoice: **" + guild?.channels.cache.filter((channel) => channel.type === "voice").size +
+                    "**\nCategories: **" + guild?.channels.cache.filter((channel) => channel.type === "category").size +
+                    "**\nNews: **" + guild?.channels.cache.filter((channel) => channel.type === "news").size +
+                    "**\nStore: **" + guild?.channels.cache.filter((channel) => channel.type === "store").size + "**", inline: true },
 				{ name: "Created At", value: guild?.createdAt.toDateString(), inline: true },
 				{ name: "Region", value: guild?.region, inline: true },
 				{ name: "Roles", value: guild?.roles.cache.size, inline: true },
@@ -33,6 +40,14 @@ export default class ServerInfoCommand extends Command {
 				{ name: "Custom Emojis", value: "Count: **" + guild?.emojis.cache.size +
                     "**\nSee them with `" + config.prefix + "emotecount`", inline: true },
 			],
-		}));
+		});
+
+		guild.systemChannel ? emb.addField("System channel", guild.systemChannel, true) : null;
+		guild.rulesChannel ? emb.addField("Rules channel", guild.rulesChannel, true) : null;
+		guild.embedChannel ? emb.addField("Embed channel", guild.embedChannel, true) : null;
+		guild.publicUpdatesChannel ? emb.addField("Public Updates channel", guild.publicUpdatesChannel, true) : null;
+		guild.widgetChannel ? emb.addField("Widget channel", guild.widgetChannel, true) : null;
+
+		return message.channel.send(emb);
 	}
 }
