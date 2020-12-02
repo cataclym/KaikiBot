@@ -1,10 +1,8 @@
 "use strict";
-import { Command } from "discord-akairo";
-import { Message } from "discord.js";
-import { MessageEmbed } from "discord.js";
+import { Command, PrefixSupplier } from "discord-akairo";
+import { Message, MessageEmbed } from "discord.js";
 import db from "quick.db";
 import { getMemberColorAsync } from "../../util/Util.js";
-import { config } from "../../config.js";
 const guildConfig = new db.table("guildConfig");
 import { updateVar } from "../../listeners/message";
 
@@ -35,7 +33,7 @@ module.exports = class DadBotConfigCommand extends Command {
 					await enabledGuilds.push(message.guild?.id);
 					updateVar(enabledGuilds);
 					guildConfig.set("dadbot", enabledGuilds);
-					embed.setDescription(`DadBot functionality has been enabled in ${message.guild?.name}!\nIndividual users can still disable dadbot on themselves with ${config.prefix}exclude.`);
+					embed.setDescription(`DadBot functionality has been enabled in ${message.guild?.name}!\nIndividual users can still disable dadbot on themselves with ${(this.handler.prefix as PrefixSupplier)(message)}exclude.`);
 					return message.util?.send(embed);
 				}
 				else {
