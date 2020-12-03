@@ -1,6 +1,10 @@
 import { AkairoClient, CommandHandler, InhibitorHandler, ListenerHandler } from "discord-akairo";
+import { Message } from "discord.js";
 import { join } from "path";
 import { config } from "../config";
+import DB from "quick.db";
+const guildConfig = new DB.table("guildConfig");
+
 
 export class customClient extends AkairoClient {
 	commandHandler: CommandHandler;
@@ -25,10 +29,22 @@ export class customClient extends AkairoClient {
 			blockBots: true,
 			blockClient: true,
 			commandUtil: true,
-			defaultCooldown: 3000,
+			defaultCooldown: 2500,
 			directory: join(__dirname, "../commands"),
 			handleEdits: true,
-			prefix: config.prefix,
+			prefix: (message: Message): string | string[] => {
+
+				if (message.guild) {
+					const prefix = guildConfig.get(`${message.guild?.id}.prefix`) as string | undefined;
+
+					if (!prefix) return config.prefix;
+
+					return prefix;
+				}
+				else {
+					return config.prefix;
+				}
+			},
 			fetchMembers: true,
 		});
 		this.listenerHandler = new ListenerHandler(this, {
@@ -37,6 +53,7 @@ export class customClient extends AkairoClient {
 		this.listenerHandler.setEmitters({
 			commandHandler: this.commandHandler,
 		});
+
 		this.commandHandler.useListenerHandler(this.listenerHandler);
 
 		this.listenerHandler.loadAll();
