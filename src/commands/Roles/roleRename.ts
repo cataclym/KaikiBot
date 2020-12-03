@@ -24,7 +24,7 @@ export default class RoleRenameCommand extends Command {
 					id: "name",
 					type: "string",
 					match: "rest",
-					otherwise: (msg: Message) => noArgGeneric(msg.util?.parsed?.command),
+					otherwise: (msg: Message) => noArgGeneric(msg),
 				},
 			],
 		});

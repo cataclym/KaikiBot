@@ -13,7 +13,7 @@ export default class ReloadCommand extends Command {
 				{
 					id: "command",
 					type: "command",
-					otherwise: (msg: Message) => noArgGeneric(msg.util?.parsed?.command),
+					otherwise: (msg: Message) => noArgGeneric(msg),
 				},
 			],
 		});

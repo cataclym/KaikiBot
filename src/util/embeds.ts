@@ -1,9 +1,8 @@
-import { config } from "../config";
 import { poems } from "../util/poems";
 import { MessageEmbed, Message, User } from "discord.js";
 import { errorColor, getMemberColorAsync } from "./Util";
 import db from "quick.db";
-import { Command } from "discord-akairo";
+import { Command, PrefixSupplier } from "discord-akairo";
 const Tinder = new db.table("Tinder");
 const tinderSlogan = ["Match?", "Chat?", "Date?", "Flirt?", "Text?", "Tease?", "Chat up?", "Take a risk?"];
 // Some cringe anime wedding pictures
@@ -14,16 +13,16 @@ const weddingImageArray = ["https://media.discordapp.net/attachments/71704505921
 // const characterRoles = ["Izuko Gaen", "Yozuru Kagenui", "Yotsugi Ononoki", "Ougi Oshino", "Senjougahara Hitagi", "Shinobu Oshino", "Nadeko Sengoku", "Mayoi Hachikuji",
 // 	"Hanekawa Tsubasa", "Sodachi Oikura", "‌‌Tsukihi Araragi", "Karen Araragi", "Suruga Kanbaru", "Meme Oshino", "Rouka Numachi", "Kaiki Deishu",
 // 	"‌‌Tooe Gaen", "Kiss-Shot Acerola-Orion Heart-Under-Blade", "Seiu Higasa"];
-const TinderHelp = new MessageEmbed()
+const TinderHelp = (msg: Message, cmd: Command): MessageEmbed => new MessageEmbed()
 	.setTitle("Tinder help page")
 	.addFields(
-		{ name: "Rolls and likes", value: "Using the main command (`" + config.prefix + "tinder`), costs a roll!\n" +
+		{ name: "Rolls and likes", value: "Using the main command (`" + (cmd.handler.prefix as PrefixSupplier)(msg) + "tinder`), costs a roll!\n" +
 				"If you decide to react with a 💚, you spend 1 like.\n" +
 				"If you react with a 🌟, you spend all your rolls and likes.", inline: true },
-		{ name: "How to marry", value: "You can only marry someone you are dating.\nMarrying is simple, type `" + config.prefix + "tinder marry @someone`\nThey will have to react with a ❤️, to complete the process!", inline: true },
-		{ name: "Check status", value: "You can check who you have liked, disliked and who you are currently dating as well as who you have married.\n`" + config.prefix + "tinder list` / `" + config.prefix + "tinder list dislikes`", inline: true },
+		{ name: "How to marry", value: "You can only marry someone you are dating.\nMarrying is simple, type\n`" + (cmd.handler.prefix as PrefixSupplier)(msg) + "tinder marry @someone`\nThey will have to react with a ❤️, to complete the process!", inline: true },
+		{ name: "Check status", value: "You can check who you have liked, disliked and who you are currently dating as well as who you have married.\n`" + (cmd.handler.prefix as PrefixSupplier)(msg) + "tinder list` / `" + (cmd.handler.prefix as PrefixSupplier)(msg) + "tinder list dislikes`", inline: true },
 		{ name: "Dislikes", value: "You have unlimited dislikes. You can never draw someone you have disliked.", inline: false },
-		{ name: "Manage your list", value: "You can remove dislikes/likes/dates and even divorce with\n`" + config.prefix + "tinder remove dislikes (user_list_nr)`. Obtain their number through the list.", inline: false },
+		{ name: "Manage your list", value: "You can remove dislikes/likes/dates and even divorce with\n`" + (cmd.handler.prefix as PrefixSupplier)(msg) + "tinder remove dislikes (user_list_nr)`. Obtain their number through the list.", inline: false },
 	)
 	.setColor("#31e387");
 
@@ -65,11 +64,27 @@ const noArgRole = new MessageEmbed({
 	description: "Can't find this role. Make sure you inputted it correctly.",
 });
 
-const noArgGeneric = (cmd: Command | undefined): MessageEmbed => new MessageEmbed({
-	color: errorColor,
-	description: "Please provide arguments.",
-	fields: [{ name: "Usage", value: (cmd?.description.usage ? `${config.prefix}${cmd.id} ${cmd.description.usage}` : "<any>") }],
-});
+const noArgGeneric = (message: Message): MessageEmbed => {
+	const cmd = message.util?.parsed?.command;
+	const prefix = (cmd?.handler.prefix as PrefixSupplier)(message);
+
+	let usage = cmd?.description.usage;
+
+	if (usage) {
+		if (usage instanceof Array) {
+			usage = usage.map(u => `${prefix}${cmd?.id} ${u}`).join("\n");
+		}
+		else {
+			usage = `${prefix}${cmd?.id} ${usage}`;
+		}
+	}
+
+	return new MessageEmbed({
+		color: errorColor,
+		description: "Please provide arguments.",
+		fields: [{ name: "Usage", value: (usage ? `${usage}` : "<any>") }],
+	});
+};
 
 const errorMessage = async (msg: string): Promise<MessageEmbed> => new MessageEmbed({
 	title: "Error",

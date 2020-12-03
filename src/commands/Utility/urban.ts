@@ -15,7 +15,7 @@ export default class UrbanDictCommand extends Command {
 				{
 					id: "term",
 					match: "rest",
-					otherwise: (msg: Message) => noArgGeneric(msg.util?.parsed?.command),
+					otherwise: (msg: Message) => noArgGeneric(msg),
 				},
 			],
 		});

@@ -15,7 +15,7 @@ export default class SetAvatarCommand extends Command {
 				{
 					id: "url",
 					type: "url",
-					otherwise: (msg: Message) => noArgGeneric(msg.util?.parsed?.command),
+					otherwise: (msg: Message) => noArgGeneric(msg),
 				},
 			],
 		});

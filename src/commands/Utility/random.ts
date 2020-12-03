@@ -1,5 +1,4 @@
 import { MessageEmbed } from "discord.js";
-import { config } from "../../config.js";
 import { Command } from "discord-akairo";
 import { Message } from "discord.js";
 import { getMemberColorAsync } from "../../util/Util.js";
@@ -8,7 +7,7 @@ module.exports = class RandomNumberCommand extends Command {
 	constructor() {
 		super("random", {
 			description:  {
-				usage: `1 10 or ${config.prefix}random 25`,
+				usage: ["1 10", "25"],
 				description: "Sends a random number between your two inputs.",
 			},
 			args: [{

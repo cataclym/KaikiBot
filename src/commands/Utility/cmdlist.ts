@@ -1,7 +1,5 @@
-import Discord from "discord.js";
-import { config } from "../../config";
-import { Command } from "discord-akairo";
-import { Message } from "discord.js";
+import { Command, PrefixSupplier } from "discord-akairo";
+import { Message, MessageEmbed } from "discord.js";
 import { getMemberColorAsync } from "../../util/Util.js";
 
 module.exports = class commandsList extends Command {
@@ -16,9 +14,9 @@ module.exports = class commandsList extends Command {
 		const AvUrl = await message.client.users.fetch("140788173885276160");
 		// Bot author
 		const color = await getMemberColorAsync(message);
-		const embed = new Discord.MessageEmbed({
+		const embed = new MessageEmbed({
 			title: "List of commands for Nadeko Sengoku",
-			description: `Prefix is currently set to \`${config.prefix}\`\n`,
+			description: `Prefix is currently set to \`${(this.handler.prefix as PrefixSupplier)(message)}\`\n`,
 			author: {
 				name: `Nadeko Sengoku Bot v${process.env.npm_package_version}`,
 				url: "https://gitlab.com/cataclym/nadekosengokubot",

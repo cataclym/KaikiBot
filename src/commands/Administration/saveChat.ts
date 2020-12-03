@@ -13,7 +13,7 @@ export default class SaveChatCommand extends Command {
 				{
 					id: "amount",
 					type: "integer",
-					otherwise: (msg: Message) => noArgGeneric(msg.util?.parsed?.command),
+					otherwise: (msg: Message) => noArgGeneric(msg),
 				},
 			],
 		});

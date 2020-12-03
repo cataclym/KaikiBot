@@ -1,6 +1,6 @@
 {
   "name": "nadekosengokubot",
-  "version": "3.3.31",
+  "version": "3.3.39-prfx",
   "main": "./dist/index.js",
   "scripts": {
     "test": "echo \"Bypass build\" && node ./dist/index.js",
@@ -14,7 +14,7 @@
     "@cataclym/discord.js-pagination-ts-nsb": "git+https://gitlab.com/cataclym/discord-js-pagination.git",
     "canvas": "^2.6.1",
     "discord-akairo": "^8.1.0",
-    "discord.js": "^12.4.1",
+    "discord.js": "^12.5.1",
     "image-size": "^0.9.3",
     "imagemin": "^6.0.0",
     "imagemin-gifsicle": "^6.0.1",

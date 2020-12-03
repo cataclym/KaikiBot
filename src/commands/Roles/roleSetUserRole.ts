@@ -1,4 +1,4 @@
-import { Command } from "discord-akairo";
+import { Command, PrefixSupplier } from "discord-akairo";
 import { GuildMember, MessageEmbed, Message, Role } from "discord.js";
 import { errorColor, getMemberColorAsync } from "../../util/Util";
 import DB from "quick.db";
@@ -16,9 +16,8 @@ export default class SetUserRoleCommand extends Command {
 			clientPermissions: ["MANAGE_ROLES"],
 			userPermissions: ["MANAGE_ROLES"],
 			prefix: (msg: Message) => {
-				const prefix = typeof msg.util?.handler.prefix === "string" ? [msg.util?.handler.prefix] : msg.util?.handler.prefix as string[];
-				prefix.push(";");
-				return prefix;
+				const p = (this.handler.prefix as PrefixSupplier)(msg);
+				return [p as string, ";"];
 			},
 			channel: "guild",
 			args: [

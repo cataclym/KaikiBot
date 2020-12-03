@@ -1,7 +1,6 @@
-import { Command } from "discord-akairo";
+import { Command, PrefixSupplier } from "discord-akairo";
 import { Guild } from "discord.js";
 import { MessageEmbed, Message } from "discord.js";
-import { config } from "../../config";
 
 export default class ServerInfoCommand extends Command {
 	constructor() {
@@ -38,7 +37,7 @@ export default class ServerInfoCommand extends Command {
 				{ name: "Roles", value: guild?.roles.cache.size, inline: true },
 				{ name: "Features", value: guild?.features.length ? guild?.features.join("\n") : "NONE", inline: true },
 				{ name: "Custom Emojis", value: "Count: **" + guild?.emojis.cache.size +
-                    "**\nSee them with `" + config.prefix + "emotecount`", inline: true },
+                    "**\nSee them with `" + (this.handler.prefix as PrefixSupplier)(message) + "emotecount`", inline: true },
 			],
 		});
 
