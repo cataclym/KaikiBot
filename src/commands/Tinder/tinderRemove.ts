@@ -1,7 +1,6 @@
-import { Argument, ArgumentOptions, Command, Flag } from "discord-akairo";
+import { Argument, ArgumentOptions, Command, Flag, PrefixSupplier } from "discord-akairo";
 import { Message } from "discord.js";
 import { MessageEmbed } from "discord.js";
-import { config } from "../../config";
 
 export default class TinderRemove extends Command {
 	constructor() {
@@ -16,7 +15,7 @@ export default class TinderRemove extends Command {
 				["tinderremovedates", "dates", "d", "dating", "date"],
 				["tinderremovemarries", "married", "marries", "spouses", "s", "m"],
 			],
-			otherwise: new MessageEmbed().setDescription("Provide a list to remove an item from: [`dislikes`, `likes`, `dates`, `marries`] \nExample: `" + config.prefix + "tinder remove dislikes 69`").setColor("#ff0000"),
+			otherwise: (message: Message) => new MessageEmbed().setDescription("Provide a list to remove an item from: [`dislikes`, `likes`, `dates`, `marries`] \nExample: `" + (this.handler.prefix as PrefixSupplier)(message) + "tinder remove dislikes 69`").setColor("#ff0000"),
 		};
 		if (!Argument.isFailure(method)) {return Flag.continue(method);}
 	}

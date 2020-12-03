@@ -2,13 +2,13 @@ import { Command } from "discord-akairo";
 import { Message } from "discord.js";
 import { TinderHelp } from "../../util/embeds";
 
-module.exports = class TinderHelpCommand extends Command {
+export default class TinderHelpCommand extends Command {
 	constructor() {
 		super("tinderhelp", {
 			aliases: ["tinderhelp"],
 		});
 	}
-	public async exec(message: Message) {
-		return message.util?.send(TinderHelp);
+	public async exec(message: Message): Promise<Message | void> {
+		return message.util?.send(TinderHelp(message, this));
 	}
-};
+}
