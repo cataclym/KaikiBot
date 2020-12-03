@@ -37,9 +37,9 @@ module.exports = class StatsCommand extends Command {
 			{ name: "Memory Usage", value: `${Math.round(process.memoryUsage().heapUsed / 1024 / 1024)}MB`, inline: true },
 			{ name: "Uptime", value: format(process.uptime()), inline: true },
 			{ name: "Users", value: message.client.users.cache.size, inline: true },
-			{ name: "Presence", value: "Guilds: " + guild.size +
-					"\nText channels: " + guild.map(g => g.channels.cache.filter(channel => (channel.type !== "voice") && channel.type !== "category").size).reduce((a, b) => a + b, 0) +
-				"\nVoice channels: " + guild.map(g => g.channels.cache.filter(channel => channel.type === "voice").size).reduce((a, b) => a + b, 0), inline: true },
+			{ name: "Presence", value: "Guilds: **" + guild.size +
+					"**\nText channels: **" + guild.map(g => g.channels.cache.filter(channel => (channel.type !== "voice") && channel.type !== "category").size).reduce((a, b) => a + b, 0) +
+				"**\nVoice channels: **" + guild.map(g => g.channels.cache.filter(channel => channel.type === "voice").size).reduce((a, b) => a + b, 0) + "**", inline: true },
 		]);
 
 		const embed2 = new MessageEmbed()
