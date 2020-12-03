@@ -1,10 +1,9 @@
-import { Command } from "discord-akairo";
-import { MessageEmbed } from "discord.js";
-import { Guild } from "discord.js";
-import { Message } from "discord.js";
+import { Command, PrefixSupplier } from "discord-akairo";
+import { Message, MessageEmbed, Guild } from "discord.js";
 import { errorColor, getMemberColorAsync, trim } from "../../util/Util";
 import DB from "quick.db";
 const userRoles = new DB.table("userRoles");
+
 export default class MyRoleCommand extends Command {
 	constructor() {
 		super("myrole", {
@@ -12,9 +11,8 @@ export default class MyRoleCommand extends Command {
 			clientPermissions: ["MANAGE_ROLES"],
 			channel: "guild",
 			prefix: (msg: Message) => {
-				const prefix = typeof msg.util?.handler.prefix === "string" ? [msg.util?.handler.prefix] : msg.util?.handler.prefix as string[];
-				prefix.push(";");
-				return prefix;
+				const p = (this.handler.prefix as PrefixSupplier)(msg);
+				return [p as string, ";"];
 			},
 			description: {
 				description: "Checks your assigned user role. Add a hexcode to change the colour.",
