@@ -2,6 +2,7 @@
 import { Command, Flag, Argument } from "discord-akairo";
 import { Message, MessageEmbed } from "discord.js";
 import db from "quick.db";
+import { noArgGeneric } from "../../util/embeds";
 import { config } from "../../config";
 import { getMemberColorAsync } from "../../util/Util";
 const guildConfig = new db.table("guildConfig");
@@ -12,7 +13,7 @@ export default class ConfigCommand extends Command {
 			aliases: ["config", "configure"],
 			description: {
 				description: "Configure guild specific settings",
-				usage: "dadbot enable",
+				usage: ["dadbot enable", "anniversary enable", "prefix !"],
 			},
 		});
 	}
@@ -30,6 +31,10 @@ export default class ConfigCommand extends Command {
 	}
 
 	public async exec(message: Message): Promise<Message | void> {
+
+		if (message.content.split(" ").length > 1) {
+			return message.channel.send(noArgGeneric(message));
+		}
 
 		const enabledDadBotGuilds = guildConfig.get("dadbot");
 		const enabledAnniversaryGuilds = guildConfig.get("anniversary");
