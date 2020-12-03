@@ -1,21 +1,9 @@
-import { Util, Message, MessageEmbed, User, Client, Guild } from "discord.js";
-import { getMemberColorAsync } from "./Util";
+import { Util, Message, Client, Guild } from "discord.js";
 import { config } from "../config";
 import db from "quick.db";
 const Tinder = new db.table("Tinder"), Emotes = new db.table("Emotes"), guildConfig = new db.table("guildConfig"), UserNickTable = new db.table("UserNickTable");
 const words = ["shit", "fuck", "stop", "dont", "kill", "don't", "don`t", "fucking", "shut", "shutup", "shuttup", "trash", "bad", "hate", "stupid", "dumb", "suck", "sucks"];
 
-// handle mentions
-async function handleMentions(message: Message): Promise<Message | void> {
-	if (message.mentions.has(message.client.user as User, { ignoreDirect: false, ignoreEveryone: true, ignoreRoles: true }) && !message.author.bot) {
-		const embed = new MessageEmbed({
-			title: `Hi ${message.author.username}, what's up?`,
-			description: `If you need help type ${config.prefix}help.`,
-			color: await getMemberColorAsync(message),
-		});
-		return message.channel.send(embed);
-	}
-}
 // dad bot
 async function dadBot(message: Message): Promise<void> {
 	for (const item of config.prefixes) {
@@ -158,6 +146,6 @@ function msToTime(duration: number): string {
 }
 
 export {
-	emoteReact, roleCheck, handleMentions, dadBot, UserNickTable, tiredNadekoReact,
+	emoteReact, roleCheck, dadBot, UserNickTable, tiredNadekoReact,
 	ResetRolls, DailyResetTimer, emoteDataBaseService, countEmotes, msToTime, timeToMidnight, startUp,
 };
