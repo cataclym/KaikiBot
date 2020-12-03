@@ -1,5 +1,5 @@
 import { Listener } from "discord-akairo";
-import { emoteReact, roleCheck, handleMentions, dadBot, tiredNadekoReact, countEmotes } from "../util/functions";
+import { emoteReact, roleCheck, dadBot, tiredNadekoReact, countEmotes } from "../util/functions";
 import { Message, MessageEmbed } from "discord.js";
 import db from "quick.db";
 import { config } from "../config";
@@ -26,7 +26,6 @@ export default class MessageListener extends Listener {
 		if (message.channel.type !== "dm") {
 			// Guild only
 			countEmotes(message);
-			handleMentions(message);
 			emoteReact(message);
 			if (enabledDadBotGuilds?.includes(message.guild?.id)) {
 				if (await roleCheck(message)) {
