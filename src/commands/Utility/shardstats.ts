@@ -1,7 +1,11 @@
 import { Command } from "discord-akairo";
-import { WebSocketShard } from "discord.js";
-import { Message } from "discord.js";
-const shardStats: any = {
+import { Message, WebSocketShard } from "discord.js";
+
+interface shards {
+	[state: number]: string,
+}
+
+const shardStats: shards = {
 	0: "READY",
 	1: "CONNECTING",
 	2: "RECONNECTING",
