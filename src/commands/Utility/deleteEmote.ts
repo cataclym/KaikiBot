@@ -17,7 +17,7 @@ export default class DeleteEmoteCommand extends Command {
 				id: "emotes",
 				match: "separate",
 				type: "emojis",
-				otherwise: (msg: Message) => noArgGeneric(msg.util?.parsed?.command),
+				otherwise: (msg: Message) => noArgGeneric(msg),
 			}],
 		});
 	}

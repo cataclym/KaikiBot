@@ -16,7 +16,7 @@ export default class RoleCreateCommand extends Command {
 					id: "name",
 					type: "string",
 					match: "rest",
-					otherwise: (msg: Message) => noArgGeneric(msg.util?.parsed?.command),
+					otherwise: (msg: Message) => noArgGeneric(msg),
 				},
 			],
 		});

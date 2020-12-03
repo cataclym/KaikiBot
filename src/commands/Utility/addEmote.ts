@@ -20,7 +20,7 @@ export default class AddEmoteCommand extends Command {
 				{
 					id: "url",
 					type: Argument.union(imgRegex, emoteRegex),
-					otherwise: (msg: Message) => noArgGeneric(msg.util?.parsed?.command),
+					otherwise: (msg: Message) => noArgGeneric(msg),
 				},
 				{
 					id: "name",
