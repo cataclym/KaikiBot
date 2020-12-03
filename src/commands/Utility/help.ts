@@ -23,9 +23,20 @@ export default class HelpCommand extends Command {
 			.setColor(await getMemberColorAsync(message));
 
 		if (command instanceof Command) {
+
+			let usage = command.description.usage;
+
+			if (usage) {
+				if (usage instanceof Array) {
+					usage = usage.map(u => `${prefix}${command.id} ${u}`).join("\n");
+				}
+				else {
+					usage = `${prefix}${command.id} ${usage}`;
+				}
+			}
 			embed.setTitle(`**Name:** ${command.id}`);
 			embed.setDescription(`**Aliases:** \`${command.aliases.join("`, `")}\`\n**Description:** ${(command.description.description || command.description)}\n
-			${(command?.description.usage ? "**Usage:** " + prefix + command.id + " " + command.description.usage : "")}`);
+			${(command?.description.usage ? `**Usage:** ${usage}` : "")}`);
 			command.userPermissions ? embed.addField("Requires", command.userPermissions, false) : null;
 			command.ownerOnly ? embed.addField("Owner only", "✅", false) : null;
 

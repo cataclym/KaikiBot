@@ -67,11 +67,22 @@ const noArgRole = new MessageEmbed({
 const noArgGeneric = (message: Message): MessageEmbed => {
 	const cmd = message.util?.parsed?.command;
 	const prefix = (cmd?.handler.prefix as PrefixSupplier)(message);
-	Promise.resolve(prefix);
+
+	let usage = cmd?.description.usage;
+
+	if (usage) {
+		if (usage instanceof Array) {
+			usage = usage.map(u => `${prefix}${cmd?.id} ${u}`).join("\n");
+		}
+		else {
+			usage = `${prefix}${cmd?.id} ${usage}`;
+		}
+	}
+
 	return new MessageEmbed({
 		color: errorColor,
 		description: "Please provide arguments.",
-		fields: [{ name: "Usage", value: (cmd?.description.usage && prefix ? `${prefix}${cmd.id} ${cmd.description.usage}` : "<any>") }],
+		fields: [{ name: "Usage", value: (usage ? `${usage}` : "<any>") }],
 	});
 };
 
