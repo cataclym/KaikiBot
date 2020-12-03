@@ -11,7 +11,7 @@ module.exports = class TodoCommand extends Command {
 			aliases: ["todo", "note"],
 			description: {
 				description: "A personal todo list",
-				usage: ["*", "add make cake 07/07/2020", "remove 5", "remove last", "remove first", "todo remove all"],
+				usage: ["", "add make cake 07/07/2020", "remove 5", "remove last", "remove first", "todo remove all"],
 			},
 		});
 	}
