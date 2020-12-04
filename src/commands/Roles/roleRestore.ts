@@ -10,6 +10,7 @@ export default class RestoreUserRoles extends Command {
 			aliases: ["restore"],
 			userPermissions: ["ADMINISTRATOR", "MANAGE_ROLES"],
 			description: { description: "Restores roles for a user who has previously left the server.", usage: "@dreb" },
+			channel: "guild",
 			args: [
 				{
 					id: "member",
