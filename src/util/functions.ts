@@ -1,39 +1,14 @@
-import { Util, Message, Client, Guild } from "discord.js";
+import { Message, Client, Guild } from "discord.js";
 import { config } from "../config";
 import db from "quick.db";
 const Tinder = new db.table("Tinder"), Emotes = new db.table("Emotes"), guildConfig = new db.table("guildConfig"), UserNickTable = new db.table("UserNickTable");
 const words = ["shit", "fuck", "stop", "dont", "kill", "don't", "don`t", "fucking", "shut", "shutup", "shuttup", "trash", "bad", "hate", "stupid", "dumb", "suck", "sucks"];
 
-// dad bot
-async function dadBot(message: Message): Promise<void> {
-	for (const item of config.prefixes) {
-		const r = new RegExp(`(^|\\s|$)(?<statement>(?<prefix>${item})\\s*(?<nickname>.*)$)`, "mi");
-		if (r.test(message.content) && !message.author.bot && !message.content.includes("||")) {
-			const match = message.content.match(r)?.groups;
-			if (match?.nickname) {
-				// Strict null check
-				if (match.nickname.length <= 256) {
-					message.channel.send(`Hi, ${Util.removeMentions(match.nickname)}`);
-					// In case of roles being mentionable.
-					const owner = message.guild?.owner;
-					if (match.nickname.length <= 32) {
-						const guildMember = message.author;
-						UserNickTable.push(`usernicknames.${guildMember.id}`, match.nickname);
-						if (guildMember.id !== owner?.id) {
-						// Avoids setting nickname on Server owners
-							await message.member?.setNickname(match.nickname);
-						}
-					}
-				}
-			}
-			break;
-		}
-	}
-}
 // check for special role
-async function roleCheck(message: Message): Promise<boolean> {
+function roleCheck(message: Message): boolean {
 	return !message.member?.roles.cache.find((r) => r.name === config.names);
 }
+
 // Reacts with emote to specified words
 async function emoteReact(message: Message): Promise<void> {
 	const keywords = message.content.toLowerCase().split(" ");
@@ -47,6 +22,7 @@ async function emoteReact(message: Message): Promise<void> {
 		}
 	});
 }
+
 const index = {
 	i: 0,
 };
@@ -68,6 +44,7 @@ async function tiredNadekoReact(message: Message): Promise<void> {
 		}
 	}
 }
+
 async function ResetRolls(): Promise<void> {
 	// Tinder reset
 	const likes = Tinder.get("likes");
@@ -78,16 +55,19 @@ async function ResetRolls(): Promise<void> {
 	}
 	console.log("🟦 resetRolls | Rolls and likes have been reset | " + Date() + "\n");
 }
+
 async function DailyResetTimer(): Promise<void> {
 	setTimeout(async () => {
 		ResetRolls();
 		DailyResetTimer();
 	}, timeToMidnight());
 }
+
 function timeToMidnight(): number {
 	const d = new Date();
 	return (-d + d.setHours(24, 0, 0, 0));
 }
+
 async function emoteDataBaseService(input: Client | Guild): Promise<void> {
 	console.log("🟦 emoteDataBaseService | Checking for new emotes-");
 	let i = 0;
@@ -100,6 +80,7 @@ async function emoteDataBaseService(input: Client | Guild): Promise<void> {
 			});
 		});
 	}
+
 	else if (input instanceof Guild) {
 		input.emojis.cache.forEach(emote => {
 			if (!Emotes.has(`${input.id}.${emote.id}`)) {
@@ -132,6 +113,7 @@ async function countEmotes(message: Message): Promise<void> {
 		});
 	}
 }
+
 function msToTime(duration: number): string {
 	const milliseconds: number = Math.floor((duration % 1000) / 100);
 	let seconds: number | string = Math.floor((duration / 1000) % 60),
@@ -146,6 +128,6 @@ function msToTime(duration: number): string {
 }
 
 export {
-	emoteReact, roleCheck, dadBot, UserNickTable, tiredNadekoReact,
+	emoteReact, roleCheck, UserNickTable, tiredNadekoReact,
 	ResetRolls, DailyResetTimer, emoteDataBaseService, countEmotes, msToTime, timeToMidnight, startUp,
 };

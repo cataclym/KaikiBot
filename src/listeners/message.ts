@@ -1,14 +1,9 @@
 import { Listener } from "discord-akairo";
-import { emoteReact, roleCheck, dadBot, tiredNadekoReact, countEmotes } from "../util/functions";
+import { emoteReact, tiredNadekoReact, countEmotes } from "../util/functions";
 import { Message, MessageEmbed } from "discord.js";
-import db from "quick.db";
 import { config } from "../config";
 import { standardColor } from "../util/Util";
-const guildConfig = new db.table("guildConfig");
-let enabledDadBotGuilds = guildConfig.get("dadbot");
-export async function updateVar(value: string[]): Promise<void> {
-	enabledDadBotGuilds = value;
-}
+
 export default class MessageListener extends Listener {
 	constructor() {
 		super("message", {
@@ -27,11 +22,6 @@ export default class MessageListener extends Listener {
 			// Guild only
 			countEmotes(message);
 			emoteReact(message);
-			if (enabledDadBotGuilds?.includes(message.guild?.id)) {
-				if (await roleCheck(message)) {
-					dadBot(message);
-				}
-			}
 		}
 		else {
 			// I wont wanna see my own msgs, thank u
