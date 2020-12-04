@@ -4,9 +4,7 @@ import { Command, PrefixSupplier } from "discord-akairo";
 
 export default class MentionCommand extends Command {
 	constructor() {
-		super("mention", {
-			category: "etc",
-		});
+		super("mention");
 	}
 
 	condition(msg: Message): boolean {

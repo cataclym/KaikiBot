@@ -49,7 +49,7 @@ async function birthdayService(client: Client): Promise<void> {
 	console.timeEnd("Anniversary roles");
 
 	// What a long line
-	console.log(`🟦 Cake Day:${ListUserCreatedAt.length ? " Users added: " + ListUserCreatedAt.join(", ") : " No users were added to Cake Day."}\n🟦 Join Anniversary:${ListUserJoinedAt.length ? " Users added: " + ListUserJoinedAt.join(", ") : " No users were added to Join Anniversary."}`);
+	console.log(`🟦 Cake Day | ${ListUserCreatedAt.length ? " Users added: " + ListUserCreatedAt.join(", ") : " No users were added to Cake Day."}\n🟦 Join Anniversary | ${ListUserJoinedAt.length ? " Users added: " + ListUserJoinedAt.join(", ") : " No users were added to Join Anniversary."}`);
 	console.log("🟩 birthdayService | Finished checking dates!");
 	ListUserJoinedAt = [],
 	ListUserCreatedAt = [];

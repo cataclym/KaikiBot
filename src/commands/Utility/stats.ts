@@ -24,7 +24,7 @@ module.exports = class StatsCommand extends Command {
 	public async exec(message: Message) {
 
 		const color = await getMemberColorAsync(message);
-		const pages = [];
+
 		const guild = this.client.guilds.cache;
 		const embed = new MessageEmbed();
 		embed.setColor(color);
@@ -48,7 +48,7 @@ module.exports = class StatsCommand extends Command {
 		for (const [key, value] of Object.entries(process.resourceUsage())) {
 			embed2.addField(key, value, true);
 		}
-		pages.push(embed, embed2);
+		const pages = [embed, embed2];
 		await Promise.resolve(pages);
 		return editMessageWithPaginatedEmbeds(message, pages, {});
 	}
