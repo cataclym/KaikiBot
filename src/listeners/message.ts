@@ -2,7 +2,7 @@ import { Listener } from "discord-akairo";
 import { emoteReact, tiredNadekoReact, countEmotes } from "../util/functions";
 import { Message, MessageEmbed } from "discord.js";
 import { config } from "../config";
-import { standardColor } from "../util/Util";
+import { standardColor, trim } from "../util/Util";
 
 export default class MessageListener extends Listener {
 	constructor() {
@@ -32,10 +32,20 @@ export default class MessageListener extends Listener {
 			const embed = new MessageEmbed({
 				color: standardColor,
 				author: { name: message.author.tag },
-				description: message.content.substring(0, 2048),
+				description: trim(message.content, 2048),
 			});
 
-			message.attachments.first()?.url ? embed.setImage(message.attachments.first()?.url as string).setTitle(message.attachments.first()?.url as string) : null;
+			const attachments = message.attachments;
+
+			if (attachments.first()?.url) {
+
+				embed.setImage(attachments.first()?.url as string).setTitle(attachments.first()?.url as string);
+
+				const urls: string[] = attachments.map(a => a.url);
+
+				embed.setFooter(urls.join("\n"));
+
+			}
 
 			return this.client.users.cache.get(config.ownerID)?.send(embed);
 		}
