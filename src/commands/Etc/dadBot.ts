@@ -4,12 +4,6 @@ import { config } from "../../config";
 import { roleCheck } from "../../util/functions";
 import db from "quick.db";
 const UserNickTable = new db.table("UserNickTable");
-const guildConfig = new db.table("guildConfig");
-
-let enabledDadBotGuilds = guildConfig.get("dadbot");
-export async function updateVar(value: string[]): Promise<void> {
-	enabledDadBotGuilds = value;
-}
 
 type nickT = {
     [key: string]: string;
@@ -26,7 +20,8 @@ export default class dadBot extends Command {
 
 	condition(message: Message): boolean {
 
-		if (enabledDadBotGuilds?.includes(message.guild?.id)) {
+		// if (enabledDadBotGuilds?.includes(message.guild?.id)) {
+		if (message.guild?.isDadBotEnabled()) {
 			if (roleCheck(message)) {
 				for (const item of config.prefixes) {
 
