@@ -3,7 +3,7 @@ import { Message, MessageEmbed } from "discord.js";
 import db from "quick.db";
 import { getMemberColorAsync } from "../../util/Util.js";
 const guildConfig = new db.table("guildConfig");
-import { updateVar } from "../Etc/dadBot";
+import { updateVar } from "../../Extensions/Guild";
 import { noArgGeneric } from "../../util/embeds.js";
 
 module.exports = class DadBotConfigCommand extends Command {

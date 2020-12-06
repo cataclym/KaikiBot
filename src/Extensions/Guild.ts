@@ -9,12 +9,12 @@ export async function updateVar(value: string[]): Promise<void> {
 
 declare module "discord.js" {
     export interface Guild {
-        isDadBotEnabled(d?: Guild): boolean;
+        isDadBotEnabled(): boolean;
     }
 }
 
 import { Guild } from "discord.js";
 
-Guild.prototype.isDadBotEnabled = (d = this): boolean => {
-	return enabledDadBotGuilds?.includes(d?.id);
+Guild.prototype.isDadBotEnabled = function() {
+	return enabledDadBotGuilds?.includes(this.id);
 };
