@@ -1,7 +1,6 @@
 import { Command } from "discord-akairo";
 import { GuildMember, Message, Util } from "discord.js";
 import { config } from "../../config";
-import { roleCheck } from "../../util/functions";
 import db from "quick.db";
 const UserNickTable = new db.table("UserNickTable");
 
@@ -20,19 +19,16 @@ export default class dadBot extends Command {
 
 	condition(message: Message): boolean {
 
-		// if (enabledDadBotGuilds?.includes(message.guild?.id)) {
-		if (message.guild?.isDadBotEnabled()) {
-			if (roleCheck(message)) {
-				for (const item of config.prefixes) {
+		if (message.guild?.isDadBotEnabled() && message.member?.hasExcludedRole()) {
+			for (const item of config.prefixes) {
 
-					const r = new RegExp(`(^|\\s|$)(?<statement>(?<prefix>${item})\\s*(?<nickname>.*)$)`, "mi");
+				const r = new RegExp(`(^|\\s|$)(?<statement>(?<prefix>${item})\\s*(?<nickname>.*)$)`, "mi");
 
-					if (r.test(message.content) && !message.author.bot && !message.content.includes("||")) {
+				if (r.test(message.content) && !message.author.bot && !message.content.includes("||")) {
 
-						const match = message.content.match(r)?.groups;
-						nick = match;
-						return (match?.nickname ? true : false);
-					}
+					const match = message.content.match(r)?.groups;
+					nick = match;
+					return (match?.nickname ? true : false);
 				}
 			}
 		}
