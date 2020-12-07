@@ -3,6 +3,7 @@ import { Client, Guild, GuildMember, Role } from "discord.js";
 import db from "quick.db";
 const guildConfig = new db.table("guildConfig");
 import { timeToMidnight } from "./functions";
+import { logger } from "./logger";
 const RoleNameJoin = "Join Anniversary",
 	RoleNameCreated = "Cake Day";
 
@@ -21,9 +22,6 @@ async function birthdayService(client: Client): Promise<void> {
 
 	const enabledGuilds = guildConfig.get("anniversary");
 
-	console.time("Anniversary roles");
-	console.log("🟦 birthdayService | Checking dates-");
-
 	const { Day, Month } = await DateObject();
 
 	await Promise.all(client.guilds.cache.map(async (guild) => {
@@ -41,16 +39,15 @@ async function birthdayService(client: Client): Promise<void> {
 				}));
 			}
 			else {
-				return console.log(guild.name + " can't add anniversary roles due to missing permissions: 'MANAGE_ROLES'");
+				return logger.medium(`${guild.name} [${guild.id}] | can't add anniversary roles due to missing permissions: 'MANAGE_ROLES'`);
 			}
 		}
 	}));
 	await Promise.all([ListUserCreatedAt, ListUserJoinedAt]);
-	console.timeEnd("Anniversary roles");
 
 	// What a long line
-	console.log(`🟦 Cake Day | ${ListUserCreatedAt.length ? " Users added: " + ListUserCreatedAt.join(", ") : " No users were added to Cake Day."}\n🟦 Join Anniversary | ${ListUserJoinedAt.length ? " Users added: " + ListUserJoinedAt.join(", ") : " No users were added to Join Anniversary."}`);
-	console.log("🟩 birthdayService | Finished checking dates!");
+	logger.info(`Cake Day | ${ListUserCreatedAt.length ? " Users added: " + ListUserCreatedAt.join(", ") : " No users were added to Cake Day."}\nJoin Anniversary | ${ListUserJoinedAt.length ? " Users added: " + ListUserJoinedAt.join(", ") : " No users were added to Join Anniversary."}`);
+	logger.low("birthdayService | Finished checking dates!");
 	ListUserJoinedAt = [],
 	ListUserCreatedAt = [];
 	setTimeout(async () => {
@@ -60,7 +57,7 @@ async function birthdayService(client: Client): Promise<void> {
 
 async function GuildOnAddBirthdays(guild: Guild): Promise<void> {
 	const enabledGuilds = guildConfig.get("anniversary");
-	console.log("🟦 birthdayService | Checking new user!");
+	logger.info("birthdayService | Checking new user!");
 	const { Day, Month } = await DateObject();
 	if (enabledGuilds.includes(guild.id)) {
 		if (guild.me?.hasPermission("MANAGE_ROLES")) {
@@ -74,7 +71,7 @@ async function GuildOnAddBirthdays(guild: Guild): Promise<void> {
 			}));
 		}
 		else {
-			return console.log(guild.name + " can't add anniversary roles due to missing permissions: 'MANAGE_ROLES'");
+			return logger.medium(`${guild.name} [${guild.id}] | can't add anniversary roles due to missing permissions: 'MANAGE_ROLES'`);
 		}
 	}
 }
@@ -84,13 +81,13 @@ async function GuildCheckRolesExist(guild: Guild): Promise<Role[] | unknown[]> {
 		guild.roles.create({
 			data: { name: RoleNameJoin },
 			reason: "Role didn't exist yet",
-		}).catch(err => console.log(err));
+		}).catch(err => logger.high(err));
 	}
 	if (!guild.roles.cache.some(r => r.name === RoleNameCreated)) {
 		guild.roles.create({
 			data: { name: RoleNameCreated },
 			reason: "Role didn't exist yet",
-		}).catch(err => console.log(err));
+		}).catch(err => logger.high(err));
 	}
 	const AnniversaryRoleJ = guild.roles.cache.find((r => r.name === RoleNameJoin));
 	const AnniversaryRoleC = guild.roles.cache.find((r => r.name === RoleNameCreated));

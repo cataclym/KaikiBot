@@ -3,6 +3,7 @@ import { birthdayService } from "../util/AnniversaryRoles";
 import { tinderStartupService } from "../util/tinder";
 import { DailyResetTimer, emoteDataBaseService, startUp } from "../util/functions";
 import { config } from "../config";
+import { logger } from "../util/logger";
 
 export default class ReadyListener extends Listener {
 	constructor() {
@@ -19,20 +20,32 @@ export default class ReadyListener extends Listener {
 		}
 
 		await this.client.user?.setActivity(config.activityName, { type: config.activityStatus }).then(r => {
-			console.log(`🟦 Client ready | Status: ${r.status}`);
+			logger.info(`Client ready | Status: ${r.status}`);
 		});
 
-		await startUp();
+		await startUp().then(() => {
+			logger.low("emoteDataBaseService | Startup finished.");
+		});
+
 		await DailyResetTimer().then(() => {
-			console.log("🟩 Reset timer initiated.");
+			logger.low("Reset timer initiated.");
 		});
 
-		emoteDataBaseService(this.client);
-		birthdayService(this.client);
+		logger.info("emoteDataBaseService | Checking for new emotes-");
+		emoteDataBaseService(this.client).then((i) => {
+			logger.low("emoteDataBaseService | ...done! " + (i ?? 0) + " new emotes added!");
+		});
+
+		logger.info("birthdayService | Checking dates-");
+		birthdayService(this.client).then(() => {
+			logger.low();
+		});
 
 		// This will spam Console on first boot.
 		if (this.client.user) {
-			await tinderStartupService(this.client.user);
+			await tinderStartupService(this.client.user).then((i) => {
+				logger.low(`tinderStartupService | Tinder has completed startup procedure. | ${i} users registered in Tinder DB`);
+			});
 		}
 
 		// Let myself know when my bot goes online.

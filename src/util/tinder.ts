@@ -5,6 +5,7 @@ import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-
 import { MessageEmbed, Message, User, Guild } from "discord.js";
 // import Canvas from "jimp";
 import { getMemberColorAsync } from "./Util";
+import { logger } from "./logger";
 // const userStates: any = {
 // 	"online" : "#00FF00",
 // 	"offline" : "#6E0DD0",
@@ -15,14 +16,14 @@ import { getMemberColorAsync } from "./Util";
 // function TinderProfile(message) {
 // 	//...
 // }
-async function tinderStartupService(message: Message | User | Guild): Promise<void> {
+async function tinderStartupService(message: Message | User | Guild): Promise<number> {
 	// This will spam the console from TinderDBService sadly // Edit: fixed it somewhat.
 	let i = 0;
 	message.client.users.cache.forEach(user => {
 		TinderDBService(user);
 		i++;
 	});
-	console.log("🟩 tinderStartupService | Tinder has completed startup procedure. | " + i + " users registered in Tinder DB");
+	return i;
 }
 async function TinderDBService(user: User): Promise<void> {
 	// This is the peak of JS
@@ -52,7 +53,7 @@ async function TinderDBService(user: User): Promise<void> {
 		i++;
 	}
 	if (i > 0) {
-		console.log("🟦 tinderStartupService | Checking " + user?.username + " | Ran " + i + " changes.");
+		logger.low("tinderStartupService | Checking " + user?.username + " | Ran " + i + " changes.");
 	}
 }
 function NoLikes(): string {
