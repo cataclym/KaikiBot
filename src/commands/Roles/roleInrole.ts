@@ -2,7 +2,7 @@ import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-
 import { Command } from "discord-akairo";
 import { GuildMember } from "discord.js";
 import { Role, MessageEmbed, Message } from "discord.js";
-import { errorColor, getMemberColorAsync } from "../../util/Util";
+import { errorColor } from "../../util/Util";
 
 export default class RoleInRoleCommand extends Command {
 	constructor() {
@@ -35,7 +35,7 @@ export default class RoleInRoleCommand extends Command {
 				const emb = new MessageEmbed()
 					.setTitle(`Users in ${role.name} (${data.length})`)
 					.setAuthor(message.guild?.name)
-					.setColor(await getMemberColorAsync(message))
+					.setColor(await (message.member as GuildMember).getMemberColorAsync())
 					// .setDescription(data.slice(p, i).join(", "))
 					.addFields([
 						{ name: "•", value: currentPageUsers.slice(0, 20).map(u => `${u.user} - ${u.user.username}`).join("\n"), inline: true },

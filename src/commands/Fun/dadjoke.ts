@@ -1,6 +1,6 @@
-import { getMemberColorAsync, trim } from "../../util/Util";
+import { trim } from "../../util/Util";
 import fetch from "node-fetch";
-import { MessageEmbed, Message } from "discord.js";
+import { GuildMember, MessageEmbed, Message } from "discord.js";
 import { Command } from "discord-akairo";
 import { ChildrenEntity, Data1 } from "../../struct/redditModel";
 
@@ -32,7 +32,7 @@ export default class DadJokeCommand extends Command {
 			const embed: MessageEmbed = new MessageEmbed({
 				title: trim(randomRedditPost.title, 256),
 				description: trim(randomRedditPost.selftext, 2048),
-				color: await getMemberColorAsync(message),
+				color: await (message.member as GuildMember).getMemberColorAsync(),
 				author: {
 					name: `Submitted by ${randomRedditPost.author}`,
 				},

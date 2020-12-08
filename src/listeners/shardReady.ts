@@ -1,4 +1,5 @@
 import { Listener } from "discord-akairo";
+import { logger } from "../util/logger";
 
 export default class ShardReadyListener extends Listener {
 	constructor() {
@@ -12,7 +13,7 @@ export default class ShardReadyListener extends Listener {
 	public async exec(id: number, unavailableGuilds: Set<string> | undefined): Promise<void> {
 		const arr: string[] = [];
 		unavailableGuilds?.forEach((guild) => arr.push(guild));
-		console.log(`🟩 shardReady | Shard: ${id}${unavailableGuilds ? `\nUnavailable guilds: ${arr.join(", ")}` : ""}`);
+		logger.low(`shardReady | Shard: ${id}${unavailableGuilds ? `\nUnavailable guilds: ${arr.join(", ")}` : ""}`);
 
 	}
 }

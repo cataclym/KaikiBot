@@ -1,10 +1,7 @@
-import { MessageEmbed, Message } from "discord.js";
+import { GuildMember, MessageEmbed, Message, User } from "discord.js";
 import { UserNickTable } from "../../util/functions";
-import { config } from "../../config";
 import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
 import { Command } from "discord-akairo";
-import { getMemberColorAsync } from "../../util/Util";
-import { User } from "discord.js";
 const arr = ["remove", "rem", "delete", "del"];
 
 module.exports = class NamesCommand extends Command {
@@ -32,7 +29,7 @@ module.exports = class NamesCommand extends Command {
 	}
 
 	public async exec(message: Message, { method, unionUser }: { method: boolean, unionUser: User}) {
-		const color = await getMemberColorAsync(message);
+		const color = await (message.member as GuildMember).getMemberColorAsync();
 		const user = unionUser || message.author;
 		// I hate this
 		// ??????????? // Guess this works.

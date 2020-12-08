@@ -8,6 +8,7 @@ export default class RoleInfoCommand extends Command {
 		super("roleinfo", {
 			aliases: ["roleinfo", "role", "rinfo"],
 			description: { description: "Shows info about a given role. If no role is supplied, it defaults to current one.", usage: "@Gamers" },
+			channel: "guild",
 			args: [
 				{
 					id: "role",

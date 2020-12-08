@@ -1,6 +1,5 @@
-import { GuildEmoji, Message, MessageEmbed } from "discord.js";
-import { errorColor, getMemberColorAsync, trim } from "../../util/Util";
-import { Collection } from "discord.js";
+import { Collection, GuildMember, GuildEmoji, Message, MessageEmbed } from "discord.js";
+import { errorColor, trim } from "../../util/Util";
 import { Command } from "discord-akairo";
 import { noArgGeneric } from "../../util/embeds";
 const timer = (ms: number) => new Promise(res => setTimeout(res, ms));
@@ -55,7 +54,7 @@ export default class DeleteEmoteCommand extends Command {
 
 			return message.channel.send(new MessageEmbed({
 				title: "Success!",
-				color: await getMemberColorAsync(message),
+				color: await (message.member as GuildMember).getMemberColorAsync(),
 				description: `Deleted:\n${trim(emotes.map((es) => es.map((e) => e)).join("\n"), 2048)}`,
 			}));
 		})();

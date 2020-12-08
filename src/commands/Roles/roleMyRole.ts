@@ -1,6 +1,6 @@
 import { Command, PrefixSupplier } from "discord-akairo";
-import { Message, MessageEmbed, Guild } from "discord.js";
-import { errorColor, getMemberColorAsync, trim } from "../../util/Util";
+import { GuildMember, Message, MessageEmbed, Guild } from "discord.js";
+import { errorColor, trim } from "../../util/Util";
 import DB from "quick.db";
 const userRoles = new DB.table("userRoles");
 
@@ -44,7 +44,7 @@ export default class MyRoleCommand extends Command {
 
 		const embedSuccess = async (text: string) => {
 			return new MessageEmbed()
-				.setColor(await getMemberColorAsync(message))
+				.setColor(await (message.member as GuildMember).getMemberColorAsync())
 				.setDescription(text);
 		};
 

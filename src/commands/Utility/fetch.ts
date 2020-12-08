@@ -1,7 +1,6 @@
 import { Argument, Command } from "discord-akairo";
-import { User } from "discord.js";
-import { MessageEmbed, Message } from "discord.js";
-import { getMemberColorAsync, flags } from "../../util/Util";
+import { GuildMember, MessageEmbed, Message, User } from "discord.js";
+import { flags } from "../../util/Util";
 
 
 export default class FetchUserCommand extends Command {
@@ -36,7 +35,7 @@ export default class FetchUserCommand extends Command {
 		}
 
 		const userFlags = userObject.flags ? userObject.flags.toArray() : [];
-		const color = await getMemberColorAsync(message);
+		const color = await (message.member as GuildMember).getMemberColorAsync();
 
 		const embed = new MessageEmbed()
 			.setColor(color)

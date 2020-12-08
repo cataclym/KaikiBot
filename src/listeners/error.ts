@@ -1,7 +1,9 @@
+/* eslint-disable indent */
 import { Command, Listener } from "discord-akairo";
 import { Message } from "discord.js";
+import { logger } from "../util/logger";
 
-module.exports = class errorListener extends Listener {
+export default class errorListener extends Listener {
 	constructor() {
 		super("error", {
 			event: "error",
@@ -9,11 +11,11 @@ module.exports = class errorListener extends Listener {
 		});
 	}
 
-	public async exec(error: Error, message: Message, command: Command) {
+	public async exec(error: Error, message: Message, command: Command): Promise<void> {
+		const date = new Date().toLocaleString("en-GB", { hour: "2-digit", minute: "2-digit", second: "2-digit", weekday: "short", year: "numeric", month: "numeric", day: "numeric" });
+
 		if (message.channel.type !== "dm") {
-			const date = new Date().toLocaleString("en-GB", { hour: "2-digit", minute: "2-digit", second: "2-digit", weekday: "short", year: "numeric", month: "numeric", day: "numeric" });
-			console.warn(
-				// eslint-disable-next-line
+			logger.high(
 	`🔴	${date} CommandFinished | ${Date.now() - message.createdTimestamp}ms
 	Guild: ${message.guild?.name} [${message.guild?.id}]
 	Channel: #${message.channel.name} [${message.channel.id}]
@@ -21,6 +23,14 @@ module.exports = class errorListener extends Listener {
 	Executed ${command?.id} | "${message.content}"\n` +
 	`🔴 ${error.stack}`);
 		}
+		else {
+			logger.high(
+	`🔴	${date} CommandFinished | ${Date.now() - message.createdTimestamp}ms
+	Channel: PRIVATE [${message.channel.id}]
+	User: ${message.author.username} [${message.author.id}]
+	Executed ${command?.id} | "${message.content}"\n` +
+	`🔴 ${error.stack}`);
+		}
 	}
-};
+}
 

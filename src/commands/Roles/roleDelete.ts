@@ -1,7 +1,7 @@
 import { Command } from "discord-akairo";
-import { Collection, Role, Message, MessageEmbed } from "discord.js";
+import { Collection, GuildMember, Role, Message, MessageEmbed } from "discord.js";
 import { noArgRole } from "../../util/embeds";
-import { errorColor, getMemberColorAsync } from "../../util/Util";
+import { errorColor } from "../../util/Util";
 const embed = new MessageEmbed({
 	color: errorColor,
 	description: "Couldn't delete roles!",
@@ -28,30 +28,52 @@ export default class RoleDeleteCommand extends Command {
 
 	public async exec(message: Message, { roles }: { roles: Collection<string, Role>[]}): Promise<Message> {
 
+		const deletedRoles: string[] = [];
+		const otherRoles: string[] = [];
+
 		const every = roles.every(async (collection) => {
 
 			const role = collection.map((r) => r)[0];
 
-			const dr = await role.delete().then(() => {
-				return Promise.resolve(true);
-			});
+			if ((role.position < (message.member as GuildMember).roles.highest.position) && !role.managed) {
 
-			if (dr.valueOf()) {
-				return true;
+				const dr = await role.delete().then((r) => {
+					if (r.deleted) {
+						deletedRoles.push(r.name);
+						return Promise.resolve(true);
+					}
+				});
+
+				if (dr?.valueOf()) {
+					return true;
+				}
+				else {
+					return message.channel.send(embed) && false;
+				}
 			}
 			else {
-				return message.channel.send(embed) && false;
+				// Pass even if role wasnt deleted
+				// Because it was a hierarchy fail
+				// These roles get summarized at the end, if they happen
+				return otherRoles.push(role.name) && true;
 			}
 		});
 
 		await Promise.all([every]);
 
-		if (every.valueOf()) {
+		if (otherRoles.length > 0) {
 			return message.channel.send(new MessageEmbed({
-				color: await getMemberColorAsync(message),
+				color: errorColor,
+				description: `Role(s) \`${otherRoles.join("`, `")}\` could not be deleted due to insufficient permissions.`,
+			}));
+		}
+		else if (every.valueOf()) {
+			return message.channel.send(new MessageEmbed({
+				color: await (message.member as GuildMember).getMemberColorAsync(),
 				description: `Deleted: ${roles.map(coll => coll.map(role => role.name)).join(", ")}`,
 			}));
 		}
+
 		else {
 			return message.channel.send(embed);
 		}

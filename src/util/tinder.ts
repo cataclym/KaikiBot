@@ -2,9 +2,10 @@ import db from "quick.db";
 const Tinder = new db.table("Tinder");
 import { timeToMidnight, msToTime } from "./functions";
 import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
-import { MessageEmbed, Message, User, Guild } from "discord.js";
+import { MessageEmbed, Message, User, Guild, GuildMember } from "discord.js";
 // import Canvas from "jimp";
-import { getMemberColorAsync } from "./Util";
+import { logger } from "./logger";
+
 // const userStates: any = {
 // 	"online" : "#00FF00",
 // 	"offline" : "#6E0DD0",
@@ -15,14 +16,14 @@ import { getMemberColorAsync } from "./Util";
 // function TinderProfile(message) {
 // 	//...
 // }
-async function tinderStartupService(message: Message | User | Guild): Promise<void> {
+async function tinderStartupService(message: Message | User | Guild): Promise<number> {
 	// This will spam the console from TinderDBService sadly // Edit: fixed it somewhat.
 	let i = 0;
 	message.client.users.cache.forEach(user => {
 		TinderDBService(user);
 		i++;
 	});
-	console.log("🟩 tinderStartupService | Tinder has completed startup procedure. | " + i + " users registered in Tinder DB");
+	return i;
 }
 async function TinderDBService(user: User): Promise<void> {
 	// This is the peak of JS
@@ -52,7 +53,7 @@ async function TinderDBService(user: User): Promise<void> {
 		i++;
 	}
 	if (i > 0) {
-		console.log("🟦 tinderStartupService | Checking " + user?.username + " | Ran " + i + " changes.");
+		logger.low("tinderStartupService | Checking " + user?.username + " | Ran " + i + " changes.");
 	}
 }
 function NoLikes(): string {
@@ -83,7 +84,7 @@ async function SeparateTinderList(message: Message, Item: string[], ListName = "
 	for (let i = 30, p = 0; p < Item.length; i = i + 30, p = p + 30) {
 		const dEmbed = new MessageEmbed()
 			.setTitle(ListName)
-			.setColor(await getMemberColorAsync(message))
+			.setColor(await (message.member as GuildMember).getMemberColorAsync())
 			.setThumbnail(message.author.displayAvatarURL({ dynamic: true }))
 			// Edited for 30 items pr page with correct index number
 			.setDescription(Item.slice(p, i).length ? Item.map((item, itemIndex) => `**${+itemIndex + 1}**. ${message.client.users.cache.find(member => member.id === item) ? message.client.users.cache.find(member => member.id === item)?.username : "`User has left guild`"}`).slice(p, i) : "There doesn't seem to be anyone here");
@@ -100,7 +101,7 @@ async function fetchUserList(message: Message, user: User): Promise<Message> {
 	await TinderDBService(user);
 	this.embed = new MessageEmbed()
 		.setTitle(user.username + "'s tinder list")
-		.setColor(await getMemberColorAsync(message));
+		.setColor(await (message.member as GuildMember).getMemberColorAsync());
 	const LikesID = [...new Set(Tinder.get(`likeID.${user.id}`))];
 	const DislikeID = [...new Set(Tinder.get(`dislikeID.${user.id}`))];
 	const Dating = [...new Set(Tinder.get(`dating.${user.id}`))];
@@ -183,7 +184,7 @@ async function fetchUserList(message: Message, user: User): Promise<Message> {
 // 	circlePath.fill();
 
 // 	const fileAttachment = new MessageAttachment(canvas.toBuffer(), "tinderProfile.png");
-// 	return message.channel.send(new MessageEmbed().attachFiles([fileAttachment]).setImage("attachment://tinderProfile.png").setColor(await getMemberColorAsync(message)));
+// 	return message.channel.send(new MessageEmbed().attachFiles([fileAttachment]).setImage("attachment://tinderProfile.png").setColor(await (message.member as GuildMember).getMemberColorAsync()));
 // }
 async function NormalLike(message: Message, SentMsg: Message, genericEmbed: MessageEmbed, newHasRolls: number, hasLikes: number, randomUsr: User): Promise<Message> {
 	if (hasLikes > 0) {

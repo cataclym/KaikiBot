@@ -1,8 +1,8 @@
 import fetch from "node-fetch";
 import Discord from "discord.js";
 import { Command } from "discord-akairo";
-import { Message } from "discord.js";
-import { getMemberColorAsync, trim } from "../../util/Util";
+import { GuildMember, Message } from "discord.js";
+import { trim } from "../../util/Util";
 import { ChildrenEntity, Data1 } from "../../struct/redditModel";
 
 export default class YeetCommand extends Command {
@@ -42,7 +42,7 @@ export default class YeetCommand extends Command {
 			const yeetEmbed = new Discord.MessageEmbed()
 				.setTitle(trim(randomRedditPost.title, 256))
 				.setDescription(trim(randomRedditPost.selftext, 2048))
-				.setColor(await getMemberColorAsync(message))
+				.setColor(await (message.member as GuildMember).getMemberColorAsync())
 				.setAuthor(`Submitted by ${randomRedditPost.author}`)
 				.setImage(randomRedditPost.url)
 				.setFooter(`${randomRedditPost.ups} updoots`);

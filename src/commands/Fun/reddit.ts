@@ -1,8 +1,8 @@
 import fetch from "node-fetch";
 import { Command } from "discord-akairo";
-import { Message, MessageEmbed, TextChannel } from "discord.js";
-import { errorColor, getMemberColorAsync, trim } from "../../util/Util";
-import { redditData, Data1, ChildrenEntity } from "../../struct/redditModel";
+import { GuildMember, Message, MessageEmbed, TextChannel } from "discord.js";
+import { errorColor, trim } from "../../util/Util";
+import { redditData, Data1 } from "../../struct/redditModel";
 
 export default class RedditCommand extends Command {
 	constructor() {
@@ -25,7 +25,7 @@ export default class RedditCommand extends Command {
 
 		loadTitle();
 
-		const color = await getMemberColorAsync(message);
+		const color = await (message.member as GuildMember).getMemberColorAsync();
 
 		async function loadTitle() {
 			const file: redditData = await fetch(`https://www.reddit.com/r/${sub}/random/.json`)

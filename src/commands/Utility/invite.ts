@@ -1,7 +1,5 @@
 import { Command } from "discord-akairo";
-import { Message, MessageEmbed } from "discord.js";
-import { getMemberColorAsync } from "../../util/Util";
-
+import { GuildMember, Message, MessageEmbed } from "discord.js";
 export default class InviteCommand extends Command {
 	constructor() {
 		super("invite", {
@@ -11,7 +9,7 @@ export default class InviteCommand extends Command {
 	}
 	public async exec(message: Message): Promise<Message> {
 		return message.channel.send(new MessageEmbed({
-			color: await getMemberColorAsync(message),
+			color: await (message.member as GuildMember).getMemberColorAsync(),
 			title: "Invite link",
 			description: `[Link](https://discord.com/oauth2/authorize?client_id=${this.client.user?.id}&scope=bot&permissions=2080763126)`,
 			image: { url: this.client.user?.displayAvatarURL({ size: 128, dynamic: true }) },

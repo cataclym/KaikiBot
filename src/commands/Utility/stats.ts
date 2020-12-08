@@ -1,7 +1,6 @@
-import Discord, { Message, MessageEmbed } from "discord.js";
+import { GuildMember, Message, MessageEmbed, version } from "discord.js";
 import Akairo, { Command } from "discord-akairo";
 import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
-import { getMemberColorAsync } from "../../util/Util";
 import { config } from "../../config";
 
 function format(seconds: number) {
@@ -23,15 +22,15 @@ module.exports = class StatsCommand extends Command {
 	}
 	public async exec(message: Message) {
 
-		const color = await getMemberColorAsync(message);
-		const pages = [];
+		const color = await (message.member as GuildMember).getMemberColorAsync();
+
 		const guild = this.client.guilds.cache;
 		const embed = new MessageEmbed();
 		embed.setColor(color);
 		embed.setAuthor(`Nadeko Sengoku Bot v${process.env.npm_package_version}`, message.client.user?.displayAvatarURL({ dynamic: true }), "https://gitlab.com/cataclym/nadekosengokubot");
 		embed.setDescription("**Built using**:");
 		embed.addFields([
-			{ name: "Discord.js library", value: `[Discord.js](https://discord.js.org/#/ 'Discord.js website') v${Discord.version}`, inline: true },
+			{ name: "Discord.js library", value: `[Discord.js](https://discord.js.org/#/ 'Discord.js website') v${version}`, inline: true },
 			{ name: "Discord-Akairo framework", value: `[Discord-Akairo](https://discord-akairo.github.io/#/ 'Discord-Akairo website') v${Akairo.version}`, inline: true },
 			{ name: "Running on Node.js", value: `[Node.js](https://nodejs.org/en/ 'Node.js website') ${process.version}`, inline: true },
 			{ name: "Memory Usage", value: `${Math.round(process.memoryUsage().heapUsed / 1024 / 1024)}MB`, inline: true },
@@ -48,7 +47,7 @@ module.exports = class StatsCommand extends Command {
 		for (const [key, value] of Object.entries(process.resourceUsage())) {
 			embed2.addField(key, value, true);
 		}
-		pages.push(embed, embed2);
+		const pages = [embed, embed2];
 		await Promise.resolve(pages);
 		return editMessageWithPaginatedEmbeds(message, pages, {});
 	}

@@ -1,5 +1,4 @@
-import { Guild, Message, MessageEmbed } from "discord.js";
-import { getMemberColorAsync } from "../../util/Util";
+import { Guild, GuildMember, Message, MessageEmbed } from "discord.js";
 import { Command } from "discord-akairo";
 import db from "quick.db";
 import { GuildOnAddBirthdays } from "../../util/AnniversaryRoles.js";
@@ -21,7 +20,7 @@ export default class AnniversaryRolesConfigCommand extends Command {
 	}
 	public async exec(message: Message, { value }: { value: string}): Promise<Message | void> {
 		const enabledGuilds = guildConfig.get("anniversary");
-		const embed = new MessageEmbed().setColor(await getMemberColorAsync(message));
+		const embed = new MessageEmbed().setColor(await (message.member as GuildMember).getMemberColorAsync());
 
 		if (value) {
 			switch (value) {
