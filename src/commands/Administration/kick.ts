@@ -1,7 +1,7 @@
 import { Command } from "discord-akairo";
 import { Guild } from "discord.js";
 import { MessageEmbed, Message, GuildMember } from "discord.js";
-import { errorColor, getMemberColorAsync } from "../../util/Util";
+import { errorColor } from "../../util/Util";
 
 export default class KickCommand extends Command {
 	constructor() {
@@ -61,7 +61,7 @@ export default class KickCommand extends Command {
 
 		return message.channel.send(new MessageEmbed({
 			title: "Kicked user",
-			color: await getMemberColorAsync(message),
+			color: await (message.member as GuildMember).getMemberColorAsync(),
 			fields: [
 				{ name: "Username", value: member.user.username, inline: true },
 				{ name: "ID", value: member.user.id, inline: true },

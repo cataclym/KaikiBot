@@ -1,6 +1,5 @@
 import { Command } from "discord-akairo";
-import { User, Message, MessageEmbed } from "discord.js";
-import { getMemberColorAsync } from "../../util/Util";
+import { GuildMember, User, Message, MessageEmbed } from "discord.js";
 
 export default class AvatarCommand extends Command {
 	constructor() {
@@ -19,7 +18,7 @@ export default class AvatarCommand extends Command {
 	public async exec(message: Message, { user }: { user: User }): Promise<Message> {
 		const av = user.avatarURL({ size: 2048, dynamic: true, format: "png" || "gif" }) || user.displayAvatarURL({ size: 2048, dynamic: true, format: "png" || "gif" });
 		return message.channel.send(new MessageEmbed({
-			color: await getMemberColorAsync(message),
+			color: await (message.member as GuildMember).getMemberColorAsync(),
 			title: user.tag,
 			description: `[Link](${av})`,
 			image: { url: av },

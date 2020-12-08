@@ -1,6 +1,6 @@
 import { Command } from "discord-akairo";
-import { Message, MessageEmbed, User } from "discord.js";
-import { errorColor, getMemberColorAsync } from "../../util/Util";
+import { GuildMember, Message, MessageEmbed, User } from "discord.js";
+import { errorColor } from "../../util/Util";
 
 export default class UnbanCommand extends Command {
 	constructor() {
@@ -27,7 +27,7 @@ export default class UnbanCommand extends Command {
 		if (bans?.find((u) => u.user.id === user.id)) {
 			await message.guild?.members.unban(user);
 			return message.channel.send(new MessageEmbed({
-				color: await getMemberColorAsync(message),
+				color: await (message.member as GuildMember).getMemberColorAsync(),
 				description: `Unbanned ${user.tag}.`,
 			}));
 		}

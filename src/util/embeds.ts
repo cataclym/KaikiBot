@@ -1,6 +1,6 @@
 import { poems } from "../util/poems";
-import { MessageEmbed, Message, User } from "discord.js";
-import { errorColor, getMemberColorAsync } from "./Util";
+import { GuildMember, MessageEmbed, Message, User } from "discord.js";
+import { errorColor } from "./Util";
 import db from "quick.db";
 import { Command, PrefixSupplier } from "discord-akairo";
 const Tinder = new db.table("Tinder");
@@ -46,7 +46,7 @@ async function tinderRollEmbed(message: Message, randomUsr: User, RollsLikes?: s
 		member = message.guild?.members.cache.get(randomUsr.id);
 
 	return new MessageEmbed()
-		.setColor(await getMemberColorAsync(message))
+		.setColor(await (message.member as GuildMember).getMemberColorAsync())
 		.setAuthor(tinderSlogan[Math.floor(Math.random() * tinderSlogan.length)])
 		.setTitle(randomUsr.username)
 		.setDescription(member ? "**Nickname**\n" + member?.displayName : "🌐")

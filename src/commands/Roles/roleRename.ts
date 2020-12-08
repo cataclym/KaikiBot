@@ -38,7 +38,7 @@ export default class RoleRenameCommand extends Command {
 					return message.channel.send(new MessageEmbed({
 						title: "Success!",
 						description: `Role renamed to ${role}.`,
-						color: await getMemberColorAsync(message),
+						color: await (message.member as GuildMember).getMemberColorAsync(),
 					}));
 				}
 				else {

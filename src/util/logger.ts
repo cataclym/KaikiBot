@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+/* eslint-disable no-mixed-spaces-and-tabs */
 import { Console } from "console";
 import { stdout } from "process";
-import { standardColor } from "../util/Util";
 
 const infoCSS = "\x1b[34m";
 const lowCSS = "\x1b[32m";
@@ -38,16 +40,4 @@ export default class Logger extends Console {
 }
 
 export const logger = new Logger(stdout);
-
-// Logger.prototype.low = function(...args: any): void {
-// 	return this.log(...args, lowCSS);
-// };
-
-// Logger.prototype.medium = function(...args: any): void {
-// 	return this.log(...args, mediumCSS);
-// };
-
-// Logger.prototype.high = function(...args: any): void {
-// 	return this.log(...args, highCSS);
-// };
 

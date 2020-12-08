@@ -1,6 +1,6 @@
-import { Message, MessageEmbed } from "discord.js";
+import { GuildMember, Message, MessageEmbed } from "discord.js";
 import { Argument, Command, PrefixSupplier } from "discord-akairo";
-import { errorColor, getMemberColorAsync } from "../../util/Util.js";
+import { errorColor } from "../../util/Util.js";
 
 export default class HelpCommand extends Command {
 	constructor() {
@@ -20,7 +20,7 @@ export default class HelpCommand extends Command {
 
 		const command = args?.command;
 		const embed = new MessageEmbed()
-			.setColor(await getMemberColorAsync(message));
+			.setColor(await (message.member as GuildMember).getMemberColorAsync());
 
 		if (command instanceof Command) {
 

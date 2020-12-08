@@ -1,6 +1,6 @@
 import { Command } from "discord-akairo";
 import { Guild, MessageEmbed, User, Message, GuildMember } from "discord.js";
-import { errorColor, getMemberColorAsync } from "../../util/Util";
+import { errorColor } from "../../util/Util";
 
 export default class BanCommand extends Command {
 	constructor() {
@@ -35,7 +35,7 @@ export default class BanCommand extends Command {
 
 		const successBan = new MessageEmbed({
 			title: "Banned user",
-			color: await getMemberColorAsync(message),
+			color: await (message.member as GuildMember).getMemberColorAsync(),
 			fields: [
 				{ name: "Username", value: user.username, inline: true },
 				{ name: "ID", value: user.id, inline: true },

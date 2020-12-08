@@ -1,10 +1,8 @@
 import fetch from "node-fetch";
 import { config } from "../../config";
 import { Command } from "discord-akairo";
-import { Message } from "discord.js";
 import { errorMessage } from "../../util/embeds";
-import { MessageEmbed } from "discord.js";
-import { getMemberColorAsync } from "../../util/Util";
+import { GuildMember, Message, MessageEmbed } from "discord.js";
 // const otherWiseText = "Correct usage would be " + prefix + "`holiday <day> <month> (last year) (country)`\n`<day>` is numbers between `1-31`\n`<month>` is numbers between `1-12`\n`(year)` can only be previous year: `2019`." + "**Year is optional.**\n`(country)` can only be 2 letter country codes: `US`. **Country is optional.**\n**Country requires Year.**";
 
 export default class HolidayAPICommand extends Command {
@@ -58,7 +56,7 @@ export default class HolidayAPICommand extends Command {
 				});
 				return message.channel.send(new MessageEmbed({
 					title: "Holiday",
-					color: await getMemberColorAsync(message),
+					color: await (message.member as GuildMember).getMemberColorAsync(),
 					description: holidayString,
 				}));
 			}

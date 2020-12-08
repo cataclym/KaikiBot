@@ -1,6 +1,5 @@
 import { Command, PrefixSupplier } from "discord-akairo";
-import { Message, MessageEmbed } from "discord.js";
-import { getMemberColorAsync } from "../../util/Util.js";
+import { GuildMember, Message, MessageEmbed } from "discord.js";
 
 module.exports = class commandsList extends Command {
 	constructor() {
@@ -13,7 +12,7 @@ module.exports = class commandsList extends Command {
 	public async exec(message: Message) {
 		const AvUrl = await message.client.users.fetch("140788173885276160");
 		// Bot author
-		const color = await getMemberColorAsync(message);
+		const color = await (message.member as GuildMember).getMemberColorAsync();
 		const embed = new MessageEmbed({
 			title: "List of commands for Nadeko Sengoku",
 			description: `Prefix is currently set to \`${(this.handler.prefix as PrefixSupplier)(message)}\`\n`,
