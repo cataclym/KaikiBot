@@ -71,7 +71,7 @@ const noArgGeneric = (message: Message): MessageEmbed => {
 	let usage = cmd?.description.usage;
 
 	if (usage) {
-		if (usage instanceof Array) {
+		if (Array.isArray(usage)) {
 			usage = usage.map(u => `${prefix}${cmd?.id} ${u}`).join("\n");
 		}
 		else {

@@ -10,7 +10,7 @@ export default class UrbanDictCommand extends Command {
 	constructor() {
 		super("urbandict", {
 			aliases: ["urbandict", "urban", "ud"],
-			description: { description: "Searches Urban Dictionary for a word or sentence", usage: "Watermelon" },
+			description: { description: "Searches Urban Dictionary for a word or sentence", usage: ["Watermelon", "anime"] },
 			args: [
 				{
 					id: "term",

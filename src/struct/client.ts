@@ -31,6 +31,7 @@ export class customClient extends AkairoClient {
 			commandUtil: true,
 			defaultCooldown: 2500,
 			directory: join(__dirname, "../commands"),
+			fetchMembers: true,
 			handleEdits: true,
 			prefix: (message: Message): string | string[] => {
 
@@ -45,7 +46,6 @@ export class customClient extends AkairoClient {
 					return config.prefix;
 				}
 			},
-			fetchMembers: true,
 		});
 		this.listenerHandler = new ListenerHandler(this, {
 			directory: join(__dirname, "../listeners"),
