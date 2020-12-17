@@ -105,7 +105,7 @@ async function GuildCheckRolesExist(guild: Guild): Promise<Role[] | unknown[]> {
 
 async function MemberCheckAnniversary(member: GuildMember, AnniversaryRoleC: Role, AnniversaryRoleJ: Role, Day: number, Month: number) {
 	if (member.user.createdAt.getMonth() === Month) {
-		if ([Day, Day - 1, Day + 1].includes(member.user.createdAt.getDate())) {
+		if (member.user.createdAt.getDate() === Day) {
 			ListUserCreatedAt.push(member.user.tag);
 			if (!member.roles.cache.has(AnniversaryRoleC.id)) {
 				member.roles.add(AnniversaryRoleC);
@@ -113,7 +113,7 @@ async function MemberCheckAnniversary(member: GuildMember, AnniversaryRoleC: Rol
 		}
 	}
 	if (member.joinedAt?.getMonth() === Month) {
-		if ([Day, Day - 1, Day + 1].includes(member.joinedAt.getDate())) {
+		if (member.joinedAt.getDate() === Day) {
 			ListUserJoinedAt.push(member.user.tag);
 			if (!member.roles.cache.has(AnniversaryRoleJ.id)) {
 				return member.roles.add(AnniversaryRoleJ);
