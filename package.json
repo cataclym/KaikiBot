@@ -1,6 +1,6 @@
 {
   "name": "nadekosengokubot",
-  "version": "3.3.43-clr",
+  "version": "3.3.44-rl-hrchy",
   "main": "./dist/index.js",
   "scripts": {
     "test": "echo \"Bypass build\" && node ./dist/index.js",

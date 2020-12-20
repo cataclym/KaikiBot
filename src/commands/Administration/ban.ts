@@ -69,16 +69,14 @@ export default class BanCommand extends Command {
 		}
 
 		await message.guild?.members.ban(user, { reason: reason }).then(m => {
-			if (m instanceof User || m instanceof GuildMember) {
-				try {
-					m.send(new MessageEmbed({
-						color: errorColor,
-						description: `You have been banned from ${message.guild?.name}.\nReason: ${reason}`,
-					}));
-				}
-				catch {
+			try {
+				(m as GuildMember | User).send(new MessageEmbed({
+					color: errorColor,
+					description: `You have been banned from ${message.guild?.name}.\nReason: ${reason}`,
+				}));
+			}
+			catch {
 				// ignored
-				}
 			}
 		})
 			.catch((err) => console.log(err));
