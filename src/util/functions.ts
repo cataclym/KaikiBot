@@ -1,6 +1,7 @@
 import { Message, Client, Guild } from "discord.js";
 import { config } from "../config";
 import db from "quick.db";
+import { logger } from "./logger";
 const Tinder = new db.table("Tinder"), Emotes = new db.table("Emotes"), guildConfig = new db.table("guildConfig"), UserNickTable = new db.table("UserNickTable");
 const words = ["shit", "fuck", "stop", "dont", "kill", "don't", "don`t", "fucking", "shut", "shutup", "shuttup", "trash", "bad", "hate", "stupid", "dumb", "suck", "sucks"];
 
@@ -48,7 +49,7 @@ async function ResetRolls(): Promise<void> {
 		Tinder.set(`likes.${key}`, 3);
 		Tinder.set(`rolls.${key}`, 15);
 	}
-	console.log("🟦 resetRolls | Rolls and likes have been reset | " + Date() + "\n");
+	logger.info("resetRolls | Rolls and likes have been reset | " + Date() + "\n");
 }
 
 async function DailyResetTimer(): Promise<void> {
