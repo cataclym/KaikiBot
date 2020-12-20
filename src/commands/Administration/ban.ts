@@ -51,15 +51,17 @@ export default class BanCommand extends Command {
 		}
 
 		// Check if member is bannable
-		if (message.author.id != message.guild?.ownerID && (message.member as GuildMember).roles.highest.comparePositionTo(guildMember.roles.highest) > 0) {
+		if (message.author.id !== message.guild?.ownerID &&
+			(message.member as GuildMember).roles.highest.position <= guildMember.roles.highest.position) {
+
 			return message.channel.send(new MessageEmbed({
 				color: errorColor,
-				description: "You don't have permissions to ban this member.",
+				description: `${message.author}, You can't use this command on users with a role higher or equal to yours in the role hierarchy.`,
 			}));
 		}
 
 		// x2
-		else if (guildClientMember.roles.highest.position < guildMember.roles.highest.position) {
+		else if (guildClientMember.roles.highest.position <= guildMember.roles.highest.position) {
 			return message.channel.send(new MessageEmbed({
 				color: errorColor,
 				description: "Sorry, I don't have permissions to ban this member.",
@@ -78,7 +80,8 @@ export default class BanCommand extends Command {
 				// ignored
 				}
 			}
-		});
+		})
+			.catch((err) => console.log(err));
 
 		return message.channel.send(successBan);
 	}

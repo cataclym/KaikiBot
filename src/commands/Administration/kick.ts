@@ -34,13 +34,15 @@ export default class KickCommand extends Command {
 		const guild = message.guild as Guild;
 		const guildClientMember = guild.me as GuildMember;
 
-		if (message.author.id != guild.ownerID && (message.member as GuildMember).roles.highest.comparePositionTo(member.roles.highest) > 0) {
+		if (message.author.id !== message.guild?.ownerID &&
+			(message.member as GuildMember).roles.highest.position <= member.roles.highest.position) {
+
 			return message.channel.send(new MessageEmbed({
 				color: errorColor,
 				description: "You don't have permissions to kick this member.",
 			}));
 		}
-		else if (guildClientMember.roles.highest.position < member.roles.highest.position) {
+		else if (guildClientMember.roles.highest.position <= member.roles.highest.position) {
 			return message.channel.send(new MessageEmbed({
 				color: errorColor,
 				description: "Sorry, I don't have permissions to kick this member.",
@@ -57,7 +59,9 @@ export default class KickCommand extends Command {
 			catch {
 				// ignored
 			}
-		});
+		})
+			.catch((err) => console.log(err));
+
 
 		return message.channel.send(new MessageEmbed({
 			title: "Kicked user",
