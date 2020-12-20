@@ -199,26 +199,28 @@ async function NormalLike(message: Message, SentMsg: Message, genericEmbed: Mess
 			if (checkLikeIDs.includes(`${message.author.id}`)) {
 				Tinder.push(`dating.${message.author.id}`, randomUsr.id);
 				Tinder.push(`dating.${randomUsr.id}`, message.author.id);
-				SentMsg.reactions.removeAll();
 				const newEmbed = new MessageEmbed(genericEmbed)
 					.setAuthor("❤️❤️❤️")
 					.setColor("#ff00ff")
 					.setTitle(randomUsr.username)
 					.setDescription("It's a match! Congratulations!")
 					.setFooter(NewRollsLikes);
-				return SentMsg.edit(newEmbed);
+				const edited = await SentMsg.edit(newEmbed);
+				if (message.guild?.me?.hasPermission("MANAGE_MESSAGES")) await SentMsg.reactions.removeAll();
+				return edited;
 			}
 		}
 		await TinderDBService(randomUsr);
 		Tinder.push(`likeID.${message.author.id}`, randomUsr.id);
-		SentMsg.reactions.removeAll();
 		const newEmbed = new MessageEmbed(genericEmbed)
 			.setAuthor("❤️❤️❤️")
 			.setColor("#00FF00")
 			.setTitle(randomUsr.username)
 			.setDescription("has been added to likes!")
 			.setFooter(NewRollsLikes);
-		return SentMsg.edit(newEmbed);
+		const edited = await SentMsg.edit(newEmbed);
+		if (message.guild?.me?.hasPermission("MANAGE_MESSAGES")) await SentMsg.reactions.removeAll();
+		return edited;
 	}
 	else {
 		SentMsg.reactions.removeAll();
@@ -229,14 +231,15 @@ async function NormalLike(message: Message, SentMsg: Message, genericEmbed: Mess
 async function Dislike(message: Message, SentMsg: Message, genericEmbed: MessageEmbed, newHasRolls: number, hasLikes: number, randomUsr: User): Promise<Message> {
 	Tinder.push(`dislikeID.${message.author.id}`, randomUsr.id);
 	const NewRollsLikes = newHasRolls + " rolls " + hasLikes + " likes remaining.";
-	SentMsg.reactions.removeAll();
 	const newEmbed = new MessageEmbed(genericEmbed)
 		.setAuthor("❌❌❌")
 		.setColor("#00FF00")
 		.setTitle(randomUsr.username)
 		.setDescription("has been added to dislikes.")
 		.setFooter(NewRollsLikes);
-	return SentMsg.edit(newEmbed);
+	const edited = await SentMsg.edit(newEmbed);
+	if (message.guild?.me?.hasPermission("MANAGE_MESSAGES")) await SentMsg.reactions.removeAll();
+	return edited;
 }
 async function SuperLike(message: Message, SentMsg: Message, genericEmbed: MessageEmbed, hasLikes: number, randomUsr: User): Promise<Message> {
 	if (hasLikes > 0) {
@@ -246,17 +249,18 @@ async function SuperLike(message: Message, SentMsg: Message, genericEmbed: Messa
 		Tinder.push(`dating.${randomUsr.id}`, message.author.id);
 		Tinder.set(`rolls.${message.author.id}`, zero);
 		Tinder.set(`likes.${message.author.id}`, zero);
-		SentMsg.reactions.removeAll();
 		const newEmbed = new MessageEmbed(genericEmbed)
 			.setAuthor("❤️🌟❤️")
 			.setColor("#FFFF00")
 			.setTitle(randomUsr.username)
 			.setDescription("Is now dating you!")
 			.setFooter("You have no rolls or likes remaining.");
-		return SentMsg.edit(newEmbed);
+		const edited = await SentMsg.edit(newEmbed);
+		if (message.guild?.me?.hasPermission("MANAGE_MESSAGES")) await SentMsg.reactions.removeAll();
+		return edited;
 	}
 	else {
-		SentMsg.reactions.removeAll();
+		await SentMsg.reactions.removeAll();
 		return message.channel.send(NoLikes());
 	}
 }
