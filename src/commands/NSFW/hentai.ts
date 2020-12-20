@@ -1,6 +1,7 @@
 import { Command } from "discord-akairo";
 import { GuildMember, Message, MessageEmbed } from "discord.js";
 import { Image } from "kaori/typings/Image";
+import { errorColor } from "../../util/Util";
 import { grabHentaiPictureAsync } from "./hentaiService";
 
 export default class HentaiCommand extends Command {
@@ -22,7 +23,11 @@ export default class HentaiCommand extends Command {
 			postHentai(messageArguments);
 		}
 		else {
-			throw new Error ("Channel is not NSFW.");
+			return message.channel.send(new MessageEmbed({
+				title: "Error",
+				description: "Channel is not NSFW.",
+				color: errorColor,
+			}));
 		}
 		async function postHentai(messageArguments: string[] | undefined): Promise<Message | void> {
 			const awaitResult = async () => (await grabHentaiPictureAsync(messageArguments));

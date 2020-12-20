@@ -24,7 +24,7 @@ export class customClient extends AkairoClient {
 		});
 
 		this.commandHandler = new CommandHandler(this, {
-			allowMention: false,
+			allowMention: true,
 			automateCategories: true,
 			blockBots: true,
 			blockClient: true,
