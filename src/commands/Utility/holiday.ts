@@ -56,7 +56,7 @@ export default class HolidayAPICommand extends Command {
 				});
 				return message.channel.send(new MessageEmbed({
 					title: "Holiday",
-					color: await (message.member as GuildMember).getMemberColorAsync(),
+					color: await message.getMemberColorAsync(),
 					description: holidayString,
 				}));
 			}

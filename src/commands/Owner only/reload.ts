@@ -24,7 +24,7 @@ export default class ReloadCommand extends Command {
 			title: "Command reloaded",
 			description: command.filepath,
 			footer: { text: "Command: " + command.id },
-			color: await (message.member as GuildMember).getMemberColorAsync(),
+			color: await message.getMemberColorAsync(),
 		}));
 	}
 }

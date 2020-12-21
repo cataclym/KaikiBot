@@ -84,7 +84,7 @@ async function SeparateTinderList(message: Message, Item: string[], ListName = "
 	for (let i = 30, p = 0; p < Item.length; i = i + 30, p = p + 30) {
 		const dEmbed = new MessageEmbed()
 			.setTitle(ListName)
-			.setColor(await (message.member as GuildMember).getMemberColorAsync())
+			.setColor(await message.getMemberColorAsync())
 			.setThumbnail(message.author.displayAvatarURL({ dynamic: true }))
 			// Edited for 30 items pr page with correct index number
 			.setDescription(Item.slice(p, i).length ? Item.map((item, itemIndex) => `**${+itemIndex + 1}**. ${message.client.users.cache.find(member => member.id === item) ? message.client.users.cache.find(member => member.id === item)?.username : "`User has left guild`"}`).slice(p, i) : "There doesn't seem to be anyone here");
@@ -101,7 +101,7 @@ async function fetchUserList(message: Message, user: User): Promise<Message> {
 	await TinderDBService(user);
 	this.embed = new MessageEmbed()
 		.setTitle(user.username + "'s tinder list")
-		.setColor(await (message.member as GuildMember).getMemberColorAsync());
+		.setColor(await message.getMemberColorAsync());
 	const LikesID = [...new Set(Tinder.get(`likeID.${user.id}`))];
 	const DislikeID = [...new Set(Tinder.get(`dislikeID.${user.id}`))];
 	const Dating = [...new Set(Tinder.get(`dating.${user.id}`))];
@@ -184,7 +184,7 @@ async function fetchUserList(message: Message, user: User): Promise<Message> {
 // 	circlePath.fill();
 
 // 	const fileAttachment = new MessageAttachment(canvas.toBuffer(), "tinderProfile.png");
-// 	return message.channel.send(new MessageEmbed().attachFiles([fileAttachment]).setImage("attachment://tinderProfile.png").setColor(await (message.member as GuildMember).getMemberColorAsync()));
+// 	return message.channel.send(new MessageEmbed().attachFiles([fileAttachment]).setImage("attachment://tinderProfile.png").setColor(await message.getMemberColorAsync()));
 // }
 async function NormalLike(message: Message, SentMsg: Message, genericEmbed: MessageEmbed, newHasRolls: number, hasLikes: number, randomUsr: User): Promise<Message> {
 	if (hasLikes > 0) {

@@ -46,7 +46,7 @@ export default class SetUserRoleCommand extends Command {
 
 		const embedSuccess = async (text: string) => {
 			return new MessageEmbed()
-				.setColor(await (message.member as GuildMember).getMemberColorAsync())
+				.setColor(await message.getMemberColorAsync())
 				.setDescription(text);
 		};
 

@@ -35,7 +35,7 @@ export default class FetchUserCommand extends Command {
 		}
 
 		const userFlags = userObject.flags ? userObject.flags.toArray() : [];
-		const color = await (message.member as GuildMember).getMemberColorAsync();
+		const color = await message.getMemberColorAsync();
 
 		const embed = new MessageEmbed()
 			.setColor(color)

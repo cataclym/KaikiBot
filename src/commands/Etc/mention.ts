@@ -1,4 +1,4 @@
-import { GuildMember, Message, MessageEmbed, User } from "discord.js";
+import { Message, MessageEmbed, User } from "discord.js";
 import { Command, PrefixSupplier } from "discord-akairo";
 
 export default class MentionCommand extends Command {
@@ -14,7 +14,7 @@ export default class MentionCommand extends Command {
 		const embed = new MessageEmbed({
 			title: `Hi ${msg.author.username}, what's up?`,
 			description: `If you need help type \`${(this.handler.prefix as PrefixSupplier)(msg)}help\`.`,
-			color: await (msg.member as GuildMember).getMemberColorAsync(),
+			color: await msg.getMemberColorAsync(),
 		});
 		return msg.channel.send(embed);
 	}

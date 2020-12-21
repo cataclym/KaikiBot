@@ -28,7 +28,7 @@ export default class RestoreUserRoles extends Command {
 		if (leaveRoleTable.get(`${member.guild.id}.${member.id}`)) {
 			const savedRoles = leaveRoleTable.get(`${member.guild.id}.${member.id}`);
 			member.roles.add(savedRoles);
-			return message.channel.send(new MessageEmbed().setColor(await (message.member as GuildMember).getMemberColorAsync()).setDescription(`Restored roles of ${member.user.tag}`));
+			return message.channel.send(new MessageEmbed().setColor(await message.getMemberColorAsync()).setDescription(`Restored roles of ${member.user.tag}`));
 		}
 
 		else {

@@ -27,7 +27,7 @@ export default class PrefixConfigCommand extends Command {
 				return message.channel.send(new MessageEmbed({
 					title: "Success!",
 					description: `Prefix has been set to \`${value}\` !`,
-					color: await (message.member as GuildMember).getMemberColorAsync(),
+					color: await message.getMemberColorAsync(),
 				}));
 			}
 			else {

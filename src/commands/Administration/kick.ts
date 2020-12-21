@@ -62,10 +62,9 @@ export default class KickCommand extends Command {
 		})
 			.catch((err) => console.log(err));
 
-
 		return message.channel.send(new MessageEmbed({
 			title: "Kicked user",
-			color: await (message.member as GuildMember).getMemberColorAsync(),
+			color: await message.getMemberColorAsync(),
 			fields: [
 				{ name: "Username", value: member.user.username, inline: true },
 				{ name: "ID", value: member.user.id, inline: true },

@@ -1,4 +1,4 @@
-import { GuildMember, MessageEmbed, Message } from "discord.js";
+import { MessageEmbed, Message } from "discord.js";
 import { Command } from "discord-akairo";
 
 export default class PingCommand extends Command {
@@ -16,7 +16,7 @@ export default class PingCommand extends Command {
 				.addFields([
 					{ name: "WebSocket ping", value: WSTime + " ms", inline: true },
 					{ name: "Client ping", value: ClientTime + " ms", inline: true }])
-				.setColor(await (message.member as GuildMember).getMemberColorAsync());
+				.setColor(await message.getMemberColorAsync());
 		return InitialMSG.edit(null, embed);
 	}
 }

@@ -69,7 +69,7 @@ export default class RoleDeleteCommand extends Command {
 		}
 		else if (every.valueOf()) {
 			return message.channel.send(new MessageEmbed({
-				color: await (message.member as GuildMember).getMemberColorAsync(),
+				color: await message.getMemberColorAsync(),
 				description: `Deleted: ${roles.map(coll => coll.map(role => role.name)).join(", ")}`,
 			}));
 		}

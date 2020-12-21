@@ -1,5 +1,5 @@
 import { Command, PrefixSupplier } from "discord-akairo";
-import { GuildMember, Message, MessageEmbed } from "discord.js";
+import { Message, MessageEmbed } from "discord.js";
 import db from "quick.db";
 const guildConfig = new db.table("guildConfig");
 import { updateVar } from "../../Extensions/Discord";
@@ -22,7 +22,7 @@ module.exports = class DadBotConfigCommand extends Command {
 	public async exec(message: Message, { value }: { value: string}) {
 		const enabledGuilds = guildConfig.get("dadbot");
 
-		const embed = new MessageEmbed().setColor(await (message.member as GuildMember).getMemberColorAsync());
+		const embed = new MessageEmbed().setColor(await message.getMemberColorAsync());
 		if (value) {
 			switch (value) {
 				case ("enable"):

@@ -39,7 +39,7 @@ export default class HentaiCommand extends Command {
 					description: `[Source](${result.source} "${result.source}")`,
 					image: { url: <string | undefined> result.fileURL || result.sampleURL || result.previewURL },
 					footer: { text: result.tags.join(", ") },
-					color: await (message.member as GuildMember).getMemberColorAsync(),
+					color: await message.getMemberColorAsync(),
 				}));
 			}
 			else {

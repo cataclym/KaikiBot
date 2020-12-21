@@ -30,7 +30,7 @@ export default class RoleMentionableCommand extends Command {
 		}
 
 		return message.channel.send(new MessageEmbed({
-			color: await (message.member as GuildMember).getMemberColorAsync(),
+			color: await message.getMemberColorAsync(),
 			description: `Toggled ${role.name}'s mentionable status to ${!role.mentionable}.`,
 		}));
 

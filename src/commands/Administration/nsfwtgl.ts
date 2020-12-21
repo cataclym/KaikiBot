@@ -1,5 +1,5 @@
 import { Command } from "discord-akairo";
-import { TextChannel, Message, MessageEmbed, GuildMember } from "discord.js";
+import { TextChannel, Message, MessageEmbed } from "discord.js";
 
 export default class ChannelNsfwCommand extends Command {
 	constructor() {
@@ -25,7 +25,7 @@ export default class ChannelNsfwCommand extends Command {
 		}
 
 		return message.channel.send(new MessageEmbed({
-			color: await (message.member as GuildMember).getMemberColorAsync(),
+			color: await message.getMemberColorAsync(),
 			description: `Toggled ${guidlChnl.name}'s NSFW status to ${!guidlChnl.nsfw}.`,
 		}));
 	}

@@ -28,7 +28,7 @@ export default class ExcludeCommand extends Command {
 	}
 
 	public async exec(message: Message): Promise<Message | void> {
-		const color = await (message.member as GuildMember).getMemberColorAsync();
+		const color = await message.getMemberColorAsync();
 		addedRoleEmbed.setColor(color);
 		removedRoleEmbed.setColor(color);
 		let excludedRole = message.guild?.roles.cache.find((r) => r.name === config.names);

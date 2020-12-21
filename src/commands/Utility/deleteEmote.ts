@@ -54,7 +54,7 @@ export default class DeleteEmoteCommand extends Command {
 
 			return message.channel.send(new MessageEmbed({
 				title: "Success!",
-				color: await (message.member as GuildMember).getMemberColorAsync(),
+				color: await message.getMemberColorAsync(),
 				description: `Deleted:\n${trim(emotes.map((es) => es.map((e) => e)).join("\n"), 2048)}`,
 			}));
 		})();

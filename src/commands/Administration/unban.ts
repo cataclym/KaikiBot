@@ -27,7 +27,7 @@ export default class UnbanCommand extends Command {
 		if (bans?.find((u) => u.user.id === user.id)) {
 			await message.guild?.members.unban(user);
 			return message.channel.send(new MessageEmbed({
-				color: await (message.member as GuildMember).getMemberColorAsync(),
+				color: await message.getMemberColorAsync(),
 				description: `Unbanned ${user.tag}.`,
 			}));
 		}

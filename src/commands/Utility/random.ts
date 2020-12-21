@@ -25,7 +25,7 @@ module.exports = class RandomNumberCommand extends Command {
 	public async exec(message: Message, args: any) {
 		const embed = new MessageEmbed({
 			title: "Result:",
-			color: await (message.member as GuildMember).getMemberColorAsync(),
+			color: await message.getMemberColorAsync(),
 		});
 		function getRndInteger(min: number, max: number) {
 			return Math.floor(Math.random() * (max - min + 1)) + min;

@@ -25,7 +25,7 @@ export default class RedditCommand extends Command {
 
 		loadTitle();
 
-		const color = await (message.member as GuildMember).getMemberColorAsync();
+		const color = await message.getMemberColorAsync();
 
 		async function loadTitle() {
 			const file: redditData = await fetch(`https://www.reddit.com/r/${sub}/random/.json`)

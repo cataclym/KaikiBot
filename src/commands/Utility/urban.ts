@@ -32,7 +32,7 @@ export default class UrbanDictCommand extends Command {
 				color: errorColor,
 			}));
 		}
-		const color = await (message.member as GuildMember).getMemberColorAsync();
+		const color = await message.getMemberColorAsync();
 		const pages: MessageEmbed[] = [];
 		list.forEach(async (result: Record<string, string>) => {
 			return pages.push(new MessageEmbed()

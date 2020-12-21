@@ -42,7 +42,7 @@ export default class YeetCommand extends Command {
 			const yeetEmbed = new Discord.MessageEmbed()
 				.setTitle(trim(randomRedditPost.title, 256))
 				.setDescription(trim(randomRedditPost.selftext, 2048))
-				.setColor(await (message.member as GuildMember).getMemberColorAsync())
+				.setColor(await message.getMemberColorAsync())
 				.setAuthor(`Submitted by ${randomRedditPost.author}`)
 				.setImage(randomRedditPost.url)
 				.setFooter(`${randomRedditPost.ups} updoots`);

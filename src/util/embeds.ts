@@ -46,7 +46,7 @@ async function tinderRollEmbed(message: Message, randomUsr: User, RollsLikes?: s
 		member = message.guild?.members.cache.get(randomUsr.id);
 
 	return new MessageEmbed()
-		.setColor(await (message.member as GuildMember).getMemberColorAsync())
+		.setColor(await message.getMemberColorAsync())
 		.setAuthor(tinderSlogan[Math.floor(Math.random() * tinderSlogan.length)])
 		.setTitle(randomUsr.username)
 		.setDescription(member ? "**Nickname**\n" + member?.displayName : "🌐")

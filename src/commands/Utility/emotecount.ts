@@ -23,7 +23,7 @@ export default class EmoteCount extends Command {
 
 		const data = [];
 		const pages = [];
-		const color = await (message.member as GuildMember).getMemberColorAsync();
+		const color = await message.getMemberColorAsync();
 		const GuildEmoteCount = Emotes.get(`${message.guild?.id}`);
 		const baseEmbed = new MessageEmbed()
 			.setTitle("Emote count")

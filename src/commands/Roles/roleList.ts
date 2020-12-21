@@ -22,7 +22,7 @@ export default class RoleListCommand extends Command {
 				const dEmbed = new MessageEmbed()
 					.setTitle("Role list")
 					.setAuthor(message.guild?.name)
-					.setColor(await (message.member as GuildMember).getMemberColorAsync())
+					.setColor(await message.getMemberColorAsync())
 					.setDescription(data.slice(p, i).join(", "));
 				pages.push(dEmbed);
 			}

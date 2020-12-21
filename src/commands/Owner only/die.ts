@@ -14,7 +14,7 @@ module.exports = class KillBotProcess extends Command {
 		const embed = new MessageEmbed()
 			.setAuthor("Dying", message.client.user?.displayAvatarURL({ dynamic: true }))
 			.addField("Shutting down", "See you later", false)
-			.setColor(await (message.member as GuildMember).getMemberColorAsync());
+			.setColor(await message.getMemberColorAsync());
 		await message.channel.send(embed);
 		console.log("Shutting down");
 		process.exit(1);

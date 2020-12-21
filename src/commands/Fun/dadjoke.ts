@@ -32,7 +32,7 @@ export default class DadJokeCommand extends Command {
 			const embed: MessageEmbed = new MessageEmbed({
 				title: trim(randomRedditPost.title, 256),
 				description: trim(randomRedditPost.selftext, 2048),
-				color: await (message.member as GuildMember).getMemberColorAsync(),
+				color: await message.getMemberColorAsync(),
 				author: {
 					name: `Submitted by ${randomRedditPost.author}`,
 				},

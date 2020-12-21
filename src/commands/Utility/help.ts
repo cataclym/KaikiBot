@@ -20,7 +20,7 @@ export default class HelpCommand extends Command {
 
 		const command = args?.command;
 		const embed = new MessageEmbed()
-			.setColor(await (message.member as GuildMember).getMemberColorAsync());
+			.setColor(await message.getMemberColorAsync());
 
 		if (command instanceof Command) {
 

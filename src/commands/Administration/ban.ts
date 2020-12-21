@@ -35,7 +35,7 @@ export default class BanCommand extends Command {
 
 		const successBan = new MessageEmbed({
 			title: "Banned user",
-			color: await (message.member as GuildMember).getMemberColorAsync(),
+			color: await message.getMemberColorAsync(),
 			fields: [
 				{ name: "Username", value: user.username, inline: true },
 				{ name: "ID", value: user.id, inline: true },

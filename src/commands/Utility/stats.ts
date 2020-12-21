@@ -22,7 +22,7 @@ module.exports = class StatsCommand extends Command {
 	}
 	public async exec(message: Message) {
 
-		const color = await (message.member as GuildMember).getMemberColorAsync();
+		const color = await message.getMemberColorAsync();
 
 		const guild = this.client.guilds.cache;
 		const embed = new MessageEmbed();

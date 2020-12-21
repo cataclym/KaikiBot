@@ -29,7 +29,7 @@ module.exports = class NamesCommand extends Command {
 	}
 
 	public async exec(message: Message, { method, unionUser }: { method: boolean, unionUser: User}) {
-		const color = await (message.member as GuildMember).getMemberColorAsync();
+		const color = await message.getMemberColorAsync();
 		const user = !(message.content.trim().split(/ +/).length > 1) && !unionUser ? message.author : unionUser;
 
 		if (method) {

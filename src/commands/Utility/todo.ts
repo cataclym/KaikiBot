@@ -1,7 +1,7 @@
 "use strict";
 import db from "quick.db";
 const ReminderList = new db.table("ReminderList");
-import { GuildMember, Message, MessageEmbed } from "discord.js";
+import { Message, MessageEmbed } from "discord.js";
 import { Command, Flag, Argument, PrefixSupplier } from "discord-akairo";
 import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
 import { trim } from "../../util/Util.js";
@@ -28,7 +28,7 @@ module.exports = class TodoCommand extends Command {
 	}
 
 	public async exec(message: Message) {
-		const color = await (message.member as GuildMember).getMemberColorAsync(), reminder: { todo: unknown[] | undefined } = ReminderList.fetch(`${message.author.id}`);
+		const color = await message.getMemberColorAsync(), reminder: { todo: unknown[] | undefined } = ReminderList.fetch(`${message.author.id}`);
 		let reminderArray;
 		reminder?.todo?.length ? reminderArray = reminder.todo.map((a: unknown[]) => a.join(" ")) : reminderArray = ["Empty list"];
 		const pages = [];
