@@ -29,7 +29,7 @@ module.exports = class TodoCommand extends Command {
 
 	public async exec(message: Message) {
 		const color = await message.getMemberColorAsync(), reminder: { todo: [][] | undefined } = ReminderList.fetch(`${message.author.id}`),
-			reminderArray = (reminder?.todo?.length ? reminder.todo.map((a: string[]) => trim(a.join(" "), 204)) : ["Empty list"]), pages = [];
+			reminderArray = (reminder?.todo?.length ? reminder.todo.map((a: string[]) => trim(a.join(" ").split(/\r?\n/).join(" "), 204)) : ["Empty list"]), pages = [];
 
 		for (let index = 10, p = 0; p < reminderArray.length; index = index + 10, p = p + 10) {
 			const embed = new MessageEmbed()
@@ -40,6 +40,7 @@ module.exports = class TodoCommand extends Command {
 				.setDescription(reminderArray.map((item: string, i: number) => `${+i + 1}. ${item}`).slice(p, index).join("\n"));
 			pages.push(embed);
 		}
+
 		await editMessageWithPaginatedEmbeds(message, pages, {});
 	}
 };

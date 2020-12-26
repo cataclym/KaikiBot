@@ -5,7 +5,6 @@ import { config } from "../config";
 import DB from "quick.db";
 const guildConfig = new DB.table("guildConfig");
 
-
 export class customClient extends AkairoClient {
 	commandHandler: CommandHandler;
 	inhibitorHandler: InhibitorHandler;
@@ -47,9 +46,11 @@ export class customClient extends AkairoClient {
 				}
 			},
 		});
+
 		this.listenerHandler = new ListenerHandler(this, {
 			directory: join(__dirname, "../listeners"),
 		});
+
 		this.listenerHandler.setEmitters({
 			commandHandler: this.commandHandler,
 		});
