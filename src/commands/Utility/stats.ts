@@ -1,5 +1,5 @@
-import { GuildMember, Message, MessageEmbed, version } from "discord.js";
-import Akairo, { Command } from "discord-akairo";
+import { Message, MessageEmbed, version } from "discord.js";
+import Akairo, { Command } from "@cataclym/discord-akairo";
 import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
 import { config } from "../../config";
 

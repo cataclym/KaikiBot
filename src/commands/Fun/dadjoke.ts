@@ -1,7 +1,7 @@
 import { trim } from "../../util/Util";
 import fetch from "node-fetch";
-import { GuildMember, MessageEmbed, Message } from "discord.js";
-import { Command } from "discord-akairo";
+import { MessageEmbed, Message } from "discord.js";
+import { Command } from "@cataclym/discord-akairo";
 import { ChildrenEntity, Data1 } from "../../struct/redditModel";
 
 export default class DadJokeCommand extends Command {

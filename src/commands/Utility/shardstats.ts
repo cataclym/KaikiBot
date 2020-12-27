@@ -1,4 +1,4 @@
-import { Command } from "discord-akairo";
+import { Command } from "@cataclym/discord-akairo";
 import { Message, WebSocketShard } from "discord.js";
 
 interface shards {

@@ -1,6 +1,6 @@
 import { MessageEmbed } from "discord.js";
-import { Command } from "discord-akairo";
-import { GuildMember, Message } from "discord.js";
+import { Command } from "@cataclym/discord-akairo";
+import { Message } from "discord.js";
 
 module.exports = class KillBotProcess extends Command {
 	constructor() {

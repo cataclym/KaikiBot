@@ -1,4 +1,4 @@
-import { Command, PrefixSupplier } from "discord-akairo";
+import { Command, PrefixSupplier } from "@cataclym/discord-akairo";
 import { Guild } from "discord.js";
 import { MessageEmbed, Message } from "discord.js";
 

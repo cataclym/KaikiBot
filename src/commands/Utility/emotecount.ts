@@ -1,6 +1,6 @@
-import { GuildMember, MessageEmbed, Message } from "discord.js";
+import { MessageEmbed, Message } from "discord.js";
 import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
-import { Command } from "discord-akairo";
+import { Command } from "@cataclym/discord-akairo";
 import { trim } from "../../util/Util";
 import db from "quick.db";
 const Emotes = new db.table("Emotes");

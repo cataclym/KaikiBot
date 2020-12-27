@@ -1,5 +1,5 @@
 /* eslint-disable indent */
-import { Command, Listener } from "discord-akairo";
+import { Command, Listener } from "@cataclym/discord-akairo";
 import { Message } from "discord.js";
 import { logger } from "../util/logger";
 

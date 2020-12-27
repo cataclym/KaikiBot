@@ -1,5 +1,5 @@
-import { Command } from "discord-akairo";
-import { GuildMember, Message, MessageEmbed } from "discord.js";
+import { Command } from "@cataclym/discord-akairo";
+import { Message, MessageEmbed } from "discord.js";
 export default class InviteCommand extends Command {
 	constructor() {
 		super("invite", {

@@ -1,6 +1,6 @@
 import fetch from "node-fetch";
-import { Command } from "discord-akairo";
-import { GuildMember, Message, MessageEmbed, TextChannel } from "discord.js";
+import { Command } from "@cataclym/discord-akairo";
+import { Message, MessageEmbed, TextChannel } from "discord.js";
 import { errorColor, trim } from "../../util/Util";
 import { redditData, Data1 } from "../../struct/redditModel";
 

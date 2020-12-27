@@ -1,4 +1,4 @@
-import { Command } from "discord-akairo";
+import { Command } from "@cataclym/discord-akairo";
 import { Message, MessageReaction } from "discord.js";
 import db from "quick.db";
 const ReminderList = new db.table("ReminderList");

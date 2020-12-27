@@ -1,5 +1,5 @@
 import { MessageEmbed, Message } from "discord.js";
-import { Command } from "discord-akairo";
+import { Command } from "@cataclym/discord-akairo";
 
 export default class PingCommand extends Command {
 	public constructor() {

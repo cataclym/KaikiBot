@@ -1,5 +1,5 @@
-import { Command } from "discord-akairo";
-import { GuildMember, MessageEmbed, Message, Role } from "discord.js";
+import { Command } from "@cataclym/discord-akairo";
+import { MessageEmbed, Message, Role } from "discord.js";
 import { noArgRole } from "../../util/embeds";
 
 export default class RoleHoistCommand extends Command {

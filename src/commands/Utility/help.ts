@@ -1,5 +1,5 @@
-import { GuildMember, Message, MessageEmbed } from "discord.js";
-import { Argument, Command, PrefixSupplier } from "discord-akairo";
+import { Message, MessageEmbed } from "discord.js";
+import { Argument, Command, PrefixSupplier } from "@cataclym/discord-akairo";
 import { errorColor } from "../../util/Util.js";
 
 export default class HelpCommand extends Command {

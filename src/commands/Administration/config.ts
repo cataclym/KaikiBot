@@ -1,5 +1,5 @@
 "use strict";
-import { Command, Flag, Argument } from "discord-akairo";
+import { Command, Flag, Argument } from "@cataclym/discord-akairo";
 import { Message, MessageEmbed } from "discord.js";
 import db from "quick.db";
 import { noArgGeneric } from "../../util/embeds";

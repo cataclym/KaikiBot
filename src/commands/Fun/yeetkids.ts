@@ -1,7 +1,7 @@
 import fetch from "node-fetch";
 import Discord from "discord.js";
-import { Command } from "discord-akairo";
-import { GuildMember, Message } from "discord.js";
+import { Command } from "@cataclym/discord-akairo";
+import { Message } from "discord.js";
 import { trim } from "../../util/Util";
 import { ChildrenEntity, Data1 } from "../../struct/redditModel";
 

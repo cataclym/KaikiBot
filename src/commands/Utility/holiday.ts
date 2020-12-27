@@ -1,8 +1,8 @@
 import fetch from "node-fetch";
 import { config } from "../../config";
-import { Command } from "discord-akairo";
+import { Command } from "@cataclym/discord-akairo";
 import { errorMessage } from "../../util/embeds";
-import { GuildMember, Message, MessageEmbed } from "discord.js";
+import { Message, MessageEmbed } from "discord.js";
 // const otherWiseText = "Correct usage would be " + prefix + "`holiday <day> <month> (last year) (country)`\n`<day>` is numbers between `1-31`\n`<month>` is numbers between `1-12`\n`(year)` can only be previous year: `2019`." + "**Year is optional.**\n`(country)` can only be 2 letter country codes: `US`. **Country is optional.**\n**Country requires Year.**";
 
 export default class HolidayAPICommand extends Command {

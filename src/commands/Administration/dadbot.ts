@@ -1,4 +1,4 @@
-import { Command, PrefixSupplier } from "discord-akairo";
+import { Command, PrefixSupplier } from "@cataclym/discord-akairo";
 import { Message, MessageEmbed } from "discord.js";
 import db from "quick.db";
 const guildConfig = new db.table("guildConfig");

@@ -1,7 +1,7 @@
 import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
 import fetch from "node-fetch";
-import { Command } from "discord-akairo";
-import { GuildMember, MessageEmbed, Message } from "discord.js";
+import { Command } from "@cataclym/discord-akairo";
+import { MessageEmbed, Message } from "discord.js";
 import querystring from "querystring";
 import { errorColor, trim } from "../../util/Util";
 import { noArgGeneric } from "../../util/embeds";

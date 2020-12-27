@@ -1,9 +1,12 @@
 import { Message, MessageEmbed, User } from "discord.js";
-import { Command, PrefixSupplier } from "discord-akairo";
+import { Command, PrefixSupplier } from "@cataclym/discord-akairo";
 
 export default class MentionCommand extends Command {
 	constructor() {
-		super("mention");
+		super("mention", {
+			channel: "guild",
+			editable: false,
+		});
 	}
 
 	condition(msg: Message): boolean {
@@ -11,11 +14,13 @@ export default class MentionCommand extends Command {
 	}
 
 	public async exec(msg: Message): Promise<Message> {
-		const embed = new MessageEmbed({
+
+		const embed = msg.channel.send(new MessageEmbed({
 			title: `Hi ${msg.author.username}, what's up?`,
 			description: `If you need help type \`${(this.handler.prefix as PrefixSupplier)(msg)}help\`.`,
 			color: await msg.getMemberColorAsync(),
-		});
-		return msg.channel.send(embed);
+		}));
+
+		return (await embed).delete({ timeout: 10000 });
 	}
 }

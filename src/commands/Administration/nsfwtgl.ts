@@ -1,4 +1,4 @@
-import { Command } from "discord-akairo";
+import { Command } from "@cataclym/discord-akairo";
 import { TextChannel, Message, MessageEmbed } from "discord.js";
 
 export default class ChannelNsfwCommand extends Command {

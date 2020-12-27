@@ -1,6 +1,6 @@
-import { Command } from "discord-akairo";
+import { Command } from "@cataclym/discord-akairo";
 import { config } from "../../config.js";
-import { GuildMember, MessageEmbed, Message } from "discord.js";
+import { MessageEmbed, Message } from "discord.js";
 import { errorColor } from "../../util/Util";
 
 const errorEmbed = new MessageEmbed({

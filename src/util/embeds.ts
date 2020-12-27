@@ -1,8 +1,8 @@
 import { poems } from "../util/poems";
-import { GuildMember, MessageEmbed, Message, User } from "discord.js";
+import { MessageEmbed, Message, User } from "discord.js";
 import { errorColor } from "./Util";
 import db from "quick.db";
-import { Command, PrefixSupplier } from "discord-akairo";
+import { Command, PrefixSupplier } from "@cataclym/discord-akairo";
 const Tinder = new db.table("Tinder");
 const tinderSlogan = ["Match?", "Chat?", "Date?", "Flirt?", "Text?", "Tease?", "Chat up?", "Take a risk?"];
 // Some cringe anime wedding pictures

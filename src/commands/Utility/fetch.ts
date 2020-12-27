@@ -1,5 +1,5 @@
-import { Argument, Command } from "discord-akairo";
-import { GuildMember, MessageEmbed, Message, User } from "discord.js";
+import { Argument, Command } from "@cataclym/discord-akairo";
+import { MessageEmbed, Message, User } from "discord.js";
 import { flags } from "../../util/Util";
 
 

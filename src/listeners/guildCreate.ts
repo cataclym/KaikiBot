@@ -1,4 +1,4 @@
-import { Listener } from "discord-akairo";
+import { Listener } from "@cataclym/discord-akairo";
 import { Guild } from "discord.js";
 import { emoteDataBaseService } from "../util/functions";
 import { tinderStartupService } from "../util/tinder";

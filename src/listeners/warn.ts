@@ -1,4 +1,4 @@
-import { Listener } from "discord-akairo";
+import { Listener } from "@cataclym/discord-akairo";
 
 export default class WarnListener extends Listener {
 	constructor() {

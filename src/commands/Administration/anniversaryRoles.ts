@@ -1,5 +1,5 @@
 import { Guild, Message, MessageEmbed } from "discord.js";
-import { Command } from "discord-akairo";
+import { Command } from "@cataclym/discord-akairo";
 import db from "quick.db";
 import { GuildOnAddBirthdays } from "../../util/AnniversaryRoles.js";
 import { noArgGeneric } from "../../util/embeds";

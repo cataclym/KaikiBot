@@ -1,5 +1,5 @@
-import { Command } from "discord-akairo";
-import { GuildMember, Message, MessageEmbed, User } from "discord.js";
+import { Command } from "@cataclym/discord-akairo";
+import { Message, MessageEmbed, User } from "discord.js";
 import { errorColor } from "../../util/Util";
 
 export default class UnbanCommand extends Command {

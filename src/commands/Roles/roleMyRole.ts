@@ -1,5 +1,5 @@
-import { Command, PrefixSupplier } from "discord-akairo";
-import { GuildMember, Message, MessageEmbed, Guild } from "discord.js";
+import { Command, PrefixSupplier } from "@cataclym/discord-akairo";
+import { Message, MessageEmbed, Guild } from "discord.js";
 import { errorColor, trim } from "../../util/Util";
 import DB from "quick.db";
 const userRoles = new DB.table("userRoles");

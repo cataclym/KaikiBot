@@ -1,4 +1,4 @@
-import { Command, PrefixSupplier } from "discord-akairo";
+import { Command, PrefixSupplier } from "@cataclym/discord-akairo";
 import { GuildMember, MessageEmbed, Message, Role } from "discord.js";
 import { errorColor } from "../../util/Util";
 import DB from "quick.db";

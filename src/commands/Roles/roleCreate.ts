@@ -1,5 +1,5 @@
-import { Command } from "discord-akairo";
-import { GuildMember, Message, MessageEmbed } from "discord.js";
+import { Command } from "@cataclym/discord-akairo";
+import { Message, MessageEmbed } from "discord.js";
 import { noArgGeneric } from "../../util/embeds";
 import { errorColor } from "../../util/Util";
 

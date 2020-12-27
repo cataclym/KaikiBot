@@ -1,5 +1,5 @@
 import { fetchUserList } from "../../util/tinder.js";
-import { Command, Flag, Argument } from "discord-akairo";
+import { Command, Flag, Argument } from "@cataclym/discord-akairo";
 import { Message, User } from "discord.js";
 
 module.exports = class TinderListCommand extends Command {

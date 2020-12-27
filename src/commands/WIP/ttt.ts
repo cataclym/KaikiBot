@@ -1,5 +1,4 @@
-import { Command } from "discord-akairo";
-import { Message } from "discord.js";
+import { Command } from "@cataclym/discord-akairo";
 
 export default class TicTacToeCommand extends Command {
 	constructor() {
@@ -8,7 +7,7 @@ export default class TicTacToeCommand extends Command {
 			description: { description: "", usage: "" },
 		});
 	}
-	public async exec(message: Message): Promise<void> {
+	public async exec(): Promise<void> {
 		//
 	}
 }

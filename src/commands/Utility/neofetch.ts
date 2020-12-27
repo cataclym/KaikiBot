@@ -1,5 +1,5 @@
 /* eslint-disable no-useless-escape */
-import { Command } from "discord-akairo";
+import { Command } from "@cataclym/discord-akairo";
 import { exec } from "child_process";
 import { Message } from "discord.js";
 import { codeblock } from "../../util/Util";

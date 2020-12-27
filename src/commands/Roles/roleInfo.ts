@@ -1,7 +1,5 @@
-import { Command } from "discord-akairo";
-import { Role } from "discord.js";
-import { MessageEmbed } from "discord.js";
-import { Message } from "discord.js";
+import { Command } from "@cataclym/discord-akairo";
+import { Message, MessageEmbed, Role } from "discord.js";
 
 export default class RoleInfoCommand extends Command {
 	constructor() {

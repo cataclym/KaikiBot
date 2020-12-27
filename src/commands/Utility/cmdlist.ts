@@ -1,5 +1,5 @@
-import { Command, PrefixSupplier } from "discord-akairo";
-import { GuildMember, Message, MessageEmbed } from "discord.js";
+import { Command, PrefixSupplier } from "@cataclym/discord-akairo";
+import { Message, MessageEmbed } from "discord.js";
 
 module.exports = class commandsList extends Command {
 	constructor() {

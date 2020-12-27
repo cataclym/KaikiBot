@@ -1,7 +1,7 @@
-import { Command } from "discord-akairo";
+import { Command } from "@cataclym/discord-akairo";
 import { Message, MessageEmbed, Role, GuildMember } from "discord.js";
 import { noArgGeneric } from "../../util/embeds";
-import { errorColor, getMemberColorAsync, trim } from "../../util/Util";
+import { errorColor, trim } from "../../util/Util";
 
 export default class RoleRenameCommand extends Command {
 	constructor() {

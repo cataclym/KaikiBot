@@ -1,5 +1,5 @@
-import { Command } from "discord-akairo";
-import { GuildMember, User, Message, MessageEmbed } from "discord.js";
+import { Command } from "@cataclym/discord-akairo";
+import { User, Message, MessageEmbed } from "discord.js";
 
 export default class AvatarCommand extends Command {
 	constructor() {

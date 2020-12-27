@@ -2,7 +2,7 @@
 import db from "quick.db";
 const ReminderList = new db.table("ReminderList");
 import { Message, MessageEmbed } from "discord.js";
-import { Command, Flag, Argument, PrefixSupplier } from "discord-akairo";
+import { Command, Flag, Argument, PrefixSupplier } from "@cataclym/discord-akairo";
 import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
 import { trim } from "../../util/Util.js";
 module.exports = class TodoCommand extends Command {

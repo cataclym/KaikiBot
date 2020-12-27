@@ -1,4 +1,4 @@
-import { Listener } from "discord-akairo";
+import { Listener } from "@cataclym/discord-akairo";
 import { birthdayService } from "../util/AnniversaryRoles";
 import { tinderStartupService } from "../util/tinder";
 import { DailyResetTimer, emoteDataBaseService, startUp } from "../util/functions";

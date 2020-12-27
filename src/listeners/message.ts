@@ -1,4 +1,4 @@
-import { Listener } from "discord-akairo";
+import { Listener } from "@cataclym/discord-akairo";
 import { emoteReact, tiredNadekoReact, countEmotes } from "../util/functions";
 import { Message, MessageEmbed } from "discord.js";
 import { config } from "../config";

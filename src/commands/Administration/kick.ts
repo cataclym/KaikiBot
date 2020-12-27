@@ -1,4 +1,4 @@
-import { Command } from "discord-akairo";
+import { Command } from "@cataclym/discord-akairo";
 import { Guild } from "discord.js";
 import { MessageEmbed, Message, GuildMember } from "discord.js";
 import { errorColor } from "../../util/Util";

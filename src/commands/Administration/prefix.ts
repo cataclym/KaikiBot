@@ -1,6 +1,6 @@
 "use strict";
-import { Command } from "discord-akairo";
-import { GuildMember, Message, MessageEmbed } from "discord.js";
+import { Command } from "@cataclym/discord-akairo";
+import { Message, MessageEmbed } from "discord.js";
 import db from "quick.db";
 import { errorColor } from "../../util/Util.js";
 import { noArgGeneric } from "../../util/embeds.js";

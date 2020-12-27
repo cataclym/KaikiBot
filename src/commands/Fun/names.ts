@@ -1,7 +1,7 @@
-import { GuildMember, MessageEmbed, Message, User } from "discord.js";
+import { MessageEmbed, Message, User } from "discord.js";
 import { UserNickTable } from "../../util/functions";
 import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
-import { Command } from "discord-akairo";
+import { Command } from "@cataclym/discord-akairo";
 const arr = ["remove", "rem", "delete", "del"];
 
 module.exports = class NamesCommand extends Command {

@@ -1,4 +1,4 @@
-import { Listener } from "discord-akairo";
+import { Listener } from "@cataclym/discord-akairo";
 import { logger } from "../util/logger";
 
 export default class ShardReadyListener extends Listener {

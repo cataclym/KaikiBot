@@ -1,6 +1,6 @@
 {
   "name": "nadekosengokubot",
-  "version": "3.3.44-rl-hrchy",
+  "version": "3.3.45-akro-fx",
   "main": "./dist/index.js",
   "scripts": {
     "test": "echo \"Bypass build\" && node ./dist/index.js",
@@ -11,9 +11,9 @@
   "author": "Cataclym <ole.kh@hotmail.com>",
   "license": "MIT",
   "dependencies": {
+    "@cataclym/discord-akairo": "git+https://gitlab.com/cataclym/discord-akairo.git",
     "@cataclym/discord.js-pagination-ts-nsb": "git+https://gitlab.com/cataclym/discord-js-pagination.git",
     "canvas": "^2.6.1",
-    "discord-akairo": "^8.1.0",
     "discord.js": "^12.5.1",
     "image-size": "^0.9.3",
     "imagemin": "^6.0.0",
