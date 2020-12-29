@@ -1,6 +1,8 @@
 import sharp from "sharp";
 import fs from "fs";
-import gifsicle from "imagemin-gifsicle";
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import gifsicle from "gifsicle";
 import { GuildEmoji } from "discord.js";
 import util from "util";
 import { Message } from "discord.js";
@@ -22,7 +24,7 @@ export async function resizeImage(file: string, type: string, imgSize: number, m
 		if (msg) {
 			msg.channel.send("Processing...");
 		}
-		// This one is broken! Not sure how to fix...
+		// This one is broken! Not sure how to fix... // with some effort this "works".
 		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 		// @ts-ignore
 		await execFile(gifsicle, ["--resize-fit-width", imgSize, "-o", file, file]);
