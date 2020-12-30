@@ -1,4 +1,4 @@
-import { Command } from "discord-akairo";
+import { Command } from "@cataclym/discord-akairo";
 import { Message, MessageReaction } from "discord.js";
 import { noArgGeneric } from "../../util/embeds";
 

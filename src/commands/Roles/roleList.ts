@@ -1,7 +1,6 @@
 import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
-import { Command } from "discord-akairo";
+import { Command } from "@cataclym/discord-akairo";
 import { Role, MessageEmbed, Message } from "discord.js";
-import { getMemberColorAsync } from "../../util/Util";
 
 export default class RoleListCommand extends Command {
 	constructor() {
@@ -23,7 +22,7 @@ export default class RoleListCommand extends Command {
 				const dEmbed = new MessageEmbed()
 					.setTitle("Role list")
 					.setAuthor(message.guild?.name)
-					.setColor(await getMemberColorAsync(message))
+					.setColor(await message.getMemberColorAsync())
 					.setDescription(data.slice(p, i).join(", "));
 				pages.push(dEmbed);
 			}

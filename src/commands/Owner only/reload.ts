@@ -1,7 +1,6 @@
-import { Command } from "discord-akairo";
+import { Command } from "@cataclym/discord-akairo";
 import { Message, MessageEmbed } from "discord.js";
 import { noArgGeneric } from "../../util/embeds";
-import { getMemberColorAsync } from "../../util/Util";
 
 export default class ReloadCommand extends Command {
 	constructor() {
@@ -25,7 +24,7 @@ export default class ReloadCommand extends Command {
 			title: "Command reloaded",
 			description: command.filepath,
 			footer: { text: "Command: " + command.id },
-			color: await getMemberColorAsync(message),
+			color: await message.getMemberColorAsync(),
 		}));
 	}
 }

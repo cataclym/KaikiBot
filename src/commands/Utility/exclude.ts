@@ -1,7 +1,7 @@
-import { Command } from "discord-akairo";
+import { Command } from "@cataclym/discord-akairo";
 import { config } from "../../config.js";
 import { MessageEmbed, Message } from "discord.js";
-import { errorColor, getMemberColorAsync } from "../../util/Util";
+import { errorColor } from "../../util/Util";
 
 const errorEmbed = new MessageEmbed({
 	title: "Error!",
@@ -28,7 +28,7 @@ export default class ExcludeCommand extends Command {
 	}
 
 	public async exec(message: Message): Promise<Message | void> {
-		const color = await getMemberColorAsync(message);
+		const color = await message.getMemberColorAsync();
 		addedRoleEmbed.setColor(color);
 		removedRoleEmbed.setColor(color);
 		let excludedRole = message.guild?.roles.cache.find((r) => r.name === config.names);

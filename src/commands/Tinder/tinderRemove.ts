@@ -1,4 +1,4 @@
-import { Argument, ArgumentOptions, Command, Flag, PrefixSupplier } from "discord-akairo";
+import { Argument, ArgumentOptions, Command, Flag, PrefixSupplier } from "@cataclym/discord-akairo";
 import { Message } from "discord.js";
 import { MessageEmbed } from "discord.js";
 

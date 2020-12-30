@@ -1,7 +1,7 @@
-import { Command } from "discord-akairo";
+import { Command } from "@cataclym/discord-akairo";
 import { Collection, GuildMember, Role, Message, MessageEmbed } from "discord.js";
 import { noArgRole } from "../../util/embeds";
-import { errorColor, getMemberColorAsync } from "../../util/Util";
+import { errorColor } from "../../util/Util";
 const embed = new MessageEmbed({
 	color: errorColor,
 	description: "Couldn't delete roles!",
@@ -69,7 +69,7 @@ export default class RoleDeleteCommand extends Command {
 		}
 		else if (every.valueOf()) {
 			return message.channel.send(new MessageEmbed({
-				color: await getMemberColorAsync(message),
+				color: await message.getMemberColorAsync(),
 				description: `Deleted: ${roles.map(coll => coll.map(role => role.name)).join(", ")}`,
 			}));
 		}

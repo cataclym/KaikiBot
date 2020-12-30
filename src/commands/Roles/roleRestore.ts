@@ -1,7 +1,7 @@
-import { Command } from "discord-akairo";
+import { Command } from "@cataclym/discord-akairo";
 import { Message, MessageEmbed, GuildMember } from "discord.js";
 import db from "quick.db";
-import { errorColor, getMemberColorAsync } from "../../util/Util";
+import { errorColor } from "../../util/Util";
 const leaveRoleTable = new db.table("leaveRoleTable");
 
 export default class RestoreUserRoles extends Command {
@@ -28,7 +28,7 @@ export default class RestoreUserRoles extends Command {
 		if (leaveRoleTable.get(`${member.guild.id}.${member.id}`)) {
 			const savedRoles = leaveRoleTable.get(`${member.guild.id}.${member.id}`);
 			member.roles.add(savedRoles);
-			return message.channel.send(new MessageEmbed().setColor(await getMemberColorAsync(message)).setDescription(`Restored roles of ${member.user.tag}`));
+			return message.channel.send(new MessageEmbed().setColor(await message.getMemberColorAsync()).setDescription(`Restored roles of ${member.user.tag}`));
 		}
 
 		else {

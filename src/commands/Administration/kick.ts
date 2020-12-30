@@ -1,7 +1,7 @@
-import { Command } from "discord-akairo";
+import { Command } from "@cataclym/discord-akairo";
 import { Guild } from "discord.js";
 import { MessageEmbed, Message, GuildMember } from "discord.js";
-import { errorColor, getMemberColorAsync } from "../../util/Util";
+import { errorColor } from "../../util/Util";
 
 export default class KickCommand extends Command {
 	constructor() {
@@ -34,13 +34,15 @@ export default class KickCommand extends Command {
 		const guild = message.guild as Guild;
 		const guildClientMember = guild.me as GuildMember;
 
-		if (message.author.id != guild.ownerID && (message.member as GuildMember).roles.highest.comparePositionTo(member.roles.highest) > 0) {
+		if (message.author.id !== message.guild?.ownerID &&
+			(message.member as GuildMember).roles.highest.position <= member.roles.highest.position) {
+
 			return message.channel.send(new MessageEmbed({
 				color: errorColor,
 				description: "You don't have permissions to kick this member.",
 			}));
 		}
-		else if (guildClientMember.roles.highest.position < member.roles.highest.position) {
+		else if (guildClientMember.roles.highest.position <= member.roles.highest.position) {
 			return message.channel.send(new MessageEmbed({
 				color: errorColor,
 				description: "Sorry, I don't have permissions to kick this member.",
@@ -57,11 +59,12 @@ export default class KickCommand extends Command {
 			catch {
 				// ignored
 			}
-		});
+		})
+			.catch((err) => console.log(err));
 
 		return message.channel.send(new MessageEmbed({
 			title: "Kicked user",
-			color: await getMemberColorAsync(message),
+			color: await message.getMemberColorAsync(),
 			fields: [
 				{ name: "Username", value: member.user.username, inline: true },
 				{ name: "ID", value: member.user.id, inline: true },

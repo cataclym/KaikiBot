@@ -1,9 +1,8 @@
 "use strict";
-import { Command } from "discord-akairo";
-import { Message } from "discord.js";
-import { MessageEmbed } from "discord.js";
+import { Command } from "@cataclym/discord-akairo";
+import { Message, MessageEmbed } from "discord.js";
 import db from "quick.db";
-import { errorColor, getMemberColorAsync } from "../../util/Util.js";
+import { errorColor } from "../../util/Util.js";
 import { noArgGeneric } from "../../util/embeds.js";
 const guildConfig = new db.table("guildConfig");
 
@@ -28,7 +27,7 @@ export default class PrefixConfigCommand extends Command {
 				return message.channel.send(new MessageEmbed({
 					title: "Success!",
 					description: `Prefix has been set to \`${value}\` !`,
-					color: await getMemberColorAsync(message),
+					color: await message.getMemberColorAsync(),
 				}));
 			}
 			else {

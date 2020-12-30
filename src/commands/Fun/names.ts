@@ -1,10 +1,7 @@
-import { MessageEmbed, Message } from "discord.js";
+import { MessageEmbed, Message, User } from "discord.js";
 import { UserNickTable } from "../../util/functions";
-import { config } from "../../config";
 import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
-import { Command } from "discord-akairo";
-import { getMemberColorAsync } from "../../util/Util";
-import { User } from "discord.js";
+import { Command } from "@cataclym/discord-akairo";
 const arr = ["remove", "rem", "delete", "del"];
 
 module.exports = class NamesCommand extends Command {
@@ -32,10 +29,9 @@ module.exports = class NamesCommand extends Command {
 	}
 
 	public async exec(message: Message, { method, unionUser }: { method: boolean, unionUser: User}) {
-		const color = await getMemberColorAsync(message);
-		const user = unionUser || message.author;
-		// I hate this
-		// ??????????? // Guess this works.
+		const color = await message.getMemberColorAsync();
+		const user = !(message.content.trim().split(/ +/).length > 1) && !unionUser ? message.author : unionUser;
+
 		if (method) {
 			try {
 				if (UserNickTable.delete(`usernicknames.${message.member?.id}`)) {
@@ -49,24 +45,27 @@ module.exports = class NamesCommand extends Command {
 			}
 		}
 
-		if (!UserNickTable.has(`usernicknames.${user.id}`)) {
-			UserNickTable.push(`usernicknames.${user.id}`, user.username);
-		}
-		let AuthorDBName = UserNickTable.fetch(`usernicknames.${user.id}`);
-		AuthorDBName = [...new Set(AuthorDBName)];
+		if (user) {
+			if (!UserNickTable.has(`usernicknames.${user.id}`)) {
+				UserNickTable.push(`usernicknames.${user.id}`, user.username);
+			}
 
-		// Makes it look cleaner
-		let StringsAuthorDBName = AuthorDBName.join("¤").toString();
-		StringsAuthorDBName = StringsAuthorDBName.replace(/¤/g, ", ");
+			let AuthorDBName = UserNickTable.fetch(`usernicknames.${user.id}`);
+			AuthorDBName = [...new Set(AuthorDBName)];
 
-		const pages = [];
-		for (let i = 2047, p = 0; p < StringsAuthorDBName.length; i = i + 2047, p = p + 2047) {
-			pages.push(new MessageEmbed()
-				.setTitle(`${user.username}'s past names`)
-				.setColor(color)
-				.setThumbnail(user.displayAvatarURL({ dynamic: true }))
-				.setDescription(StringsAuthorDBName.slice(p, i)));
+			// Makes it look cleaner
+			let StringsAuthorDBName = AuthorDBName.join("¤").toString();
+			StringsAuthorDBName = StringsAuthorDBName.replace(/¤/g, ", ");
+
+			const pages = [];
+			for (let i = 2048, p = 0; p < StringsAuthorDBName.length; i = i + 2048, p = p + 2048) {
+				pages.push(new MessageEmbed()
+					.setTitle(`${user.username}'s past names`)
+					.setColor(color)
+					.setThumbnail(user.displayAvatarURL({ dynamic: true }))
+					.setDescription(StringsAuthorDBName.slice(p, i)));
+			}
+			return editMessageWithPaginatedEmbeds(message, pages, {});
 		}
-		return editMessageWithPaginatedEmbeds(message, pages, {});
 	}
 };

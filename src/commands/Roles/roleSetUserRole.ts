@@ -1,6 +1,6 @@
-import { Command, PrefixSupplier } from "discord-akairo";
+import { Command, PrefixSupplier } from "@cataclym/discord-akairo";
 import { GuildMember, MessageEmbed, Message, Role } from "discord.js";
-import { errorColor, getMemberColorAsync } from "../../util/Util";
+import { errorColor } from "../../util/Util";
 import DB from "quick.db";
 const userRoles = new DB.table("userRoles");
 
@@ -46,7 +46,7 @@ export default class SetUserRoleCommand extends Command {
 
 		const embedSuccess = async (text: string) => {
 			return new MessageEmbed()
-				.setColor(await getMemberColorAsync(message))
+				.setColor(await message.getMemberColorAsync())
 				.setDescription(text);
 		};
 

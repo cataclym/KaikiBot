@@ -1,8 +1,8 @@
 import { poems } from "../util/poems";
 import { MessageEmbed, Message, User } from "discord.js";
-import { errorColor, getMemberColorAsync } from "./Util";
+import { errorColor } from "./Util";
 import db from "quick.db";
-import { Command, PrefixSupplier } from "discord-akairo";
+import { Command, PrefixSupplier } from "@cataclym/discord-akairo";
 const Tinder = new db.table("Tinder");
 const tinderSlogan = ["Match?", "Chat?", "Date?", "Flirt?", "Text?", "Tease?", "Chat up?", "Take a risk?"];
 // Some cringe anime wedding pictures
@@ -46,7 +46,7 @@ async function tinderRollEmbed(message: Message, randomUsr: User, RollsLikes?: s
 		member = message.guild?.members.cache.get(randomUsr.id);
 
 	return new MessageEmbed()
-		.setColor(await getMemberColorAsync(message))
+		.setColor(await message.getMemberColorAsync())
 		.setAuthor(tinderSlogan[Math.floor(Math.random() * tinderSlogan.length)])
 		.setTitle(randomUsr.username)
 		.setDescription(member ? "**Nickname**\n" + member?.displayName : "🌐")
@@ -71,7 +71,7 @@ const noArgGeneric = (message: Message): MessageEmbed => {
 	let usage = cmd?.description.usage;
 
 	if (usage) {
-		if (usage instanceof Array) {
+		if (Array.isArray(usage)) {
 			usage = usage.map(u => `${prefix}${cmd?.id} ${u}`).join("\n");
 		}
 		else {

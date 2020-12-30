@@ -1,7 +1,7 @@
 "use strict";
 import db from "quick.db";
 const Tinder = new db.table("Tinder");
-import { Command } from "discord-akairo";
+import { Command } from "@cataclym/discord-akairo";
 import { DMEMarry } from "../../util/embeds.js";
 import { MessageEmbed } from "discord.js";
 import { Message, MessageReaction, User } from "discord.js";

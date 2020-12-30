@@ -1,8 +1,9 @@
-import { Listener } from "discord-akairo";
+import { Listener } from "@cataclym/discord-akairo";
 import { emoteReact, tiredNadekoReact, countEmotes } from "../util/functions";
 import { Message, MessageEmbed } from "discord.js";
 import { config } from "../config";
 import { standardColor, trim } from "../util/Util";
+import { logger } from "../util/logger";
 
 export default class MessageListener extends Listener {
 	constructor() {
@@ -13,6 +14,9 @@ export default class MessageListener extends Listener {
 	}
 
 	public async exec(message: Message): Promise<void | Message> {
+
+
+		let attachmentLinks = "";
 
 		if (message.webhookID || message.author.bot) return;
 
@@ -27,27 +31,35 @@ export default class MessageListener extends Listener {
 			// I wont wanna see my own msgs, thank u
 			if (message.author.id === config.ownerID) return;
 
-			console.log("message | DM from " + message.author.tag);
+			logger.info(`message | DM from ${message.author.tag} [${message.author.id}]`);
 
 			const embed = new MessageEmbed({
 				color: standardColor,
-				author: { name: message.author.tag },
+				author: { name: `${message.author.tag} [${message.author.id}]` },
 				description: trim(message.content, 2048),
 			});
 
+			// Attachments (Terrible, I know)
 			const attachments = message.attachments;
 
 			if (attachments.first()?.url) {
 
-				embed.setImage(attachments.first()?.url as string).setTitle(attachments.first()?.url as string);
-
 				const urls: string[] = attachments.map(a => a.url);
 
-				embed.setFooter(urls.join("\n"));
+				const restLinks = [...urls];
+				restLinks.shift();
+				attachmentLinks = restLinks.join("\n");
+
+				const firstAttachment = attachments.first()?.url as string;
+
+				embed
+					.setImage(firstAttachment)
+					.setTitle(firstAttachment)
+					.setFooter(urls.join("\n"));
 
 			}
 
-			return this.client.users.cache.get(config.ownerID)?.send(embed);
+			return this.client.users.cache.get(config.ownerID)?.send({ content: attachmentLinks ?? null, embed: embed });
 		}
 	}
 }

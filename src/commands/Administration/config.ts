@@ -1,10 +1,9 @@
 "use strict";
-import { Command, Flag, Argument } from "discord-akairo";
+import { Command, Flag, Argument } from "@cataclym/discord-akairo";
 import { Message, MessageEmbed } from "discord.js";
 import db from "quick.db";
 import { noArgGeneric } from "../../util/embeds";
 import { config } from "../../config";
-import { getMemberColorAsync } from "../../util/Util";
 const guildConfig = new db.table("guildConfig");
 
 export default class ConfigCommand extends Command {
@@ -40,7 +39,7 @@ export default class ConfigCommand extends Command {
 		const enabledAnniversaryGuilds = guildConfig.get("anniversary");
 		const guildPrefix = guildConfig.get(`${message.guild?.id}.prefix`) as string | undefined;
 
-		const embed = new MessageEmbed().setColor(await getMemberColorAsync(message));
+		const embed = new MessageEmbed().setColor(await message.getMemberColorAsync());
 
 		let dadbotEnabled = false;
 		let anniversaryRolesEnabled = false;

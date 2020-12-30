@@ -1,7 +1,6 @@
-import { Command } from "discord-akairo";
+import { Command } from "@cataclym/discord-akairo";
 import { MessageEmbed, Message, Role } from "discord.js";
 import { noArgRole } from "../../util/embeds";
-import { getMemberColorAsync } from "../../util/Util";
 
 export default class RoleMentionableCommand extends Command {
 	constructor() {
@@ -31,7 +30,7 @@ export default class RoleMentionableCommand extends Command {
 		}
 
 		return message.channel.send(new MessageEmbed({
-			color: await getMemberColorAsync(message),
+			color: await message.getMemberColorAsync(),
 			description: `Toggled ${role.name}'s mentionable status to ${!role.mentionable}.`,
 		}));
 

@@ -1,4 +1,4 @@
-import { Command } from "discord-akairo";
+import { Command } from "@cataclym/discord-akairo";
 import { Channel, TextChannel } from "discord.js";
 
 export default class ClearCommand extends Command {

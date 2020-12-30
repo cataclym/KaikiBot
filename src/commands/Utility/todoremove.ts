@@ -1,7 +1,7 @@
 "use strict";
 import db from "quick.db";
 const ReminderList = new db.table("ReminderList");
-import { Command, Argument } from "discord-akairo";
+import { Command, Argument } from "@cataclym/discord-akairo";
 import { Message } from "discord.js";
 module.exports = class todoRemoveCommand extends Command {
 	constructor() {

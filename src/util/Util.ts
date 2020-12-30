@@ -101,7 +101,8 @@ export function trim(str: string, max: number): string {
  string
  */
 export async function codeblock(
-	language:
+	code: string,
+	language?:
         | "asciidoc"
         | "autohotkey"
         | "bash"
@@ -121,7 +122,6 @@ export async function codeblock(
         | "tex"
         | "xl"
         | "xml",
-	code: string,
 ): Promise<string> {
-	return `\`\`\`${language}\n${code}\`\`\``;
+	return `\`\`\`${language ?? ""}\n${code}\`\`\``;
 }

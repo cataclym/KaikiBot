@@ -1,13 +1,9 @@
 import { Message, Client, Guild } from "discord.js";
 import { config } from "../config";
 import db from "quick.db";
+import { logger } from "./logger";
 const Tinder = new db.table("Tinder"), Emotes = new db.table("Emotes"), guildConfig = new db.table("guildConfig"), UserNickTable = new db.table("UserNickTable");
 const words = ["shit", "fuck", "stop", "dont", "kill", "don't", "don`t", "fucking", "shut", "shutup", "shuttup", "trash", "bad", "hate", "stupid", "dumb", "suck", "sucks"];
-
-// check for special role
-function roleCheck(message: Message): boolean {
-	return !message.member?.roles.cache.find((r) => r.name === config.names);
-}
 
 // Reacts with emote to specified words
 async function emoteReact(message: Message): Promise<void> {
@@ -53,7 +49,7 @@ async function ResetRolls(): Promise<void> {
 		Tinder.set(`likes.${key}`, 3);
 		Tinder.set(`rolls.${key}`, 15);
 	}
-	console.log("🟦 resetRolls | Rolls and likes have been reset | " + Date() + "\n");
+	logger.info("resetRolls | Rolls and likes have been reset | " + Date() + "\n");
 }
 
 async function DailyResetTimer(): Promise<void> {
@@ -68,8 +64,8 @@ function timeToMidnight(): number {
 	return (-d + d.setHours(24, 0, 0, 0));
 }
 
-async function emoteDataBaseService(input: Client | Guild): Promise<void> {
-	console.log("🟦 emoteDataBaseService | Checking for new emotes-");
+async function emoteDataBaseService(input: Client | Guild): Promise<number> {
+
 	let i = 0;
 	if (input instanceof Client) {
 		input.guilds.cache.forEach(guild => {
@@ -89,16 +85,16 @@ async function emoteDataBaseService(input: Client | Guild): Promise<void> {
 		});
 	}
 	else {
-		return console.error("🔴 emoteDataBaseService | error");
+		throw new Error("emoteDataBaseService | error");
 	}
-	console.log("🟩 emoteDataBaseService | ...done! " + i + " new emotes added!");
+	return i;
 }
 
 // Yeah this is stupid.
 const startUp = async (): Promise<void> => {
 	if (!guildConfig.get("dadbot")) { guildConfig.set("dadbot", ["10000000"]); }
 	if (!guildConfig.get("anniversary")) { guildConfig.set("anniversary", ["10000000"]); }
-	console.log("🟩 Startup finished.");
+	return Promise.resolve();
 };
 
 async function countEmotes(message: Message): Promise<void> {
@@ -128,6 +124,6 @@ function msToTime(duration: number): string {
 }
 
 export {
-	emoteReact, roleCheck, UserNickTable, tiredNadekoReact,
+	emoteReact, UserNickTable, tiredNadekoReact,
 	ResetRolls, DailyResetTimer, emoteDataBaseService, countEmotes, msToTime, timeToMidnight, startUp,
 };

@@ -1,7 +1,6 @@
 import { MessageEmbed } from "discord.js";
-import { Command } from "discord-akairo";
+import { Command } from "@cataclym/discord-akairo";
 import { Message } from "discord.js";
-import { getMemberColorAsync } from "../../util/Util.js";
 
 module.exports = class RandomNumberCommand extends Command {
 	constructor() {
@@ -24,11 +23,10 @@ module.exports = class RandomNumberCommand extends Command {
 		});
 	}
 	public async exec(message: Message, args: any) {
-		const color = await getMemberColorAsync(message),
-			embed = new MessageEmbed({
-				title: "Result:",
-				color,
-			});
+		const embed = new MessageEmbed({
+			title: "Result:",
+			color: await message.getMemberColorAsync(),
+		});
 		function getRndInteger(min: number, max: number) {
 			return Math.floor(Math.random() * (max - min + 1)) + min;
 		}

@@ -1,9 +1,9 @@
-import { Argument, Command } from "discord-akairo";
+import { Argument, Command } from "@cataclym/discord-akairo";
 import { Message } from "discord.js";
 import sizeOf from "image-size";
 import { noArgGeneric } from "../../util/embeds";
 import { deleteImage, getFileOut, resizeImage, saveEmoji, saveFile } from "../../util/Emote";
-const imgRegex = /(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|gif|png)/g;
+const imgRegex = /(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|gif|png)/gi;
 // Credit to https://github.com/Snitt/emojibotten/blob/master/commands/management/emoji.js
 export default class AddEmotesCommand extends Command {
 	constructor() {

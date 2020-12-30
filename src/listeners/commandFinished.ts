@@ -1,6 +1,7 @@
 /* eslint-disable indent */
-import { Command, Listener } from "discord-akairo";
+import { Command, Listener } from "@cataclym/discord-akairo";
 import { Message } from "discord.js";
+import { logger } from "../util/logger";
 
 export default class commandFinishedListener extends Listener {
 	constructor() {
@@ -14,7 +15,7 @@ export default class commandFinishedListener extends Listener {
 		const date = new Date().toLocaleString("en-GB", { hour: "2-digit", minute: "2-digit", second: "2-digit", weekday: "short", year: "numeric", month: "numeric", day: "numeric" });
 
 		if (message.channel.type !== "dm") {
-			console.log(
+			logger.low(
 	`🟢	${date} CommandFinished | ${Date.now() - message.createdTimestamp}ms
 	Guild: ${message.guild?.name} [${message.guild?.id}]
 	Channel: #${message.channel.name} [${message.channel.id}]
@@ -22,7 +23,7 @@ export default class commandFinishedListener extends Listener {
 	Executed ${command?.id} | "${message.content}"`);
 		}
 		else {
-			console.log(
+			logger.low(
 	`🟢	${date} CommandFinished | ${Date.now() - message.createdTimestamp}ms
 	Channel: PRIVATE [${message.channel.id}]
 	User: ${message.author.username} [${message.author.id}]

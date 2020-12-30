@@ -1,7 +1,7 @@
-import { Command } from "discord-akairo";
+import { Command } from "@cataclym/discord-akairo";
 import { Message, MessageEmbed } from "discord.js";
 import { noArgGeneric } from "../../util/embeds";
-import { errorColor, getMemberColorAsync } from "../../util/Util";
+import { errorColor } from "../../util/Util";
 
 export default class RoleCreateCommand extends Command {
 	constructor() {
@@ -34,7 +34,7 @@ export default class RoleCreateCommand extends Command {
 			return message.channel.send(new MessageEmbed({
 				title: "Success!",
 				description: `Created ${createdRole}!`,
-				color: await getMemberColorAsync(message),
+				color: await message.getMemberColorAsync(),
 			}));
 		}
 

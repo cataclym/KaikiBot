@@ -1,9 +1,8 @@
-import { Command, PrefixSupplier } from "discord-akairo";
+import { Command, PrefixSupplier } from "@cataclym/discord-akairo";
 import { Message, MessageEmbed } from "discord.js";
 import db from "quick.db";
-import { getMemberColorAsync } from "../../util/Util.js";
 const guildConfig = new db.table("guildConfig");
-import { updateVar } from "../../Extensions/Guild";
+import { updateVar } from "../../Extensions/Discord";
 import { noArgGeneric } from "../../util/embeds.js";
 
 module.exports = class DadBotConfigCommand extends Command {
@@ -23,7 +22,7 @@ module.exports = class DadBotConfigCommand extends Command {
 	public async exec(message: Message, { value }: { value: string}) {
 		const enabledGuilds = guildConfig.get("dadbot");
 
-		const embed = new MessageEmbed().setColor(await getMemberColorAsync(message));
+		const embed = new MessageEmbed().setColor(await message.getMemberColorAsync());
 		if (value) {
 			switch (value) {
 				case ("enable"):

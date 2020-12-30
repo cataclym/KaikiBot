@@ -1,6 +1,6 @@
-import { Command } from "discord-akairo";
+import { Command } from "@cataclym/discord-akairo";
 import { Message, MessageEmbed, Role, GuildMember } from "discord.js";
-import { errorColor, getMemberColorAsync } from "../../util/Util";
+import { errorColor } from "../../util/Util";
 
 export default class RoleRemoveCommand extends Command {
 	constructor() {
@@ -40,7 +40,7 @@ export default class RoleRemoveCommand extends Command {
 				return message.channel.send(new MessageEmbed({
 					title: "Success!",
 					description: `Removed ${role} from ${member.user}`,
-					color: await getMemberColorAsync(message),
+					color: await message.getMemberColorAsync(),
 				}));
 			}
 			else {

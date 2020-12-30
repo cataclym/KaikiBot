@@ -1,7 +1,6 @@
 import { MessageEmbed } from "discord.js";
-import { Command } from "discord-akairo";
+import { Command } from "@cataclym/discord-akairo";
 import { Message } from "discord.js";
-import { getMemberColorAsync } from "../../util/Util";
 
 module.exports = class KillBotProcess extends Command {
 	constructor() {
@@ -15,7 +14,7 @@ module.exports = class KillBotProcess extends Command {
 		const embed = new MessageEmbed()
 			.setAuthor("Dying", message.client.user?.displayAvatarURL({ dynamic: true }))
 			.addField("Shutting down", "See you later", false)
-			.setColor(await getMemberColorAsync(message));
+			.setColor(await message.getMemberColorAsync());
 		await message.channel.send(embed);
 		console.log("Shutting down");
 		process.exit(1);

@@ -1,16 +1,16 @@
 import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
 import fetch from "node-fetch";
-import { Command } from "discord-akairo";
+import { Command } from "@cataclym/discord-akairo";
 import { MessageEmbed, Message } from "discord.js";
 import querystring from "querystring";
-import { errorColor, getMemberColorAsync, trim } from "../../util/Util";
+import { errorColor, trim } from "../../util/Util";
 import { noArgGeneric } from "../../util/embeds";
 
 export default class UrbanDictCommand extends Command {
 	constructor() {
 		super("urbandict", {
 			aliases: ["urbandict", "urban", "ud"],
-			description: { description: "Searches Urban Dictionary for a word or sentence", usage: "Watermelon" },
+			description: { description: "Searches Urban Dictionary for a word or sentence", usage: ["Watermelon", "anime"] },
 			args: [
 				{
 					id: "term",
@@ -32,7 +32,7 @@ export default class UrbanDictCommand extends Command {
 				color: errorColor,
 			}));
 		}
-		const color = await getMemberColorAsync(message);
+		const color = await message.getMemberColorAsync();
 		const pages: MessageEmbed[] = [];
 		list.forEach(async (result: Record<string, string>) => {
 			return pages.push(new MessageEmbed()
