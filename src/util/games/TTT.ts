@@ -4,110 +4,175 @@ const numbers = ["1", "2", "3", "4", "5", "6", "7", "8", "9"];
 const winningCombos = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]];
 
 const drawMessage = "Game ended in a draw!";
+type playerType = { player: GuildMember, color: string, sign: string };
 
 export default class TicTacToe {
-	p1: GuildMember;
-	p2: GuildMember;
+	p1: playerType;
+	p2: playerType;
+	currentPlayer: playerType;
 	message: Message;
 	embed: Promise<Message>;
-	currentPlayerTurn: (p: GuildMember) => Promise<Message>;
+	currentPlayerTurn: (p: GuildMember, m: Message) => Promise<Message>;
 	winningMessage: (p: GuildMember) => string;
 	timedWinMessage: (p: GuildMember) => string;
 	stateDict: {[index: number]: string};
+	active: boolean;
 	/**
 	 * Initializes a TicTacToe game.
-	 * @param p1 @type {GuildMember}
-	 * @param p2 @type {GuildMember}
+	 * @param player1 @type {GuildMember}
+	 * @param player2 @type {GuildMember}
 	 * @param message @type {Message}
 	 */
-	constructor(p1: GuildMember, p2: GuildMember, message: Message) {
-		this.p1 = p1;
-		this.p2 = p2;
+
+	constructor(player1: GuildMember, player2: GuildMember, message: Message) {
+		this.p1 = { player: player1, color: "#78b159", sign: "p1" };
+		this.p2 = { player: player2, color: "#dd2e44", sign: "p2" };
+		this.currentPlayer = this.p2;
 		this.message = message;
 		this.stateDict = {
 			0: "1⃣", 1: "2⃣", 2: "3⃣",
 			3: "4⃣", 4: "5⃣", 5: "6⃣",
 			6: "7⃣", 7: "8⃣", 8: "9⃣",
 		};
+		this.active = true;
 
 		this.start();
 
-		this.embed = this.message.channel.send(`${this.p2} starts!`, new MessageEmbed({
-			description: JSON.stringify(this.stateDict, null, 4),
+		this.embed = this.message.channel.send(`${this.p2.player} starts!`, new MessageEmbed({
+			description: Object.values(this.stateDict).map((v, i) => [2, 5].includes(i) ? v + "\n" : v).join(""),
+			color: this.p2.color,
 		}));
 
-		this.currentPlayerTurn = (p: GuildMember) => this.message.channel.send(`It's ${p}'s turn`).then(m => m.delete({ timeout: 2500 }));
-		this.winningMessage = (p: GuildMember) => `Player <@${p.id}> has won!`;
-		this.timedWinMessage = (p: GuildMember) => `Player <@${p.id}> didn't make a move for 20 seconds, making <@${p.id === this.p1.id ? this.p1.id : this.p2.id}>`;
-
+		this.currentPlayerTurn = async (p: GuildMember, m: Message) => this.message.channel.send(`It's ${p}'s turn`).then(async (m2) => {
+			m?.delete({ timeout: 3500 });
+			return m2.delete({ timeout: 4500 });
+		});
+		this.winningMessage = (p: GuildMember) => `Player ${p} has won!`;
+		this.timedWinMessage = (p: GuildMember) => `Player ${p} didn't make a move for 20 seconds, making <@${p.id !== this.p1.player.id ? this.p1.player.id : this.p2.player.id}> the winner.`;
 	}
+
 	private start() {
 		this.awaitInput(this.p2);
 	}
-	private async awaitInput(player: GuildMember, updateEmbed?: boolean): Promise<number | void> {
 
-		if (updateEmbed) {
-			(await this.embed).edit(null, new MessageEmbed({
-				description: Object.values.replace("p1", "🟩").replace("p2", "🟦"),
-			}));
-		}
+	private async awaitInput(playerObject: playerType): Promise<number | void | Message> {
+
+		if (!this.active) return;
+
+		console.log("active, awaiting: ", playerObject.player.user.username);
+
+		const { player } = playerObject;
+
 
 		const filter = (m: Message) => numbers.includes(m.content) && m.member?.id === player.id;
-		const collector = this.message.channel.createMessageCollector(filter, { time: 20000 });
 
-		collector.once("collect", (m: Message) => {
-			return this.input(player, parseInt(m.content) - 1);
-		});
-
-		collector.on("end", () => {
-			return this.timedWin(player);
-		});
+		this.message.channel.awaitMessages(filter, { max: 1, time: 20000, errors: ["time"] })
+			.then(collected => {
+				return this.input(playerObject, collected.first() as Message);
+			})
+			.catch(() => {
+				return this.timedWin(playerObject);
+			});
 	}
 
-	private async input(player: GuildMember, input: number) {
-		const playerSignature = player.id === this.p1.id ? "p1" : "p2";
-		this.stateDict[input] = playerSignature;
-		if (this.checkWinningCombination(playerSignature)) {
-			return this.win(player);
+	private async input(playerObject: playerType, m: Message) {
+
+
+		console.log("input", playerObject.player.user.username);
+
+		const { player, sign } = playerObject;
+
+		if (!numbers.includes(m.content.trim())) {
+			m.delete();
+			return this.awaitInput(playerObject);
 		}
-		else if (this.checkTie()) {
+
+		const int = parseInt(m.content) - 1;
+
+		if (this.stateDict[int] === ("p1" || "p2")) {
+			m.delete();
+			return this.awaitInput(playerObject);
+		}
+
+		this.stateDict[int] = sign;
+		this.currentPlayer = player.id !== this.p1.player.id ? this.p1 : this.p2;
+		this.updateEmbed(this.currentPlayer);
+		this.currentPlayerTurn(this.currentPlayer.player, m);
+
+		if (this.checkWin(sign)) {
+			return this.win(playerObject);
+		}
+
+		else if (this.checkTie("p1" || "p2")) {
 			return this.tie();
 		}
-		const currentPlayer = player.id === this.p1.id ? this.p1 : this.p2;
-		this.currentPlayerTurn(currentPlayer);
-		return this.awaitInput(currentPlayer, true);
+
+		return this.awaitInput(this.currentPlayer);
 	}
 
-	private checkWinningCombination(str: string) {
+	private async updateEmbed(playerObject: playerType): Promise<Message | NodeJS.Timeout> {
+
+		const msg = await this.embed;
+		const finalString = `It's ${playerObject.player}'s turn to make a move.`;
+		const finalEmbed = new MessageEmbed({
+			description: Object.values(this.stateDict).map((v, i) => [2, 5].includes(i) ? v + "\n" : v).join("").replace(/p1/g, "🟩").replace(/p2/g, "🟥"),
+			color: playerObject.color,
+		});
+
+		if (msg.editedTimestamp) {
+
+			if ((Date.now() - msg.editedTimestamp) > 3500) {
+				return (await this.embed).edit(finalString, finalEmbed);
+			}
+
+			else {
+				return setTimeout(async () => {
+					return this.updateEmbed(this.currentPlayer);
+				}, 3500);
+			}
+		}
+
+		else {
+			return (await this.embed).edit(finalString, finalEmbed);
+		}
+	}
+
+	private checkWin(value: string) {
 		return winningCombos.some(arr => {
-			if (arr.every(num => this.stateDict[num] === str)) {
+			if (arr.every(num => this.stateDict[num] === value)) {
 				return true;
 			}
 			return false;
 		});
 	}
 
-	private checkTie() {
-		return winningCombos.some(arr => {
-			if (arr.every(num => this.stateDict[num] === ("p1" || "p2"))) {
+	private checkTie(value: string) {
+		return Object.values(this.stateDict).every(str => {
+			if (str === value) {
 				return true;
 			}
 			return false;
 		});
 	}
 
-	private win(winner: GuildMember) {
-		this.message.channel.send(this.winningMessage(winner));
-		return this.message.delete();
+	private win(winner: playerType) {
+		if (this.active) {
+			this.active = false;
+			return this.message.channel.send(this.winningMessage(winner.player));
+		}
 	}
 
-	private timedWin(loser: GuildMember) {
-		this.timedWinMessage(loser);
-		return this.message.delete();
+	private timedWin(loser: playerType) {
+		if (this.active) {
+			this.active = false;
+			return this.message.channel.send(this.timedWinMessage(loser.player));
+		}
 	}
 
 	private tie() {
-		this.message.channel.send(drawMessage);
-		return this.message.delete();
+		if (this.active) {
+			this.active = false;
+			return this.message.channel.send(drawMessage);
+		}
 	}
 }
