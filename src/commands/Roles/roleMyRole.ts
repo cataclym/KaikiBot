@@ -2,6 +2,7 @@ import { Command, PrefixSupplier } from "@cataclym/discord-akairo";
 import { Message, MessageEmbed, Guild } from "discord.js";
 import { errorColor, trim } from "../../nsb/Util";
 import DB from "quick.db";
+import { resolveColor } from "../../nsb/Color";
 const userRoles = new DB.table("userRoles");
 
 export default class MyRoleCommand extends Command {
@@ -32,14 +33,14 @@ export default class MyRoleCommand extends Command {
 			],
 		});
 	}
-	public async exec(message: Message, { name, color }: { name?: string | null, color?: string | null }): Promise<Message | void> {
+	public async exec(message: Message, { name, color }: { name?: string, color?: string }): Promise<Message | void> {
 
 		const guild = (message.guild as Guild);
 
-		const embedFail = async (text: string) => {
+		const embedFail = async (text?: string) => {
 			return new MessageEmbed()
 				.setColor(errorColor)
-				.setDescription(text);
+				.setDescription(text ?? "You do not have a role!");
 		};
 
 		const embedSuccess = async (text: string) => {
@@ -50,7 +51,7 @@ export default class MyRoleCommand extends Command {
 
 		const res = userRoles.get(`${message.guild?.id}.${message.author.id}`);
 
-		if (!res) return message.channel.send(await embedFail("You do not have a role!"));
+		if (!res) return message.channel.send(await embedFail());
 
 		const myRole = guild.roles.cache.get(res[0]);
 		name = name?.slice(5);
@@ -59,8 +60,13 @@ export default class MyRoleCommand extends Command {
 
 			if (!myRole) {
 				userRoles.delete(`${guild.id}.${res[0]}`);
-				return message.channel.send(await embedFail("You do not have a role!"));
+				return message.channel.send(await embedFail());
 			}
+
+			const botRole = message.guild?.me?.roles.highest;
+			const isPosition = botRole?.comparePositionTo(myRole);
+
+			if (isPosition && isPosition <= 0) return message.channel.send(await embedFail("This role is higher than me, I cannot edit this role!"));
 
 			if (name) {
 				const oldName = myRole.name;
@@ -69,22 +75,23 @@ export default class MyRoleCommand extends Command {
 			}
 
 			if (color) {
-				const hexCode = color,
+				const hexCode = await resolveColor(color),
 					oldHex = myRole.hexColor;
 				await myRole.setColor(hexCode);
-				await message.channel.send(await embedSuccess(`You have changed ${myRole.name}'s color from ${oldHex} to #${hexCode}!`));
+				await message.channel.send(await embedSuccess(`You have changed ${myRole.name}'s color from ${oldHex} to ${hexCode}!`));
 			}
 		}
+
 		else {
 			if (!myRole) {
 				userRoles.delete(`${guild.id}.${res[0]}`);
-				return message.channel.send(await embedFail("You do not have a role!"));
+				return message.channel.send(await embedFail());
 			}
 
 			message.channel.send(new MessageEmbed()
 				.setAuthor(`Current role assigned to ${message.author.username}`,
 					guild.iconURL({ size: 2048, dynamic: true, format: "png" || "gif" })
-				|| message.author.displayAvatarURL({ size: 2048, dynamic: true, format: "png" || "gif" }))
+						|| message.author.displayAvatarURL({ size: 2048, dynamic: true, format: "png" || "gif" }))
 				.setColor(myRole.hexColor)
 				.addField("Name", `${myRole.name}`, true)
 				.addField("Colour", `${myRole.hexColor}`, true));

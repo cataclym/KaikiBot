@@ -53,26 +53,27 @@ export default class SetUserRoleCommand extends Command {
 		const botRole = message.guild?.me?.roles.highest;
 		const isPosition = botRole?.comparePositionTo(role);
 
-		if (isPosition && isPosition <= 0) return message.channel.send(await embedFail("This role is higher than me, I cannot add this role!"));
+		if (!isPosition || (isPosition <= 0)) return message.channel.send(await embedFail("This role is higher than me, I cannot add this role!"));
 
 		const res = userRoles.get(`${message.guild?.id}.${member.id}`);
 
 		if (res) {
-			if (userRoles.delete(`${message.guild?.id}.${member.id}`)) {
+			const userRole = message.guild?.roles.cache.get(res[0]);
 
-				member.roles.remove(role);
-				message.channel.send(await embedSuccess(`Removed role ${role.name} from ${member.user.username}`));
+			if (userRoles.delete(`${message.guild?.id}.${member.id}`)) {
+				await member.roles.remove(userRole ?? res);
+				return message.channel.send(await embedSuccess(`Removed role ${(userRole)?.name ?? res} from ${member.user.username}`));
 			}
+
 			else {
 				throw new Error("Failed to delete user role...?");
 			}
 		}
-		else if (!res) {
 
+		else {
 			userRoles.push(`${message.guild?.id}.${member.id}`, `${role.id}`);
-
-			member.roles.add(role);
-			message.channel.send(await embedSuccess(`Adding role ${role.name} to ${member.user.username}`));
+			await member.roles.add(role);
+			return message.channel.send(await embedSuccess(`Adding role ${role.name} to ${member.user.username}`));
 		}
 	}
 }
