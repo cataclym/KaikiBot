@@ -18,7 +18,7 @@ export default class TicTacToeCommand extends Command {
 			],
 		});
 	}
-	public async exec(message: Message, { player2 } : { player2: GuildMember }): Promise<TicTacToe> {
-		return new TicTacToe(message.member as GuildMember, player2, message);
+	public async exec(message: Message, { player2 } : { player2: GuildMember }): Promise<void> {
+		// return new TicTacToe(message.member as GuildMember, player2, message);
 	}
 }
