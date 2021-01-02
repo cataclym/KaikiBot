@@ -1,7 +1,7 @@
 import { Command } from "@cataclym/discord-akairo";
 import { Message, MessageEmbed } from "discord.js";
-import { noArgGeneric } from "../../util/embeds";
-import { errorColor } from "../../util/Util";
+import { noArgGeneric } from "../../nsb/Embeds";
+import { errorColor } from "../../nsb/Util";
 
 export default class RoleCreateCommand extends Command {
 	constructor() {

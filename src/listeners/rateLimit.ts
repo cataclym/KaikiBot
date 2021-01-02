@@ -1,4 +1,5 @@
 import { Listener } from "@cataclym/discord-akairo";
+import { logger } from "../nsb/Logger";
 
 export default class RateLimitListener extends Listener {
 	constructor() {
@@ -11,7 +12,7 @@ export default class RateLimitListener extends Listener {
 
 	public async exec({ timeout, limit, method, path, route }: { timeout: number, limit: number, method: string, path: string, route: string }): Promise<void> {
 
-		console.warn(
+		logger.medium(
 			// eslint-disable-next-line
         `🟪      rateLimit | Timeout: ${timeout}
         Limit: ${limit} // Number of requests that can be made to this endpoint

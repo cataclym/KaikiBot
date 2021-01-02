@@ -3,7 +3,7 @@ import { Client, Guild, GuildMember, Role } from "discord.js";
 import db from "quick.db";
 const guildConfig = new db.table("guildConfig");
 import { timeToMidnight } from "./functions";
-import { logger } from "./logger";
+import { logger } from "./Logger";
 const RoleNameJoin = "Join Anniversary",
 	RoleNameCreated = "Cake Day";
 

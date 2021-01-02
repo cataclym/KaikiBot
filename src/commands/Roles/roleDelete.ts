@@ -1,7 +1,7 @@
 import { Command } from "@cataclym/discord-akairo";
 import { Collection, GuildMember, Role, Message, MessageEmbed } from "discord.js";
-import { noArgRole } from "../../util/embeds";
-import { errorColor } from "../../util/Util";
+import { noArgRole } from "../../nsb/Embeds";
+import { errorColor } from "../../nsb/Util";
 const embed = new MessageEmbed({
 	color: errorColor,
 	description: "Couldn't delete roles!",

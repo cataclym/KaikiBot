@@ -12,11 +12,13 @@ export default class TicTacToe {
 	currentPlayer: playerType;
 	message: Message;
 	embed: Promise<Message>;
+	moves?: playerType[];
 	currentPlayerTurn: (p: GuildMember, m: Message) => Promise<Message>;
 	winningMessage: (p: GuildMember) => string;
 	timedWinMessage: (p: GuildMember) => string;
 	stateDict: {[index: number]: string};
 	active: boolean;
+
 	/**
 	 * Initializes a TicTacToe game.
 	 * @param player1 @type {GuildMember}
@@ -30,9 +32,9 @@ export default class TicTacToe {
 		this.currentPlayer = this.p2;
 		this.message = message;
 		this.stateDict = {
-			0: "1⃣", 1: "2⃣", 2: "3⃣",
-			3: "4⃣", 4: "5⃣", 5: "6⃣",
-			6: "7⃣", 7: "8⃣", 8: "9⃣",
+			0: "1️⃣", 1: "2️⃣", 2: "3️⃣",
+			3: "4️⃣", 4: "5️⃣", 5: "6️⃣",
+			6: "7️⃣", 7: "8️⃣", 8: "9️⃣",
 		};
 		this.active = true;
 
@@ -63,7 +65,6 @@ export default class TicTacToe {
 
 		const { player } = playerObject;
 
-
 		const filter = (m: Message) => numbers.includes(m.content) && m.member?.id === player.id;
 
 		this.message.channel.awaitMessages(filter, { max: 1, time: 20000, errors: ["time"] })
@@ -76,9 +77,6 @@ export default class TicTacToe {
 	}
 
 	private async input(playerObject: playerType, m: Message) {
-
-
-		console.log("input", playerObject.player.user.username);
 
 		const { player, sign } = playerObject;
 
@@ -96,6 +94,7 @@ export default class TicTacToe {
 
 		this.stateDict[int] = sign;
 		this.currentPlayer = player.id !== this.p1.player.id ? this.p1 : this.p2;
+
 		this.updateEmbed(this.currentPlayer);
 		this.currentPlayerTurn(this.currentPlayer.player, m);
 
@@ -112,29 +111,12 @@ export default class TicTacToe {
 
 	private async updateEmbed(playerObject: playerType): Promise<Message | NodeJS.Timeout> {
 
-		const msg = await this.embed;
 		const finalString = `It's ${playerObject.player}'s turn to make a move.`;
 		const finalEmbed = new MessageEmbed({
 			description: Object.values(this.stateDict).map((v, i) => [2, 5].includes(i) ? v + "\n" : v).join("").replace(/p1/g, "🟩").replace(/p2/g, "🟥"),
 			color: playerObject.color,
 		});
-
-		if (msg.editedTimestamp) {
-
-			if ((Date.now() - msg.editedTimestamp) > 3500) {
-				return (await this.embed).edit(finalString, finalEmbed);
-			}
-
-			else {
-				return setTimeout(async () => {
-					return this.updateEmbed(this.currentPlayer);
-				}, 3500);
-			}
-		}
-
-		else {
-			return (await this.embed).edit(finalString, finalEmbed);
-		}
+		return (await this.embed).edit(finalString, finalEmbed);
 	}
 
 	private checkWin(value: string) {

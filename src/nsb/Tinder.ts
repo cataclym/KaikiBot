@@ -2,9 +2,9 @@ import db from "quick.db";
 const Tinder = new db.table("Tinder");
 import { timeToMidnight, msToTime } from "./functions";
 import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
-import { MessageEmbed, Message, User, Guild, GuildMember } from "discord.js";
+import { MessageEmbed, Message, User, Guild } from "discord.js";
 // import Canvas from "jimp";
-import { logger } from "./logger";
+import { logger } from "./Logger";
 
 // const userStates: any = {
 // 	"online" : "#00FF00",

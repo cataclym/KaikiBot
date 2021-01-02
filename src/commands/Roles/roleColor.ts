@@ -1,5 +1,5 @@
-import { Command, Flag } from "@cataclym/discord-akairo";
-import { BitField, Message, MessageEmbed, Role, Permissions } from "discord.js";
+import { Command } from "@cataclym/discord-akairo";
+import { Message, MessageEmbed, Role } from "discord.js";
 import { errorColor } from "../../util/Util";
 
 export default class RoleColorCommand extends Command {
