@@ -1,5 +1,7 @@
 import { Command } from "@cataclym/discord-akairo";
+import { MessageAttachment } from "discord.js";
 import { Message, MessageEmbed, Role } from "discord.js";
+import { imgFromColor, resolveColor } from "../../nsb/Color";
 import { errorColor } from "../../nsb/Util";
 
 export default class RoleColorCommand extends Command {
@@ -30,21 +32,25 @@ export default class RoleColorCommand extends Command {
 			const { member } = message;
 
 			if (typeof clr !== "string") {
-				return message.channel.send(new MessageEmbed({
-					title: `Role color of ${role.name}.`,
-					description: `${role.hexColor}`,
-					image: { },
-					color: role.hexColor,
-				}));
+				const attachment = new MessageAttachment(await imgFromColor(role.hexColor), "color.png");
+				return message.channel.send({ files: [attachment],
+					embed: new MessageEmbed({
+						title: `Role color of ${role.name}.`,
+						description: `${role.hexColor}`,
+						image: { url: "attachment://color.png" },
+						color: role.hexColor,
+					}),
+				});
 			}
 
 			if (member?.permissions.has("MANAGE_ROLES") && member.roles.highest.position > role.position) {
-				const { hexColor } = role;
+				const { hexColor } = role,
+					newColor = await resolveColor(clr);
 
-				return role.edit({ color: clr }).then(r => {
+				return role.edit({ color: newColor }).then(r => {
 					return message.channel.send(new MessageEmbed({
 						title: `You have changed ${r.name}'s color from ${hexColor} to ${r.hexColor}!`,
-						color: clr,
+						color: newColor,
 					}));
 				});
 			}

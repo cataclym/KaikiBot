@@ -14,12 +14,13 @@ export class customClient extends AkairoClient {
 			ownerID: config.ownerID,
 		},
 		{
-			shards: "auto",
 			disableMentions: "everyone",
 			partials: ["REACTION"],
 			presence: {
 				activity: { type: config.activityStatus, name: config.activityName },
 			},
+			shards: "auto",
+			ws: { properties: { $browser: "Discord Android" } },
 		});
 
 		this.commandHandler = new CommandHandler(this, {

@@ -1,6 +1,6 @@
 {
   "name": "nadekosengokubot",
-  "version": "3.3.45-akro-fx",
+  "version": "3.3.46-colors",
   "main": "./dist/index.js",
   "scripts": {
     "test": "echo \"Bypass build\" && node ./dist/index.js",
