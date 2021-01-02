@@ -2,7 +2,7 @@ import { Command } from "@cataclym/discord-akairo";
 import { Message } from "discord.js";
 import { noArgGeneric } from "../../nsb/Embeds";
 import { imgFromColor, resolveColor } from "../../nsb/Color";
-import { MessageAttachment } from "discord.js";
+import { MessageEmbed, MessageAttachment } from "discord.js";
 
 export default class ColorCommand extends Command {
 	constructor() {
@@ -20,8 +20,15 @@ export default class ColorCommand extends Command {
 	}
 	public async exec(message: Message, { color }: { color:string }): Promise<Message> {
 
-		const clrStr = await resolveColor(color);
+		const clrStr = await resolveColor(color),
+			attachment = new MessageAttachment(await imgFromColor(clrStr), "color.png");
 
-		return message.channel.send(new MessageAttachment(await imgFromColor(clrStr)));
+		return message.channel.send({ files: [attachment],
+			embed: new MessageEmbed({
+				description: clrStr.toString(),
+				image: { url: "attachment://color.png" },
+				color: clrStr,
+			}),
+		});
 	}
 }
