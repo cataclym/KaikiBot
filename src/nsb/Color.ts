@@ -170,3 +170,9 @@ export async function imgFromColor(color: ColorResolvable): Promise<Buffer> {
 	return canv.toBuffer();
 }
 
+export async function resolveColor(color: string): Promise<ColorResolvable> {
+	const clrStr = await getColorAsync(color);
+	if (clrStr) return clrStr;
+	return color.startsWith("#") ? color : `#${color}`;
+}
+
