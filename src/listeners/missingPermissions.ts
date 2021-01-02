@@ -1,6 +1,7 @@
 import { Command, Listener } from "@cataclym/discord-akairo";
 import { MessageEmbed, Message, PermissionString, BitFieldResolvable } from "discord.js";
-import { errorColor } from "../util/Util";
+import { logger } from "../nsb/Logger";
+import { errorColor } from "../nsb/Util";
 
 export default class missingPermissionsListener extends Listener {
 	constructor() {
@@ -15,7 +16,7 @@ export default class missingPermissionsListener extends Listener {
 	public async exec(message: Message, command: Command, type: string, missing: BitFieldResolvable<PermissionString>): Promise<NodeJS.Timeout | void> {
 		const date = new Date().toLocaleString("en-GB", { hour: "2-digit", minute: "2-digit", second: "2-digit", weekday: "short", year: "numeric", month: "numeric", day: "numeric" });
 		if (message.channel.type !== "dm") {
-			console.log(
+			logger.info(
 				// eslint-disable-next-line
 	`🔵	${date} missingPermissions | ${Date.now() - message.createdTimestamp}ms
 	Guild: ${message.guild?.name} [${message.guild?.id}]

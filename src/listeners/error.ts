@@ -1,7 +1,7 @@
 /* eslint-disable indent */
 import { Command, Listener } from "@cataclym/discord-akairo";
 import { Message } from "discord.js";
-import { logger } from "../util/logger";
+import { logger } from "../nsb/Logger";
 
 export default class errorListener extends Listener {
 	constructor() {

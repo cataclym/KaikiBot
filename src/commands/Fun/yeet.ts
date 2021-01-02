@@ -2,7 +2,7 @@ import fetch from "node-fetch";
 import Discord from "discord.js";
 import { Command } from "@cataclym/discord-akairo";
 import { Message } from "discord.js";
-import { trim } from "../../util/Util";
+import { trim } from "../../nsb/Util";
 import { ChildrenEntity, Data1 } from "../../struct/redditModel";
 
 export default class YeetCommand extends Command {

@@ -1,9 +1,9 @@
 import { Listener } from "@cataclym/discord-akairo";
-import { birthdayService } from "../util/AnniversaryRoles";
-import { tinderStartupService } from "../util/tinder";
-import { DailyResetTimer, emoteDataBaseService, startUp } from "../util/functions";
+import { birthdayService } from "../nsb/AnniversaryRoles";
+import { tinderStartupService } from "../nsb/Tinder";
+import { DailyResetTimer, emoteDataBaseService, startUp } from "../nsb/functions";
 import { config } from "../config";
-import { logger } from "../util/logger";
+import { logger } from "../nsb/Logger";
 
 export default class ReadyListener extends Listener {
 	constructor() {

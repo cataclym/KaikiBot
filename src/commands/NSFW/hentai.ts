@@ -1,7 +1,7 @@
 import { Command } from "@cataclym/discord-akairo";
 import { Message, MessageEmbed } from "discord.js";
 import { Image } from "kaori/typings/Image";
-import { errorColor } from "../../util/Util";
+import { errorColor } from "../../nsb/Util";
 import { grabHentaiPictureAsync } from "./hentaiService";
 
 export default class HentaiCommand extends Command {

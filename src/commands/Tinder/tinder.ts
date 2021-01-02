@@ -1,7 +1,7 @@
 import db from "quick.db";
 const Tinder = new db.table("Tinder");
-import { NoRolls, Dislike, SuperLike, NormalLike } from "../../util/tinder";
-import { tinderRollEmbed } from "../../util/embeds";
+import { NoRolls, Dislike, SuperLike, NormalLike } from "../../nsb/Tinder";
+import { tinderRollEmbed } from "../../nsb/Embeds";
 import { Command, Argument, Flag } from "@cataclym/discord-akairo";
 import { MessageEmbed, Message, User, MessageReaction } from "discord.js";
 import { config } from "../../config";

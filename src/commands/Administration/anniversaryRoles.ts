@@ -1,8 +1,8 @@
 import { Guild, Message, MessageEmbed } from "discord.js";
 import { Command } from "@cataclym/discord-akairo";
 import db from "quick.db";
-import { GuildOnAddBirthdays } from "../../util/AnniversaryRoles.js";
-import { noArgGeneric } from "../../util/embeds";
+import { GuildOnAddBirthdays } from "../../nsb/AnniversaryRoles.js";
+import { noArgGeneric } from "../../nsb/Embeds";
 const guildConfig = new db.table("guildConfig");
 
 export default class AnniversaryRolesConfigCommand extends Command {

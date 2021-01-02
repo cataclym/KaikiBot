@@ -1,6 +1,6 @@
 import { Command } from "@cataclym/discord-akairo";
 import { Message, MessageEmbed } from "discord.js";
-import { noArgGeneric } from "../../util/embeds";
+import { noArgGeneric } from "../../nsb/Embeds";
 
 export default class ReloadCommand extends Command {
 	constructor() {

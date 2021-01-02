@@ -1,6 +1,6 @@
 import { Message, MessageEmbed } from "discord.js";
 import { Argument, Command, PrefixSupplier } from "@cataclym/discord-akairo";
-import { errorColor } from "../../util/Util.js";
+import { errorColor } from "../../nsb/Util.js";
 
 export default class HelpCommand extends Command {
 	constructor() {

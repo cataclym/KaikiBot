@@ -1,6 +1,6 @@
 import { Command, Listener } from "@cataclym/discord-akairo";
 import { MessageEmbed, Message } from "discord.js";
-import { noArgGeneric } from "../../util/embeds";
+import { noArgGeneric } from "../../nsb/Embeds";
 
 export default class EmitCommand extends Command {
 	constructor() {

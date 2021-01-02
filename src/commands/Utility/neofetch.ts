@@ -2,8 +2,8 @@
 import { Command } from "@cataclym/discord-akairo";
 import { exec } from "child_process";
 import { Message } from "discord.js";
-import { codeblock } from "../../util/Util";
-import { logger } from "../../util/logger";
+import { codeblock } from "../../nsb/Util";
+import { logger } from "../../nsb/Logger";
 export default class NeofetchCommand extends Command {
 	constructor() {
 		super("neofetch", {

@@ -2,8 +2,8 @@ import { Command } from "@cataclym/discord-akairo";
 import { Message } from "discord.js";
 import Canvas from "canvas";
 import { MessageAttachment } from "discord.js";
-import { calculateAspectRatioFit } from "../../util/Util";
-import { noArgGeneric } from "../../util/embeds";
+import { calculateAspectRatioFit } from "../../nsb/Util";
+import { noArgGeneric } from "../../nsb/Embeds";
 
 export default class SetAvatarCommand extends Command {
 	constructor() {

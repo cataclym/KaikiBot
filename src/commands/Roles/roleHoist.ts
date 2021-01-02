@@ -1,6 +1,6 @@
 import { Command } from "@cataclym/discord-akairo";
 import { MessageEmbed, Message, Role } from "discord.js";
-import { noArgRole } from "../../util/embeds";
+import { noArgRole } from "../../nsb/Embeds";
 
 export default class RoleHoistCommand extends Command {
 	constructor() {
