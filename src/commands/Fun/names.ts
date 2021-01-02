@@ -1,5 +1,5 @@
 import { MessageEmbed, Message, User } from "discord.js";
-import { UserNickTable } from "../../util/functions";
+import { UserNickTable } from "../../nsb/functions";
 import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
 import { Command } from "@cataclym/discord-akairo";
 const arr = ["remove", "rem", "delete", "del"];

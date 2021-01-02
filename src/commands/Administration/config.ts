@@ -2,7 +2,7 @@
 import { Command, Flag, Argument } from "@cataclym/discord-akairo";
 import { Message, MessageEmbed } from "discord.js";
 import db from "quick.db";
-import { noArgGeneric } from "../../util/embeds";
+import { noArgGeneric } from "../../nsb/Embeds";
 import { config } from "../../config";
 const guildConfig = new db.table("guildConfig");
 

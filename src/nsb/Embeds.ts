@@ -1,4 +1,4 @@
-import { poems } from "../util/poems";
+import { poems } from "../nsb/Poems";
 import { MessageEmbed, Message, User } from "discord.js";
 import { errorColor } from "./Util";
 import db from "quick.db";

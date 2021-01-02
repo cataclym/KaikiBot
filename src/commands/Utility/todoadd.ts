@@ -3,7 +3,7 @@ import db from "quick.db";
 const ReminderList = new db.table("ReminderList");
 import { Command } from "@cataclym/discord-akairo";
 import { Message } from "discord.js";
-import { noArgGeneric } from "../../util/embeds";
+import { noArgGeneric } from "../../nsb/Embeds";
 module.exports = class todoAddCommand extends Command {
 	constructor() {
 		super("add", {

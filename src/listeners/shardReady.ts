@@ -1,5 +1,5 @@
 import { Listener } from "@cataclym/discord-akairo";
-import { logger } from "../util/logger";
+import { logger } from "../nsb/Logger";
 
 export default class ShardReadyListener extends Listener {
 	constructor() {

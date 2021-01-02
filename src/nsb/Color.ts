@@ -1,12 +1,13 @@
+import Canvas from "canvas";
 import { ColorResolvable } from "discord.js";
 
-export async function getColorAsync(term: string): Promise<ColorResolvable | undefined> {
+export async function getColorAsync(term: string): Promise<ColorResolvable | null> {
 	const rgba = colorTable[term.toLowerCase()];
 	if (rgba) {
-		rgba.replace(/^rgba?\(|\s+|\)$/g, "").split(",");
-		return `#${((1 << 24) + (parseInt(rgba[0]) << 16) + (parseInt(rgba[1]) << 8) + parseInt(rgba[2])).toString(16).slice(1)}` as ColorResolvable;
+		const rgbArr = rgba.replace(/^rgba?\(|\s+|\)$/g, "").split(",");
+		return `#${((1 << 24) + (parseInt(rgbArr[0]) << 16) + (parseInt(rgbArr[1]) << 8) + parseInt(rgbArr[2])).toString(16).slice(1)}`;
 	}
-	return undefined;
+	return null;
 }
 
 const colorTable: {[index: string]: string} = {
@@ -161,6 +162,11 @@ const colorTable: {[index: string]: string} = {
 	"yellowgreen":"rgba(154,205,50,1)",
 };
 
-export async function imgFromColor(color: string) {
+export async function imgFromColor(color: ColorResolvable): Promise<Buffer> {
+	const canv = Canvas.createCanvas(128, 128), ctx = canv.getContext("2d");
+	ctx.fillStyle = color.toString();
+	ctx.fillRect(0, 0, canv.width, canv.height);
 
+	return canv.toBuffer();
 }
+

@@ -1,4 +1,4 @@
-import { trim } from "../../util/Util";
+import { trim } from "../../nsb/Util";
 import fetch from "node-fetch";
 import { MessageEmbed, Message } from "discord.js";
 import { Command } from "@cataclym/discord-akairo";

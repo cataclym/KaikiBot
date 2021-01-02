@@ -1,6 +1,6 @@
 import { Listener } from "@cataclym/discord-akairo";
 import { GuildMember } from "discord.js";
-import { TinderDBService } from "../util/tinder";
+import { TinderDBService } from "../nsb/Tinder";
 
 export default class GuildCreate extends Listener {
 	constructor() {

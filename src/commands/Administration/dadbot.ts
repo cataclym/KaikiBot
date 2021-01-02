@@ -3,7 +3,7 @@ import { Message, MessageEmbed } from "discord.js";
 import db from "quick.db";
 const guildConfig = new db.table("guildConfig");
 import { updateVar } from "../../Extensions/Discord";
-import { noArgGeneric } from "../../util/embeds.js";
+import { noArgGeneric } from "../../nsb/Embeds.js";
 
 module.exports = class DadBotConfigCommand extends Command {
 	constructor() {

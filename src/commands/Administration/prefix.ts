@@ -2,8 +2,8 @@
 import { Command } from "@cataclym/discord-akairo";
 import { Message, MessageEmbed } from "discord.js";
 import db from "quick.db";
-import { errorColor } from "../../util/Util.js";
-import { noArgGeneric } from "../../util/embeds.js";
+import { errorColor } from "../../nsb/Util.js";
+import { noArgGeneric } from "../../nsb/Embeds.js";
 const guildConfig = new db.table("guildConfig");
 
 export default class PrefixConfigCommand extends Command {

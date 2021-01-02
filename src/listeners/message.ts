@@ -1,9 +1,9 @@
 import { Listener } from "@cataclym/discord-akairo";
-import { emoteReact, tiredNadekoReact, countEmotes } from "../util/functions";
+import { emoteReact, tiredNadekoReact, countEmotes } from "../nsb/functions";
 import { Message, MessageEmbed } from "discord.js";
 import { config } from "../config";
-import { standardColor, trim } from "../util/Util";
-import { logger } from "../util/logger";
+import { standardColor, trim } from "../nsb/Util";
+import { logger } from "../nsb/Logger";
 
 export default class MessageListener extends Listener {
 	constructor() {

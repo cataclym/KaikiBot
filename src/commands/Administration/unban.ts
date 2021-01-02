@@ -1,6 +1,6 @@
 import { Command } from "@cataclym/discord-akairo";
 import { Message, MessageEmbed, User } from "discord.js";
-import { errorColor } from "../../util/Util";
+import { errorColor } from "../../nsb/Util";
 
 export default class UnbanCommand extends Command {
 	constructor() {

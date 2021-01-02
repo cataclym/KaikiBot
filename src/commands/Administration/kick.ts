@@ -1,7 +1,7 @@
 import { Command } from "@cataclym/discord-akairo";
 import { Guild } from "discord.js";
 import { MessageEmbed, Message, GuildMember } from "discord.js";
-import { errorColor } from "../../util/Util";
+import { errorColor } from "../../nsb/Util";
 
 export default class KickCommand extends Command {
 	constructor() {

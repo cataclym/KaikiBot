@@ -1,7 +1,7 @@
 import fetch from "node-fetch";
 import { Command } from "@cataclym/discord-akairo";
 import { Message, MessageEmbed, TextChannel } from "discord.js";
-import { errorColor, trim } from "../../util/Util";
+import { errorColor, trim } from "../../nsb/Util";
 import { redditData, Data1 } from "../../struct/redditModel";
 
 export default class RedditCommand extends Command {
