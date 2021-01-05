@@ -1,6 +1,6 @@
 import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
 import { Command } from "@cataclym/discord-akairo";
-import { Role, MessageEmbed, Message } from "discord.js";
+import { Guild, Role, MessageEmbed, Message } from "discord.js";
 
 export default class RoleListCommand extends Command {
 	constructor() {
@@ -13,17 +13,21 @@ export default class RoleListCommand extends Command {
 
 	public async exec(message: Message): Promise<Message> {
 
-		const data: Role[] | undefined = message.guild?.roles.cache.array().sort((a: Role, b: Role) => b.position - a.position || (b.id as unknown as number) - (a.id as unknown as number));
+		const roleArray = (message.guild as Guild).roles.cache.array();
+		const data: Role[] = roleArray.sort((a: Role, b: Role) => b.position - a.position || (b.id as unknown as number) - (a.id as unknown as number));
 
 		const pages: MessageEmbed[] = [];
 
 		if (data) {
 			for (let i = 50, p = 0; p < data.length; i = i + 50, p = p + 50) {
 				const dEmbed = new MessageEmbed()
-					.setTitle("Role list")
+					.setTitle(`Role list (${roleArray.length})`)
 					.setAuthor(message.guild?.name)
 					.setColor(await message.getMemberColorAsync())
-					.setDescription(data.slice(p, i).join(", "));
+					.addField("\u200B", data.slice(p, i - 25).join("\n"), true);
+				if (data.slice(p, i).length > 25) {
+					dEmbed.addField("\u200B", data.slice(p + 25, i).join("\n"), true);
+				}
 				pages.push(dEmbed);
 			}
 		}
