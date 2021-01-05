@@ -50,15 +50,21 @@ export default class ColorCommand extends Command {
 			return message.channel.send(noArgGeneric(message));
 		}
 
-		const clrStr = await resolveColor(color),
-			attachment = new MessageAttachment(await imgFromColor(clrStr), "color.png");
+		// Someone pls format this better ty^^
 
-		return message.channel.send({ files: [attachment],
-			embed: new MessageEmbed({
+		const clrStr = await resolveColor(color),
+			embed = new MessageEmbed({
 				description: clrStr.toString(),
-				image: { url: "attachment://color.png" },
 				color: clrStr,
 			}),
+			attachment = new MessageAttachment(await imgFromColor(clrStr !== "RANDOM" ? clrStr : embed.hexColor ?? "#000000"), "color.png");
+
+		if (clrStr === "RANDOM") embed.setDescription(embed.hexColor?.toString());
+
+		embed.setImage("attachment://color.png");
+
+		return message.channel.send({ files: [attachment],
+			embed: embed,
 		});
 	}
 }

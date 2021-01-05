@@ -175,6 +175,8 @@ export async function imgFromColor(color: ColorResolvable): Promise<Buffer> {
 export async function resolveColor(color: string): Promise<ColorResolvable> {
 	const clrStr = await getColorAsync(color);
 	if (clrStr) return clrStr;
+	if (color.trim().toUpperCase() === "RANDOM") return "RANDOM";
+	// TODO: Check if remaining is hex or nah
 	return color.startsWith("#") ? color : `#${color}`;
 }
 
