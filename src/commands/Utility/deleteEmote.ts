@@ -7,7 +7,7 @@ export default class DeleteEmoteCommand extends Command {
 	constructor() {
 		super("deleteemote", {
 			aliases: ["deleteemote", "de"],
-			description: { description: "Deletes one or multiple emotes/emoji. Multiple emotes take longer, to avoid ratelimits.", usage: "<:NadekoSip:>" },
+			description: { description: "Deletes one or multiple emotes/emoji. Multiple emotes take longer, to avoid ratelimits. Keep a space between all emotes you wish to delete.", usage: "<:NadekoSip:>" },
 			clientPermissions: "MANAGE_EMOJIS",
 			userPermissions: "MANAGE_EMOJIS",
 			channel: "guild",
