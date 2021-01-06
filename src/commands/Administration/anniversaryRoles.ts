@@ -9,18 +9,20 @@ export default class AnniversaryRolesConfigCommand extends Command {
 	constructor() {
 		super("config-anniversary", {
 			userPermissions: "ADMINISTRATOR",
+			channel: "guild",
 			args: [
 				{
 					id: "value",
 					index: 0,
 					type: "string",
+					otherwise: (message: Message) => noArgGeneric(message),
 				},
 			],
 		});
 	}
 	public async exec(message: Message, { value }: { value: string}): Promise<Message | void> {
-		const enabledGuilds = guildConfig.get("anniversary");
-		const embed = new MessageEmbed().setColor(await message.getMemberColorAsync());
+		const enabledGuilds = guildConfig.get("anniversary"),
+			embed = new MessageEmbed().setColor(await message.getMemberColorAsync());
 
 		if (value) {
 			switch (value) {
@@ -48,9 +50,6 @@ export default class AnniversaryRolesConfigCommand extends Command {
 					}
 				}
 			}
-		}
-		else {
-			return message.channel.send(noArgGeneric(message));
 		}
 	}
 }

@@ -10,7 +10,9 @@ export async function getColorAsync(term: string): Promise<ColorResolvable | nul
 	return null;
 }
 
-const colorTable: {[index: string]: string} = {
+export const colorTable: {
+	[index: string]: string
+} = {
 	"transparent":"rgba(0,0,0,0)",
 	"aliceblue":"rgba(240,248,255,1)",
 	"antiquewhite":"rgba(250,235,215,1)",
@@ -19,7 +21,7 @@ const colorTable: {[index: string]: string} = {
 	"azure":"rgba(240,255,255,1)",
 	"beige":"rgba(245,245,220,1)",
 	"bisque":"rgba(255,228,196,1)",
-	"black":"rgba(0,0,0,1)",
+	"black":"rgba(0,0,1,1)",
 	"blanchedalmond":"rgba(255,235,205,1)",
 	"blue":"rgba(0,0,255,1)",
 	"blueviolet":"rgba(138,43,226,1)",
@@ -173,6 +175,8 @@ export async function imgFromColor(color: ColorResolvable): Promise<Buffer> {
 export async function resolveColor(color: string): Promise<ColorResolvable> {
 	const clrStr = await getColorAsync(color);
 	if (clrStr) return clrStr;
+	if (color.trim().toUpperCase() === "RANDOM") return "RANDOM";
+	// TODO: Check if remaining is hex or nah
 	return color.startsWith("#") ? color : `#${color}`;
 }
 

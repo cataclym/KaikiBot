@@ -1,28 +1,30 @@
 import { Command, PrefixSupplier } from "@cataclym/discord-akairo";
 import { Message, MessageEmbed } from "discord.js";
 import db from "quick.db";
-const guildConfig = new db.table("guildConfig");
 import { updateVar } from "../../Extensions/Discord";
 import { noArgGeneric } from "../../nsb/Embeds.js";
+const guildConfig = new db.table("guildConfig");
 
 module.exports = class DadBotConfigCommand extends Command {
 	constructor() {
 		super("config-dadbot", {
 			userPermissions: "ADMINISTRATOR",
+			channel: "guild",
 			args: [
 				{
 					id: "value",
 					index: 0,
 					type: "string",
+					otherwise: (message: Message) => noArgGeneric(message),
 				},
 			],
 
 		});
 	}
 	public async exec(message: Message, { value }: { value: string}) {
-		const enabledGuilds = guildConfig.get("dadbot");
+		const enabledGuilds = guildConfig.get("dadbot"),
+			embed = new MessageEmbed().setColor(await message.getMemberColorAsync());
 
-		const embed = new MessageEmbed().setColor(await message.getMemberColorAsync());
 		if (value) {
 			switch (value) {
 				case ("enable"):
@@ -54,9 +56,6 @@ module.exports = class DadBotConfigCommand extends Command {
 					}
 				}
 			}
-		}
-		else {
-			return message.channel.send(noArgGeneric(message));
 		}
 	}
 };

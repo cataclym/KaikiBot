@@ -3,9 +3,8 @@ import fs from "fs";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import gifsicle from "gifsicle";
-import { GuildEmoji } from "discord.js";
 import util from "util";
-import { Message } from "discord.js";
+import { GuildEmoji, Message } from "discord.js";
 import cp = require("child_process")
 const execFile = util.promisify(cp.execFile);
 
