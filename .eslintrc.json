@@ -9,6 +9,7 @@
 		"ecmaVersion": 2020
 	},
 	"rules": {
+		// "object-property-newline": "warn",
 		"brace-style": ["error", "stroustrup", { "allowSingleLine": true }],
 		"comma-dangle": ["error", "always-multiline"],
 		"comma-spacing": "error",
@@ -22,6 +23,7 @@
 		"no-console": "off",
 		"no-empty-function": "error",
 		"no-floating-decimal": "error",
+		"no-mixed-spaces-and-tabs": "warn",		
 		"no-inline-comments": "error",
 		"no-lonely-if": "error",
 		"no-multi-spaces": "error",
