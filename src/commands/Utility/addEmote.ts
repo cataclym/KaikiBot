@@ -2,7 +2,7 @@ import { Argument, Command } from "@cataclym/discord-akairo";
 import { Message, MessageAttachment } from "discord.js";
 import sizeOf from "image-size";
 import { noArgGeneric } from "../../nsb/Embeds";
-import { deleteImage, getFileOut, resizeImage, saveEmoji, saveFile } from "../../nsb/Emote";
+import { deleteImage, getFileOut, getFilesizeInBytes, resizeImage, saveEmoji, saveFile } from "../../nsb/Emote";
 import { trim } from "../../nsb/Util";
 
 const emoteRegex = /<(a?)((!?\d+)|(:.+?:\d+))>/g;
@@ -64,23 +64,23 @@ export default class AddEmoteCommand extends Command {
 			name = name || url.name?.slice(0, url.name.lastIndexOf("."));
 		}
 
-		console.log(url, emote, name);
-
 		if (!emote) return;
 
 		const msNow = Date.now().toString();
 		const file = getFileOut(msNow);
-		console.log(file);
 
 		name = trim(name || msNow, 32).replace(/ /g, "_");
 		await saveFile(emote, file);
 
 		// Example output: { width: 240, height: 240, type: 'gif' }
-		const imgDimensions = sizeOf(file);
-		console.log(emote, name);
-		if ((imgDimensions.width && imgDimensions.height) && imgDimensions.width <= 128 && imgDimensions.height <= 128) {
+		const imgDimensions = sizeOf(file),
+			fileSize = await getFilesizeInBytes(file);
+
+		// Had to add filesizeCheck
+		if ((imgDimensions.width && imgDimensions.height) && imgDimensions.width <= 128 && imgDimensions.height <= 128 && !(fileSize > 25600)) {
 			await saveEmoji(message, emote, name);
 		}
+
 		else if (imgDimensions.type) {
 			const img = await resizeImage(file, imgDimensions.type, 128, message);
 			await saveEmoji(message, img, name);
