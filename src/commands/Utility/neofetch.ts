@@ -30,13 +30,12 @@ export default class NeofetchCommand extends Command {
 
 		if (list) {
 			const pages: MessageEmbed[] = [];
-			const sortedDistros = distros.sort().filter(n => n);
-			for (let i = 150, p = 0; p < sortedDistros.length; i = i + 150, p = p + 150) {
+			for (let i = 150, p = 0; p < distros.length; i = i + 150, p = p + 150) {
 				pages.push(new MessageEmbed()
 					.setTitle("Neofetch ascii art list")
 					.setColor(await message.getMemberColorAsync())
 					.setThumbnail(message.author.displayAvatarURL({ dynamic: true }))
-					.setDescription(await codeblock(sortedDistros.slice(p, i).join(", "), "json")));
+					.setDescription(await codeblock(distros.slice(p, i).join(", "), "json")));
 			}
 			return editMessageWithPaginatedEmbeds(message, pages, {});
 		}
