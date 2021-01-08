@@ -9,7 +9,7 @@ export default class EmoteCount extends Command {
 		super("emotecount", {
 			cooldown: 15000,
 			aliases: ["emotecount", "emojicount", "ec"],
-			description: "Shows amount of times each emote has been used",
+			description: { description: "Shows amount of times each emote has been used", usage: ["", "-s", "--small"] },
 			channel: "guild",
 			args: [{
 				id: "flag",
@@ -21,8 +21,8 @@ export default class EmoteCount extends Command {
 
 	public async exec(message: Message, { flag }: { flag: boolean }): Promise<Message | void> {
 
-		const data = [];
-		const pages = [];
+		const data: string[] = [];
+		const pages: MessageEmbed[] = [];
 		const color = await message.getMemberColorAsync();
 		const GuildEmoteCount = Emotes.get(`${message.guild?.id}`);
 		const baseEmbed = new MessageEmbed()
@@ -57,6 +57,7 @@ export default class EmoteCount extends Command {
 					);
 				}
 			}
+
 			else {
 
 				for (let i = 50, p = 0; p < data.length; i = i + 50, p = p + 50) {
