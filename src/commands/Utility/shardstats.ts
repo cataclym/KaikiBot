@@ -1,5 +1,6 @@
 import { Command } from "@cataclym/discord-akairo";
 import { Message, WebSocketShard } from "discord.js";
+import { codeblock } from "../../nsb/Util";
 
 interface shards {
 	[state: number]: string,
@@ -17,16 +18,19 @@ module.exports = class ShardStatisticsCommand extends Command {
 	constructor() {
 		super("shardstats", {
 			aliases: ["shards", "shardstats"],
-			description: "Shows state of shards, if any",
+			description: "Shows state of shards",
 		});
 	}
 	public async exec(message: Message) {
+
+		const { ws } = message.client;
+
 		const pages: string[] = [];
-		pages.push("WebSocket: " + shardStats[message.client.ws.status]);
+		pages.push(`WebSocket: ${shardStats[message.client.ws.status]} | Shards: ${ws.shards.size}/idfk`);
 		// Why doesnt this show up??
-		message.client.ws.shards.each((element: WebSocketShard) => {
-			pages.push("ID: **#" + element.id + "** | status: **" + shardStats[element.status] + "** | ping: **" + element.ping + "** | Connected to **" + message.client.guilds.cache.size + "** servers.");
+		ws.shards.each(async (element, d) => {
+			pages.push(`ID: #${element.id} | Status: ${shardStats[element.status]} | Ping: ${element.ping} | Connected to idfk servers. | ${d}`);
 		});
-		message.util?.send(pages.join("\n"));
+		message.util?.send(await codeblock(pages.join("\n"), "json"));
 	}
 };
