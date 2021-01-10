@@ -1,6 +1,6 @@
 import { Command } from "@cataclym/discord-akairo";
 import { Message } from "discord.js";
-import sendWaifuPics from "./waifuPics";
+import sendWaifuPics from "../../nsb/waifuPics";
 
 export default class Waifu extends Command {
 	constructor() {

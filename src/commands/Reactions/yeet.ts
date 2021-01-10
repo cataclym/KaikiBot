@@ -1,12 +1,13 @@
 import { Command } from "@cataclym/discord-akairo";
 import { Message, GuildMember } from "discord.js";
-import sendWaifuPics from "./waifuPics";
+import sendWaifuPics from "../../nsb/waifuPics";
 
-export default class Cuddle extends Command {
+export default class Yeet extends Command {
 	constructor() {
-		super("cuddle", {
-			aliases: ["cuddle"],
-			description: { description: "Cuddle someone!", usage: ["", "@dreb"] },
+		super("yeet", {
+			aliases: ["yeet"],
+			description: { description: "Yeeeeeeeeeeeeeeeeeee\neeeeeeeeeeeeeeeet",
+				usage: ["", "@dreb"] },
 			typing: true,
 			args: [{
 				id: "mention",
@@ -16,7 +17,6 @@ export default class Cuddle extends Command {
 		});
 	}
 	public async exec(message: Message, { mention }: { mention: GuildMember | null }): Promise<Message> {
-		return message.channel.send(await sendWaifuPics(message, "cuddle", mention));
+		return message.channel.send(await sendWaifuPics(message, "yeet", mention));
 	}
 }
-

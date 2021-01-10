@@ -7,9 +7,9 @@ import { ChildrenEntity, Data1 } from "../../struct/redditModel";
 
 export default class YeetCommand extends Command {
 	constructor() {
-		super("yeet", {
+		super("reddityeet", {
 			cooldown: 8000,
-			aliases: ["yeet"],
+			aliases: ["reddityeet", "ryeet", "ry"],
 			typing: true,
 			description: { description: "Returns yeet..." },
 		});
