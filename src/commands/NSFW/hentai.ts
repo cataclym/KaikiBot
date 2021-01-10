@@ -2,25 +2,30 @@ import { Command } from "@cataclym/discord-akairo";
 import { Message, MessageEmbed } from "discord.js";
 import { Image } from "kaori/typings/Image";
 import { errorColor } from "../../nsb/Util";
-import { grabHentaiPictureAsync } from "./hentaiService";
+import { grabHentaiPictureAsync, grabHentai, typesArray } from "./hentaiService";
 
 export default class HentaiCommand extends Command {
 	constructor() {
 		super("hentai", {
 			aliases: ["hentai"],
-			description: { description: "Fetches hentai images from" },
+			description: { description: "Fetches hentai images from Booru boards" },
 			typing: true,
 			args: [{
 				id: "tags",
 				match: "rest",
 				type: "string",
+				default: null,
 			}],
 		});
 	}
-	public async exec(message: Message, { tags }: { tags: string }): Promise<Message | void> {
+	public async exec(message: Message, { tags }: { tags: string }): Promise<Message> {
 		if (message.channel.type === "text" && message.channel.nsfw) {
+			if (!tags) {
+				return message.channel.send(await grabHentai(typesArray[Math.floor(Math.random() * typesArray.length)], "single"));
+			}
+
 			const messageArguments: string[] | undefined = tags?.split(/ +/);
-			postHentai(messageArguments);
+			return postHentai(messageArguments);
 		}
 		else {
 			return message.channel.send(new MessageEmbed({
@@ -29,11 +34,11 @@ export default class HentaiCommand extends Command {
 				color: errorColor,
 			}));
 		}
-		async function postHentai(messageArguments: string[] | undefined): Promise<Message | void> {
+		async function postHentai(messageArguments: string[] | undefined): Promise<Message> {
 			const awaitResult = async () => (await grabHentaiPictureAsync(messageArguments));
 			const result: Image = await awaitResult();
 			if (result) {
-				return message.util?.send(result.sampleURL, new MessageEmbed({
+				return message.channel.send(result.sampleURL, new MessageEmbed({
 					author: { name: result.createdAt?.toLocaleString() },
 					title: "Score: " + result.score,
 					description: `[Source](${result.source} "${result.source}")`,
