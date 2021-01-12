@@ -2,8 +2,7 @@
 import { Command } from "@cataclym/discord-akairo";
 import { Message, MessageEmbed } from "discord.js";
 import db from "quick.db";
-import { errorColor } from "../../nsb/Util.js";
-import { noArgGeneric } from "../../nsb/Embeds.js";
+import { dbError, noArgGeneric } from "../../nsb/Embeds.js";
 const guildConfig = new db.table("guildConfig");
 
 export default class PrefixConfigCommand extends Command {
@@ -31,11 +30,7 @@ export default class PrefixConfigCommand extends Command {
 				}));
 			}
 			else {
-				return message.channel.send(new MessageEmbed({
-					title: "Error",
-					description: "Failed to set prefix.",
-					color: errorColor,
-				}));
+				return message.channel.send(dbError);
 			}
 		}
 		else {

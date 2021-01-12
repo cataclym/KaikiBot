@@ -4,6 +4,12 @@ import { errorColor } from "./Util";
 import db from "quick.db";
 import { Command, PrefixSupplier } from "@cataclym/discord-akairo";
 
+// export class CustomEmbed extends MessageEmbed {
+// 	constructor(data?: MessageEmbed | MessageEmbedOptions) {
+// 		super(data);
+// 	}
+// }
+
 const Tinder = new db.table("Tinder");
 const tinderSlogan = ["Match?", "Chat?", "Date?", "Flirt?", "Text?", "Tease?", "Chat up?", "Take a risk?"];
 
@@ -91,6 +97,18 @@ const errorMessage = async (msg: string): Promise<MessageEmbed> => new MessageEm
 	color: errorColor,
 });
 
+const dbError = new MessageEmbed({
+	title: "Error",
+	description: "Failed to set value.",
+	color: errorColor,
+});
+
 export {
-	DMEMarry, TinderHelp, tinderRollEmbed, noArgRole, noArgGeneric, errorMessage,
+	dbError,
+	DMEMarry,
+	errorMessage,
+	noArgGeneric,
+	noArgRole,
+	TinderHelp,
+	tinderRollEmbed,
 };

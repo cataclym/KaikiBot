@@ -1,5 +1,5 @@
 import { Command } from "@cataclym/discord-akairo";
-import { GuildMember, Message, Util } from "discord.js";
+import { Guild, GuildMember, Message, Util } from "discord.js";
 import { config } from "../../config";
 import db from "quick.db";
 const UserNickTable = new db.table("UserNickTable");
@@ -17,12 +17,12 @@ export default class dadBot extends Command {
 			editable: false,
 			condition: (message: Message): boolean => {
 
-				if (message.guild?.isDadBotEnabled() && message.member?.hasExcludedRole()) {
+				if ((message.guild as Guild).isDadBotEnabled() && (message.member as GuildMember).hasExcludedRole() && !message.author.bot) {
 					for (const item of config.prefixes) {
 
 						const r = new RegExp(`(^|\\s|$)(?<statement>(?<prefix>${item})\\s*(?<nickname>.*)$)`, "mi");
 
-						if (r.test(message.content) && !message.author.bot && !message.content.includes("||")) {
+						if (r.test(message.content) && !message.content.includes("||")) {
 
 							const match = message.content.match(r)?.groups;
 							nick = match;

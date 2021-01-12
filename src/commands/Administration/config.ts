@@ -12,54 +12,50 @@ export default class ConfigCommand extends Command {
 			aliases: ["config", "configure"],
 			description: {
 				description: "Configure guild specific settings",
-				usage: ["dadbot enable", "anniversary enable", "prefix !"],
+				usage: ["dadbot enable", "anniversary enable", "prefix !", "okcolor <hex>", "errorcolor <hex>"],
 			},
 		});
 	}
-	*args(): unknown {
+	*args(): Generator<{
+		type: string[][];
+	}, (Flag & {
+		command: string;
+		ignore: boolean;
+		rest: string;
+	}) | undefined, unknown> {
 		const method = yield {
 			type: [
 				["config-dadbot", "dadbot", "dad"],
 				["config-anniversary", "anniversary", "roles", "anniversaryroles"],
 				["config-prefix", "prefix"],
+				["config-okcolor", "okcolor"],
+				["config-errorcolor", "errorcolor"],
 			],
 		};
 		if (!Argument.isFailure(method)) {
-			return Flag.continue(method);
+			return Flag.continue(method as string);
 		}
 	}
 
-	public async exec(message: Message): Promise<Message | void> {
+	public async exec(message: Message): Promise<Message> {
 
 		if (message.content.split(" ").length > 1) {
 			return message.channel.send(noArgGeneric(message));
 		}
 
-		const enabledDadBotGuilds = guildConfig.get("dadbot");
-		const enabledAnniversaryGuilds = guildConfig.get("anniversary");
-		const guildPrefix = guildConfig.get(`${message.guild?.id}.prefix`) as string | undefined;
+		const guildConf = guildConfig.get(`${message.guild?.id}`),
+			{ anniversary = undefined, dadbot = undefined }: { anniversary: boolean | undefined, dadbot: boolean | undefined } = guildConf;
+		let { prefix = undefined }: { prefix: string | undefined } = guildConf;
 
 		const embed = new MessageEmbed().setColor(await message.getMemberColorAsync());
 
-		let dadbotEnabled = false;
-		let anniversaryRolesEnabled = false;
-		let prefix = `\`${config.prefix}\` (default)`;
-
-		if (enabledDadBotGuilds.includes(message.guild?.id)) {
-			dadbotEnabled = true;
-		}
-		if (enabledAnniversaryGuilds.includes(message.guild?.id)) {
-			anniversaryRolesEnabled = true;
-		}
-		if (guildPrefix) {
-			prefix = `\`${guildPrefix}\``;
+		if (prefix === config.prefix || !prefix) {
+			prefix = `\`${config.prefix}\` (Default)`;
 		}
 
-		embed.addField("DadBot", dadbotEnabled, true);
-		embed.addField("Anniversary-Roles", anniversaryRolesEnabled, true);
+		embed.addField("DadBot", dadbot ? "Enabled" : "Disabled", true);
+		embed.addField("Anniversary-Roles", anniversary ? "Enabled" : "Disabled", true);
 		embed.addField("Guild prefix", prefix, true);
-		message.util?.send(embed);
-	// Execute message to show what is enabled/disabled
-	// TODO: rename some things
+		return message.channel.send(embed);
 	}
 }

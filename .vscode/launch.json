@@ -5,6 +5,16 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "command": "npm run-script public",
+            "name": "Public NPM",
+            "request": "launch",
+            "type": "node-terminal",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "trace": true,
+        },
+        {
             "command": "npm start",
             "name": "Run npm start",
             "request": "launch",

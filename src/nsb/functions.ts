@@ -1,8 +1,8 @@
-import { Message, Client, Guild } from "discord.js";
+import { Collection, Message, Client, Guild } from "discord.js";
 import { config } from "../config";
 import db from "quick.db";
 import { logger } from "./Logger";
-const Tinder = new db.table("Tinder"), Emotes = new db.table("Emotes"), guildConfig = new db.table("guildConfig"), UserNickTable = new db.table("UserNickTable");
+const Tinder = new db.table("Tinder"), Emotes = new db.table("Emotes"), guildConfig = new db.table("guildConfig"), userNicknameTable = new db.table("UserNickTable");
 const words = ["shit", "fuck", "stop", "dont", "kill", "don't", "don`t", "fucking", "shut", "shutup", "shuttup", "trash", "bad", "hate", "stupid", "dumb", "suck", "sucks"];
 
 // Reacts with emote to specified words
@@ -52,10 +52,10 @@ async function ResetRolls(): Promise<void> {
 	logger.info("resetRolls | Rolls and likes have been reset | " + Date() + "\n");
 }
 
-async function DailyResetTimer(): Promise<void> {
+async function dailyResetTimer(): Promise<void> {
 	setTimeout(async () => {
 		ResetRolls();
-		DailyResetTimer();
+		dailyResetTimer();
 	}, timeToMidnight());
 }
 
@@ -68,34 +68,28 @@ async function emoteDataBaseService(input: Client | Guild): Promise<number> {
 
 	let i = 0;
 	if (input instanceof Client) {
-		input.guilds.cache.forEach(guild => {
-			guild.emojis.cache.forEach(emote => {
+		input.guilds.cache.forEach(async guild => {
+			guild.emojis.cache.each(async emote => {
 				if (!Emotes.has(`${guild.id}.${emote.id}`)) {
 					Emotes.set(`${guild.id}.${emote.id}`, { count: 0 }); i++;
 				}
 			});
 		});
+		return Promise.resolve(i);
 	}
 
 	else if (input instanceof Guild) {
-		input.emojis.cache.forEach(emote => {
+		input.emojis.cache.forEach(async emote => {
 			if (!Emotes.has(`${input.id}.${emote.id}`)) {
 				Emotes.set(`${input.id}.${emote.id}`, { count: 0 }); i++;
 			}
 		});
+		return Promise.resolve(i);
 	}
 	else {
 		throw new Error("emoteDataBaseService | error");
 	}
-	return i;
 }
-
-// Yeah this is stupid.
-const startUp = async (): Promise<void> => {
-	if (!guildConfig.get("dadbot")) { guildConfig.set("dadbot", ["10000000"]); }
-	if (!guildConfig.get("anniversary")) { guildConfig.set("anniversary", ["10000000"]); }
-	return Promise.resolve();
-};
 
 async function countEmotes(message: Message): Promise<void> {
 	const emotes = message.content.match(/<?(a)?:.+?:\d+>/g);
@@ -123,7 +117,44 @@ function msToTime(duration: number): string {
 	return "**" + hours + "** hours **" + minutes + "** minutes **" + seconds + "." + milliseconds + "** seconds";
 }
 
+export type dbStruct = {
+	guildConfig: {
+		prefix: null | string,
+		anniversary: boolean,
+		dadbot: boolean,
+		okColor: null | string,
+		errorColor: null | string,
+	},
+}
+
+export const dbStructure: dbStruct = {
+	guildConfig: {
+		prefix: null,
+		anniversary: false,
+		dadbot: false,
+		okColor: null,
+		errorColor: null,
+	},
+};
+
+async function dbColumns(client: Client): Promise<Collection<string, Guild>> {
+	const guilds = client.guilds.cache.each(g => {
+		if (!guildConfig.has(g.id)) {
+			guildConfig.set(g.id, dbStructure.guildConfig);
+		}
+	});
+	return Promise.resolve(guilds);
+}
+
 export {
-	emoteReact, UserNickTable, tiredNadekoReact,
-	ResetRolls, DailyResetTimer, emoteDataBaseService, countEmotes, msToTime, timeToMidnight, startUp,
+	countEmotes,
+	dailyResetTimer,
+	dbColumns,
+	emoteDataBaseService,
+	emoteReact,
+	msToTime,
+	ResetRolls,
+	timeToMidnight,
+	tiredNadekoReact,
+	userNicknameTable,
 };

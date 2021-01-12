@@ -1,7 +1,7 @@
 import { Listener } from "@cataclym/discord-akairo";
 import { birthdayService } from "../nsb/AnniversaryRoles";
 import { tinderStartupService } from "../nsb/Tinder";
-import { DailyResetTimer, emoteDataBaseService, startUp } from "../nsb/functions";
+import { dailyResetTimer, dbColumns, emoteDataBaseService } from "../nsb/functions";
 import { config } from "../config";
 import { logger } from "../nsb/Logger";
 
@@ -23,23 +23,23 @@ export default class ReadyListener extends Listener {
 			logger.info(`Client ready | Status: ${r.status}`);
 		});
 
-		await startUp().then(() => {
-			logger.low("emoteDataBaseService | Startup finished.");
-		});
-
-		await DailyResetTimer().then(() => {
+		await dailyResetTimer().then(() => {
 			logger.low("Reset timer initiated.");
 		});
 
-		logger.info("emoteDataBaseService | Checking for new emotes-");
-		emoteDataBaseService(this.client).then((i) => {
-			logger.low("emoteDataBaseService | ...done! " + (i ?? 0) + " new emotes added!");
+		logger.info("dataBaseService | Checking for missing database entries");
+
+		dbColumns(this.client).then(async (guilds) => {
+			logger.low(`dataBaseService | ${guilds.size} guilds registered in DB.`);
 		});
 
-		logger.info("birthdayService | Checking dates-");
-		birthdayService(this.client).then(() => {
-			logger.low();
+		emoteDataBaseService(this.client).then(async (i) => {
+			logger.low("dataBaseService | " + i + " new emotes added!");
 		});
+
+		logger.info("birthdayService | Checking dates");
+
+		birthdayService(this.client);
 
 		// This will spam Console on first boot.
 		if (this.client.user) {

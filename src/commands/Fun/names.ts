@@ -1,5 +1,5 @@
 import { MessageEmbed, Message, User } from "discord.js";
-import { UserNickTable } from "../../nsb/functions";
+import { userNicknameTable } from "../../nsb/functions";
 import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
 import { Command } from "@cataclym/discord-akairo";
 const arr = ["remove", "rem", "delete", "del"];
@@ -34,9 +34,9 @@ module.exports = class NamesCommand extends Command {
 
 		if (method) {
 			try {
-				if (UserNickTable.delete(`usernicknames.${message.member?.id}`)) {
+				if (userNicknameTable.delete(`usernicknames.${message.member?.id}`)) {
 
-					UserNickTable.push(`usernicknames.${message.member?.id}`, message.author.username);
+					userNicknameTable.push(`usernicknames.${message.member?.id}`, message.author.username);
 					return message.util?.send(`Deleted all of ${message.member}'s nicknames.\nWell done, you made daddy forget.`);
 				}
 			}
@@ -46,11 +46,11 @@ module.exports = class NamesCommand extends Command {
 		}
 
 		if (user) {
-			if (!UserNickTable.has(`usernicknames.${user.id}`)) {
-				UserNickTable.push(`usernicknames.${user.id}`, user.username);
+			if (!userNicknameTable.has(`usernicknames.${user.id}`)) {
+				userNicknameTable.push(`usernicknames.${user.id}`, user.username);
 			}
 
-			let AuthorDBName = UserNickTable.fetch(`usernicknames.${user.id}`);
+			let AuthorDBName = userNicknameTable.fetch(`usernicknames.${user.id}`);
 			AuthorDBName = [...new Set(AuthorDBName)];
 
 			// Makes it look cleaner
