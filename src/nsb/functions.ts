@@ -69,7 +69,7 @@ async function emoteDataBaseService(input: Client | Guild): Promise<number> {
 	let i = 0;
 	if (input instanceof Client) {
 		input.guilds.cache.forEach(async guild => {
-			guild.emojis.cache.each(async emote => {
+			guild.emojis.cache.forEach(async emote => {
 				if (!Emotes.has(`${guild.id}.${emote.id}`)) {
 					Emotes.set(`${guild.id}.${emote.id}`, { count: 0 }); i++;
 				}

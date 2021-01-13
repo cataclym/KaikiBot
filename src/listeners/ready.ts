@@ -4,6 +4,7 @@ import { tinderStartupService } from "../nsb/Tinder";
 import { dailyResetTimer, dbColumns, emoteDataBaseService } from "../nsb/functions";
 import { config } from "../config";
 import { logger } from "../nsb/Logger";
+import { MessageEmbed } from "discord.js";
 
 export default class ReadyListener extends Listener {
 	constructor() {
@@ -50,7 +51,7 @@ export default class ReadyListener extends Listener {
 
 		// Let myself know when my bot goes online.
 		if (["Tsukihi Araragi", "Kaiki Deishuu"].includes(this.client.user?.username as string)) {
-			(await this.client.users.fetch("140788173885276160")).send("Bot is online.");
+			(await this.client.users.fetch("140788173885276160")).send(new MessageEmbed().setDescription("Bot is online."));
 		}
 	}
 }
