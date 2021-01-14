@@ -71,7 +71,8 @@ async function emoteDataBaseService(input: Client | Guild): Promise<number> {
 		input.guilds.cache.forEach(async guild => {
 			guild.emojis.cache.forEach(async emote => {
 				if (!Emotes.has(`${guild.id}.${emote.id}`)) {
-					Emotes.set(`${guild.id}.${emote.id}`, { count: 0 }); i++;
+					Emotes.set(`${guild.id}.${emote.id}`, { count: 0 });
+					i++;
 				}
 			});
 		});
@@ -81,7 +82,8 @@ async function emoteDataBaseService(input: Client | Guild): Promise<number> {
 	else if (input instanceof Guild) {
 		input.emojis.cache.forEach(async emote => {
 			if (!Emotes.has(`${input.id}.${emote.id}`)) {
-				Emotes.set(`${input.id}.${emote.id}`, { count: 0 }); i++;
+				Emotes.set(`${input.id}.${emote.id}`, { count: 0 });
+				i++;
 			}
 		});
 		return Promise.resolve(i);

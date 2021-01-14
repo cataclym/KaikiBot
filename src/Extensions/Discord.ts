@@ -1,10 +1,30 @@
+import { Command, PrefixSupplier } from "@cataclym/discord-akairo";
+import { config } from "../config";
+import { errorColor } from "../nsb/Util";
+import db from "quick.db";
+
+const guildConfigTable = new db.table("guildConfig");
+
+export function guildConfig(id: string | undefined) {
+	if (!id) return undefined;
+	return guildConfigTable.get(id);
+}
+
+function getPrefix(message: Message, command: Command) {
+	const prefix = (command.handler.prefix as PrefixSupplier)(message);
+	if (Array.isArray(prefix)) return prefix[0] as string;
+	return prefix as string;
+}
+
 declare module "discord.js" {
     export interface Guild {
         isDadBotEnabled(guild?: Guild): boolean;
     }
+
     export interface GuildMember {
         hasExcludedRole(member?: GuildMember): boolean;
     }
+
     export interface Message {
         args(command: Command): string | undefined;
         getMemberColorAsync(member?: GuildMember): Promise<ColorResolvable>;
@@ -17,23 +37,6 @@ declare module "discord.js" {
 }
 
 import { ColorResolvable, Guild, GuildMember, Message, MessageEmbed } from "discord.js";
-import { Command, PrefixSupplier } from "@cataclym/discord-akairo";
-import { config } from "../config";
-import { errorColor } from "../nsb/Util";
-import db from "quick.db";
-
-const guildConfigTable = new db.table("guildConfig");
-
-function guildConfig(id: string | undefined) {
-	if (!id) return undefined;
-	return guildConfigTable.get(id);
-}
-
-function getPrefix(message: Message, command: Command) {
-	const prefix = (command.handler.prefix as PrefixSupplier)(message);
-	if (Array.isArray(prefix)) return prefix[0] as string;
-	return prefix as string;
-}
 
 Message.prototype.args = function(command: Command) {
 	return (command.handler.parseWithPrefix(this, getPrefix(this, command)))?.content;
@@ -59,4 +62,3 @@ MessageEmbed.prototype.withErrorColor = function(m: Message) {
 MessageEmbed.prototype.withOkColor = function(m: Message) {
 	return guildConfig(m.guild?.id)?.okColor ?? "#7cfc00";
 };
-

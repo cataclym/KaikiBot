@@ -5,6 +5,9 @@ import { GuildOnAddBirthdays } from "../../nsb/AnniversaryRoles.js";
 import { noArgGeneric } from "../../nsb/Embeds";
 const guildConfig = new db.table("guildConfig");
 
+type values = "enable" | "true" | "disable" | "false";
+const values: values[] = ["enable", "true", "disable", "false"];
+
 export default class AnniversaryRolesConfigCommand extends Command {
 	constructor() {
 		super("config-anniversary", {
@@ -13,13 +16,13 @@ export default class AnniversaryRolesConfigCommand extends Command {
 			args: [
 				{
 					id: "value",
-					type: ["enable", "true", "disable", "false"],
+					type: values,
 					otherwise: (message: Message) => noArgGeneric(message),
 				},
 			],
 		});
 	}
-	public async exec(message: Message, { value }: { value: "enable" | "true" | "disable" | "false" }): Promise<Message> {
+	public async exec(message: Message, { value }: { value: values }): Promise<Message> {
 		const isEnabled: boolean = guildConfig.get(`${message.guild?.id}`).anniversary,
 			embed = new MessageEmbed().setColor(await message.getMemberColorAsync());
 
