@@ -2,7 +2,9 @@ import { Command, PrefixSupplier } from "@cataclym/discord-akairo";
 import { Message, MessageEmbed } from "discord.js";
 import db from "quick.db";
 import { noArgGeneric } from "../../nsb/Embeds.js";
-const guildConfig = new db.table("guildConfig");
+import { guildConfig as gC } from "../../Extensions/Discord";
+const guildConfig = new db.table("guildConfig"),
+	ignore = gC("This is necessary for my module augmentation to work.");
 
 export default class DadBotConfigCommand extends Command {
 	constructor() {
