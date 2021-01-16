@@ -119,14 +119,16 @@ function msToTime(duration: number): string {
 	return "**" + hours + "** hours **" + minutes + "** minutes **" + seconds + "." + milliseconds + "** seconds";
 }
 
+export type guildConfig = {
+	prefix: null | string,
+	anniversary: boolean,
+	dadbot: boolean,
+	okColor: null | string,
+	errorColor: null | string,
+}
+
 export type dbStruct = {
-	guildConfig: {
-		prefix: null | string,
-		anniversary: boolean,
-		dadbot: boolean,
-		okColor: null | string,
-		errorColor: null | string,
-	},
+	guildConfig: guildConfig,
 }
 
 export const dbStructure: dbStruct = {
