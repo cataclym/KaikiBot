@@ -1,6 +1,6 @@
 import db from "quick.db";
 const Tinder = new db.table("Tinder");
-import { NoRolls, Dislike, SuperLike, NormalLike } from "../../nsb/Tinder";
+import { NoRolls, Dislike, SuperLike, NormalLike, tinderDataStructure, tinderDBService } from "../../nsb/Tinder";
 import { tinderRollEmbed } from "../../nsb/Embeds";
 import { Command, Argument, Flag } from "@cataclym/discord-akairo";
 import { MessageEmbed, Message, User, MessageReaction } from "discord.js";
@@ -41,25 +41,25 @@ export default class TinderMain extends Command {
 		};
 		return user;
 	}
-	public async exec(message: Message, args: User): Promise<Message | void> {
+	public async exec(message: Message, args: User | undefined): Promise<Message | void> {
+
+		await tinderDBService(args ?? message.author);
 
 		if (args) {
 			return message.channel.send(await tinderRollEmbed(message, args));
-		// return tinderNodeCanvasImage(message, tinderCardUser);
 		}
-		const hasRolls = parseInt(Tinder.get(`rolls.${message.author.id}`), 10);
-		const hasLikes = parseInt(Tinder.get(`likes.${message.author.id}`), 10);
-		const RollsLikes = (hasRolls - 1) + " rolls " + hasLikes + " likes remaining.";
-		const rolledIDs = Tinder.get(`temporary.${message.author.id}`);
-		const likesID = Tinder.get(`likeID.${message.author.id}`);
-		const dislikeID = Tinder.get(`dislikeID.${message.author.id}`);
-		const dating = Tinder.get(`dating.${message.author.id}`);
-		const married = Tinder.get(`married.${message.author.id}`);
-		const combined: string[] = [].concat(likesID, dislikeID, married, dating, rolledIDs);
+
+		const tinderUserData: tinderDataStructure = Tinder.get(message.author.id),
+			{ datingIDs, marriedIDs, likeIDs, likes, dislikeIDs, temporary } = tinderUserData;
+		let { rolls } = tinderUserData;
+
+		const combined: string[] = ([] as string[]).concat(likeIDs, dislikeIDs, marriedIDs, datingIDs, temporary);
+		const RollsLikes = (rolls - 1) + " rolls " + likes + " likes remaining.";
 
 		const userIDArray = message.client.users.cache.map(user => !user.bot ? user.id : message.member?.id),
 			// This is how I filter out bot users. Please let me know if it can be done better
 			filtered = userIDArray.filter((f: string) => !combined.includes(f));
+
 		if (!filtered.length) {
 			// When there are no more people left
 			return message.channel.send("Looking for people to date... 📡").then((sentMsg) => {
@@ -68,37 +68,44 @@ export default class TinderMain extends Command {
 				}, 5000);
 			});
 		}
+
 		const randomUserID = filtered[Math.floor(Math.random() * filtered.length)];
-		const randomUsr = message.client.users.cache.get(randomUserID ? randomUserID : config.ownerID);
+		const randomUsr = message.client.users.cache.get(randomUserID ?? config.ownerID);
 
-		if (hasRolls > 0 && randomUsr) {
-			Tinder.subtract(`rolls.${message.author.id}`, 1);
-			Tinder.push(`temporary.${message.author.id}`, randomUsr.id);
+		if (rolls > 0 && randomUsr) {
+			--rolls;
+			temporary.push(randomUsr.id);
 
-			const randomUserEmbed = await tinderRollEmbed(message, randomUsr, RollsLikes);
-			const SentMsg = await message.channel.send(randomUserEmbed);
+			console.log(rolls);
+
+			Tinder.set(message.author.id, { datingIDs, marriedIDs, likeIDs, likes, dislikeIDs, rolls, temporary });
+
+			await tinderDBService(randomUsr);
+
+			const SentMsg = await message.channel.send(await tinderRollEmbed(message, randomUsr, RollsLikes));
 			reactPromises(SentMsg)
 				.catch(err => console.log(err));
 			const filter = async (reaction: MessageReaction, user: User) => {
 				return ["❌", "💚", "🌟"].includes(reaction.emoji.name) && user.id === message.author.id;
 			};
+
 			SentMsg.awaitReactions(filter, { max: 1, time: 25000, errors: ["time"] })
 				.then(async (collected) => {
-					const reaction = collected.first();
-					const newHasRolls = parseInt(Tinder.get(`rolls.${message.author.id}`), 10);
-					// Updates leftover likes/rolls in real-time /s
-					switch (reaction?.emoji.name) {
+					switch (collected.first()?.emoji.name) {
 						case "❌": {
-							return Dislike(message, SentMsg, randomUserEmbed, newHasRolls, hasLikes, randomUsr);
+							return Dislike(message, SentMsg, SentMsg.embeds[0], rolls, likes, randomUsr);
 						}
 						case "🌟": {
-							return SuperLike(message, SentMsg, randomUserEmbed, hasLikes, randomUsr);
+							return SuperLike(message, SentMsg, SentMsg.embeds[0], likes, randomUsr);
 						}
 						case "💚": {
-							return NormalLike(message, SentMsg, randomUserEmbed, newHasRolls, hasLikes, randomUsr);
+							return NormalLike(message, SentMsg, SentMsg.embeds[0], rolls, likes, randomUsr);
 						}
 					}
-				}).catch(async () => SentMsg.edit(new MessageEmbed(randomUserEmbed).setFooter("Timed out")).then(msg => msg.reactions.removeAll()));
+				})
+				.catch(async () => {
+					SentMsg.edit(new MessageEmbed(SentMsg.embeds[0]).setFooter("Timed out")).then(msg => msg.reactions.removeAll());
+				});
 		}
 		else {
 			return message.reply(await NoRolls());

@@ -1,7 +1,8 @@
 import { Collection, Message, Client, Guild } from "discord.js";
 import { config } from "../config";
-import db from "quick.db";
+import db, { table } from "quick.db";
 import { logger } from "./Logger";
+import { tinderDataStructure } from "./Tinder";
 const Tinder = new db.table("Tinder"), Emotes = new db.table("Emotes"), guildConfig = new db.table("guildConfig"), userNicknameTable = new db.table("UserNickTable");
 const words = ["shit", "fuck", "stop", "dont", "kill", "don't", "don`t", "fucking", "shut", "shutup", "shuttup", "trash", "bad", "hate", "stupid", "dumb", "suck", "sucks"];
 
@@ -43,16 +44,19 @@ async function tiredNadekoReact(message: Message): Promise<void> {
 
 async function ResetRolls(): Promise<void> {
 	// Tinder reset
-	const likes = Tinder.get("likes");
-	Tinder.delete("temporary");
-	for (const key of Object.keys(likes)) {
-		Tinder.set(`likes.${key}`, 3);
-		Tinder.set(`rolls.${key}`, 15);
-	}
-	logger.info("resetRolls | Rolls and likes have been reset | " + Date() + "\n");
+	Tinder.all().filter((obj) => (obj.data as tinderDataStructure).temporary).forEach(async ({ ID }) => {
+		console.log(ID);
+
+		Tinder.set(`${ID}.likes`, 3);
+		Tinder.set(`${ID}.rolls`, 15);
+		Tinder.set(`${ID}.temporary`, []);
+	});
+
+	return logger.info("\nresetRolls | Rolls and likes have been reset | " + Date() + "\n");
 }
 
 async function dailyResetTimer(): Promise<void> {
+	ResetRolls();
 	setTimeout(async () => {
 		ResetRolls();
 		dailyResetTimer();
@@ -119,7 +123,7 @@ function msToTime(duration: number): string {
 	return "**" + hours + "** hours **" + minutes + "** minutes **" + seconds + "." + milliseconds + "** seconds";
 }
 
-export type guildConfig = {
+export interface guildConfig {
 	prefix: null | string,
 	anniversary: boolean,
 	dadbot: boolean,

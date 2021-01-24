@@ -11,7 +11,7 @@ module.exports = class TinderListMarriesCommand extends Command {
 	}
 
 	public async exec(message: Message) {
-		const married = <string[]> [...new Set(Tinder.get(`married.${message.author.id}`))];
-		return SeparateTinderList(message, married, `Spouses (${married.length - 1})`);
+		const marriedIDs = <string[]> [...new Set(Tinder.get(`${message.author.id}.marriedIDs`))];
+		return SeparateTinderList(message, marriedIDs, `Spouses (${marriedIDs.length - 1})`);
 	}
 };

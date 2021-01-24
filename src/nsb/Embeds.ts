@@ -24,30 +24,28 @@ const TinderHelp = (msg: Message, cmd: Command): MessageEmbed => new MessageEmbe
 		{ name: "Rolls and likes", value: "Using the main command (`" + (cmd.handler.prefix as PrefixSupplier)(msg) + "tinder`), costs a roll!\n" +
 				"If you decide to react with a 💚, you spend 1 like.\n" +
 				"If you react with a 🌟, you spend all your rolls and likes.", inline: true },
-		{ name: "How to marry", value: "You can only marry someone you are dating.\nMarrying is simple, type\n`" + (cmd.handler.prefix as PrefixSupplier)(msg) + "tinder marry @someone`\nThey will have to react with a ❤️, to complete the process!", inline: true },
-		{ name: "Check status", value: "You can check who you have liked, disliked and who you are currently dating as well as who you have married.\n`" + (cmd.handler.prefix as PrefixSupplier)(msg) + "tinder list` / `" + (cmd.handler.prefix as PrefixSupplier)(msg) + "tinder list dislikes`", inline: true },
+		{ name: "How to marry", value: "You can only marry someone you are datingIDs.\nMarrying is simple, type\n`" + (cmd.handler.prefix as PrefixSupplier)(msg) + "tinder marry @someone`\nThey will have to react with a ❤️, to complete the process!", inline: true },
+		{ name: "Check status", value: "You can check who you have liked, disliked and who you are currently datingIDs as well as who you have married.\n`" + (cmd.handler.prefix as PrefixSupplier)(msg) + "tinder list` / `" + (cmd.handler.prefix as PrefixSupplier)(msg) + "tinder list dislikes`", inline: true },
 		{ name: "Dislikes", value: "You have unlimited dislikes. You can never draw someone you have disliked.", inline: false },
 		{ name: "Manage your list", value: "You can remove dislikes/likes/dates and even divorce with\n`" + (cmd.handler.prefix as PrefixSupplier)(msg) + "tinder remove dislikes (user_list_nr)`. Obtain their number through the list.", inline: false },
 	)
 	.setColor("#31e387");
 
 async function DMEMarry(): Promise<MessageEmbed> {
-	const randomWeddingImage = weddingImageArray[Math.floor(Math.random() * weddingImageArray.length)];
-	const randomPoem = poems[Math.floor(Math.random() * poems.length)];
 
 	return new MessageEmbed()
 		.setTitle("The wedding ceremony has begun!")
 		.setColor("#e746da")
-		.setURL(randomWeddingImage)
-		.setImage(randomWeddingImage)
-		.setDescription(randomPoem);
+		.setURL(weddingImageArray[Math.floor(Math.random() * weddingImageArray.length)])
+		.setImage(weddingImageArray[Math.floor(Math.random() * weddingImageArray.length)])
+		.setDescription(poems[Math.floor(Math.random() * poems.length)]);
 }
+
 async function tinderRollEmbed(message: Message, randomUsr: User, RollsLikes?: string): Promise<MessageEmbed> {
-	const waifuIDs = Tinder.get(`married.${randomUsr.id}`)?.length,
-		likeIDs = Tinder.get("likeID");
-	const likeIDValues = Object.values(likeIDs),
-		flattArray = <string[]> likeIDValues.reduce((a: string, b: string) => a.concat(b), []),
-		finalNumber = flattArray.filter((id: string) => id === randomUsr.id).length,
+	const waifuIDs = Tinder.get(`${randomUsr.id}.married`)?.length,
+		likeIDs: string[] | null = Tinder.get("likeID"),
+		flattArray: (string | null)[] | undefined = likeIDs?.flat(),
+		finalNumber = flattArray?.filter((id: string) => id === randomUsr.id).length,
 		member = message.guild?.members.cache.get(randomUsr.id);
 
 	return new MessageEmbed()
@@ -56,7 +54,7 @@ async function tinderRollEmbed(message: Message, randomUsr: User, RollsLikes?: s
 		.setTitle(randomUsr.username)
 		.setDescription(member ? "**Nickname**\n" + member?.displayName : "🌐")
 		.addFields(
-			{ name: "**Likes**", value: finalNumber > 1 ? finalNumber - 1 : "None", inline: true },
+			{ name: "**Likes**", value: finalNumber ?? "None", inline: true },
 			{ name: "**Waifus**", value: waifuIDs > 1 ? waifuIDs - 1 : "None", inline: true },
 			// In order to negate the user itself in the list
 		)

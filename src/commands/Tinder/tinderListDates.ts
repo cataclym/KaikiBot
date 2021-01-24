@@ -11,7 +11,7 @@ module.exports = class TinderListDatesCommand extends Command {
 	}
 
 	public async exec(message: Message) {
-		const dating = <string[]> [...new Set(Tinder.get(`dating.${message.author.id}`))];
-		return SeparateTinderList(message, dating, `Dates (${dating.length - 1})`);
+		const datingIDs = <string[]> [...new Set(Tinder.get(`${message.author.id}.datingIDs`))];
+		return SeparateTinderList(message, datingIDs, `Dates (${datingIDs.length - 1})`);
 	}
 };

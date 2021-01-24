@@ -19,7 +19,7 @@ module.exports = class TodoCommand extends Command {
 		const method = yield {
 			type: [
 				["add"],
-				["remove", "rem", "delete", "del"],
+				["remove", "rem", "delete", "del", "rm"],
 			],
 		};
 		if (!Argument.isFailure(method)) {

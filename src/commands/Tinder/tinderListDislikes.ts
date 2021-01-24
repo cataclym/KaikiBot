@@ -10,7 +10,7 @@ module.exports = class TinderListDislikesCommand extends Command {
 		});
 	}
 	public async exec(message: Message) {
-		const dislikeID = <string[]> [...new Set(Tinder.get(`dislikeID.${message.author.id}`))];
-		return SeparateTinderList(message, dislikeID, `Dislikes (${dislikeID.length - 1})`);
+		const dislikeIDs = [...new Set(Tinder.get(`${message.author.id}.dislikeIDs`))] as string[];
+		return SeparateTinderList(message, dislikeIDs, `Dislikes (${dislikeIDs.length - 1})`);
 	}
 };

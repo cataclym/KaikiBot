@@ -1,6 +1,5 @@
 import { Listener } from "@cataclym/discord-akairo";
 import { birthdayService } from "../nsb/AnniversaryRoles";
-import { tinderStartupService } from "../nsb/Tinder";
 import { dailyResetTimer, dbColumns, emoteDataBaseService } from "../nsb/functions";
 import { config } from "../config";
 import { logger } from "../nsb/Logger";
@@ -41,13 +40,6 @@ export default class ReadyListener extends Listener {
 		logger.info("birthdayService | Checking dates");
 
 		birthdayService(this.client);
-
-		// This will spam Console on first boot.
-		if (this.client.user) {
-			await tinderStartupService(this.client.user).then((i) => {
-				logger.low(`tinderStartupService | Tinder has completed startup procedure. | ${i} users registered in Tinder DB`);
-			});
-		}
 
 		// Let myself know when my bot goes online.
 		if (["Tsukihi Araragi", "Kaiki Deishuu"].includes(this.client.user?.username as string)) {
