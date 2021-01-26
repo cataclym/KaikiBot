@@ -1,8 +1,7 @@
-import db from "quick.db";
-const Tinder = new db.table("Tinder");
 import { timeToMidnight, msToTime } from "./functions";
 import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
 import { MessageEmbed, Message, User } from "discord.js";
+import { customClient } from "../struct/client";
 
 export interface tinderDataStructure {
 	rolls: number,
@@ -16,21 +15,8 @@ export interface tinderDataStructure {
 
 async function tinderDBService(user: User): Promise<void> {
 
-	let tinderData: tinderDataStructure = Tinder.get(user.id);
-
-	if (tinderData?.likes) return Promise.resolve();
-
-	tinderData = {
-		rolls: 15,
-		likes: 3,
-		datingIDs: [user.id],
-		likeIDs: [user.id],
-		dislikeIDs: [user.id],
-		marriedIDs: [user.id],
-		temporary: [],
-	};
-
-	Tinder.set(user.id, tinderData);
+	(user.client as customClient).tinderDB.set(user.id, "rolls", 15);
+	(user.client as customClient).tinderDB.set(user.id, "rolls", 3);
 	return Promise.resolve();
 }
 function NoLikes(): string {
@@ -79,7 +65,7 @@ async function fetchUserList(message: Message, user: User): Promise<Message> {
 		.setTitle(user.username + "'s tinder list")
 		.setColor(await message.getMemberColorAsync());
 
-	const { datingIDs, marriedIDs, dislikeIDs, likeIDs }: tinderDataStructure = Tinder.get(user.id);
+	const { datingIDs, marriedIDs, dislikeIDs, likeIDs }: tinderDataStructure = (message.client as customClient).tinderDB.getDocument(user.id);
 
 	embed.addFields(
 		{ name: "Liked 👍", value: likeIDs?.length > 1 ? await allListMap(message, likeIDs) : "N/A", inline: true },
@@ -97,6 +83,9 @@ async function fetchUserList(message: Message, user: User): Promise<Message> {
 }
 
 async function NormalLike(message: Message, SentMsg: Message, genericEmbed: MessageEmbed, newHasRolls: number, hasLikes: number, randomUsr: User): Promise<Message> {
+
+	const client = message.client as customClient;
+
 	if (hasLikes > 0) {
 		--hasLikes;
 		// Updates leftover likes/rolls in real-time /s
@@ -107,24 +96,28 @@ async function NormalLike(message: Message, SentMsg: Message, genericEmbed: Mess
 			.setTitle(randomUsr.username)
 			.setFooter(NewRollsLikes);
 
-		Tinder.set(`${message.author.id}.likes`, hasLikes);
+		client.tinderDB.set(message.author.id, "likes", hasLikes);
 
-		if (Tinder.has(`${randomUsr.id}.likeIDs`)) {
-			// Prevents choke
-			const checkLikeIDs = Tinder.get(`${randomUsr.id}.likeIDs`);
-			// Theoretically this part should work
-			if (checkLikeIDs.includes(`${message.author.id}`)) {
-				Tinder.push(`${message.author.id}.datingIDs`, randomUsr.id);
-				Tinder.push(`${randomUsr.id}.datingIDs`, message.author.id);
-				const edited = await SentMsg.edit(newEmbed
-					.setColor("#ff00ff")
-					.setDescription("It's a match! Congratulations!"));
-				if (message.guild?.me?.hasPermission("MANAGE_MESSAGES")) await SentMsg.reactions.removeAll();
-				return edited;
-			}
+		const checkLikeIDs = client.tinderDB.get(randomUsr.id, "likeIDs", []);
+		const aData: string[] = client.tinderDB.get(message.author.id, "datingIDs", []);
+
+		if (checkLikeIDs.includes(message.author.id)) {
+			const rData: string[] = client.tinderDB.get(randomUsr.id, "datingIDs", []);
+
+			aData.push(randomUsr.id);
+			rData.push(message.author.id);
+
+			client.tinderDB.set(message.author.id, "datingIDs", aData);
+			client.tinderDB.set(randomUsr.id, "datingIDs", rData);
+
+			const edited = await SentMsg.edit(newEmbed
+				.setColor("#ff00ff")
+				.setDescription("It's a match! Congratulations!"));
+			if (message.guild?.me?.hasPermission("MANAGE_MESSAGES")) await SentMsg.reactions.removeAll();
+			return edited;
 		}
-		await tinderDBService(randomUsr);
-		Tinder.push(`${message.author.id}.likeIDs`, randomUsr.id);
+		aData.push(randomUsr.id);
+		client.tinderDB.set(message.author.id, "likeIDs", aData);
 
 		const edited = await SentMsg.edit(newEmbed
 			.setColor("#00FF00")
@@ -139,7 +132,8 @@ async function NormalLike(message: Message, SentMsg: Message, genericEmbed: Mess
 }
 
 async function Dislike(message: Message, SentMsg: Message, genericEmbed: MessageEmbed, newHasRolls: number, hasLikes: number, randomUsr: User): Promise<Message> {
-	Tinder.push(`${message.author.id}.dislikeIDs`, randomUsr.id);
+	(message.client as customClient).tinderDB.set(message.author.id, "dislikeIDs", ((await (message.client as customClient).tinderDB.get(message.author.id, "dislikeIDs", [])) as string[]).push(randomUsr.id));
+
 	const NewRollsLikes = `${newHasRolls} rolls, ${hasLikes} likes remaining.`;
 	if (message.guild?.me?.hasPermission("MANAGE_MESSAGES")) await SentMsg.reactions.removeAll();
 	return SentMsg.edit(new MessageEmbed(genericEmbed)

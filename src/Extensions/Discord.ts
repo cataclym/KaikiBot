@@ -1,14 +1,5 @@
 import { Command, PrefixSupplier } from "@cataclym/discord-akairo";
 import { config } from "../config";
-import { errorColor } from "../nsb/Util";
-import db from "quick.db";
-
-const guildConfigTable = new db.table("guildConfig");
-
-export function guildConfig(id: string | undefined) {
-	if (!id) return undefined;
-	return guildConfigTable.get(id);
-}
 
 function getPrefix(message: Message, command: Command) {
 	const prefix = (command.handler.prefix as PrefixSupplier)(message);
@@ -37,6 +28,8 @@ declare module "discord.js" {
 }
 
 import { ColorResolvable, Guild, GuildMember, Message, MessageEmbed } from "discord.js";
+import { customClient } from "../struct/client";
+import { errorColor, okColor } from "../nsb/Util";
 
 Message.prototype.args = function(command: Command) {
 	return (command.handler.parseWithPrefix(this, getPrefix(this, command)))?.content;
@@ -51,14 +44,15 @@ GuildMember.prototype.hasExcludedRole = function(member?: GuildMember) {
 };
 
 Guild.prototype.isDadBotEnabled = function(guild?: Guild) {
-	const value = guildConfig(guild?.id ?? this.id)?.dadbot;
-	return value ? value : false;
+	const g = guild ?? this as Guild;
+	return (g.client as customClient).guildDB.get(g.id, "dadbot", false);
 };
 
 MessageEmbed.prototype.withErrorColor = function(m: Message) {
-	return guildConfig(m.guild?.id)?.errorColor ?? errorColor;
+	return m.guild?.id ? (m.client as customClient).guildDB.get(m.guild?.id, "errorColor", errorColor) : errorColor;
 };
 
 MessageEmbed.prototype.withOkColor = function(m: Message) {
-	return guildConfig(m.guild?.id)?.okColor ?? "#7cfc00";
+	return m.guild?.id ? (m.client as customClient).guildDB.get(m.guild?.id, "okColor", okColor) : okColor;
+
 };

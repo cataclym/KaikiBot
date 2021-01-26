@@ -1,14 +1,15 @@
-import { AkairoClient, CommandHandler, InhibitorHandler, ListenerHandler } from "@cataclym/discord-akairo";
-import { Message } from "discord.js";
+import { AkairoClient, CommandHandler, InhibitorHandler, ListenerHandler, MongooseProvider } from "@cataclym/discord-akairo";
+import { guildsDB, tinderDataDB, usersDB } from "./models";
 import { join } from "path";
 import { config } from "../config";
-import DB from "quick.db";
-const guildConfig = new DB.table("guildConfig");
 
 export class customClient extends AkairoClient {
 	commandHandler: CommandHandler;
 	inhibitorHandler: InhibitorHandler;
 	listenerHandler: ListenerHandler;
+	guildDB: MongooseProvider;
+	userDB: MongooseProvider;
+	tinderDB: MongooseProvider;
 	constructor() {
 		super({
 			ownerID: config.ownerID,
@@ -23,6 +24,10 @@ export class customClient extends AkairoClient {
 			ws: { properties: { $browser: "Discord Android" } },
 		});
 
+		this.guildDB = new MongooseProvider(guildsDB);
+		this.userDB = new MongooseProvider(usersDB);
+		this.tinderDB = new MongooseProvider(tinderDataDB);
+
 		this.commandHandler = new CommandHandler(this, {
 			allowMention: true,
 			automateCategories: true,
@@ -33,31 +38,21 @@ export class customClient extends AkairoClient {
 			directory: join(__dirname, "../commands"),
 			fetchMembers: true,
 			handleEdits: true,
-			prefix: (message: Message): string | string[] => {
-
+			prefix: (message) => {
 				if (message.guild) {
-					const prefix = guildConfig.get(`${message.guild?.id}.prefix`) as string | undefined;
-
-					if (!prefix) return config.prefix;
-
-					return prefix;
+					// The third param is the default.
+					return this.guildDB.get(message.guild.id, "prefix", config.prefix);
 				}
-				else {
-					return config.prefix;
-				}
+
+				return config.prefix;
 			},
 		});
 
-		this.listenerHandler = new ListenerHandler(this, {
-			directory: join(__dirname, "../listeners"),
-		});
-
-		this.listenerHandler.setEmitters({
-			commandHandler: this.commandHandler,
-		});
-
+		this.listenerHandler = new ListenerHandler(this, { directory: join(__dirname, "../listeners") });
+		this.listenerHandler.setEmitters({ commandHandler: this.commandHandler });
 		this.commandHandler.useListenerHandler(this.listenerHandler);
 
+		(this.guildDB, this.tinderDB, this.userDB).init();
 		this.listenerHandler.loadAll();
 		this.commandHandler.loadAll();
 	}

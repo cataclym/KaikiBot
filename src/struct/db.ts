@@ -1,5 +1,4 @@
 import mongodb, { Error } from "mongoose";
-import { config } from "../config";
 import { logger } from "../nsb/Logger";
 import { guildsDB, usersDB, tinderDataDB } from "./models";
 
@@ -17,7 +16,7 @@ mongodb.connect("mongodb://localhost/nsb", {
 	});
 
 // Create/find Guilds Database
-export async function getUserDB(userID: string) {
+export async function getUserDB(userID: string): Promise<mongodb.Document<any>> {
 	let userDB = await usersDB.findOne({ id: userID });
 	if (userDB) {
 		return userDB;
@@ -32,7 +31,7 @@ export async function getUserDB(userID: string) {
 }
 
 // Create/find Guilds Database
-export async function getGuildDB(guildID: string) {
+export async function getGuildDB(guildID: string): Promise<mongodb.Document<any>> {
 	let guildDB = await guildsDB.findOne({ id: guildID });
 
 	if (guildDB) {
@@ -47,7 +46,7 @@ export async function getGuildDB(guildID: string) {
 	}
 }
 
-export async function getTinderDB(userID: string) {
+export async function getTinderDB(userID: string): Promise<mongodb.Document<any>> {
 	let tinderDB = await tinderDataDB.findOne({ id: userID });
 
 	if (tinderDB) {

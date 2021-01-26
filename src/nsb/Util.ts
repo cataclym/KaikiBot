@@ -1,12 +1,13 @@
 import { ClientUser, Message, ColorResolvable, UserFlagsString, User } from "discord.js";
+import { hexColorTable } from "./Color";
 
 export async function getMemberColorAsync(message: Message): Promise<ColorResolvable> {
 	return <ColorResolvable> message?.member?.displayColor || "#f47fff";
 }
 
-export const errorColor: ColorResolvable = "#ee281f";
+export const errorColor: ColorResolvable = hexColorTable["red"];
 
-export const standardColor: ColorResolvable = "#32CD32";
+export const okColor: ColorResolvable = hexColorTable["greenyellow"];
 
 export type presenceType = {
 	main: string,

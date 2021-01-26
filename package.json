@@ -1,6 +1,6 @@
 {
   "name": "nadekosengokubot",
-  "version": "3.3.5-aqua",
+  "version": "3.4.0-aqua",
   "main": "./dist/index.js",
   "scripts": {
     "test": "echo \"Bypass build\" && node ./dist/index.js",
