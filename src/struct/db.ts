@@ -2,7 +2,7 @@ import mongodb, { Error } from "mongoose";
 import { logger } from "../nsb/Logger";
 import { guildsDB, usersDB, tinderDataDB } from "./models";
 
-mongodb.connect("mongodb://localhost/nsb", {
+mongodb.connect("mongodb://localhost:27017/nsb", {
 	useNewUrlParser: true,
 	useUnifiedTopology: true,
 })
