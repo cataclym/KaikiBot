@@ -87,7 +87,7 @@ export default async function sendWaifuPics(message: Message, API: APIs, mention
 	const embed = new MessageEmbed({
 		color: color,
 		image: { url: result },
-		author: { name: "URL", url: result, icon_url: (mention?.user || message.author).displayAvatarURL({ dynamic: true }) },
+		footer: { icon_url: (mention?.user || message.author).displayAvatarURL({ dynamic: true }) },
 	});
 
 	if (mention && action) {
