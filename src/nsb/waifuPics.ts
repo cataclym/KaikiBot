@@ -72,7 +72,7 @@ const WaifuData: {
 		},
 		"kiss": {
 			action: "kissed",
-			color: hexColorTable[""],
+			color: hexColorTable["hotpink"],
 			append: "♥️",
 		},
 	};
