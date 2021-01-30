@@ -6,13 +6,13 @@ import { deleteImage, getFileOut, getFilesizeInBytes, resizeImage, saveEmoji, sa
 import { trim } from "../../nsb/Util";
 
 const emoteRegex = /<(a?)((!?\d+)|(:.+?:\d+))>/g;
-const imgRegex = /(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|gif|png)/gi;
+const imgRegex = /(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|gif|png|jpeg)/gi;
 // Credit to https://github.com/Snitt/emojibotten/blob/master/commands/management/emoji.js
 export default class AddEmoteCommand extends Command {
 	constructor() {
 		super("addemote", {
 			aliases: ["addemote", "ae"],
-			description: { description: "Adds an emote from an image link or attached image, with an optional name.", usage: "https://discord.com/assets/28174a34e77bb5e5310ced9f95cb480b.png DiscordLogo" },
+			description: { description: "Adds an emote from an image link or attached image, with an optional name.", usage: "<image link> Emotename" },
 			clientPermissions: "MANAGE_EMOJIS",
 			userPermissions: "MANAGE_EMOJIS",
 			typing: true,
