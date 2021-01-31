@@ -107,7 +107,7 @@ typings/
 # Configuration
 
 /config.js
-
+/src/config.ts
 /variables.js
 
 # Database
