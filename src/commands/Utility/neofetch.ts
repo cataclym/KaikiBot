@@ -17,7 +17,7 @@ export default class NeofetchCommand extends Command {
 			args: [{
 				id: "os",
 				type: distros,
-				default: `${process.platform}`,
+				default: null,
 			},
 			{
 				id: "list",
@@ -26,7 +26,7 @@ export default class NeofetchCommand extends Command {
 			}],
 		});
 	}
-	public async exec(message: Message, { os, list }: { os: string, list: boolean }): Promise<Message | void> {
+	public async exec(message: Message, { os, list }: { os: string | null, list: boolean }): Promise<Message | void> {
 
 		if (list) {
 			const pages: MessageEmbed[] = [];
@@ -54,7 +54,12 @@ export default class NeofetchCommand extends Command {
 		}
 
 		function neofetch(username: string) {
-			exec(`neofetch --ascii_distro ${os}|sed 's/\x1B\[[0-9;\?]*[a-zA-Z]//g'`, async (error, stdout, stderr) => {
+
+			let cmd = `neofetch --ascii_distro ${os}|sed 's/\x1B\[[0-9;\?]*[a-zA-Z]//g'`;
+
+			if (!os && process.platform !== "win32") cmd = "neofetch |sed 's/\x1B\[[0-9;\?]*[a-zA-Z]//g'";
+
+			exec(cmd, async (error, stdout, stderr) => {
 				if (error) {
 					return logger.high(error);
 				}
