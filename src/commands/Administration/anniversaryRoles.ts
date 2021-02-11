@@ -22,15 +22,16 @@ export default class AnniversaryRolesConfigCommand extends Command {
 		});
 	}
 	public async exec(message: Message, { value }: { value: values }): Promise<Message> {
-		const client = this.client as customClient;
-		const isEnabled: boolean = client.guildDB.get(message.guild!.id, "anniversary", false),
+		const client = this.client as customClient,
+			guildID = (message.guild as Guild).id;
+		const isEnabled: boolean = client.addons.get(guildID, "anniversary", false),
 			embed = new MessageEmbed().setColor(await message.getMemberColorAsync());
 
 		switch (value) {
 			case ("enable"):
 			case ("true"): {
 				if (!isEnabled) {
-					client.tinderDB.set(message.guild!.id, "anniversary", true);
+					client.addons.set(guildID, "anniversary", true);
 					GuildOnAddBirthdays(<Guild> message.guild);
 					return message.channel.send(embed.setDescription(`Anniversary-roles functionality has been enabled in ${message.guild?.name}!`));
 				}
@@ -41,7 +42,7 @@ export default class AnniversaryRolesConfigCommand extends Command {
 			case ("disable"):
 			case ("false"): {
 				if (isEnabled) {
-					client.tinderDB.set(message.guild!.id, "anniversary", false);
+					client.addons.set(guildID, "anniversary", false);
 					return message.channel.send(embed.setDescription(`Anniversary-roles functionality has been disabled in ${message.guild?.name}!`));
 				}
 				else {

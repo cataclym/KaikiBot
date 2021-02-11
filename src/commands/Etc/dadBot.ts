@@ -1,13 +1,12 @@
 import { Command } from "@cataclym/discord-akairo";
 import { Guild, GuildMember, Message, Util } from "discord.js";
+import { getUserDB } from "../../struct/db";
 import { config } from "../../config";
-import db from "quick.db";
-const UserNickTable = new db.table("UserNickTable");
+import { logger } from "../../nsb/Logger";
 
-type nickT = {
-    [key: string]: string;
-} | undefined;
-let nick: nickT;
+let nick: {
+	[key: string]: string
+};
 
 // dad bot
 export default class dadBot extends Command {
@@ -25,8 +24,12 @@ export default class dadBot extends Command {
 						if (r.test(message.content) && !message.content.includes("||")) {
 
 							const match = message.content.match(r)?.groups;
-							nick = match;
-							return (match?.nickname ? true : false);
+
+							if (match?.nickname && match?.nickname.length <= 256) {
+								nick = match;
+								return true;
+							}
+							return false;
 						}
 					}
 				}
@@ -37,19 +40,17 @@ export default class dadBot extends Command {
 
 	public async exec(message: Message): Promise<GuildMember | undefined> {
 
-		const match = nick;
+		message.channel.send(`Hi, ${Util.removeMentions(nick.nickname)}`);
 
-		if (match?.nickname && match?.nickname.length <= 256) {
-			message.channel.send(`Hi, ${Util.removeMentions(match.nickname)}`);
-			// In case of roles being mentionable.
-			const owner = message.guild?.owner;
-			if (match.nickname.length <= 32) {
-				const user = message.author;
-				UserNickTable.push(`usernicknames.${user.id}`, match.nickname);
-				if (user.id !== owner?.id) {
-					// Avoids setting nickname on Server owners
-					return message.member?.setNickname(match.nickname);
-				}
+		if (nick.nickname.length <= 32) {
+
+			const user = message.author;
+
+			(await getUserDB(user.id)).updateOne({ $push: { userNicknames: nick.nickname } }, null, (err, data) => logger.info(data));
+
+			if (user.id !== message.guild?.owner?.id) {
+				// Avoids setting nickname on Server owners
+				return message.member?.setNickname(nick.nickname);
 			}
 		}
 	}

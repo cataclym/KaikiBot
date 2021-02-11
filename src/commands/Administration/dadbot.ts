@@ -1,10 +1,7 @@
 import { Command, PrefixSupplier } from "@cataclym/discord-akairo";
-import { Message, MessageEmbed } from "discord.js";
-import db from "quick.db";
+import { Guild, Message, MessageEmbed } from "discord.js";
+import { customClient } from "../../struct/client.js";
 import { noArgGeneric } from "../../nsb/Embeds.js";
-import { guildConfig as gC } from "../../Extensions/Discord";
-const guildConfig = new db.table("guildConfig"),
-	ignore = gC("This is necessary for my module augmentation to work.");
 
 export default class DadBotConfigCommand extends Command {
 	constructor() {
@@ -22,14 +19,15 @@ export default class DadBotConfigCommand extends Command {
 		});
 	}
 	public async exec(message: Message, { value }: { value: "enable" | "true" | "disable" | "false" }): Promise<Message> {
-		const isEnabled: boolean = guildConfig.get(`${message.guild?.id}`).dadbot,
-			embed = new MessageEmbed().setColor(await message.getMemberColorAsync());
+		const embed = new MessageEmbed().setColor(await message.getMemberColorAsync()),
+			guildID = (message.guild as Guild).id,
+			isEnabled = (message.client as customClient).addons.get(guildID, "dadbot", false);
 
 		switch (value) {
 			case ("enable"):
 			case ("true"): {
 				if (!isEnabled) {
-					guildConfig.set(`${message.guild?.id}.dadbot`, !isEnabled);
+					(message.client as customClient).addons.set(guildID, "dadBot", true);
 					embed.setDescription(`DadBot functionality has been enabled in ${message.guild?.name}!\nIndividual users can still disable dadbot on themselves with ${(this.handler.prefix as PrefixSupplier)(message)}exclude.`);
 					return message.channel.send(embed);
 				}
@@ -41,7 +39,7 @@ export default class DadBotConfigCommand extends Command {
 			case ("disable"):
 			case ("false"): {
 				if (isEnabled) {
-					guildConfig.set(`${message.guild?.id}.dadbot`, !isEnabled);
+					(message.client as customClient).addons.set(guildID, "dadBot", false);
 					embed.setDescription(`DadBot functionality has been disabled in ${message.guild?.name}!`);
 					return message.channel.send(embed);
 				}
