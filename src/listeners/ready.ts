@@ -10,6 +10,7 @@ export default class ReadyListener extends Listener {
 		super("ready", {
 			event: "ready",
 			emitter: "client",
+			type: "once",
 		});
 	}
 

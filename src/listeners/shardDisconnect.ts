@@ -14,6 +14,5 @@ export default class ShardDisconnectListener extends Listener {
 		console.warn(
 			// eslint-disable-next-line indent
 	`🟥 ShardDisconnect | Shard: ${id} Reason: ${event.reason}`);
-
 	}
 }

@@ -1,9 +1,11 @@
 import { Listener } from "@cataclym/discord-akairo";
 import { emoteReact, tiredNadekoReact, countEmotes } from "../nsb/functions";
-import { Message, MessageEmbed } from "discord.js";
+import { Message, MessageEmbed, User } from "discord.js";
 import { config } from "../config";
-import { standardColor, trim } from "../nsb/Util";
+import { okColor, trim } from "../nsb/Util";
 import { logger } from "../nsb/Logger";
+
+let botOwner: User | undefined;
 
 export default class MessageListener extends Listener {
 	constructor() {
@@ -14,9 +16,6 @@ export default class MessageListener extends Listener {
 	}
 
 	public async exec(message: Message): Promise<void | Message> {
-
-
-		let attachmentLinks = "";
 
 		if (message.webhookID || message.author.bot) return;
 
@@ -31,10 +30,13 @@ export default class MessageListener extends Listener {
 			// I wont wanna see my own msgs, thank u
 			if (message.author.id === config.ownerID) return;
 
+			else if (!botOwner) botOwner = this.client.users.cache.get(config.ownerID);
+
+			let attachmentLinks = "";
 			logger.info(`message | DM from ${message.author.tag} [${message.author.id}]`);
 
 			const embed = new MessageEmbed({
-				color: standardColor,
+				color: okColor,
 				author: { name: `${message.author.tag} [${message.author.id}]` },
 				description: trim(message.content, 2048),
 			});
@@ -56,10 +58,9 @@ export default class MessageListener extends Listener {
 					.setImage(firstAttachment)
 					.setTitle(firstAttachment)
 					.setFooter(urls.join("\n"));
-
 			}
 
-			return this.client.users.cache.get(config.ownerID)?.send({ content: attachmentLinks ?? null, embed: embed });
+			return botOwner?.send({ content: attachmentLinks ?? null, embed: embed });
 		}
 	}
 }

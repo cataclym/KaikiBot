@@ -1,7 +1,6 @@
 import { Listener } from "@cataclym/discord-akairo";
 import { GuildMember } from "discord.js";
-import db from "quick.db";
-const leaveRoleTable = new db.table("leaveRoleTable");
+import { getGuildDB } from "../struct/db";
 
 export default class GuildMemberRemovedListener extends Listener {
 	constructor() {
@@ -11,6 +10,9 @@ export default class GuildMemberRemovedListener extends Listener {
 		});
 	}
 	public async exec(member: GuildMember): Promise<void> {
-		leaveRoleTable.set(`${member.guild.id}.${member.id}`, member.roles.cache.map(role => role.id));
+
+		const db = (await getGuildDB(member.guild.id));
+		db.leaveRoles[member.id] = member.roles.cache.map(role => role.id);
+		db.save();
 	}
 }
