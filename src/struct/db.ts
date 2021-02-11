@@ -1,4 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import mongodb, { Error } from "mongoose";
+import { ITinder, IUser, IGuild } from "../interfaces/db";
 import { logger } from "../nsb/Logger";
 import { guildsDB, usersDB, tinderDataDB } from "./models";
 
@@ -8,7 +10,7 @@ mongodb.connect("mongodb://localhost:27017/nsb", {
 })
 	.then(() => {
 		// If it connects log the following
-		logger.low("Connected to the Mongodb database.", "log");
+		logger.info("Connected to the Mongodb database.", "log");
 	})
 	.catch((err) => {
 		// If it doesn't connect log the following
@@ -16,7 +18,7 @@ mongodb.connect("mongodb://localhost:27017/nsb", {
 	});
 
 // Create/find Guilds Database
-export async function getUserDB(userID: string): Promise<mongodb.Document<any>> {
+export async function getUserDB(userID: string): Promise<IUser> {
 	let userDB = await usersDB.findOne({ id: userID });
 	if (userDB) {
 		return userDB;
@@ -31,7 +33,7 @@ export async function getUserDB(userID: string): Promise<mongodb.Document<any>> 
 }
 
 // Create/find Guilds Database
-export async function getGuildDB(guildID: string): Promise<mongodb.Document<any>> {
+export async function getGuildDB(guildID: string): Promise<IGuild> {
 	let guildDB = await guildsDB.findOne({ id: guildID });
 
 	if (guildDB) {
@@ -46,14 +48,14 @@ export async function getGuildDB(guildID: string): Promise<mongodb.Document<any>
 	}
 }
 
-export async function getTinderDB(userID: string): Promise<mongodb.Document<any>> {
+export async function getTinderDB(userID: string): Promise<ITinder> {
 	let tinderDB = await tinderDataDB.findOne({ id: userID });
 
 	if (tinderDB) {
 		return tinderDB;
 	}
 	else {
-		tinderDB = new guildsDB({
+		tinderDB = new tinderDataDB({
 			id: userID,
 		});
 		await tinderDB.save().catch((err: Error) => console.log(err));

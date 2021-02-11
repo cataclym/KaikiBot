@@ -1,9 +1,9 @@
-import { Collection } from "discord.js";
 import { model, Schema } from "mongoose";
 import { errorColor, okColor } from "../nsb/Util";
 import { config } from "../config";
+import { IGuild, ITinder, IUser } from "../../src/interfaces/db";
 
-export const guildsDB = model("Guild", new Schema({
+export const guildSchema = new Schema({
 	// ID of the guild
 	id: {
 		type: String,
@@ -11,22 +11,28 @@ export const guildsDB = model("Guild", new Schema({
 	registeredAt: {
 		type: Number, default: Date.now(),
 	},
-	prefix: {
-		type: String, default: config.prefix,
-	},
 	leaveRoles: {
 		type: Object, default: {
-			pairs: new Collection(),
+		},
+	},
+	userRoles: {
+		type: Object, default: {
+		},
+	},
+	emojiStats: {
+		type: Object, default: {
 		},
 	},
 
 	addons: {
 		type: Object, default: {
+			prefix: config.prefix,
+
 			anniversary: {
 				// Anniversary roles feature enabled
 				enabled: false,
 			},
-			dadbot: {
+			dadBot: {
 				// Dadbot feature enabled
 				enabled: false,
 			},
@@ -44,7 +50,7 @@ export const guildsDB = model("Guild", new Schema({
 				// Custom message
 				message: null,
 				// Check if image is enabled
-				image: false,
+				image: null,
 				// Check if embed is enabled
 				embed: false },
 			goodbye: {
@@ -55,21 +61,17 @@ export const guildsDB = model("Guild", new Schema({
 				// Custom message
 				message: null,
 				// Check if image is enabled
-				image: false,
+				image: null,
 				// Check if embed is enabled
 				embed: false,
 			},
 		},
 	},
-}));
+});
 
-export const usersDB = model("Member", new Schema({
+export const usersSchema = new Schema({
 	// ID of the user
 	id: {
-		type: String,
-	},
-	// ID of the guild
-	guild: {
 		type: String,
 	},
 	// Date
@@ -80,41 +82,36 @@ export const usersDB = model("Member", new Schema({
 	userNicknames: {
 		type: Array, default: [],
 	},
+	todo: {
+		type: Array, default: [],
+	},
+});
 
-}));
-
-export const tinderDataDB = model("Tinder", new Schema({
+export const tinderDataSchema = new Schema({
 	// ID of the user
 	id: {
 		type: String,
 	},
-	// Array of IDs
-	datingIDs: {
-		type: Array, default: null,
+	tinderData: {
+		type: Object, default: {
+			// Array of IDs
+			datingIDs: [],
+			// Array of IDs
+			marriedIDs: [],
+			// Array of IDs
+			likeIDs: [],
+			// Array of IDs
+			dislikeIDs: [],
+			// Array of IDs
+			temporary: [],
+			// Number of likes
+			likes: 3,
+			// Number of rolls
+			rolls: 15,
+		},
 	},
-	// Array of IDs
-	marriedIDs: {
-		type: Array, default: null,
-	},
-	// Array of IDs
-	likeIDs: {
-		type: Array, default: null,
-	},
-	// Array of IDs
-	dislikeIDs: {
-		type: Array, default: null,
-	},
-	// Array of IDs
-	temporary: {
-		type: Array, default: null,
-	},
-	// Number of likes
-	likes: {
-		type: Number, default: 3,
-	},
-	// Number of rolls
-	rolls: {
-		type: Number, default: 15,
-	},
+});
 
-}));
+export const guildsDB = model<IGuild>("Guild", guildSchema);
+export const tinderDataDB = model<ITinder>("Tinder", tinderDataSchema);
+export const usersDB = model<IUser>("Member", usersSchema);

@@ -1,6 +1,11 @@
 import { Command, PrefixSupplier } from "@cataclym/discord-akairo";
 import { config } from "../config";
 
+// cache
+const dadbotCache: {[key: string]: boolean} = {};
+const errorColorCache: {[key: string]: string} = {};
+const okColorCache: {[key: string]: string} = {};
+
 function getPrefix(message: Message, command: Command) {
 	const prefix = (command.handler.prefix as PrefixSupplier)(message);
 	if (Array.isArray(prefix)) return prefix[0] as string;
@@ -19,11 +24,12 @@ declare module "discord.js" {
     export interface Message {
         args(command: Command): string | undefined;
         getMemberColorAsync(member?: GuildMember): Promise<ColorResolvable>;
+        client: customClient;
     }
 
     export interface MessageEmbed {
-        withOkColor(m: Message): ColorResolvable;
-        withErrorColor(m: Message): ColorResolvable;
+        withOkColor(m: Message): this;
+        withErrorColor(m: Message): this;
     }
 }
 
@@ -44,15 +50,47 @@ GuildMember.prototype.hasExcludedRole = function(member?: GuildMember) {
 };
 
 Guild.prototype.isDadBotEnabled = function(guild?: Guild) {
+
 	const g = guild ?? this as Guild;
-	return (g.client as customClient).guildDB.get(g.id, "dadbot", false);
+	let enabled = dadbotCache[g.id];
+
+	if (typeof enabled !== "boolean") {
+		enabled = (g.client as customClient).addons.get(g.id, "dadBot", false);
+		dadbotCache[g.id] = enabled;
+	}
+
+	return enabled;
 };
 
 MessageEmbed.prototype.withErrorColor = function(m: Message) {
-	return m.guild?.id ? (m.client as customClient).guildDB.get(m.guild?.id, "errorColor", errorColor) : errorColor;
+
+	if (m.guild?.id) {
+		let color = errorColorCache[m.guild.id];
+
+		if (!color) {
+			color = (m.client as customClient).addons.get(m.guild.id, "errorColor", errorColor);
+			errorColorCache[m.guild.id] = color;
+		}
+		this.color = color;
+		return this;
+	}
+	this.color = okColor;
+	return this;
 };
 
 MessageEmbed.prototype.withOkColor = function(m: Message) {
-	return m.guild?.id ? (m.client as customClient).guildDB.get(m.guild?.id, "okColor", okColor) : okColor;
 
+	if (m.guild?.id) {
+
+		let color = okColorCache[m.guild.id];
+
+		if (!color) {
+			color = (m.client as customClient).addons.get(m.guild?.id, "okColor", okColor);
+			errorColorCache[m.guild.id] = color;
+		}
+		this.color = color;
+		return this;
+	}
+	this.color = okColor;
+	return this;
 };
