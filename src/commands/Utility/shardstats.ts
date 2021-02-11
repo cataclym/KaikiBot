@@ -1,5 +1,5 @@
 import { Command } from "@cataclym/discord-akairo";
-import { Message, WebSocketShard } from "discord.js";
+import { Message } from "discord.js";
 import { codeblock } from "../../nsb/Util";
 
 interface shards {
@@ -14,6 +14,7 @@ const shardStats: shards = {
 	4: "NEARLY",
 	5: "DISCONNECTED",
 };
+
 module.exports = class ShardStatisticsCommand extends Command {
 	constructor() {
 		super("shardstats", {
@@ -29,7 +30,7 @@ module.exports = class ShardStatisticsCommand extends Command {
 		pages.push(`WebSocket: ${shardStats[message.client.ws.status]} | Shards: ${ws.shards.size}/idfk`);
 		// Why doesnt this show up??
 		ws.shards.each(async (element, d) => {
-			pages.push(`ID: #${element.id} | Status: ${shardStats[element.status]} | Ping: ${element.ping} | Connected to idfk servers. | ${d}`);
+			pages.push(`ID: #${element.id} | Status: ${shardStats[element.status]} | Heartbeat: ${element.ping} | ${d}`);
 		});
 		message.util?.send(await codeblock(pages.join("\n"), "json"));
 	}

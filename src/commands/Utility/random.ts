@@ -22,7 +22,7 @@ module.exports = class RandomNumberCommand extends Command {
 			aliases: ["random", "rng"],
 		});
 	}
-	public async exec(message: Message, args: any) {
+	public async exec(message: Message, args: { int: number, int2: number }) {
 		const embed = new MessageEmbed({
 			title: "Result:",
 			color: await message.getMemberColorAsync(),
@@ -30,8 +30,8 @@ module.exports = class RandomNumberCommand extends Command {
 		function getRndInteger(min: number, max: number) {
 			return Math.floor(Math.random() * (max - min + 1)) + min;
 		}
-		const number1 = parseInt(args.int, 10),
-			number2 = parseInt(args.int2, 10);
+		const number1 = args.int,
+			number2 = args.int2;
 		embed.setFooter(`Random number between ${number1} and ${number2}`);
 		if (number1 > number2) {
 			embed.setDescription(getRndInteger(number2, number1));

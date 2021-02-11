@@ -18,15 +18,14 @@ export default class FetchUserCommand extends Command {
 							if (u) return u;
 						}
 						catch {
-							//
+							return;
 						}
-						return message.author;
 					}),
 				},
 			],
 		});
 	}
-	public async exec(message: Message, { userObject }: { userObject: User}): Promise<Message | void> {
+	public async exec(message: Message, { userObject }: { userObject: User }): Promise<Message | void> {
 
 		const userinfo = this.handler.modules.get("uinfo");
 

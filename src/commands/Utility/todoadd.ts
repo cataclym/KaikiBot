@@ -1,10 +1,8 @@
-"use strict";
-import db from "quick.db";
-const ReminderList = new db.table("ReminderList");
 import { Command } from "@cataclym/discord-akairo";
-import { Message } from "discord.js";
+import { Message, MessageReaction } from "discord.js";
+import { getUserDB } from "../../struct/db";
 import { noArgGeneric } from "../../nsb/Embeds";
-module.exports = class todoAddCommand extends Command {
+export default class todoAddCommand extends Command {
 	constructor() {
 		super("add", {
 			args: [
@@ -17,8 +15,10 @@ module.exports = class todoAddCommand extends Command {
 			],
 		});
 	}
-	public async exec(message: Message, { toAdd }: { toAdd: string}) {
-		ReminderList.push(`${message.author.id}.todo`, toAdd.split(/ +/));
+	public async exec(message: Message, { toAdd }: { toAdd: string}): Promise<MessageReaction> {
+		const userDB = await getUserDB(message.author.id);
+		userDB.todo.push(toAdd);
+		userDB.save();
 		return message.react("✅");
 	}
-};
+}
