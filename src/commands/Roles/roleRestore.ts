@@ -1,8 +1,8 @@
 import { Command } from "@cataclym/discord-akairo";
-import { Message, MessageEmbed, GuildMember } from "discord.js";
-import db from "quick.db";
+import { Guild, Message, MessageEmbed, GuildMember } from "discord.js";
+import { customClient } from "../../struct/client";
 import { errorColor } from "../../nsb/Util";
-const leaveRoleTable = new db.table("leaveRoleTable");
+import { getGuildDB } from "../../struct/db";
 
 export default class RestoreUserRoles extends Command {
 	constructor() {
@@ -23,16 +23,29 @@ export default class RestoreUserRoles extends Command {
 			],
 		});
 	}
-	public async exec(message: Message, { member }: { member: GuildMember }): Promise<Message> {
+	public async exec(message: Message, { member }: { member: GuildMember }): Promise<Message | void> {
 
-		if (leaveRoleTable.get(`${member.guild.id}.${member.id}`)) {
-			const savedRoles = leaveRoleTable.get(`${member.guild.id}.${member.id}`);
-			member.roles.add(savedRoles);
-			return message.channel.send(new MessageEmbed().setColor(await message.getMemberColorAsync()).setDescription(`Restored roles of ${member.user.tag}`));
+		const guild = message.guild as Guild;
+
+		const db = await getGuildDB(guild.id),
+			leaveRoles = db.leaveRoles[member.id];
+
+		if (leaveRoles) {
+
+			const roleIDArray = leaveRoles.filter(roleString => member.guild.roles.cache.get(roleString));
+
+			if (!roleIDArray.length) return;
+
+			member.roles.add(roleIDArray);
+			return message.channel.send(new MessageEmbed()
+				.setColor(await message.getMemberColorAsync())
+				.setDescription(`Restored roles of ${member.user.tag}`));
 		}
 
 		else {
-			return message.channel.send(new MessageEmbed().setColor(errorColor).setDescription("This user's roles have not been saved, or user has never left the guild."));
+			return message.channel.send(new MessageEmbed()
+				.setColor(errorColor)
+				.setDescription("This user's roles have not been saved, or user has never left the guild."));
 		}
 	}
 }

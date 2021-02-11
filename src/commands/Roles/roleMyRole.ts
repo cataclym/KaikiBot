@@ -1,9 +1,8 @@
 import { Command, PrefixSupplier } from "@cataclym/discord-akairo";
 import { Message, MessageEmbed, Guild } from "discord.js";
 import { errorColor, trim } from "../../nsb/Util";
-import DB from "quick.db";
 import { resolveColor } from "../../nsb/Color";
-const userRoles = new DB.table("userRoles");
+import { customClient } from "../../struct/client";
 
 export default class MyRoleCommand extends Command {
 	constructor() {
@@ -35,36 +34,36 @@ export default class MyRoleCommand extends Command {
 	}
 	public async exec(message: Message, { name, color }: { name?: string, color?: string }): Promise<Message | void> {
 
-		const guild = (message.guild as Guild);
+		const guild = (message.guild as Guild),
+			{ userRoles } = (message.client as customClient);
 
 		const embedFail = async (text?: string) => {
-			return new MessageEmbed()
-				.setColor(errorColor)
-				.setDescription(text ?? "You do not have a role!");
-		};
+				return new MessageEmbed()
+					.setColor(errorColor)
+					.setDescription(text ?? "You do not have a role!");
+			},
+			embedSuccess = async (text: string) => {
+				return new MessageEmbed()
+					.setColor(await message.getMemberColorAsync())
+					.setDescription(text);
+			};
 
-		const embedSuccess = async (text: string) => {
-			return new MessageEmbed()
-				.setColor(await message.getMemberColorAsync())
-				.setDescription(text);
-		};
+		const dbRole = userRoles.get(guild.id, message.author.id, null);
 
-		const res = userRoles.get(`${message.guild?.id}.${message.author.id}`);
+		if (!dbRole) return message.channel.send(await embedFail());
 
-		if (!res) return message.channel.send(await embedFail());
-
-		const myRole = guild.roles.cache.get(res[0]);
+		const myRole = guild.roles.cache.get(dbRole);
 		name = name?.slice(5);
 
 		if (name || color) {
 
 			if (!myRole) {
-				userRoles.delete(`${guild.id}.${res[0]}`);
+				userRoles.delete(guild.id, message.author.id);
 				return message.channel.send(await embedFail());
 			}
 
-			const botRole = message.guild?.me?.roles.highest;
-			const isPosition = botRole?.comparePositionTo(myRole);
+			const botRole = message.guild?.me?.roles.highest,
+				isPosition = botRole?.comparePositionTo(myRole);
 
 			if (isPosition && isPosition <= 0) return message.channel.send(await embedFail("This role is higher than me, I cannot edit this role!"));
 
@@ -84,14 +83,14 @@ export default class MyRoleCommand extends Command {
 
 		else {
 			if (!myRole) {
-				userRoles.delete(`${guild.id}.${res[0]}`);
+				userRoles.delete(guild.id, message.author.id);
 				return message.channel.send(await embedFail());
 			}
 
 			message.channel.send(new MessageEmbed()
 				.setAuthor(`Current role assigned to ${message.author.username}`,
-					guild.iconURL({ size: 2048, dynamic: true, format: "png" || "gif" })
-						|| message.author.displayAvatarURL({ size: 2048, dynamic: true, format: "png" || "gif" }))
+					guild.iconURL({ size: 2048, dynamic: true })
+						|| message.author.displayAvatarURL({ size: 2048, dynamic: true }))
 				.setColor(myRole.hexColor)
 				.addField("Name", `${myRole.name}`, true)
 				.addField("Colour", `${myRole.hexColor}`, true));
