@@ -1,8 +1,7 @@
-import db from "quick.db";
-const Tinder = new db.table("Tinder");
-import { SeparateTinderList } from "../../nsb/Tinder.js";
+import { separateTinderList } from "../../nsb/Tinder.js";
 import { Command } from "@cataclym/discord-akairo";
 import { Message } from "discord.js";
+import { getTinderDB } from "../../struct/db.js";
 
 module.exports = class TinderListLikesCommand extends Command {
 	constructor() {
@@ -10,7 +9,8 @@ module.exports = class TinderListLikesCommand extends Command {
 		});
 	}
 	public async exec(message: Message) {
-		const likesID = <string[]> [...new Set(Tinder.get(`${message.author.id}.likeID`))];
-		return SeparateTinderList(message, likesID, `Likes (${likesID.length - 1})`);
+		const db = await getTinderDB(message.author.id),
+			likeIDs = [...new Set(db.tinderData.likeIDs)];
+		return separateTinderList(message, likeIDs, `Likes (${likeIDs.length - 1})`);
 	}
 };

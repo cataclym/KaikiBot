@@ -1,10 +1,8 @@
-"use strict";
-import db from "quick.db";
-const Tinder = new db.table("Tinder");
 import { Command } from "@cataclym/discord-akairo";
-import { MessageEmbed } from "discord.js";
-import { Message } from "discord.js";
-import { MessageReaction } from "discord.js";
+import { Message, MessageEmbed } from "discord.js";
+import { ITinder } from "../../interfaces/db";
+import { errorMessage } from "../../nsb/Embeds";
+import { getTinderDB } from "../../struct/db";
 
 export default class TinderRemoveLikes extends Command {
 	constructor() {
@@ -13,26 +11,36 @@ export default class TinderRemoveLikes extends Command {
 				{
 					id: "integer",
 					type: "integer",
-					otherwise: (m: Message) => new MessageEmbed().setDescription("Provide a number. Check your tinder lists for the specific numbers").withErrorColor(m),
+					otherwise: (m: Message) => errorMessage(m, "Provide a number. Check your tinder lists for the specific numbers"),
 				},
 			],
 		});
 	}
-	public async exec(message: Message, { integer }: { integer: number }): Promise<Message | MessageReaction> {
-		const likes = [...new Set(Tinder.fetch(`${message.author.id}.likeID`))];
-		if (!likes[1]) {
-			return message.channel.send("Nothing to delete.");
+	public async exec(message: Message, { integer }: { integer: number }): Promise<ITinder> {
+		const db = await getTinderDB(message.author.id);
+
+		if (db.tinderData.likeIDs.length) {
+
+			if (db.tinderData.dislikeIDs.length >= integer) {
+			// Matches given number to array item
+				const userID = db.tinderData.likeIDs.splice(integer, 1),
+					RemovedMember = message.client.users.cache.get(userID.toString());
+
+				message.channel.send(`Removed ${RemovedMember ? RemovedMember?.username : "<@" + userID + ">"} from list.`).then(SentMsg => {
+					SentMsg.react("✅");
+				});
+			}
+			else {
+				message.channel.send(new MessageEmbed()
+					.setDescription("Please provide a valid number.")
+					.withErrorColor(message),
+				);
+			}
 		}
-		const removedItem = likes.splice(integer, 1);
-		if (!(removedItem.toString() === message.author.id) && removedItem) {
-			Tinder.set(`${message.author.id}.likeID`, likes);
-			const RemovedMember = message.client.users.cache.get(removedItem.toString());
-			return message.channel.send(`Removed \`${RemovedMember ? RemovedMember?.username : "Uncached user"}\` from list.`).then(SentMsg => {
-				return SentMsg.react("✅");
-			});
-		}
+
 		else {
-			return message.channel.send("Something went wrong.");
+			message.channel.send("Something went wrong.");
 		}
+		return db.save();
 	}
 }

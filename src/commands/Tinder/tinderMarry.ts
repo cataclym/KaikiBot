@@ -1,8 +1,7 @@
-import db from "quick.db";
-const Tinder = new db.table("Tinder");
 import { Command } from "@cataclym/discord-akairo";
 import { DMEMarry } from "../../nsb/Embeds.js";
 import { Message, MessageEmbed, MessageReaction, User } from "discord.js";
+import { getTinderDB } from "../../struct/db.js";
 
 module.exports = class TinderMarryCommand extends Command {
 	constructor() {
@@ -20,37 +19,37 @@ module.exports = class TinderMarryCommand extends Command {
 		});
 	}
 	public async exec(message: Message, { user }: { user: User}) {
+		const db = await getTinderDB(user.id),
+			ArgDates = db.tinderData.datingIDs;
 
-		const ArgDates = Tinder.get(`${user.id}.datingIDs`);
+		if (ArgDates.includes(message.author.id)) {
 
-		if (ArgDates.includes(`${message.author.id}`)) {
+			const authorDB = await getTinderDB(message.author.id),
+				MarryMatches = authorDB.tinderData.marriedIDs.filter((f: string) => db.tinderData.marriedIDs.includes(f));
 
-			const ArgMarry = Tinder.get(`${user.id}.marriedIDs`);
-			const AuthorMarry = Tinder.get(`${message.author.id}.marriedIDs`),
-				MarryMatches = AuthorMarry.filter((f: string) => ArgMarry.includes(f));
-
-			if (!MarryMatches.includes(`${user.id}`)) {
-				message.channel.send("Do you want to marry " + message.author.username + `, <@${user.id}>?` + "\nReact with a ❤️ to marry!")
-					.then(heart => {
-						heart.react("❤️");
+			if (!MarryMatches.includes(user.id)) {
+				message.channel.send(`Do you want to marry ${message.author.username}, <@${user.id}>?\nReact with a ❤️ to marry!`)
+					.then(msg => {
+						msg.react("❤️");
 
 						const filter = (reaction: MessageReaction, reactionUser: User) => {
 							return reaction.emoji.name === "❤️" && reactionUser.id === user.id;
 						};
-						heart.awaitReactions(filter, { max: 1, time: 50000, errors: ["time"] })
+
+						msg.awaitReactions(filter, { max: 1, time: 50000, errors: ["time"] })
 							.then(async () => {
-								Tinder.push(`${message.author.id}.marriedIDs`, user.id);
-								Tinder.push(`${user.id}.marriedIDs`, message.author.id);
+								authorDB.tinderData.marriedIDs.push(user.id);
+								db.tinderData.marriedIDs.push(message.author.id);
 								return message.channel.send(await DMEMarry());
 							})
-							.catch(() => {
-								heart.reactions.removeAll().catch(error => console.error("Failed to clear reactions: ", error));
-								return heart.edit("Timed out");
+							.catch(async () => {
+								msg.reactions.removeAll().catch(error => console.error("Failed to clear reactions: ", error));
+								return msg.edit("Timed out");
 							});
 					});
 			}
 			else { return message.util?.send("You can't marry this person!"); }
 		}
-		else { return message.util?.send("You are not datingIDs this person!"); }
+		else { return message.util?.send("You are not dating this person!"); }
 	}
 };
