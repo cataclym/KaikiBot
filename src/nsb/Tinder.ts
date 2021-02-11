@@ -1,43 +1,19 @@
 import { timeToMidnight, msToTime } from "./functions";
 import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
 import { MessageEmbed, Message, User } from "discord.js";
-import { customClient } from "../struct/client";
-
-export interface tinderDataStructure {
-	rolls: number,
-	likes: number,
-	datingIDs: string[],
-	likeIDs: string[],
-	dislikeIDs: string[],
-	marriedIDs: string[],
-	temporary: string[]
-}
+import { ITinder } from "../interfaces/db";
+import { getTinderDB } from "../struct/db";
+import { hexColorTable } from "./Color";
 
 async function tinderDBService(user: User): Promise<void> {
-
-	(user.client as customClient).tinderDB.set(user.id, "rolls", 15);
-	(user.client as customClient).tinderDB.set(user.id, "rolls", 3);
-	return Promise.resolve();
+	await getTinderDB(user.id);
 }
-function NoLikes(): string {
-	return "You don't have any more likes!\nLikes and rolls reset in: " + msToTime(timeToMidnight());
-}
-async function NoRolls(): Promise<string> {
-	return "You don't have any more rolls!\nLikes and rolls reset in: " + msToTime(timeToMidnight());
+async function noMoreLikesOrRolls(value: "rolls" | "likes"): Promise<string> {
+	return `You don't have any more ${value}!\nLikes and rolls reset in: ${msToTime(timeToMidnight())}`;
 }
 
-/**
-  * Function to return a specific tinder list.
-  *
-  * @param {Message} message Context
-  * @param {string[]} Item User's specific tinder array
-  * @param {string} ListName Embed title
-  * @return {Message} editMessageWithPaginatedEmbeds
-  */
-async function SeparateTinderList(message: Message, Item: string[], ListName = "Tinder list"): Promise<Message> {
+async function separateTinderList(message: Message, Item: string[], ListName = "Tinder list"): Promise<Message> {
 
-	Item.shift();
-	// Remove self
 	if (!Item.length) { return message.reply("There doesn't seem to be anyone here"); }
 
 	const pages = [];
@@ -54,25 +30,30 @@ async function SeparateTinderList(message: Message, Item: string[], ListName = "
 }
 
 const allListMap = async (message: Message, DataAndID: string[]) => {
-	return DataAndID.slice(1, 21).map((item, i) => `${+i + 1}. ${message.client.users.cache.find(_user => _user.id === item) ? message.client.users.cache.find(_user => _user.id === item)?.username : "User left guild"}`).join("\n");
+	return DataAndID.slice(0, 20)
+		.map((item, i) => {
+			const usr = message.client.users.cache.find(_user => _user.id === item),
+				result = usr
+					? usr.username
+					: item;
+			return `${+i + 1}. ${result}`;
+		}).join("\n");
 };
 
 async function fetchUserList(message: Message, user: User): Promise<Message> {
-
-	await tinderDBService(user);
 
 	const embed = new MessageEmbed()
 		.setTitle(user.username + "'s tinder list")
 		.setColor(await message.getMemberColorAsync());
 
-	const { datingIDs, marriedIDs, dislikeIDs, likeIDs }: tinderDataStructure = (message.client as customClient).tinderDB.getDocument(user.id);
+	const { datingIDs, marriedIDs, dislikeIDs, likeIDs } = (await getTinderDB(user.id)).tinderData;
 
 	embed.addFields(
-		{ name: "Liked 👍", value: likeIDs?.length > 1 ? await allListMap(message, likeIDs) : "N/A", inline: true },
-		{ name: "Disliked ❌", value: dislikeIDs?.length > 1 ? await allListMap(message, dislikeIDs) : "N/A", inline: true },
-		{ name: "Dating ❤️", value: datingIDs?.length > 1 ? await allListMap(message, datingIDs) : "N/A", inline: true });
+		{ name: "Liked 👍", value: likeIDs?.length ? await allListMap(message, likeIDs) : "N/A", inline: true },
+		{ name: "Disliked ❌", value: dislikeIDs?.length ? await allListMap(message, dislikeIDs) : "N/A", inline: true },
+		{ name: "Dating ❤️", value: datingIDs?.length ? await allListMap(message, datingIDs) : "N/A", inline: true });
 
-	if (marriedIDs?.length > 1) {
+	if (marriedIDs.length) {
 		embed.addFields(
 			{ name: "\u200B", value: "\u200B", inline: true },
 			{ name: "Married 🌟", value: await allListMap(message, marriedIDs) + "\u200B", inline: true },
@@ -82,91 +63,105 @@ async function fetchUserList(message: Message, user: User): Promise<Message> {
 	return message.channel.send(embed);
 }
 
-async function NormalLike(message: Message, SentMsg: Message, genericEmbed: MessageEmbed, newHasRolls: number, hasLikes: number, randomUsr: User): Promise<Message> {
+async function tinderNormalLike(message: Message, SentMsg: Message, genericEmbed: MessageEmbed, randomUsr: User, tinderUserData: ITinder, ramdomUsrData: ITinder): Promise<void> {
 
-	const client = message.client as customClient;
+	if (tinderUserData.tinderData.likes <= 0) {
 
-	if (hasLikes > 0) {
-		--hasLikes;
-		// Updates leftover likes/rolls in real-time /s
-		const NewRollsLikes = `${newHasRolls} rolls, ${hasLikes} likes remaining.`;
-
-		const newEmbed = new MessageEmbed(genericEmbed)
-			.setAuthor("❤️❤️❤️")
-			.setTitle(randomUsr.username)
-			.setFooter(NewRollsLikes);
-
-		client.tinderDB.set(message.author.id, "likes", hasLikes);
-
-		const checkLikeIDs = client.tinderDB.get(randomUsr.id, "likeIDs", []);
-		const aData: string[] = client.tinderDB.get(message.author.id, "datingIDs", []);
-
-		if (checkLikeIDs.includes(message.author.id)) {
-			const rData: string[] = client.tinderDB.get(randomUsr.id, "datingIDs", []);
-
-			aData.push(randomUsr.id);
-			rData.push(message.author.id);
-
-			client.tinderDB.set(message.author.id, "datingIDs", aData);
-			client.tinderDB.set(randomUsr.id, "datingIDs", rData);
-
-			const edited = await SentMsg.edit(newEmbed
-				.setColor("#ff00ff")
-				.setDescription("It's a match! Congratulations!"));
-			if (message.guild?.me?.hasPermission("MANAGE_MESSAGES")) await SentMsg.reactions.removeAll();
-			return edited;
-		}
-		aData.push(randomUsr.id);
-		client.tinderDB.set(message.author.id, "likeIDs", aData);
-
-		const edited = await SentMsg.edit(newEmbed
-			.setColor("#00FF00")
-			.setDescription("has been added to likes!"));
-		if (message.guild?.me?.hasPermission("MANAGE_MESSAGES")) await SentMsg.reactions.removeAll();
-		return edited;
-	}
-	else {
 		SentMsg.reactions.removeAll();
-		return message.channel.send(NoLikes());
+		message.channel.send(await noMoreLikesOrRolls("likes"));
 	}
+
+	else {
+
+		--tinderUserData.tinderData.likes;
+		// Updates leftover likes/rolls in real-time /s
+		const NewRollsLikes = `${tinderUserData.tinderData.rolls} rolls, ${tinderUserData.tinderData.likes} likes remaining.`,
+			newEmbed = new MessageEmbed(genericEmbed)
+				.setAuthor("❤️❤️❤️")
+				.setTitle(randomUsr.username)
+				.setFooter(NewRollsLikes);
+
+		if (ramdomUsrData.tinderData.likeIDs.includes(message.author.id)) {
+
+			tinderUserData.tinderData.datingIDs.push(randomUsr.id);
+			ramdomUsrData.tinderData.datingIDs.push(message.author.id);
+
+			if (message.guild?.me?.hasPermission("MANAGE_MESSAGES")) SentMsg.reactions.removeAll();
+
+			SentMsg.edit(newEmbed
+				.setColor(hexColorTable["deeppink"])
+				.setDescription("It's a match! Congratulations!"),
+			);
+		}
+
+		else {
+
+			ramdomUsrData.tinderData.likeIDs.push(randomUsr.id);
+
+			if (message.guild?.me?.hasPermission("MANAGE_MESSAGES")) SentMsg.reactions.removeAll();
+
+			SentMsg.edit(newEmbed
+				.setColor(hexColorTable["lawngreen"])
+				.setDescription("has been added to likes!"),
+			);
+		}
+	}
+
+	tinderUserData.save();
+	ramdomUsrData.save();
 }
 
-async function Dislike(message: Message, SentMsg: Message, genericEmbed: MessageEmbed, newHasRolls: number, hasLikes: number, randomUsr: User): Promise<Message> {
-	(message.client as customClient).tinderDB.set(message.author.id, "dislikeIDs", ((await (message.client as customClient).tinderDB.get(message.author.id, "dislikeIDs", [])) as string[]).push(randomUsr.id));
+async function tinderDislike(message: Message, SentMsg: Message, genericEmbed: MessageEmbed, randomUsr: User, tinderUserData: ITinder, ramdomUsrData: ITinder): Promise<void> {
 
-	const NewRollsLikes = `${newHasRolls} rolls, ${hasLikes} likes remaining.`;
-	if (message.guild?.me?.hasPermission("MANAGE_MESSAGES")) await SentMsg.reactions.removeAll();
-	return SentMsg.edit(new MessageEmbed(genericEmbed)
+	tinderUserData.tinderData.dislikeIDs.push(randomUsr.id);
+
+	const NewRollsLikes = `${tinderUserData.tinderData.rolls} rolls, ${tinderUserData.tinderData.likes} likes remaining.`;
+
+	if (message.guild?.me?.hasPermission("MANAGE_MESSAGES")) SentMsg.reactions.removeAll();
+
+	SentMsg.edit(new MessageEmbed(genericEmbed)
 		.setAuthor("❌❌❌")
-		.setColor("#00FF00")
+		.setColor(hexColorTable["deeppink"])
 		.setTitle(randomUsr.username)
 		.setDescription("has been added to dislikes.")
-		.setFooter(NewRollsLikes));
+		.setFooter(NewRollsLikes),
+	);
+
+	tinderUserData.save();
+	ramdomUsrData.save();
 }
 
-async function SuperLike(message: Message, SentMsg: Message, genericEmbed: MessageEmbed, hasLikes: number, randomUsr: User): Promise<Message> {
-	if (hasLikes > 0) {
-		const zero = 0;
-		Tinder.push(`${message.author.id}.datingIDs`, randomUsr.id);
-		Tinder.push(`${randomUsr.id}.datingIDs`, message.author.id);
-		Tinder.set(`${message.author.id}.rolls`, zero);
-		Tinder.set(`${message.author.id}.likes.`, zero);
-		if (message.guild?.me?.hasPermission("MANAGE_MESSAGES")) await SentMsg.reactions.removeAll();
-		return SentMsg.edit(new MessageEmbed(genericEmbed)
+async function tinderSuperLike(message: Message, SentMsg: Message, genericEmbed: MessageEmbed, randomUsr: User, tinderUserData: ITinder, ramdomUsrData: ITinder): Promise<void> {
+
+	if (tinderUserData.tinderData.likes > 0) {
+
+		tinderUserData.tinderData.datingIDs.push(randomUsr.id);
+		ramdomUsrData.tinderData.datingIDs.push(message.author.id);
+
+		tinderUserData.tinderData.rolls = 0;
+		tinderUserData.tinderData.likes = 0;
+
+		if (message.guild?.me?.hasPermission("MANAGE_MESSAGES")) SentMsg.reactions.removeAll();
+
+		SentMsg.edit(new MessageEmbed(genericEmbed)
 			.setAuthor("❤️🌟❤️")
 			.setColor("#FFFF00")
 			.setTitle(randomUsr.username)
 			.setDescription("Is now dating you!")
-			.setFooter("You have no rolls or likes remaining."));
+			.setFooter("You have no rolls or likes remaining."),
+		);
 	}
 	else {
-		await SentMsg.reactions.removeAll();
-		return message.channel.send(NoLikes());
+		SentMsg.reactions.removeAll();
+		message.channel.send(await noMoreLikesOrRolls("likes"));
 	}
+
+	tinderUserData.save();
+	ramdomUsrData.save();
 }
 
 export {
-	tinderDBService, NoLikes, NoRolls, SeparateTinderList, fetchUserList,
-	Dislike, NormalLike, SuperLike,
+	tinderDBService, noMoreLikesOrRolls, separateTinderList, fetchUserList,
+	tinderDislike, tinderNormalLike, tinderSuperLike,
 	// tinderNodeCanvasImage,
 };

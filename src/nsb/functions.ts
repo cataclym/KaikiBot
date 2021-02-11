@@ -1,10 +1,12 @@
 import { Collection, Message, Client, Guild } from "discord.js";
+import { getGuildDB } from "../struct/db";
 import { config } from "../config";
-import db, { table } from "quick.db";
 import { logger } from "./Logger";
-import { tinderDataStructure } from "./Tinder";
-const Tinder = new db.table("Tinder"), Emotes = new db.table("Emotes"), guildConfig = new db.table("guildConfig"), userNicknameTable = new db.table("UserNickTable");
+import { tinderDataDB } from "../struct/models";
+
 const words = ["shit", "fuck", "stop", "dont", "kill", "don't", "don`t", "fucking", "shut", "shutup", "shuttup", "trash", "bad", "hate", "stupid", "dumb", "suck", "sucks"];
+const index: {[name: string]: number} = {
+};
 
 // Reacts with emote to specified words
 async function emoteReact(message: Message): Promise<void> {
@@ -20,9 +22,6 @@ async function emoteReact(message: Message): Promise<void> {
 	});
 }
 
-const index = {
-	i: 0,
-};
 // Please don't laugh
 async function tiredNadekoReact(message: Message): Promise<void> {
 	const botName = message.client.user?.username.toLowerCase().split(" ");
@@ -30,29 +29,23 @@ async function tiredNadekoReact(message: Message): Promise<void> {
 		return;
 	}
 	if (new RegExp(botName.join("|")).test(message.content.toLowerCase()) && new RegExp(words.join("|")).test(message.content.toLowerCase())) {
-		index.i++;
-		if (index.i < 4) {
+		index["i"] ? index["i"]++ : index["i"] = 0;
+		if (index["i"] < 4) {
 			message.react("😢");
 		}
 		else {
 			// reset length
 			message.channel.send("😢");
-			index.i = 0;
+			index["i"] = 0;
 		}
 	}
 }
 
 async function ResetRolls(): Promise<void> {
 	// Tinder reset
-	Tinder.all().filter((obj) => (obj.data as tinderDataStructure).temporary).forEach(async ({ ID }) => {
-		console.log(ID);
-
-		Tinder.set(`${ID}.likes`, 3);
-		Tinder.set(`${ID}.rolls`, 15);
-		Tinder.set(`${ID}.temporary`, []);
+	tinderDataDB.updateMany({ tinderData: { $type: "object" } }, { $set: { "tinderData.temporary": [], "tinderData.rolls": 15, "tinderData.likes": 3 } }, null, () => {
+		logger.info(`mongooseDB | Reset tinder rolls/likes at ${Date()}`);
 	});
-
-	return logger.info("\nresetRolls | Rolls and likes have been reset | " + Date() + "\n");
 }
 
 async function dailyResetTimer(): Promise<void> {
@@ -68,43 +61,48 @@ function timeToMidnight(): number {
 	return (-d + d.setHours(24, 0, 0, 0));
 }
 
+async function emoteDB(guild: Guild, i = 0) {
+	const gDB = await getGuildDB(guild.id);
+	guild.emojis.cache.forEach(async emote => {
+
+		if (!gDB.emojiStats[emote.id]) {
+			gDB.emojiStats[emote.id] = 0;
+			i++;
+		}
+	});
+	gDB.save();
+	return Promise.resolve(i);
+}
+
 async function emoteDataBaseService(input: Client | Guild): Promise<number> {
 
-	let i = 0;
 	if (input instanceof Client) {
+		let i = 0;
 		input.guilds.cache.forEach(async guild => {
-			guild.emojis.cache.forEach(async emote => {
-				if (!Emotes.has(`${guild.id}.${emote.id}`)) {
-					Emotes.set(`${guild.id}.${emote.id}`, { count: 0 });
-					i++;
-				}
-			});
+			emoteDB(guild);
+			i++;
 		});
 		return Promise.resolve(i);
 	}
 
-	else if (input instanceof Guild) {
-		input.emojis.cache.forEach(async emote => {
-			if (!Emotes.has(`${input.id}.${emote.id}`)) {
-				Emotes.set(`${input.id}.${emote.id}`, { count: 0 });
-				i++;
-			}
-		});
-		return Promise.resolve(i);
-	}
 	else {
-		throw new Error("emoteDataBaseService | error");
+		return emoteDB(input);
 	}
 }
 
 async function countEmotes(message: Message): Promise<void> {
-	const emotes = message.content.match(/<?(a)?:.+?:\d+>/g);
-	if (emotes) {
+	const emotes = message.content.match(/<?(a)?:.+?:\d+>/g),
+		{ guild } = message;
+	if (emotes && guild) {
 		const ids = emotes.toString().match(/\d+/g);
-		ids?.forEach(id => {
-			const emote = message.guild?.emojis.cache.find(emoji => emoji.id === id);
+		ids?.forEach(async id => {
+			const emote = guild.emojis.cache.find(emoji => emoji.id === id);
 			if (emote) {
-				Emotes.add(`${message.guild?.id}.${emote.id}.count`, 1);
+				const db = await getGuildDB(guild.id);
+				db.emojiStats[emote.id]
+					? db.emojiStats[emote.id]++
+					: db.emojiStats[emote.id] = 1;
+				db.save();
 			}
 		});
 	}
@@ -123,33 +121,9 @@ function msToTime(duration: number): string {
 	return "**" + hours + "** hours **" + minutes + "** minutes **" + seconds + "." + milliseconds + "** seconds";
 }
 
-export interface guildConfig {
-	prefix: null | string,
-	anniversary: boolean,
-	dadbot: boolean,
-	okColor: null | string,
-	errorColor: null | string,
-}
-
-export type dbStruct = {
-	guildConfig: guildConfig,
-}
-
-export const dbStructure: dbStruct = {
-	guildConfig: {
-		prefix: null,
-		anniversary: false,
-		dadbot: false,
-		okColor: null,
-		errorColor: null,
-	},
-};
-
 async function dbColumns(client: Client): Promise<Collection<string, Guild>> {
 	const guilds = client.guilds.cache.each(g => {
-		if (!guildConfig.has(g.id)) {
-			guildConfig.set(g.id, dbStructure.guildConfig);
-		}
+		return getGuildDB(g.id);
 	});
 	return Promise.resolve(guilds);
 }
@@ -164,5 +138,4 @@ export {
 	ResetRolls,
 	timeToMidnight,
 	tiredNadekoReact,
-	userNicknameTable,
 };
