@@ -1,5 +1,5 @@
 {
-    "discord.enabled": true,
+    "discord.enabled": false,
     "editor.codeActionsOnSave": {
       "source.fixAll.eslint": true
     },
