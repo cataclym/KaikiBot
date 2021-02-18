@@ -10,12 +10,12 @@ type TGreetMessage = {
 }
 
 export interface IGuild extends Document {
-	id: string;
-	registeredAt: number;
-	leaveRoles: {[index: string]: string[]};
-	userRoles: {[index: string]: string};
-	emojiStats: {[index: string]: number};
-	addons: {
+	id: string,
+	registeredAt: number,
+	leaveRoles: {[userID: string]: string[]},
+	userRoles: {[userID: string]: string},
+	emojiStats: {[emojiID: string]: number},
+	settings: {
 		prefix: string,
 		anniversary: boolean,
 		dadBot: boolean,
@@ -44,4 +44,8 @@ export interface IUser extends Document {
 	registeredAt: number,
 	userNicknames: string[],
 	todo: string[],
+}
+
+export interface ICommandStats extends Document {
+	count: {[commandAlias: string]: number},
 }

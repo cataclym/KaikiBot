@@ -1,21 +1,25 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import mongodb, { Error } from "mongoose";
-import { ITinder, IUser, IGuild } from "../interfaces/db";
+import mongoose, { Error } from "mongoose";
+import { ITinder, IUser, IGuild, ICommandStats } from "../interfaces/db";
 import { logger } from "../nsb/Logger";
-import { guildsDB, usersDB, tinderDataDB } from "./models";
+import { guildsDB, usersDB, tinderDataDB, commandStatsDB } from "./models";
 
-mongodb.connect("mongodb://localhost:27017/nsb", {
+mongoose.connect("mongodb://localhost:27017", {
 	useNewUrlParser: true,
 	useUnifiedTopology: true,
+	dbName: "KaikiDB",
 })
 	.then(() => {
 		// If it connects log the following
-		logger.info("Connected to the Mongodb database.", "log");
+		logger.info("Connected to the Mongodb database.");
 	})
 	.catch((err) => {
 		// If it doesn't connect log the following
 		logger.high("Unable to connect to the Mongodb database. Error:" + err, "error");
 	});
+
+const db = mongoose.connection;
+db.on("error", logger.high.bind(console, "connection error:"));
 
 // Create/find Guilds Database
 export async function getUserDB(userID: string): Promise<IUser> {
@@ -27,7 +31,7 @@ export async function getUserDB(userID: string): Promise<IUser> {
 		userDB = new usersDB({
 			id: userID,
 		});
-		await userDB.save().catch((err: Error) => console.log(err));
+		await userDB.save().catch((err: Error) => logger.high(err));
 		return userDB;
 	}
 }
@@ -43,7 +47,7 @@ export async function getGuildDB(guildID: string): Promise<IGuild> {
 		guildDB = new guildsDB({
 			id: guildID,
 		});
-		await guildDB.save().catch((err: Error) => console.log(err));
+		await guildDB.save().catch((err: Error) => logger.high(err));
 		return guildDB;
 	}
 }
@@ -58,7 +62,21 @@ export async function getTinderDB(userID: string): Promise<ITinder> {
 		tinderDB = new tinderDataDB({
 			id: userID,
 		});
-		await tinderDB.save().catch((err: Error) => console.log(err));
+		await tinderDB.save().catch((err: Error) => logger.high(err));
 		return tinderDB;
+	}
+}
+
+export async function getCommandStatsDB(): Promise<ICommandStats> {
+	let cmdStatsDB = await commandStatsDB.findOne();
+
+	if (cmdStatsDB) {
+		return cmdStatsDB;
+	}
+	else {
+		cmdStatsDB = new commandStatsDB();
+
+		await cmdStatsDB.save().catch((err: Error) => logger.high(err));
+		return cmdStatsDB;
 	}
 }
