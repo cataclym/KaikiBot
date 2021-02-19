@@ -10,13 +10,13 @@ export default class todoRemoveCommand extends Command {
 				{
 					id: "toRemove",
 					index: 0,
-					type: Argument.union("integer", "string"),
+					type: Argument.union("integer", ["first", "last", "all"]),
 					otherwise: "Please specify number to delete from list, or 'first'/'last'/'all'",
 				},
 			],
 		});
 	}
-	public async exec(message: Message, { toRemove }: { toRemove: number | string }): Promise<IUser | Message> {
+	public async exec(message: Message, { toRemove }: { toRemove: number | "first" | "last" | "all" }): Promise<IUser | Message> {
 
 		const { author } = message, userDB = await getUserDB(author.id);
 
@@ -24,44 +24,42 @@ export default class todoRemoveCommand extends Command {
 			return message.channel.send("Nothing to delete.");
 		}
 
+		let removedItem = undefined;
+
 		if (typeof toRemove === "number") {
 			// Matches given number to array item
-			const index = Math.floor(toRemove - 1),
-				removedItem = userDB.todo.splice(index, 1),
-				stringified = removedItem?.toString().replace(/,/g, " ").substring(0, 46);
-			message.reply(`Removed \`${stringified}\` from list.`).then(SentMsg => {
-				SentMsg.react("✅");
-			});
+			removedItem = userDB.todo.splice(toRemove, 1);
 		}
 
 		else {
 			switch (toRemove) {
 				case "all": {
 					userDB.todo = [];
-					message.channel.send("List deleted.").then(SentMsg => {
-						SentMsg.react("✅");
-					});
 					break;
 				}
 				case "last": {
-				// This gets repeated unnecessarily
-					const removedItem = userDB.todo.pop();
-					const stringified = removedItem?.toString().replace(/,/g, " ").substring(0, 46);
-					// Returns removedItem with space
-					message.reply(`Removed \`${stringified}\` from list.`).then(SentMsg => {
-						SentMsg.react("✅");
-					});
+					removedItem = userDB.todo.pop();
 					break;
 				}
 				case "first": {
-					const removedItem = userDB.todo.shift();
-					const stringified = removedItem?.substring(0, 46);
-					message.reply(`Removed \`${stringified}\` from list.`).then(SentMsg => {
-						SentMsg.react("✅");
-					});
+					removedItem = userDB.todo.shift();
+					break;
 				}
 			}
+
+			if (!removedItem) {
+				message.channel.send("List deleted.").then(SentMsg => {
+					SentMsg.react("✅");
+				});
+			}
+			else {
+				const stringified = removedItem?.substring(0, 46);
+				message.reply(`Removed \`${stringified}\` from list.`).then(SentMsg => {
+					SentMsg.react("✅");
+				});
+			}
 		}
+		userDB.markModified("todo");
 		return userDB.save();
 	}
 }

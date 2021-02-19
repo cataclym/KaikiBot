@@ -13,6 +13,7 @@ export default class GuildMemberRemovedListener extends Listener {
 
 		const db = (await getGuildDB(member.guild.id));
 		db.leaveRoles[member.id] = member.roles.cache.map(role => role.id);
+		db.markModified("leaveRoles");
 		db.save();
 	}
 }

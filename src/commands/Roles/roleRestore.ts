@@ -1,7 +1,5 @@
 import { Command } from "@cataclym/discord-akairo";
 import { Guild, Message, MessageEmbed, GuildMember } from "discord.js";
-import { customClient } from "../../struct/client";
-import { errorColor } from "../../nsb/Util";
 import { getGuildDB } from "../../struct/db";
 
 export default class RestoreUserRoles extends Command {
@@ -25,27 +23,28 @@ export default class RestoreUserRoles extends Command {
 	}
 	public async exec(message: Message, { member }: { member: GuildMember }): Promise<Message | void> {
 
-		const guild = message.guild as Guild;
-
-		const db = await getGuildDB(guild.id),
+		const guild = message.guild as Guild,
+			db = await getGuildDB(guild.id),
 			leaveRoles = db.leaveRoles[member.id];
 
-		if (leaveRoles) {
+		if (leaveRoles.length) {
 
-			const roleIDArray = leaveRoles.filter(roleString => member.guild.roles.cache.get(roleString));
+			const roleIDArray = leaveRoles.filter(roleString => guild.roles.cache.get(roleString));
 
 			if (!roleIDArray.length) return;
 
 			member.roles.add(roleIDArray);
 			return message.channel.send(new MessageEmbed()
-				.setColor(await message.getMemberColorAsync())
-				.setDescription(`Restored roles of ${member.user.tag}`));
+				.setDescription(`Restored roles of ${member.user.tag}`)
+				.withOkColor(message),
+			);
 		}
 
 		else {
 			return message.channel.send(new MessageEmbed()
-				.setColor(errorColor)
-				.setDescription("This user's roles have not been saved, or user has never left the guild."));
+				.setDescription("This user's roles have not been saved, or user has never left the guild.")
+				.withErrorColor(message),
+			);
 		}
 	}
 }

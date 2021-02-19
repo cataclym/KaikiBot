@@ -1,8 +1,8 @@
 import { Command } from "@cataclym/discord-akairo";
-import { Guild, GuildMember, Message, Util } from "discord.js";
+import { GuildMember, Message, Util } from "discord.js";
 import { getUserDB } from "../../struct/db";
 import { config } from "../../config";
-import { logger } from "../../nsb/Logger";
+import { IUser } from "../../interfaces/db";
 
 let nick: {
 	[key: string]: string
@@ -16,7 +16,7 @@ export default class dadBot extends Command {
 			editable: false,
 			condition: (message: Message): boolean => {
 
-				if ((message.guild as Guild).isDadBotEnabled() && (message.member as GuildMember).hasExcludedRole() && !message.author.bot) {
+				if (message.guild?.isDadBotEnabled() && (message.member as GuildMember).hasExcludedRole() && !message.author.bot) {
 					for (const item of config.prefixes) {
 
 						const r = new RegExp(`(^|\\s|$)(?<statement>(?<prefix>${item})\\s*(?<nickname>.*)$)`, "mi");
@@ -38,20 +38,23 @@ export default class dadBot extends Command {
 		});
 	}
 
-	public async exec(message: Message): Promise<GuildMember | undefined> {
+	public async exec(message: Message): Promise<IUser | void> {
 
 		message.channel.send(`Hi, ${Util.removeMentions(nick.nickname)}`);
 
 		if (nick.nickname.length <= 32) {
 
-			const user = message.author;
+			const user = message.author,
+				db = await getUserDB(user.id);
 
-			(await getUserDB(user.id)).updateOne({ $push: { userNicknames: nick.nickname } }, null, (err, data) => logger.info(data));
+			db.userNicknames.push(nick.nickname);
 
 			if (user.id !== message.guild?.owner?.id) {
 				// Avoids setting nickname on Server owners
-				return message.member?.setNickname(nick.nickname);
+				message.member?.setNickname(nick.nickname);
 			}
+			db.markModified("userNicknames");
+			return db.save();
 		}
 	}
 }

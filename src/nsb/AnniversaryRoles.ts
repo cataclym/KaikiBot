@@ -2,8 +2,8 @@ import { Client, Guild, GuildMember, Role } from "discord.js";
 import { getGuildDB } from "../struct/db";
 import { timeToMidnight } from "./functions";
 import { logger } from "./Logger";
-const RoleNameJoin = "Join Anniversary",
-	RoleNameCreated = "Cake Day";
+const roleNameJoin = "Join Anniversary",
+	roleNameCreated = "Cake Day";
 
 async function DateObject() {
 	const d = new Date();
@@ -11,15 +11,15 @@ async function DateObject() {
 	const Day = d.getDate();
 	return { Month, Day };
 }
-let ListUserCreatedAt: string[] = [],
-	ListUserJoinedAt: string[] = [];
+let listUsersCakeDay: string[] = [],
+	listUserJoinedAt: string[] = [];
 // Fuck this-
 // 5/8/2020 DDMMYYYY
 
 async function birthdayService(client: Client): Promise<void> {
 
 	const enabledGuilds = client.guilds.cache.array().filter(async (g) => {
-			return (await getGuildDB(g.id)).addons.anniversary ? true : false;
+			return (await getGuildDB(g.id)).settings.anniversary ? true : false;
 		}),
 		{ Day, Month } = await DateObject();
 
@@ -43,26 +43,18 @@ async function birthdayService(client: Client): Promise<void> {
 		}
 	}));
 
-	await Promise.all([ListUserCreatedAt, ListUserJoinedAt]);
-
-	// What a long line
-	logger.info(`Cake Day | ${ListUserCreatedAt.length
-		? " Users added: " + ListUserCreatedAt.join(", ")
-		: " No users were added to Cake Day."}\nJoin Anniversary | ${ListUserJoinedAt.length
-		? " Users added: " + ListUserJoinedAt.join(", ")
-		: " No users were added to Join Anniversary."}`);
-	logger.low(`birthdayService | Finished checking [${enabledGuilds.length}] guilds`);
-	ListUserJoinedAt = [],
-	ListUserCreatedAt = [];
+	await Promise.all([listUsersCakeDay, listUserJoinedAt]);
+	listUserJoinedAt = [],
+	listUsersCakeDay = [];
 
 	setTimeout(async () => {
 		birthdayService(client);
 	}, timeToMidnight());
 }
 
-async function GuildOnAddBirthdays(guild: Guild): Promise<void> {
+async function checkBirthdayOnAdd(guild: Guild): Promise<void> {
 
-	const enabled = (await getGuildDB(guild.id)).addons.anniversary,
+	const enabled = (await getGuildDB(guild.id)).settings.anniversary,
 		{ Day, Month } = await DateObject();
 
 	logger.info(`birthdayService | Checking newly added guild [${guild.id}]`);
@@ -99,7 +91,7 @@ async function MemberOnAddBirthday(member: GuildMember): Promise<void> {
 
 	const { guild } = member,
 		{ Day, Month } = await DateObject(),
-		enabled = (await getGuildDB(guild.id)).addons.anniversary;
+		enabled = (await getGuildDB(guild.id)).settings.anniversary;
 
 	logger.info(`birthdayService | Checking user ${member.user.tag} in ${guild.name} [${guild.id}]`);
 
@@ -130,20 +122,20 @@ async function MemberOnAddBirthday(member: GuildMember): Promise<void> {
 }
 
 async function GuildCheckRolesExist(guild: Guild): Promise<Role[] | unknown[]> {
-	if (!guild.roles.cache.some(r => r.name === RoleNameJoin)) {
+	if (!guild.roles.cache.some(r => r.name === roleNameJoin)) {
 		guild.roles.create({
-			data: { name: RoleNameJoin },
+			data: { name: roleNameJoin },
 			reason: "Role didn't exist yet",
 		}).catch(err => logger.high(err));
 	}
-	if (!guild.roles.cache.some(r => r.name === RoleNameCreated)) {
+	if (!guild.roles.cache.some(r => r.name === roleNameCreated)) {
 		guild.roles.create({
-			data: { name: RoleNameCreated },
+			data: { name: roleNameCreated },
 			reason: "Role didn't exist yet",
 		}).catch(err => logger.high(err));
 	}
-	const AnniversaryRoleJ = guild.roles.cache.find((r => r.name === RoleNameJoin));
-	const AnniversaryRoleC = guild.roles.cache.find((r => r.name === RoleNameCreated));
+	const AnniversaryRoleJ = guild.roles.cache.find((r => r.name === roleNameJoin));
+	const AnniversaryRoleC = guild.roles.cache.find((r => r.name === roleNameCreated));
 
 	return [AnniversaryRoleC, AnniversaryRoleJ];
 
@@ -160,7 +152,7 @@ async function GuildCheckRolesExist(guild: Guild): Promise<Role[] | unknown[]> {
 async function MemberCheckAnniversary(member: GuildMember, AnniversaryRoleC: Role, AnniversaryRoleJ: Role, Day: number, Month: number) {
 	if (member.user.createdAt.getMonth() === Month) {
 		if (member.user.createdAt.getDate() === Day) {
-			ListUserCreatedAt.push(member.user.tag);
+			listUsersCakeDay.push(member.user.tag);
 			if (!member.roles.cache.has(AnniversaryRoleC.id)) {
 				member.roles.add(AnniversaryRoleC);
 			}
@@ -168,13 +160,13 @@ async function MemberCheckAnniversary(member: GuildMember, AnniversaryRoleC: Rol
 	}
 	if (member.joinedAt?.getMonth() === Month) {
 		if (member.joinedAt.getDate() === Day) {
-			ListUserJoinedAt.push(member.user.tag);
+			listUserJoinedAt.push(member.user.tag);
 			if (!member.roles.cache.has(AnniversaryRoleJ.id)) {
 				return member.roles.add(AnniversaryRoleJ);
 			}
 		}
 	}
-	if (!ListUserCreatedAt.includes(member.user.tag)) {
+	if (!listUsersCakeDay.includes(member.user.tag)) {
 		if (member.roles.cache.has(AnniversaryRoleC.id)) {
 			member.roles.remove(AnniversaryRoleC.id, AnniversaryRoleJ.id);
 		}
@@ -185,5 +177,5 @@ async function MemberCheckAnniversary(member: GuildMember, AnniversaryRoleC: Rol
 }
 
 export {
-	birthdayService, GuildOnAddBirthdays, MemberOnAddBirthday,
+	birthdayService, checkBirthdayOnAdd, MemberOnAddBirthday,
 };

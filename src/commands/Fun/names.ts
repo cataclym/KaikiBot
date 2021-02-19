@@ -1,23 +1,30 @@
 import { MessageEmbed, Message, User } from "discord.js";
-import { userNicknameTable } from "../../nsb/functions";
 import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
 import { Command } from "@cataclym/discord-akairo";
-const arr = ["remove", "rem", "delete", "del"];
+import { getUserDB } from "../../struct/db";
+import { IUser } from "../../interfaces/db";
 
-module.exports = class NamesCommand extends Command {
+export default class NamesCommand extends Command {
 	constructor() {
 		super("names", {
 			aliases: ["name", "names"],
 			description: { description: "Returns all your daddy nicknames", usage: "@dreb" },
 		});
 	}
-	*args() {
+	*args(): Generator<{
+		type: (message: Message, phrase: string) => Promise<boolean>;
+		index?: undefined;
+	} | {
+		index: number;
+		type: string;
+	}, {
+		unionUser: unknown;
+		method: unknown;
+	}, unknown> {
 		const method = yield {
 			// TODO: figure out type of phrase
 			type: async (message: Message, phrase: string) => {
-				if (arr.includes(phrase)) {
-					return true;
-				}
+				return (["remove", "rem", "delete", "del"].includes(phrase));
 			},
 		};
 		const unionUser = yield {
@@ -28,44 +35,37 @@ module.exports = class NamesCommand extends Command {
 		return { unionUser, method };
 	}
 
-	public async exec(message: Message, { method, unionUser }: { method: boolean, unionUser: User}) {
-		const color = await message.getMemberColorAsync();
-		const user = !(message.content.trim().split(/ +/).length > 1) && !unionUser ? message.author : unionUser;
+	public async exec(message: Message, { method, unionUser }: { method: boolean, unionUser: User }): Promise<IUser | Message | void> {
 
-		if (method) {
-			try {
-				if (userNicknameTable.delete(`usernicknames.${message.member?.id}`)) {
-
-					userNicknameTable.push(`usernicknames.${message.member?.id}`, message.author.username);
-					return message.util?.send(`Deleted all of ${message.member}'s nicknames.\nWell done, you made daddy forget.`);
-				}
-			}
-			catch (error) {
-				return console.log(error);
-			}
+		if (!(message.content.trim().split(/ +/).length > 1) && !unionUser) {
+			return;
 		}
 
-		if (user) {
-			if (!userNicknameTable.has(`usernicknames.${user.id}`)) {
-				userNicknameTable.push(`usernicknames.${user.id}`, user.username);
-			}
+		const db = await getUserDB(message.author.id);
 
-			let AuthorDBName = userNicknameTable.fetch(`usernicknames.${user.id}`);
-			AuthorDBName = [...new Set(AuthorDBName)];
+		if (method) {
+			db.userNicknames = [];
+			message.channel.send(new MessageEmbed()
+				.setDescription(`Deleted all of <@${message.author.id}>'s nicknames.\nWell done, you made daddy forget.`)
+				.withOkColor(message),
+			);
+			db.markModified("userNicknames");
+			return db.save();
+		}
 
-			// Makes it look cleaner
-			let StringsAuthorDBName = AuthorDBName.join("¤").toString();
-			StringsAuthorDBName = StringsAuthorDBName.replace(/¤/g, ", ");
+		if (unionUser) {
+			const nicknameString = db.userNicknames.join(", "),
+				pages = [];
 
-			const pages = [];
-			for (let i = 2048, p = 0; p < StringsAuthorDBName.length; i = i + 2048, p = p + 2048) {
+			for (let i = 2048, p = 0; p < nicknameString.length; i += 2048, p += 2048) {
 				pages.push(new MessageEmbed()
-					.setTitle(`${user.username}'s past names`)
-					.setColor(color)
-					.setThumbnail(user.displayAvatarURL({ dynamic: true }))
-					.setDescription(StringsAuthorDBName.slice(p, i)));
+					.setTitle(`${unionUser.username}'s past names`)
+					.setThumbnail(unionUser.displayAvatarURL({ dynamic: true }))
+					.setDescription(nicknameString.slice(p, i))
+					.withOkColor(message),
+				);
 			}
 			return editMessageWithPaginatedEmbeds(message, pages, {});
 		}
 	}
-};
+}

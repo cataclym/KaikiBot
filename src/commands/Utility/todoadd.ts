@@ -16,9 +16,11 @@ export default class todoAddCommand extends Command {
 		});
 	}
 	public async exec(message: Message, { toAdd }: { toAdd: string}): Promise<MessageReaction> {
-		const userDB = await getUserDB(message.author.id);
-		userDB.todo.push(toAdd);
-		userDB.save();
+		await getUserDB(message.author.id).then(db => {
+			db.todo.push(toAdd);
+			db.markModified("todo");
+			db.save();
+		});
 		return message.react("✅");
 	}
 }

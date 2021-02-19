@@ -1,7 +1,8 @@
 import { Command, PrefixSupplier } from "@cataclym/discord-akairo";
 import { Guild } from "discord.js";
 import { GuildMember, MessageEmbed, Message, Role } from "discord.js";
-import { errorColor } from "../../nsb/Util";
+import { IGuild } from "../../interfaces/db";
+import { getGuildDB } from "../../struct/db";
 
 // Rewrite of Miyano's setuserrole command
 // https://github.com/PlatinumFT/Miyano-v2
@@ -33,21 +34,18 @@ export default class SetUserRoleCommand extends Command {
 			],
 		});
 	}
-	public async exec(message: Message, args: { member: GuildMember, role: Role }): Promise<Message | void> {
+	public async exec(message: Message, args: { member: GuildMember, role: Role }): Promise<Message | IGuild> {
 
 		const { role, member } = args,
 			guildID = (message.guild as Guild).id;
 
-		const embedFail = async (text: string) => {
-				return new MessageEmbed()
-					.setColor(errorColor)
-					.setDescription(text);
-			},
-			embedSuccess = async (text: string) => {
-				return new MessageEmbed()
-					.setColor(await message.getMemberColorAsync())
-					.setDescription(text);
-			};
+		const embedFail = async (text: string) => new MessageEmbed()
+				.setDescription(text)
+				.withErrorColor(message),
+
+			embedSuccess = async (text: string) => new MessageEmbed()
+				.setDescription(text)
+				.withOkColor(message);
 
 		const botRole = message.guild?.me?.roles.highest,
 			isPosition = botRole?.comparePositionTo(role);
@@ -62,16 +60,17 @@ export default class SetUserRoleCommand extends Command {
 			return message.channel.send(await embedFail("This role is higher than your highest, I cannot add this role!"));
 		}
 
-		const dbRole = message.client.userRoles.get(guildID, member.id, null);
+		const db = await getGuildDB(guildID),
+			roleID = db.userRoles[member.id];
 
-		if (dbRole) {
+		if (roleID) {
 
-			const userRole = message.guild?.roles.cache.get(dbRole);
+			const userRole = message.guild?.roles.cache.get(roleID);
 
 			try {
-				message.client.userRoles.delete(guildID, member.id);
-				await member.roles.remove(userRole ?? dbRole);
-				return message.channel.send(await embedSuccess(`Removed role ${(userRole)?.name ?? dbRole} from ${member.user.username}`));
+				delete db.userRoles[member.id];
+				await member.roles.remove(userRole ?? roleID);
+				message.channel.send(await embedSuccess(`Removed role ${(userRole)?.name ?? roleID} from ${member.user.username}`));
 			}
 
 			catch (err) {
@@ -80,9 +79,11 @@ export default class SetUserRoleCommand extends Command {
 		}
 
 		else {
-			message.client.userRoles.set(guildID, member.id, role.id);
+			db.userRoles[member.id] = role.id;
 			await member.roles.add(role);
-			return message.channel.send(await embedSuccess(`Adding role ${role.name} to ${member.user.username}`));
+			message.channel.send(await embedSuccess(`Adding role ${role.name} to ${member.user.username}`));
 		}
+		db.markModified("userRoles");
+		return db.save();
 	}
 }
