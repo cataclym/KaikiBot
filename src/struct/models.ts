@@ -1,7 +1,7 @@
 import { model, Schema } from "mongoose";
 import { errorColor, okColor } from "../nsb/Util";
 import { config } from "../config";
-import { IGuild, ITinder, IUser } from "../../src/interfaces/db";
+import { IGuild, ITinder, IUser, ICommandStats } from "../../src/interfaces/db";
 
 export const guildSchema = new Schema({
 	// ID of the guild
@@ -24,24 +24,13 @@ export const guildSchema = new Schema({
 		},
 	},
 
-	addons: {
+	settings: {
 		type: Object, default: {
 			prefix: config.prefix,
-
-			anniversary: {
-				// Anniversary roles feature enabled
-				enabled: false,
-			},
-			dadBot: {
-				// Dadbot feature enabled
-				enabled: false,
-			},
-			errorColor: {
-				color: errorColor,
-			},
-			okColor: {
-				color: okColor,
-			},
+			anniversary: false,
+			dadBot: false,
+			errorColor: errorColor,
+			okColor: okColor,
 			welcome: {
 				// Welcome features are enabled
 				enabled: false,
@@ -112,6 +101,17 @@ export const tinderDataSchema = new Schema({
 	},
 });
 
+export const commandStatsSchema = new Schema({
+	id: {
+		type: String,
+	},
+	count: {
+		type: Object, default: {
+		},
+	},
+});
+
 export const guildsDB = model<IGuild>("Guild", guildSchema);
+export const commandStatsDB = model<ICommandStats>("CommandStats", commandStatsSchema);
 export const tinderDataDB = model<ITinder>("Tinder", tinderDataSchema);
 export const usersDB = model<IUser>("Member", usersSchema);
