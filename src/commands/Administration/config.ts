@@ -2,7 +2,8 @@ import { Command, Flag, Argument } from "@cataclym/discord-akairo";
 import { Message, MessageEmbed } from "discord.js";
 import { noArgGeneric } from "../../nsb/Embeds";
 import { config } from "../../config";
-import { customClient } from "../../struct/client";
+import { getGuildDB } from "../../struct/db";
+import { Guild } from "discord.js";
 
 export default class ConfigCommand extends Command {
 	constructor() {
@@ -42,21 +43,16 @@ export default class ConfigCommand extends Command {
 			return message.channel.send(noArgGeneric(message));
 		}
 
-		const guildConf = (message.client as customClient).guildDB.getDocument(message.guild!.id),
-			{ anniversary, dadbot, okColor, errorColor }: { anniversary: boolean, dadbot: boolean, okColor: string, errorColor: string } = guildConf.addons;
-		let { prefix }: { prefix: string } = guildConf.addons;
+		const db = await getGuildDB((message.guild as Guild).id),
+			{ anniversary, dadBot, prefix, errorColor, okColor } = db.settings;
 
-		const embed = new MessageEmbed().setColor(await message.getMemberColorAsync());
-
-		if (prefix === config.prefix) {
-			prefix = `\`${config.prefix}\` (Default)`;
-		}
-
-		embed.addField("DadBot", dadbot ? "Enabled" : "Disabled", true);
-		embed.addField("Anniversary-Roles", anniversary ? "Enabled" : "Disabled", true);
-		embed.addField("Guild prefix", prefix, true);
-		embed.addField("Embed error color", errorColor, true);
-		embed.addField("Embed ok color", okColor, true);
-		return message.channel.send(embed);
+		return message.channel.send(new MessageEmbed()
+			.withOkColor(message)
+			.addField("DadBot", dadBot ? "Enabled" : "Disabled", true)
+			.addField("Anniversary-Roles", anniversary ? "Enabled" : "Disabled", true)
+			.addField("Guild prefix", prefix === config.prefix ? `\`${config.prefix}\` (Default)` : prefix, true)
+			.addField("Embed error color", errorColor, true)
+			.addField("Embed ok color", okColor, true),
+		);
 	}
 }

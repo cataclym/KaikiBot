@@ -2,11 +2,12 @@ import { Command } from "@cataclym/discord-akairo";
 import { Guild, Message, MessageEmbed } from "discord.js";
 import { config } from "../../config.js";
 import { noArgGeneric } from "../../nsb/Embeds.js";
+import { prefixCache } from "../../struct/client.js";
 
 export default class PrefixConfigCommand extends Command {
 	constructor() {
 		super("config-prefix", {
-			userPermissions: "ADMINISTRATOR",
+			userPermissions: ["ADMINISTRATOR"],
 			channel: "guild",
 			args: [
 				{
@@ -17,17 +18,21 @@ export default class PrefixConfigCommand extends Command {
 			],
 		});
 	}
-	public async exec(message: Message, { value }: { value?: string}): Promise<Message> {
+	public async exec(message: Message, { value }: { value: string }): Promise<Message | void> {
 
-		const gID = (message.guild as Guild).id,
-			oldPrefix = message.client.addons.get(gID, "prefix", config.prefix);
-		await message.client.addons.set(gID, "prefix", value);
+		const guildID = (message.guild as Guild).id,
+			oldPrefix = message.client.guildSettings.get(guildID, "prefix", config.prefix);
+
+		message.client.guildSettings.set(guildID, "prefix", value);
+
+		prefixCache[guildID] = value;
 
 		return message.channel.send(new MessageEmbed({
 			title: "Success!",
 			description: `Prefix has been set to \`${value}\` !`,
 			footer: { text: `Old prefix: \`${oldPrefix}\`` },
-			color: await message.getMemberColorAsync(),
-		}));
+		})
+			.withOkColor(message),
+		);
 	}
 }
