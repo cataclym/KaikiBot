@@ -1,9 +1,10 @@
 import { Listener } from "@cataclym/discord-akairo";
 import { birthdayService } from "../nsb/AnniversaryRoles";
-import { dailyResetTimer, dbColumns, emoteDataBaseService } from "../nsb/functions";
+import { dailyResetTimer, emoteDataBaseService } from "../nsb/functions";
 import { config } from "../config";
 import { logger } from "../nsb/Logger";
 import { MessageEmbed } from "discord.js";
+import { guildsDB } from "../struct/models";
 
 export default class ReadyListener extends Listener {
 	constructor() {
@@ -20,31 +21,40 @@ export default class ReadyListener extends Listener {
 			throw new Error("Missing prefix! Set a prefix in src/config.ts");
 		}
 
-		await this.client.user?.setActivity(config.activityName, { type: config.activityStatus }).then(r => {
-			logger.info(`Client ready | Status: ${r.status}`);
-		});
+		this.client.user?.setActivity(config.activityName, { type: config.activityStatus })
+			.then(r => {
+				logger.info(`Client ready | Status: ${r.status}`);
+			});
 
-		await dailyResetTimer().then(() => {
-			logger.low("Reset timer initiated.");
-		});
+		dailyResetTimer()
+			.then(() => {
+				logger.low("dailyResetTimer | Reset timer initiated.");
+			});
 
-		logger.info("dataBaseService | Checking for missing database entries");
+		setTimeout(async () => {
+			await emoteDataBaseService(this.client)
+				.then(i => {
+					console.log("final", i);
+					if (i > 0) {
+						logger.low("dataBaseService | " + i + " new emotes added!");
+					}
+				});
+		}, 2000);
 
-		dbColumns(this.client).then(async (guilds) => {
-			logger.low(`dataBaseService | ${guilds.size} guilds registered in DB.`);
-		});
+		await birthdayService(this.client);
+		logger.info("birthdayService | Service initiated");
 
-		emoteDataBaseService(this.client).then(async (i) => {
-			logger.low("dataBaseService | " + i + " new emotes added!");
-		});
+		const guilds = await guildsDB.countDocuments();
+		logger.low(`dataBaseService | ${guilds} guilds registered in DB.`);
 
-		logger.info("birthdayService | Checking dates");
-
-		birthdayService(this.client);
-
-		// Let myself know when my bot goes online.
+		// Let bot owner know when bot goes online.
 		if (["Tsukihi Araragi", "Kaiki Deishuu"].includes(this.client.user?.username as string)) {
-			(await this.client.users.fetch("140788173885276160")).send(new MessageEmbed().setDescription("Bot is online."));
+			this.client.users.fetch("140788173885276160").then(user => user
+				.send(new MessageEmbed()
+					.setDescription("Bot is online.")
+					.withOkColor(),
+				),
+			);
 		}
 	}
 }
