@@ -1,6 +1,5 @@
 import { Message, MessageEmbed } from "discord.js";
 import { Argument, Command, PrefixSupplier } from "@cataclym/discord-akairo";
-import { errorColor } from "../../nsb/Util.js";
 
 export default class HelpCommand extends Command {
 	constructor() {
@@ -14,13 +13,13 @@ export default class HelpCommand extends Command {
 		});
 	}
 
-	public async exec(message: Message, args: { command: Command | string } | undefined): Promise<Message | void> {
+	public async exec(message: Message, args: { command: Command | string } | undefined): Promise<Message> {
 
 		const prefix = (this.handler.prefix as PrefixSupplier)(message);
 
 		const command = args?.command;
 		const embed = new MessageEmbed()
-			.setColor(await message.getMemberColorAsync());
+			.withOkColor(message);
 
 		if (command instanceof Command) {
 
@@ -40,13 +39,13 @@ export default class HelpCommand extends Command {
 			command.userPermissions ? embed.addField("Requires", command.userPermissions, false) : null;
 			command.ownerOnly ? embed.addField("Owner only", "✅", false) : null;
 
-			return message.util?.send(embed);
+			return message.channel.send(embed);
 		}
 		else if (typeof command === "string") {
 			return message.channel.send(new MessageEmbed({
 				description: `**${message.author.tag}** Command \`${command}\` not found.`,
-				color: errorColor,
-			}));
+			})
+				.withErrorColor(message));
 		}
 
 		const AvUrl = await message.client.users.fetch("140788173885276160", true);
@@ -59,6 +58,6 @@ export default class HelpCommand extends Command {
 		]);
 		embed.setAuthor(`Nadeko Sengoku Bot v${process.env.npm_package_version}`, message.author.displayAvatarURL({ dynamic: true }), "https://gitlab.com/cataclym/nadekosengokubot");
 		embed.setFooter("Made by Cata <3", AvUrl.displayAvatarURL({ dynamic: true }));
-		await message.util?.send(embed);
+		return message.channel.send(embed);
 	}
 }

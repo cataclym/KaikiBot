@@ -56,9 +56,9 @@ export default class HolidayAPICommand extends Command {
 				});
 				return message.channel.send(new MessageEmbed({
 					title: "Holiday",
-					color: await message.getMemberColorAsync(),
 					description: holidayString,
-				}));
+				})
+					.withOkColor(message));
 			}
 			catch {
 				return message.channel.send("No holiday on this date.");

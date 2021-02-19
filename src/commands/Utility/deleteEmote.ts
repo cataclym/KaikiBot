@@ -1,5 +1,5 @@
 import { Collection, GuildEmoji, Message, MessageEmbed } from "discord.js";
-import { errorColor, trim } from "../../nsb/Util";
+import { trim } from "../../nsb/Util";
 import { Command } from "@cataclym/discord-akairo";
 import { noArgGeneric } from "../../nsb/Embeds";
 const timer = (ms: number) => new Promise(res => setTimeout(res, ms));
@@ -38,25 +38,25 @@ export default class DeleteEmoteCommand extends Command {
 					if (!deleted) {
 						return message.channel.send(new MessageEmbed({
 							title: "Error occured",
-							color: errorColor,
 							description: "Some or all emotes could not be deleted.",
-						}));
+						})
+							.withErrorColor(message));
 					}
 				}
 				else {
 					return message.channel.send(new MessageEmbed({
 						title: "Error occured",
-						color: errorColor,
 						description: "Not valid emote(s).",
-					}));
+					})
+						.withErrorColor(message));
 				}
 			}
 
 			return message.channel.send(new MessageEmbed({
 				title: "Success!",
-				color: await message.getMemberColorAsync(),
 				description: `Deleted:\n${trim(emotes.map((es) => es.map((e) => e)).join("\n"), 2048)}`,
-			}));
+			})
+				.withOkColor(message));
 		})();
 	}
 }

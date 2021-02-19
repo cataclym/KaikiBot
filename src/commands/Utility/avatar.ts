@@ -18,11 +18,11 @@ export default class AvatarCommand extends Command {
 	public async exec(message: Message, { user }: { user: User }): Promise<Message> {
 		const av = user.avatarURL({ size: 2048, dynamic: true, format: "png" || "gif" }) || user.displayAvatarURL({ size: 2048, dynamic: true, format: "png" || "gif" });
 		return message.channel.send(new MessageEmbed({
-			color: await message.getMemberColorAsync(),
 			title: user.tag,
 			description: `[Link](${av})`,
 			image: { url: av },
 			footer: { text: "ID: " + user.id },
-		}));
+		})
+			.withOkColor(message));
 	}
 }

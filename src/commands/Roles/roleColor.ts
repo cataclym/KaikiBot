@@ -2,7 +2,6 @@ import { Command } from "@cataclym/discord-akairo";
 import { MessageAttachment } from "discord.js";
 import { Message, MessageEmbed, Role } from "discord.js";
 import { imgFromColor, resolveColor } from "../../nsb/Color";
-import { errorColor } from "../../nsb/Util";
 
 export default class RoleColorCommand extends Command {
 	constructor() {
@@ -64,8 +63,8 @@ export default class RoleColorCommand extends Command {
 			return message.channel.send(new MessageEmbed({
 				title: "Error",
 				description: "Role is undefined. Please contact bot owner.",
-				color: errorColor,
-			}));
+			})
+				.withErrorColor(message));
 		}
 	}
 }

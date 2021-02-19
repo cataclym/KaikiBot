@@ -1,6 +1,5 @@
 import { Command } from "@cataclym/discord-akairo";
 import { Message, MessageEmbed, Role, GuildMember } from "discord.js";
-import { errorColor } from "../../nsb/Util";
 
 export default class RoleRemoveCommand extends Command {
 	constructor() {
@@ -14,18 +13,18 @@ export default class RoleRemoveCommand extends Command {
 				{
 					id: "member",
 					type: "member",
-					otherwise: () => new MessageEmbed({
+					otherwise: (m: Message) => new MessageEmbed({
 						title: "Can't find this user. Try again.",
-						color: errorColor,
-					}),
+					})
+						.withErrorColor(m),
 				},
 				{
 					id: "role",
 					type: "role",
-					otherwise: () => new MessageEmbed({
+					otherwise: (m: Message) => new MessageEmbed({
 						title: "Can't find a matching role. Try again.",
-						color: errorColor,
-					}),
+					})
+						.withErrorColor(m),
 				},
 			],
 		});
@@ -40,22 +39,24 @@ export default class RoleRemoveCommand extends Command {
 				return message.channel.send(new MessageEmbed({
 					title: "Success!",
 					description: `Removed ${role} from ${member.user}`,
-					color: await message.getMemberColorAsync(),
-				}));
+				})
+					.withOkColor(message));
 			}
+
 			else {
 				return message.channel.send(new MessageEmbed({
 					title: "Error",
 					description: `${member} doesn't have ${role}`,
-					color: errorColor,
-				}));
+				})
+					.withErrorColor(message));
 			}
 		}
+
 		else {
 			return message.channel.send(new MessageEmbed({
 				title: "Insufficient permission(s).",
-				color: errorColor,
-			}));
+			})
+				.withErrorColor(message));
 		}
 	}
 }

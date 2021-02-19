@@ -1,11 +1,6 @@
 import { Command } from "@cataclym/discord-akairo";
 import { Collection, GuildMember, Role, Message, MessageEmbed } from "discord.js";
 import { noArgRole } from "../../nsb/Embeds";
-import { errorColor } from "../../nsb/Util";
-const embed = new MessageEmbed({
-	color: errorColor,
-	description: "Couldn't delete roles!",
-});
 
 export default class RoleDeleteCommand extends Command {
 	constructor() {
@@ -48,7 +43,10 @@ export default class RoleDeleteCommand extends Command {
 					return true;
 				}
 				else {
-					return message.channel.send(embed) && false;
+					return message.channel.send(new MessageEmbed({
+						description: "Couldn't delete roles!",
+					})
+						.withErrorColor(message)) && false;
 				}
 			}
 			else {
@@ -63,19 +61,22 @@ export default class RoleDeleteCommand extends Command {
 
 		if (otherRoles.length > 0) {
 			return message.channel.send(new MessageEmbed({
-				color: errorColor,
 				description: `Role(s) \`${otherRoles.join("`, `")}\` could not be deleted due to insufficient permissions.`,
-			}));
+			})
+				.withErrorColor(message));
 		}
 		else if (every.valueOf()) {
 			return message.channel.send(new MessageEmbed({
-				color: await message.getMemberColorAsync(),
 				description: `Deleted: ${roles.map(coll => coll.map(role => role.name)).join(", ")}`,
-			}));
+			})
+				.withOkColor(message));
 		}
 
 		else {
-			return message.channel.send(embed);
+			return message.channel.send(new MessageEmbed({
+				description: "Couldn't delete roles!",
+			})
+				.withErrorColor(message));
 		}
 	}
 }

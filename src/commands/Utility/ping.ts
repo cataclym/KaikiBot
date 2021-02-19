@@ -9,14 +9,15 @@ export default class PingCommand extends Command {
 		});
 	}
 	public async exec(message: Message): Promise<Message> {
+
 		const InitialMSG: Message = await message.channel.send("Pinging...!"),
 			WSTime: number = Math.abs(message.client.ws.ping),
-			ClientTime: number = InitialMSG.createdTimestamp - message.createdTimestamp,
-			embed = new MessageEmbed()
-				.addFields([
-					{ name: "WebSocket ping", value: WSTime + " ms", inline: true },
-					{ name: "Client ping", value: ClientTime + " ms", inline: true }])
-				.setColor(await message.getMemberColorAsync());
-		return InitialMSG.edit(null, embed);
+			ClientTime: number = InitialMSG.createdTimestamp - message.createdTimestamp;
+
+		return InitialMSG.edit(null, new MessageEmbed()
+			.addFields([
+				{ name: "WebSocket ping", value: WSTime + " ms", inline: true },
+				{ name: "Client ping", value: ClientTime + " ms", inline: true }])
+			.withOkColor(message));
 	}
 }

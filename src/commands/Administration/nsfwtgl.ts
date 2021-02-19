@@ -19,8 +19,8 @@ export default class ChannelNsfwCommand extends Command {
 		channel.setNSFW(!channel.nsfw, `${message.author.tag} toggled NSFW.`);
 
 		return message.channel.send(new MessageEmbed({
-			color: await message.getMemberColorAsync(),
 			description: `Toggled ${channel.name}'s NSFW status to ${!channel.nsfw}.`,
-		}));
+		})
+			.withOkColor(message));
 	}
 }

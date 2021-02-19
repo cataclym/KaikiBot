@@ -33,9 +33,9 @@ export default class NeofetchCommand extends Command {
 			for (let i = 150, p = 0; p < distros.length; i = i + 150, p = p + 150) {
 				pages.push(new MessageEmbed()
 					.setTitle("Neofetch ascii art list")
-					.setColor(await message.getMemberColorAsync())
 					.setThumbnail(message.author.displayAvatarURL({ dynamic: true }))
-					.setDescription(await codeblock(distros.slice(p, i).join(", "), "json")));
+					.setDescription(await codeblock(distros.slice(p, i).join(", "), "json"))
+					.withOkColor(message));
 			}
 			return editMessageWithPaginatedEmbeds(message, pages, {});
 		}

@@ -29,10 +29,9 @@ export default class DadJokeCommand extends Command {
 
 			const randomRedditPost = data[Math.floor(Math.random() * data.length) + 1];
 
-			const embed: MessageEmbed = new MessageEmbed({
+			return message?.util?.send(new MessageEmbed({
 				title: trim(randomRedditPost.title, 256),
 				description: trim(randomRedditPost.selftext, 2048),
-				color: await message.getMemberColorAsync(),
 				author: {
 					name: `Submitted by ${randomRedditPost.author}`,
 				},
@@ -42,9 +41,8 @@ export default class DadJokeCommand extends Command {
 				footer: {
 					text: `${randomRedditPost.ups} updoots`,
 				},
-			});
-
-			return message?.util?.send(embed);
+			})
+				.withOkColor(message));
 		}
 	}
 }

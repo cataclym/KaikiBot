@@ -12,7 +12,6 @@ module.exports = class commandsList extends Command {
 	public async exec(message: Message) {
 		const AvUrl = await message.client.users.fetch("140788173885276160");
 		// Bot author
-		const color = await message.getMemberColorAsync();
 		const embed = new MessageEmbed({
 			title: "List of commands for Nadeko Sengoku",
 			description: `Prefix is currently set to \`${(this.handler.prefix as PrefixSupplier)(message)}\`\n`,
@@ -24,12 +23,13 @@ module.exports = class commandsList extends Command {
 			thumbnail: {
 				url: "https://cdn.discordapp.com/attachments/717045690022363229/726600392107884646/3391ce4715f3c814d6067911438e5bf7.png",
 			},
-			color,
 			footer: {
 				text: "Made by Cata <3",
 				icon_url: AvUrl.displayAvatarURL({ dynamic: true }),
 			},
-		});
+		})
+			.withOkColor(message);
+
 		for (const category of this.handler.categories.values()) {
 			if (["default", "Etc"].includes(category.id)) continue;
 

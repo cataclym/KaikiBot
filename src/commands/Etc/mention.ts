@@ -18,8 +18,8 @@ export default class MentionCommand extends Command {
 		const embed = msg.channel.send(new MessageEmbed({
 			title: `Hi ${msg.author.username}, what's up?`,
 			description: `If you need help type \`${(this.handler.prefix as PrefixSupplier)(msg)}help\`.`,
-			color: await msg.getMemberColorAsync(),
-		}));
+		})
+			.withOkColor(msg));
 
 		return (await embed).delete({ timeout: 10000 });
 	}

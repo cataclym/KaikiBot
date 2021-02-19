@@ -28,10 +28,9 @@ export default class YeetCommand extends Command {
 
 		async function postRandomTitle(data: Data1[]) {
 
-			const randomRedditPost = data[Math.floor(Math.random() * data.length) + 1];
+			const randomRedditPost = data[Math.floor(Math.random() * data.length) + 1],
+				filters = ["webm", "mp4", "gifv", "youtube", "v.redd", "gfycat", "youtu", "news", "wsbtv"];
 
-			const filters = ["webm", "mp4", "gifv", "youtube", "v.redd", "gfycat", "youtu", "news", "wsbtv"];
-			// Yes.
 			const isVideo = () => {
 				if (filters.some((filter) => randomRedditPost.url.includes(filter))) {
 					return true;
@@ -40,12 +39,12 @@ export default class YeetCommand extends Command {
 			};
 
 			const yeetEmbed = new Discord.MessageEmbed()
+				.setAuthor(`Submitted by ${randomRedditPost.author}`)
 				.setTitle(trim(randomRedditPost.title, 256))
 				.setDescription(trim(randomRedditPost.selftext, 2048))
-				.setColor(await message.getMemberColorAsync())
-				.setAuthor(`Submitted by ${randomRedditPost.author}`)
 				.setImage(randomRedditPost.url)
-				.setFooter(`${randomRedditPost.ups} updoots`);
+				.setFooter(`${randomRedditPost.ups} updoots`)
+				.withOkColor(message);
 
 			isVideo() ? await message.util?.send(randomRedditPost.url) : "";
 
