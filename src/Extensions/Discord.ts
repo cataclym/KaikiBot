@@ -2,9 +2,27 @@ import { Command, PrefixSupplier } from "@cataclym/discord-akairo";
 import { config } from "../config";
 
 // cache
-const dadbotCache: {[key: string]: boolean} = {};
-const errorColorCache: {[key: string]: string} = {};
-const okColorCache: {[key: string]: string} = {};
+type cacheObjects = "dadbotCache"
+	| "errorColorCache"
+	| "okColorCache";
+
+interface sessionCache {
+	dadbotCache: {[key: string]: boolean},
+	errorColorCache: {[key: string]: string},
+	okColorCache: {[key: string]: string},
+}
+
+const sessionCache: sessionCache = {
+	dadbotCache: {},
+	errorColorCache: {},
+	okColorCache: {},
+};
+
+export async function setSessionCache(cache: cacheObjects, id: string, value: boolean | string): Promise<string | boolean> {
+	console.log(sessionCache);
+
+	return (sessionCache[cache])[id] = value;
+}
 
 function getPrefix(message: Message, command: Command) {
 	const prefix = (command.handler.prefix as PrefixSupplier)(message);
@@ -12,6 +30,9 @@ function getPrefix(message: Message, command: Command) {
 	return prefix as string;
 }
 
+export const extensionHook = (): void => {
+	return;
+};
 declare module "discord.js" {
     export interface Guild {
         isDadBotEnabled(guild?: Guild): boolean;
@@ -28,9 +49,14 @@ declare module "discord.js" {
     }
 
     export interface MessageEmbed {
-        withOkColor(m: Message): this;
-        withErrorColor(m: Message): this;
+        withOkColor(m?: Message): this;
+        withErrorColor(m?: Message): this;
     }
+
+	// export interface MessageEmbedOptions {
+	// 	errorColor?: Message;
+	// 	okColor?: Message;
+	// }
 }
 
 import { ColorResolvable, Guild, GuildMember, Message, MessageEmbed } from "discord.js";
@@ -46,51 +72,49 @@ Message.prototype.getMemberColorAsync = async function(member?: GuildMember) {
 };
 
 GuildMember.prototype.hasExcludedRole = function(member?: GuildMember) {
-	return !(member ?? this as GuildMember).roles.cache.find((r) => r.name === config.names);
+	return !(member ?? this as GuildMember).roles.cache
+		.find((r) => r.name === config.names);
 };
 
 Guild.prototype.isDadBotEnabled = function(guild?: Guild) {
 
 	const g = guild ?? this as Guild;
-	let enabled = dadbotCache[g.id];
+	if (!g) return false;
+	let enabled = sessionCache.dadbotCache[g.id];
 
 	if (typeof enabled !== "boolean") {
-		enabled = (g.client as customClient).addons.get(g.id, "dadBot", false);
-		dadbotCache[g.id] = enabled;
+		enabled = (g.client as customClient).guildSettings.get(g.id, "dadBot", false);
+		sessionCache.dadbotCache[g.id] = enabled;
 	}
 
 	return enabled;
 };
 
-MessageEmbed.prototype.withErrorColor = function(m: Message) {
+MessageEmbed.prototype.withErrorColor = function(m?: Message) {
 
-	if (m.guild?.id) {
-		let color = errorColorCache[m.guild.id];
+	if (m?.guild?.id) {
+		let color = sessionCache.errorColorCache[m.guild.id];
 
 		if (!color) {
-			color = (m.client as customClient).addons.get(m.guild.id, "errorColor", errorColor);
-			errorColorCache[m.guild.id] = color;
+			color = m.client.guildSettings.get(m.guild.id, "errorColor", errorColor);
+			sessionCache.errorColorCache[m.guild.id] = color;
 		}
-		this.color = color;
-		return this;
+		return this.setColor(color);
 	}
-	this.color = okColor;
-	return this;
+	return this.setColor(errorColor);
 };
 
-MessageEmbed.prototype.withOkColor = function(m: Message) {
+MessageEmbed.prototype.withOkColor = function(m?: Message) {
 
-	if (m.guild?.id) {
+	if (m?.guild?.id) {
 
-		let color = okColorCache[m.guild.id];
+		let color = sessionCache.okColorCache[m.guild.id];
 
 		if (!color) {
-			color = (m.client as customClient).addons.get(m.guild?.id, "okColor", okColor);
-			errorColorCache[m.guild.id] = color;
+			color = m.client.guildSettings.get(m.guild.id, "okColor", okColor);
+			sessionCache.errorColorCache[m.guild.id] = color;
 		}
-		this.color = color;
-		return this;
+		return this.setColor(color);
 	}
-	this.color = okColor;
-	return this;
+	return this.setColor(okColor);
 };

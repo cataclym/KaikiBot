@@ -38,7 +38,7 @@ export async function getUserPresenceAsync(user: User): Promise<presenceType> {
 	return presence;
 }
 
-export const flags: Record<UserFlagsString, string> = {
+export const flags: {[index in UserFlagsString]: string} = {
 	DISCORD_EMPLOYEE: "Discord Employee 👨‍💼",
 	DISCORD_PARTNER: "Discord Partner ❤️",
 	BUGHUNTER_LEVEL_1: "Bug Hunter (Level 1) 🐛",
