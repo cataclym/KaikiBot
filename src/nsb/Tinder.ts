@@ -18,13 +18,19 @@ async function separateTinderList(message: Message, Item: string[], ListName = "
 
 	const pages = [];
 	for (let i = 30, p = 0; p < Item.length; i = i + 30, p = p + 30) {
-		const dEmbed = new MessageEmbed()
+		pages.push(new MessageEmbed()
 			.setTitle(ListName)
-			.setColor(await message.getMemberColorAsync())
 			.setThumbnail(message.author.displayAvatarURL({ dynamic: true }))
-			// Edited for 30 items pr page with correct index number
-			.setDescription(Item.slice(p, i).length ? Item.map((item, itemIndex) => `**${+itemIndex + 1}**. ${message.client.users.cache.find(member => member.id === item) ? message.client.users.cache.find(member => member.id === item)?.username : "`User has left guild`"}`).slice(p, i) : "There doesn't seem to be anyone here");
-		pages.push(dEmbed);
+		// Edited for 30 items pr page with correct index number
+			.setDescription(Item.slice(p, i).length
+				? Item.map((item, itemIndex) => `**${+itemIndex + 1}**. ${message.client.users.cache
+					.find(member => member.id === item)
+					? message.client.users.cache
+						.find(member => member.id === item)?.username
+					: "`User has left guild`"}`)
+					.slice(p, i)
+				: "There doesn't seem to be anyone here")
+			.withOkColor(message));
 	}
 	return editMessageWithPaginatedEmbeds(message, pages, {});
 }
@@ -44,7 +50,7 @@ async function fetchUserList(message: Message, user: User): Promise<Message> {
 
 	const embed = new MessageEmbed()
 		.setTitle(user.username + "'s tinder list")
-		.setColor(await message.getMemberColorAsync());
+		.withOkColor(message);
 
 	const { datingIDs, marriedIDs, dislikeIDs, likeIDs } = (await getTinderDB(user.id)).tinderData;
 
@@ -106,7 +112,8 @@ async function tinderNormalLike(message: Message, SentMsg: Message, genericEmbed
 			);
 		}
 	}
-
+	tinderUserData.markModified("tinderData");
+	ramdomUsrData.markModified("tinderData");
 	tinderUserData.save();
 	ramdomUsrData.save();
 }
@@ -121,12 +128,13 @@ async function tinderDislike(message: Message, SentMsg: Message, genericEmbed: M
 
 	SentMsg.edit(new MessageEmbed(genericEmbed)
 		.setAuthor("❌❌❌")
-		.setColor(hexColorTable["deeppink"])
+		.setColor(hexColorTable["red"])
 		.setTitle(randomUsr.username)
 		.setDescription("has been added to dislikes.")
 		.setFooter(NewRollsLikes),
 	);
-
+	tinderUserData.markModified("tinderData");
+	ramdomUsrData.markModified("tinderData");
 	tinderUserData.save();
 	ramdomUsrData.save();
 }
@@ -145,7 +153,7 @@ async function tinderSuperLike(message: Message, SentMsg: Message, genericEmbed:
 
 		SentMsg.edit(new MessageEmbed(genericEmbed)
 			.setAuthor("❤️🌟❤️")
-			.setColor("#FFFF00")
+			.setColor(hexColorTable["yellow"])
 			.setTitle(randomUsr.username)
 			.setDescription("Is now dating you!")
 			.setFooter("You have no rolls or likes remaining."),
@@ -156,6 +164,8 @@ async function tinderSuperLike(message: Message, SentMsg: Message, genericEmbed:
 		message.channel.send(await noMoreLikesOrRolls("likes"));
 	}
 
+	tinderUserData.markModified("tinderData");
+	ramdomUsrData.markModified("tinderData");
 	tinderUserData.save();
 	ramdomUsrData.save();
 }

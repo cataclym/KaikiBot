@@ -21,7 +21,7 @@ export default class TinderRemoveMarries extends Command {
 
 		if (db.tinderData.marriedIDs.length) {
 
-			if (db.tinderData.dislikeIDs.length >= integer) {
+			if (db.tinderData.marriedIDs.length >= integer) {
 				const userID = db.tinderData.marriedIDs.splice(integer, 1),
 					RemovedMember = message.client.users.cache.get(userID[0]),
 					rDB = await getTinderDB(RemovedMember?.id ?? userID[0]),
@@ -35,6 +35,7 @@ export default class TinderRemoveMarries extends Command {
 					SentMsg.react("✅");
 					SentMsg.react("💔");
 				});
+				rDB.markModified("tinderData.marriedIDs");
 				rDB.save();
 			}
 			else {
@@ -47,6 +48,7 @@ export default class TinderRemoveMarries extends Command {
 		else {
 			message.channel.send("Nothing to delete.");
 		}
+		db.markModified("tinderData.marriedIDs");
 		return db.save();
 	}
 }

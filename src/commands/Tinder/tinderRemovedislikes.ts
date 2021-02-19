@@ -40,6 +40,7 @@ export default class TinderRemoveDislikes extends Command {
 		else {
 			message.channel.send("Nothing to delete.");
 		}
+		db.markModified("tinderData.dislikeIDs");
 		return db.save();
 	}
 }

@@ -21,7 +21,7 @@ export default class TinderRemoveLikes extends Command {
 
 		if (db.tinderData.likeIDs.length) {
 
-			if (db.tinderData.dislikeIDs.length >= integer) {
+			if (db.tinderData.likeIDs.length >= integer) {
 			// Matches given number to array item
 				const userID = db.tinderData.likeIDs.splice(integer, 1),
 					RemovedMember = message.client.users.cache.get(userID.toString());
@@ -37,10 +37,10 @@ export default class TinderRemoveLikes extends Command {
 				);
 			}
 		}
-
 		else {
-			message.channel.send("Something went wrong.");
+			message.channel.send("Nothing to delete");
 		}
+		db.markModified("tinderData.likeIDs");
 		return db.save();
 	}
 }
