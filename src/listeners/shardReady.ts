@@ -11,9 +11,13 @@ export default class ShardReadyListener extends Listener {
 	// Emitted when a shard turns ready.
 
 	public async exec(id: number, unavailableGuilds: Set<string> | undefined): Promise<void> {
-		const arr: string[] = [];
-		unavailableGuilds?.forEach((guild) => arr.push(guild));
-		logger.low(`shardReady | Shard: ${id}${unavailableGuilds ? `\nUnavailable guilds: ${arr.join(", ")}` : ""}`);
+		const arr = [`shardReady | Shard: ${id}`];
+		if (unavailableGuilds?.size) {
+			for await (const [k, v] of unavailableGuilds) {
+				arr.push(`${k}: ${v}`);
+			}
+		}
+		logger.low(arr.join("\n"));
 
 	}
 }

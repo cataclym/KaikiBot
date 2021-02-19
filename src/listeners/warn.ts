@@ -1,4 +1,5 @@
 import { Listener } from "@cataclym/discord-akairo";
+import { logger } from "../nsb/Logger";
 
 export default class WarnListener extends Listener {
 	constructor() {
@@ -11,7 +12,7 @@ export default class WarnListener extends Listener {
 
 	public async exec(info: string): Promise<void> {
 
-		console.warn(`🟧 warn | ${info}`);
+		logger.medium(`warn | ${info}`);
 
 	}
 }

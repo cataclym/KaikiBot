@@ -2,7 +2,7 @@ import { Listener } from "@cataclym/discord-akairo";
 import { emoteReact, tiredNadekoReact, countEmotes } from "../nsb/functions";
 import { Message, MessageEmbed, User } from "discord.js";
 import { config } from "../config";
-import { okColor, trim } from "../nsb/Util";
+import { trim } from "../nsb/Util";
 import { logger } from "../nsb/Logger";
 
 let botOwner: User | undefined;
@@ -36,13 +36,13 @@ export default class MessageListener extends Listener {
 			logger.info(`message | DM from ${message.author.tag} [${message.author.id}]`);
 
 			const embed = new MessageEmbed({
-				color: okColor,
 				author: { name: `${message.author.tag} [${message.author.id}]` },
 				description: trim(message.content, 2048),
-			});
+			})
+				.withOkColor();
 
 			// Attachments (Terrible, I know)
-			const attachments = message.attachments;
+			const { attachments } = message;
 
 			if (attachments.first()?.url) {
 

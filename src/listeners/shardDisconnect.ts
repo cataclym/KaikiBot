@@ -1,4 +1,5 @@
 import { Listener } from "@cataclym/discord-akairo";
+import { logger } from "../nsb/Logger";
 
 export default class ShardDisconnectListener extends Listener {
 	constructor() {
@@ -11,8 +12,6 @@ export default class ShardDisconnectListener extends Listener {
 
 	public async exec(event: CloseEvent, id: number): Promise<void> {
 
-		console.warn(
-			// eslint-disable-next-line indent
-	`🟥 ShardDisconnect | Shard: ${id} Reason: ${event.reason}`);
+		logger.medium(`ShardDisconnect | Shard: ${id} Reason: ${event.reason}`);
 	}
 }

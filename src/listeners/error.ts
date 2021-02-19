@@ -14,23 +14,12 @@ export default class errorListener extends Listener {
 	public async exec(error: Error, message: Message, command: Command): Promise<void> {
 		const date = new Date().toLocaleString("en-GB", { hour: "2-digit", minute: "2-digit", second: "2-digit", weekday: "short", year: "numeric", month: "numeric", day: "numeric" });
 
-		if (message.channel.type !== "dm") {
-			logger.high(
-	`🔴	${date} CommandFinished | ${Date.now() - message.createdTimestamp}ms
-	Guild: ${message.guild?.name} [${message.guild?.id}]
-	Channel: #${message.channel.name} [${message.channel.id}]
-	User: ${message.author.username} [${message.author.id}]
-	Executed ${command?.id} | "${message.content}"\n` +
-	`🔴 ${error.stack}`);
-		}
-		else {
-			logger.high(
-	`🔴	${date} CommandFinished | ${Date.now() - message.createdTimestamp}ms
-	Channel: PRIVATE [${message.channel.id}]
-	User: ${message.author.username} [${message.author.id}]
-	Executed ${command?.id} | "${message.content}"\n` +
-	`🔴 ${error.stack}`);
-		}
+		logger.medium(`${date} error | ${Date.now() - message.createdTimestamp}ms
+		Guild: ${message.guild?.name} [${message.guild?.id}]
+		${message.channel.type !== "dm" ? `Channel: #${message.channel.name} [${message.channel.id}]` : ""}
+		User: ${message.author.username} [${message.author.id}]
+		Executed ${command?.id} | "${message.content}"
+		\n${error.stack}`);
 	}
 }
 

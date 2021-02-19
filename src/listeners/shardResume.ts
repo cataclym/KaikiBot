@@ -1,4 +1,5 @@
 import { Listener } from "@cataclym/discord-akairo";
+import { logger } from "../nsb/Logger";
 
 export default class ShardResumeListener extends Listener {
 	constructor() {
@@ -11,7 +12,7 @@ export default class ShardResumeListener extends Listener {
 
 	public async exec(id: number, replayedEvents: number): Promise<void> {
 
-		console.log(`🟩 shardResume | Shard: ${id} \nReplayed ${replayedEvents} events.`);
+		logger.info(`shardResume | Shard: ${id} \nReplayed ${replayedEvents} events.`);
 
 	}
 }
