@@ -1,12 +1,13 @@
 import { ColorResolvable } from "discord.js";
 import { Document } from "mongoose";
 
-type TGreetMessage = {
+export type TGreetMessage = {
 	enabled: boolean,
 	channel: string,
 	message: string,
-	image: string,
+	image: false | string,
 	embed: boolean,
+	color: ColorResolvable,
 }
 
 export interface IGuild extends Document {

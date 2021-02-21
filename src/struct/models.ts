@@ -32,16 +32,13 @@ export const guildSchema = new Schema({
 			errorColor: errorColor,
 			okColor: okColor,
 			welcome: {
-				// Welcome features are enabled
 				enabled: false,
-				// ID for the channel to send messages to
 				channel:  null,
-				// Custom message
 				message: null,
-				// Check if image is enabled
-				image: null,
-				// Check if embed is enabled
-				embed: false },
+				image: false,
+				embed: false,
+				color: okColor,
+			},
 			goodbye: {
 				// Goodbye features are enabled
 				enabled: false,
@@ -50,7 +47,7 @@ export const guildSchema = new Schema({
 				// Custom message
 				message: null,
 				// Check if image is enabled
-				image: null,
+				image: false,
 				// Check if embed is enabled
 				embed: false,
 			},
