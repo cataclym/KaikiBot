@@ -13,6 +13,7 @@ export default class ShardReadyListener extends Listener {
 	public async exec(id: number, unavailableGuilds: Set<string> | undefined): Promise<void> {
 		const arr = [`shardReady | Shard: ${id}`];
 		if (unavailableGuilds?.size) {
+			arr.push("Unavailable guilds:");
 			for await (const [k, v] of unavailableGuilds) {
 				arr.push(`${k}: ${v}`);
 			}

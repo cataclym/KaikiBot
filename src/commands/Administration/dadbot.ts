@@ -29,7 +29,8 @@ export default class DadBotConfigCommand extends Command {
 			case ("true"): {
 				if (!isEnabled) {
 					(message.client as customClient).guildSettings.set(guildID, "dadBot", true);
-					embed.setDescription(`DadBot functionality has been enabled in ${message.guild?.name}!\nIndividual users can still disable dadbot on themselves with ${(this.handler.prefix as PrefixSupplier)(message)}exclude.`);
+					embed.setDescription(`DadBot functionality has been enabled in ${message.guild?.name}!
+					\nIndividual users can still disable dadbot on themselves with ${(this.handler.prefix as PrefixSupplier)(message)}exclude.`);
 					setSessionCache("dadbotCache", guildID, true);
 					return message.channel.send(embed);
 				}
