@@ -41,23 +41,9 @@ export default class NeofetchCommand extends Command {
 		}
 
 		else {
-			exec("whoami", (err, out, stdrr) => {
-				if (err) {
-					return logger.high(err);
-				}
-				if (stdrr) {
-					return logger.high(stdrr);
-				}
+			let cmd = `neofetch -L --ascii_distro ${os}|sed 's/\x1B\[[0-9;\?]*[a-zA-Z]//g'`;
 
-				return neofetch(out.trim());
-			});
-		}
-
-		function neofetch(username: string) {
-
-			let cmd = `neofetch --ascii_distro ${os}|sed 's/\x1B\[[0-9;\?]*[a-zA-Z]//g'`;
-
-			if (!os && process.platform !== "win32") cmd = "neofetch |sed 's/\x1B\[[0-9;\?]*[a-zA-Z]//g'";
+			if (!os && process.platform !== "win32") cmd = "neofetch -L |sed 's/\x1B\[[0-9;\?]*[a-zA-Z]//g'";
 
 			exec(cmd, async (error, stdout, stderr) => {
 				if (error) {
@@ -67,7 +53,7 @@ export default class NeofetchCommand extends Command {
 					return logger.high(stderr);
 				}
 
-				return message.channel.send(await codeblock(stdout.substring(0, stdout.indexOf(username + "@")).replace(/```/g, "\u0300`\u0300`\u0300`\u0300")));
+				return message.channel.send(await codeblock(stdout.replace(/```/g, "\u0300`\u0300`\u0300`\u0300")));
 			});
 		}
 	}
