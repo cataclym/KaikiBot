@@ -1,13 +1,7 @@
 import { Listener } from "@cataclym/discord-akairo";
 import { GuildMember } from "discord.js";
 import { MemberOnAddBirthday } from "../nsb/AnniversaryRoles";
-
-export const greetLeaveCache: {
-	[guildID: string]: {
-		welcome: boolean,
-		goodbye: boolean,
-	}
-} = {};
+import { handleGreetMessage } from "./cache";
 
 export default class GuildMemberAddListener extends Listener {
 	constructor() {
@@ -20,9 +14,7 @@ export default class GuildMemberAddListener extends Listener {
 
 		MemberOnAddBirthday(member);
 
-		export async function checkGreetLeave(guildMember: GuildMember) {
-
-		}
+		handleGreetMessage(member);
 	}
 }
 

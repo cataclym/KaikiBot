@@ -1,11 +1,11 @@
 import { Argument, Command } from "@cataclym/discord-akairo";
-import { TextChannel } from "discord.js";
-import { Guild, Message, MessageEmbed } from "discord.js";
+import { Guild, Message, MessageEmbed, TextChannel } from "discord.js";
+import { greetLeaveCache } from "../../listeners/cache.js";
 import { hexColorTable } from "../../nsb/Color.js";
 import { okColor } from "../../nsb/Util.js";
 import { getGuildDB } from "../../struct/db.js";
 
-export default class ErroColorConfigCommand extends Command {
+export default class WelcomeConfigCommand extends Command {
 	constructor() {
 		super("config-welcome", {
 			userPermissions: "ADMINISTRATOR",
@@ -13,32 +13,32 @@ export default class ErroColorConfigCommand extends Command {
 			args: [
 				{
 					id: "toggle",
-					flag: ["toggle", "tgl", "-t", "--toggle", "disable", "--disable"],
-					match: "option",
-					default: false,
+					flag: ["toggle", "tgl", "-t", "--toggle"],
+					match: "flag",
 				},
 				{
 					id: "channel",
-					type: "channel",
+					type: "textChannel",
 					default: (m: Message) => m.channel,
 				},
 				{
 					id: "embed",
 					flag: ["embed", "e", "-e", "--embed"],
-					match: "option",
+					match: "flag",
 					default: true,
 				},
 				{
 					id: "color",
 					flag: ["color", "c", "-c", "--color"],
-					match: "flag",
+					match: "option",
+					type: Argument.union("color", (m: Message, content: string) => hexColorTable[content]),
 					default: okColor,
 				},
 				{
 					id: "image",
 					flag: ["image", "i", "-i", "--image"],
-					match: "flag",
-					type: Argument.union("color", (m: Message, content: string) => hexColorTable[content]),
+					match: "option",
+					type: "url",
 					// Does this work??
 					default: false,
 				},
@@ -51,27 +51,34 @@ export default class ErroColorConfigCommand extends Command {
 			],
 		});
 	}
-	public async exec(message: Message, { toggle, channel, embed, color, image, msg }: { toggle: boolean, channel: TextChannel, embed: boolean, image: string | false, color: string, msg: string }): Promise<Message> {
+
+	public async exec(message: Message, { toggle, channel, embed, color, image, msg }: { toggle: boolean, channel: TextChannel, embed: boolean, image: URL | false, color: string, msg: string }): Promise<Message> {
+
 		const guildID = (message.guild as Guild).id;
 
 		if (toggle) {
-			await getGuildDB(guildID)
-				.then(async db => {
 
-					if (db.settings.welcome.enabled) {
-						return message.channel.send(new MessageEmbed()
-							.setDescription("Welcome message is already disabled.")
-							.withErrorColor(message),
-						);
-					}
+			const db = await getGuildDB(guildID);
 
-					db.settings.welcome.enabled = false;
-					db.markModified("settings.welcome.enabled");
-					await db.save();
-				});
+			if (db.settings.welcome.enabled) {
+				db.settings.welcome.enabled = false;
+			}
+			else {
+				db.settings.welcome.enabled = true;
+			}
 
+			db.markModified("settings.welcome.enabled");
+
+			const enabledOrDisabled = db.settings.welcome.enabled;
+
+			greetLeaveCache[guildID] = {
+				welcome: db.settings.welcome,
+				goodbye: db.settings.goodbye,
+			};
+
+			await db.save();
 			return message.channel.send(new MessageEmbed()
-				.setDescription("Disabled welcome message")
+				.setDescription(`${enabledOrDisabled ? "Enabled" : "Disabled"} welcome message`)
 				.withOkColor(message),
 			);
 		}
@@ -91,10 +98,16 @@ export default class ErroColorConfigCommand extends Command {
 						enabled: true,
 						channel: channel.id,
 						message: msg,
-						image: image,
+						image: image ? image.href : image,
 						embed: embed,
 						color: color ?? db.settings.welcome.color,
 					};
+
+					greetLeaveCache[guildID] = {
+						welcome: db.settings.welcome,
+						goodbye: db.settings.goodbye,
+					};
+
 					db.markModified("settings.welcome");
 					await db.save();
 				});
@@ -102,10 +115,9 @@ export default class ErroColorConfigCommand extends Command {
 
 		return message.channel.send(new MessageEmbed({
 			title: "Set welcome message",
-			description: `Welcome message info:\n
-			image: ${image ? "Enabled" : "Disabled"}\n
-			embed: ${embed ? "Enabled" : "Disabled"}\n
-			channel: ${channel.name} [${channel.id}]`,
+			description: `**Image**: ${image.valueOf() ? "Enabled" : "Disabled"}\n
+			**Embed**: ${embed ? `Enabled (${color})` : "Disabled"}\n
+			**Channel**: ${channel.name} [${channel.id}]`,
 		})
 			.withOkColor(message));
 	}

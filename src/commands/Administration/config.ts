@@ -1,9 +1,8 @@
-import { Command, Flag, Argument } from "@cataclym/discord-akairo";
-import { Message, MessageEmbed } from "discord.js";
-import { noArgGeneric } from "../../nsb/Embeds";
+import { Argument, Command, Flag, PrefixSupplier } from "@cataclym/discord-akairo";
+import { Guild, Message, MessageEmbed } from "discord.js";
 import { config } from "../../config";
+import { noArgGeneric } from "../../nsb/Embeds";
 import { getGuildDB } from "../../struct/db";
-import { Guild } from "discord.js";
 
 export default class ConfigCommand extends Command {
 	constructor() {
@@ -11,8 +10,12 @@ export default class ConfigCommand extends Command {
 			aliases: ["config", "configure"],
 			channel: "guild",
 			description: {
-				description: "Configure guild specific settings",
-				usage: ["dadbot enable", "anniversary enable", "prefix !", "okcolor <hex>", "errorcolor <hex>"],
+				description: "Configure or display guild specific settings",
+				usage: ["", "dadbot enable", "anniversary enable", "prefix !", "okcolor <hex>", "errorcolor <hex>"],
+			},
+			prefix: (msg: Message) => {
+				const p = (this.handler.prefix as PrefixSupplier)(msg);
+				return [p as string, "-"];
 			},
 		});
 	}
@@ -30,6 +33,8 @@ export default class ConfigCommand extends Command {
 				["config-prefix", "prefix"],
 				["config-okcolor", "okcolor"],
 				["config-errorcolor", "errorcolor"],
+				["config-welcome", "welcome", "greet"],
+				["config-goodbye", "goodbye", "bye"],
 			],
 		};
 		if (!Argument.isFailure(method)) {

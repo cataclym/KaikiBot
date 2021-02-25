@@ -1,7 +1,4 @@
-import { Guild } from "discord.js";
-import { MessageEmbed } from "discord.js";
-import { TextChannel } from "discord.js";
-import { GuildMember } from "discord.js";
+import { Guild, GuildMember, Message, MessageEmbed, TextChannel } from "discord.js";
 import { TGreetMessage } from "../interfaces/db";
 import { getGuildDB } from "../struct/db";
 
@@ -12,7 +9,7 @@ export const greetLeaveCache: {
 	}
 } = {};
 
-export async function handleGreetMessage(guildMember: GuildMember) {
+export async function handleGreetMessage(guildMember: GuildMember): Promise<Message | undefined> {
 	let guildSettings = greetLeaveCache[guildMember.guild.id];
 
 	if (!(guildMember.guild.id in greetLeaveCache)) {
@@ -23,7 +20,9 @@ export async function handleGreetMessage(guildMember: GuildMember) {
 					goodbye: db.settings.goodbye,
 				};
 			});
+		greetLeaveCache[guildMember.guild.id] = guildSettings;
 	}
+	console.log(greetLeaveCache);
 
 	if (guildSettings.welcome.enabled) {
 		return sendGreetLeaveMessage(guildSettings.welcome, guildMember.guild, guildMember);
@@ -31,7 +30,7 @@ export async function handleGreetMessage(guildMember: GuildMember) {
 	return undefined;
 }
 
-export async function handleGoodbyeMessage(guildMember: GuildMember) {
+export async function handleGoodbyeMessage(guildMember: GuildMember): Promise<Message | undefined> {
 	let guildSettings = greetLeaveCache[guildMember.guild.id];
 
 	if (!(guildMember.guild.id in greetLeaveCache)) {
@@ -42,7 +41,9 @@ export async function handleGoodbyeMessage(guildMember: GuildMember) {
 					goodbye: db.settings.goodbye,
 				};
 			});
+		greetLeaveCache[guildMember.guild.id] = guildSettings;
 	}
+	console.log(greetLeaveCache);
 
 	if (guildSettings.goodbye.enabled) {
 		return sendGreetLeaveMessage(guildSettings.goodbye, guildMember.guild, guildMember);
@@ -52,26 +53,34 @@ export async function handleGoodbyeMessage(guildMember: GuildMember) {
 
 async function sendGreetLeaveMessage(data: TGreetMessage, guild: Guild, guildMember: GuildMember) {
 
+	const channel = guild.channels.cache.get(data.channel) ?? await guild.client.channels.fetch(data.channel, true);
+	if (channel.type !== "text") return undefined;
+
 	if (data.embed) {
 		const embed = new MessageEmbed()
 			.setColor(data.color)
-			.setDescription(data.message);
+			.setDescription(await parsePlaceHolders(data.message, guild, guildMember));
 
 		if (data.image) {
 			embed.setImage(data.image);
 		}
-		const channel = guild.channels.cache.get(data.channel) ?? await guild.client.channels.fetch(data.channel);
-		if (channel.type !== "text") return undefined;
 		return (channel as TextChannel).send(embed);
 	}
 
 	else {
-		const channel = guild.channels.cache.get(data.channel) ?? await guild.client.channels.fetch(data.channel);
-		if (channel.type !== "text") return undefined;
 		return (channel as TextChannel).send(await parsePlaceHolders(data.message, guild, guildMember));
 	}
 }
 
-async function parsePlaceHolders(params:string, guild: Guild, guildMember: GuildMember) {
-	return params.replace(/%guild%/ig, guild.name).replace(/%member%/ig, guildMember.user.tag);
+async function parsePlaceHolders(input:string, guild: Guild, guildMember: GuildMember) {
+
+	const searchString = input.toLowerCase();
+
+	if (searchString.includes("%guild%")) {
+		input = input.replace(/%guild%/ig, guild.name);
+	}
+	if (searchString.includes("%member%")) {
+		input = input.replace(/%member%/ig, guildMember.user.tag);
+	}
+	return input;
 }
