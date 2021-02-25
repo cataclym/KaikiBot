@@ -1,9 +1,9 @@
-import { Message, Guild } from "discord.js";
-import { getGuildDB } from "../struct/db";
-import { config } from "../config";
-import { logger } from "./Logger";
-import { tinderDataDB } from "../struct/models";
 import { AkairoClient } from "@cataclym/discord-akairo";
+import { Guild, Message } from "discord.js";
+import { config } from "../config";
+import { getGuildDB } from "../struct/db";
+import { tinderDataDB } from "../struct/models";
+import { logger } from "./Logger";
 
 const words = ["shit", "fuck", "stop", "dont", "kill", "don't", "don`t", "fucking", "shut", "shutup", "shuttup", "trash", "bad", "hate", "stupid", "dumb", "suck", "sucks"];
 const index: {[name: string]: number} = {

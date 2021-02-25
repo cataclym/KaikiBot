@@ -1,7 +1,7 @@
 import { model, Schema } from "mongoose";
-import { errorColor, okColor } from "../nsb/Util";
+import { ICommandStats, IGuild, ITinder, IUser } from "../../src/interfaces/db";
 import { config } from "../config";
-import { IGuild, ITinder, IUser, ICommandStats } from "../../src/interfaces/db";
+import { errorColor, okColor } from "../nsb/Util";
 
 export const guildSchema = new Schema({
 	// ID of the guild
@@ -40,31 +40,24 @@ export const guildSchema = new Schema({
 				color: okColor,
 			},
 			goodbye: {
-				// Goodbye features are enabled
 				enabled: false,
-				// ID for channel to send messages to
 				channel:  null,
-				// Custom message
 				message: null,
-				// Check if image is enabled
 				image: false,
-				// Check if embed is enabled
 				embed: false,
+				color: okColor,
 			},
 		},
 	},
 });
 
 export const usersSchema = new Schema({
-	// ID of the user
 	id: {
 		type: String,
 	},
-	// Date
 	registeredAt: {
 		type: Number, default: Date.now(),
 	},
-	// Array of past nicknames
 	userNicknames: {
 		type: Array, default: [],
 	},
@@ -74,25 +67,17 @@ export const usersSchema = new Schema({
 });
 
 export const tinderDataSchema = new Schema({
-	// ID of the user
 	id: {
 		type: String,
 	},
 	tinderData: {
 		type: Object, default: {
-			// Array of IDs
 			datingIDs: [],
-			// Array of IDs
 			marriedIDs: [],
-			// Array of IDs
 			likeIDs: [],
-			// Array of IDs
 			dislikeIDs: [],
-			// Array of IDs
 			temporary: [],
-			// Number of likes
 			likes: 3,
-			// Number of rolls
 			rolls: 15,
 		},
 	},

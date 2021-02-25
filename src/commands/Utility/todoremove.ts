@@ -48,15 +48,17 @@ export default class todoRemoveCommand extends Command {
 			}
 
 			if (!removedItem) {
-				message.channel.send("List deleted.").then(SentMsg => {
-					SentMsg.react("✅");
-				});
+				message.channel.send("List deleted.")
+					.then(SentMsg => {
+						SentMsg.react("✅");
+					});
 			}
 			else {
 				const stringified = removedItem?.substring(0, 46);
-				message.reply(`Removed \`${stringified}\` from list.`).then(SentMsg => {
-					SentMsg.react("✅");
-				});
+				message.reply(`Removed \`${stringified}\` from list.`)
+					.then(SentMsg => {
+						SentMsg.react("✅");
+					});
 			}
 		}
 		userDB.markModified("todo");

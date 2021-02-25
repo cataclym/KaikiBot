@@ -1,5 +1,5 @@
 import { Command, Listener } from "@cataclym/discord-akairo";
-import { MessageEmbed, Message } from "discord.js";
+import { GuildMember, Message, MessageEmbed } from "discord.js";
 import { noArgGeneric } from "../../nsb/Embeds";
 
 export default class EmitCommand extends Command {
@@ -17,19 +17,30 @@ export default class EmitCommand extends Command {
 
 				},
 				{
+					id: "member",
+					flag: ["-m"],
+					type: "member",
+					match: "option",
+				},
+				{
 					id: "eventArguments",
 					match: "separate",
+					default: null,
 				},
+
 			],
 		});
 	}
-	public async exec(message: Message, { event, eventArguments }: { event: Listener, eventArguments: string[] }): Promise<Message | void> {
+	public async exec(message: Message, { event, eventArguments, member }: { event: Listener, eventArguments: string[], member: GuildMember }): Promise<Message | void> {
 
-		const value = this.client.emit(event.id, eventArguments);
+		const value = event.emitter === "client"
+			? this.client.emit(event.id, member, eventArguments)
+			: this.handler.emit(event.id, member, eventArguments);
 
-		return message.channel.send(new MessageEmbed({
-			description: `Emitted ${event.id}.`,
-			footer: { text: value.toString() },
-		}));
+		if (value) {
+			return message.channel.send(new MessageEmbed({
+				description: `Emitted ${event.id}.`,
+			}));
+		}
 	}
 }

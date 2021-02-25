@@ -1,11 +1,11 @@
 import { Argument, Command } from "@cataclym/discord-akairo";
 import { Guild, Message, MessageEmbed } from "discord.js";
-import { noArgGeneric } from "../../nsb/Embeds.js";
-import { hexColorTable } from "../../nsb/Color.js";
-import { getGuildDB } from "../../struct/db.js";
 import { setSessionCache } from "../../Extensions/Discord.js";
+import { hexColorTable } from "../../nsb/Color.js";
+import { noArgGeneric } from "../../nsb/Embeds.js";
+import { getGuildDB } from "../../struct/db.js";
 
-export default class ErroColorConfigCommand extends Command {
+export default class ErrorColorConfigCommand extends Command {
 	constructor() {
 		super("config-errorcolor", {
 			userPermissions: "ADMINISTRATOR",
