@@ -1,5 +1,5 @@
 import { Command } from "@cataclym/discord-akairo";
-import { Guild, MessageEmbed, User, Message, GuildMember } from "discord.js";
+import { Guild, GuildMember, Message, MessageEmbed, User } from "discord.js";
 
 export default class BanCommand extends Command {
 	constructor() {
