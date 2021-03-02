@@ -1,6 +1,6 @@
 import { Guild, GuildMember, Message, MessageEmbed, TextChannel } from "discord.js";
 import { TGreetMessage } from "../interfaces/db";
-import { getGuildDB } from "../struct/db";
+import { getCommandStatsDB, getGuildDB } from "../struct/db";
 
 export const greetLeaveCache: {
 	[guildID: string]: {
@@ -84,3 +84,22 @@ async function parsePlaceHolders(input:string, guild: Guild, guildMember: GuildM
 	}
 	return input;
 }
+
+export let cmdStatsCache: {[index: string]: number} = {};
+
+setInterval(async () => {
+	const db = await getCommandStatsDB();
+
+	if (!Object.entries(cmdStatsCache).length) return;
+
+	Object.entries(cmdStatsCache)
+		.forEach(async ([id, number]) => {
+			db.count[id]
+				? db.count[id] += number
+				: db.count[id] = number;
+		});
+	db.markModified("count");
+	db.save();
+
+	cmdStatsCache = {};
+}, 900000);
