@@ -1,9 +1,10 @@
 import { AkairoClient } from "@cataclym/discord-akairo";
 import { Guild, Message } from "discord.js";
+import logger from "loglevel";
 import { config } from "../config";
 import { getGuildDB } from "../struct/db";
 import { tinderDataDB } from "../struct/models";
-import { logger } from "./Logger";
+
 
 const words = ["shit", "fuck", "stop", "dont", "kill", "don't", "don`t", "fucking", "shut", "shutup", "shuttup", "trash", "bad", "hate", "stupid", "dumb", "suck", "sucks"];
 const index: {[name: string]: number} = {
@@ -62,21 +63,16 @@ function timeToMidnight(): number {
 }
 
 async function emoteDB(guild: Guild) {
-	// eslint-disable-next-line no-var
-	var i = 0;
+	let i = 0;
 	const db = await getGuildDB(guild.id);
-	await guild.emojis.cache.reduce(async (promise, emote) => {
-		// This line will wait for the last async function to finish.
-		// The first iteration uses an already resolved Promise
-		// so, it will immediately continue.
-		await promise;
+	for await (const emote of guild.emojis.cache.array()) {
 		if (!(emote.id in db.emojiStats)) {
 			i++;
 			db.emojiStats[emote.id] = 0;
 		}
-	}, Promise.resolve());
-	db.markModified("emojistats");
-	await db.save();
+	}
+	if (i > 0) db.markModified("emojiStats");
+	db.save();
 	return i;
 }
 
@@ -86,7 +82,7 @@ async function emoteDataBaseService(input: AkairoClient | Guild): Promise<number
 	if (input instanceof AkairoClient) {
 		await input.guilds.cache.reduce(async (promise, guild) => {
 			await promise;
-			changes = await emoteDB(guild) + changes;
+			changes += await emoteDB(guild);
 		}, Promise.resolve());
 		return changes;
 	}
@@ -99,7 +95,7 @@ async function countEmotes(message: Message): Promise<void> {
 	if (message.guild) {
 		const { guild } = message,
 			emotes = message.content.match(/<?(a)?:.+?:\d+>/g);
-		if (emotes && guild) {
+		if (emotes) {
 			const ids = emotes.toString().match(/\d+/g);
 			ids?.forEach(async id => {
 				const emote = guild.emojis.cache.find(emoji => emoji.id === id);

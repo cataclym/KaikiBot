@@ -1,17 +1,16 @@
-"use strict";
-
+import logger from "loglevel";
 import { config } from "./config";
 import { extensionHook } from "./Extensions/Discord";
-import { logger } from "./nsb/Logger";
 import { customClient } from "./struct/client";
+
+logger.setLevel("INFO", true);
 
 extensionHook();
 
-const client = new customClient();
+process.on("unhandledRejection", error => logger.error(`unhandledRejection | ${(error as Error)?.stack}`));
 
-process.on("unhandledRejection", error => logger.high(`unhandledRejection | ${(error as Error)?.stack}`));
-
-client.login(config.token)
+new customClient()
+	.login(config.token)
 	.catch((err: Error) => {
-		console.error(err);
+		logger.error(err);
 	});

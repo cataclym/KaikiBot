@@ -1,5 +1,6 @@
 import { Listener } from "@cataclym/discord-akairo";
-import { logger } from "../nsb/Logger";
+import logger from "loglevel";
+
 
 export default class ShardReconnectingListener extends Listener {
 	constructor() {

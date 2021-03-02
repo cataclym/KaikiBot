@@ -1,5 +1,6 @@
 import { Listener } from "@cataclym/discord-akairo";
-import { logger } from "../nsb/Logger";
+import logger from "loglevel";
+
 
 export default class ShardReadyListener extends Listener {
 	constructor() {
@@ -18,7 +19,7 @@ export default class ShardReadyListener extends Listener {
 				arr.push(`${k}: ${v}`);
 			}
 		}
-		logger.low(arr.join("\n"));
+		logger.info(arr.join("\n"));
 
 	}
 }

@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import logger from "loglevel";
 import mongoose, { Error } from "mongoose";
-import { ITinder, IUser, IGuild, ICommandStats } from "../interfaces/db";
-import { logger } from "../nsb/Logger";
-import { guildsDB, usersDB, tinderDataDB, commandStatsDB } from "./models";
+import { ICommandStats, IGuild, ITinder, IUser } from "../interfaces/db";
+import { commandStatsDB, guildsDB, tinderDataDB, usersDB } from "./models";
+
 
 mongoose.connect("mongodb://localhost:27017", {
 	useNewUrlParser: true,
@@ -15,11 +16,11 @@ mongoose.connect("mongodb://localhost:27017", {
 	})
 	.catch((err) => {
 		// If it doesn't connect log the following
-		logger.high("Unable to connect to the Mongodb database. Error:" + err, "error");
+		logger.error("Unable to connect to the Mongodb database. Error:" + err, "error");
 	});
 
 const db = mongoose.connection;
-db.on("error", logger.high.bind(console, "connection error:"));
+db.on("error", logger.error.bind(console, "connection error:"));
 
 // Create/find Guilds Database
 export async function getUserDB(userID: string): Promise<IUser> {
@@ -31,7 +32,7 @@ export async function getUserDB(userID: string): Promise<IUser> {
 		userDB = new usersDB({
 			id: userID,
 		});
-		await userDB.save().catch((err: Error) => logger.high(err));
+		await userDB.save().catch((err: Error) => logger.error(err));
 		return userDB;
 	}
 }
@@ -47,7 +48,7 @@ export async function getGuildDB(guildID: string): Promise<IGuild> {
 		guildDB = new guildsDB({
 			id: guildID,
 		});
-		await guildDB.save().catch((err: Error) => logger.high(err));
+		await guildDB.save().catch((err: Error) => logger.error(err));
 		return guildDB;
 	}
 }
@@ -62,7 +63,7 @@ export async function getTinderDB(userID: string): Promise<ITinder> {
 		tinderDB = new tinderDataDB({
 			id: userID,
 		});
-		await tinderDB.save().catch((err: Error) => logger.high(err));
+		await tinderDB.save().catch((err: Error) => logger.error(err));
 		return tinderDB;
 	}
 }
@@ -76,7 +77,7 @@ export async function getCommandStatsDB(): Promise<ICommandStats> {
 	else {
 		cmdStatsDB = new commandStatsDB();
 
-		await cmdStatsDB.save().catch((err: Error) => logger.high(err));
+		await cmdStatsDB.save().catch((err: Error) => logger.error(err));
 		return cmdStatsDB;
 	}
 }

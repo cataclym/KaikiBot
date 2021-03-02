@@ -1,9 +1,10 @@
 import { Listener } from "@cataclym/discord-akairo";
-import { emoteReact, tiredNadekoReact, countEmotes } from "../nsb/functions";
 import { Message, MessageEmbed, User } from "discord.js";
+import logger from "loglevel";
 import { config } from "../config";
+import { countEmotes, emoteReact, tiredNadekoReact } from "../nsb/functions";
 import { trim } from "../nsb/Util";
-import { logger } from "../nsb/Logger";
+
 
 let botOwner: User | undefined;
 

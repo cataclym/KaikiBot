@@ -1,5 +1,6 @@
 import { Listener } from "@cataclym/discord-akairo";
-import { logger } from "../nsb/Logger";
+import logger from "loglevel";
+
 
 export default class ShardDisconnectListener extends Listener {
 	constructor() {
@@ -12,6 +13,6 @@ export default class ShardDisconnectListener extends Listener {
 
 	public async exec(event: CloseEvent, id: number): Promise<void> {
 
-		logger.medium(`ShardDisconnect | Shard: ${id} Reason: ${event.reason}`);
+		logger.warn(`ShardDisconnect | Shard: ${id} Reason: ${event.reason}`);
 	}
 }

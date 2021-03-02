@@ -1,5 +1,6 @@
 import { Listener } from "@cataclym/discord-akairo";
-import { logger } from "../nsb/Logger";
+import logger from "loglevel";
+
 
 export default class ShardErrorListener extends Listener {
 	constructor() {
@@ -12,7 +13,7 @@ export default class ShardErrorListener extends Listener {
 
 	public async exec(error: Error, id: number): Promise<void> {
 
-		logger.medium(`shardError | Shard: ${id} \n${error.stack ? error.stack : error}`);
+		logger.error(`shardError | Shard: ${id} \n${error.stack ? error.stack : error}`);
 
 	}
 }

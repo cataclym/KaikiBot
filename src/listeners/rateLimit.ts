@@ -1,5 +1,6 @@
 import { Listener } from "@cataclym/discord-akairo";
-import { logger } from "../nsb/Logger";
+import logger from "loglevel";
+
 
 export default class RateLimitListener extends Listener {
 	constructor() {
@@ -12,10 +13,10 @@ export default class RateLimitListener extends Listener {
 
 	public async exec({ timeout, limit, method, path, route }: { timeout: number, limit: number, method: string, path: string, route: string }): Promise<void> {
 
-		logger.medium(`rateLimit | Timeout: ${timeout}
-		Limit: ${limit} // Number of requests that can be made to this endpoint
-		Method: ${method} // HTTP method used for request that triggered this event
-        Path: ${path} // Path used for request that triggered this event
-        Route: ${route} // Route used for request that triggered this event`);
+		logger.warn(`rateLimit | Timeout: ${timeout}
+Limit: ${limit} // Number of requests that can be made to this endpoint
+Method: ${method} // HTTP method used for request that triggered this event
+Path: ${path} // Path used for request that triggered this event
+Route: ${route} // Route used for request that triggered this event`);
 	}
 }

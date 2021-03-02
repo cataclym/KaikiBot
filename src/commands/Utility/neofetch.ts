@@ -1,11 +1,12 @@
 /* eslint-disable no-useless-escape */
 import { Command } from "@cataclym/discord-akairo";
+import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
 import { exec } from "child_process";
 import { Message, MessageEmbed } from "discord.js";
-import { codeblock } from "../../nsb/Util";
-import { logger } from "../../nsb/Logger";
+import logger from "loglevel";
 import { distros } from "../../nsb/distros.json";
-import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
+import { codeblock } from "../../nsb/Util";
+
 
 export default class NeofetchCommand extends Command {
 	constructor() {
@@ -43,10 +44,10 @@ export default class NeofetchCommand extends Command {
 		else {
 			exec("whoami", (err, out, stdrr) => {
 				if (err) {
-					return logger.high(err);
+					return logger.error(err);
 				}
 				if (stdrr) {
-					return logger.high(stdrr);
+					return logger.error(stdrr);
 				}
 
 				return neofetch(out.trim());
@@ -56,10 +57,10 @@ export default class NeofetchCommand extends Command {
 		function neofetch(username: string) {
 			exec(`neofetch --ascii_distro ${os}|sed 's/\x1B\[[0-9;\?]*[a-zA-Z]//g'`, async (error, stdout, stderr) => {
 				if (error) {
-					return logger.high(error);
+					return logger.error(error);
 				}
 				if (stderr) {
-					return logger.high(stderr);
+					return logger.error(stderr);
 				}
 
 				return message.channel.send(await codeblock(stdout.substring(0, stdout.indexOf(username + "@")).replace(/```/g, "\u0300`\u0300`\u0300`\u0300")));

@@ -1,9 +1,10 @@
-import { Command, Argument, Flag } from "@cataclym/discord-akairo";
-import { MessageEmbed, Message, User, MessageReaction } from "discord.js";
-import { noMoreLikesOrRolls, tinderDislike, tinderSuperLike, tinderNormalLike } from "../../nsb/Tinder";
+import { Argument, Command, Flag } from "@cataclym/discord-akairo";
+import { Message, MessageEmbed, MessageReaction, User } from "discord.js";
+import logger from "loglevel";
 import { tinderRollEmbed } from "../../nsb/Embeds";
+import { noMoreLikesOrRolls, tinderDislike, tinderNormalLike, tinderSuperLike } from "../../nsb/Tinder";
 import { getTinderDB } from "../../struct/db";
-import { logger } from "../../nsb/Logger";
+
 
 const reactPromises = async (SentMsg: Message) => {
 	await SentMsg.react("❌");
@@ -85,7 +86,7 @@ export default class TinderMain extends Command {
 
 			const SentMsg = await message.channel.send(await tinderRollEmbed(message, randomUsr, RollsLikes));
 			reactPromises(SentMsg)
-				.catch(err => logger.high(err));
+				.catch(err => logger.error(err));
 
 			const filter = async (reaction: MessageReaction, user: User) => {
 				return ["❌", "💚", "🌟"].includes(reaction.emoji.name) && user.id === message.author.id;

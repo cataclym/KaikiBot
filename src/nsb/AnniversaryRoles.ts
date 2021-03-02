@@ -1,7 +1,8 @@
 import { Client, Guild, GuildMember, Role } from "discord.js";
+import logger from "loglevel";
 import { getGuildDB } from "../struct/db";
 import { timeToMidnight } from "./functions";
-import { logger } from "./Logger";
+
 const roleNameJoin = "Join Anniversary",
 	roleNameCreated = "Cake Day";
 
@@ -39,7 +40,7 @@ async function birthdayService(client: Client): Promise<void> {
 			}));
 		}
 		else {
-			return logger.medium(`birthdayService | ${guild.name} [${guild.id}] - can't add anniversary roles due to missing permissions: 'MANAGE_ROLES'`);
+			return logger.warn(`birthdayService | ${guild.name} [${guild.id}] - can't add anniversary roles due to missing permissions: 'MANAGE_ROLES'`);
 		}
 	}));
 
@@ -57,7 +58,7 @@ async function checkBirthdayOnAdd(guild: Guild): Promise<void> {
 	const enabled = (await getGuildDB(guild.id)).settings.anniversary,
 		{ Day, Month } = await DateObject();
 
-	logger.info(`birthdayService | Checking newly added guild [${guild.id}]`);
+	logger.info(`birthdayService | Checking newly added guild ${guild.name} [${guild.id}]`);
 
 	if (enabled) {
 		try {
@@ -72,11 +73,11 @@ async function checkBirthdayOnAdd(guild: Guild): Promise<void> {
 				}));
 			}
 			else {
-				return logger.medium(`birthdayService | ${guild.name} [${guild.id}] - can't add anniversary roles due to missing permissions: 'MANAGE_ROLES'`);
+				return logger.warn(`birthdayService | ${guild.name} [${guild.id}] - can't add anniversary roles due to missing permissions: 'MANAGE_ROLES'`);
 			}
 		}
 		catch (err) {
-			logger.high(err);
+			logger.error(err);
 		}
 		finally {
 			logger.info(`birthdayService | Finished checking [${guild.id}] - Anniversary enabled`);
@@ -87,13 +88,11 @@ async function checkBirthdayOnAdd(guild: Guild): Promise<void> {
 	}
 }
 
-async function MemberOnAddBirthday(member: GuildMember): Promise<void> {
+async function memberOnAddBirthdayService(member: GuildMember): Promise<void> {
 
 	const { guild } = member,
 		{ Day, Month } = await DateObject(),
 		enabled = (await getGuildDB(guild.id)).settings.anniversary;
-
-	logger.info(`birthdayService | Checking user ${member.user.tag} in ${guild.name} [${guild.id}]`);
 
 	if (enabled) {
 		try {
@@ -106,18 +105,15 @@ async function MemberOnAddBirthday(member: GuildMember): Promise<void> {
 				}
 			}
 			else {
-				return logger.medium(`birthdayService | ${guild.name} [${guild.id}] - can't add anniversary roles due to missing permissions: 'MANAGE_ROLES'`);
+				return logger.warn(`birthdayService | ${guild.name} [${guild.id}] - can't add anniversary roles due to missing permissions: 'MANAGE_ROLES'`);
 			}
 		}
 		catch (err) {
-			logger.high(err);
+			logger.error(err);
 		}
 		finally {
-			logger.info(`birthdayService | Finished checking user ${member.user.tag} in ${guild.name} [${guild.id}] - Anniversary enabled`);
+			logger.info(`birthdayService | Checked user ${member.user.tag} in ${guild.name} [${guild.id}]`);
 		}
-	}
-	else {
-		logger.info(`birthdayService | Finished checking user ${member.user.tag} in ${guild.name} [${guild.id}] - Anniversary disabled`);
 	}
 }
 
@@ -126,13 +122,13 @@ async function GuildCheckRolesExist(guild: Guild): Promise<Role[] | unknown[]> {
 		guild.roles.create({
 			data: { name: roleNameJoin },
 			reason: "Role didn't exist yet",
-		}).catch(err => logger.high(err));
+		}).catch(err => logger.error(err));
 	}
 	if (!guild.roles.cache.some(r => r.name === roleNameCreated)) {
 		guild.roles.create({
 			data: { name: roleNameCreated },
 			reason: "Role didn't exist yet",
-		}).catch(err => logger.high(err));
+		}).catch(err => logger.error(err));
 	}
 	const AnniversaryRoleJ = guild.roles.cache.find((r => r.name === roleNameJoin));
 	const AnniversaryRoleC = guild.roles.cache.find((r => r.name === roleNameCreated));
@@ -177,5 +173,5 @@ async function MemberCheckAnniversary(member: GuildMember, AnniversaryRoleC: Rol
 }
 
 export {
-	birthdayService, checkBirthdayOnAdd, MemberOnAddBirthday,
+	birthdayService, checkBirthdayOnAdd, memberOnAddBirthdayService,
 };
