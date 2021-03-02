@@ -1,6 +1,6 @@
 {
-  "name": "nadekosengokubot",
-  "version": "3.4.0-aqua",
+  "name": "kaikideishubot",
+  "version": "3.4.1-aqua",
   "main": "./dist/index.js",
   "scripts": {
     "test": "echo \"Bypass build\" && node ./dist/index.js",
@@ -20,6 +20,7 @@
     "imagemin": "^6.0.0",
     "imagemin-gifsicle": "^6.0.1",
     "kaori": "^2.0.x",
+    "loglevel": "^1.7.1",
     "mongoose": "^5.11.13",
     "node-emoji": "^1.10.0",
     "node-fetch": "^2.6.1",
@@ -45,6 +46,6 @@
   "description": "Discord bot built with Akairo and MongoDB",
   "repository": {
     "type": "git",
-    "url": "https://gitlab.com/cataclym/nadekosengokubot.git"
+    "url": "https://gitlab.com/cataclym/KaikiDeishuBot.git"
   }
 }
