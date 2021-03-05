@@ -2,7 +2,6 @@ import { Argument, Command, Flag, PrefixSupplier } from "@cataclym/discord-akair
 import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
 import { Guild, Message, MessageEmbed } from "discord.js";
 import { config } from "../../config";
-import { noArgGeneric } from "../../nsb/Embeds";
 import { getGuildDB } from "../../struct/db";
 
 export default class ConfigCommand extends Command {
@@ -44,10 +43,6 @@ export default class ConfigCommand extends Command {
 	}
 
 	public async exec(message: Message): Promise<Message> {
-
-		if (message.content.split(" ").length > 1) {
-			return message.channel.send(noArgGeneric(message));
-		}
 
 		const db = await getGuildDB((message.guild as Guild).id),
 			{ anniversary, dadBot, prefix, errorColor, okColor, welcome, goodbye } = db.settings,
