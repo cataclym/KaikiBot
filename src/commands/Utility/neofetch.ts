@@ -18,7 +18,7 @@ export default class NeofetchCommand extends Command {
 			args: [{
 				id: "os",
 				type: distros,
-				default: `${process.platform}`,
+				default: null,
 			},
 			{
 				id: "list",
@@ -27,7 +27,7 @@ export default class NeofetchCommand extends Command {
 			}],
 		});
 	}
-	public async exec(message: Message, { os, list }: { os: string, list: boolean }): Promise<Message | void> {
+	public async exec(message: Message, { os, list }: { os: string | null, list: boolean }): Promise<Message | void> {
 
 		if (list) {
 			const pages: MessageEmbed[] = [];
@@ -42,20 +42,11 @@ export default class NeofetchCommand extends Command {
 		}
 
 		else {
-			exec("whoami", (err, out, stdrr) => {
-				if (err) {
-					return logger.error(err);
-				}
-				if (stdrr) {
-					return logger.error(stdrr);
-				}
+			let cmd = `neofetch -L --ascii_distro ${os}|sed 's/\x1B\[[0-9;\?]*[a-zA-Z]//g'`;
 
-				return neofetch(out.trim());
-			});
-		}
+			if (!os && process.platform !== "win32") cmd = "neofetch -L |sed 's/\x1B\[[0-9;\?]*[a-zA-Z]//g'";
 
-		function neofetch(username: string) {
-			exec(`neofetch --ascii_distro ${os}|sed 's/\x1B\[[0-9;\?]*[a-zA-Z]//g'`, async (error, stdout, stderr) => {
+			exec(cmd, async (error, stdout, stderr) => {
 				if (error) {
 					return logger.error(error);
 				}
@@ -63,7 +54,7 @@ export default class NeofetchCommand extends Command {
 					return logger.error(stderr);
 				}
 
-				return message.channel.send(await codeblock(stdout.substring(0, stdout.indexOf(username + "@")).replace(/```/g, "\u0300`\u0300`\u0300`\u0300")));
+				return message.channel.send(await codeblock(stdout.replace(/```/g, "\u0300`\u0300`\u0300`\u0300")));
 			});
 		}
 	}

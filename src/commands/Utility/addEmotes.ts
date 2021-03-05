@@ -3,13 +3,13 @@ import { Message } from "discord.js";
 import sizeOf from "image-size";
 import { noArgGeneric } from "../../nsb/Embeds";
 import { deleteImage, getFileOut, resizeImage, saveEmoji, saveFile } from "../../nsb/Emote";
-const imgRegex = /(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|gif|png)/gi;
+const imgRegex = /(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|gif|png|jpeg)/gi;
 // Credit to https://github.com/Snitt/emojibotten/blob/master/commands/management/emoji.js
 export default class AddEmotesCommand extends Command {
 	constructor() {
 		super("addemotes", {
 			aliases: ["addemotes", "aes"],
-			description: { description: "Adds multiple emotes. Cannot specify names.", usage: "https://discord.com/assets/28174a34e77bb5e5310ced9f95cb480b.png https://cdn.discordapp.com/avatars/140788173885276160/a_a8c1ebfb526b8850b2f125c440e8f6b7.gif" },
+			description: { description: "Adds multiple emotes. Cannot specify names.", usage: "<img link1> <img link2> <img link3>" },
 			clientPermissions: "MANAGE_EMOJIS",
 			userPermissions: "MANAGE_EMOJIS",
 			channel: "guild",
