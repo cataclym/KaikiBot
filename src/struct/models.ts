@@ -70,16 +70,26 @@ export const tinderDataSchema = new Schema({
 	id: {
 		type: String,
 	},
-	tinderData: {
-		type: Object, default: {
-			datingIDs: [],
-			marriedIDs: [],
-			likeIDs: [],
-			dislikeIDs: [],
-			temporary: [],
-			likes: 3,
-			rolls: 15,
-		},
+	datingIDs: {
+		type: Array, default: [],
+	},
+	marriedIDs: {
+		type: Array, default: [],
+	},
+	likeIDs: {
+		type: Array, default: [],
+	},
+	dislikeIDs: {
+		type: Array, default: [],
+	},
+	temporary: {
+		type: Array, default: [],
+	},
+	likes: {
+		type: Number, default: 3,
+	},
+	rolls: {
+		type: Number, default: 15,
 	},
 });
 

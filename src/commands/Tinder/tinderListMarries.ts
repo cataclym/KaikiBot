@@ -1,6 +1,6 @@
-import { separateTinderList } from "../../nsb/Tinder.js";
 import { Command } from "@cataclym/discord-akairo";
 import { Message } from "discord.js";
+import { separateTinderList } from "../../nsb/Tinder.js";
 import { getTinderDB } from "../../struct/db.js";
 
 module.exports = class TinderListMarriesCommand extends Command {
@@ -11,7 +11,7 @@ module.exports = class TinderListMarriesCommand extends Command {
 
 	public async exec(message: Message) {
 		const db = await getTinderDB(message.author.id),
-			marriedIDs = [...new Set(db.tinderData.marriedIDs)];
+			marriedIDs = [...new Set(db.marriedIDs)];
 		return separateTinderList(message, marriedIDs, `Spouses (${marriedIDs.length - 1})`);
 	}
 };

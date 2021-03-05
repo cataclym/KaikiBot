@@ -19,23 +19,23 @@ export default class TinderRemoveMarries extends Command {
 	public async exec(message: Message, { integer }: { integer: number }): Promise<ITinder> {
 		const db = await getTinderDB(message.author.id);
 
-		if (db.tinderData.marriedIDs.length) {
+		if (db.marriedIDs.length) {
 
-			if (db.tinderData.marriedIDs.length >= integer) {
-				const userID = db.tinderData.marriedIDs.splice(integer, 1),
+			if (db.marriedIDs.length >= integer) {
+				const userID = db.marriedIDs.splice(integer, 1),
 					RemovedMember = message.client.users.cache.get(userID[0]),
 					rDB = await getTinderDB(RemovedMember?.id ?? userID[0]),
-					userNumber = rDB.tinderData.marriedIDs.indexOf(message.author.id);
+					userNumber = rDB.marriedIDs.indexOf(message.author.id);
 
 				if (userNumber !== -1) {
-					rDB.tinderData.marriedIDs.splice(userNumber, 1);
+					rDB.marriedIDs.splice(userNumber, 1);
 				}
 
 				message.channel.send(`You divorced ${RemovedMember ? RemovedMember?.username : "<@" + userID + ">"}!`).then(SentMsg => {
 					SentMsg.react("✅");
 					SentMsg.react("💔");
 				});
-				rDB.markModified("tinderData.marriedIDs");
+				rDB.markModified("marriedIDs");
 				rDB.save();
 			}
 			else {
@@ -48,7 +48,7 @@ export default class TinderRemoveMarries extends Command {
 		else {
 			message.channel.send("Nothing to delete.");
 		}
-		db.markModified("tinderData.marriedIDs");
+		db.markModified("marriedIDs");
 		return db.save();
 	}
 }

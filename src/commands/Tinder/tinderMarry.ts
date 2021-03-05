@@ -1,6 +1,6 @@
 import { Command } from "@cataclym/discord-akairo";
-import { DMEMarry } from "../../nsb/Embeds.js";
 import { Message, MessageEmbed, MessageReaction, User } from "discord.js";
+import { DMEMarry } from "../../nsb/Embeds.js";
 import { getTinderDB } from "../../struct/db.js";
 
 module.exports = class TinderMarryCommand extends Command {
@@ -20,12 +20,12 @@ module.exports = class TinderMarryCommand extends Command {
 	}
 	public async exec(message: Message, { user }: { user: User}) {
 		const db = await getTinderDB(user.id),
-			ArgDates = db.tinderData.datingIDs;
+			ArgDates = db.datingIDs;
 
 		if (ArgDates.includes(message.author.id)) {
 
 			const authorDB = await getTinderDB(message.author.id),
-				MarryMatches = authorDB.tinderData.marriedIDs.filter((f: string) => db.tinderData.marriedIDs.includes(f));
+				MarryMatches = authorDB.marriedIDs.filter((f: string) => db.marriedIDs.includes(f));
 
 			if (!MarryMatches.includes(user.id)) {
 				message.channel.send(`Do you want to marry ${message.author.username}, <@${user.id}>?\nReact with a ❤️ to marry!`)
@@ -38,8 +38,14 @@ module.exports = class TinderMarryCommand extends Command {
 
 						msg.awaitReactions(filter, { max: 1, time: 50000, errors: ["time"] })
 							.then(async () => {
-								authorDB.tinderData.marriedIDs.push(user.id);
-								db.tinderData.marriedIDs.push(message.author.id);
+								authorDB.marriedIDs.push(user.id);
+								db.marriedIDs.push(message.author.id);
+
+								authorDB.markModified("marriedIDs");
+								db.markModified("marriedIDs");
+
+								authorDB.save();
+								db.save();
 								return message.channel.send(await DMEMarry());
 							})
 							.catch(async () => {

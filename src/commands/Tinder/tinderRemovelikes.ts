@@ -19,11 +19,11 @@ export default class TinderRemoveLikes extends Command {
 	public async exec(message: Message, { integer }: { integer: number }): Promise<ITinder> {
 		const db = await getTinderDB(message.author.id);
 
-		if (db.tinderData.likeIDs.length) {
+		if (db.likeIDs.length) {
 
-			if (db.tinderData.likeIDs.length >= integer) {
+			if (db.likeIDs.length >= integer) {
 			// Matches given number to array item
-				const userID = db.tinderData.likeIDs.splice(integer, 1),
+				const userID = db.likeIDs.splice(integer, 1),
 					RemovedMember = message.client.users.cache.get(userID.toString());
 
 				message.channel.send(`Removed ${RemovedMember ? RemovedMember?.username : "<@" + userID + ">"} from list.`).then(SentMsg => {
@@ -40,7 +40,7 @@ export default class TinderRemoveLikes extends Command {
 		else {
 			message.channel.send("Nothing to delete");
 		}
-		db.markModified("tinderData.likeIDs");
+		db.markModified("likeIDs");
 		return db.save();
 	}
 }

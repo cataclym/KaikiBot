@@ -1,6 +1,6 @@
-import { poems } from "../nsb/Poems";
-import { MessageEmbed, Message, User } from "discord.js";
 import { Command, PrefixSupplier } from "@cataclym/discord-akairo";
+import { Message, MessageEmbed, User } from "discord.js";
+import { poems } from "../nsb/Poems";
 import { getTinderDB } from "../struct/db";
 import { tinderDataDB } from "../struct/models";
 
@@ -44,11 +44,11 @@ async function DMEMarry(): Promise<MessageEmbed> {
 }
 
 async function tinderRollEmbed(message: Message, randomUsr: User, RollsLikes?: string): Promise<MessageEmbed> {
-	const db = await getTinderDB(randomUsr.id);
-	const waifus = db.tinderData.marriedIDs.length,
+	const db = await getTinderDB(randomUsr.id),
+		waifus = db.marriedIDs.length,
 		likeIDsDB = await tinderDataDB.find({ tinderData: {} }),
 		flattArray = likeIDsDB
-			.map((ITinderData) => ITinderData.tinderData.likeIDs)
+			.map((ITinderData) => ITinderData.likeIDs)
 			.flat(),
 		randomUsrLikes = flattArray
 			?.filter((id: string) => id === randomUsr.id)

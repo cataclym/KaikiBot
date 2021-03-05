@@ -29,15 +29,13 @@ export interface IGuild extends Document {
 
 export interface ITinder extends Document {
 	id: string,
-	tinderData: {
-		datingIDs: string[],
-		marriedIDs: string[],
-		likeIDs: string[],
-		dislikeIDs: string[],
-		temporary: string[],
-		likes: number,
-		rolls: number,
-	},
+	datingIDs: string[],
+	marriedIDs: string[],
+	likeIDs: string[],
+	dislikeIDs: string[],
+	temporary: string[],
+	likes: number,
+	rolls: number,
 }
 
 export interface IUser extends Document {

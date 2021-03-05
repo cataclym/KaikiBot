@@ -19,23 +19,23 @@ export default class TinderRemoveDates extends Command {
 	public async exec(message: Message, { integer }: { integer: number }): Promise<ITinder> {
 		const db = await getTinderDB(message.author.id);
 
-		if (db.tinderData.datingIDs.length) {
+		if (db.datingIDs.length) {
 
-			if (db.tinderData.datingIDs.length >= integer) {
-				const userID = db.tinderData.datingIDs.splice(integer, 1),
+			if (db.datingIDs.length >= integer) {
+				const userID = db.datingIDs.splice(integer, 1),
 					RemovedMember = message.client.users.cache.get(userID[0]),
 					rDB = await getTinderDB(RemovedMember?.id ?? userID[0]),
-					userNumber = rDB.tinderData.datingIDs.indexOf(message.author.id);
+					userNumber = rDB.datingIDs.indexOf(message.author.id);
 
 				if (userNumber !== -1) {
-					rDB.tinderData.datingIDs.splice(userNumber, 1);
+					rDB.datingIDs.splice(userNumber, 1);
 				}
 
 				message.channel.send(`You stopped dating ${RemovedMember ? RemovedMember?.username : "<@" + userID + ">"}.`).then(SentMsg => {
 					SentMsg.react("✅");
 					SentMsg.react("💔");
 				});
-				rDB.markModified("tinderData.datingIDs");
+				rDB.markModified("datingIDs");
 				rDB.save();
 			}
 			else {
@@ -48,7 +48,7 @@ export default class TinderRemoveDates extends Command {
 		else {
 			message.channel.send("Nothing to delete.");
 		}
-		db.markModified("tinderData.datingIDs");
+		db.markModified("datingIDs");
 		return db.save();
 	}
 }
