@@ -8,7 +8,11 @@
     "build": "tsc",
     "public": "rm -r dist/ && npm run start"
   },
-  "keywords": [],
+  "keywords": [
+    "Discord",
+    "Discordjs",
+    "Typescript"
+  ],
   "author": "Cataclym <ole.kh@hotmail.com>",
   "license": "MIT",
   "dependencies": {

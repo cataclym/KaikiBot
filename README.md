@@ -1,4 +1,4 @@
-#  Welcome to Nadeko Sengoku Bot
+#  Welcome to Kaiki Deishu Bot
 
 ### A simple bot Written in TypeScript with lots of unique commands and features.
 
@@ -9,16 +9,16 @@ Requirements
 * TypeScript `npm install -g typescript` https://www.npmjs.com/package/typescript
 * Build tools (Windows) `npm i --global --production windows-build-tools` | (Linux) <a href="https://github.com/Automattic/node-canvas/wiki/Installation:-Fedora-and-other-RPM-based-distributions"> Find your distribution and dependencies here </a> 
 
-1. Clone repo
-1. Go into `src` folder. Edit`config.ts` - Add your bot token and edit the other inputs. // Need help? Come join our server!
-1. Terminal: `cd nadekosengokubot`
-1. Terminal: `npm i`
-1. Terminal: `npm start`
+1. Clone repo: `git clone https://gitlab.com/cataclym/KaikiDeishuBot.git`
+1. `cd KaikiDeishuBot/src`
+1. Edit `config.ts` - Add your bot token. // Need help? Come join our server!
+1. `npm i`
+1. `npm start`
 1. ?
 1. Profit
 
 **Note:** 
-By default the role that excludes users is currently called `Nadeko-excluded`. It can be changed in `src/config.ts`.              
+By default the role that excludes users is currently called `Dadbot-excluded`. It can be changed in `src/config.ts`.              
 It will autocreate the role if it doesnt exist first time you type `+exlude`. And as long as it has "Manage roles" permissions.  
 
 Having issues? Come join us on discord here                                                                                    
