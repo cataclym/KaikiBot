@@ -1,6 +1,7 @@
 import { AkairoClient } from "@cataclym/discord-akairo";
 import { Guild, Message } from "discord.js";
 import logger from "loglevel";
+import { clearRollCache } from "../commands/Tinder/tinder";
 import { config } from "../config";
 import { getGuildDB } from "../struct/db";
 import { tinderDataDB } from "../struct/models";
@@ -17,7 +18,7 @@ async function emoteReact(message: Message): Promise<void> {
 		if (config.prefixes2.includes(word)) {
 			// TODO: Able to add more words, select random word, store in db
 			const emojiName = config.emoteNames[config.prefixes2.indexOf(word)];
-			if (!message.guild?.emojis.cache.find((e) => e.name === emojiName)) return console.log("Couldn't react to message. Emote probably doesnt exist on this guild.");
+			if (!message.guild?.emojis.cache.find((e) => e.name === emojiName)) return console.warn("Couldn't react to message. Emote probably doesnt exist on this guild.");
 			const emojiArray = message.guild.emojis.cache.find((e) => e.name === emojiName);
 			message.react(emojiArray ? emojiArray : "⚠");
 		}
@@ -45,7 +46,8 @@ async function tiredNadekoReact(message: Message): Promise<void> {
 
 async function ResetRolls(): Promise<void> {
 	// Tinder reset
-	tinderDataDB.updateMany({ rolls: { $lt: 15 } }, { $set: { "tinderData.temporary": [], "tinderData.rolls": 15, "tinderData.likes": 3 } }, null, () => {
+	clearRollCache();
+	tinderDataDB.updateMany({ rolls: { $lt: 15 } }, { rolls: 15, temporary: [], likes: 3 }, null, () => {
 		logger.info(`mongooseDB | Reset tinder rolls/likes at ${Date()}`);
 	});
 }
