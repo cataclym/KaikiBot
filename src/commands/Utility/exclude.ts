@@ -1,6 +1,6 @@
 import { Command } from "@cataclym/discord-akairo";
+import { Message, MessageEmbed } from "discord.js";
 import { config } from "../../config.js";
-import { MessageEmbed, Message } from "discord.js";
 
 const addedRoleEmbed = new MessageEmbed({
 	title: "Success!",

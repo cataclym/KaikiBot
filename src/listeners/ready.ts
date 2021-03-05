@@ -35,7 +35,6 @@ export default class ReadyListener extends Listener {
 		setTimeout(async () => {
 			await emoteDataBaseService(this.client)
 				.then(i => {
-					console.log("final", i);
 					if (i > 0) {
 						logger.info("dataBaseService | " + i + " new emote(s) added!");
 					}
