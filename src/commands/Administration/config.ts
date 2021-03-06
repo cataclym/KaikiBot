@@ -10,7 +10,7 @@ export default class ConfigCommand extends Command {
 			aliases: ["config", "configure"],
 			channel: "guild",
 			description: {
-				description: "Configure or display guild specific settings",
+				description: "Configure or display guild specific settings. Will always respond to default prefix.",
 				usage: ["", "dadbot enable", "anniversary enable", "prefix !", "okcolor <hex>", "errorcolor <hex>", "welcome/goodbye [channel] [-e] [-c yellow] [-i http://link.png] [message]"],
 			},
 			prefix: (msg: Message) => {
@@ -66,13 +66,36 @@ export default class ConfigCommand extends Command {
 		const pages = [
 			new MessageEmbed()
 				.withOkColor(message)
-				.addField("DadBot", dadBot ? "Enabled" : "Disabled", true)
-				.addField("Anniversary-Roles", anniversary ? "Enabled" : "Disabled", true)
-				.addField("Guild prefix", prefix === config.prefix ? `\`${config.prefix}\` (Default)` : prefix, true)
-				.addField("Embed error color", errorColor, true)
-				.addField("Embed ok color", okColor, true)
-				.addField("Welcome message", welcome.enabled ? "Enabled" : "Disabled", true)
-				.addField("Goodbye message", goodbye.enabled ? "Enabled" : "Disabled", true),
+				.addField("DadBot",
+					dadBot
+						? "Enabled"
+						: "Disabled", true)
+				.addField("Anniversary-Roles",
+					anniversary
+						? "Enabled"
+						: "Disabled", true)
+				.addField("Guild prefix",
+					prefix === config.prefix
+						? `\`${config.prefix}\` (Default)`
+						: prefix, true)
+				.addField("Embed error color",
+					errorColor.toString().startsWith("#")
+						? errorColor
+						: "#" + errorColor.toString(16), true)
+				.addField("Embed ok color",
+					okColor.toString().startsWith("#")
+						? okColor
+						: "#" + okColor.toString(16), true)
+				.addField("\u200B", "\u200B", true)
+				.addField("Welcome message",
+					welcome.enabled
+						? "Enabled"
+						: "Disabled", true)
+				.addField("Goodbye message",
+					goodbye.enabled
+						? "Enabled"
+						: "Disabled", true)
+				.addField("\u200B", "\u200B", true),
 			welcomeEmbed,
 			goodbyeEmbed,
 		];
