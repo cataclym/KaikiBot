@@ -1,6 +1,6 @@
-import { Message, MessageEmbed } from "discord.js";
-import { Command, Flag, Argument, PrefixSupplier } from "@cataclym/discord-akairo";
+import { Argument, Command, Flag, PrefixSupplier } from "@cataclym/discord-akairo";
 import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
+import { Message, MessageEmbed } from "discord.js";
 import { trim } from "../../nsb/Util.js";
 import { getUserDB } from "../../struct/db.js";
 module.exports = class TodoCommand extends Command {
@@ -13,7 +13,13 @@ module.exports = class TodoCommand extends Command {
 			},
 		});
 	}
-	*args() {
+	*args(): Generator<{
+		type: string[][];
+	}, (Flag & {
+		command: string;
+		ignore: boolean;
+		rest: string;
+	}) | undefined, string> {
 		const method = yield {
 			type: [
 				["add"],
