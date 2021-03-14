@@ -13,12 +13,12 @@ export default class CheckPermissionsCommand extends Command {
 			args: [
 				{
 					id: "input",
-					type: Argument.union("roles", "member"),
+					type: Argument.union("role", "member"),
 					default: (message: Message) => message.member,
 				},
 				{
 					id: "channel",
-					type: "channel",
+					type: "textChannel",
 					default: (message: Message) => message.channel,
 				},
 			],
@@ -31,23 +31,44 @@ export default class CheckPermissionsCommand extends Command {
 			permissionsIn = input.permissionsIn(message.channel),
 			inputName = input instanceof Role ? input.name : input.user.tag;
 
-		const pages = [
-			new MessageEmbed()
+		const pages = [];
+
+		if (permissionsIn.bitfield !== permissions.bitfield) {
+			pages.push(new MessageEmbed()
 				.withOkColor(message)
-				.setTitle(`Permissions for ${inputName} in ${channel.name}`)
+				.setTitle(`Permissions for ${inputName} in #${channel.name}`)
 				.setDescription(await codeblock(permissionsIn
 					.toArray()
 					.sort()
 					.join("\n"))),
+			);
 
-			new MessageEmbed()
+			if (message.channel.id !== channel.id) {
+				return message.channel.send(pages[0]);
+			}
+		}
+
+		else if (message.channel.id !== channel.id) {
+			pages.push(new MessageEmbed()
+				.withOkColor(message)
+				.setTitle(`Permissions for ${inputName} in #${channel.name}`)
+				.setDescription(await codeblock(permissionsIn
+					.toArray()
+					.sort()
+					.join("\n"))),
+			);
+		}
+
+		else {
+			pages.push(new MessageEmbed()
 				.withOkColor(message)
 				.setTitle(`General permissions for ${inputName}`)
 				.setDescription(await codeblock(permissions
 					.toArray()
 					.sort()
 					.join("\n"))),
-		];
+			);
+		}
 
 		return editMessageWithPaginatedEmbeds(message, pages, {});
 	}

@@ -1,8 +1,12 @@
-import { MessageEmbed, Message, User } from "discord.js";
-import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
 import { Command } from "@cataclym/discord-akairo";
-import { getUserDB } from "../../struct/db";
+import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
+import { Message, MessageEmbed, User } from "discord.js";
 import { IUser } from "../../interfaces/db";
+import { getUserDB } from "../../struct/db";
+
+async function add(Embed: MessageEmbed, array: MessageEmbed[]) {
+	array.push(Embed);
+}
 
 export default class NamesCommand extends Command {
 	constructor() {
@@ -37,13 +41,8 @@ export default class NamesCommand extends Command {
 
 	public async exec(message: Message, { method, unionUser }: { method: boolean, unionUser: User }): Promise<IUser | Message | void> {
 
-		if (!(message.content.trim().split(/ +/).length > 1) && !unionUser) {
-			return;
-		}
-
-		const db = await getUserDB(message.author.id);
-
 		if (method) {
+			const db = await getUserDB(message.author.id);
 			db.userNicknames = [];
 			message.channel.send(new MessageEmbed()
 				.setDescription(`Deleted all of <@${message.author.id}>'s nicknames.\nWell done, you made daddy forget.`)
@@ -53,19 +52,24 @@ export default class NamesCommand extends Command {
 			return db.save();
 		}
 
-		if (unionUser) {
-			const nicknameString = db.userNicknames.join(", "),
-				pages = [];
-
-			for (let i = 2048, p = 0; p < nicknameString.length; i += 2048, p += 2048) {
-				pages.push(new MessageEmbed()
-					.setTitle(`${unionUser.username}'s past names`)
-					.setThumbnail(unionUser.displayAvatarURL({ dynamic: true }))
-					.setDescription(nicknameString.slice(p, i))
-					.withOkColor(message),
-				);
-			}
-			return editMessageWithPaginatedEmbeds(message, pages, {});
+		if (!unionUser) {
+			unionUser = message.author;
 		}
+
+		const db = await getUserDB(unionUser.id),
+			nicknameString = (db.userNicknames.length ? db.userNicknames : ["Empty"]).join(", "),
+			pages: MessageEmbed[] = [];
+
+		for (let i = 2048, p = 0; p < nicknameString.length; i += 2048, p += 2048) {
+			await add(new MessageEmbed()
+				.setTitle(`${unionUser.username}'s past names`)
+				.setThumbnail(unionUser.displayAvatarURL({ dynamic: true }))
+				.setDescription(nicknameString.slice(p, i))
+				.withOkColor(message),
+			pages);
+		}
+		await Promise.resolve(pages);
+
+		return editMessageWithPaginatedEmbeds(message, pages, {});
 	}
 }

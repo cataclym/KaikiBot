@@ -4,7 +4,8 @@
   "main": "./dist/index.js",
   "scripts": {
     "test": "echo \"Bypass build\" && node ./dist/index.js",
-    "start": "npm run build && node ./dist/index.js",
+    "start": "npm run build && npm run index",
+    "index": "node ./dist/index.js",
     "build": "tsc",
     "public": "rm -r dist/ && npm run start"
   },
