@@ -2,7 +2,7 @@ import { Command } from "@cataclym/discord-akairo";
 import { exec } from "child_process";
 import { Message } from "discord.js";
 import logger from "loglevel";
-import { codeblock } from "../../nsb/Util";
+import { codeblock, trim } from "../../nsb/Util";
 export default class UpdateCommand extends Command {
 	constructor() {
 		super("update", {
@@ -21,7 +21,7 @@ export default class UpdateCommand extends Command {
 					logger.error(error);
 					return message.channel.send(error.message);
 				}
-				return message.channel.send(`Log:\n${await codeblock(std, undefined)}\nUpdated ${message.client.user?.tag} to ${stdVer}`);
+				return message.channel.send(`Log:\n${await codeblock(trim(std, 1000))}\nUpdated ${message.client.user?.tag} to ${stdVer}`);
 			});
 		});
 	}
