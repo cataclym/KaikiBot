@@ -12,7 +12,6 @@ exec("git update-index --assume-unchanged src/config.ts", (err, stdout, stderr) 
 	logger.info("Untracking changes to src/config.ts");
 });
 
-
 extensionHook();
 
 process.on("unhandledRejection", error => logger.error(`unhandledRejection | ${(error as Error)?.stack}`));
@@ -20,5 +19,5 @@ process.on("unhandledRejection", error => logger.error(`unhandledRejection | ${(
 new customClient()
 	.login(config.token)
 	.catch((err: Error) => {
-		logger.error(err);
+		return logger.error(err);
 	});
