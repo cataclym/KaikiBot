@@ -48,3 +48,7 @@ export interface IUser extends Document {
 export interface ICommandStats extends Document {
 	count: {[commandAlias: string]: number},
 }
+
+export interface IBlacklist extends Document {
+	blacklist: {[id: string]: true},
+}
