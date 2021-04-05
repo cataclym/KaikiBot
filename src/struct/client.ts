@@ -51,7 +51,7 @@ export class customClient extends AkairoClient {
 		});
 
 		this.listenerHandler = new ListenerHandler(this, { directory: join(__dirname, "../listeners") });
-		this.inhibitorHandler = new InhibitorHandler(this, { directory: "../inhibitors" });
+		// this.inhibitorHandler = new InhibitorHandler(this, { directory: join(__dirname, "../inhibitors") });
 
 		this.listenerHandler.setEmitters({ commandHandler: this.commandHandler });
 
