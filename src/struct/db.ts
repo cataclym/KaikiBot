@@ -19,8 +19,7 @@ mongoose.connect("mongodb://localhost:27017", {
 		logger.error("Unable to connect to the Mongodb database. Error:" + err, "error");
 	});
 
-const db = mongoose.connection;
-db.on("error", logger.error.bind(console, "connection error:"));
+mongoose.connection.on("error", logger.error.bind(console, "connection error:"));
 
 // Create/find Guilds Database
 export async function getUserDB(userID: string): Promise<IUser> {

@@ -9,11 +9,9 @@ export default class MeowCommand extends Command {
 			description: { description: "Meow.", usage: "" },
 		});
 	}
-	public async exec(message: Message): Promise<Message> {
+	public async exec(message: Message): Promise<Message | void> {
 
-		const { file } = await fetch("https://aws.random.cat/meow")
-			.then(response => response.json());
-
-		return message.channel.send(file);
+		return message.channel.send((await fetch("https://aws.random.cat/meow")
+			.then(response => response.json())).file);
 	}
 }

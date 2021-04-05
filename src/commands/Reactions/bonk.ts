@@ -1,5 +1,5 @@
 import { Command } from "@cataclym/discord-akairo";
-import { Message, GuildMember } from "discord.js";
+import { GuildMember, Message } from "discord.js";
 import sendWaifuPics from "../../nsb/waifuPics";
 
 export default class Bonk extends Command {
