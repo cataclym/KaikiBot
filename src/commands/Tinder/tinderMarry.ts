@@ -1,10 +1,7 @@
-"use strict";
-import db from "quick.db";
-const Tinder = new db.table("Tinder");
 import { Command } from "@cataclym/discord-akairo";
+import { Message, MessageEmbed, MessageReaction, User } from "discord.js";
 import { DMEMarry } from "../../nsb/Embeds.js";
-import { MessageEmbed } from "discord.js";
-import { Message, MessageReaction, User } from "discord.js";
+import { getTinderDB } from "../../struct/db.js";
 
 module.exports = class TinderMarryCommand extends Command {
 	constructor() {
@@ -13,34 +10,47 @@ module.exports = class TinderMarryCommand extends Command {
 				{
 					id: "user",
 					type: "user",
-					otherwise: new MessageEmbed().setDescription("Provide a user you wish you wish to marry.").setColor("#ff0000"),
+					otherwise: (m: Message) => new MessageEmbed()
+						.setDescription("Provide a user you wish you wish to marry.")
+						.withErrorColor(m),
 					// TODO: prompt:
 				},
 			],
 		});
 	}
 	public async exec(message: Message, { user }: { user: User}) {
-		const ArgDates = Tinder.get(`dating.${user.id}`);
-		if (ArgDates.includes(`${message.author.id}`)) {
-			const ArgMarry = Tinder.get(`married.${user.id}`);
-			const AuthorMarry = Tinder.get(`married.${message.author.id}`),
-				MarryMatches = AuthorMarry.filter((f: string) => ArgMarry.includes(f));
-			if (!MarryMatches.includes(`${user.id}`)) {
-				message.channel.send("Do you want to marry " + message.author.username + `, <@${user.id}>?` + "\nReact with a ❤️ to marry!")
-					.then(heart => {
-						heart.react("❤️");
+		const db = await getTinderDB(user.id),
+			ArgDates = db.datingIDs;
+
+		if (ArgDates.includes(message.author.id)) {
+
+			const authorDB = await getTinderDB(message.author.id),
+				MarryMatches = authorDB.marriedIDs.filter((f: string) => db.marriedIDs.includes(f));
+
+			if (!MarryMatches.includes(user.id)) {
+				message.channel.send(`Do you want to marry ${message.author.username}, <@${user.id}>?\nReact with a ❤️ to marry!`)
+					.then(msg => {
+						msg.react("❤️");
+
 						const filter = (reaction: MessageReaction, reactionUser: User) => {
 							return reaction.emoji.name === "❤️" && reactionUser.id === user.id;
 						};
-						heart.awaitReactions(filter, { max: 1, time: 50000, errors: ["time"] })
+
+						msg.awaitReactions(filter, { max: 1, time: 50000, errors: ["time"] })
 							.then(async () => {
-								Tinder.push(`married.${message.author.id}`, user.id);
-								Tinder.push(`married.${user.id}`, message.author.id);
+								authorDB.marriedIDs.push(user.id);
+								db.marriedIDs.push(message.author.id);
+
+								authorDB.markModified("marriedIDs");
+								db.markModified("marriedIDs");
+
+								authorDB.save();
+								db.save();
 								return message.channel.send(await DMEMarry());
 							})
-							.catch(() => {
-								heart.reactions.removeAll().catch(error => console.error("Failed to clear reactions: ", error));
-								return heart.edit("Timed out");
+							.catch(async () => {
+								msg.reactions.removeAll().catch(error => console.error("Failed to clear reactions: ", error));
+								return msg.edit("Timed out");
 							});
 					});
 			}

@@ -1,19 +1,23 @@
-import { customClient } from "./struct/client";
-import { config } from "./config";
-import { logger } from "./nsb/Logger";
 import { exec } from "child_process";
+import logger from "loglevel";
+import { config } from "./config";
+import { extensionHook } from "./Extensions/Discord";
+import { customClient } from "./struct/client";
 
+logger.setLevel("INFO");
 // Shmart
 exec("git update-index --assume-unchanged src/config.ts", (err, stdout, stderr) => {
-	if (err) logger.high("Untracking changes to config file\n" + err);
-	if (stderr) logger.high("Untracking changes to config file\n" + stderr);
+	if (err) logger.error("Untracking changes to config file\n" + err);
+	if (stderr) logger.error("Untracking changes to config file\n" + stderr);
 	logger.info("Untracking changes to src/config.ts");
 });
 
-const client = new customClient();
+extensionHook();
 
-process.on("unhandledRejection", error => console.error("unhandledRejection | ", error));
+process.on("unhandledRejection", error => logger.error(`unhandledRejection | ${(error as Error)?.stack}`));
 
-client.login(config.token).catch((err: Error) => {
-	logger.high(err);
-});
+new customClient()
+	.login(config.token)
+	.catch((err: Error) => {
+		return logger.error(err);
+	});

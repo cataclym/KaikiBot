@@ -1,65 +1,105 @@
-"use strict";
-import { Command, Flag, Argument } from "@cataclym/discord-akairo";
-import { Message, MessageEmbed } from "discord.js";
-import db from "quick.db";
-import { noArgGeneric } from "../../nsb/Embeds";
+import { Argument, Command, Flag, PrefixSupplier } from "@cataclym/discord-akairo";
+import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
+import { Guild, Message, MessageEmbed } from "discord.js";
 import { config } from "../../config";
-const guildConfig = new db.table("guildConfig");
+import { getGuildDB } from "../../struct/db";
 
 export default class ConfigCommand extends Command {
 	constructor() {
 		super("config", {
 			aliases: ["config", "configure"],
+			channel: "guild",
 			description: {
-				description: "Configure guild specific settings",
-				usage: ["dadbot enable", "anniversary enable", "prefix !"],
+				description: "Configure or display guild specific settings. Will always respond to default prefix.",
+				usage: ["", "dadbot enable", "anniversary enable", "prefix !", "okcolor <hex>", "errorcolor <hex>", "welcome/goodbye [channel] [-e] [-c yellow] [-i http://link.png] [message]"],
+			},
+			prefix: (msg: Message) => {
+				const p = (this.handler.prefix as PrefixSupplier)(msg);
+				return [p as string, "-"];
 			},
 		});
 	}
-	*args(): unknown {
+	*args(): Generator<{
+		type: string[][];
+	}, (Flag & {
+		command: string;
+		ignore: boolean;
+		rest: string;
+	}) | undefined, unknown> {
 		const method = yield {
 			type: [
 				["config-dadbot", "dadbot", "dad"],
 				["config-anniversary", "anniversary", "roles", "anniversaryroles"],
 				["config-prefix", "prefix"],
+				["config-okcolor", "okcolor"],
+				["config-errorcolor", "errorcolor"],
+				["config-welcome", "welcome", "greet"],
+				["config-goodbye", "goodbye", "bye"],
 			],
 		};
 		if (!Argument.isFailure(method)) {
-			return Flag.continue(method);
+			return Flag.continue(method as string);
 		}
 	}
 
-	public async exec(message: Message): Promise<Message | void> {
+	public async exec(message: Message): Promise<Message> {
 
-		if (message.content.split(" ").length > 1) {
-			return message.channel.send(noArgGeneric(message));
+		const db = await getGuildDB((message.guild as Guild).id),
+			{ anniversary, dadBot, prefix, errorColor, okColor, welcome, goodbye } = db.settings,
+			welcomeEmbed = new MessageEmbed()
+				.setColor(welcome.color)
+				.setAuthor("Welcome embed preview")
+				.setDescription(welcome.message),
+			goodbyeEmbed = new MessageEmbed()
+				.setColor(goodbye.color)
+				.setAuthor("Goodbye embed preview")
+				.setDescription(goodbye.message);
+
+		if (welcome.image) {
+			welcomeEmbed.setImage(welcome.image);
 		}
 
-		const enabledDadBotGuilds = guildConfig.get("dadbot");
-		const enabledAnniversaryGuilds = guildConfig.get("anniversary");
-		const guildPrefix = guildConfig.get(`${message.guild?.id}.prefix`) as string | undefined;
-
-		const embed = new MessageEmbed().setColor(await message.getMemberColorAsync());
-
-		let dadbotEnabled = false;
-		let anniversaryRolesEnabled = false;
-		let prefix = `\`${config.prefix}\` (default)`;
-
-		if (enabledDadBotGuilds.includes(message.guild?.id)) {
-			dadbotEnabled = true;
-		}
-		if (enabledAnniversaryGuilds.includes(message.guild?.id)) {
-			anniversaryRolesEnabled = true;
-		}
-		if (guildPrefix) {
-			prefix = `\`${guildPrefix}\``;
+		if (goodbye.image) {
+			goodbyeEmbed.setImage(goodbye.image);
 		}
 
-		embed.addField("DadBot", dadbotEnabled, true);
-		embed.addField("Anniversary-Roles", anniversaryRolesEnabled, true);
-		embed.addField("Guild prefix", prefix, true);
-		message.util?.send(embed);
-	// Execute message to show what is enabled/disabled
-	// TODO: rename some things
+		const pages = [
+			new MessageEmbed()
+				.withOkColor(message)
+				.addField("DadBot",
+					dadBot
+						? "Enabled"
+						: "Disabled", true)
+				.addField("Anniversary-Roles",
+					anniversary
+						? "Enabled"
+						: "Disabled", true)
+				.addField("Guild prefix",
+					prefix === config.prefix
+						? `\`${config.prefix}\` (Default)`
+						: prefix, true)
+				.addField("Embed error color",
+					errorColor.toString().startsWith("#")
+						? errorColor
+						: "#" + errorColor.toString(16), true)
+				.addField("Embed ok color",
+					okColor.toString().startsWith("#")
+						? okColor
+						: "#" + okColor.toString(16), true)
+				.addField("\u200B", "\u200B", true)
+				.addField("Welcome message",
+					welcome.enabled
+						? "Enabled"
+						: "Disabled", true)
+				.addField("Goodbye message",
+					goodbye.enabled
+						? "Enabled"
+						: "Disabled", true)
+				.addField("\u200B", "\u200B", true),
+			welcomeEmbed,
+			goodbyeEmbed,
+		];
+
+		return editMessageWithPaginatedEmbeds(message, pages, {});
 	}
 }

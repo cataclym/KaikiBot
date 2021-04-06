@@ -118,13 +118,12 @@ typings/
 keyfile.json
 variables.js
 config.json
-json.sqlite
 
+# Jetprains
 *.xml
-.idea/nadekosengokubot.iml
-json.sqlite
-.idea/nadekosengokubotAkairo.iml
+/.idea
+*.idea
+.idea/*
 
-dist/smoljson.sqlite
-
+# Output dir
 dist/

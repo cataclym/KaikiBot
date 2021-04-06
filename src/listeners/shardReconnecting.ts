@@ -1,4 +1,6 @@
 import { Listener } from "@cataclym/discord-akairo";
+import logger from "loglevel";
+
 
 export default class ShardReconnectingListener extends Listener {
 	constructor() {
@@ -11,7 +13,7 @@ export default class ShardReconnectingListener extends Listener {
 
 	public async exec(id: number): Promise<void> {
 
-		console.warn(`🟧 shardReconnecting | Shard: ${id}`);
+		logger.info(`shardReconnecting | Shard: ${id}`);
 
 	}
 }

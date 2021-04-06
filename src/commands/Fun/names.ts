@@ -1,23 +1,34 @@
-import { MessageEmbed, Message, User } from "discord.js";
-import { UserNickTable } from "../../nsb/functions";
-import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
 import { Command } from "@cataclym/discord-akairo";
-const arr = ["remove", "rem", "delete", "del"];
+import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
+import { Message, MessageEmbed, User } from "discord.js";
+import { IUser } from "../../interfaces/db";
+import { getUserDB } from "../../struct/db";
 
-module.exports = class NamesCommand extends Command {
+async function add(Embed: MessageEmbed, array: MessageEmbed[]) {
+	array.push(Embed);
+}
+
+export default class NamesCommand extends Command {
 	constructor() {
 		super("names", {
 			aliases: ["name", "names"],
 			description: { description: "Returns all your daddy nicknames", usage: "@dreb" },
 		});
 	}
-	*args() {
+	*args(): Generator<{
+		type: (message: Message, phrase: string) => Promise<boolean>;
+		index?: undefined;
+	} | {
+		index: number;
+		type: string;
+	}, {
+		unionUser: unknown;
+		method: unknown;
+	}, unknown> {
 		const method = yield {
 			// TODO: figure out type of phrase
 			type: async (message: Message, phrase: string) => {
-				if (arr.includes(phrase)) {
-					return true;
-				}
+				return (["remove", "rem", "delete", "del"].includes(phrase));
 			},
 		};
 		const unionUser = yield {
@@ -28,44 +39,37 @@ module.exports = class NamesCommand extends Command {
 		return { unionUser, method };
 	}
 
-	public async exec(message: Message, { method, unionUser }: { method: boolean, unionUser: User}) {
-		const color = await message.getMemberColorAsync();
-		const user = !(message.content.trim().split(/ +/).length > 1) && !unionUser ? message.author : unionUser;
+	public async exec(message: Message, { method, unionUser }: { method: boolean, unionUser: User }): Promise<IUser | Message | void> {
 
 		if (method) {
-			try {
-				if (UserNickTable.delete(`usernicknames.${message.member?.id}`)) {
-
-					UserNickTable.push(`usernicknames.${message.member?.id}`, message.author.username);
-					return message.util?.send(`Deleted all of ${message.member}'s nicknames.\nWell done, you made daddy forget.`);
-				}
-			}
-			catch (error) {
-				return console.log(error);
-			}
+			const db = await getUserDB(message.author.id);
+			db.userNicknames = [];
+			message.channel.send(new MessageEmbed()
+				.setDescription(`Deleted all of <@${message.author.id}>'s nicknames.\nWell done, you made daddy forget.`)
+				.withOkColor(message),
+			);
+			db.markModified("userNicknames");
+			return db.save();
 		}
 
-		if (user) {
-			if (!UserNickTable.has(`usernicknames.${user.id}`)) {
-				UserNickTable.push(`usernicknames.${user.id}`, user.username);
-			}
-
-			let AuthorDBName = UserNickTable.fetch(`usernicknames.${user.id}`);
-			AuthorDBName = [...new Set(AuthorDBName)];
-
-			// Makes it look cleaner
-			let StringsAuthorDBName = AuthorDBName.join("¤").toString();
-			StringsAuthorDBName = StringsAuthorDBName.replace(/¤/g, ", ");
-
-			const pages = [];
-			for (let i = 2048, p = 0; p < StringsAuthorDBName.length; i = i + 2048, p = p + 2048) {
-				pages.push(new MessageEmbed()
-					.setTitle(`${user.username}'s past names`)
-					.setColor(color)
-					.setThumbnail(user.displayAvatarURL({ dynamic: true }))
-					.setDescription(StringsAuthorDBName.slice(p, i)));
-			}
-			return editMessageWithPaginatedEmbeds(message, pages, {});
+		if (!unionUser) {
+			unionUser = message.author;
 		}
+
+		const db = await getUserDB(unionUser.id),
+			nicknameString = (db.userNicknames.length ? db.userNicknames : ["Empty"]).join(", "),
+			pages: MessageEmbed[] = [];
+
+		for (let i = 2048, p = 0; p < nicknameString.length; i += 2048, p += 2048) {
+			await add(new MessageEmbed()
+				.setTitle(`${unionUser.username}'s past names`)
+				.setThumbnail(unionUser.displayAvatarURL({ dynamic: true }))
+				.setDescription(nicknameString.slice(p, i))
+				.withOkColor(message),
+			pages);
+		}
+		await Promise.resolve(pages);
+
+		return editMessageWithPaginatedEmbeds(message, pages, {});
 	}
-};
+}

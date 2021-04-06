@@ -1,7 +1,6 @@
 import { Command } from "@cataclym/discord-akairo";
 import { Guild } from "discord.js";
 import { MessageEmbed, Message, GuildMember } from "discord.js";
-import { errorColor } from "../../nsb/Util";
 
 export default class KickCommand extends Command {
 	constructor() {
@@ -15,10 +14,10 @@ export default class KickCommand extends Command {
 				{
 					id: "member",
 					type: "member",
-					otherwise: new MessageEmbed({
-						color: errorColor,
+					otherwise: (m: Message) => new MessageEmbed({
 						description: "Can't find this user.",
-					}),
+					})
+						.withErrorColor(m),
 				},
 				{
 					id: "reason",
@@ -38,23 +37,23 @@ export default class KickCommand extends Command {
 			(message.member as GuildMember).roles.highest.position <= member.roles.highest.position) {
 
 			return message.channel.send(new MessageEmbed({
-				color: errorColor,
 				description: "You don't have permissions to kick this member.",
-			}));
+			})
+				.withErrorColor(message));
 		}
 		else if (guildClientMember.roles.highest.position <= member.roles.highest.position) {
 			return message.channel.send(new MessageEmbed({
-				color: errorColor,
 				description: "Sorry, I don't have permissions to kick this member.",
-			}));
+			})
+				.withErrorColor(message));
 		}
 
 		await member.kick(reason).then(m => {
 			try {
 				m.user.send(new MessageEmbed({
-					color: errorColor,
 					description: `You have been kicked from ${message.guild?.name}.\nReason: ${reason}`,
-				}));
+				})
+					.withErrorColor(message));
 			}
 			catch {
 				// ignored
@@ -63,12 +62,11 @@ export default class KickCommand extends Command {
 			.catch((err) => console.log(err));
 
 		return message.channel.send(new MessageEmbed({
-			title: "Kicked user",
-			color: await message.getMemberColorAsync(),
-			fields: [
+			title: "Kicked user",			fields: [
 				{ name: "Username", value: member.user.username, inline: true },
 				{ name: "ID", value: member.user.id, inline: true },
 			],
-		}));
+		})
+			.withOkColor(message));
 	}
 }

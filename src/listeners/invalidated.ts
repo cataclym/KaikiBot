@@ -1,4 +1,6 @@
 import { Listener } from "@cataclym/discord-akairo";
+import logger from "loglevel";
+
 
 export default class InvalidatedListener extends Listener {
 	constructor() {
@@ -11,7 +13,7 @@ export default class InvalidatedListener extends Listener {
 
 	public async exec(): Promise<never> {
 
-		console.error("🟥 invalidated | Session has become invalidated. Shutting down client.");
+		logger.error("invalidated | Session has become invalidated. Shutting down client.");
 
 		return process.exit(1);
 

@@ -1,8 +1,8 @@
-"use strict";
-import db from "quick.db";
-const Tinder = new db.table("Tinder");
 import { Command } from "@cataclym/discord-akairo";
-import { Message, MessageEmbed, MessageReaction } from "discord.js";
+import { Message, MessageEmbed } from "discord.js";
+import { ITinder } from "../../interfaces/db";
+import { errorMessage } from "../../nsb/Embeds";
+import { getTinderDB } from "../../struct/db";
 
 export default class TinderRemoveDates extends Command {
 	constructor() {
@@ -11,35 +11,44 @@ export default class TinderRemoveDates extends Command {
 				{
 					id: "integer",
 					type: "integer",
-					otherwise: new MessageEmbed().setDescription("Provide a number. Check your tinder lists for the specific numbers").setColor("#ff0000"),
+					otherwise: (m: Message) => errorMessage(m, "Provide a number. Check your tinder lists for the specific numbers"),
 				},
 			],
 		});
 	}
-	public async exec(message: Message, { integer }: { integer: number }): Promise<Message | MessageReaction | null> {
-		const authorList = [...new Set(Tinder.fetch(`dating.${message.author.id}`))];
-		if (!authorList[1]) {
-			return message.channel.send("Nothing to delete.");
-		}
-		const removedItem = authorList.splice(integer, 1);
-		if (!(removedItem.toString() === message.author.id) && removedItem) {
-			Tinder.set(`dating.${message.author.id}`, authorList);
-			const RemovedMember = message.client.users.cache.get(removedItem.toString());
-			const userList = [...new Set(Tinder.fetch(`dating.${removedItem}`))].map(a => a);
-			if (!userList || !Array.isArray(userList)) {
-				return null;
-			}
-			const userNumber = userList.indexOf(message.author.id);
-			userList.splice(userNumber, 1);
-			Tinder.set(`dating.${removedItem}`, userList);
+	public async exec(message: Message, { integer }: { integer: number }): Promise<ITinder> {
+		const db = await getTinderDB(message.author.id);
 
-			return message.channel.send(`You stopped dating \`${RemovedMember ? RemovedMember?.username : "Uncached user"}\`.`).then(SentMsg => {
-				SentMsg.react("✅");
-				return SentMsg.react("💔");
-			});
+		if (db.datingIDs.length) {
+
+			if (db.datingIDs.length >= integer) {
+				const userID = db.datingIDs.splice(integer, 1),
+					RemovedMember = message.client.users.cache.get(userID[0]),
+					rDB = await getTinderDB(RemovedMember?.id ?? userID[0]),
+					userNumber = rDB.datingIDs.indexOf(message.author.id);
+
+				if (userNumber !== -1) {
+					rDB.datingIDs.splice(userNumber, 1);
+				}
+
+				message.channel.send(`You stopped dating ${RemovedMember ? RemovedMember?.username : "<@" + userID + ">"}.`).then(SentMsg => {
+					SentMsg.react("✅");
+					SentMsg.react("💔");
+				});
+				rDB.markModified("datingIDs");
+				rDB.save();
+			}
+			else {
+				message.channel.send(new MessageEmbed()
+					.setDescription("Please provide a valid number.")
+					.withErrorColor(message),
+				);
+			}
 		}
 		else {
-			return message.channel.send("Something went wrong.");
+			message.channel.send("Nothing to delete.");
 		}
+		db.markModified("datingIDs");
+		return db.save();
 	}
 }

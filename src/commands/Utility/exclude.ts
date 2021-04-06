@@ -1,14 +1,7 @@
 import { Command } from "@cataclym/discord-akairo";
+import { Message, MessageEmbed } from "discord.js";
 import { config } from "../../config.js";
-import { MessageEmbed, Message } from "discord.js";
-import { errorColor } from "../../nsb/Util";
 
-const errorEmbed = new MessageEmbed({
-	title: "Error!",
-	color: errorColor,
-	description: `A role with name \`${config.names}\` was not found in guild. Creating... `,
-	footer: { text: "Beep boop..." },
-});
 const addedRoleEmbed = new MessageEmbed({
 	title: "Success!",
 	description: `Added role \`${config.names}\`.\nType the command again to remove.`,
@@ -28,9 +21,7 @@ export default class ExcludeCommand extends Command {
 	}
 
 	public async exec(message: Message): Promise<Message | void> {
-		const color = await message.getMemberColorAsync();
-		addedRoleEmbed.setColor(color);
-		removedRoleEmbed.setColor(color);
+
 		let excludedRole = message.guild?.roles.cache.find((r) => r.name === config.names);
 
 		if (!message.guild?.roles.cache.some(r => r.name === excludedRole?.name)) {
@@ -38,15 +29,24 @@ export default class ExcludeCommand extends Command {
 				data: { name: config.names },
 				reason: "Role didn't exist yet.",
 			});
-			await (message.channel.send(errorEmbed));
+			await (message.channel.send(new MessageEmbed({
+				title: "Error!",
+				description: `A role with name \`${config.names}\` was not found in guild. Creating... `,
+				footer: { text: "Beep boop..." },
+			})
+				.withErrorColor(message)));
 		}
+
 		if (!message.member?.roles.cache.find((r) => r === excludedRole) && excludedRole) {
 			await message.member?.roles.add(excludedRole);
-			return message.channel.send(addedRoleEmbed);
+			return message.channel.send(addedRoleEmbed
+				.withOkColor(message));
 		}
+
 		if (message.member?.roles.cache.find((r) => r === excludedRole) && excludedRole) {
 			await message.member?.roles.remove(excludedRole);
-			return message.channel.send(removedRoleEmbed);
+			return message.channel.send(removedRoleEmbed
+				.withOkColor(message));
 		}
 	}
 }

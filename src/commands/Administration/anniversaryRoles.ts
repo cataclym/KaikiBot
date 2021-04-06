@@ -1,9 +1,12 @@
 import { Guild, Message, MessageEmbed } from "discord.js";
 import { Command } from "@cataclym/discord-akairo";
-import db from "quick.db";
-import { GuildOnAddBirthdays } from "../../nsb/AnniversaryRoles.js";
+import { checkBirthdayOnAdd } from "../../nsb/AnniversaryRoles.js";
 import { noArgGeneric } from "../../nsb/Embeds";
-const guildConfig = new db.table("guildConfig");
+import { getGuildDB } from "../../struct/db.js";
+import { IGuild } from "../../interfaces/db.js";
+
+type values = "enable" | "true" | "disable" | "false";
+const values: values[] = ["enable", "true", "disable", "false"];
 
 export default class AnniversaryRolesConfigCommand extends Command {
 	constructor() {
@@ -13,43 +16,44 @@ export default class AnniversaryRolesConfigCommand extends Command {
 			args: [
 				{
 					id: "value",
-					index: 0,
-					type: "string",
+					type: values,
 					otherwise: (message: Message) => noArgGeneric(message),
 				},
 			],
 		});
 	}
-	public async exec(message: Message, { value }: { value: string}): Promise<Message | void> {
-		const enabledGuilds = guildConfig.get("anniversary"),
-			embed = new MessageEmbed().setColor(await message.getMemberColorAsync());
+	public async exec(message: Message, { value }: { value: values }): Promise<IGuild> {
+		const guildID = (message.guild as Guild).id,
+			db = await getGuildDB(guildID),
+			boolean = db.settings.anniversary,
+			embed = new MessageEmbed()
+				.withOkColor(message);
 
-		if (value) {
-			switch (value) {
-				case ("enable"):
-				case ("true"): {
-					if (!enabledGuilds.includes(message.guild?.id)) {
-						enabledGuilds.push(message.guild?.id);
-						guildConfig.set("anniversary", enabledGuilds);
-						GuildOnAddBirthdays(<Guild> message.guild);
-						return message.util?.send(embed.setDescription(`Anniversary-roles functionality has been enabled in ${message.guild?.name}!`));
-					}
-					else {
-						return message.util?.send(embed.setDescription("You have already enabled Anniversary-roles."));
-					}
+		switch (value) {
+			case ("enable"):
+			case ("true"): {
+				if (!boolean) {
+					db.settings.anniversary = true;
+					checkBirthdayOnAdd(message.guild as Guild);
+					message.channel.send(embed.setDescription(`Anniversary-roles functionality has been enabled in ${message.guild?.name}!`));
 				}
-				case ("disable"):
-				case ("false"): {
-					if (enabledGuilds.includes(message.guild?.id)) {
-						await enabledGuilds.splice(enabledGuilds.indexOf(message.guild?.id), 1);
-						guildConfig.set("anniversary", enabledGuilds);
-						return message.util?.send(embed.setDescription(`Anniversary-roles functionality has been disabled in ${message.guild?.name}!`));
-					}
-					else {
-						return message.util?.send(embed.setDescription("You have already disabled Anniversary-roles."));
-					}
+				else {
+					message.channel.send(embed.setDescription("You have already enabled Anniversary-roles."));
+				}
+				break;
+			}
+			case ("disable"):
+			case ("false"): {
+				if (boolean) {
+					db.settings.anniversary = false;
+					message.channel.send(embed.setDescription(`Anniversary-roles functionality has been disabled in ${message.guild?.name}!`));
+				}
+				else {
+					message.channel.send(embed.setDescription("You have already disabled Anniversary-roles."));
 				}
 			}
 		}
+		db.markModified("settings.anniversary");
+		return db.save();
 	}
 }

@@ -1,11 +1,11 @@
 import { Command, PrefixSupplier } from "@cataclym/discord-akairo";
+import { Guild } from "discord.js";
 import { GuildMember, MessageEmbed, Message, Role } from "discord.js";
-import { errorColor } from "../../nsb/Util";
-import DB from "quick.db";
-const userRoles = new DB.table("userRoles");
+import { IGuild } from "../../interfaces/db";
+import { getGuildDB } from "../../struct/db";
 
-//
 // Rewrite of Miyano's setuserrole command
+// https://github.com/PlatinumFT/Miyano-v2
 // Thanks Plat.
 
 export default class SetUserRoleCommand extends Command {
@@ -34,46 +34,56 @@ export default class SetUserRoleCommand extends Command {
 			],
 		});
 	}
-	public async exec(message: Message, args: { member: GuildMember, role: Role }): Promise<Message | void> {
+	public async exec(message: Message, args: { member: GuildMember, role: Role }): Promise<Message | IGuild> {
 
-		const { role, member } = args;
+		const { role, member } = args,
+			guildID = (message.guild as Guild).id;
 
-		const embedFail = async (text: string) => {
-			return new MessageEmbed()
-				.setColor(errorColor)
-				.setDescription(text);
-		};
+		const embedFail = async (text: string) => new MessageEmbed()
+				.setDescription(text)
+				.withErrorColor(message),
 
-		const embedSuccess = async (text: string) => {
-			return new MessageEmbed()
-				.setColor(await message.getMemberColorAsync())
-				.setDescription(text);
-		};
+			embedSuccess = async (text: string) => new MessageEmbed()
+				.setDescription(text)
+				.withOkColor(message);
 
-		const botRole = message.guild?.me?.roles.highest;
-		const isPosition = botRole?.comparePositionTo(role);
+		const botRole = message.guild?.me?.roles.highest,
+			isPosition = botRole?.comparePositionTo(role);
 
-		if (!isPosition || (isPosition <= 0)) return message.channel.send(await embedFail("This role is higher than me, I cannot add this role!"));
+		if (!isPosition || (isPosition <= 0)) {
+			return message.channel.send(await embedFail("This role is higher than me, I cannot add this role!"));
+		}
 
-		const res = userRoles.get(`${message.guild?.id}.${member.id}`);
+		else if (message.author.id !== message.guild?.ownerID &&
+			(message.member as GuildMember).roles.highest.position <= member.roles.highest.position) {
 
-		if (res) {
-			const userRole = message.guild?.roles.cache.get(res[0]);
+			return message.channel.send(await embedFail("This role is higher than your highest, I cannot add this role!"));
+		}
 
-			if (userRoles.delete(`${message.guild?.id}.${member.id}`)) {
-				await member.roles.remove(userRole ?? res);
-				return message.channel.send(await embedSuccess(`Removed role ${(userRole)?.name ?? res} from ${member.user.username}`));
+		const db = await getGuildDB(guildID),
+			roleID = db.userRoles[member.id];
+
+		if (roleID) {
+
+			const userRole = message.guild?.roles.cache.get(roleID);
+
+			try {
+				delete db.userRoles[member.id];
+				await member.roles.remove(userRole ?? roleID);
+				message.channel.send(await embedSuccess(`Removed role ${(userRole)?.name ?? roleID} from ${member.user.username}`));
 			}
 
-			else {
-				throw new Error("Failed to delete user role...?");
+			catch (err) {
+				throw new Error("Failed to delete user role." + err);
 			}
 		}
 
 		else {
-			userRoles.push(`${message.guild?.id}.${member.id}`, `${role.id}`);
+			db.userRoles[member.id] = role.id;
 			await member.roles.add(role);
-			return message.channel.send(await embedSuccess(`Adding role ${role.name} to ${member.user.username}`));
+			message.channel.send(await embedSuccess(`Adding role ${role.name} to ${member.user.username}`));
 		}
+		db.markModified("userRoles");
+		return db.save();
 	}
 }

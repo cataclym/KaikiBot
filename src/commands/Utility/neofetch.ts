@@ -1,11 +1,12 @@
 /* eslint-disable no-useless-escape */
 import { Command } from "@cataclym/discord-akairo";
+import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
 import { exec } from "child_process";
 import { Message, MessageEmbed } from "discord.js";
-import { codeblock } from "../../nsb/Util";
-import { logger } from "../../nsb/Logger";
+import logger from "loglevel";
 import { distros } from "../../nsb/distros.json";
-import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
+import { codeblock } from "../../nsb/Util";
+
 
 export default class NeofetchCommand extends Command {
 	constructor() {
@@ -33,9 +34,9 @@ export default class NeofetchCommand extends Command {
 			for (let i = 150, p = 0; p < distros.length; i = i + 150, p = p + 150) {
 				pages.push(new MessageEmbed()
 					.setTitle("Neofetch ascii art list")
-					.setColor(await message.getMemberColorAsync())
 					.setThumbnail(message.author.displayAvatarURL({ dynamic: true }))
-					.setDescription(await codeblock(distros.slice(p, i).join(", "), "json")));
+					.setDescription(await codeblock(distros.slice(p, i).join(", "), "json"))
+					.withOkColor(message));
 			}
 			return editMessageWithPaginatedEmbeds(message, pages, {});
 		}
@@ -47,10 +48,10 @@ export default class NeofetchCommand extends Command {
 
 			exec(cmd, async (error, stdout, stderr) => {
 				if (error) {
-					return logger.high(error);
+					return logger.error(error);
 				}
 				if (stderr) {
-					return logger.high(stderr);
+					return logger.error(stderr);
 				}
 
 				return message.channel.send(await codeblock(stdout.replace(/```/g, "\u0300`\u0300`\u0300`\u0300")));

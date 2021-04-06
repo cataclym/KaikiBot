@@ -1,15 +1,18 @@
 import { Listener } from "@cataclym/discord-akairo";
-import { birthdayService } from "../nsb/AnniversaryRoles";
-import { tinderStartupService } from "../nsb/Tinder";
-import { DailyResetTimer, emoteDataBaseService, startUp } from "../nsb/functions";
+import { MessageEmbed } from "discord.js";
+import logger from "loglevel";
 import { config } from "../config";
-import { logger } from "../nsb/Logger";
+import { birthdayService } from "../nsb/AnniversaryRoles";
+import { dailyResetTimer, emoteDataBaseService } from "../nsb/functions";
+import { guildsDB } from "../struct/models";
+
 
 export default class ReadyListener extends Listener {
 	constructor() {
 		super("ready", {
 			event: "ready",
 			emitter: "client",
+			type: "once",
 		});
 	}
 
@@ -19,38 +22,40 @@ export default class ReadyListener extends Listener {
 			throw new Error("Missing prefix! Set a prefix in src/config.ts");
 		}
 
-		await this.client.user?.setActivity(config.activityName, { type: config.activityStatus }).then(r => {
-			logger.info(`Client ready | Status: ${r.status}`);
-		});
-
-		await startUp().then(() => {
-			logger.low("emoteDataBaseService | Startup finished.");
-		});
-
-		await DailyResetTimer().then(() => {
-			logger.low("Reset timer initiated.");
-		});
-
-		logger.info("emoteDataBaseService | Checking for new emotes-");
-		emoteDataBaseService(this.client).then((i) => {
-			logger.low("emoteDataBaseService | ...done! " + (i ?? 0) + " new emotes added!");
-		});
-
-		logger.info("birthdayService | Checking dates-");
-		birthdayService(this.client).then(() => {
-			logger.low();
-		});
-
-		// This will spam Console on first boot.
-		if (this.client.user) {
-			await tinderStartupService(this.client.user).then((i) => {
-				logger.low(`tinderStartupService | Tinder has completed startup procedure. | ${i} users registered in Tinder DB`);
+		this.client.user?.setActivity(config.activityName, { type: config.activityStatus })
+			.then(r => {
+				logger.info(`Client ready | Status: ${r.status}`);
 			});
-		}
 
-		// Let myself know when my bot goes online.
+		dailyResetTimer()
+			.then(() => {
+				logger.info("dailyResetTimer | Reset timer initiated.");
+			});
+
+		setTimeout(async () => {
+			await emoteDataBaseService(this.client)
+				.then(i => {
+					if (i > 0) {
+						logger.info("dataBaseService | " + i + " new emote(s) added!");
+					}
+				});
+		}, 2000);
+
+		logger.info("birthdayService | Service initiated");
+		await birthdayService(this.client);
+
+		const guilds = await guildsDB.countDocuments();
+		logger.info(`dataBaseService | ${guilds} guilds registered in DB.`);
+
+		// Let bot owner know when bot goes online.
 		if (["Tsukihi Araragi", "Kaiki Deishuu"].includes(this.client.user?.username as string)) {
-			(await this.client.users.fetch("140788173885276160")).send("Bot is online.");
+			this.client.users.fetch("140788173885276160")
+				.then(user => user
+					.send(new MessageEmbed()
+						.setDescription("Bot is online.")
+						.withOkColor(),
+					),
+				);
 		}
 	}
 }

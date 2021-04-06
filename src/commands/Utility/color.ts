@@ -8,7 +8,7 @@ import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-
 export default class ColorCommand extends Command {
 	constructor() {
 		super("color", {
-			aliases: ["color"],
+			aliases: ["color", "clr"],
 			description: {
 				description: "Returns a representation of a color string, or shows list of available color names to use.",
 				usage: ["", "list"],

@@ -14,19 +14,13 @@ export default class ChannelNsfwCommand extends Command {
 
 	public async exec(message: Message): Promise<Message> {
 
-		const guidlChnl = message.channel as TextChannel;
+		const channel = message.channel as TextChannel;
 
-		if (guidlChnl.nsfw) {
-			guidlChnl.setNSFW(false);
-		}
-
-		else {
-			guidlChnl.setNSFW(true);
-		}
+		channel.setNSFW(!channel.nsfw, `${message.author.tag} toggled NSFW.`);
 
 		return message.channel.send(new MessageEmbed({
-			color: await message.getMemberColorAsync(),
-			description: `Toggled ${guidlChnl.name}'s NSFW status to ${!guidlChnl.nsfw}.`,
-		}));
+			description: `Toggled ${channel.name}'s NSFW status to ${!channel.nsfw}.`,
+		})
+			.withOkColor(message));
 	}
 }

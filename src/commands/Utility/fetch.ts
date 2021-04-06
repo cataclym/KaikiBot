@@ -18,15 +18,14 @@ export default class FetchUserCommand extends Command {
 							if (u) return u;
 						}
 						catch {
-							//
+							return;
 						}
-						return message.author;
 					}),
 				},
 			],
 		});
 	}
-	public async exec(message: Message, { userObject }: { userObject: User}): Promise<Message | void> {
+	public async exec(message: Message, { userObject }: { userObject: User }): Promise<Message | void> {
 
 		const userinfo = this.handler.modules.get("uinfo");
 
@@ -34,21 +33,17 @@ export default class FetchUserCommand extends Command {
 			return this.handler.runCommand(message, userinfo, await userinfo.parse(message, userObject.id));
 		}
 
-		const userFlags = userObject.flags ? userObject.flags.toArray() : [];
-		const color = await message.getMemberColorAsync();
-
-		const embed = new MessageEmbed()
-			.setColor(color)
-			.setDescription(userObject.username)
-			.setThumbnail(userObject?.displayAvatarURL({ dynamic: true }))
-			.setTitle(userObject.tag)
-			.addFields([
-				{ name: "ID", value: userObject.id, inline: true },
-				{ name: "Account date", value: userObject?.createdAt?.toDateString(), inline: true }],
-			);
+		const userFlags = userObject.flags ? userObject.flags.toArray() : [],
+			embed = new MessageEmbed()
+				.setDescription(userObject.username)
+				.setThumbnail(userObject?.displayAvatarURL({ dynamic: true }))
+				.setTitle(userObject.tag)
+				.addFields([
+					{ name: "ID", value: userObject.id, inline: true },
+					{ name: "Account date", value: userObject?.createdAt?.toDateString(), inline: true }])
+				.withOkColor(message);
 
 		userObject.lastMessage ? embed.addField("Last (seen) message", userObject.lastMessage?.createdAt.toLocaleString(), true) : null;
-		userObject.locale?.length ? embed.addField("Locale", userObject.locale, true) : null;
 
 		userFlags.length ? embed.addField("Flags", userFlags.map((flag) => flags[flag]).join("\n"), true) : null;
 		userObject.bot ? embed.addField("Bot", "✅", true) : null;

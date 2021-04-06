@@ -1,9 +1,8 @@
-import fetch from "node-fetch";
-import Discord from "discord.js";
 import { Command } from "@cataclym/discord-akairo";
-import { Message } from "discord.js";
+import Discord, { Message } from "discord.js";
+import fetch from "node-fetch";
+import { PurpleData, RedditData } from "../../interfaces/IRedditAPI";
 import { trim } from "../../nsb/Util";
-import { ChildrenEntity, Data1 } from "../../struct/redditModel";
 
 export default class YeetCommand extends Command {
 	constructor() {
@@ -17,39 +16,45 @@ export default class YeetCommand extends Command {
 
 	public async exec(message: Message): Promise<Message | void> {
 
-		await loadTitle();
-		async function loadTitle() {
+		await (async function loadTitle() {
 			const promise = async () => fetch("https://www.reddit.com/r/YeetingKids/.json?limit=1000&?sort=top&t=all");
-			promise()
+			await promise()
 				.then((res) => res.json())
-				.then((json) => json.data.children.map((t: ChildrenEntity) => t.data))
+				.then((json: RedditData) => json.data.children.map(t => t.data))
 				.then((data) => postRandomTitle(data));
-		}
+		})();
 
-		async function postRandomTitle(data: Data1[]) {
+		async function postRandomTitle(data: PurpleData[]) {
 
-			const randomRedditPost = data[Math.floor(Math.random() * data.length) + 1];
+			const randomRedditPost = data[Math.floor(Math.random() * data.length) + 1],
+				filters = ["webm", "mp4", "gifv", "youtube", "v.redd", "gfycat", "youtu", "news", "wsbtv"];
 
-			const filters = ["webm", "mp4", "gifv", "youtube", "v.redd", "gfycat", "youtu", "news", "wsbtv"];
-			// Yes.
 			const isVideo = () => {
-				if (filters.some((filter) => randomRedditPost.url.includes(filter))) {
+				if (filters.some((filter) => randomRedditPost.url?.includes(filter))) {
 					return true;
 				}
 				return false;
 			};
 
-			const yeetEmbed = new Discord.MessageEmbed()
-				.setTitle(trim(randomRedditPost.title, 256))
-				.setDescription(trim(randomRedditPost.selftext, 2048))
-				.setColor(await message.getMemberColorAsync())
-				.setAuthor(`Submitted by ${randomRedditPost.author}`)
-				.setImage(randomRedditPost.url)
-				.setFooter(`${randomRedditPost.ups} updoots`);
+			const yeetEmbed = new Discord.MessageEmbed({
+				title: randomRedditPost.title ? trim(randomRedditPost.title, 256) : "\u200B",
+				description: randomRedditPost.selftext ? trim(randomRedditPost.selftext, 2048) : "\u200B",
+				author: {
+					name: `Submitted by ${randomRedditPost.author}`,
+					url: randomRedditPost.url,
+				},
+				footer: {
+					text: `${randomRedditPost.ups} updoots`,
+				},
+			})
+				.withOkColor();
 
-			isVideo() ? await message.util?.send(randomRedditPost.url) : "";
+			if (randomRedditPost.url?.length) {
+				if (isVideo()) await message.channel.send(randomRedditPost.url);
+				else yeetEmbed.setImage(randomRedditPost.url);
+			}
 
-			return message.util?.send("", { split: true, embed: yeetEmbed });
+			return message.channel.send(yeetEmbed);
 		}
 	}
 }

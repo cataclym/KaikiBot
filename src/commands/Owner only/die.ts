@@ -11,10 +11,12 @@ module.exports = class KillBotProcess extends Command {
 		});
 	}
 	public async exec(message: Message) {
+
 		const embed = new MessageEmbed()
 			.setAuthor("Dying", message.client.user?.displayAvatarURL({ dynamic: true }))
 			.addField("Shutting down", "See you later", false)
-			.setColor(await message.getMemberColorAsync());
+			.withOkColor(message);
+
 		await message.channel.send(embed);
 		console.log("Shutting down");
 		process.exit(1);
