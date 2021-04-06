@@ -58,7 +58,7 @@ export class customClient extends AkairoClient {
 		this.commandHandler.useListenerHandler(this.listenerHandler);
 		this.commandHandler.useInhibitorHandler(this.inhibitorHandler);
 
-		this.inhibitorHandler.loadAll();
+		// this.inhibitorHandler.loadAll();
 		this.listenerHandler.loadAll();
 		this.commandHandler.loadAll();
 
