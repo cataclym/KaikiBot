@@ -21,7 +21,7 @@
       "typeRoots": ["types", "node_modules/@types"],
       "lib": ["ES2020", "ES2019", "ES2018", "es2017", "es2016", "es2015", "dom"]
     },
-    "include": ["src/**/*", "src/.eslintrc.js", "jest.config.js", "src/*", "nsb.d.ts", "types"],
+    "include": ["src/**/*", "src/.eslintrc.js", "jest.config.js", "src/*", "nsb.d.ts", "types", "src/nsb/loglevel.d.ts"],
     "exclude": ["node_modules/*", "types/*"]
   }
   

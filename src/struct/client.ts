@@ -1,15 +1,19 @@
 import { AkairoClient, CommandHandler, InhibitorHandler, ListenerHandler, MongooseProvider } from "@cataclym/discord-akairo";
-import { guildsDB, tinderDataDB, usersDB } from "./models";
 import { join } from "path";
 import { config } from "../config";
+import { guildsDB } from "./models";
+
+export const prefixCache: {[index: string]: string} = {};
 
 export class customClient extends AkairoClient {
 	commandHandler: CommandHandler;
 	inhibitorHandler: InhibitorHandler;
 	listenerHandler: ListenerHandler;
-	guildDB: MongooseProvider;
-	userDB: MongooseProvider;
-	tinderDB: MongooseProvider;
+	guildSettings: MongooseProvider;
+	userNicknames: MongooseProvider;
+	tinderData: MongooseProvider;
+	userRoles: MongooseProvider;
+	leaveRoles: MongooseProvider;
 	constructor() {
 		super({
 			ownerID: config.ownerID,
@@ -17,17 +21,12 @@ export class customClient extends AkairoClient {
 		{
 			disableMentions: "everyone",
 			partials: ["REACTION"],
-			presence: {
-				activity: { type: config.activityStatus, name: config.activityName },
-			},
+			presence: { activity: { type: config.activityStatus, name: config.activityName } },
 			shards: "auto",
 			ws: { properties: { $browser: "Discord Android" } },
 		});
 
-		this.guildDB = new MongooseProvider(guildsDB);
-		this.userDB = new MongooseProvider(usersDB);
-		this.tinderDB = new MongooseProvider(tinderDataDB);
-
+		this.guildSettings = new MongooseProvider(guildsDB);
 		this.commandHandler = new CommandHandler(this, {
 			allowMention: true,
 			automateCategories: true,
@@ -40,20 +39,29 @@ export class customClient extends AkairoClient {
 			handleEdits: true,
 			prefix: (message) => {
 				if (message.guild) {
-					// The third param is the default.
-					return this.guildDB.get(message.guild.id, "prefix", config.prefix);
-				}
+					let guildPrefix = prefixCache[message.guild.id];
+					if (guildPrefix) return guildPrefix;
 
+					guildPrefix = this.guildSettings.get(message.guild.id, "prefix", config.prefix);
+					prefixCache[message.guild.id] = guildPrefix;
+					return guildPrefix;
+				}
 				return config.prefix;
 			},
 		});
 
 		this.listenerHandler = new ListenerHandler(this, { directory: join(__dirname, "../listeners") });
-		this.listenerHandler.setEmitters({ commandHandler: this.commandHandler });
-		this.commandHandler.useListenerHandler(this.listenerHandler);
+		// this.inhibitorHandler = new InhibitorHandler(this, { directory: join(__dirname, "../inhibitors") });
 
-		(this.guildDB, this.tinderDB, this.userDB).init();
+		this.listenerHandler.setEmitters({ commandHandler: this.commandHandler });
+
+		this.commandHandler.useListenerHandler(this.listenerHandler);
+		this.commandHandler.useInhibitorHandler(this.inhibitorHandler);
+
+		// this.inhibitorHandler.loadAll();
 		this.listenerHandler.loadAll();
 		this.commandHandler.loadAll();
+
+		this.guildSettings.init();
 	}
 }

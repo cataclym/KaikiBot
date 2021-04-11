@@ -1,62 +1,74 @@
-import { Collection, Message, Client, Guild } from "discord.js";
-import { config } from "../config";
-import db, { table } from "quick.db";
-import { logger } from "./Logger";
-import { tinderDataStructure } from "./Tinder";
-const Tinder = new db.table("Tinder"), Emotes = new db.table("Emotes"), guildConfig = new db.table("guildConfig"), userNicknameTable = new db.table("UserNickTable");
-const words = ["shit", "fuck", "stop", "dont", "kill", "don't", "don`t", "fucking", "shut", "shutup", "shuttup", "trash", "bad", "hate", "stupid", "dumb", "suck", "sucks"];
+import { AkairoClient } from "@cataclym/discord-akairo";
+import { Guild, Message } from "discord.js";
+import logger from "loglevel";
+import { clearRollCache } from "../commands/Tinder/tinder";
+import { badWords } from "../struct/constants";
+import { getGuildDB } from "../struct/db";
+import { tinderDataDB } from "../struct/models";
+
+export const keyWordCache: {[guild: string]: {[keyWord: string]: string} } = {
+};
 
 // Reacts with emote to specified words
 async function emoteReact(message: Message): Promise<void> {
+
+	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+	const gID = message.guild!.id;
+	let wordObj = keyWordCache[gID];
+
+	if (!wordObj) {
+		keyWordCache[gID] = (await getGuildDB(gID)).emojiReactions;
+		wordObj = keyWordCache[gID];
+	}
+
 	const keywords = message.content.toLowerCase().split(" ");
+
 	keywords.forEach(async (word) => {
-		if (config.prefixes2.includes(word)) {
+		if (wordObj[word]) {
 			// TODO: Able to add more words, select random word, store in db
-			const emojiName = config.emoteNames[config.prefixes2.indexOf(word)];
-			if (!message.guild?.emojis.cache.find((e) => e.name === emojiName)) return console.log("Couldn't react to message. Emote probably doesnt exist on this guild.");
-			const emojiArray = message.guild.emojis.cache.find((e) => e.name === emojiName);
-			message.react(emojiArray ? emojiArray : "⚠");
+			if (!message.guild?.emojis.cache.has(wordObj[word])) return;
+
+			const aSingleEmoji = message.guild.emojis.cache.find((e) => e.id === wordObj[word]);
+
+			if (!aSingleEmoji) return;
+
+			message.react(aSingleEmoji);
 		}
 	});
 }
 
-const index = {
-	i: 0,
-};
-// Please don't laugh
 async function tiredNadekoReact(message: Message): Promise<void> {
+
 	const botName = message.client.user?.username.toLowerCase().split(" ");
+
 	if (!botName) {
 		return;
 	}
-	if (new RegExp(botName.join("|")).test(message.content.toLowerCase()) && new RegExp(words.join("|")).test(message.content.toLowerCase())) {
-		index.i++;
-		if (index.i < 4) {
+
+	if (new RegExp(botName.join("|")).test(message.content.toLowerCase())
+		&& new RegExp(badWords.join("|")).test(message.content.toLowerCase())) {
+
+		const index: number = Math.floor(Math.random() * 10);
+
+		if (index < 7) {
 			message.react("😢");
 		}
+
 		else {
-			// reset length
 			message.channel.send("😢");
-			index.i = 0;
 		}
 	}
 }
 
 async function ResetRolls(): Promise<void> {
 	// Tinder reset
-	Tinder.all().filter((obj) => (obj.data as tinderDataStructure).temporary).forEach(async ({ ID }) => {
-		console.log(ID);
-
-		Tinder.set(`${ID}.likes`, 3);
-		Tinder.set(`${ID}.rolls`, 15);
-		Tinder.set(`${ID}.temporary`, []);
+	clearRollCache();
+	tinderDataDB.updateMany({ rolls: { $lt: 15 } }, { rolls: 15, temporary: [], likes: 3 }, null, () => {
+		logger.info(`mongooseDB | Reset tinder rolls/likes at ${Date()}`);
 	});
-
-	return logger.info("\nresetRolls | Rolls and likes have been reset | " + Date() + "\n");
 }
 
 async function dailyResetTimer(): Promise<void> {
-	ResetRolls();
 	setTimeout(async () => {
 		ResetRolls();
 		dailyResetTimer();
@@ -68,45 +80,53 @@ function timeToMidnight(): number {
 	return (-d + d.setHours(24, 0, 0, 0));
 }
 
-async function emoteDataBaseService(input: Client | Guild): Promise<number> {
-
+async function emoteDB(guild: Guild) {
 	let i = 0;
-	if (input instanceof Client) {
-		input.guilds.cache.forEach(async guild => {
-			guild.emojis.cache.forEach(async emote => {
-				if (!Emotes.has(`${guild.id}.${emote.id}`)) {
-					Emotes.set(`${guild.id}.${emote.id}`, { count: 0 });
-					i++;
-				}
-			});
-		});
-		return Promise.resolve(i);
+	const db = await getGuildDB(guild.id);
+	for await (const emote of guild.emojis.cache.array()) {
+		if (!(emote.id in db.emojiStats)) {
+			i++;
+			db.emojiStats[emote.id] = 0;
+		}
 	}
+	if (i > 0) db.markModified("emojiStats");
+	db.save();
+	return i;
+}
 
-	else if (input instanceof Guild) {
-		input.emojis.cache.forEach(async emote => {
-			if (!Emotes.has(`${input.id}.${emote.id}`)) {
-				Emotes.set(`${input.id}.${emote.id}`, { count: 0 });
-				i++;
-			}
-		});
-		return Promise.resolve(i);
+async function emoteDataBaseService(input: AkairoClient | Guild): Promise<number> {
+	// eslint-disable-next-line no-var
+	var changes = 0;
+	if (input instanceof AkairoClient) {
+		await input.guilds.cache.reduce(async (promise, guild) => {
+			await promise;
+			changes += await emoteDB(guild);
+		}, Promise.resolve());
+		return changes;
 	}
 	else {
-		throw new Error("emoteDataBaseService | error");
+		return await emoteDB(input);
 	}
 }
 
 async function countEmotes(message: Message): Promise<void> {
-	const emotes = message.content.match(/<?(a)?:.+?:\d+>/g);
-	if (emotes) {
-		const ids = emotes.toString().match(/\d+/g);
-		ids?.forEach(id => {
-			const emote = message.guild?.emojis.cache.find(emoji => emoji.id === id);
-			if (emote) {
-				Emotes.add(`${message.guild?.id}.${emote.id}.count`, 1);
-			}
-		});
+	if (message.guild) {
+		const { guild } = message,
+			emotes = message.content.match(/<?(a)?:.+?:\d+>/g);
+		if (emotes) {
+			const ids = emotes.toString().match(/\d+/g);
+			ids?.forEach(async id => {
+				const emote = guild.emojis.cache.find(emoji => emoji.id === id);
+				if (emote) {
+					const db = await getGuildDB(guild.id);
+					db.emojiStats[emote.id]
+						? db.emojiStats[emote.id]++
+						: db.emojiStats[emote.id] = 1;
+					db.markModified("emojiStats");
+					db.save();
+				}
+			});
+		}
 	}
 }
 
@@ -123,46 +143,13 @@ function msToTime(duration: number): string {
 	return "**" + hours + "** hours **" + minutes + "** minutes **" + seconds + "." + milliseconds + "** seconds";
 }
 
-export interface guildConfig {
-	prefix: null | string,
-	anniversary: boolean,
-	dadbot: boolean,
-	okColor: null | string,
-	errorColor: null | string,
-}
-
-export type dbStruct = {
-	guildConfig: guildConfig,
-}
-
-export const dbStructure: dbStruct = {
-	guildConfig: {
-		prefix: null,
-		anniversary: false,
-		dadbot: false,
-		okColor: null,
-		errorColor: null,
-	},
-};
-
-async function dbColumns(client: Client): Promise<Collection<string, Guild>> {
-	const guilds = client.guilds.cache.each(g => {
-		if (!guildConfig.has(g.id)) {
-			guildConfig.set(g.id, dbStructure.guildConfig);
-		}
-	});
-	return Promise.resolve(guilds);
-}
-
 export {
 	countEmotes,
 	dailyResetTimer,
-	dbColumns,
 	emoteDataBaseService,
 	emoteReact,
 	msToTime,
 	ResetRolls,
 	timeToMidnight,
 	tiredNadekoReact,
-	userNicknameTable,
 };

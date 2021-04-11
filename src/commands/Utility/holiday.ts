@@ -41,7 +41,7 @@ export default class HolidayAPICommand extends Command {
 			return loadTitle();
 		}
 		else {
-			return message.channel.send(await errorMessage("You need to provide a HolidayAPI token in `config.ts`\nThis only applies if you are bot owner."));
+			return message.channel.send(await errorMessage(message, "You need to provide a HolidayAPI token in `config.ts`\nThis only applies if you are bot owner."));
 		}
 		async function loadTitle() {
 			return fetch(`https://holidayapi.com/v1/holidays?pretty&key=${config.holidayKey}&country=${country}&year=${year}&month=${month}&day=${day}`)
@@ -56,9 +56,9 @@ export default class HolidayAPICommand extends Command {
 				});
 				return message.channel.send(new MessageEmbed({
 					title: "Holiday",
-					color: await message.getMemberColorAsync(),
 					description: holidayString,
-				}));
+				})
+					.withOkColor(message));
 			}
 			catch {
 				return message.channel.send("No holiday on this date.");

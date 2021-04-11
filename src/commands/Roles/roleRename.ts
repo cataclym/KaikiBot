@@ -1,7 +1,7 @@
 import { Command } from "@cataclym/discord-akairo";
 import { Message, MessageEmbed, Role, GuildMember } from "discord.js";
 import { noArgGeneric } from "../../nsb/Embeds";
-import { errorColor, trim } from "../../nsb/Util";
+import { trim } from "../../nsb/Util";
 
 export default class RoleRenameCommand extends Command {
 	constructor() {
@@ -15,10 +15,10 @@ export default class RoleRenameCommand extends Command {
 				{
 					id: "role",
 					type: "role",
-					otherwise: () => new MessageEmbed({
+					otherwise: (m: Message) => new MessageEmbed({
 						title: "Can't find a matching role. Try again.",
-						color: errorColor,
-					}),
+					})
+						.withErrorColor(m),
 				},
 				{
 					id: "name",
@@ -38,8 +38,8 @@ export default class RoleRenameCommand extends Command {
 					return message.channel.send(new MessageEmbed({
 						title: "Success!",
 						description: `Role renamed to ${role}.`,
-						color: await message.getMemberColorAsync(),
-					}));
+					})
+						.withOkColor(message));
 				}
 				else {
 					throw "Failed to edit role name.";
@@ -50,15 +50,15 @@ export default class RoleRenameCommand extends Command {
 					title: "Error!",
 					description: "An error occured. Could not rename role.",
 					footer: { text: e },
-					color: errorColor,
-				}));
+				})
+					.withErrorColor(message));
 			}
 		}
 		else {
 			return message.channel.send(new MessageEmbed({
 				title: "Insufficient permission(s).",
-				color: errorColor,
-			}));
+			})
+				.withErrorColor(message));
 		}
 	}
 }

@@ -1,8 +1,8 @@
-import { Command, Flag, Argument } from "@cataclym/discord-akairo";
-import { Message, MessageEmbed } from "discord.js";
-import { noArgGeneric } from "../../nsb/Embeds";
+import { Argument, Command, Flag, PrefixSupplier } from "@cataclym/discord-akairo";
+import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
+import { Guild, Message, MessageEmbed } from "discord.js";
 import { config } from "../../config";
-import { customClient } from "../../struct/client";
+import { getGuildDB } from "../../struct/db";
 
 export default class ConfigCommand extends Command {
 	constructor() {
@@ -10,8 +10,12 @@ export default class ConfigCommand extends Command {
 			aliases: ["config", "configure"],
 			channel: "guild",
 			description: {
-				description: "Configure guild specific settings",
-				usage: ["dadbot enable", "anniversary enable", "prefix !", "okcolor <hex>", "errorcolor <hex>"],
+				description: "Configure or display guild specific settings. Will always respond to default prefix.",
+				usage: ["", "dadbot enable", "anniversary enable", "prefix !", "okcolor <hex>", "errorcolor <hex>", "welcome/goodbye [channel] [-e] [-c yellow] [-i http://link.png] [message]"],
+			},
+			prefix: (msg: Message) => {
+				const p = (this.handler.prefix as PrefixSupplier)(msg);
+				return [p as string, "-"];
 			},
 		});
 	}
@@ -29,6 +33,8 @@ export default class ConfigCommand extends Command {
 				["config-prefix", "prefix"],
 				["config-okcolor", "okcolor"],
 				["config-errorcolor", "errorcolor"],
+				["config-welcome", "welcome", "greet"],
+				["config-goodbye", "goodbye", "bye"],
 			],
 		};
 		if (!Argument.isFailure(method)) {
@@ -38,25 +44,62 @@ export default class ConfigCommand extends Command {
 
 	public async exec(message: Message): Promise<Message> {
 
-		if (message.content.split(" ").length > 1) {
-			return message.channel.send(noArgGeneric(message));
+		const db = await getGuildDB((message.guild as Guild).id),
+			{ anniversary, dadBot, prefix, errorColor, okColor, welcome, goodbye } = db.settings,
+			welcomeEmbed = new MessageEmbed()
+				.setColor(welcome.color)
+				.setAuthor("Welcome embed preview")
+				.setDescription(welcome.message),
+			goodbyeEmbed = new MessageEmbed()
+				.setColor(goodbye.color)
+				.setAuthor("Goodbye embed preview")
+				.setDescription(goodbye.message);
+
+		if (welcome.image) {
+			welcomeEmbed.setImage(welcome.image);
 		}
 
-		const guildConf = (message.client as customClient).guildDB.getDocument(message.guild!.id),
-			{ anniversary, dadbot, okColor, errorColor }: { anniversary: boolean, dadbot: boolean, okColor: string, errorColor: string } = guildConf.addons;
-		let { prefix }: { prefix: string } = guildConf.addons;
-
-		const embed = new MessageEmbed().setColor(await message.getMemberColorAsync());
-
-		if (prefix === config.prefix) {
-			prefix = `\`${config.prefix}\` (Default)`;
+		if (goodbye.image) {
+			goodbyeEmbed.setImage(goodbye.image);
 		}
 
-		embed.addField("DadBot", dadbot ? "Enabled" : "Disabled", true);
-		embed.addField("Anniversary-Roles", anniversary ? "Enabled" : "Disabled", true);
-		embed.addField("Guild prefix", prefix, true);
-		embed.addField("Embed error color", errorColor, true);
-		embed.addField("Embed ok color", okColor, true);
-		return message.channel.send(embed);
+		const pages = [
+			new MessageEmbed()
+				.withOkColor(message)
+				.addField("DadBot",
+					dadBot
+						? "Enabled"
+						: "Disabled", true)
+				.addField("Anniversary-Roles",
+					anniversary
+						? "Enabled"
+						: "Disabled", true)
+				.addField("Guild prefix",
+					prefix === config.prefix
+						? `\`${config.prefix}\` (Default)`
+						: prefix, true)
+				.addField("Embed error color",
+					errorColor.toString().startsWith("#")
+						? errorColor
+						: "#" + errorColor.toString(16), true)
+				.addField("Embed ok color",
+					okColor.toString().startsWith("#")
+						? okColor
+						: "#" + okColor.toString(16), true)
+				.addField("\u200B", "\u200B", true)
+				.addField("Welcome message",
+					welcome.enabled
+						? "Enabled"
+						: "Disabled", true)
+				.addField("Goodbye message",
+					goodbye.enabled
+						? "Enabled"
+						: "Disabled", true)
+				.addField("\u200B", "\u200B", true),
+			welcomeEmbed,
+			goodbyeEmbed,
+		];
+
+		return editMessageWithPaginatedEmbeds(message, pages, {});
 	}
 }

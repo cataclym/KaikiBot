@@ -11,10 +11,7 @@ export default class WoofCommand extends Command {
 	}
 	public async exec(message: Message): Promise<Message | void> {
 
-		const file = await fetch("https://dog.ceo/api/breeds/image/random")
-			.then(response => response.json());
-		if (file) {
-			return message.channel.send(file.message);
-		}
+		return message.channel.send((await fetch("https://dog.ceo/api/breeds/image/random")
+			.then(response => response.json())).message);
 	}
 }

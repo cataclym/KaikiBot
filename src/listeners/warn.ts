@@ -1,4 +1,6 @@
 import { Listener } from "@cataclym/discord-akairo";
+import logger from "loglevel";
+
 
 export default class WarnListener extends Listener {
 	constructor() {
@@ -11,7 +13,7 @@ export default class WarnListener extends Listener {
 
 	public async exec(info: string): Promise<void> {
 
-		console.warn(`🟧 warn | ${info}`);
+		logger.warn(`warn | ${info}`);
 
 	}
 }

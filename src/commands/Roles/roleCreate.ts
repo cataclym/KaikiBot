@@ -1,7 +1,6 @@
 import { Command } from "@cataclym/discord-akairo";
 import { Message, MessageEmbed } from "discord.js";
 import { noArgGeneric } from "../../nsb/Embeds";
-import { errorColor } from "../../nsb/Util";
 
 export default class RoleCreateCommand extends Command {
 	constructor() {
@@ -34,8 +33,8 @@ export default class RoleCreateCommand extends Command {
 			return message.channel.send(new MessageEmbed({
 				title: "Success!",
 				description: `Created ${createdRole}!`,
-				color: await message.getMemberColorAsync(),
-			}));
+			})
+				.withOkColor(message));
 		}
 
 		catch (e) {
@@ -43,8 +42,8 @@ export default class RoleCreateCommand extends Command {
 				title: "Error!",
 				description: "An error occured. Could not create role.",
 				footer: { text: e },
-				color: errorColor,
-			}));
+			})
+				.withErrorColor(message));
 		}
 	}
 }

@@ -1,120 +1,119 @@
-import { Collection } from "discord.js";
 import { model, Schema } from "mongoose";
-import { errorColor, okColor } from "../nsb/Util";
+import { IBlacklist, ICommandStats, IGuild, ITinder, IUser } from "../../src/interfaces/db";
 import { config } from "../config";
+import { errorColor, okColor } from "../nsb/Util";
 
-export const guildsDB = model("Guild", new Schema({
+export const guildSchema = new Schema({
 	// ID of the guild
 	id: {
 		type: String,
 	},
 	registeredAt: {
 		type: Number, default: Date.now(),
-	},
-	prefix: {
-		type: String, default: config.prefix,
 	},
 	leaveRoles: {
 		type: Object, default: {
-			pairs: new Collection(),
+		},
+	},
+	userRoles: {
+		type: Object, default: {
+		},
+	},
+	emojiStats: {
+		type: Object, default: {
+		},
+	},
+	emojiReactions: {
+		type: Object, default: {
 		},
 	},
 
-	addons: {
+	settings: {
 		type: Object, default: {
-			anniversary: {
-				// Anniversary roles feature enabled
+			prefix: config.prefix,
+			anniversary: false,
+			dadBot: false,
+			errorColor: errorColor,
+			okColor: okColor,
+			excludeRole: config.dadbotRole,
+			welcome: {
 				enabled: false,
-			},
-			dadbot: {
-				// Dadbot feature enabled
-				enabled: false,
-			},
-			errorColor: {
-				color: errorColor,
-			},
-			okColor: {
+				channel:  null,
+				message: null,
+				image: false,
+				embed: false,
 				color: okColor,
 			},
-			welcome: {
-				// Welcome features are enabled
-				enabled: false,
-				// ID for the channel to send messages to
-				channel:  null,
-				// Custom message
-				message: null,
-				// Check if image is enabled
-				image: false,
-				// Check if embed is enabled
-				embed: false },
 			goodbye: {
-				// Goodbye features are enabled
 				enabled: false,
-				// ID for channel to send messages to
 				channel:  null,
-				// Custom message
 				message: null,
-				// Check if image is enabled
 				image: false,
-				// Check if embed is enabled
 				embed: false,
+				color: okColor,
 			},
 		},
 	},
-}));
+});
 
-export const usersDB = model("Member", new Schema({
-	// ID of the user
+export const usersSchema = new Schema({
 	id: {
 		type: String,
 	},
-	// ID of the guild
-	guild: {
-		type: String,
-	},
-	// Date
 	registeredAt: {
 		type: Number, default: Date.now(),
 	},
-	// Array of past nicknames
 	userNicknames: {
 		type: Array, default: [],
 	},
+	todo: {
+		type: Array, default: [],
+	},
+});
 
-}));
-
-export const tinderDataDB = model("Tinder", new Schema({
-	// ID of the user
+export const tinderDataSchema = new Schema({
 	id: {
 		type: String,
 	},
-	// Array of IDs
 	datingIDs: {
-		type: Array, default: null,
+		type: Array, default: [],
 	},
-	// Array of IDs
 	marriedIDs: {
-		type: Array, default: null,
+		type: Array, default: [],
 	},
-	// Array of IDs
 	likeIDs: {
-		type: Array, default: null,
+		type: Array, default: [],
 	},
-	// Array of IDs
 	dislikeIDs: {
-		type: Array, default: null,
+		type: Array, default: [],
 	},
-	// Array of IDs
 	temporary: {
-		type: Array, default: null,
+		type: Array, default: [],
 	},
-	// Number of likes
 	likes: {
 		type: Number, default: 3,
 	},
-	// Number of rolls
 	rolls: {
 		type: Number, default: 15,
 	},
+});
 
-}));
+export const commandStatsSchema = new Schema({
+	count: {
+		type: Object, default: {
+		},
+	},
+});
+
+export const blacklistSchema = new Schema({
+	blacklist: {
+		type: Object, default: {
+		},
+	},
+});
+
+export const guildsDB = model<IGuild>("Guild", guildSchema);
+export const commandStatsDB = model<ICommandStats>("CommandStats", commandStatsSchema);
+export const tinderDataDB = model<ITinder>("Tinder", tinderDataSchema);
+export const usersDB = model<IUser>("Member", usersSchema);
+export const blacklistDB = model<IBlacklist>("Blacklist", blacklistSchema);

@@ -1,6 +1,5 @@
 import { Command } from "@cataclym/discord-akairo";
 import { Message, MessageEmbed } from "discord.js";
-import { errorColor } from "../../nsb/Util";
 import { grabHentai, typesArray } from "./hentaiService";
 
 export default class HentaiBombCommand extends Command {
@@ -32,8 +31,8 @@ export default class HentaiBombCommand extends Command {
 			return message.channel.send(new MessageEmbed({
 				title: "Error",
 				description: "Channel is not NSFW.",
-				color: errorColor,
-			}));
+			})
+				.withErrorColor(message));
 		}
 	}
 }

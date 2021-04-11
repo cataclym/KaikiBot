@@ -1,11 +1,9 @@
-"use strict";
-import { Command } from "@cataclym/discord-akairo";
-import { Message, MessageEmbed } from "discord.js";
-import db from "quick.db";
-import { noArgGeneric, dbError } from "../../nsb/Embeds.js";
-import { Argument } from "@cataclym/discord-akairo";
+import { Argument, Command } from "@cataclym/discord-akairo";
+import { Guild, Message, MessageEmbed } from "discord.js";
+import { noArgGeneric } from "../../nsb/Embeds.js";
 import { hexColorTable } from "../../nsb/Color.js";
-const guildConfig = new db.table("guildConfig");
+import { getGuildDB } from "../../struct/db.js";
+import { setSessionCache } from "../../Extensions/Discord.js";
 
 export default class OkColorConfigCommand extends Command {
 	constructor() {
@@ -22,17 +20,19 @@ export default class OkColorConfigCommand extends Command {
 		});
 	}
 	public async exec(message: Message, { value }: { value: string }): Promise<Message> {
+		const guildID = (message.guild as Guild).id;
 
-		const setColor = guildConfig.set(`${message.guild?.id}.okcolor`, value);
-		if (setColor) {
-			return message.channel.send(new MessageEmbed({
-				title: "Success!",
-				description: `OkColor has been set to \`${value}\` !`,
-				color: await message.getMemberColorAsync(),
-			}));
-		}
-		else {
-			return message.channel.send(dbError);
-		}
+		await getGuildDB(guildID).then(async db => {
+			db.settings.okColor = value;
+			db.markModified("settings.okColor");
+			await db.save();
+			setSessionCache("okColorCache", guildID, value);
+		});
+
+		return message.channel.send(new MessageEmbed({
+			title: "Success!",
+			description: `okColor has been set to \`${value}\` !`,
+		})
+			.withOkColor(message));
 	}
 }

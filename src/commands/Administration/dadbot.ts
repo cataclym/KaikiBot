@@ -1,10 +1,8 @@
 import { Command, PrefixSupplier } from "@cataclym/discord-akairo";
-import { Message, MessageEmbed } from "discord.js";
-import db from "quick.db";
+import { Guild, Message, MessageEmbed } from "discord.js";
+import { customClient } from "../../struct/client.js";
 import { noArgGeneric } from "../../nsb/Embeds.js";
-import { guildConfig as gC } from "../../Extensions/Discord";
-const guildConfig = new db.table("guildConfig"),
-	ignore = gC("This is necessary for my module augmentation to work.");
+import { setSessionCache } from "../../Extensions/Discord.js";
 
 export default class DadBotConfigCommand extends Command {
 	constructor() {
@@ -22,15 +20,18 @@ export default class DadBotConfigCommand extends Command {
 		});
 	}
 	public async exec(message: Message, { value }: { value: "enable" | "true" | "disable" | "false" }): Promise<Message> {
-		const isEnabled: boolean = guildConfig.get(`${message.guild?.id}`).dadbot,
-			embed = new MessageEmbed().setColor(await message.getMemberColorAsync());
+		const embed = new MessageEmbed().withOkColor(message),
+			guildID = (message.guild as Guild).id,
+			isEnabled = message.client.guildSettings.get(guildID, "dadBot", false);
 
 		switch (value) {
 			case ("enable"):
 			case ("true"): {
 				if (!isEnabled) {
-					guildConfig.set(`${message.guild?.id}.dadbot`, !isEnabled);
-					embed.setDescription(`DadBot functionality has been enabled in ${message.guild?.name}!\nIndividual users can still disable dadbot on themselves with ${(this.handler.prefix as PrefixSupplier)(message)}exclude.`);
+					(message.client as customClient).guildSettings.set(guildID, "dadBot", true);
+					embed.setDescription(`DadBot functionality has been enabled in ${message.guild?.name}!
+					\nIndividual users can still disable dadbot on themselves with ${(this.handler.prefix as PrefixSupplier)(message)}exclude.`);
+					setSessionCache("dadbotCache", guildID, true);
 					return message.channel.send(embed);
 				}
 				else {
@@ -41,8 +42,9 @@ export default class DadBotConfigCommand extends Command {
 			case ("disable"):
 			case ("false"): {
 				if (isEnabled) {
-					guildConfig.set(`${message.guild?.id}.dadbot`, !isEnabled);
+					(message.client as customClient).guildSettings.set(guildID, "dadBot", false);
 					embed.setDescription(`DadBot functionality has been disabled in ${message.guild?.name}!`);
+					setSessionCache("dadbotCache", guildID, false);
 					return message.channel.send(embed);
 				}
 				else {

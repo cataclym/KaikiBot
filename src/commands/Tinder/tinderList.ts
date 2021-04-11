@@ -1,6 +1,6 @@
-import { fetchUserList } from "../../nsb/Tinder.js";
-import { Command, Flag, Argument } from "@cataclym/discord-akairo";
+import { Argument, Command, Flag } from "@cataclym/discord-akairo";
 import { Message, User } from "discord.js";
+import { fetchUserList } from "../../nsb/Tinder.js";
 
 module.exports = class TinderListCommand extends Command {
 	constructor() {
@@ -8,7 +8,15 @@ module.exports = class TinderListCommand extends Command {
 			aliases: ["tinderlist"],
 		});
 	}
-	*args() {
+	*args(): Generator<{
+		type: string[][];
+		flag?: undefined;
+		default?: undefined;
+	} | {
+		type: string;
+		flag: string[];
+		default: (message: Message) => User;
+	}, any, string> {
 		const method = yield {
 			type: [
 				["tinderlistlikes", "like", "l", "likes"],

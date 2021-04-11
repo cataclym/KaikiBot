@@ -1,7 +1,6 @@
 import { Command } from "@cataclym/discord-akairo";
 import { Message, MessageEmbed } from "discord.js";
 import { Image } from "kaori/typings/Image";
-import { errorColor } from "../../nsb/Util";
 import { grabHentaiPictureAsync, grabHentai, typesArray } from "./hentaiService";
 
 export default class HentaiCommand extends Command {
@@ -31,8 +30,8 @@ export default class HentaiCommand extends Command {
 			return message.channel.send(new MessageEmbed({
 				title: "Error",
 				description: "Channel is not NSFW.",
-				color: errorColor,
-			}));
+			})
+				.withErrorColor(message));
 		}
 		async function postHentai(messageArguments: string[] | undefined): Promise<Message> {
 			const awaitResult = async () => (await grabHentaiPictureAsync(messageArguments));
@@ -44,8 +43,8 @@ export default class HentaiCommand extends Command {
 					description: `[Source](${result.source} "${result.source}")`,
 					image: { url: <string | undefined> result.fileURL || result.sampleURL || result.previewURL },
 					footer: { text: result.tags.join(", ") },
-					color: await message.getMemberColorAsync(),
-				}));
+				})
+					.withOkColor(message));
 			}
 			else {
 				return postHentai(messageArguments);

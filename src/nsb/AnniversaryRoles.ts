@@ -1,11 +1,10 @@
-"use strict";
 import { Client, Guild, GuildMember, Role } from "discord.js";
-import db from "quick.db";
-const guildConfig = new db.table("guildConfig");
+import logger from "loglevel";
+import { getGuildDB } from "../struct/db";
 import { timeToMidnight } from "./functions";
-import { logger } from "./Logger";
-const RoleNameJoin = "Join Anniversary",
-	RoleNameCreated = "Cake Day";
+
+const roleNameJoin = "Join Anniversary",
+	roleNameCreated = "Cake Day";
 
 async function DateObject() {
 	const d = new Date();
@@ -13,54 +12,24 @@ async function DateObject() {
 	const Day = d.getDate();
 	return { Month, Day };
 }
-let ListUserCreatedAt: string[] = [],
-	ListUserJoinedAt: string[] = [];
+let listUsersCakeDay: string[] = [],
+	listUserJoinedAt: string[] = [];
 // Fuck this-
 // 5/8/2020 DDMMYYYY
 
 async function birthdayService(client: Client): Promise<void> {
 
-	const enabledGuilds = guildConfig.get("anniversary");
+	const enabledGuilds = client.guilds.cache.array().filter(async (g) => {
+			return (await getGuildDB(g.id)).settings.anniversary ? true : false;
+		}),
+		{ Day, Month } = await DateObject();
 
-	const { Day, Month } = await DateObject();
+	logger.info(`birthdayService | Checking [${enabledGuilds.length}] guilds`);
 
-	await Promise.all(client.guilds.cache.map(async (guild) => {
-		if (enabledGuilds.includes(guild.id)) {
-			// Check if guild is enabled.
-			if (guild.me?.hasPermission("MANAGE_ROLES")) {
-				// Check if perms.
-				const [AnniversaryRoleC, AnniversaryRoleJ] = <Role[]> await GuildCheckRolesExist(guild);
-				// Get roles from the result of checking if guild has the roles at all / after creating them.
-				await Promise.all(guild.members.cache.map(async (member) => {
-					if (!member.user.bot) {
-						// Don't assign special roles to bots.
-						MemberCheckAnniversary(member, AnniversaryRoleC, AnniversaryRoleJ, Day, Month);
-					}
-				}));
-			}
-			else {
-				return logger.medium(`${guild.name} [${guild.id}] | can't add anniversary roles due to missing permissions: 'MANAGE_ROLES'`);
-			}
-		}
-	}));
-	await Promise.all([ListUserCreatedAt, ListUserJoinedAt]);
-
-	// What a long line
-	logger.info(`Cake Day | ${ListUserCreatedAt.length ? " Users added: " + ListUserCreatedAt.join(", ") : " No users were added to Cake Day."}\nJoin Anniversary | ${ListUserJoinedAt.length ? " Users added: " + ListUserJoinedAt.join(", ") : " No users were added to Join Anniversary."}`);
-	logger.low("birthdayService | Finished checking dates!");
-	ListUserJoinedAt = [],
-	ListUserCreatedAt = [];
-	setTimeout(async () => {
-		birthdayService(client);
-	}, timeToMidnight());
-}
-
-async function GuildOnAddBirthdays(guild: Guild): Promise<void> {
-	const enabledGuilds = guildConfig.get("anniversary");
-	logger.info("birthdayService | Checking new user!");
-	const { Day, Month } = await DateObject();
-	if (enabledGuilds.includes(guild.id)) {
+	await Promise.all(enabledGuilds.map(async (guild) => {
+		// Check if guild is enabled.
 		if (guild.me?.hasPermission("MANAGE_ROLES")) {
+			// Check if perms.
 			const [AnniversaryRoleC, AnniversaryRoleJ] = <Role[]> await GuildCheckRolesExist(guild);
 			// Get roles from the result of checking if guild has the roles at all / after creating them.
 			await Promise.all(guild.members.cache.map(async (member) => {
@@ -71,30 +40,103 @@ async function GuildOnAddBirthdays(guild: Guild): Promise<void> {
 			}));
 		}
 		else {
-			return logger.medium(`${guild.name} [${guild.id}] | can't add anniversary roles due to missing permissions: 'MANAGE_ROLES'`);
+			return logger.warn(`birthdayService | ${guild.name} [${guild.id}] - can't add anniversary roles due to missing permissions: 'MANAGE_ROLES'`);
+		}
+	}));
+
+	await Promise.all([listUsersCakeDay, listUserJoinedAt]);
+	listUserJoinedAt = [],
+	listUsersCakeDay = [];
+
+	setTimeout(async () => {
+		birthdayService(client);
+	}, timeToMidnight());
+}
+
+async function checkBirthdayOnAdd(guild: Guild): Promise<void> {
+
+	const enabled = (await getGuildDB(guild.id)).settings.anniversary,
+		{ Day, Month } = await DateObject();
+
+	logger.info(`birthdayService | Checking newly added guild ${guild.name} [${guild.id}]`);
+
+	if (enabled) {
+		try {
+			if (guild.me?.hasPermission("MANAGE_ROLES")) {
+				const [AnniversaryRoleC, AnniversaryRoleJ] = <Role[]> await GuildCheckRolesExist(guild);
+				// Get roles from the result of checking if guild has the roles at all / after creating them.
+				await Promise.all(guild.members.cache.map(async (member) => {
+					if (!member.user.bot) {
+					// Don't assign special roles to bots.
+						MemberCheckAnniversary(member, AnniversaryRoleC, AnniversaryRoleJ, Day, Month);
+					}
+				}));
+			}
+			else {
+				return logger.warn(`birthdayService | ${guild.name} [${guild.id}] - can't add anniversary roles due to missing permissions: 'MANAGE_ROLES'`);
+			}
+		}
+		catch (err) {
+			logger.error(err);
+		}
+		finally {
+			logger.info(`birthdayService | Finished checking [${guild.id}] - Anniversary enabled`);
+		}
+	}
+	else {
+		logger.info(`birthdayService | Finished checking [${guild.id}] - Anniversary disabled`);
+	}
+}
+
+async function memberOnAddBirthdayService(member: GuildMember): Promise<void> {
+
+	const { guild } = member,
+		{ Day, Month } = await DateObject(),
+		enabled = (await getGuildDB(guild.id)).settings.anniversary;
+
+	if (enabled) {
+		try {
+			if (guild.me?.hasPermission("MANAGE_ROLES")) {
+				const [AnniversaryRoleC, AnniversaryRoleJ] = <Role[]> await GuildCheckRolesExist(guild);
+				// Get roles from the result of checking if guild has the roles at all / after creating them.
+				if (!member.user.bot) {
+					// Don't assign special roles to bots.
+					MemberCheckAnniversary(member, AnniversaryRoleC, AnniversaryRoleJ, Day, Month);
+				}
+			}
+			else {
+				return logger.warn(`birthdayService | ${guild.name} [${guild.id}] - can't add anniversary roles due to missing permissions: 'MANAGE_ROLES'`);
+			}
+		}
+		catch (err) {
+			logger.error(err);
+		}
+		finally {
+			logger.info(`birthdayService | Checked user ${member.user.tag} in ${guild.name} [${guild.id}]`);
 		}
 	}
 }
 
 async function GuildCheckRolesExist(guild: Guild): Promise<Role[] | unknown[]> {
-	if (!guild.roles.cache.some(r => r.name === RoleNameJoin)) {
+	if (!guild.roles.cache.some(r => r.name === roleNameJoin)) {
 		guild.roles.create({
-			data: { name: RoleNameJoin },
+			data: { name: roleNameJoin },
 			reason: "Role didn't exist yet",
-		}).catch(err => logger.high(err));
+		}).catch(err => logger.error(err));
 	}
-	if (!guild.roles.cache.some(r => r.name === RoleNameCreated)) {
+	if (!guild.roles.cache.some(r => r.name === roleNameCreated)) {
 		guild.roles.create({
-			data: { name: RoleNameCreated },
+			data: { name: roleNameCreated },
 			reason: "Role didn't exist yet",
-		}).catch(err => logger.high(err));
+		}).catch(err => logger.error(err));
 	}
-	const AnniversaryRoleJ = guild.roles.cache.find((r => r.name === RoleNameJoin));
-	const AnniversaryRoleC = guild.roles.cache.find((r => r.name === RoleNameCreated));
+	const AnniversaryRoleJ = guild.roles.cache.find((r => r.name === roleNameJoin));
+	const AnniversaryRoleC = guild.roles.cache.find((r => r.name === roleNameCreated));
 
 	return [AnniversaryRoleC, AnniversaryRoleJ];
 
 }
+
 // Checks all roles
 // Add role when date is right
 // Removes role when date isn't right
@@ -106,7 +148,7 @@ async function GuildCheckRolesExist(guild: Guild): Promise<Role[] | unknown[]> {
 async function MemberCheckAnniversary(member: GuildMember, AnniversaryRoleC: Role, AnniversaryRoleJ: Role, Day: number, Month: number) {
 	if (member.user.createdAt.getMonth() === Month) {
 		if (member.user.createdAt.getDate() === Day) {
-			ListUserCreatedAt.push(member.user.tag);
+			listUsersCakeDay.push(member.user.tag);
 			if (!member.roles.cache.has(AnniversaryRoleC.id)) {
 				member.roles.add(AnniversaryRoleC);
 			}
@@ -114,13 +156,13 @@ async function MemberCheckAnniversary(member: GuildMember, AnniversaryRoleC: Rol
 	}
 	if (member.joinedAt?.getMonth() === Month) {
 		if (member.joinedAt.getDate() === Day) {
-			ListUserJoinedAt.push(member.user.tag);
+			listUserJoinedAt.push(member.user.tag);
 			if (!member.roles.cache.has(AnniversaryRoleJ.id)) {
 				return member.roles.add(AnniversaryRoleJ);
 			}
 		}
 	}
-	if (!ListUserCreatedAt.includes(member.user.tag)) {
+	if (!listUsersCakeDay.includes(member.user.tag)) {
 		if (member.roles.cache.has(AnniversaryRoleC.id)) {
 			member.roles.remove(AnniversaryRoleC.id, AnniversaryRoleJ.id);
 		}
@@ -131,5 +173,5 @@ async function MemberCheckAnniversary(member: GuildMember, AnniversaryRoleC: Rol
 }
 
 export {
-	birthdayService, GuildOnAddBirthdays,
+	birthdayService, checkBirthdayOnAdd, memberOnAddBirthdayService,
 };

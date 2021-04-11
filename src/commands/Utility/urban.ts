@@ -3,7 +3,7 @@ import fetch from "node-fetch";
 import { Command } from "@cataclym/discord-akairo";
 import { MessageEmbed, Message } from "discord.js";
 import querystring from "querystring";
-import { errorColor, trim } from "../../nsb/Util";
+import { trim } from "../../nsb/Util";
 import { noArgGeneric } from "../../nsb/Embeds";
 
 export default class UrbanDictCommand extends Command {
@@ -29,10 +29,9 @@ export default class UrbanDictCommand extends Command {
 		if (!list.length) {
 			return message.channel.send(new MessageEmbed({
 				description: `No results found for **${term}**.`,
-				color: errorColor,
-			}));
+			})
+				.withErrorColor(message));
 		}
-		const color = await message.getMemberColorAsync();
 		const pages: MessageEmbed[] = [];
 		list.forEach(async (result: Record<string, string>) => {
 			return pages.push(new MessageEmbed()
@@ -43,7 +42,7 @@ export default class UrbanDictCommand extends Command {
 					{ name: "Example", value: trim(result.example, 1024) },
 					{ name: "Rating", value: `${result.thumbs_up} thumbs up. ${result.thumbs_down} thumbs down.` },
 				)
-				.setColor(color),
+				.withOkColor(message),
 			);
 		});
 		return editMessageWithPaginatedEmbeds(message, pages, {});
