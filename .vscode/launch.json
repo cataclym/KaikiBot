@@ -4,16 +4,25 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
-        
         {
-            "command": "npm run-script public",
-            "name": "Public NPM",
+            "args": [],
+            "cwd": "${workspaceFolder}",
+            "protocol": "inspector",
+            "env": {
+                "NODE_ENV": "development"
+            },
+            "name": "DEBUG",
+            "outFiles": ["${workspaceRoot}/dist/**/*.js"],
+            "preLaunchTask": "tsc: build - tsconfig.json",
+            "program": "${workspaceRoot}/src/index.ts",
             "request": "launch",
-            "type": "node-terminal",
-            "skipFiles": [
-                "<node_internals>/**"
+            "runtimeArgs": [
+                "--nolazy"
             ],
-            "trace": true,
+            "runtimeExecutable": null,
+            "sourceMaps": true,
+            "stopOnEntry": false,
+            "type": "node"
         },
         {
             "command": "npm start",
