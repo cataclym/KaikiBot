@@ -4,11 +4,11 @@ import { config } from "../../config.js";
 
 const addedRoleEmbed = new MessageEmbed({
 	title: "Success!",
-	description: `Added role \`${config.names}\`.\nType the command again to remove.`,
+	description: `Added role \`${config.dadbotRole}\`.\nType the command again to remove.`,
 });
 const removedRoleEmbed = new MessageEmbed({
 	title: "Success!",
-	description: `Removed role \`${config.names}\`.\nType the command again to add it back.`,
+	description: `Removed role \`${config.dadbotRole}\`.\nType the command again to add it back.`,
 });
 
 export default class ExcludeCommand extends Command {
@@ -22,16 +22,16 @@ export default class ExcludeCommand extends Command {
 
 	public async exec(message: Message): Promise<Message | void> {
 
-		let excludedRole = message.guild?.roles.cache.find((r) => r.name === config.names);
+		let excludedRole = message.guild?.roles.cache.find((r) => r.name === config.dadbotRole);
 
 		if (!message.guild?.roles.cache.some(r => r.name === excludedRole?.name)) {
 			excludedRole = await message.guild?.roles.create({
-				data: { name: config.names },
+				data: { name: config.dadbotRole },
 				reason: "Role didn't exist yet.",
 			});
 			await (message.channel.send(new MessageEmbed({
 				title: "Error!",
-				description: `A role with name \`${config.names}\` was not found in guild. Creating... `,
+				description: `A role with name \`${config.dadbotRole}\` was not found in guild. Creating... `,
 				footer: { text: "Beep boop..." },
 			})
 				.withErrorColor(message)));
