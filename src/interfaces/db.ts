@@ -16,6 +16,7 @@ export interface IGuild extends Document {
 	leaveRoles: {[userID: string]: string[]},
 	userRoles: {[userID: string]: string},
 	emojiStats: {[emojiID: string]: number},
+	emojiReactions: {[keyWord: string]: string},
 	settings: {
 		prefix: string,
 		anniversary: boolean,

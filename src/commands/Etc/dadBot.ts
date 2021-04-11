@@ -1,8 +1,8 @@
 import { Command } from "@cataclym/discord-akairo";
-import { GuildMember, Message, Util } from "discord.js";
-import { getUserDB } from "../../struct/db";
-import { config } from "../../config";
+import { Guild, GuildMember, Message, Util } from "discord.js";
 import { IUser } from "../../interfaces/db";
+import { dadbotArray } from "../../struct/constants";
+import { getUserDB } from "../../struct/db";
 
 let nick: {
 	[key: string]: string
@@ -14,10 +14,10 @@ export default class dadBot extends Command {
 		super("dadbot", {
 			channel: "guild",
 			editable: false,
-			condition: (message: Message): boolean => {
+			condition: (message: Message) => {
 
-				if (message.guild?.isDadBotEnabled() && (message.member as GuildMember).hasExcludedRole() && !message.author.bot) {
-					for (const item of config.prefixes) {
+				if ((message.guild as Guild).isDadBotEnabled() && (message.member as GuildMember).hasExcludedRole() && !message.author.bot) {
+					for (const item of dadbotArray) {
 
 						const r = new RegExp(`(^|\\s|$)(?<statement>(?<prefix>${item})\\s*(?<nickname>.*)$)`, "mi");
 

@@ -23,6 +23,10 @@ export const guildSchema = new Schema({
 		type: Object, default: {
 		},
 	},
+	emojiReactions: {
+		type: Object, default: {
+		},
+	},
 
 	settings: {
 		type: Object, default: {
@@ -31,6 +35,7 @@ export const guildSchema = new Schema({
 			dadBot: false,
 			errorColor: errorColor,
 			okColor: okColor,
+			excludeRole: config.dadbotRole,
 			welcome: {
 				enabled: false,
 				channel:  null,

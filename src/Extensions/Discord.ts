@@ -19,7 +19,6 @@ const sessionCache: sessionCache = {
 };
 
 export async function setSessionCache(cache: cacheObjects, id: string, value: boolean | string): Promise<string | boolean> {
-	console.log(sessionCache);
 
 	return (sessionCache[cache])[id] = value;
 }
@@ -73,7 +72,7 @@ Message.prototype.getMemberColorAsync = async function(member?: GuildMember) {
 
 GuildMember.prototype.hasExcludedRole = function(member?: GuildMember) {
 	return !(member ?? this as GuildMember).roles.cache
-		.find((r) => r.name === config.names);
+		.find((r) => r.name === config.dadbotRole);
 };
 
 Guild.prototype.isDadBotEnabled = function(guild?: Guild) {

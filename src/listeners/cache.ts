@@ -22,7 +22,6 @@ export async function handleGreetMessage(guildMember: GuildMember): Promise<Mess
 			});
 		greetLeaveCache[guildMember.guild.id] = guildSettings;
 	}
-	console.log(greetLeaveCache);
 
 	if (guildSettings.welcome.enabled) {
 		return sendGreetLeaveMessage(guildSettings.welcome, guildMember.guild, guildMember);
@@ -43,7 +42,6 @@ export async function handleGoodbyeMessage(guildMember: GuildMember): Promise<Me
 			});
 		greetLeaveCache[guildMember.guild.id] = guildSettings;
 	}
-	console.log(greetLeaveCache);
 
 	if (guildSettings.goodbye.enabled) {
 		return sendGreetLeaveMessage(guildSettings.goodbye, guildMember.guild, guildMember);
