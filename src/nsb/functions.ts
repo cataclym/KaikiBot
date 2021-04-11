@@ -2,44 +2,60 @@ import { AkairoClient } from "@cataclym/discord-akairo";
 import { Guild, Message } from "discord.js";
 import logger from "loglevel";
 import { clearRollCache } from "../commands/Tinder/tinder";
-import { config } from "../config";
+import { badWords } from "../struct/constants";
 import { getGuildDB } from "../struct/db";
 import { tinderDataDB } from "../struct/models";
 
-
-const words = ["shit", "fuck", "stop", "dont", "kill", "don't", "don`t", "fucking", "shut", "shutup", "shuttup", "trash", "bad", "hate", "stupid", "dumb", "suck", "sucks"];
-const index: {[name: string]: number} = {
+export const keyWordCache: {[guild: string]: {[keyWord: string]: string} } = {
 };
 
 // Reacts with emote to specified words
 async function emoteReact(message: Message): Promise<void> {
+
+	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+	const gID = message.guild!.id;
+	let wordObj = keyWordCache[gID];
+
+	if (!wordObj) {
+		keyWordCache[gID] = (await getGuildDB(gID)).emojiReactions;
+		wordObj = keyWordCache[gID];
+	}
+
 	const keywords = message.content.toLowerCase().split(" ");
+
 	keywords.forEach(async (word) => {
-		if (config.prefixes2.includes(word)) {
+		if (wordObj[word]) {
 			// TODO: Able to add more words, select random word, store in db
-			const emojiName = config.emoteNames[config.prefixes2.indexOf(word)];
-			if (!message.guild?.emojis.cache.find((e) => e.name === emojiName)) return console.warn("Couldn't react to message. Emote probably doesnt exist on this guild.");
-			const emojiArray = message.guild.emojis.cache.find((e) => e.name === emojiName);
-			message.react(emojiArray ? emojiArray : "⚠");
+			if (!message.guild?.emojis.cache.has(wordObj[word])) return;
+
+			const aSingleEmoji = message.guild.emojis.cache.find((e) => e.id === wordObj[word]);
+
+			if (!aSingleEmoji) return;
+
+			message.react(aSingleEmoji);
 		}
 	});
 }
 
-// Please don't laugh
 async function tiredNadekoReact(message: Message): Promise<void> {
+
 	const botName = message.client.user?.username.toLowerCase().split(" ");
+
 	if (!botName) {
 		return;
 	}
-	if (new RegExp(botName.join("|")).test(message.content.toLowerCase()) && new RegExp(words.join("|")).test(message.content.toLowerCase())) {
-		index["i"] ? index["i"]++ : index["i"] = 0;
-		if (index["i"] < 4) {
+
+	if (new RegExp(botName.join("|")).test(message.content.toLowerCase())
+		&& new RegExp(badWords.join("|")).test(message.content.toLowerCase())) {
+
+		const index: number = Math.floor(Math.random() * 10);
+
+		if (index < 7) {
 			message.react("😢");
 		}
+
 		else {
-			// reset length
 			message.channel.send("😢");
-			index["i"] = 0;
 		}
 	}
 }
