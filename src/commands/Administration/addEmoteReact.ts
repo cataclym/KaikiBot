@@ -5,8 +5,8 @@ import { getGuildDB } from "../../struct/db";
 
 export default class EmoteReactCommand extends Command {
 	constructor() {
-		super("emotereact", {
-			aliases: ["emotereact", "er"],
+		super("addemotereact", {
+			aliases: ["addemotereact", "emotereact", "aer"],
 			channel: "guild",
 			description: { description: "Add triggers for the bot to react with emojis/emotes to. Use quotes for triggers with spaces.",
 				usage: ["red :red:", "anime :weeaboosgetout:"] },
