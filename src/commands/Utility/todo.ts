@@ -9,7 +9,7 @@ module.exports = class TodoCommand extends Command {
 			aliases: ["todo", "note"],
 			description: {
 				description: "A personal todo list. The items are limited to 204 characters. Intended for small notes, not detailed cooking recipies.",
-				usage: ["", "add make cake 07/07/2020", "remove 5", "remove last", "remove first", "remove all"],
+				usage: ["", "add make cake 07/07/2020", "remove 5", "remove last", "remove first", "remove all", "rm 1"],
 			},
 		});
 	}
@@ -38,7 +38,7 @@ module.exports = class TodoCommand extends Command {
 				? todo.map((str) => trim(str.split(/\r?\n/).join(" "), 204))
 				: ["Empty list"]);
 
-		for (let index = 10, p = 0; p < reminderArray.length; index = index + 10, p = p + 10) {
+		for (let index = 10, p = 0; p < reminderArray.length; index += 10, p += 10) {
 			const embed = new MessageEmbed()
 				.setTitle("Todo")
 				.setAuthor(`${message.author.tag} 📔 To learn more about the command, type \`${(this.handler.prefix as PrefixSupplier)(message)}help todo\``)

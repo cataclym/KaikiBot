@@ -1,4 +1,4 @@
-import { Command, Argument } from "@cataclym/discord-akairo";
+import { Argument, Command } from "@cataclym/discord-akairo";
 import { Message } from "discord.js";
 import { IUser } from "../../interfaces/db";
 import { getUserDB } from "../../struct/db";
@@ -28,7 +28,7 @@ export default class todoRemoveCommand extends Command {
 
 		if (typeof toRemove === "number") {
 			// Matches given number to array item
-			removedItem = userDB.todo.splice(toRemove, 1);
+			removedItem = userDB.todo.splice(toRemove - 1, 1).toString();
 		}
 
 		else {
@@ -46,22 +46,25 @@ export default class todoRemoveCommand extends Command {
 					break;
 				}
 			}
-
-			if (!removedItem) {
-				message.channel.send("List deleted.")
-					.then(SentMsg => {
-						SentMsg.react("✅");
-					});
-			}
-			else {
-				const stringified = removedItem?.substring(0, 46);
-				message.reply(`Removed \`${stringified}\` from list.`)
-					.then(SentMsg => {
-						SentMsg.react("✅");
-					});
-			}
 		}
+
 		userDB.markModified("todo");
+
+		if (!removedItem) {
+			message.channel.send("List deleted.")
+				.then(SentMsg => {
+					SentMsg.react("✅");
+				});
+		}
+
+		else {
+			removedItem = removedItem?.substring(0, 46);
+			message.reply(`Removed \`${removedItem}\` from list.`)
+				.then(SentMsg => {
+					SentMsg.react("✅");
+				});
+		}
+
 		return userDB.save();
 	}
 }

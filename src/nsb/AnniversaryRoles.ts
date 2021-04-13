@@ -154,7 +154,7 @@ async function MemberCheckAnniversary(member: GuildMember, AnniversaryRoleC: Rol
 			}
 		}
 	}
-	if (member.joinedAt?.getMonth() === Month) {
+	if (member.joinedAt?.getMonth() === Month && member.joinedAt.getFullYear() !== new Date().getFullYear()) {
 		if (member.joinedAt.getDate() === Day) {
 			listUserJoinedAt.push(member.user.tag);
 			if (!member.roles.cache.has(AnniversaryRoleJ.id)) {
