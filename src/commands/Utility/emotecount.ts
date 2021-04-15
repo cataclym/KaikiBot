@@ -1,6 +1,6 @@
-import { Guild, MessageEmbed, Message } from "discord.js";
-import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
 import { Command } from "@cataclym/discord-akairo";
+import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
+import { Guild, Message, MessageEmbed } from "discord.js";
 import { trim } from "../../nsb/Util";
 import { getGuildDB } from "../../struct/db";
 
@@ -41,8 +41,8 @@ export default class EmoteCount extends Command {
 
 			if (!Emote) continue;
 
-			if (!flag) data.push(`\`${Object.values(value)}\` ${Emote} | ${Emote.name}`);
-			else data.push(`${Emote} \`${Object.values(value)}\` `);
+			if (!flag) data.push(`\`${value}\` ${Emote} | ${Emote.name}`);
+			else data.push(`${Emote} \`${value}\` `);
 		}
 
 		if (!flag) {

@@ -16,6 +16,8 @@ export default class dadBot extends Command {
 			editable: false,
 			condition: (message: Message) => {
 
+				if (!message.guild) return false;
+
 				if ((message.guild as Guild).isDadBotEnabled() && (message.member as GuildMember).hasExcludedRole() && !message.author.bot) {
 					for (const item of dadbotArray) {
 
