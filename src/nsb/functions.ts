@@ -97,6 +97,7 @@ async function emoteDB(guild: Guild) {
 async function emoteDataBaseService(input: AkairoClient | Guild): Promise<number> {
 	// eslint-disable-next-line no-var
 	var changes = 0;
+
 	if (input instanceof AkairoClient) {
 		await input.guilds.cache.reduce(async (promise, guild) => {
 			await promise;
@@ -104,6 +105,7 @@ async function emoteDataBaseService(input: AkairoClient | Guild): Promise<number
 		}, Promise.resolve());
 		return changes;
 	}
+
 	else {
 		return await emoteDB(input);
 	}
@@ -114,18 +116,18 @@ async function countEmotes(message: Message): Promise<void> {
 		const { guild } = message,
 			emotes = message.content.match(/<?(a)?:.+?:\d+>/g);
 		if (emotes) {
+			const db = await getGuildDB(guild.id);
 			const ids = emotes.toString().match(/\d+/g);
 			ids?.forEach(async id => {
-				const emote = guild.emojis.cache.find(emoji => emoji.id === id);
+				const emote = guild.emojis.cache.get(id);
 				if (emote) {
-					const db = await getGuildDB(guild.id);
 					db.emojiStats[emote.id]
 						? db.emojiStats[emote.id]++
 						: db.emojiStats[emote.id] = 1;
-					db.markModified("emojiStats");
-					db.save();
+					db.markModified(`emojiStats.${emote.id}`);
 				}
 			});
+			db.save();
 		}
 	}
 }
