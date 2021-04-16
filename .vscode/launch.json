@@ -13,7 +13,7 @@
             },
             "name": "DEBUG",
             "outFiles": ["${workspaceRoot}/dist/**/*.js"],
-            "preLaunchTask": "tsc: build - tsconfig.json",
+            "preLaunchTask": "tsc: build - src/tsconfig.json",
             "program": "${workspaceRoot}/src/index.ts",
             "request": "launch",
             "runtimeArgs": [
