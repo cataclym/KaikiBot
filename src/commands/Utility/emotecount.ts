@@ -33,7 +33,7 @@ export default class EmoteCount extends Command {
 
 			emoteDataPair = Object
 				.entries(GuildEmoteCount)
-				.sort((a, b) => Object.values(b[1])[0] - Object.values(a[1])[0] || a[1] - b[1]);
+				.sort((a, b) => b[1] - a[1]);
 
 		for (const [key, value] of emoteDataPair) {
 

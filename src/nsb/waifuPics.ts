@@ -1,6 +1,6 @@
 import { ColorResolvable, GuildMember, Message, MessageEmbed } from "discord.js";
-import { hexColorTable } from "./Color";
 import fetch from "node-fetch";
+import { hexColorTable } from "./Color";
 
 type APIs = "bonk"
 	| "cry"
@@ -14,7 +14,9 @@ type APIs = "bonk"
     | "bully"
     | "megumin"
     | "neko"
-    | "shinobu";
+    | "shinobu"
+	| "nom"
+	| "slap";
 
 const WaifuData: {
         [str in APIs]: { action: string | boolean, color: ColorResolvable, append?: string }
@@ -74,6 +76,15 @@ const WaifuData: {
 			action: "kissed",
 			color: hexColorTable["hotpink"],
 			append: "♥️",
+		},
+		"nom": {
+			action: "nommed",
+			color: hexColorTable["mediumseagreen"],
+		},
+		"slap": {
+			action: "slapped",
+			color: hexColorTable["pink"],
+			append: "👋",
 		},
 	};
 

@@ -1,5 +1,5 @@
-import { Message, MessageEmbed } from "discord.js";
 import { Argument, Command, PrefixSupplier } from "@cataclym/discord-akairo";
+import { Message, MessageEmbed } from "discord.js";
 
 export default class HelpCommand extends Command {
 	constructor() {
@@ -34,10 +34,11 @@ export default class HelpCommand extends Command {
 				}
 			}
 			embed.setTitle(`**Name:** ${command.id}`);
-			embed.setDescription(`**Aliases:** \`${command.aliases.join("`, `")}\`\n**Description:** ${(command.description.description || command.description)}\n
-			${(command?.description.usage ? `**Usage:** ${usage}` : "")}`);
-			command.userPermissions ? embed.addField("Requires", command.userPermissions, false) : null;
-			command.ownerOnly ? embed.addField("Owner only", "✅", false) : null;
+			embed.setDescription(`**Aliases:** \`${command.aliases.join("`, `")}\`\n**Description:** ${command.description.description || command.description}\n`);
+
+			if (command?.description.usage) embed.addField("Usage", usage);
+			if (command.userPermissions) embed.addField("Requires", command.userPermissions, false);
+			if (command.ownerOnly) embed.addField("Owner only", "✅", false);
 
 			return message.channel.send(embed);
 		}
