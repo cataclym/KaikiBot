@@ -28,8 +28,8 @@ export default class MessageListener extends Listener {
 			emoteReact(message);
 		}
 		else {
-			// I wont wanna see my own msgs, thank u
 			if (message.author.id === config.ownerID) return;
+			// I wont wanna see my own msgs, thank u
 
 			else if (!botOwner) botOwner = this.client.users.cache.get(config.ownerID);
 

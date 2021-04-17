@@ -51,15 +51,15 @@ export default class HelpCommand extends Command {
 		const AvUrl = (message.client.users.cache.get("140788173885276160") || (await message.client.users.fetch("140788173885276160", true)))
 			.displayAvatarURL({ dynamic: true });
 
-		embed.setTitle(`${message.client.user?.username} help page`);
-		embed.setDescription(`Prefix is currently set to \`${prefix}\``);
-		embed.addFields([
-			{ name: "📋 Command list", value: `\`${prefix}cmds\` returns a complete list of commands.`, inline: true },
-			{ name: "🔍 Command Info", value: `\`${prefix}help [command]\` to get more help. Example: \`${prefix}help ping\``, inline: true },
-		]);
-		embed.setAuthor(`${name} v${version}-${execSync("git rev-parse --short HEAD").toString()}`,
-			message.author.displayAvatarURL({ dynamic: true }), "https://gitlab.com/cataclym/nadekosengokubot");
-		embed.setFooter("Made by Cata <3", AvUrl);
+		embed.setTitle(`${message.client.user?.username} help page`)
+			.setDescription(`Prefix is currently set to \`${prefix}\``)
+			.addFields([
+				{ name: "📋 Command list", value: `\`${prefix}cmds\` returns a complete list of commands.`, inline: true },
+				{ name: "🔍 Command Info", value: `\`${prefix}help [command]\` to get more help. Example: \`${prefix}help ping\``, inline: true },
+			])
+			.setAuthor(`${name} v${version}-${execSync("git rev-parse --short HEAD").toString()}`,
+				message.author.displayAvatarURL({ dynamic: true }), "https://gitlab.com/cataclym/nadekosengokubot")
+			.setFooter("Made by Cata <3", AvUrl);
 		return message.channel.send(embed);
 	}
 }
