@@ -1,7 +1,7 @@
 import { Command, Listener } from "@cataclym/discord-akairo";
 import { BitFieldResolvable, Message, MessageEmbed, PermissionString } from "discord.js";
 import logger from "loglevel";
-import { cmdStatsCache } from "./cache";
+import { cmdStatsCache } from "../cache/cache";
 
 
 export default class missingPermissionsListener extends Listener {

@@ -2,7 +2,7 @@
 import { Command, Listener } from "@cataclym/discord-akairo";
 import { Message } from "discord.js";
 import logger from "loglevel";
-import { cmdStatsCache } from "./cache";
+import { cmdStatsCache } from "../cache/cache";
 
 
 export default class commandFinishedListener extends Listener {

@@ -101,3 +101,24 @@ setInterval(async () => {
 
 	cmdStatsCache = {};
 }, 900000);
+
+type cacheObjects = "dadbotCache"
+	| "errorColorCache"
+	| "okColorCache";
+
+interface sessionCache {
+	dadbotCache: {[key: string]: boolean},
+	errorColorCache: {[key: string]: string},
+	okColorCache: {[key: string]: string},
+}
+
+export const sessionCache: sessionCache = {
+	dadbotCache: {},
+	errorColorCache: {},
+	okColorCache: {},
+};
+
+export async function setSessionCache(cache: cacheObjects, id: string, value: boolean | string): Promise<string | boolean> {
+
+	return (sessionCache[cache])[id] = value;
+}
