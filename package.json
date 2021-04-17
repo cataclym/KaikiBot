@@ -6,7 +6,7 @@
     "test": "echo \"Bypass build\" && node ./dist/index.js",
     "start": "npm run build && npm run index",
     "index": "node ./dist/index.js",
-    "build": "tsc",
+    "build": "tsc -p src/tsconfig.json",
     "public": "rm -rf dist/ && npm run start"
   },
   "keywords": [
