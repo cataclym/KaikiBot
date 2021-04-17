@@ -2,7 +2,7 @@ import { Command, PrefixSupplier } from "@cataclym/discord-akairo";
 import { Guild, Message, MessageEmbed } from "discord.js";
 import { customClient } from "../../struct/client.js";
 import { noArgGeneric } from "../../nsb/Embeds.js";
-import { setSessionCache } from "../../Extensions/Discord.js";
+import { setSessionCache } from "../../cache/cache.js";
 
 export default class DadBotConfigCommand extends Command {
 	constructor() {

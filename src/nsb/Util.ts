@@ -7,7 +7,7 @@ export async function getMemberColorAsync(message: Message): Promise<ColorResolv
 
 export const errorColor: ColorResolvable = hexColorTable["red"];
 
-export const okColor: ColorResolvable = hexColorTable["greenyellow"];
+export const okColor: ColorResolvable = "#00ff00";
 
 export type presenceType = {
 	main: string,

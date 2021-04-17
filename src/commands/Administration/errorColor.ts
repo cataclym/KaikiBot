@@ -1,6 +1,6 @@
 import { Argument, Command } from "@cataclym/discord-akairo";
 import { Guild, Message, MessageEmbed } from "discord.js";
-import { setSessionCache } from "../../Extensions/Discord.js";
+import { setSessionCache } from "../../cache/cache.js";
 import { hexColorTable } from "../../nsb/Color.js";
 import { noArgGeneric } from "../../nsb/Embeds.js";
 import { getGuildDB } from "../../struct/db.js";

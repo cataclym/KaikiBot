@@ -1,28 +1,6 @@
 import { Command, PrefixSupplier } from "@cataclym/discord-akairo";
 import { config } from "../config";
 
-// cache
-type cacheObjects = "dadbotCache"
-	| "errorColorCache"
-	| "okColorCache";
-
-interface sessionCache {
-	dadbotCache: {[key: string]: boolean},
-	errorColorCache: {[key: string]: string},
-	okColorCache: {[key: string]: string},
-}
-
-const sessionCache: sessionCache = {
-	dadbotCache: {},
-	errorColorCache: {},
-	okColorCache: {},
-};
-
-export async function setSessionCache(cache: cacheObjects, id: string, value: boolean | string): Promise<string | boolean> {
-
-	return (sessionCache[cache])[id] = value;
-}
-
 function getPrefix(message: Message, command: Command) {
 	const prefix = (command.handler.prefix as PrefixSupplier)(message);
 	if (Array.isArray(prefix)) return prefix[0] as string;
@@ -51,16 +29,12 @@ declare module "discord.js" {
         withOkColor(m?: Message): this;
         withErrorColor(m?: Message): this;
     }
-
-	// export interface MessageEmbedOptions {
-	// 	errorColor?: Message;
-	// 	okColor?: Message;
-	// }
 }
 
 import { ColorResolvable, Guild, GuildMember, Message, MessageEmbed } from "discord.js";
 import { customClient } from "../struct/client";
 import { errorColor, okColor } from "../nsb/Util";
+import { sessionCache } from "../cache/cache";
 
 Message.prototype.args = function(command: Command) {
 	return (command.handler.parseWithPrefix(this, getPrefix(this, command)))?.content;
@@ -78,20 +52,22 @@ GuildMember.prototype.hasExcludedRole = function(member?: GuildMember) {
 Guild.prototype.isDadBotEnabled = function(guild?: Guild) {
 
 	const g = guild ?? this as Guild;
+
 	if (!g) return false;
+
 	let enabled = sessionCache.dadbotCache[g.id];
 
 	if (typeof enabled !== "boolean") {
 		enabled = (g.client as customClient).guildSettings.get(g.id, "dadBot", false);
 		sessionCache.dadbotCache[g.id] = enabled;
 	}
-
 	return enabled;
 };
 
 MessageEmbed.prototype.withErrorColor = function(m?: Message) {
 
 	if (m?.guild?.id) {
+
 		let color = sessionCache.errorColorCache[m.guild.id];
 
 		if (!color) {
@@ -111,7 +87,7 @@ MessageEmbed.prototype.withOkColor = function(m?: Message) {
 
 		if (!color) {
 			color = m.client.guildSettings.get(m.guild.id, "okColor", okColor);
-			sessionCache.errorColorCache[m.guild.id] = color;
+			sessionCache.okColorCache[m.guild.id] = color;
 		}
 		return this.setColor(color);
 	}
