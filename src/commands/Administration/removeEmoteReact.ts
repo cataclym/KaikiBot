@@ -7,6 +7,7 @@ export default class RemoveEmoteReactCommand extends Command {
 	constructor() {
 		super("removereact", {
 			aliases: ["removereact", "rer"],
+			userPermissions: "MANAGE_EMOJIS",
 			channel: "guild",
 			description: { description: "Remove emotereact triggers.",
 				usage: ["anime"] },

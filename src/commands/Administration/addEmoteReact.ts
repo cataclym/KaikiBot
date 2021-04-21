@@ -7,6 +7,8 @@ export default class EmoteReactCommand extends Command {
 	constructor() {
 		super("addemotereact", {
 			aliases: ["addemotereact", "emotereact", "aer"],
+			userPermissions: "MANAGE_EMOJIS",
+			clientPermissions: "ADD_REACTIONS",
 			channel: "guild",
 			description: { description: "Add triggers for the bot to react with emojis/emotes to. Use quotes for triggers with spaces.",
 				usage: ["red :red:", "anime :weeaboosgetout:"] },

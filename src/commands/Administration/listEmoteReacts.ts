@@ -9,7 +9,7 @@ export default class RemoveEmoteReactCommand extends Command {
 			aliases: ["listreacts", "ler"],
 			channel: "guild",
 			description: { description: "List emotereact triggers.",
-				usage: ["anime"] },
+				usage: [""] },
 		});
 	}
 
