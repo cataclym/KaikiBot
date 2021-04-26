@@ -1,43 +1,87 @@
-import { Command, PrefixSupplier } from "@cataclym/discord-akairo";
+import { Argument, Category, Command, PrefixSupplier } from "@cataclym/discord-akairo";
 import { Message, MessageEmbed } from "discord.js";
+import { version } from "../../../package.json";
+import { noArgGeneric } from "../../nsb/Embeds";
 
-module.exports = class commandsList extends Command {
+export default class commandsList extends Command {
 	constructor() {
 		super("cmdlist", {
 			aliases: ["commands", "cmds", "cmdlist"],
-			description: "Returns all aliases and commands.",
+			description: {
+				description: "Returns all commands.",
+				usage: ["", "admin"] },
+
+			args: [
+				{
+					id: "category",
+					type: Argument.union((_, phrase) => {
+						return this.handler.categories.find((__, k) => {
+
+							k = k.toLowerCase();
+
+							return phrase
+								.toLowerCase()
+								.startsWith(k.slice(0, Math.max(phrase.length - 1, 1)));
+						});
+					}, (__, _phrase) => _phrase.length <= 0
+						? ""
+						: undefined),
+					// Thanks js
+					otherwise: (msg: Message) => noArgGeneric(msg),
+
+				},
+			],
 		});
 	}
 
-	public async exec(message: Message) {
-		const AvUrl = await message.client.users.fetch("140788173885276160");
-		// Bot author
-		const embed = new MessageEmbed({
-			title: "List of commands for Nadeko Sengoku",
-			description: `Prefix is currently set to \`${(this.handler.prefix as PrefixSupplier)(message)}\`\n`,
-			author: {
-				name: `Nadeko Sengoku Bot v${process.env.npm_package_version}`,
-				url: "https://gitlab.com/cataclym/nadekosengokubot",
-				icon_url: message.author.displayAvatarURL({ dynamic: true }),
-			},
-			thumbnail: {
-				url: "https://cdn.discordapp.com/attachments/717045690022363229/726600392107884646/3391ce4715f3c814d6067911438e5bf7.png",
-			},
-			footer: {
-				text: "Made by Cata <3",
-				icon_url: AvUrl.displayAvatarURL({ dynamic: true }),
-			},
-		})
-			.withOkColor(message);
+	public async exec(message: Message, { category }: { category: Category<string, Command>}): Promise<Message | undefined> {
 
-		for (const category of this.handler.categories.values()) {
-			if (["default", "Etc"].includes(category.id)) continue;
+		const prefix = (this.handler.prefix as PrefixSupplier)(message);
 
-			embed.addField(category.id, category
-				.filter(cmd => cmd.aliases.length > 0)
-				.map(cmd => `**\`${cmd}\`**`)
-				.join(", ") || "Empty");
+		if (category) {
+			const embed = new MessageEmbed()
+				.setTitle(`Commands in ${category.id}`)
+				.withOkColor(message);
+			{
+				embed.setDescription(category
+					.filter(cmd => cmd.aliases.length > 0)
+					.map(cmd => `**${prefix}${cmd}** [\`${cmd.aliases.join("`, `")}\`]`)
+					.join("\n") || "Empty");
+			}
+			return message.channel.send(embed);
 		}
-		await message.channel.send(embed);
+
+		else {
+			const AvUrl = (message.client.users.cache.get("140788173885276160") || (await message.client.users.fetch("140788173885276160", true)))
+				.displayAvatarURL({ dynamic: true });
+
+			const embed = new MessageEmbed({
+				title: `List of commands for ${this.client.user?.username}`,
+				description: `Prefix is currently set to \`${prefix}\`\n`,
+				author: {
+					name: `Kaiki Deishu Bot v${version}`,
+					url: "https://gitlab.com/cataclym/KaikiDeishuBot",
+					icon_url: message.author.displayAvatarURL({ dynamic: true }),
+				},
+				thumbnail: {
+					url: "https://cdn.discordapp.com/attachments/717045690022363229/726600392107884646/3391ce4715f3c814d6067911438e5bf7.png",
+				},
+				footer: {
+					text: "Made by Cata <3",
+					icon_url: AvUrl,
+				},
+			})
+				.withOkColor(message);
+
+			for (const _category of this.handler.categories.values()) {
+				if (["default", "Etc"].includes(_category.id)) continue;
+
+				embed.addField(_category.id, _category
+					.filter(cmd => cmd.aliases.length > 0)
+					.map(cmd => `**${prefix}${cmd}**`)
+					.join(" ") || "Empty");
+			}
+			return message.channel.send(embed);
+		}
 	}
-};
+}
