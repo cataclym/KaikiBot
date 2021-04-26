@@ -58,7 +58,7 @@ export default class HelpCommand extends Command {
 				{ name: "🔍 Command Info", value: `\`${prefix}help [command]\` to get more help. Example: \`${prefix}help ping\``, inline: true },
 			])
 			.setAuthor(`${name} v${version}-${execSync("git rev-parse --short HEAD").toString()}`,
-				message.author.displayAvatarURL({ dynamic: true }), "https://gitlab.com/cataclym/nadekosengokubot")
+				message.author.displayAvatarURL({ dynamic: true }), "https://gitlab.com/cataclym/KaikiDeishuBot")
 			.setFooter("Made by Cata <3", AvUrl);
 		return message.channel.send(embed);
 	}

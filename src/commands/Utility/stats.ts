@@ -1,6 +1,8 @@
-import { Message, MessageEmbed, version } from "discord.js";
 import Akairo, { Command } from "@cataclym/discord-akairo";
 import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
+import { execSync } from "child_process";
+import { Message, MessageEmbed, version } from "discord.js";
+import * as packageJson from "../../../package.json";
 import { getCommandStatsDB } from "../../struct/db";
 
 function format(seconds: number) {
@@ -24,13 +26,13 @@ module.exports = class StatsCommand extends Command {
 
 		const guildCache = this.client.guilds.cache,
 			createEmbed = () => new MessageEmbed()
-				.setAuthor("© 2020 @Cata#2702", message.client.user?.displayAvatarURL({ dynamic: true }), "https://gitlab.com/cataclym/nadekosengokubot")
+				.setAuthor("© 2020 @Cata#2702", message.client.user?.displayAvatarURL({ dynamic: true }), "https://gitlab.com/cataclym/KaikiDeishuBot")
 				.withOkColor(message),
 			db = await getCommandStatsDB(),
-			stats = Object.entries(db.count).sort();
+			stats = Object.entries(db.count).sort((a, b) => b[1] - a[1]);
 
 		const pages = [new MessageEmbed()
-			.setAuthor(`Nadeko Sengoku Bot v${process.env.npm_package_version}`, message.client.user?.displayAvatarURL({ dynamic: true }), "https://gitlab.com/cataclym/nadekosengokubot")
+			.setAuthor(`${packageJson.name} v${packageJson.version}-${execSync("git rev-parse --short HEAD").toString()}`, message.client.user?.displayAvatarURL({ dynamic: true }), "https://gitlab.com/cataclym/KaikiDeishuBot")
 			.setDescription("**Built using**:")
 			.addFields([
 				{ name: "Discord.js library", value: `[Discord.js](https://discord.js.org/#/ 'Discord.js website') v${version}`, inline: true },
@@ -53,11 +55,13 @@ module.exports = class StatsCommand extends Command {
 				.setTitle("Command stats")
 				.withOkColor(message);
 
-			stats.slice(i, l).forEach(([key, value]) => {
-				emb.addField(key, value, true);
+			const desc = stats.slice(i, l).map(([key, value]) => {
+				return `**${key}**: \`${value}\``;
 			});
 
-			if (!emb.fields.length) return;
+			emb.setDescription(desc.join("\n"));
+
+			if (!emb.description?.length) return;
 
 			pages.push(emb);
 		}

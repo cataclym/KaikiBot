@@ -4,7 +4,7 @@ export default class InviteCommand extends Command {
 	constructor() {
 		super("invite", {
 			aliases: ["invite", "inv"],
-			description: { description: "Get a link to invite Nadeko Sengoku to your server.", usage: "" },
+			description: { description: `Get a link to invite ${() => this.client.user?.username} to your server.`, usage: "" },
 		});
 	}
 	public async exec(message: Message): Promise<Message> {
