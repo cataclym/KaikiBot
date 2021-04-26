@@ -17,6 +17,7 @@ export interface IGuild extends Document {
 	userRoles: {[userID: string]: string},
 	emojiStats: {[emojiID: string]: number},
 	emojiReactions: {[keyWord: string]: string},
+    illegalWordChannel: { channel: string, word: string; };
 	settings: {
 		prefix: string,
 		anniversary: boolean,

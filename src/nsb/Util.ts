@@ -1,4 +1,4 @@
-import { ClientUser, Message, ColorResolvable, UserFlagsString, User } from "discord.js";
+import { ClientUser, ColorResolvable, Message, User, UserFlagsString } from "discord.js";
 import { hexColorTable } from "./Color";
 
 export async function getMemberColorAsync(message: Message): Promise<ColorResolvable> {
@@ -23,13 +23,13 @@ export async function getUserPresenceAsync(user: User): Promise<presenceType> {
 		return Promise.resolve(presence);
 	}
 
-	presence.main =
-	(user.presence?.activities?.length ?
-		`${user.presence?.activities.join(", ")}\n` : "") +
-	(user.presence?.activities.map((e) => e.state).length ?
-		`**State**\n${user?.presence?.activities.map((a) => a.state).join("\n")}\n` : "") +
-	(user.presence.status !== "offline" ?
-		Object.entries(user.presence.clientStatus as { [s: string]: unknown; } | ArrayLike<unknown>).join(", ") : "Offline");
+	presence.main = (user.presence?.activities?.length
+		? `${user.presence?.activities.join(", ")}\n`
+		: "") + (user.presence?.activities.map((e) => e.state).length
+		? `**State**\n${user?.presence?.activities.map((a) => a.state).join("\n")}\n`
+		: "") + (user.presence.status !== "offline"
+		? Object.entries(user.presence.clientStatus as {[s: string]:unknown} | ArrayLike<unknown>).join(", ")
+		: "Offline");
 
 	const uPActivities = user?.presence?.activities;
 

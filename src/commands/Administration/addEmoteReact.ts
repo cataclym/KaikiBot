@@ -1,6 +1,6 @@
 import { Command } from "@cataclym/discord-akairo";
 import { GuildEmoji, Message, MessageEmbed } from "discord.js";
-import { keyWordCache } from "../../nsb/functions";
+import { keyWordCache } from "../../cache/cache";
 import { getGuildDB } from "../../struct/db";
 
 export default class EmoteReactCommand extends Command {

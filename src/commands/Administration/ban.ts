@@ -30,15 +30,17 @@ export default class BanCommand extends Command {
 			],
 		});
 	}
-	public async exec(message: Message, { user, reason }: { user: User, reason: string}): Promise<Message> {
+	public async exec(message: Message, { user, reason }: { user: GuildMember | User, reason: string}): Promise<Message> {
 
-		const guild = message.guild as Guild;
-		const guildClientMember = guild.me as GuildMember;
+		const guild = message.guild as Guild,
+			guildClientMember = guild.me as GuildMember;
 
 		const successBan = new MessageEmbed({
 			title: "Banned user",
 			fields: [
-				{ name: "Username", value: user.username, inline: true },
+				{ name: "Username", value: user instanceof GuildMember
+					? user.user.username
+					: user.username, inline: true },
 				{ name: "ID", value: user.id, inline: true },
 			],
 		})

@@ -122,3 +122,13 @@ export async function setSessionCache(cache: cacheObjects, id: string, value: bo
 
 	return (sessionCache[cache])[id] = value;
 }
+
+interface wordCache {[word: string]: number}
+
+interface channelWordCache {[channelID: string]: wordCache}
+
+export const wordCache: channelWordCache = {};
+
+export const keyWordCache: {[guild: string]: {[keyWord: string]: string} } = {};
+
+export const illegalWordCache: {[guild: string]:{ channel: string | null, word: string | null }} = {};
