@@ -1,13 +1,12 @@
 import { Command } from "@cataclym/discord-akairo";
-import { MessageAttachment } from "discord.js";
-import { Message, MessageEmbed, Role } from "discord.js";
+import { Message, MessageAttachment, MessageEmbed, Role } from "discord.js";
 import { imgFromColor, resolveColor } from "../../nsb/Color";
 
 export default class RoleColorCommand extends Command {
 	constructor() {
 		super("rolecolor", {
 			aliases: ["rolecolor", "roleclr", "rclr"],
-			description: { description: "Displays the color of a given role, or your highest role.", usage: "@Gamer weeb" },
+			description: { description: "Displays the color of a given role, or your highest role.", usage: "@Gamer ff00ff" },
 			clientPermissions: "MANAGE_ROLES",
 			channel: "guild",
 			args: [
