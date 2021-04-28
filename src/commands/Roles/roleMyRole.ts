@@ -1,7 +1,7 @@
 import { Command, PrefixSupplier } from "@cataclym/discord-akairo";
-import { Message, MessageEmbed, Guild } from "discord.js";
-import { trim } from "../../nsb/Util";
+import { Guild, Message, MessageEmbed } from "discord.js";
 import { resolveColor } from "../../nsb/Color";
+import { trim } from "../../nsb/Util";
 import { getGuildDB } from "../../struct/db";
 
 export default class MyRoleCommand extends Command {
@@ -47,7 +47,7 @@ export default class MyRoleCommand extends Command {
 					.withOkColor(message);
 			};
 
-		const db = await getGuildDB(message.author.id),
+		const db = await getGuildDB(guild.id),
 			roleID = db.userRoles[message.author.id];
 
 		if (!roleID) return message.channel.send(await embedFail());
