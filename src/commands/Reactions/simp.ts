@@ -1,6 +1,6 @@
-import Canvas, { loadImage } from "canvas";
 import { Command } from "@cataclym/discord-akairo";
-import { Message, GuildMember, MessageAttachment } from "discord.js";
+import Canvas, { loadImage } from "canvas";
+import { GuildMember, Message, MessageAttachment } from "discord.js";
 // Canvas.registerFont("../../../lmsans9-regular.otf", { family: "Latin Modern Sans", style: "regular" });
 const background = async () => await loadImage("https://cdn.discordapp.com/attachments/717045059215687691/763459005137420328/simp.jpg");
 export default class SimpCommand extends Command {

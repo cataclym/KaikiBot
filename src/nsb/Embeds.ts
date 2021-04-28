@@ -89,7 +89,7 @@ const noArgGeneric = (message: Message): MessageEmbed => {
 	}
 
 	return new MessageEmbed({
-		description: "Please provide arguments.",
+		description: "Please provide (valid) arguments.",
 		fields: [{ name: "Usage", value: (usage ? `${usage}` : "<any>") }],
 	})
 		.withErrorColor(message);
@@ -102,10 +102,11 @@ const errorMessage = async (message: Message, msg: string): Promise<MessageEmbed
 	.withErrorColor(message);
 
 export {
-	DMEMarry,
-	errorMessage,
-	noArgGeneric,
-	noArgRole,
-	TinderHelp,
-	tinderRollEmbed,
+    DMEMarry,
+    errorMessage,
+    noArgGeneric,
+    noArgRole,
+    TinderHelp,
+    tinderRollEmbed,
 };
+

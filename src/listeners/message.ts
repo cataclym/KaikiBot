@@ -1,12 +1,6 @@
 import { Listener } from "@cataclym/discord-akairo";
-import { Message, MessageEmbed, User } from "discord.js";
-import logger from "loglevel";
-import { config } from "../config";
-import { countEmotes, emoteReact, tiredNadekoReact } from "../nsb/functions";
-import { trim } from "../nsb/Util";
-
-
-let botOwner: User | undefined;
+import { Message } from "discord.js";
+import { countEmotes, emoteReact, illegalWordService, sendDM, tiredNadekoReact } from "../nsb/functions";
 
 export default class MessageListener extends Listener {
 	constructor() {
@@ -16,7 +10,7 @@ export default class MessageListener extends Listener {
 		});
 	}
 
-	public async exec(message: Message): Promise<void | Message> {
+	public async exec(message: Message): Promise<void> {
 
 		if (message.webhookID || message.author.bot) return;
 
@@ -26,42 +20,11 @@ export default class MessageListener extends Listener {
 			// Guild only
 			countEmotes(message);
 			emoteReact(message);
+			illegalWordService(message);
 		}
+
 		else {
-			if (message.author.id === config.ownerID) return;
-			// I wont wanna see my own msgs, thank u
-
-			else if (!botOwner) botOwner = this.client.users.cache.get(config.ownerID);
-
-			let attachmentLinks = "";
-			logger.info(`message | DM from ${message.author.tag} [${message.author.id}]`);
-
-			const embed = new MessageEmbed({
-				author: { name: `${message.author.tag} [${message.author.id}]` },
-				description: trim(message.content, 2048),
-			})
-				.withOkColor();
-
-			// Attachments (Terrible, I know)
-			const { attachments } = message;
-
-			if (attachments.first()?.url) {
-
-				const urls: string[] = attachments.map(a => a.url);
-
-				const restLinks = [...urls];
-				restLinks.shift();
-				attachmentLinks = restLinks.join("\n");
-
-				const firstAttachment = attachments.first()?.url as string;
-
-				embed
-					.setImage(firstAttachment)
-					.setTitle(firstAttachment)
-					.setFooter(urls.join("\n"));
-			}
-
-			return botOwner?.send({ content: attachmentLinks ?? null, embed: embed });
+			sendDM(message);
 		}
 	}
 }

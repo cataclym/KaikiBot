@@ -27,6 +27,10 @@ export const guildSchema = new Schema({
 		type: Object, default: {
 		},
 	},
+	illegalWordChannel: {
+		type: Object, default: {
+		},
+	},
 
 	settings: {
 		type: Object, default: {
