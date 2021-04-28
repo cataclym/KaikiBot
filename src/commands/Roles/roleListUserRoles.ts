@@ -23,7 +23,7 @@ export default class ListUserRoles extends Command {
 
 		if (roles.length) {
 
-			const mapped = roles.map(([u, r]) => `${message.guild?.members.cache.get(u) || u}: ${message.guild?.roles.cache.get(r) || r}`),
+			const mapped = roles.sort().map(([u, r]) => `${message.guild?.members.cache.get(u) || u}: ${message.guild?.roles.cache.get(r) || r}`),
 				pages: MessageEmbed[] = [];
 
 			for (let items = 20, from = 0; mapped.length > from; items += 20, from += 20) {
