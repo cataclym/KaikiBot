@@ -1,6 +1,6 @@
 import { Argument, Category, Command, PrefixSupplier } from "@cataclym/discord-akairo";
 import { Message, MessageEmbed } from "discord.js";
-import { version } from "../../../package.json";
+import { name, repository, version } from "../../../package.json";
 import { noArgGeneric } from "../../nsb/Embeds";
 
 export default class commandsList extends Command {
@@ -8,7 +8,7 @@ export default class commandsList extends Command {
 		super("cmdlist", {
 			aliases: ["commands", "cmds", "cmdlist"],
 			description: {
-				description: "Returns all commands.",
+				description: "Shows categories, or commands if provided with a category.",
 				usage: ["", "admin"] },
 
 			args: [
@@ -52,23 +52,20 @@ export default class commandsList extends Command {
 		}
 
 		else {
-			const AvUrl = (message.client.users.cache.get("140788173885276160") || (await message.client.users.fetch("140788173885276160", true)))
-				.displayAvatarURL({ dynamic: true });
-
 			const embed = new MessageEmbed({
-				title: `List of commands for ${this.client.user?.username}`,
+				title: `List of command categories for ${this.client.user?.username}`,
 				description: `Prefix is currently set to \`${prefix}\`\n`,
 				author: {
-					name: `Kaiki Deishu Bot v${version}`,
-					url: "https://gitlab.com/cataclym/KaikiDeishuBot",
+					name: `${name} v${version}`,
+					url: repository.url,
 					icon_url: message.author.displayAvatarURL({ dynamic: true }),
 				},
 				thumbnail: {
 					url: "https://cdn.discordapp.com/attachments/717045690022363229/726600392107884646/3391ce4715f3c814d6067911438e5bf7.png",
 				},
 				footer: {
-					text: "Made by Cata <3",
-					icon_url: AvUrl,
+					icon_url: (message.client.users.cache.get("140788173885276160") || (await message.client.users.fetch("140788173885276160", true)))
+						.displayAvatarURL({ dynamic: true }),
 				},
 			})
 				.withOkColor(message);
@@ -76,10 +73,7 @@ export default class commandsList extends Command {
 			for (const _category of this.handler.categories.values()) {
 				if (["default", "Etc"].includes(_category.id)) continue;
 
-				embed.addField(_category.id, _category
-					.filter(cmd => cmd.aliases.length > 0)
-					.map(cmd => `**${prefix}${cmd}**`)
-					.join(" ") || "Empty");
+				embed.addField(_category.id, `Commands: **${_category.size}**`);
 			}
 			return message.channel.send(embed);
 		}
