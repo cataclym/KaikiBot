@@ -1,6 +1,6 @@
 {
   "name": "kaikideishubot",
-  "version": "3.4.1-aqua",
+  "version": "3.4.1-Blueberry",
   "main": "./dist/index.js",
   "scripts": {
     "test": "echo \"Bypass build\" && node ./dist/index.js",
