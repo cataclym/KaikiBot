@@ -20,7 +20,7 @@ export default class commandFinishedListener extends Listener {
 Guild: ${message.guild?.name} [${message.guild?.id}]
 ${message.channel.type !== "dm" ? `Channel: #${message.channel.name} [${message.channel.id}]` : ""}
 User: ${message.author.username} [${message.author.id}]
-Executed ${command?.id} | "${message.content}"`);
+Executed ${command?.id} | "${message.content}"\n`);
 
 		cmdStatsCache[command.id]
 			? cmdStatsCache[command.id]++

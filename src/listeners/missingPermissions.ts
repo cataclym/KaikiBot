@@ -14,7 +14,7 @@ export default class missingPermissionsListener extends Listener {
 
 	// Emitted when a permissions check is failed.
 
-	public async exec(message: Message, command: Command, type: string, missing: BitFieldResolvable<PermissionString>): Promise<NodeJS.Timeout | void> {
+	public async exec(message: Message, command: Command, type: string, missing: BitFieldResolvable<PermissionString>): Promise<Message | void> {
 		const date = new Date().toLocaleString("en-GB", { hour: "2-digit", minute: "2-digit", second: "2-digit", weekday: "short", year: "numeric", month: "numeric", day: "numeric" });
 
 		logger.info(`${date} missingPermissions | ${Date.now() - message.createdTimestamp}ms
@@ -28,16 +28,16 @@ Executed ${command.id} | "${message.content}"`);
 			: cmdStatsCache[command.id] = 1;
 
 		if (message.channel.type !== "dm") {
-			const msg = await message.util?.send(new MessageEmbed({
+			const msg = await message.channel.send(new MessageEmbed({
 				title: "Missing permissions",
 				description: `${type === "client" ? "Client" : "User"} can't execute \`${command.id}\` due to missing permissions.`,
 				footer: { text: `Missing: ${missing}` },
 			})
 				.withErrorColor(message));
 
-			return setTimeout(async () => {
-				if (message.guild?.me?.hasPermission("MANAGE_MESSAGES")) msg?.delete();
-			}, 7500);
+			return msg.delete({ timeout: 7500 })
+				.catch(logger.error);
+
 		}
 	}
 }
