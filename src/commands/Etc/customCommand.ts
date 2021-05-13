@@ -1,8 +1,8 @@
 // import { Command } from "@cataclym/discord-akairo";
 // import { Message } from "discord.js";
 // import db from "quick.db";
-// import { codeblock } from "../../nsb/Util";
-// import customCommand from "../../nsb/customCommand";
+// import { codeblock } from "../../lib/Util";
+// import customCommand from "../../lib/customCommand";
 // const CustomCommands = new db.table("UserNickTable");
 // let command: customCommand;
 

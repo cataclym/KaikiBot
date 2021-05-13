@@ -1,6 +1,6 @@
 import { Command } from "@cataclym/discord-akairo";
 import { Message } from "discord.js";
-import sendWaifuPics from "../../nsb/waifuPics";
+import sendWaifuPics from "../../lib/waifuPics";
 
 export default class Neko extends Command {
 	constructor() {

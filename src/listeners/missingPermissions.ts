@@ -2,6 +2,7 @@ import { Command, Listener } from "@cataclym/discord-akairo";
 import { BitFieldResolvable, Message, MessageEmbed, PermissionString } from "discord.js";
 import logger from "loglevel";
 import { cmdStatsCache } from "../cache/cache";
+import { listenerLog } from "../lib/Util";
 
 
 export default class missingPermissionsListener extends Listener {
@@ -15,13 +16,8 @@ export default class missingPermissionsListener extends Listener {
 	// Emitted when a permissions check is failed.
 
 	public async exec(message: Message, command: Command, type: string, missing: BitFieldResolvable<PermissionString>): Promise<Message | void> {
-		const date = new Date().toLocaleString("en-GB", { hour: "2-digit", minute: "2-digit", second: "2-digit", weekday: "short", year: "numeric", month: "numeric", day: "numeric" });
 
-		logger.info(`${date} missingPermissions | ${Date.now() - message.createdTimestamp}ms
-Guild: ${message.guild?.name} [${message.guild?.id}]
-${message.channel.type !== "dm" ? `Channel: #${message.channel.name} [${message.channel.id}]` : ""}
-User: ${message.author.username} [${message.author.id}]
-Executed ${command.id} | "${message.content}"`);
+		listenerLog(message, this, logger.info, command);
 
 		cmdStatsCache[command.id]
 			? cmdStatsCache[command.id]++

@@ -1,8 +1,8 @@
 import { Argument, Command, Flag } from "@cataclym/discord-akairo";
 import { Message, MessageEmbed, MessageReaction, User } from "discord.js";
 import logger from "loglevel";
-import { tinderRollEmbed } from "../../nsb/Embeds";
-import { noMoreLikesOrRolls, tinderDislike, tinderNormalLike, tinderSuperLike } from "../../nsb/Tinder";
+import { tinderRollEmbed } from "../../lib/Embeds";
+import { noMoreLikesOrRolls, tinderDislike, tinderNormalLike, tinderSuperLike } from "../../lib/Tinder";
 import { getTinderDB } from "../../struct/db";
 
 const reactPromises = async (SentMsg: Message) => {

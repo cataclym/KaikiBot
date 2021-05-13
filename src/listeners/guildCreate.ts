@@ -1,7 +1,7 @@
 import { Listener } from "@cataclym/discord-akairo";
 import { Guild } from "discord.js";
-import { checkBirthdayOnAdd } from "../nsb/AnniversaryRoles";
-import { emoteDataBaseService } from "../nsb/functions";
+import { checkBirthdayOnAdd } from "../lib/AnniversaryRoles";
+import { emoteDataBaseService } from "../lib/functions";
 
 module.exports = class GuildCreate extends Listener {
 	constructor() {

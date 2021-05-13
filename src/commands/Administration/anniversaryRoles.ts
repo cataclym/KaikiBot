@@ -1,9 +1,9 @@
-import { Guild, Message, MessageEmbed } from "discord.js";
 import { Command } from "@cataclym/discord-akairo";
-import { checkBirthdayOnAdd } from "../../nsb/AnniversaryRoles.js";
-import { noArgGeneric } from "../../nsb/Embeds";
-import { getGuildDB } from "../../struct/db.js";
+import { Guild, Message, MessageEmbed } from "discord.js";
 import { IGuild } from "../../interfaces/db.js";
+import { checkBirthdayOnAdd } from "../../lib/AnniversaryRoles.js";
+import { noArgGeneric } from "../../lib/Embeds";
+import { getGuildDB } from "../../struct/db.js";
 
 type values = "enable" | "true" | "disable" | "false";
 const values: values[] = ["enable", "true", "disable", "false"];

@@ -1,8 +1,8 @@
 import { Argument, Command } from "@cataclym/discord-akairo";
 import { Guild, Message, MessageEmbed } from "discord.js";
 import { setSessionCache } from "../../cache/cache.js";
-import { hexColorTable } from "../../nsb/Color.js";
-import { noArgGeneric } from "../../nsb/Embeds.js";
+import { hexColorTable } from "../../lib/Color.js";
+import { noArgGeneric } from "../../lib/Embeds.js";
 import { getGuildDB } from "../../struct/db.js";
 
 export default class ErrorColorConfigCommand extends Command {

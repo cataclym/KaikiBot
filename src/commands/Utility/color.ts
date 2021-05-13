@@ -1,8 +1,8 @@
 import { Command } from "@cataclym/discord-akairo";
 import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
 import { Message, MessageAttachment, MessageEmbed } from "discord.js";
-import { hexColorTable, imgFromColor, resolveColor } from "../../nsb/Color";
-import { noArgGeneric } from "../../nsb/Embeds";
+import { hexColorTable, imgFromColor, resolveColor } from "../../lib/Color";
+import { noArgGeneric } from "../../lib/Embeds";
 
 export default class ColorCommand extends Command {
 	constructor() {

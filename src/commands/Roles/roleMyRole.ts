@@ -1,7 +1,7 @@
 import { Command, PrefixSupplier } from "@cataclym/discord-akairo";
 import { Guild, Message, MessageEmbed } from "discord.js";
-import { resolveColor } from "../../nsb/Color";
-import { trim } from "../../nsb/Util";
+import { resolveColor } from "../../lib/Color";
+import { trim } from "../../lib/Util";
 import { getGuildDB } from "../../struct/db";
 
 export default class MyRoleCommand extends Command {

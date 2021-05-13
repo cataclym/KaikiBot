@@ -127,3 +127,9 @@ config.json
 
 # Output dir
 dist/
+
+credentials.json
+
+obj/
+
+bin/

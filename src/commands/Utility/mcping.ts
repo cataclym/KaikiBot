@@ -2,8 +2,8 @@ import { Command } from "@cataclym/discord-akairo";
 import { Message, MessageAttachment, MessageEmbed } from "discord.js";
 import fetch from "node-fetch";
 import { ServerOffline, ServerOnline } from "../../interfaces/IMinecraftServerPing";
-import { noArgGeneric } from "../../nsb/Embeds";
-import { trim } from "../../nsb/Util";
+import { noArgGeneric } from "../../lib/Embeds";
+import { trim } from "../../lib/Util";
 
 
 export default class mcpingCommand extends Command {

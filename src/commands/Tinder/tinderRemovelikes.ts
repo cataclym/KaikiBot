@@ -1,7 +1,7 @@
 import { Command } from "@cataclym/discord-akairo";
 import { Message, MessageEmbed } from "discord.js";
 import { ITinder } from "../../interfaces/db";
-import { errorMessage } from "../../nsb/Embeds";
+import { errorMessage } from "../../lib/Embeds";
 import { getTinderDB } from "../../struct/db";
 
 export default class TinderRemoveLikes extends Command {

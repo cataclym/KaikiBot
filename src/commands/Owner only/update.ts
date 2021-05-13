@@ -2,7 +2,7 @@ import { Command } from "@cataclym/discord-akairo";
 import { exec } from "child_process";
 import { Message } from "discord.js";
 import logger from "loglevel";
-import { codeblock, trim } from "../../nsb/Util";
+import { codeblock, trim } from "../../lib/Util";
 export default class UpdateCommand extends Command {
 	constructor() {
 		super("update", {

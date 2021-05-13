@@ -2,8 +2,8 @@ import { Listener } from "@cataclym/discord-akairo";
 import { MessageEmbed } from "discord.js";
 import logger from "loglevel";
 import { config } from "../config";
-import { birthdayService } from "../nsb/AnniversaryRoles";
-import { dailyResetTimer, emoteDataBaseService } from "../nsb/functions";
+import { birthdayService } from "../lib/AnniversaryRoles";
+import { dailyResetTimer, emoteDataBaseService } from "../lib/functions";
 import { guildsDB } from "../struct/models";
 
 

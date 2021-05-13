@@ -1,7 +1,7 @@
 import { Command } from "@cataclym/discord-akairo";
 import { Message, MessageReaction } from "discord.js";
+import { noArgGeneric } from "../../lib/Embeds";
 import { getUserDB } from "../../struct/db";
-import { noArgGeneric } from "../../nsb/Embeds";
 export default class todoAddCommand extends Command {
 	constructor() {
 		super("add", {

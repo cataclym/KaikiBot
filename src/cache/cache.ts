@@ -132,3 +132,8 @@ export const wordCache: channelWordCache = {};
 export const keyWordCache: {[guild: string]: {[keyWord: string]: string} } = {};
 
 export const illegalWordCache: {[guild: string]:{ channel: string | null, word: string | null }} = {};
+
+// Anime quotes
+export type respType = { anime: string, character: string, quote: string };
+export const animeQuoteCache: {[character: string]: respType} = {};
+

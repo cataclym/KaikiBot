@@ -1,7 +1,7 @@
 import { Argument, Category, Command, PrefixSupplier } from "@cataclym/discord-akairo";
 import { Message, MessageEmbed } from "discord.js";
 import { name, repository, version } from "../../../package.json";
-import { noArgGeneric } from "../../nsb/Embeds";
+import { noArgGeneric } from "../../lib/Embeds";
 
 export default class commandsList extends Command {
 	constructor() {

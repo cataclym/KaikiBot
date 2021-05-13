@@ -1,6 +1,6 @@
 import { Command } from "@cataclym/discord-akairo";
 import { GuildMember, Message, MessageEmbed } from "discord.js";
-import sendNekosPics from "../../nsb/nekos.life";
+import sendNekosPics from "../../lib/nekos.life";
 
 export default class spank extends Command {
 	constructor() {

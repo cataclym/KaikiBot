@@ -2,7 +2,7 @@ import { Command } from "@cataclym/discord-akairo";
 import Discord, { Message } from "discord.js";
 import fetch from "node-fetch";
 import { PurpleData, RedditData } from "../../interfaces/IRedditAPI";
-import { trim } from "../../nsb/Util";
+import { trim } from "../../lib/Util";
 
 export default class YeetCommand extends Command {
 	constructor() {

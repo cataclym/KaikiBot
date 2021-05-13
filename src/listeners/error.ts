@@ -3,6 +3,7 @@ import { Command, Listener } from "@cataclym/discord-akairo";
 import { Message } from "discord.js";
 import logger from "loglevel";
 import { cmdStatsCache } from "../cache/cache";
+import { listenerLog } from "../lib/Util";
 
 
 export default class errorListener extends Listener {
@@ -14,14 +15,8 @@ export default class errorListener extends Listener {
 	}
 
 	public async exec(error: Error, message: Message, command: Command): Promise<void> {
-		const date = new Date().toLocaleString("en-GB", { hour: "2-digit", minute: "2-digit", second: "2-digit", weekday: "short", year: "numeric", month: "numeric", day: "numeric" });
 
-		logger.warn(`\n${date} error | ${Date.now() - message.createdTimestamp}ms
-Guild: ${message.guild?.name} [${message.guild?.id}]
-${message.channel.type !== "dm" ? `Channel: #${message.channel.name} [${message.channel.id}]` : ""}
-User: ${message.author.username} [${message.author.id}]
-Executed ${command?.id} | "${message.content}"
-${error.stack}\n`);
+        listenerLog(message, this, logger.warn, command, `${error.stack}\n`);
 
 		cmdStatsCache[command.id]
 			? cmdStatsCache[command.id]++

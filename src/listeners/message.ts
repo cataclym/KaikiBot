@@ -1,6 +1,6 @@
 import { Listener } from "@cataclym/discord-akairo";
 import { Message } from "discord.js";
-import { countEmotes, emoteReact, illegalWordService, sendDM, tiredNadekoReact } from "../nsb/functions";
+import { countEmotes, emoteReact, illegalWordService, sendDM, tiredNadekoReact } from "../lib/functions";
 
 export default class MessageListener extends Listener {
 	constructor() {

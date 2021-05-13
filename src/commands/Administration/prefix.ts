@@ -1,7 +1,7 @@
 import { Command } from "@cataclym/discord-akairo";
 import { Guild, Message, MessageEmbed } from "discord.js";
 import { config } from "../../config.js";
-import { noArgGeneric } from "../../nsb/Embeds.js";
+import { noArgGeneric } from "../../lib/Embeds.js";
 import { prefixCache } from "../../struct/client.js";
 
 export default class PrefixConfigCommand extends Command {
