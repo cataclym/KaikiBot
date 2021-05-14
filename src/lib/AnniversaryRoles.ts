@@ -1,7 +1,6 @@
 import { Client, Guild, GuildMember, Role } from "discord.js";
 import logger from "loglevel";
 import { getGuildDB } from "../struct/db";
-import { timeToMidnight } from "./functions";
 
 const roleNameJoin = "Join Anniversary",
 	roleNameCreated = "Cake Day";
@@ -28,7 +27,7 @@ async function birthdayService(client: Client): Promise<void> {
 
 	await Promise.all(enabledGuilds.map(async (guild) => {
 		// Check if guild is enabled.
-		if (guild.me?.hasPermission("MANAGE_ROLES")) {
+		if (guild.me?.permissions.has("MANAGE_ROLES")) {
 			// Check if perms.
 			const [AnniversaryRoleC, AnniversaryRoleJ] = <Role[]> await GuildCheckRolesExist(guild);
 			// Get roles from the result of checking if guild has the roles at all / after creating them.
@@ -47,10 +46,6 @@ async function birthdayService(client: Client): Promise<void> {
 	await Promise.all([listUsersCakeDay, listUserJoinedAt]);
 	listUserJoinedAt = [],
 	listUsersCakeDay = [];
-
-	setTimeout(async () => {
-		birthdayService(client);
-	}, timeToMidnight());
 }
 
 async function checkBirthdayOnAdd(guild: Guild): Promise<void> {
@@ -62,7 +57,7 @@ async function checkBirthdayOnAdd(guild: Guild): Promise<void> {
 
 	if (enabled) {
 		try {
-			if (guild.me?.hasPermission("MANAGE_ROLES")) {
+			if (guild.me?.permissions.has("MANAGE_ROLES")) {
 				const [AnniversaryRoleC, AnniversaryRoleJ] = <Role[]> await GuildCheckRolesExist(guild);
 				// Get roles from the result of checking if guild has the roles at all / after creating them.
 				await Promise.all(guild.members.cache.map(async (member) => {
@@ -96,7 +91,7 @@ async function memberOnAddBirthdayService(member: GuildMember): Promise<void> {
 
 	if (enabled) {
 		try {
-			if (guild.me?.hasPermission("MANAGE_ROLES")) {
+			if (guild.me?.permissions.has("MANAGE_ROLES")) {
 				const [AnniversaryRoleC, AnniversaryRoleJ] = <Role[]> await GuildCheckRolesExist(guild);
 				// Get roles from the result of checking if guild has the roles at all / after creating them.
 				if (!member.user.bot) {
@@ -120,13 +115,13 @@ async function memberOnAddBirthdayService(member: GuildMember): Promise<void> {
 async function GuildCheckRolesExist(guild: Guild): Promise<Role[] | unknown[]> {
 	if (!guild.roles.cache.some(r => r.name === roleNameJoin)) {
 		guild.roles.create({
-			data: { name: roleNameJoin },
+			name: roleNameJoin,
 			reason: "Role didn't exist yet",
 		}).catch(err => logger.error(err));
 	}
 	if (!guild.roles.cache.some(r => r.name === roleNameCreated)) {
 		guild.roles.create({
-			data: { name: roleNameCreated },
+			name: roleNameCreated,
 			reason: "Role didn't exist yet",
 		}).catch(err => logger.error(err));
 	}
@@ -172,7 +167,5 @@ async function MemberCheckAnniversary(member: GuildMember, AnniversaryRoleC: Rol
 	}
 }
 
-export {
-    birthdayService, checkBirthdayOnAdd, memberOnAddBirthdayService,
-};
+export { birthdayService, checkBirthdayOnAdd, memberOnAddBirthdayService };
 

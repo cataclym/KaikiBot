@@ -7,6 +7,7 @@ import { config } from "../config";
 import { badWords } from "../struct/constants";
 import { getGuildDB } from "../struct/db";
 import { tinderDataDB } from "../struct/models";
+import { birthdayService } from "./AnniversaryRoles";
 import { trim } from "./Util";
 
 let botOwner: User | undefined;
@@ -74,6 +75,7 @@ export async function dailyResetTimer(): Promise<void> {
 	setTimeout(async () => {
 		ResetRolls();
 		dailyResetTimer();
+		birthdayService(this.client);
 	}, timeToMidnight());
 }
 

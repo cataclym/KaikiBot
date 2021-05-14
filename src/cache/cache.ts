@@ -52,7 +52,7 @@ export async function handleGoodbyeMessage(guildMember: GuildMember): Promise<Me
 async function sendGreetLeaveMessage(data: TGreetMessage, guild: Guild, guildMember: GuildMember) {
 
 	const channel = guild.channels.cache.get(data.channel) ?? await guild.client.channels.fetch(data.channel, true);
-	if (channel.type !== "text") return undefined;
+	if (channel?.type !== "text") return undefined;
 
 	if (data.embed) {
 		const embed = new MessageEmbed()

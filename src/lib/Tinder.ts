@@ -99,7 +99,7 @@ async function tinderNormalLike(message: Message, SentMsg: Message, genericEmbed
 			tinderUserData.markModified("datingIDs");
 			ramdomUsrData.markModified("datingIDs");
 
-			if (message.guild?.me?.hasPermission("MANAGE_MESSAGES")) SentMsg.reactions.removeAll();
+			if (message.guild?.me?.permissions.has("MANAGE_MESSAGES")) SentMsg.reactions.removeAll();
 
 			SentMsg.edit(newEmbed
 				.setColor(hexColorTable["deeppink"])
@@ -112,7 +112,7 @@ async function tinderNormalLike(message: Message, SentMsg: Message, genericEmbed
 			ramdomUsrData.likeIDs.push(randomUsr.id);
 			ramdomUsrData.markModified("likeIDs");
 
-			if (message.guild?.me?.hasPermission("MANAGE_MESSAGES")) SentMsg.reactions.removeAll();
+			if (message.guild?.me?.permissions.has("MANAGE_MESSAGES")) SentMsg.reactions.removeAll();
 
 			SentMsg.edit(newEmbed
 				.setColor(hexColorTable["lawngreen"])
@@ -131,7 +131,7 @@ async function tinderDislike(message: Message, SentMsg: Message, genericEmbed: M
 
 	const NewRollsLikes = `${tinderUserData.rolls} rolls, ${tinderUserData.likes} likes remaining.`;
 
-	if (message.guild?.me?.hasPermission("MANAGE_MESSAGES")) SentMsg.reactions.removeAll();
+	if (message.guild?.me?.permissions.has("MANAGE_MESSAGES")) SentMsg.reactions.removeAll();
 
 	SentMsg.edit(new MessageEmbed(genericEmbed)
 		.setAuthor("❌❌❌")
@@ -160,7 +160,7 @@ async function tinderSuperLike(message: Message, SentMsg: Message, genericEmbed:
 
 		tinderUserData.markModified("likes");
 
-		if (message.guild?.me?.hasPermission("MANAGE_MESSAGES")) SentMsg.reactions.removeAll();
+		if (message.guild?.me?.permissions.has("MANAGE_MESSAGES")) SentMsg.reactions.removeAll();
 
 		SentMsg.edit(new MessageEmbed(genericEmbed)
 			.setAuthor("❤️🌟❤️")

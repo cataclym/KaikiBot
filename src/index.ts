@@ -5,6 +5,7 @@ import { extensionHook } from "./Extensions/Discord";
 import { customClient } from "./struct/client";
 
 logger.setLevel("INFO");
+
 // Shmart
 exec("git update-index --assume-unchanged src/config.ts", (err, stdout, stderr) => {
 	if (err) logger.error("Untracking changes to config file\n" + err);
@@ -14,10 +15,12 @@ exec("git update-index --assume-unchanged src/config.ts", (err, stdout, stderr) 
 
 extensionHook();
 
-process.on("unhandledRejection", error => logger.error(`unhandledRejection | ${(error as Error)?.stack}`));
+process.on("unhandledRejection", error => logger.error(error));
 
-new customClient()
-	.login(config.token)
+const client = new customClient();
+
+
+client.login(config.token)
 	.catch((err: Error) => {
 		return logger.error(err);
 	});

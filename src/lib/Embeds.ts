@@ -1,5 +1,6 @@
 import { Command, PrefixSupplier } from "@cataclym/discord-akairo";
 import { Message, MessageEmbed, User } from "discord.js";
+import { config } from "../config";
 import { getTinderDB } from "../struct/db";
 import { tinderDataDB } from "../struct/models";
 import { poems } from "./Poems";
@@ -10,10 +11,10 @@ import { poems } from "./Poems";
 // 	}
 // }
 
-const tinderSlogan = ["Match?", "Chat?", "Date?", "Flirt?", "Text?", "Tease?", "Chat up?", "Take a risk?"];
+export const tinderSlogan = ["Match?", "Chat?", "Date?", "Flirt?", "Text?", "Tease?", "Chat up?", "Take a risk?"];
 
 // Some cringe anime wedding pictures
-const weddingImageArray = ["https://media.discordapp.net/attachments/717045059215687691/754790776893997134/L4jgWKm.jpg", "https://media.discordapp.net/attachments/717045059215687691/754790949216845824/714738.jpg", "https://media.discordapp.net/attachments/717045059215687691/754791292646457474/408146.jpg",
+export const weddingImageArray = ["https://media.discordapp.net/attachments/717045059215687691/754790776893997134/L4jgWKm.jpg", "https://media.discordapp.net/attachments/717045059215687691/754790949216845824/714738.jpg", "https://media.discordapp.net/attachments/717045059215687691/754791292646457474/408146.jpg",
 		"https://media.discordapp.net/attachments/717045059215687691/754791432610644008/Anime-Wedding-runochan97-33554809-1280-720.jpg", "https://media.discordapp.net/attachments/717045059215687691/754791553075249252/Anime-Wedding-runochan97-33554796-800-600.jpg",
 		"https://media.discordapp.net/attachments/717045059215687691/754791700492320798/4525190-short-hair-long-hair-brunette-anime-anime-girls-love-live-love-live-sunshine-wedding-dress-b.jpg"],
 	TinderHelp = (msg: Message, cmd: Command): MessageEmbed => {
@@ -32,7 +33,7 @@ const weddingImageArray = ["https://media.discordapp.net/attachments/71704505921
 			.setColor("#31e387");
 	};
 
-async function DMEMarry(): Promise<MessageEmbed> {
+export async function DMEMarry(): Promise<MessageEmbed> {
 	const weddingImg = weddingImageArray[Math.floor(Math.random() * weddingImageArray.length)];
 
 	return new MessageEmbed()
@@ -43,7 +44,7 @@ async function DMEMarry(): Promise<MessageEmbed> {
 		.setDescription(poems[Math.floor(Math.random() * poems.length)]);
 }
 
-async function tinderRollEmbed(message: Message, randomUsr: User, RollsLikes?: string): Promise<MessageEmbed> {
+export async function tinderRollEmbed(message: Message, randomUsr: User, RollsLikes?: string): Promise<MessageEmbed> {
 	const db = await getTinderDB(randomUsr.id),
 		waifus = db.marriedIDs.length,
 		likeIDsDB = await tinderDataDB.find({ tinderData: {} }),
@@ -68,12 +69,12 @@ async function tinderRollEmbed(message: Message, randomUsr: User, RollsLikes?: s
 		.setImage(randomUsr.displayAvatarURL({ dynamic: true, size: 128 }));
 }
 
-const noArgRole = (message: Message): MessageEmbed => new MessageEmbed({
+export const noArgRole = (message: Message): MessageEmbed => new MessageEmbed({
 	description: "Can't find this role. Make sure you inputted it correctly.",
 })
 	.withErrorColor(message);
 
-const noArgGeneric = (message: Message): MessageEmbed => {
+export const noArgGeneric = (message: Message): MessageEmbed => {
 	const cmd = message.util?.parsed?.command;
 	const prefix = (cmd?.handler.prefix as PrefixSupplier)(message);
 
@@ -95,18 +96,21 @@ const noArgGeneric = (message: Message): MessageEmbed => {
 		.withErrorColor(message);
 };
 
-const errorMessage = async (message: Message, msg: string): Promise<MessageEmbed> => new MessageEmbed({
+export const errorMessage = async (message: Message, msg: string): Promise<MessageEmbed> => new MessageEmbed({
 	title: "Error",
 	description: msg,
 })
 	.withErrorColor(message);
 
-export {
-    DMEMarry,
-    errorMessage,
-    noArgGeneric,
-    noArgRole,
-    TinderHelp,
-    tinderRollEmbed,
-};
+export const Exclude = {
 
+	addedRoleEmbed: new MessageEmbed({
+		title: "Success!",
+		description: `Added role \`${config.dadbotRole}\`.\nType the command again to remove.`,
+	}),
+
+	removedRoleEmbed: new MessageEmbed({
+		title: "Success!",
+		description: `Removed role \`${config.dadbotRole}\`.\nType the command again to add it back.`,
+	}),
+};

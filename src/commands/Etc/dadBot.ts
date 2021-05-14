@@ -51,7 +51,7 @@ export default class dadBot extends Command {
 
 			db.userNicknames.push(nick.nickname);
 
-			if (user.id !== message.guild?.owner?.id) {
+			if (user.id !== message.guild?.ownerID) {
 				// Avoids setting nickname on Server owners
 				message.member?.setNickname(nick.nickname);
 			}

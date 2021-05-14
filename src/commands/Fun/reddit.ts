@@ -20,7 +20,7 @@ export default class RedditCommand extends Command {
 		});
 	}
 
-	public async exec(message: Message, { sub }: { sub: string }): Promise<Message> {
+	public async exec(message: Message, { sub }: { sub: string }): Promise<Message | NodeJS.Timeout> {
 
 		const promise = async () => fetch(`https://www.reddit.com/r/${sub.trim()}/random/.json`);
 
@@ -46,7 +46,9 @@ export default class RedditCommand extends Command {
 					description: "Cannot show NSFW in DMs or non-NSFW channels",
 				})
 					.withErrorColor(message))
-					.then(msg => msg.delete({ timeout: 7500 }));
+					.then(msg => setTimeout(() => {
+						msg.delete();
+					}, 7500));
 			}
 
 			const embed = new MessageEmbed({
