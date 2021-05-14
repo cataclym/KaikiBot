@@ -184,7 +184,7 @@ export async function sendDM(message: Message): Promise<Message | undefined> {
 	if (message.author.id === config.ownerID) return;
 	// I wont wanna see my own msgs, thank u
 
-	else if (!botOwner) botOwner = this.client.users.cache.get(config.ownerID);
+	if (!botOwner) botOwner = message.client.users.cache.get(config.ownerID);
 
 	let attachmentLinks = "";
 	logger.info(`message | DM from ${message.author.tag} [${message.author.id}]`);

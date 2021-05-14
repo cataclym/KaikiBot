@@ -7,8 +7,8 @@ export default class SetIllegalWordChannel extends Command {
 	constructor() {
 		super("setillegalwordchannel", {
 			aliases: ["setillegalwordchannel", "iwc", "siwc"],
-			userPermissions: "MANAGE_EMOJIS",
-			clientPermissions: "ADD_REACTIONS",
+			userPermissions: "MANAGE_MESSAGES",
+			clientPermissions: ["MANAGE_CHANNELS", "MANAGE_MESSAGES"],
 			channel: "guild",
 			description: { description: "Set a channel where a certain word is illegal to say",
 				usage: ["#no-hi hi"] },

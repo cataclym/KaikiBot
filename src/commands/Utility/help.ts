@@ -1,7 +1,7 @@
 import { Argument, Command, PrefixSupplier } from "@cataclym/discord-akairo";
 import { execSync } from "child_process";
 import { Message, MessageEmbed } from "discord.js";
-import { name, version } from "../../../package.json";
+import { name, repository, version } from "../../../package.json";
 
 export default class HelpCommand extends Command {
 	constructor() {
@@ -31,8 +31,9 @@ export default class HelpCommand extends Command {
 				usage = usage instanceof Array ? usage.map(u => `${prefix}${command.id} ${u}`).join("\n") : `${prefix}${command.id} ${usage}`;
 			}
 
-			embed.setTitle(`**Name:** ${command.id}`);
-			embed.setDescription(`**Aliases:** \`${command.aliases.join("`, `")}\`\n**Description:** ${command.description.description || command.description}\n`);
+			embed.setTitle(`**Name:** ${command.id}`)
+				.setDescription(`**Aliases:** \`${command.aliases.join("`, `")}\`\n**Description:** ${command.description.description || command.description}\n`)
+				.setFooter(command.categoryID);
 
 			if (command?.description.usage) embed.addField("Usage", usage);
 			if (command.userPermissions) embed.addField("Requires", command.userPermissions, false);
@@ -58,8 +59,9 @@ export default class HelpCommand extends Command {
 				{ name: "🔍 Command Info", value: `\`${prefix}help [command]\` to get more help. Example: \`${prefix}help ping\``, inline: true },
 			])
 			.setAuthor(`${name} v${version}-${execSync("git rev-parse --short HEAD").toString()}`,
-				message.author.displayAvatarURL({ dynamic: true }), "https://gitlab.com/cataclym/KaikiDeishuBot")
+				message.author.displayAvatarURL({ dynamic: true }), repository.url)
 			.setFooter("Made by Cata <3", AvUrl);
+
 		return message.channel.send(embed);
 	}
 }

@@ -1,8 +1,8 @@
 import { Argument, Command } from "@cataclym/discord-akairo";
 import { Guild, Message, MessageEmbed, TextChannel } from "discord.js";
 import { greetLeaveCache } from "../../cache/cache.js";
-import { hexColorTable } from "../../nsb/Color.js";
-import { okColor } from "../../nsb/Util.js";
+import { hexColorTable } from "../../lib/Color.js";
+import { okColor } from "../../lib/Util.js";
 import { getGuildDB } from "../../struct/db.js";
 
 export default class WelcomeConfigCommand extends Command {

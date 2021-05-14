@@ -1,7 +1,7 @@
 import { Command } from "@cataclym/discord-akairo";
 import { Collection, GuildEmoji, Message, MessageEmbed } from "discord.js";
-import { noArgGeneric } from "../../nsb/Embeds";
-import { trim } from "../../nsb/Util";
+import { noArgGeneric } from "../../lib/Embeds";
+import { trim } from "../../lib/Util";
 const timer = (ms: number) => new Promise(res => setTimeout(res, ms));
 export default class DeleteEmoteCommand extends Command {
 	constructor() {

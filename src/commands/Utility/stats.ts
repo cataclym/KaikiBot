@@ -26,13 +26,13 @@ module.exports = class StatsCommand extends Command {
 
 		const guildCache = this.client.guilds.cache,
 			createEmbed = () => new MessageEmbed()
-				.setAuthor("© 2020 @Cata#2702", message.client.user?.displayAvatarURL({ dynamic: true }), "https://gitlab.com/cataclym/KaikiDeishuBot")
+				.setAuthor("© 2020 @Cata#2702", message.client.user?.displayAvatarURL({ dynamic: true }), packageJson.repository.url)
 				.withOkColor(message),
 			db = await getCommandStatsDB(),
 			stats = Object.entries(db.count).sort((a, b) => b[1] - a[1]);
 
 		const pages = [new MessageEmbed()
-			.setAuthor(`${packageJson.name} v${packageJson.version}-${execSync("git rev-parse --short HEAD").toString()}`, message.client.user?.displayAvatarURL({ dynamic: true }), "https://gitlab.com/cataclym/KaikiDeishuBot")
+			.setAuthor(`${packageJson.name} v${packageJson.version}-${execSync("git rev-parse --short HEAD").toString()}`, message.client.user?.displayAvatarURL({ dynamic: true }), packageJson.repository.url)
 			.setDescription("**Built using**:")
 			.addFields([
 				{ name: "Discord.js library", value: `[Discord.js](https://discord.js.org/#/ 'Discord.js website') v${version}`, inline: true },

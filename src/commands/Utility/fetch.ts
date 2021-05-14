@@ -1,6 +1,6 @@
 import { Argument, Command } from "@cataclym/discord-akairo";
-import { MessageEmbed, Message, User } from "discord.js";
-import { flags } from "../../nsb/Util";
+import { Message, MessageEmbed, User } from "discord.js";
+import { flags } from "../../lib/Util";
 
 
 export default class FetchUserCommand extends Command {

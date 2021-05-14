@@ -2,8 +2,8 @@ import { Listener } from "@cataclym/discord-akairo";
 import { MessageEmbed } from "discord.js";
 import logger from "loglevel";
 import { config } from "../config";
-import { birthdayService } from "../nsb/AnniversaryRoles";
-import { dailyResetTimer, emoteDataBaseService } from "../nsb/functions";
+import { birthdayService } from "../lib/AnniversaryRoles";
+import { dailyResetTimer, emoteDataBaseService } from "../lib/functions";
 import { guildsDB } from "../struct/models";
 
 
@@ -36,7 +36,7 @@ export default class ReadyListener extends Listener {
 			await emoteDataBaseService(this.client)
 				.then(i => {
 					if (i > 0) {
-						logger.info("dataBaseService | " + i + " new emote(s) added!");
+						logger.info("dataBaseService | " + i + " new emote(s) added!\n");
 					}
 				});
 		}, 2000);
@@ -45,7 +45,7 @@ export default class ReadyListener extends Listener {
 		await birthdayService(this.client);
 
 		const guilds = await guildsDB.countDocuments();
-		logger.info(`dataBaseService | ${guilds} guilds registered in DB.`);
+		logger.info(`dataBaseService | ${guilds} guilds registered in DB.\n`);
 
 		// Let bot owner know when bot goes online.
 		if (["Tsukihi Araragi", "Kaiki Deishuu"].includes(this.client.user?.username as string)) {

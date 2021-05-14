@@ -1,9 +1,8 @@
 import { Command } from "@cataclym/discord-akairo";
-import { Message } from "discord.js";
-import { noArgGeneric } from "../../nsb/Embeds";
-import { imgFromColor, resolveColor, colorTable, getColorAsync } from "../../nsb/Color";
-import { MessageEmbed, MessageAttachment } from "discord.js";
 import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
+import { Message, MessageAttachment, MessageEmbed } from "discord.js";
+import { hexColorTable, imgFromColor, resolveColor } from "../../lib/Color";
+import { noArgGeneric } from "../../lib/Embeds";
 
 export default class ColorCommand extends Command {
 	constructor() {
@@ -22,6 +21,7 @@ export default class ColorCommand extends Command {
 				{
 					id: "color",
 					type: "string",
+					match: "rest",
 				},
 
 			],
@@ -30,16 +30,15 @@ export default class ColorCommand extends Command {
 	public async exec(message: Message, { color, list }: { color: string, list: boolean }): Promise<Message> {
 
 		if (list) {
-			const colorList = Object.keys(colorTable),
-				embedColor = await getColorAsync(colorList[Math.floor(Math.random() * colorList.length)]) ?? message.getMemberColorAsync(),
-				map = colorList.map((k, v) => k),
+			const colorList = Object.keys(hexColorTable),
+				embedColor = hexColorTable[(colorList[Math.floor(Math.random() * colorList.length)])],
 				pages: MessageEmbed[] = [];
 
-			for (let index = 15, p = 0; p < map.length; index = index + 15, p = p + 15) {
+			for (let index = 15, p = 0; p < colorList.length; index = index + 15, p = p + 15) {
 				pages.push(new MessageEmbed({
 					title: "List of all available color names",
-					description: map.slice(p, index).join("\n"),
-					color: await embedColor,
+					description: colorList.slice(p, index).join("\n"),
+					color: embedColor,
 				}));
 			}
 

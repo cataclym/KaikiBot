@@ -1,6 +1,6 @@
 import { Command } from "@cataclym/discord-akairo";
-import { Collection, GuildMember, Role, Message, MessageEmbed } from "discord.js";
-import { noArgRole } from "../../nsb/Embeds";
+import { Collection, GuildMember, Message, MessageEmbed, Role } from "discord.js";
+import { noArgRole } from "../../lib/Embeds";
 
 export default class RoleDeleteCommand extends Command {
 	constructor() {

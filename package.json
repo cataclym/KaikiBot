@@ -1,6 +1,6 @@
 {
   "name": "kaikideishubot",
-  "version": "3.4.1-aqua",
+  "version": "3.4.1-Blueberry",
   "main": "./dist/index.js",
   "scripts": {
     "test": "echo \"Bypass build\" && node ./dist/index.js",
@@ -19,6 +19,7 @@
   "dependencies": {
     "@cataclym/discord-akairo": "git+https://gitlab.com/cataclym/discord-akairo.git",
     "@cataclym/discord.js-pagination-ts-nsb": "git+https://gitlab.com/cataclym/discord-js-pagination.git",
+    "@types/ws": "^7.4.2",
     "canvas": "^2.6.1",
     "discord.js": "^12.5.1",
     "image-size": "^0.9.3",
@@ -36,17 +37,19 @@
   "devDependencies": {
     "@types/imagemin-gifsicle": "^7.0.0",
     "@types/mongodb": "^3.6.3",
-    "@types/node": "^13.13.39",
+    "@types/sharp": "^0.26.1",
     "@types/node-emoji": "^1.8.1",
     "@types/node-fetch": "^2.5.7",
-    "@types/sharp": "^0.26.1",
-    "@types/ws": "^7.4.0",
     "@typescript-eslint/eslint-plugin": "^4.12.0",
     "@typescript-eslint/parser": "^4.12.0",
     "eslint": "^7.17.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-import-resolver-typescript": "^2.3.0",
     "eslint-plugin-import": "^2.22.1"
+  },
+  "peerDependencies": {
+    "@types/ws": "^7.4.0",
+    "@types/node": "^13.13.39"
   },
   "description": "Discord bot built with Akairo and MongoDB",
   "repository": {

@@ -1,5 +1,9 @@
 import { Command, PrefixSupplier } from "@cataclym/discord-akairo";
+import { ColorResolvable, Guild, GuildMember, Message, MessageEmbed } from "discord.js";
+import { sessionCache } from "../cache/cache";
 import { config } from "../config";
+import { errorColor, okColor } from "../lib/Util";
+import { customClient } from "../struct/client";
 
 function getPrefix(message: Message, command: Command) {
 	const prefix = (command.handler.prefix as PrefixSupplier)(message);
@@ -31,10 +35,6 @@ declare module "discord.js" {
     }
 }
 
-import { ColorResolvable, Guild, GuildMember, Message, MessageEmbed } from "discord.js";
-import { customClient } from "../struct/client";
-import { errorColor, okColor } from "../nsb/Util";
-import { sessionCache } from "../cache/cache";
 
 Message.prototype.args = function(command: Command) {
 	return (command.handler.parseWithPrefix(this, getPrefix(this, command)))?.content;

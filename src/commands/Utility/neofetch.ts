@@ -4,8 +4,8 @@ import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-
 import { exec } from "child_process";
 import { Message, MessageEmbed } from "discord.js";
 import logger from "loglevel";
-import { distros } from "../../nsb/distros.json";
-import { codeblock } from "../../nsb/Util";
+import { distros } from "../../lib/distros.json";
+import { codeblock } from "../../lib/Util";
 
 
 export default class NeofetchCommand extends Command {

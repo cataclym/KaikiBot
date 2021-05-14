@@ -1,14 +1,6 @@
 import Canvas from "canvas";
 import { ColorResolvable } from "discord.js";
-
-export async function getColorAsync(term: string): Promise<ColorResolvable | null> {
-	const rgba = colorTable[term.toLowerCase()];
-	if (rgba) {
-		const rgbArr = rgba.replace(/^rgba?\(|\s+|\)$/g, "").split(",");
-		return `#${((1 << 24) + (parseInt(rgbArr[0]) << 16) + (parseInt(rgbArr[1]) << 8) + parseInt(rgbArr[2])).toString(16).slice(1)}`;
-	}
-	return null;
-}
+import { colors } from "./Colors.json";
 
 export const colorTable: {
 	[index: string]: string
@@ -173,11 +165,25 @@ export async function imgFromColor(color: ColorResolvable): Promise<Buffer> {
 }
 
 export async function resolveColor(color: string): Promise<ColorResolvable> {
-	const clrStr = await getColorAsync(color);
-	if (clrStr) return clrStr;
-	if (color.trim().toUpperCase() === "RANDOM") return "RANDOM";
-	// TODO: Check if remaining is hex or nah
-	return color.startsWith("#") ? color : `#${color}`;
+
+	color = color.toLowerCase();
+
+	const clrStr = hexColorTable[color]
+		? hexColorTable[color]
+		: colors.find(c => c.name === color || c.hex === color)?.hex;
+
+	if (clrStr) {
+		return clrStr.startsWith("#")
+			? clrStr
+			: `#${clrStr}`;
+	}
+
+	else {
+		return color.startsWith("#")
+			? color
+			: `#${color}`;
+	}
+
 }
 
 export const hexColorTable: {

@@ -1,10 +1,10 @@
-import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
-import fetch from "node-fetch";
 import { Command } from "@cataclym/discord-akairo";
-import { MessageEmbed, Message } from "discord.js";
+import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
+import { Message, MessageEmbed } from "discord.js";
+import fetch from "node-fetch";
 import querystring from "querystring";
-import { trim } from "../../nsb/Util";
-import { noArgGeneric } from "../../nsb/Embeds";
+import { noArgGeneric } from "../../lib/Embeds";
+import { trim } from "../../lib/Util";
 
 export default class UrbanDictCommand extends Command {
 	constructor() {

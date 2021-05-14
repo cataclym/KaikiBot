@@ -180,7 +180,7 @@ async function tinderSuperLike(message: Message, SentMsg: Message, genericEmbed:
 }
 
 export {
-	tinderDBService, noMoreLikesOrRolls, separateTinderList, fetchUserList,
-	tinderDislike, tinderNormalLike, tinderSuperLike,
+    tinderDBService, noMoreLikesOrRolls, separateTinderList, fetchUserList,
+    tinderDislike, tinderNormalLike, tinderSuperLike,
 };
 

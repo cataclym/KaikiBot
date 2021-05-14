@@ -17,6 +17,6 @@ export default class RateLimitListener extends Listener {
 Limit: ${limit} // Number of requests that can be made to this endpoint
 Method: ${method} // HTTP method used for request that triggered this event
 Path: ${path} // Path used for request that triggered this event
-Route: ${route} // Route used for request that triggered this event`);
+Route: ${route} // Route used for request that triggered this event\n`);
 	}
 }

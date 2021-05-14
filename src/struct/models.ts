@@ -1,7 +1,7 @@
 import { model, Schema } from "mongoose";
 import { IBlacklist, ICommandStats, IGuild, ITinder, IUser } from "../../src/interfaces/db";
 import { config } from "../config";
-import { errorColor, okColor } from "../nsb/Util";
+import { errorColor, okColor } from "../lib/Util";
 
 export const guildSchema = new Schema({
 	// ID of the guild

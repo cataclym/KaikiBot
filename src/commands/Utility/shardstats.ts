@@ -1,6 +1,6 @@
 import { Command } from "@cataclym/discord-akairo";
 import { Message } from "discord.js";
-import { codeblock } from "../../nsb/Util";
+import { codeblock } from "../../lib/Util";
 
 interface shards {
 	[state: number]: string,

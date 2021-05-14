@@ -1,6 +1,6 @@
 import { Command } from "@cataclym/discord-akairo";
 import { GuildMember, Message } from "discord.js";
-import sendWaifuPics from "../../nsb/waifuPics";
+import sendWaifuPics from "../../lib/waifuPics";
 
 export default class Slap extends Command {
 	constructor() {

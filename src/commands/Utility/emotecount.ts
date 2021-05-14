@@ -1,7 +1,7 @@
 import { Command } from "@cataclym/discord-akairo";
 import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
 import { Guild, Message, MessageEmbed } from "discord.js";
-import { trim } from "../../nsb/Util";
+import { trim } from "../../lib/Util";
 import { getGuildDB } from "../../struct/db";
 
 export default class EmoteCount extends Command {

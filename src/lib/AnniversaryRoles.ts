@@ -173,5 +173,6 @@ async function MemberCheckAnniversary(member: GuildMember, AnniversaryRoleC: Rol
 }
 
 export {
-	birthdayService, checkBirthdayOnAdd, memberOnAddBirthdayService,
+    birthdayService, checkBirthdayOnAdd, memberOnAddBirthdayService,
 };
+

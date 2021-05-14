@@ -1,8 +1,8 @@
 import { Command, PrefixSupplier } from "@cataclym/discord-akairo";
 import { Message, MessageEmbed, User } from "discord.js";
-import { poems } from "../nsb/Poems";
 import { getTinderDB } from "../struct/db";
 import { tinderDataDB } from "../struct/models";
+import { poems } from "./Poems";
 
 // export class CustomEmbed extends MessageEmbed {
 // 	constructor(data?: MessageEmbed | MessageEmbedOptions) {

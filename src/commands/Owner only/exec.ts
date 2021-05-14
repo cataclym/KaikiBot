@@ -1,7 +1,7 @@
 import { Command } from "@cataclym/discord-akairo";
 import { ChildProcess, exec } from "child_process";
 import { Message, MessageEmbed } from "discord.js";
-import { codeblock, trim } from "../../nsb/Util";
+import { codeblock, trim } from "../../lib/Util";
 
 export default class ExecCommand extends Command {
 	constructor() {

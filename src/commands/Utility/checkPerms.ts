@@ -1,7 +1,7 @@
 import { Argument, Command } from "@cataclym/discord-akairo";
 import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
 import { GuildMember, Message, MessageEmbed, Role, TextChannel } from "discord.js";
-import { codeblock } from "../../nsb/Util";
+import { codeblock } from "../../lib/Util";
 
 export default class CheckPermissionsCommand extends Command {
 	constructor() {
