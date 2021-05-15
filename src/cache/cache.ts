@@ -1,5 +1,6 @@
 import { Guild, GuildMember, Message, MessageEmbed, TextChannel } from "discord.js";
 import { TGreetMessage } from "../interfaces/db";
+import { parsePlaceHolders } from "../lib/functions";
 import { getCommandStatsDB, getGuildDB } from "../struct/db";
 
 export const greetLeaveCache: {
@@ -70,19 +71,6 @@ async function sendGreetLeaveMessage(data: TGreetMessage, guild: Guild, guildMem
 	}
 }
 
-async function parsePlaceHolders(input:string, guild: Guild, guildMember: GuildMember) {
-
-	const searchString = input.toLowerCase();
-
-	if (searchString.includes("%guild%")) {
-		input = input.replace(/%guild%/ig, guild.name);
-	}
-	if (searchString.includes("%member%")) {
-		input = input.replace(/%member%/ig, guildMember.user.tag);
-	}
-	return input;
-}
-
 export let cmdStatsCache: {[index: string]: number} = {};
 
 setInterval(async () => {
@@ -129,11 +117,12 @@ interface channelWordCache {[channelID: string]: wordCache}
 
 export const wordCache: channelWordCache = {};
 
-export const keyWordCache: {[guild: string]: {[keyWord: string]: string} } = {};
+export const keyWordCache: {[guild: string]: {[keyWord: string]: string } } = {};
+
+export const blockedModulesCache: {[guild: string]: {[categoryID: string]: boolean }} = {};
 
 export const illegalWordCache: {[guild: string]:{ channel: string | null, word: string | null }} = {};
 
 // Anime quotes
 export type respType = { anime: string, character: string, quote: string };
-export const animeQuoteCache: {[character: string]: respType} = {};
-
+export const animeQuoteCache: {[character: string]: respType } = {};

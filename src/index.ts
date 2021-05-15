@@ -19,6 +19,9 @@ process.on("unhandledRejection", error => logger.error(error));
 
 const client = new customClient();
 
+if (!config.prefix) {
+	throw new Error("Missing prefix! Set a prefix in src/config.ts");
+}
 
 client.login(config.token)
 	.catch((err: Error) => {

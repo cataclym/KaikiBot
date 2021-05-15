@@ -1,9 +1,10 @@
 import { AkairoClient } from "@cataclym/discord-akairo";
-import { Guild, Message, MessageEmbed, User } from "discord.js";
+import { Guild, GuildMember, Message, MessageEmbed, User } from "discord.js";
 import logger from "loglevel";
 import { illegalWordCache, keyWordCache } from "../cache/cache";
 import { clearRollCache } from "../commands/Tinder/tinder";
 import { config } from "../config";
+import { customClient } from "../struct/client";
 import { badWords } from "../struct/constants";
 import { getGuildDB } from "../struct/db";
 import { tinderDataDB } from "../struct/models";
@@ -220,3 +221,19 @@ export async function sendDM(message: Message): Promise<Message | undefined> {
 
 }
 
+export async function parsePlaceHolders(input:string, guild: Guild, guildMember: GuildMember): Promise<string> {
+
+	const searchString = input.toLowerCase();
+
+	if (searchString.includes("%guild%")) {
+		input = input.replace(/%guild%/ig, guild.name);
+	}
+	if (searchString.includes("%member%")) {
+		input = input.replace(/%member%/ig, guildMember.user.tag);
+	}
+	return input;
+}
+
+export function getCommandCategories(client: customClient): any {
+	return client.commandHandler.categories.toJSON();
+}

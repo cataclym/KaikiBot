@@ -5,7 +5,6 @@ import { config } from "../config";
 import { dailyResetTimer, emoteDataBaseService } from "../lib/functions";
 import { guildsDB } from "../struct/models";
 
-
 export default class ReadyListener extends Listener {
 	constructor() {
 		super("ready", {
@@ -16,10 +15,6 @@ export default class ReadyListener extends Listener {
 	}
 
 	public async exec(): Promise<void> {
-
-		if (!config.prefix) {
-			throw new Error("Missing prefix! Set a prefix in src/config.ts");
-		}
 
 		const presence = this.client.user?.setActivity(config.activityName, { type: config.activityStatus });
 		logger.info(`Client ready | Status: ${presence?.status}`);
@@ -33,7 +28,7 @@ export default class ReadyListener extends Listener {
 		});
 
 		dailyResetTimer()
-			.then(() => {
+			.then(async () => {
 				logger.info("dailyResetTimer | Reset timer initiated.");
 				logger.info("birthdayService | Service initiated");
 			});
