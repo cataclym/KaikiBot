@@ -31,6 +31,10 @@ export const guildSchema = new Schema({
 		type: Object, default: {
 		},
 	},
+	blockedCategories: {
+		type: Object, default: {
+		},
+	},
 
 	settings: {
 		type: Object, default: {

@@ -18,7 +18,8 @@ export interface IGuild extends Document {
 	emojiStats: {[emojiID: string]: number},
 	emojiReactions: {[keyWord: string]: string},
     illegalWordChannel: { channel: string, word: string; };
-	settings: {
+    blockedCategories: {[categoryID: string]: boolean };
+    settings: {
 		prefix: string,
 		anniversary: boolean,
 		dadBot: boolean,
