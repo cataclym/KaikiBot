@@ -134,18 +134,7 @@ async function MemberCheckAnniversary(member: GuildMember, AnniversaryRoleC: Rol
 async function getEnabledGuilds(client: Client) {
 
 	const dbRes = await guildsDB.find({ "settings.anniversary": true });
-	const guildArr = await Promise.all(client.guilds.cache.array().map(async g => g.id));
-
-	const filtered = dbRes.filter(async g => {
-		guildArr.includes(g.id);
-	});
-
-	return filtered.map(s => client.guilds.cache.get(s.id)).filter(f => !!f) as Guild[];
-
-	// return client.guilds.cache.array()
-	// 	.filter(async g => {
-	// 		return (await getGuildDB(g.id)).settings.anniversary;
-	// 	});
+	return dbRes.map(s => client.guilds.cache.get(s.id)).filter(Boolean) as Guild[];
 }
 
 async function handleAnniversaryGuilds(enabledGuilds: Guild[], { Day, Month }: {Day: number, Month: number}) {
