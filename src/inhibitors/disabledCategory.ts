@@ -13,17 +13,10 @@ export default class BlockModulesInhibitor extends Inhibitor {
 	async exec(message: Message, command: Command): Promise<boolean> {
 
 		if (message.guild) {
-
-			if (!(blockedModulesCache[message.guild.id])) blockedModulesCache[message.guild.id] = {};
-
-			const category = command.categoryID;
-			const blocked = (blockedModulesCache[message.guild.id])[category];
-
-			if (blocked === undefined) {
-				const db = await getGuildDB(message.guild.id);
-				return (blockedModulesCache[message.guild.id])[category] = db.blockedCategories[category];
+			if (!(message.guild.id in blockedModulesCache)) {
+				blockedModulesCache[message.guild.id] = (await getGuildDB(message.guild.id)).blockedCategories;
 			}
-			return blocked;
+			return (blockedModulesCache[message.guild.id])[command.category.id];
 		}
 		return false;
 	}
