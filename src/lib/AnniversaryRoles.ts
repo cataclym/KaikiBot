@@ -1,9 +1,8 @@
-import { Client, Guild, GuildMember, Role } from "discord.js";
+import { Client, Guild, GuildMember, Permissions, Role } from "discord.js";
 import logger from "loglevel";
+import { AnniversaryStrings } from "../struct/constants";
 import { getGuildDB } from "../struct/db";
-
-const roleNameJoin = "Join Anniversary",
-	roleNameCreated = "Cake Day";
+import { guildsDB } from "../struct/models";
 
 async function DateObject() {
 	const d = new Date();
@@ -18,34 +17,10 @@ let listUsersCakeDay: string[] = [],
 
 async function birthdayService(client: Client): Promise<void> {
 
-	const enabledGuilds = client.guilds.cache.array().filter(async (g) => {
-			return (await getGuildDB(g.id)).settings.anniversary ? true : false;
-		}),
-		{ Day, Month } = await DateObject();
-
+	const enabledGuilds = await getEnabledGuilds(client);
 	logger.info(`birthdayService | Checking [${enabledGuilds.length}] guilds`);
-
-	await Promise.all(enabledGuilds.map(async (guild) => {
-		// Check if guild is enabled.
-		if (guild.me?.permissions.has("MANAGE_ROLES")) {
-			// Check if perms.
-			const [AnniversaryRoleC, AnniversaryRoleJ] = <Role[]> await GuildCheckRolesExist(guild);
-			// Get roles from the result of checking if guild has the roles at all / after creating them.
-			await Promise.all(guild.members.cache.map(async (member) => {
-				if (!member.user.bot) {
-					// Don't assign special roles to bots.
-					MemberCheckAnniversary(member, AnniversaryRoleC, AnniversaryRoleJ, Day, Month);
-				}
-			}));
-		}
-		else {
-			return logger.warn(`birthdayService | ${guild.name} [${guild.id}] - can't add anniversary roles due to missing permissions: 'MANAGE_ROLES'`);
-		}
-	}));
-
-	await Promise.all([listUsersCakeDay, listUserJoinedAt]);
-	listUserJoinedAt = [],
-	listUsersCakeDay = [];
+	await handleAnniversaryGuilds(enabledGuilds, await DateObject());
+	return resetArrays();
 }
 
 async function checkBirthdayOnAdd(guild: Guild): Promise<void> {
@@ -57,8 +32,8 @@ async function checkBirthdayOnAdd(guild: Guild): Promise<void> {
 
 	if (enabled) {
 		try {
-			if (guild.me?.permissions.has("MANAGE_ROLES")) {
-				const [AnniversaryRoleC, AnniversaryRoleJ] = <Role[]> await GuildCheckRolesExist(guild);
+			if (guild.me?.permissions.has(Permissions.FLAGS.MANAGE_ROLES)) {
+				const [AnniversaryRoleC, AnniversaryRoleJ] = <Role[]> await handleGuildRoles(guild);
 				// Get roles from the result of checking if guild has the roles at all / after creating them.
 				await Promise.all(guild.members.cache.map(async (member) => {
 					if (!member.user.bot) {
@@ -75,32 +50,29 @@ async function checkBirthdayOnAdd(guild: Guild): Promise<void> {
 			logger.error(err);
 		}
 		finally {
-			logger.info(`birthdayService | Finished checking [${guild.id}] - Anniversary enabled`);
+			logger.info(`birthdayService | Finished checking ${guild.name} [${guild.id}] - Anniversary enabled`);
 		}
 	}
 	else {
-		logger.info(`birthdayService | Finished checking [${guild.id}] - Anniversary disabled`);
+		logger.info(`birthdayService | Finished checking ${guild.name} [${guild.id}] - Anniversary disabled`);
 	}
 }
 
-async function memberOnAddBirthdayService(member: GuildMember): Promise<void> {
-
+async function checkAnniversaryMember(member: GuildMember): Promise<void> {
 	const { guild } = member,
-		{ Day, Month } = await DateObject(),
 		enabled = (await getGuildDB(guild.id)).settings.anniversary;
 
 	if (enabled) {
+		const { Day, Month } = await DateObject();
+
 		try {
-			if (guild.me?.permissions.has("MANAGE_ROLES")) {
-				const [AnniversaryRoleC, AnniversaryRoleJ] = <Role[]> await GuildCheckRolesExist(guild);
+			if (guild.me?.permissions.has(Permissions.FLAGS.MANAGE_ROLES)) {
+				const [AnniversaryRoleC, AnniversaryRoleJ] = <Role[]> await handleGuildRoles(guild);
 				// Get roles from the result of checking if guild has the roles at all / after creating them.
 				if (!member.user.bot) {
 					// Don't assign special roles to bots.
 					MemberCheckAnniversary(member, AnniversaryRoleC, AnniversaryRoleJ, Day, Month);
 				}
-			}
-			else {
-				return logger.warn(`birthdayService | ${guild.name} [${guild.id}] - can't add anniversary roles due to missing permissions: 'MANAGE_ROLES'`);
 			}
 		}
 		catch (err) {
@@ -112,33 +84,25 @@ async function memberOnAddBirthdayService(member: GuildMember): Promise<void> {
 	}
 }
 
-async function GuildCheckRolesExist(guild: Guild): Promise<Role[] | unknown[]> {
-	if (!guild.roles.cache.some(r => r.name === roleNameJoin)) {
+async function handleGuildRoles(guild: Guild): Promise<Role[] | unknown[]> {
+	if (!guild.roles.cache.some(r => r.name === AnniversaryStrings.roleNameJoin)) {
 		guild.roles.create({
-			name: roleNameJoin,
+			name: AnniversaryStrings.roleNameJoin,
 			reason: "Role didn't exist yet",
 		}).catch(err => logger.error(err));
 	}
-	if (!guild.roles.cache.some(r => r.name === roleNameCreated)) {
+	if (!guild.roles.cache.some(r => r.name === AnniversaryStrings.roleNameCreated)) {
 		guild.roles.create({
-			name: roleNameCreated,
+			name: AnniversaryStrings.roleNameCreated,
 			reason: "Role didn't exist yet",
 		}).catch(err => logger.error(err));
 	}
-	const AnniversaryRoleJ = guild.roles.cache.find((r => r.name === roleNameJoin));
-	const AnniversaryRoleC = guild.roles.cache.find((r => r.name === roleNameCreated));
+	const AnniversaryRoleJ = guild.roles.cache.find((r => r.name === AnniversaryStrings.roleNameJoin));
+	const AnniversaryRoleC = guild.roles.cache.find((r => r.name === AnniversaryStrings.roleNameCreated));
 
 	return [AnniversaryRoleC, AnniversaryRoleJ];
 
 }
-
-// Checks all roles
-// Add role when date is right
-// Removes role when date isn't right
-// Its a cluster fuck
-// Fixed ? I think so 19/08/2020
-// OFC NOT.
-// REWRITE AS OF 15/09/2020
 
 async function MemberCheckAnniversary(member: GuildMember, AnniversaryRoleC: Role, AnniversaryRoleJ: Role, Day: number, Month: number) {
 	if (member.user.createdAt.getMonth() === Month) {
@@ -167,5 +131,56 @@ async function MemberCheckAnniversary(member: GuildMember, AnniversaryRoleC: Rol
 	}
 }
 
-export { birthdayService, checkBirthdayOnAdd, memberOnAddBirthdayService };
+async function getEnabledGuilds(client: Client) {
+
+	const dbRes = await guildsDB.find({ "settings.anniversary": true });
+	const guildArr = await Promise.all(client.guilds.cache.array().map(async g => g.id));
+
+	const filtered = dbRes.filter(async g => {
+		guildArr.includes(g.id);
+	});
+
+	return filtered.map(s => client.guilds.cache.get(s.id)).filter(f => !!f) as Guild[];
+
+	// return client.guilds.cache.array()
+	// 	.filter(async g => {
+	// 		return (await getGuildDB(g.id)).settings.anniversary;
+	// 	});
+}
+
+async function handleAnniversaryGuilds(enabledGuilds: Guild[], { Day, Month }: {Day: number, Month: number}) {
+
+	await Promise.all(enabledGuilds.map(async (guild) => {
+		// Check if guild is enabled.
+		if (guild.me?.permissions.has(Permissions.FLAGS.MANAGE_ROLES)) {
+			// Check if perms.
+			const [AnniversaryRoleC, AnniversaryRoleJ] = <Role[]> await handleGuildRoles(guild);
+			// Get roles from the result of checking if guild has the roles at all / after creating them.
+			await Promise.all(guild.members.cache.map(async (member) => {
+				if (!member.user.bot) {
+					// Don't assign special roles to bots.
+					MemberCheckAnniversary(member, AnniversaryRoleC, AnniversaryRoleJ, Day, Month);
+				}
+			}));
+		}
+	}));
+}
+
+async function resetArrays() {
+	listUserJoinedAt = [],
+	listUsersCakeDay = [];
+}
+
+// Checks all roles
+// Add role when date is right
+// Removes role when date isn't right
+// Its a cluster fuck
+// Fixed ? I think so 19/08/2020
+// OFC NOT.
+// REWRITE AS OF 15/09/2020
+//
+// 17/05/2021
+// It doesnt filter out enabled vs disabled guilds in the Database
+
+export { birthdayService, checkBirthdayOnAdd, checkAnniversaryMember };
 

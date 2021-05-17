@@ -1,7 +1,7 @@
 import { Listener } from "@cataclym/discord-akairo";
 import { GuildMember } from "discord.js";
 import { handleGreetMessage } from "../cache/cache";
-import { memberOnAddBirthdayService } from "../lib/AnniversaryRoles";
+import { checkAnniversaryMember } from "../lib/AnniversaryRoles";
 
 export default class GuildMemberAddListener extends Listener {
 	constructor() {
@@ -12,7 +12,7 @@ export default class GuildMemberAddListener extends Listener {
 	}
 	public async exec(member: GuildMember): Promise<void> {
 
-		memberOnAddBirthdayService(member);
+		checkAnniversaryMember(member);
 
 		handleGreetMessage(member);
 	}

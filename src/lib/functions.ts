@@ -1,5 +1,5 @@
 import { AkairoClient } from "@cataclym/discord-akairo";
-import { Guild, GuildMember, Message, MessageEmbed, User } from "discord.js";
+import { Client, Guild, GuildMember, Message, MessageEmbed, User } from "discord.js";
 import logger from "loglevel";
 import { illegalWordCache, keyWordCache } from "../cache/cache";
 import { clearRollCache } from "../commands/Tinder/tinder";
@@ -72,11 +72,12 @@ export async function ResetRolls(): Promise<void> {
 	});
 }
 
-export async function dailyResetTimer(): Promise<void> {
+export async function dailyResetTimer(client: Client): Promise<void> {
 	setTimeout(async () => {
 		ResetRolls();
-		dailyResetTimer();
-		birthdayService(this.client);
+		dailyResetTimer(client);
+		birthdayService(client);
+		emoteDataBaseService(client as AkairoClient);
 	}, timeToMidnight());
 }
 
