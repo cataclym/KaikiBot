@@ -97,8 +97,8 @@ async function handleGuildRoles(guild: Guild): Promise<Role[] | unknown[]> {
 			reason: "Role didn't exist yet",
 		}).catch(err => logger.error(err));
 	}
-	const AnniversaryRoleJ = guild.roles.cache.find((r => r.name === AnniversaryStrings.roleNameJoin));
-	const AnniversaryRoleC = guild.roles.cache.find((r => r.name === AnniversaryStrings.roleNameCreated));
+	const AnniversaryRoleJ = guild.roles.cache.find(r => r.name === AnniversaryStrings.roleNameJoin);
+	const AnniversaryRoleC = guild.roles.cache.find(r => r.name === AnniversaryStrings.roleNameCreated);
 
 	return [AnniversaryRoleC, AnniversaryRoleJ];
 

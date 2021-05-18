@@ -100,6 +100,13 @@ export default class ConfigCommand extends Command {
 			goodbyeEmbed,
 		];
 
+		const categories = Object.keys(db.blockedCategories);
+
+		if (categories.length) {
+			pages[0]
+				.addField("Disabled categories", categories.join("\n"), false);
+		}
+
 		return editMessageWithPaginatedEmbeds(message, pages, {});
 	}
 }
