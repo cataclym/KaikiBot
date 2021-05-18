@@ -114,3 +114,13 @@ export const Exclude = {
 		description: `Removed role \`${config.dadbotRole}\`.\nType the command again to add it back.`,
 	}),
 };
+
+export const reddit = {
+
+	noDataReceived: async (m: Message): Promise<MessageEmbed> => new MessageEmbed({
+		title: "Error",
+		description: "No data received. Double check the subreddit's name and try again.",
+	})
+		.withErrorColor(m),
+
+};

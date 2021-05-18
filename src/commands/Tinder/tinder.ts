@@ -90,8 +90,6 @@ export default class TinderMain extends Command {
 			tinderUserData.rolls = rolls;
 			tinderUserData.markModified("rolls");
 
-			logger.info(rolls);
-
 			const ramdomUsrData = await getTinderDB(randomUsr.id),
 				SentMsg = await message.channel.send(await tinderRollEmbed(message, randomUsr, RollsLikes));
 

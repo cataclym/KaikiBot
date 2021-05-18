@@ -2,6 +2,7 @@ import { Command } from "@cataclym/discord-akairo";
 import { Message, MessageEmbed, TextChannel } from "discord.js";
 import fetch from "node-fetch";
 import { PurpleData, RedditData } from "../../interfaces/IRedditAPI";
+import { reddit } from "../../lib/Embeds";
 import { trim } from "../../lib/Util";
 
 export default class RedditCommand extends Command {
@@ -22,21 +23,20 @@ export default class RedditCommand extends Command {
 
 	public async exec(message: Message, { sub }: { sub: string }): Promise<Message | NodeJS.Timeout> {
 
-		const promise = async () => fetch(`https://www.reddit.com/r/${sub.trim()}/random/.json`);
+		const promise = await fetch(`https://www.reddit.com/r/${sub}/random/.json`);
 
-		return await promise()
-			.then(response => response.json())
-			.then((json: RedditData | RedditData[]) => Array.isArray(json) ? json[0].data.children.map((t) => t.data) : json.data.children.map((t) => t.data))
+		if (!promise.ok) return message.channel.send(await reddit.noDataReceived(message));
+
+		return promise.json()
+			.then((json: RedditData | RedditData[]) => Array.isArray(json)
+				? json[0]?.data?.children.map((t) => t.data)
+				: json?.data?.children.map((t) => t.data))
 			.then((data) => postRandomTitle(data[Math.floor(Math.random() * data.length)]));
 
 		async function postRandomTitle(data: PurpleData) {
 
 			if (!data) {
-				return message.channel.send(new MessageEmbed({
-					title: "Error",
-					description: "No data received...",
-				})
-					.withErrorColor(message));
+				return message.channel.send(await reddit.noDataReceived(message));
 			}
 
 			// We don´t want nsfw in normal channels, do we?
@@ -47,6 +47,7 @@ export default class RedditCommand extends Command {
 				})
 					.withErrorColor(message))
 					.then(msg => setTimeout(() => {
+						message.delete();
 						msg.delete();
 					}, 7500));
 			}
@@ -62,7 +63,9 @@ export default class RedditCommand extends Command {
 
 			if (data.title?.length) embed.setTitle(trim(data.title, 256));
 			if (data.selftext?.length) embed.setDescription(trim(data.selftext, 2048));
-			!data.is_video && data.url?.length ? embed.setImage(data.url) : message.channel.send(data.url ?? data.permalink);
+			!data.is_video && data.url?.length
+				? embed.setImage(data.url)
+				: message.channel.send(data.url ?? data.permalink);
 
 			return message.channel.send(embed);
 		}

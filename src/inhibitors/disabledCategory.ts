@@ -16,6 +16,9 @@ export default class BlockModulesInhibitor extends Inhibitor {
 			if (!(message.guild.id in blockedModulesCache)) {
 				blockedModulesCache[message.guild.id] = (await getGuildDB(message.guild.id)).blockedCategories;
 			}
+
+			if (command.id === "togglecategory") return false;
+
 			return (blockedModulesCache[message.guild.id])[command.category.id];
 		}
 		return false;
