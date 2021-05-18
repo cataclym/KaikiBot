@@ -1,3 +1,4 @@
+import { ActivityType } from "discord-api-types";
 import { ColorResolvable } from "discord.js";
 import { Document } from "mongoose";
 
@@ -54,4 +55,9 @@ export interface ICommandStats extends Document {
 
 export interface IBlacklist extends Document {
 	blacklist: {[id: string]: true},
+}
+
+export interface IBotDB extends Document {
+	activity: string,
+    activityType: ActivityType,
 }

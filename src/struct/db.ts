@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import logger from "loglevel";
 import mongoose, { Error } from "mongoose";
-import { IBlacklist, ICommandStats, IGuild, ITinder, IUser } from "../interfaces/db";
-import { blacklistDB, commandStatsDB, guildsDB, tinderDataDB, usersDB } from "./models";
+import { IBlacklist, IBotDB, ICommandStats, IGuild, ITinder, IUser } from "../interfaces/db";
+import { blacklistDB, botDB, commandStatsDB, guildsDB, tinderDataDB, usersDB } from "./models";
 
 
 mongoose.connect("mongodb://localhost:27017", {
@@ -92,5 +92,19 @@ export async function getBlacklistDB(): Promise<IBlacklist> {
 
 		await blacklist.save().catch((err: Error) => logger.error(err));
 		return blacklist;
+	}
+}
+
+export async function getBotDB(): Promise<IBotDB> {
+	let bot = await botDB.findOne();
+
+	if (bot) {
+		return bot;
+	}
+	else {
+		bot = new botDB();
+
+		await bot.save().catch((err: Error) => logger.error(err));
+		return bot;
 	}
 }

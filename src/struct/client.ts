@@ -20,7 +20,6 @@ export class customClient extends AkairoClient {
 			allowedMentions: { parse: ["users"], repliedUser: true },
 			intents: [Intents.ALL],
 			partials: ["REACTION", "CHANNEL"],
-			presence: { activities: [{ name: config.activityName, type: config.activityStatus }] },
 			shards: "auto",
 			ws: { properties: { $browser: "Discord Android" } },
 		});
