@@ -93,7 +93,7 @@ export default async function sendWaifuPics(message: Message, API: APIs, mention
 	const data = WaifuData[API];
 	const { action, color, append } = data;
 
-	const result = await (await (await fetch(`https://waifu.pics/api/sfw/${API}`)).json())["url"];
+	const result = (await (await fetch(`https://waifu.pics/api/sfw/${API}`)).json())["url"];
 
 	const embed = new MessageEmbed({
 		color: color,
