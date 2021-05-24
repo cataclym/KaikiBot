@@ -5,7 +5,9 @@
   "scripts": {
     "test": "echo \"Bypass build\" && node ./dist/index.js",
     "start": "npm run build && npm run index",
-    "index": "node ./dist/index.js",
+    "nodemon": "npm run build && npm run debug",
+    "debug": "nodemon --watch 'src/**/*.ts' --exec 'ts-node -r dotenv/config --project src/tsconfig.json src/index.ts'",
+    "index": "node -r dotenv/config ./dist/index.js",
     "build": "tsc -p src/tsconfig.json",
     "public": "rm -rf dist/ && npm run start"
   },
@@ -19,10 +21,12 @@
   "dependencies": {
     "@cataclym/discord-akairo": "git+https://gitlab.com/cataclym/discord-akairo.git",
     "@cataclym/discord.js-pagination-ts-nsb": "git+https://gitlab.com/cataclym/discord-js-pagination.git",
+    "@types/node": "^15.3.0",
     "@types/ws": "^7.4.4",
     "canvas": "^2.8.0",
     "discord-api-types": "^0.18.1",
     "discord.js": "github:discordjs/discord.js",
+    "dotenv": "^9.0.2",
     "image-size": "^1.0.0",
     "imagemin": "^8.0.0",
     "imagemin-gifsicle": "^7.0.0",
@@ -38,9 +42,9 @@
   "devDependencies": {
     "@types/imagemin-gifsicle": "^7.0.0",
     "@types/mongodb": "^3.6.13",
-    "@types/sharp": "^0.28.1",
     "@types/node-emoji": "^1.8.1",
     "@types/node-fetch": "^2.5.10",
+    "@types/sharp": "^0.28.1",
     "@typescript-eslint/eslint-plugin": "^4.24.0",
     "@typescript-eslint/parser": "^4.24.0",
     "eslint": "^7.26.0",
