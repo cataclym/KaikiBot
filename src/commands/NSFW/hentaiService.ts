@@ -18,7 +18,7 @@ export async function grabHentai(type: types, format: "bomb"): Promise<string[]>
 export async function grabHentai(type: types, format: "single" | "bomb"): Promise<string | string[]> {
 
 	if (format === "bomb") {
-		const rawResponse = await fetch(`https://waifu.pics/api/many/nsfw/${type}`, {
+		const rawResponse = await fetch(`https://api.waifu.pics/many/nsfw/${type}`, {
 			method: "POST",
 			headers: {
 				"Accept": "application/json",
@@ -30,6 +30,6 @@ export async function grabHentai(type: types, format: "single" | "bomb"): Promis
 
 		return content;
 	}
-	return await (await (await fetch(`https://waifu.pics/api/nsfw/${type}`)).json())["url"];
+	return (await (await fetch(`https://waifu.pics/api/nsfw/${type}`)).json())["url"];
 
 }
