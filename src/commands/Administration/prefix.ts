@@ -1,8 +1,7 @@
 import { Command } from "@cataclym/discord-akairo";
 import { Guild, Message, MessageEmbed } from "discord.js";
-import { config } from "../../config.js";
-import { noArgGeneric } from "../../lib/Embeds.js";
-import { prefixCache } from "../../struct/client.js";
+import { noArgGeneric } from "../../lib/Embeds";
+import { prefixCache } from "../../struct/client";
 
 export default class PrefixConfigCommand extends Command {
 	constructor() {
@@ -21,7 +20,7 @@ export default class PrefixConfigCommand extends Command {
 	public async exec(message: Message, { value }: { value: string }): Promise<Message | void> {
 
 		const guildID = (message.guild as Guild).id,
-			oldPrefix = message.client.guildSettings.get(guildID, "prefix", config.prefix);
+			oldPrefix = message.client.guildSettings.get(guildID, "prefix", process.env.PREFIX);
 
 		message.client.guildSettings.set(guildID, "prefix", value);
 

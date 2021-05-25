@@ -1,7 +1,6 @@
 import { AkairoClient, CommandHandler, InhibitorHandler, ListenerHandler, MongooseProvider } from "@cataclym/discord-akairo";
 import { Intents } from "discord.js";
 import { join } from "path";
-import { config } from "../config";
 import { guildsDB } from "./models";
 
 export const prefixCache: {[index: string]: string} = {};
@@ -13,7 +12,7 @@ export class customClient extends AkairoClient {
 	guildSettings: MongooseProvider;
 	constructor() {
 		super({
-			ownerID: config.ownerID,
+			ownerID: process.env.OWNER,
 			intents: [Intents.ALL],
 		},
 		{
@@ -40,11 +39,11 @@ export class customClient extends AkairoClient {
 					let guildPrefix = prefixCache[message.guild.id];
 					if (guildPrefix) return guildPrefix;
 
-					guildPrefix = this.guildSettings.get(message.guild.id, "prefix", config.prefix);
+					guildPrefix = this.guildSettings.get(message.guild.id, "prefix", process.env.PREFIX);
 					prefixCache[message.guild.id] = guildPrefix;
 					return guildPrefix;
 				}
-				return config.prefix;
+				return process.env.PREFIX as string;
 			},
 		});
 

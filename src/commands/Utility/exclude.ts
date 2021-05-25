@@ -1,7 +1,7 @@
 import { Command } from "@cataclym/discord-akairo";
-import { Message, MessageEmbed } from "discord.js";
-import { config } from "../../config.js";
-import { Exclude } from "../../lib/Embeds.js";
+import { Guild, Message, MessageEmbed } from "discord.js";
+import { Exclude } from "../../lib/Embeds";
+import { getGuildDB } from "../../struct/db";
 
 export default class ExcludeCommand extends Command {
 	constructor() {
@@ -9,21 +9,24 @@ export default class ExcludeCommand extends Command {
 			description: { description: "Adds or removes excluded role from user. Excludes the user from being targeted by dadbot." },
 			aliases: ["exclude", "e", "excl"],
 			clientPermissions: "MANAGE_ROLES",
+			channel: "guild",
 		});
 	}
 
 	public async exec(message: Message): Promise<Message | void> {
 
-		let excludedRole = message.guild?.roles.cache.find((r) => r.name === config.dadbotRole);
+		const db = await getGuildDB((message.guild as Guild).id);
+
+		let excludedRole = message.guild?.roles.cache.find((r) => r.name === db.settings.excludeRole);
 
 		if (!message.guild?.roles.cache.some(r => r.name === excludedRole?.name)) {
 			excludedRole = await message.guild?.roles.create({
-				name: config.dadbotRole,
+				name: db.settings.excludeRole,
 				reason: "Role didn't exist yet.",
 			});
 			await (message.channel.send(new MessageEmbed({
 				title: "Error!",
-				description: `A role with name \`${config.dadbotRole}\` was not found in guild. Creating... `,
+				description: `A role with name \`${db.settings.excludeRole}\` was not found in guild. Creating... `,
 				footer: { text: "Beep boop..." },
 			})
 				.withErrorColor(message)));
@@ -31,14 +34,13 @@ export default class ExcludeCommand extends Command {
 
 		if (!message.member?.roles.cache.find((r) => r === excludedRole) && excludedRole) {
 			await message.member?.roles.add(excludedRole);
-			return message.channel.send(Exclude.addedRoleEmbed
+			return message.channel.send(Exclude.addedRoleEmbed(db.settings.excludeRole)
 				.withOkColor(message));
 		}
 
 		if (message.member?.roles.cache.find((r) => r === excludedRole) && excludedRole) {
 			await message.member?.roles.remove(excludedRole);
-			return message.channel.send(Exclude.removedRoleEmbed
-				.withOkColor(message));
+			return message.channel.send(Exclude.removedRoleEmbed(db.settings.excludeRole));
 		}
 	}
 }

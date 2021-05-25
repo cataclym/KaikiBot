@@ -1,7 +1,6 @@
 import { Command } from "@cataclym/discord-akairo";
 import { Message, MessageEmbed } from "discord.js";
 import fetch from "node-fetch";
-import { config } from "../../config";
 import { errorMessage } from "../../lib/Embeds";
 // const otherWiseText = "Correct usage would be " + prefix + "`holiday <day> <month> (last year) (country)`\n`<day>` is numbers between `1-31`\n`<month>` is numbers between `1-12`\n`(year)` can only be previous year: `2019`." + "**Year is optional.**\n`(country)` can only be 2 letter country codes: `US`. **Country is optional.**\n**Country requires Year.**";
 
@@ -37,14 +36,14 @@ export default class HolidayAPICommand extends Command {
 
 		const { day, month, year, country } = args;
 
-		if (config.holidayKey) {
+		if (process.env.HOLIDAYKEY) {
 			return loadTitle();
 		}
 		else {
-			return message.channel.send(await errorMessage(message, "You need to provide a HolidayAPI token in `config.ts`\nThis only applies if you are bot owner."));
+			return message.channel.send(await errorMessage(message, "You need to provide a HolidayAPI token in `.env`\nThis only applies if you are bot owner."));
 		}
 		async function loadTitle() {
-			return fetch(`https://holidayapi.com/v1/holidays?pretty&key=${config.holidayKey}&country=${country}&year=${year}&month=${month}&day=${day}`)
+			return fetch(`https://holidayapi.com/v1/holidays?pretty&key=${process.env.HOLIDAYKEY}&country=${country}&year=${year}&month=${month}&day=${day}`)
 				.then((res) => res.json())
 				.then((date) => PostHoliday(date));
 		}

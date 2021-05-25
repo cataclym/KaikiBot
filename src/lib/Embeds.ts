@@ -1,6 +1,5 @@
 import { Command, PrefixSupplier } from "@cataclym/discord-akairo";
 import { Message, MessageEmbed, User } from "discord.js";
-import { config } from "../config";
 import { getTinderDB } from "../struct/db";
 import { tinderDataDB } from "../struct/models";
 import { poems } from "./Poems";
@@ -104,14 +103,14 @@ export const errorMessage = async (message: Message, msg: string): Promise<Messa
 
 export const Exclude = {
 
-	addedRoleEmbed: new MessageEmbed({
+	addedRoleEmbed: (rolename: string): MessageEmbed => new MessageEmbed({
 		title: "Success!",
-		description: `Added role \`${config.dadbotRole}\`.\nType the command again to remove.`,
+		description: `Added role \`${rolename}\`.\nType the command again to remove.`,
 	}),
 
-	removedRoleEmbed: new MessageEmbed({
+	removedRoleEmbed: (rolename: string): MessageEmbed => new MessageEmbed({
 		title: "Success!",
-		description: `Removed role \`${config.dadbotRole}\`.\nType the command again to add it back.`,
+		description: `Removed role \`${rolename}\`.\nType the command again to add it back.`,
 	}),
 };
 

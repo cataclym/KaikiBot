@@ -3,7 +3,7 @@ import { Client, Guild, GuildMember, Message, MessageEmbed, User } from "discord
 import logger from "loglevel";
 import { illegalWordCache, keyWordCache } from "../cache/cache";
 import { clearRollCache } from "../commands/Tinder/tinder";
-import { config } from "../config";
+import { badWords, dadbotArray } from "../struct/constants";
 import { customClient } from "../struct/client";
 import { badWords } from "../struct/constants";
 import { getGuildDB } from "../struct/db";
@@ -185,10 +185,10 @@ export async function illegalWordService(msg: Message): Promise<{
 }
 
 export async function sendDM(message: Message): Promise<Message | undefined> {
-	if (message.author.id === config.ownerID) return;
+	if (message.author.id === process.env.OWNER) return;
 	// I wont wanna see my own msgs, thank u
 
-	if (!botOwner) botOwner = message.client.users.cache.get(config.ownerID);
+	if (!botOwner) botOwner = message.client.users.cache.get(process.env.OWNER!);
 
 	let attachmentLinks = "";
 	logger.info(`message | DM from ${message.author.tag} [${message.author.id}]`);

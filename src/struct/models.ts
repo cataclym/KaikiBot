@@ -1,6 +1,5 @@
 import { model, Schema } from "mongoose";
 import { IBlacklist, IBotDB, ICommandStats, IGuild, ITinder, IUser } from "../../src/interfaces/db";
-import { config } from "../config";
 import { errorColor, okColor } from "../lib/Util";
 
 export const guildSchema = new Schema({
@@ -38,15 +37,15 @@ export const guildSchema = new Schema({
 
 	settings: {
 		type: Object, default: {
-			prefix: config.prefix,
+			prefix: process.env.PREFIX,
 			anniversary: false,
 			dadBot: false,
 			errorColor: errorColor,
 			okColor: okColor,
-			excludeRole: config.dadbotRole,
+			excludeRole: "Dadbot-excluded",
 			welcome: {
 				enabled: false,
-				channel:  null,
+				channel: null,
 				message: null,
 				image: false,
 				embed: false,
@@ -54,7 +53,7 @@ export const guildSchema = new Schema({
 			},
 			goodbye: {
 				enabled: false,
-				channel:  null,
+				channel: null,
 				message: null,
 				image: false,
 				embed: false,
