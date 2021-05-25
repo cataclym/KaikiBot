@@ -1,6 +1,6 @@
 import { Listener } from "@cataclym/discord-akairo";
 import { GuildMember } from "discord.js";
-import { handleGreetMessage } from "../cache/cache";
+import { handleGreetMessage } from "../lib/GreetHandler";
 import { checkAnniversaryMember } from "../lib/AnniversaryRoles";
 
 export default class GuildMemberAddListener extends Listener {

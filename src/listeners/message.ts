@@ -1,6 +1,6 @@
 import { Listener } from "@cataclym/discord-akairo";
 import { Message } from "discord.js";
-import { countEmotes, emoteReact, illegalWordService, sendDM, tiredNadekoReact } from "../lib/functions";
+import { countEmotes, emoteReact, sendDM, tiredNadekoReact } from "../lib/functions";
 
 export default class MessageListener extends Listener {
 	constructor() {
@@ -20,7 +20,6 @@ export default class MessageListener extends Listener {
 			// Guild only
 			countEmotes(message);
 			emoteReact(message);
-			illegalWordService(message);
 		}
 
 		else {

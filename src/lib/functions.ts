@@ -1,11 +1,8 @@
 import { AkairoClient } from "@cataclym/discord-akairo";
 import { Client, Guild, GuildMember, Message, MessageEmbed, User } from "discord.js";
 import logger from "loglevel";
-import { illegalWordCache, keyWordCache } from "../cache/cache";
 import { clearRollCache } from "../commands/Tinder/tinder";
 import { badWords, dadbotArray } from "../struct/constants";
-import { customClient } from "../struct/client";
-import { badWords } from "../struct/constants";
 import { getGuildDB } from "../struct/db";
 import { tinderDataDB } from "../struct/models";
 import { birthdayService } from "./AnniversaryRoles";
@@ -16,29 +13,23 @@ let botOwner: User | undefined;
 // Reacts with emote to specified words
 export async function emoteReact(message: Message): Promise<void> {
 
-	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-	const gID = message.guild!.id;
-	let wordObj = keyWordCache[gID];
+	const gID = message.guild!.id,
+		wordObj = (await getGuildDB(gID)).emojiReactions;
 
-	if (!wordObj) {
-		keyWordCache[gID] = (await getGuildDB(gID)).emojiReactions;
-		wordObj = keyWordCache[gID];
+	const regexFromMyArray = new RegExp(Object.keys(wordObj).join("|"), "gi");
+
+	const matches = message.content.match(regexFromMyArray) || [];
+
+	for (let i = 0; i < matches.length; i++) {
+		// TODO: Able to add more words, select random word, store in db
+		if (!message.guild?.emojis.cache.has(wordObj[matches[i]])) return;
+
+		const aSingleEmoji = message.guild.emojis.cache.get(wordObj[matches[i]]);
+
+		if (!aSingleEmoji) return;
+
+		message.react(wordObj[matches[i]]);
 	}
-
-	const keywords = message.content.toLowerCase().split(" ");
-
-	keywords.forEach(async (word) => {
-		if (wordObj[word]) {
-			// TODO: Able to add more words, select random word, store in db
-			if (!message.guild?.emojis.cache.has(wordObj[word])) return;
-
-			const aSingleEmoji = message.guild.emojis.cache.find((e) => e.id === wordObj[word]);
-
-			if (!aSingleEmoji) return;
-
-			message.react(aSingleEmoji);
-		}
-	});
 }
 
 export async function tiredNadekoReact(message: Message): Promise<void> {
@@ -151,39 +142,6 @@ export function msToTime(duration: number): string {
 	return "**" + hours + "** hours **" + minutes + "** minutes **" + seconds + "." + milliseconds + "** seconds";
 }
 
-export async function illegalWordService(msg: Message): Promise<{
-    channel: null;
-    word: null;
-} | undefined> {
-	const gID = msg.guild!.id,
-		wordObj = illegalWordCache[gID];
-
-	if (wordObj) {
-
-		if (wordObj.channel !== msg.channel.id || !wordObj?.word) {
-			return;
-		}
-
-		else if (msg.content.toLowerCase().includes(wordObj.word.toLowerCase())) {
-			msg.delete();
-		}
-	}
-
-	else {
-
-		const otherWordObj = (await getGuildDB(gID)).illegalWordChannel;
-
-		if (!otherWordObj?.channel === undefined) {
-			illegalWordCache[gID] = { channel: null, word: null };
-		}
-
-		else {
-			illegalWordCache[gID] = otherWordObj;
-			msg.delete;
-		}
-	}
-}
-
 export async function sendDM(message: Message): Promise<Message | undefined> {
 	if (message.author.id === process.env.OWNER) return;
 	// I wont wanna see my own msgs, thank u
@@ -235,6 +193,33 @@ export async function parsePlaceHolders(input:string, guild: Guild, guildMember:
 	return input;
 }
 
-export function getCommandCategories(client: customClient): any {
-	return client.commandHandler.categories.toJSON();
-}
+// /**
+//  * Get the sortest form of "I am something" in a message to fuck users over.
+//  * Twice as hard when they don't pay attention to what they're saying!
+//  * Utilizes a couple loops in order to grab the absolute shortest possible
+//  * occurrence of a user saying they are something.
+//  * Maximum dadbot!
+//  *
+//  * @param	{String} userinputisgay		The message the user sent.
+//  * @return	{String} The shortest form of the user saying they are something, or null.
+//  */
+// export function findshortest(userinputisgay: string): null | string {
+// 	let longest: string | string[] | null = null;
+// 	for (const split in dadbotArray) {
+// 		const results = userinputisgay.split(split);
+// 		logger.info(results);
+// 		if (results.length > 1) {
+// 			// split always returns 1 item if it didn't split
+// 			results.forEach(r => {
+// 				if (longest) {
+// 					logger.info(r);
+// 					if (r.length < longest.length) {
+// 						logger.info(r);
+// 						longest = r;
+// 					}
+// 				}
+// 			});
+// 		}
+// 	}
+// 	return longest;
+// }

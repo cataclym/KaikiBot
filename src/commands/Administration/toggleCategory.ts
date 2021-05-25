@@ -1,8 +1,7 @@
 import { Category, Command } from "@cataclym/discord-akairo";
 import { Guild, Message, MessageEmbed } from "discord.js";
-import { blockedModulesCache } from "../../cache/cache.js";
-import { noArgGeneric } from "../../lib/Embeds.js";
-import { getGuildDB } from "../../struct/db.js";
+import { noArgGeneric } from "../../lib/Embeds";
+import { getGuildDB } from "../../struct/db";
 
 export default class ToggleCategoryCommand extends Command {
 	constructor() {
@@ -27,18 +26,16 @@ export default class ToggleCategoryCommand extends Command {
 					otherwise: (msg: Message) => noArgGeneric(msg),
 				},
 			],
-
 		});
 	}
-	public async exec(message: Message, { category }: {category: Category<string, Command>}): Promise<Message> {
+	public async exec(message: Message, { category }: { category: Category<string, Command> }): Promise<Message> {
 
-		const guild = (message.guild as Guild);
-		const db = await getGuildDB(guild.id);
-		const bool = !db.blockedCategories[category.id];
+		const guild = (message.guild as Guild),
+			db = await getGuildDB(guild.id),
+			bool = !db.blockedCategories[category.id];
 
-		blockedModulesCache[guild.id][category.id] = bool;
 		db.blockedCategories[category.id] = bool;
-		db.markModified("blockedCategories");
+		db.markModified(`blockedCategories.${category.id}`);
 		db.save();
 
 		return message.channel.send(new MessageEmbed()
