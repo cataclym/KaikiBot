@@ -1,5 +1,5 @@
 import { Command } from "@cataclym/discord-akairo";
-import { TextChannel, Message, MessageEmbed } from "discord.js";
+import { Message, MessageEmbed, TextChannel } from "discord.js";
 
 export default class ChannelNsfwCommand extends Command {
 	constructor() {
@@ -19,8 +19,9 @@ export default class ChannelNsfwCommand extends Command {
 		channel.setNSFW(!channel.nsfw, `${message.author.tag} toggled NSFW.`);
 
 		return message.channel.send(new MessageEmbed({
-			description: `Toggled ${channel.name}'s NSFW status to ${!channel.nsfw}.`,
+			description: `NSFW in ${channel.name} has been ${!channel.nsfw ? "enabled" : "disabled"}.`,
 		})
-			.withOkColor(message));
+			.withOkColor(message),
+		);
 	}
 }

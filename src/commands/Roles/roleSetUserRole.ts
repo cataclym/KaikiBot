@@ -74,7 +74,7 @@ export default class SetUserRoleCommand extends Command {
 			}
 
 			catch (err) {
-				throw new Error("Failed to delete user role." + err);
+				throw new Error("Failed to delete user role.\n" + err);
 			}
 		}
 

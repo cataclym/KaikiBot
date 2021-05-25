@@ -1,9 +1,8 @@
 import { Argument, Command } from "@cataclym/discord-akairo";
 import { Guild, Message, MessageEmbed, TextChannel } from "discord.js";
-import { greetLeaveCache } from "../../cache/cache.js";
-import { hexColorTable } from "../../lib/Color.js";
-import { okColor } from "../../lib/Util.js";
-import { getGuildDB } from "../../struct/db.js";
+import { hexColorTable } from "../../lib/Color";
+import { okColor } from "../../lib/Util";
+import { getGuildDB } from "../../struct/db";
 
 export default class WelcomeConfigCommand extends Command {
 	constructor() {
@@ -71,11 +70,6 @@ export default class WelcomeConfigCommand extends Command {
 
 			const enabledOrDisabled = db.settings.welcome.enabled;
 
-			greetLeaveCache[guildID] = {
-				welcome: db.settings.welcome,
-				goodbye: db.settings.goodbye,
-			};
-
 			await db.save();
 			return message.channel.send(new MessageEmbed()
 				.setDescription(`${enabledOrDisabled ? "Enabled" : "Disabled"} welcome message`)
@@ -101,11 +95,6 @@ export default class WelcomeConfigCommand extends Command {
 						image: image ? image.href : image,
 						embed: embed,
 						color: color ?? db.settings.welcome.color,
-					};
-
-					greetLeaveCache[guildID] = {
-						welcome: db.settings.welcome,
-						goodbye: db.settings.goodbye,
 					};
 
 					db.markModified("settings.welcome");

@@ -37,15 +37,10 @@ export default class MyRoleCommand extends Command {
 		const guild = (message.guild as Guild);
 
 		const embedFail = async (text = "You do not have a role!") => {
-				return new MessageEmbed()
-					.setDescription(text)
-					.withErrorColor(message);
-			},
-			embedSuccess = async (text: string) => {
-				return new MessageEmbed()
-					.setDescription(text)
-					.withOkColor(message);
-			};
+			return new MessageEmbed()
+				.setDescription(text)
+				.withErrorColor(message);
+		};
 
 		const db = await getGuildDB(guild.id),
 			roleID = db.userRoles[message.author.id];
@@ -75,13 +70,19 @@ export default class MyRoleCommand extends Command {
 				const hexCode = await resolveColor(color),
 					oldHex = myRole.hexColor;
 				await myRole.setColor(hexCode);
-				return message.channel.send(await embedSuccess(`You have changed ${myRole.name}'s color from ${oldHex} to ${hexCode}!`));
+				return message.channel.send(new MessageEmbed()
+					.setDescription(`You have changed ${myRole.name}'s color from ${oldHex} to ${hexCode}!`)
+					.setColor(hexCode),
+				);
 			}
 
 			else {
 				const oldName = myRole.name;
 				await myRole.setName(trim(name!, 32));
-				return message.channel.send(await embedSuccess(`You have changed ${oldName}'s name to ${name}!`));
+				return message.channel.send(new MessageEmbed()
+					.setDescription(`You have changed ${oldName}'s name to ${name}!`)
+					.setColor(myRole.color),
+				);
 			}
 		}
 
