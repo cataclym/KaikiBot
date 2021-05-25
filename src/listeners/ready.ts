@@ -22,8 +22,8 @@ export default class ReadyListener extends Listener {
 				name: "exclude",
 				description: "Excludes you from being targeted by dadbot.",
 			});
-			logger.info(`Created slash commands in ${g.name}`);
 		});
+		logger.info(`Created slash commands in ${this.client.guilds.cache.size} guilds.`);
 
 		dailyResetTimer(this.client)
 			.then(async () => {

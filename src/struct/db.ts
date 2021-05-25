@@ -1,11 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import logger from "loglevel";
-import mongoose, { Error } from "mongoose";
+import { connection, connect } from "mongoose";
 import { IBlacklist, IBotDB, ICommandStats, IGuild, ITinder, IUser } from "../interfaces/db";
 import { blacklistDB, botDB, commandStatsDB, guildsDB, tinderDataDB, usersDB } from "./models";
 
-
-mongoose.connect("mongodb://localhost:27017", {
+connect("mongodb://localhost:27017", {
 	useNewUrlParser: true,
 	useUnifiedTopology: true,
 	dbName: "KaikiDB",
@@ -19,9 +18,8 @@ mongoose.connect("mongodb://localhost:27017", {
 		logger.error("Unable to connect to the Mongodb database. Error:" + err, "error");
 	});
 
-mongoose.connection.on("error", logger.error.bind(console, "connection error:"));
+connection.on("error", logger.error.bind(console, "connection error:"));
 
-// Create/find Guilds Database
 export async function getUserDB(userID: string): Promise<IUser> {
 	let userDB = await usersDB.findOne({ id: userID });
 	if (userDB) {
@@ -31,25 +29,20 @@ export async function getUserDB(userID: string): Promise<IUser> {
 		userDB = new usersDB({
 			id: userID,
 		});
-		await userDB.save().catch((err: Error) => logger.error(err));
+		await userDB.save().catch(err => logger.error(err));
 		return userDB;
 	}
 }
 
-// Create/find Guilds Database
 export async function getGuildDB(guildID: string): Promise<IGuild> {
+
 	let guildDB = await guildsDB.findOne({ id: guildID });
 
-	if (guildDB) {
-		return guildDB;
+	if (!guildDB) {
+		guildDB = new guildsDB({ id: guildID });
 	}
-	else {
-		guildDB = new guildsDB({
-			id: guildID,
-		});
-		await guildDB.save().catch((err: Error) => logger.error(err));
-		return guildDB;
-	}
+
+	return await guildDB.save();
 }
 
 export async function getTinderDB(userID: string): Promise<ITinder> {
@@ -59,10 +52,8 @@ export async function getTinderDB(userID: string): Promise<ITinder> {
 		return tinderDB;
 	}
 	else {
-		tinderDB = new tinderDataDB({
-			id: userID,
-		});
-		await tinderDB.save().catch((err: Error) => logger.error(err));
+		tinderDB = new tinderDataDB({ id: userID });
+		await tinderDB.save().catch(err => logger.error(err));
 		return tinderDB;
 	}
 }
@@ -76,7 +67,7 @@ export async function getCommandStatsDB(): Promise<ICommandStats> {
 	else {
 		cmdStatsDB = new commandStatsDB();
 
-		await cmdStatsDB.save().catch((err: Error) => logger.error(err));
+		await cmdStatsDB.save().catch(err => logger.error(err));
 		return cmdStatsDB;
 	}
 }
@@ -90,7 +81,7 @@ export async function getBlacklistDB(): Promise<IBlacklist> {
 	else {
 		blacklist = new blacklistDB();
 
-		await blacklist.save().catch((err: Error) => logger.error(err));
+		await blacklist.save().catch(err => logger.error(err));
 		return blacklist;
 	}
 }
@@ -104,7 +95,7 @@ export async function getBotDB(): Promise<IBotDB> {
 	else {
 		bot = new botDB();
 
-		await bot.save().catch((err: Error) => logger.error(err));
+		await bot.save().catch(err => logger.error(err));
 		return bot;
 	}
 }

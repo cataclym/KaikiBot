@@ -26,6 +26,7 @@ export interface IGuild extends Document {
 		dadBot: boolean,
 		errorColor: ColorResolvable,
 		okColor: ColorResolvable,
+        excludeRole: string,
 		welcome: TGreetMessage,
 		goodbye: TGreetMessage,
 	},
