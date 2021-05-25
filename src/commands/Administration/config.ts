@@ -1,7 +1,6 @@
 import { Argument, Command, Flag, PrefixSupplier } from "@cataclym/discord-akairo";
 import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
 import { Guild, Message, MessageEmbed } from "discord.js";
-import { config } from "../../config";
 import { getGuildDB } from "../../struct/db";
 
 export default class ConfigCommand extends Command {
@@ -75,8 +74,8 @@ export default class ConfigCommand extends Command {
 						? "Enabled"
 						: "Disabled", true)
 				.addField("Guild prefix",
-					prefix === config.prefix
-						? `\`${config.prefix}\` (Default)`
+					prefix === process.env.PREFIX
+						? `\`${process.env.PREFIX}\` (Default)`
 						: prefix, true)
 				.addField("Embed error color",
 					errorColor.toString().startsWith("#")
@@ -100,11 +99,11 @@ export default class ConfigCommand extends Command {
 			goodbyeEmbed,
 		];
 
-		const categories = Object.keys(db.blockedCategories);
+		const categories = Object.entries(db.blockedCategories).filter(e => e[1]);
 
 		if (categories.length) {
 			pages[0]
-				.addField("Disabled categories", categories.join("\n"), false);
+				.addField("Disabled categories", categories.map(c => c[0]).join("\n"), false);
 		}
 
 		return editMessageWithPaginatedEmbeds(message, pages, {});
