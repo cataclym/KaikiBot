@@ -1,10 +1,36 @@
+import { MessageEmbed } from "discord.js";
+import { Message } from "discord.js";
 import { search } from "kaori";
 import { Image } from "kaori/typings/Image";
-import fetch from "node-fetch";
+import fetch, { RequestInit } from "node-fetch";
+import { Post, responseE621 } from "../../interfaces/IDapi";
+import { version } from "../../../package.json";
 const sites: string[] = ["danbooru", "yandere"];
+
+export enum DapiSearchType {
+    E621,
+    Danbooru,
+}
+
+const body = {
+	file: {
+		url: "",
+	},
+};
+
+const postData: RequestInit = {
+	method: "POST",
+	body: JSON.stringify(body),
+	headers: {
+		"Accept": "application/json",
+		"Content-Type": "application/json",
+		"User-Agent": `KaikiDeishuBot/${version} (Cataclym)`,
+	},
+};
 
 export type types =
 "waifu" | "neko" | "trap" | "blowjob";
+
 export const typesArray: types[] = ["waifu", "neko", "trap", "blowjob"];
 
 export async function grabHentaiPictureAsync(usertags: string[] = []): Promise<Image> {
