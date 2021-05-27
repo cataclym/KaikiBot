@@ -1,6 +1,6 @@
 {
   "name": "kaikideishubot",
-  "version": "3.4.2-Cherry",
+  "version": "3.4.3-Desire",
   "main": "./dist/index.js",
   "scripts": {
     "test": "echo \"Bypass build\" && node ./dist/index.js",
