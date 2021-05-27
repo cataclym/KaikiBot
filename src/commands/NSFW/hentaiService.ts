@@ -33,3 +33,53 @@ export async function grabHentai(type: types, format: "single" | "bomb"): Promis
 	return (await (await fetch(`https://waifu.pics/api/nsfw/${type}`)).json())["url"];
 
 }
+
+export async function DapiGrabber(tags: string[] | null, type: DapiSearchType): Promise<Post[] | void> {
+
+	const tag = tags?.join("+").replace(" ", "_").toLowerCase();
+	let url = "";
+
+	switch (type) {
+		case DapiSearchType.E621: {
+			url = `https://e621.net/posts.json?limit=10&tags=${tag}`;
+			break;
+		}
+		case DapiSearchType.Danbooru: {
+			url = `http://danbooru.donmai.us/posts.json?limit=100&tags=${tag}`;
+			break;
+		}
+	}
+
+	try {
+		if (type === DapiSearchType.E621) {
+			const r: responseE621 = (await (await fetch(url, postData)).json());
+			return r.posts;
+		}
+		if (type === DapiSearchType.Danbooru) {
+			const r = (await (await fetch(url, postData)).json());
+			return r.posts;
+		}
+	}
+	catch (error) {
+		throw new Error("Fetching image data returned null\n" + error);
+	}
+
+}
+
+export async function postHentai(message: Message, messageArguments: string[] | undefined): Promise<Message> {
+	const awaitResult = async () => (await grabHentaiPictureAsync(messageArguments));
+	const result: Image = await awaitResult();
+	if (result) {
+		return message.channel.send(result.sampleURL, new MessageEmbed({
+			author: { name: result.createdAt?.toLocaleString() },
+			title: "Score: " + result.score,
+			description: `[Source](${result.source} "${result.source}")`,
+			image: { url: <string | undefined> result.fileURL || result.sampleURL || result.previewURL },
+			footer: { text: result.tags.join(", ") },
+		})
+			.withOkColor(message));
+	}
+	else {
+		return postHentai(message, messageArguments);
+	}
+}

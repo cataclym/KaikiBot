@@ -20,21 +20,11 @@ export default class HentaiBombCommand extends Command {
 
 	public async exec(message: Message, { category }: { category: "waifu" | "neko" | "trap" | "blowjob" | null }): Promise<void | Message> {
 
-		if (message.channel.type === "text" && message.channel.nsfw) {
 
-			const megaResponse = (await grabHentai(category ?? typesArray[Math.floor(Math.random() * typesArray.length)], "bomb"));
+		const megaResponse = (await grabHentai(category ?? typesArray[Math.floor(Math.random() * typesArray.length)], "bomb"));
 
-			for (let index = 5, p = 0; p < megaResponse.length; index += 5, p += 5) {
-				await message.channel.send(megaResponse.slice(p, index));
-			}
-		}
-
-		else {
-			return message.channel.send(new MessageEmbed({
-				title: "Error",
-				description: "Channel is not NSFW.",
-			})
-				.withErrorColor(message));
+		for (let index = 5, p = 0; p < megaResponse.length; index += 5, p += 5) {
+			await message.channel.send(megaResponse.slice(p, index));
 		}
 	}
 }
