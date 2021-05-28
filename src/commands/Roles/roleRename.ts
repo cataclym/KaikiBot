@@ -1,6 +1,7 @@
 import { Command } from "@cataclym/discord-akairo";
+import { Guild } from "discord.js";
 import { GuildMember, Message, MessageEmbed, Role } from "discord.js";
-import { noArgGeneric } from "../../lib/Embeds";
+import { errorMessage, noArgGeneric } from "../../lib/Embeds";
 import { trim } from "../../lib/Util";
 
 export default class RoleRenameCommand extends Command {
@@ -31,34 +32,25 @@ export default class RoleRenameCommand extends Command {
 	}
 	public async exec(message: Message, { role, name }: { role: Role, name: string }): Promise<Message> {
 
-		if ((role.position < (message.member as GuildMember).roles.highest.position) && !role.managed) {
-			try {
-				const editRole = role.edit({ name: trim(name.toString(), 32) });
-				if (editRole) {
-					return message.channel.send(new MessageEmbed({
-						title: "Success!",
-						description: `Role renamed to ${role}.`,
-					})
-						.withOkColor(message));
-				}
-				else {
-					throw "Failed to edit role name.";
-				}
-			}
-			catch (e) {
-				return message.channel.send(new MessageEmbed({
-					title: "Error!",
-					description: "An error occured. Could not rename role.",
-					footer: { text: e },
-				})
-					.withErrorColor(message));
-			}
+
+		if ((role.position < (message.member as GuildMember).roles.highest.position)
+            && (role.position < ((message.guild as Guild).me as GuildMember).roles.highest.position)
+            && !role.managed) {
+
+			const oldName = role.name;
+
+			role.edit({ name: trim(name.toString(), 32) })
+				.catch((e) => {
+					throw new Error("Error: Failed to edit role.\n" + e);
+				});
+			return message.channel.send(new MessageEmbed()
+				.setTitle("Success!")
+				.setDescription(`\`${oldName}\` renamed to ${role}.`)
+				.withOkColor(message));
 		}
+
 		else {
-			return message.channel.send(new MessageEmbed({
-				title: "Insufficient permission(s).",
-			})
-				.withErrorColor(message));
+			return message.channel.send(await errorMessage(message, "**Insufficient permissions**\nRole is above you or me in the role hierarchy."));
 		}
 	}
 }
