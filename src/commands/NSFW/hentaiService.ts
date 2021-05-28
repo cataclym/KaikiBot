@@ -1,10 +1,12 @@
-import { MessageEmbed } from "discord.js";
-import { Message } from "discord.js";
+import { Message, MessageEmbed } from "discord.js";
 import { search } from "kaori";
 import { Image } from "kaori/typings/Image";
-import fetch, { RequestInit } from "node-fetch";
+import logger from "loglevel";
+import fetch from "node-fetch";
+import querystring from "querystring";
+import { repository, version } from "../../../package.json";
 import { Post, responseE621 } from "../../interfaces/IDapi";
-import { version } from "../../../package.json";
+
 const sites: string[] = ["danbooru", "yandere"];
 
 export enum DapiSearchType {
@@ -12,19 +14,10 @@ export enum DapiSearchType {
     Danbooru,
 }
 
-const body = {
-	file: {
-		url: "",
-	},
-};
-
-const postData: RequestInit = {
-	method: "POST",
-	body: JSON.stringify(body),
+const options = {
+	method: "GET",
 	headers: {
-		"Accept": "application/json",
-		"Content-Type": "application/json",
-		"User-Agent": `KaikiDeishuBot/${version} (Cataclym)`,
+		"User-Agent": `KaikiDeishuBot a Discord bot, v${version} (${repository.url})`,
 	},
 };
 
@@ -60,14 +53,15 @@ export async function grabHentai(type: types, format: "single" | "bomb"): Promis
 
 }
 
-export async function DapiGrabber(tags: string[] | null, type: DapiSearchType): Promise<Post[] | void> {
+export async function DapiGrabber(tags: string[] | null, type: DapiSearchType): Promise<Post | void> {
 
 	const tag = tags?.join("+").replace(" ", "_").toLowerCase();
 	let url = "";
 
 	switch (type) {
 		case DapiSearchType.E621: {
-			url = `https://e621.net/posts.json?limit=10&tags=${tag}`;
+			const query = querystring.stringify({ tags: tag, limit: 50 });
+			url = `https://e621.net/posts.json?${query}`;
 			break;
 		}
 		case DapiSearchType.Danbooru: {
@@ -76,20 +70,39 @@ export async function DapiGrabber(tags: string[] | null, type: DapiSearchType): 
 		}
 	}
 
-	try {
-		if (type === DapiSearchType.E621) {
-			const r: responseE621 = (await (await fetch(url, postData)).json());
-			return r.posts;
+	if (type === DapiSearchType.E621) {
+
+		const cache = Object.values(imageCache);
+		if (cache.length > 200) {
+			return cache[Math.floor(Math.random() * cache.length)];
 		}
-		if (type === DapiSearchType.Danbooru) {
-			const r = (await (await fetch(url, postData)).json());
-			return r.posts;
+
+		const r = (await fetch(url, options));
+
+		console.log(r.status, r.statusText);
+
+		if ([503, 429, 502].includes(r.status) && cache.length >= 50) {
+			return cache[Math.floor(Math.random() * cache.length)];
 		}
-	}
-	catch (error) {
-		throw new Error("Fetching image data returned null\n" + error);
+
+		if (!(r.status === 200)) {
+			throw new Error(`Error: Fetch didnt return successful Status code\n${r.status} ${r.statusText}`);
+		}
+
+		const json: responseE621 = await r.json()
+			.catch((err) => logger.error(err));
+
+		if (Array.isArray(json)) {
+			json.posts.forEach(async (p) => imageCache[p.id] = p);
+		}
+
+		return json.posts[Math.floor(Math.random() * json.posts.length)];
 	}
 
+	if (type === DapiSearchType.Danbooru) {
+		const r = await fetch(url);
+		return JSON.parse(r.body.toString()).posts;
+	}
 }
 
 export async function postHentai(message: Message, messageArguments: string[] | undefined): Promise<Message> {
@@ -109,3 +122,5 @@ export async function postHentai(message: Message, messageArguments: string[] | 
 		return postHentai(message, messageArguments);
 	}
 }
+
+const imageCache: {[id: string]: Post} = {};

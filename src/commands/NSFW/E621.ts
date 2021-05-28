@@ -1,9 +1,8 @@
 import { Command } from "@cataclym/discord-akairo";
 import { Message, MessageEmbed } from "discord.js";
-import { Image } from "kaori/typings/Image";
 import { errorMessage } from "../../lib/Embeds";
-import { codeblock } from "../../lib/Util";
-import { grabHentaiPictureAsync, grabHentai, typesArray, DapiGrabber, DapiSearchType } from "./hentaiService";
+import { trim } from "../../lib/Util";
+import { DapiGrabber, DapiSearchType } from "./hentaiService";
 
 export default class E621Command extends Command {
 	constructor() {
@@ -20,10 +19,20 @@ export default class E621Command extends Command {
 		});
 	}
 	public async exec(message: Message, { tags }: { tags: string | null }): Promise<Message> {
-		const posts = await DapiGrabber(tags?.split("+").map(tag => tag.replace(" ", "_")) ?? null, DapiSearchType.E621);
-		if (posts) {
-			return message.channel.send(await codeblock(posts.map(p => p.file.url).join(", "), "xl"));
+		const post = await DapiGrabber(tags?.split("+").map(tag => tag.replace(" ", "_")) ?? null, DapiSearchType.E621);
+		if (post) {
+
+			const emb = new MessageEmbed()
+				.setAuthor(post.tags.artist.join(", "))
+				.setDescription(trim(`**Tags**: ${post.tags.general.join(",")}`, 2048))
+				.setImage(post.file.url || post.preview.url || post.sample.url || post.sources[0])
+				.withOkColor(message);
+
+			if (post.tags.character.length) emb.addField("Character(s)", post.tags.character.join(", "), true);
+
+			return message.channel.send(emb);
 		}
+
 		else {
 			return message.channel.send(await errorMessage(message, "No data received"));
 		}
