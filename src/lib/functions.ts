@@ -2,7 +2,7 @@ import { AkairoClient } from "@cataclym/discord-akairo";
 import { Client, Guild, GuildMember, Message, MessageEmbed, User } from "discord.js";
 import logger from "loglevel";
 import { clearRollCache } from "../commands/Tinder/tinder";
-import { badWords, dadbotArray } from "../struct/constants";
+import { badWords } from "../struct/constants";
 import { getGuildDB } from "../struct/db";
 import { tinderDataDB } from "../struct/models";
 import { birthdayService } from "./AnniversaryRoles";
@@ -13,21 +13,14 @@ let botOwner: User | undefined;
 // Reacts with emote to specified words
 export async function emoteReact(message: Message): Promise<void> {
 
-	const gID = message.guild!.id,
-		wordObj = (await getGuildDB(gID)).emojiReactions;
-
-	const regexFromMyArray = new RegExp(Object.keys(wordObj).join("|"), "gi");
-
-	const matches = message.content.match(regexFromMyArray) || [];
+	const wordObj = (await getGuildDB((message.guild as Guild).id)).emojiReactions;
+	const regexFromArray = new RegExp(Object.keys(wordObj).join("|"), "gi");
+	const matches = message.content.toLowerCase().match(regexFromArray) || [];
 
 	for (let i = 0; i < matches.length; i++) {
-		// TODO: Able to add more words, select random word, store in db
 		if (!message.guild?.emojis.cache.has(wordObj[matches[i]])) return;
 
-		const aSingleEmoji = message.guild.emojis.cache.get(wordObj[matches[i]]);
-
-		if (!aSingleEmoji) return;
-
+		// Using const aSingleEmoji here throws an error, so I'm using the ID instead after checking it exists.
 		message.react(wordObj[matches[i]]);
 	}
 }
