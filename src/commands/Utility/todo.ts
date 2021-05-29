@@ -1,8 +1,8 @@
 import { Argument, Command, Flag, PrefixSupplier } from "@cataclym/discord-akairo";
 import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
 import { Message, MessageEmbed } from "discord.js";
-import { trim } from "../../lib/Util.js";
-import { getUserDB } from "../../struct/db.js";
+import { trim } from "../../lib/Util";
+import { getUserDB } from "../../struct/db";
 module.exports = class TodoCommand extends Command {
 	constructor() {
 		super("todo", {

@@ -24,7 +24,7 @@ export default class RoleCreateCommand extends Command {
 
 		try {
 
-			const createdRole = await message.guild?.roles.create({ data: { name: name } });
+			const createdRole = await message.guild?.roles.create({ name:  name });
 
 			if (!createdRole) {
 				throw ("Role creation failed.");

@@ -90,8 +90,6 @@ export default class TinderMain extends Command {
 			tinderUserData.rolls = rolls;
 			tinderUserData.markModified("rolls");
 
-			logger.info(rolls);
-
 			const ramdomUsrData = await getTinderDB(randomUsr.id),
 				SentMsg = await message.channel.send(await tinderRollEmbed(message, randomUsr, RollsLikes));
 
@@ -99,7 +97,7 @@ export default class TinderMain extends Command {
 				.catch(err => logger.error(err));
 
 			const filter = async (reaction: MessageReaction, user: User) => {
-				return ["❌", "💚", "🌟"].includes(reaction.emoji.name) && user.id === message.author.id;
+				return ["❌", "💚", "🌟"].includes(reaction.emoji.name ?? reaction.emoji.identifier) && user.id === message.author.id;
 			};
 
 			SentMsg.awaitReactions(filter, { max: 1, time: 25000, errors: ["time"] })

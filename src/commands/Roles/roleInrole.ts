@@ -21,24 +21,24 @@ export default class RoleInRoleCommand extends Command {
 	public async exec(message: Message, { role }: { role: Role }): Promise<Message> {
 
 		const data = role.members.array()
-			.sort((a: GuildMember, b: GuildMember) => b.roles.highest.position - a.roles.highest.position || (a.id as unknown as number) - (b.id as unknown as number));
+			.sort((a: GuildMember, b: GuildMember) => b.roles.highest.position - a.roles.highest.position
+                || (a.id as unknown as number) - (b.id as unknown as number))
+			.slice(0, 400);
 
 		const pages: MessageEmbed[] = [];
 
 		if (data && data.length) {
 
-			for (let i = 40, p = 0; p < data.length; i = i + 40, p = p + 40) {
+			for (let i = 40, p = 0; p < data.length; i += 40, p += 40) {
 
 				const currentPageUsers = data.slice(p, i),
 					emb = new MessageEmbed()
 						.setTitle(`Users in ${role.name} (${data.length})`)
 						.setAuthor(message.guild?.name)
-						.addFields([
-							{ name: "•", value: currentPageUsers
-								.slice(0, 20)
-								.map(u => `${u.user} - ${u.user.username}`)
-								.join("\n"), inline: true },
-						])
+						.addField("•", currentPageUsers
+							.slice(0, 20)
+							.map(u => `${u.user} - ${u.user.username}`)
+							.join("\n"), true)
 						.withOkColor(message);
 
 				if (currentPageUsers.length > 20) {

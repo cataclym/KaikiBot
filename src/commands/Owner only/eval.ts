@@ -26,7 +26,7 @@ export default class EvalCommand extends Command {
 	}
 	public async exec(message: Message, { code }: { code: string }): Promise<Message | void> {
 		try {
-			let evaled = eval(code);
+			let evaled = await eval("(async () => " + code + ")()");
 
 			if (typeof evaled !== "string") {
 				evaled = (await import("util")).inspect(evaled);

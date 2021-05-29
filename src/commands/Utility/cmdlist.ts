@@ -53,8 +53,8 @@ export default class commandsList extends Command {
 
 		else {
 			const embed = new MessageEmbed({
-				title: `List of command categories for ${this.client.user?.username}`,
-				description: `Prefix is currently set to \`${prefix}\`\n`,
+				title: "Command categories",
+				description: `\`${prefix}cmds <category>\` returns all commands in the category.`,
 				author: {
 					name: `${name} v${version}`,
 					url: repository.url,
@@ -73,7 +73,7 @@ export default class commandsList extends Command {
 			for (const _category of this.handler.categories.values()) {
 				if (["default", "Etc"].includes(_category.id)) continue;
 
-				embed.addField(_category.id, `Commands: **${_category.size}**`);
+				embed.addField(_category.id, `Commands: **${_category.size}**`, true);
 			}
 			return message.channel.send(embed);
 		}

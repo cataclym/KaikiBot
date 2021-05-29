@@ -1,7 +1,7 @@
 import { Command } from "@cataclym/discord-akairo";
 import { Message } from "discord.js";
-import { separateTinderList } from "../../lib/Tinder.js";
-import { getTinderDB } from "../../struct/db.js";
+import { separateTinderList } from "../../lib/Tinder";
+import { getTinderDB } from "../../struct/db";
 
 module.exports = class TinderListLikesCommand extends Command {
 	constructor() {

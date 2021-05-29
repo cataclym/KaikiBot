@@ -1,5 +1,5 @@
-import { Message, MessageEmbed, User } from "discord.js";
 import { Command, PrefixSupplier } from "@cataclym/discord-akairo";
+import { Message, MessageEmbed, User } from "discord.js";
 
 export default class MentionCommand extends Command {
 	constructor() {
@@ -10,10 +10,10 @@ export default class MentionCommand extends Command {
 	}
 
 	condition(msg: Message): boolean {
-		return msg.mentions.has(msg.client.user as User, { ignoreDirect: false, ignoreEveryone: true, ignoreRoles: true }) && !msg.author.bot;
+		return msg.mentions.has(msg.client.user as User, { ignoreDirect: false, ignoreEveryone: true, ignoreRoles: true }) && !msg.author.bot && msg.content.split(" ").length === 1;
 	}
 
-	public async exec(msg: Message): Promise<Message> {
+	public async exec(msg: Message): Promise<NodeJS.Timeout> {
 
 		const embed = msg.channel.send(new MessageEmbed({
 			title: `Hi ${msg.author.username}, what's up?`,
@@ -21,6 +21,6 @@ export default class MentionCommand extends Command {
 		})
 			.withOkColor(msg));
 
-		return (await embed).delete({ timeout: 10000 });
+		return this.client.setTimeout(async () => (await embed).delete(), 10000);
 	}
 }

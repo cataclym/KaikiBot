@@ -1,6 +1,6 @@
 import { Command } from "@cataclym/discord-akairo";
-import { GuildEmoji, Message, MessageEmbed } from "discord.js";
-import { keyWordCache } from "../../cache/cache";
+import { Guild, GuildEmoji, Message, MessageEmbed } from "discord.js";
+import { noArgGeneric } from "../../lib/Embeds";
 import { getGuildDB } from "../../struct/db";
 
 export default class EmoteReactCommand extends Command {
@@ -16,10 +16,12 @@ export default class EmoteReactCommand extends Command {
 				{
 					id: "trigger",
 					type: "string",
+					otherwise: (m: Message) => noArgGeneric(m),
 				},
 				{
 					id: "emoji",
 					type: "emoji",
+					otherwise: (m: Message) => noArgGeneric(m),
 				},
 			],
 		});
@@ -27,10 +29,10 @@ export default class EmoteReactCommand extends Command {
 
 	public async exec(message: Message, { trigger, emoji }: { trigger: string, emoji: GuildEmoji }): Promise<Message> {
 
-		const gid = message.guild!.id,
+		trigger = trigger.toLowerCase();
+		const gid = (message.guild as Guild).id,
 			db = await getGuildDB(gid);
 		db.emojiReactions[trigger] = emoji.id;
-		keyWordCache[gid][trigger] = emoji.id;
 		db.markModified(`emojiReactions.${trigger}`);
 		db.save();
 

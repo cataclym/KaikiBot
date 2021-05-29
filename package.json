@@ -1,13 +1,12 @@
 {
   "name": "kaikideishubot",
-  "version": "3.4.1-Blueberry",
+  "version": "3.4.3-Desire",
   "main": "./dist/index.js",
   "scripts": {
     "test": "echo \"Bypass build\" && node ./dist/index.js",
-    "start": "npm run build && npm run index",
-    "index": "node ./dist/index.js",
-    "build": "tsc -p src/tsconfig.json",
-    "public": "rm -rf dist/ && npm run start"
+    "start": "npm run build & npm run index",
+    "index": "node -r dotenv/config ./dist/index.js",
+    "build": "tsc -p src/tsconfig.json"
   },
   "keywords": [
     "Discord",
@@ -19,37 +18,40 @@
   "dependencies": {
     "@cataclym/discord-akairo": "git+https://gitlab.com/cataclym/discord-akairo.git",
     "@cataclym/discord.js-pagination-ts-nsb": "git+https://gitlab.com/cataclym/discord-js-pagination.git",
-    "@types/ws": "^7.4.2",
-    "canvas": "^2.6.1",
-    "discord.js": "^12.5.1",
-    "image-size": "^0.9.3",
-    "imagemin": "^6.0.0",
-    "imagemin-gifsicle": "^6.0.1",
-    "kaori": "^2.0.x",
+    "@types/node": "^15.3.0",
+    "@types/ws": "^7.4.4",
+    "canvas": "^2.8.0",
+    "discord-api-types": "^0.18.1",
+    "discord.js": "github:discordjs/discord.js",
+    "dotenv": "^9.0.2",
+    "image-size": "^1.0.0",
+    "imagemin": "^8.0.0",
+    "imagemin-gifsicle": "^7.0.0",
+    "kaori": "^2.0.4",
     "loglevel": "^1.7.1",
-    "mongoose": "^5.11.13",
+    "mongoose": "^5.12.10",
     "node-emoji": "^1.10.0",
     "node-fetch": "^2.6.1",
-    "sharp": "^0.26.3",
+    "sharp": "^0.28.2",
     "ts-node": "^9.1.1",
-    "typescript": "^4.1.3"
+    "typescript": "^4.3.2"
   },
   "devDependencies": {
     "@types/imagemin-gifsicle": "^7.0.0",
-    "@types/mongodb": "^3.6.3",
-    "@types/sharp": "^0.26.1",
+    "@types/mongodb": "^3.6.13",
     "@types/node-emoji": "^1.8.1",
-    "@types/node-fetch": "^2.5.7",
-    "@typescript-eslint/eslint-plugin": "^4.12.0",
-    "@typescript-eslint/parser": "^4.12.0",
-    "eslint": "^7.17.0",
+    "@types/node-fetch": "^2.5.10",
+    "@types/sharp": "^0.28.1",
+    "@typescript-eslint/eslint-plugin": "^4.24.0",
+    "@typescript-eslint/parser": "^4.24.0",
+    "eslint": "^7.26.0",
     "eslint-config-airbnb-base": "^14.2.1",
-    "eslint-import-resolver-typescript": "^2.3.0",
-    "eslint-plugin-import": "^2.22.1"
+    "eslint-import-resolver-typescript": "^2.4.0",
+    "eslint-plugin-import": "^2.23.2"
   },
   "peerDependencies": {
-    "@types/ws": "^7.4.0",
-    "@types/node": "^13.13.39"
+    "@types/ws": "^7.4.4",
+    "@types/node": "^15.3.0"
   },
   "description": "Discord bot built with Akairo and MongoDB",
   "repository": {

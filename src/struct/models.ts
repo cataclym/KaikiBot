@@ -1,6 +1,5 @@
 import { model, Schema } from "mongoose";
-import { IBlacklist, ICommandStats, IGuild, ITinder, IUser } from "../../src/interfaces/db";
-import { config } from "../config";
+import { IBlacklist, IBotDB, ICommandStats, IGuild, ITinder, IUser } from "../../src/interfaces/db";
 import { errorColor, okColor } from "../lib/Util";
 
 export const guildSchema = new Schema({
@@ -31,18 +30,22 @@ export const guildSchema = new Schema({
 		type: Object, default: {
 		},
 	},
+	blockedCategories: {
+		type: Object, default: {
+		},
+	},
 
 	settings: {
 		type: Object, default: {
-			prefix: config.prefix,
+			prefix: process.env.PREFIX,
 			anniversary: false,
 			dadBot: false,
 			errorColor: errorColor,
 			okColor: okColor,
-			excludeRole: config.dadbotRole,
+			excludeRole: "Dadbot-excluded",
 			welcome: {
 				enabled: false,
-				channel:  null,
+				channel: null,
 				message: null,
 				image: false,
 				embed: false,
@@ -50,7 +53,7 @@ export const guildSchema = new Schema({
 			},
 			goodbye: {
 				enabled: false,
-				channel:  null,
+				channel: null,
 				message: null,
 				image: false,
 				embed: false,
@@ -116,8 +119,18 @@ export const blacklistSchema = new Schema({
 	},
 });
 
+export const botSchema = new Schema({
+	activity: {
+		type: String, default: "",
+	},
+	activityType: {
+		type: String, default: "",
+	},
+});
+
 export const guildsDB = model<IGuild>("Guild", guildSchema);
 export const commandStatsDB = model<ICommandStats>("CommandStats", commandStatsSchema);
 export const tinderDataDB = model<ITinder>("Tinder", tinderDataSchema);
 export const usersDB = model<IUser>("Member", usersSchema);
 export const blacklistDB = model<IBlacklist>("Blacklist", blacklistSchema);
+export const botDB = model<IBotDB>("BotDB", botSchema);

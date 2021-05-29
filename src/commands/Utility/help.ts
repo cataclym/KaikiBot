@@ -55,7 +55,7 @@ export default class HelpCommand extends Command {
 		embed.setTitle(`${message.client.user?.username} help page`)
 			.setDescription(`Prefix is currently set to \`${prefix}\``)
 			.addFields([
-				{ name: "📋 Command list", value: `\`${prefix}cmds\` returns a complete list of commands.`, inline: true },
+				{ name: "📋 Command list", value: `\`${prefix}cmds\` returns a complete list of command categories.`, inline: true },
 				{ name: "🔍 Command Info", value: `\`${prefix}help [command]\` to get more help. Example: \`${prefix}help ping\``, inline: true },
 			])
 			.setAuthor(`${name} v${version}-${execSync("git rev-parse --short HEAD").toString()}`,

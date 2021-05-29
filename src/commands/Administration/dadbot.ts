@@ -1,8 +1,7 @@
 import { Command, PrefixSupplier } from "@cataclym/discord-akairo";
 import { Guild, Message, MessageEmbed } from "discord.js";
-import { setSessionCache } from "../../cache/cache.js";
-import { noArgGeneric } from "../../lib/Embeds.js";
-import { customClient } from "../../struct/client.js";
+import { noArgGeneric } from "../../lib/Embeds";
+import { customClient } from "../../struct/client";
 
 export default class DadBotConfigCommand extends Command {
 	constructor() {
@@ -31,7 +30,6 @@ export default class DadBotConfigCommand extends Command {
 					(message.client as customClient).guildSettings.set(guildID, "dadBot", true);
 					embed.setDescription(`DadBot functionality has been enabled in ${message.guild?.name}!
 					\nIndividual users can still disable dadbot on themselves with ${(this.handler.prefix as PrefixSupplier)(message)}exclude.`);
-					setSessionCache("dadbotCache", guildID, true);
 					return message.channel.send(embed);
 				}
 				else {
@@ -44,7 +42,6 @@ export default class DadBotConfigCommand extends Command {
 				if (isEnabled) {
 					(message.client as customClient).guildSettings.set(guildID, "dadBot", false);
 					embed.setDescription(`DadBot functionality has been disabled in ${message.guild?.name}!`);
-					setSessionCache("dadbotCache", guildID, false);
 					return message.channel.send(embed);
 				}
 				else {

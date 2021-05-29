@@ -1,6 +1,6 @@
 import { Listener } from "@cataclym/discord-akairo";
 import { GuildMember } from "discord.js";
-import { handleGoodbyeMessage } from "../cache/cache";
+import { handleGoodbyeMessage } from "../lib/GreetHandler";
 import { getGuildDB } from "../struct/db";
 
 export default class GuildMemberRemovedListener extends Listener {

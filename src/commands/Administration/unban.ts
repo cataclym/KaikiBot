@@ -1,4 +1,4 @@
-import { Command } from "@cataclym/discord-akairo";
+import { Argument, Command } from "@cataclym/discord-akairo";
 import { Message, MessageEmbed, User } from "discord.js";
 
 export default class UnbanCommand extends Command {
@@ -7,10 +7,14 @@ export default class UnbanCommand extends Command {
 			aliases: ["unban", "ub"],
 			userPermissions: "BAN_MEMBERS",
 			clientPermissions: "BAN_MEMBERS",
+			channel: "guild",
 			args: [
 				{
 					id: "user",
-					type: "user",
+					type: Argument.union("member", "user", async (_, phrase) => {
+						const u = await this.client.users.fetch(phrase);
+						return u || null;
+					}),
 					otherwise: (m: Message) => new MessageEmbed({
 						description: "Can't find this user.",
 					})
@@ -21,7 +25,9 @@ export default class UnbanCommand extends Command {
 	}
 	public async exec(message: Message, { user }: { user: User }): Promise<Message> {
 
-		const bans = await message.guild?.fetchBans();
+		const bans = (message.guild?.bans.cache.size
+			? message.guild?.bans.cache
+			: await message.guild?.bans.fetch());
 
 		if (bans?.find((u) => u.user.id === user.id)) {
 			await message.guild?.members.unban(user);
@@ -30,6 +36,7 @@ export default class UnbanCommand extends Command {
 			})
 				.withOkColor(message));
 		}
+
 		else {
 			return message.channel.send(new MessageEmbed({
 				description: "This user is not banned.",

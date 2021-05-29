@@ -1,12 +1,11 @@
 import { AkairoClient } from "@cataclym/discord-akairo";
-import { Guild, Message, MessageEmbed, User } from "discord.js";
+import { Client, Guild, GuildMember, Message, MessageEmbed, User } from "discord.js";
 import logger from "loglevel";
-import { illegalWordCache, keyWordCache } from "../cache/cache";
 import { clearRollCache } from "../commands/Tinder/tinder";
-import { config } from "../config";
 import { badWords } from "../struct/constants";
 import { getGuildDB } from "../struct/db";
 import { tinderDataDB } from "../struct/models";
+import { birthdayService } from "./AnniversaryRoles";
 import { trim } from "./Util";
 
 let botOwner: User | undefined;
@@ -14,29 +13,16 @@ let botOwner: User | undefined;
 // Reacts with emote to specified words
 export async function emoteReact(message: Message): Promise<void> {
 
-	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-	const gID = message.guild!.id;
-	let wordObj = keyWordCache[gID];
+	const wordObj = (await getGuildDB((message.guild as Guild).id)).emojiReactions;
+	const regexFromArray = new RegExp(Object.keys(wordObj).join("|"), "gi");
+	const matches = message.content.toLowerCase().match(regexFromArray) || [];
 
-	if (!wordObj) {
-		keyWordCache[gID] = (await getGuildDB(gID)).emojiReactions;
-		wordObj = keyWordCache[gID];
+	for (let i = 0; i < matches.length; i++) {
+		if (!message.guild?.emojis.cache.has(wordObj[matches[i]])) return;
+
+		// Using const aSingleEmoji here throws an error, so I'm using the ID instead after checking it exists.
+		message.react(wordObj[matches[i]]);
 	}
-
-	const keywords = message.content.toLowerCase().split(" ");
-
-	keywords.forEach(async (word) => {
-		if (wordObj[word]) {
-			// TODO: Able to add more words, select random word, store in db
-			if (!message.guild?.emojis.cache.has(wordObj[word])) return;
-
-			const aSingleEmoji = message.guild.emojis.cache.find((e) => e.id === wordObj[word]);
-
-			if (!aSingleEmoji) return;
-
-			message.react(aSingleEmoji);
-		}
-	});
 }
 
 export async function tiredNadekoReact(message: Message): Promise<void> {
@@ -70,10 +56,12 @@ export async function ResetRolls(): Promise<void> {
 	});
 }
 
-export async function dailyResetTimer(): Promise<void> {
+export async function dailyResetTimer(client: Client): Promise<void> {
 	setTimeout(async () => {
 		ResetRolls();
-		dailyResetTimer();
+		dailyResetTimer(client);
+		birthdayService(client);
+		emoteDataBaseService(client as AkairoClient);
 	}, timeToMidnight());
 }
 
@@ -147,44 +135,11 @@ export function msToTime(duration: number): string {
 	return "**" + hours + "** hours **" + minutes + "** minutes **" + seconds + "." + milliseconds + "** seconds";
 }
 
-export async function illegalWordService(msg: Message): Promise<{
-    channel: null;
-    word: null;
-} | undefined> {
-	const gID = msg.guild!.id,
-		wordObj = illegalWordCache[gID];
-
-	if (wordObj) {
-
-		if (wordObj.channel !== msg.channel.id || !wordObj?.word) {
-			return;
-		}
-
-		else if (msg.content.toLowerCase().includes(wordObj.word.toLowerCase())) {
-			msg.delete();
-		}
-	}
-
-	else {
-
-		const otherWordObj = (await getGuildDB(gID)).illegalWordChannel;
-
-		if (!otherWordObj?.channel === undefined) {
-			illegalWordCache[gID] = { channel: null, word: null };
-		}
-
-		else {
-			illegalWordCache[gID] = otherWordObj;
-			msg.delete;
-		}
-	}
-}
-
 export async function sendDM(message: Message): Promise<Message | undefined> {
-	if (message.author.id === config.ownerID) return;
+	if (message.author.id === process.env.OWNER) return;
 	// I wont wanna see my own msgs, thank u
 
-	if (!botOwner) botOwner = message.client.users.cache.get(config.ownerID);
+	if (!botOwner) botOwner = message.client.users.cache.get(process.env.OWNER!);
 
 	let attachmentLinks = "";
 	logger.info(`message | DM from ${message.author.tag} [${message.author.id}]`);
@@ -218,3 +173,46 @@ export async function sendDM(message: Message): Promise<Message | undefined> {
 
 }
 
+export async function parsePlaceHolders(input:string, guild: Guild, guildMember: GuildMember): Promise<string> {
+
+	const searchString = input.toLowerCase();
+
+	if (searchString.includes("%guild%")) {
+		input = input.replace(/%guild%/ig, guild.name);
+	}
+	if (searchString.includes("%member%")) {
+		input = input.replace(/%member%/ig, guildMember.user.tag);
+	}
+	return input;
+}
+
+// /**
+//  * Get the sortest form of "I am something" in a message to fuck users over.
+//  * Twice as hard when they don't pay attention to what they're saying!
+//  * Utilizes a couple loops in order to grab the absolute shortest possible
+//  * occurrence of a user saying they are something.
+//  * Maximum dadbot!
+//  *
+//  * @param	{String} userinputisgay		The message the user sent.
+//  * @return	{String} The shortest form of the user saying they are something, or null.
+//  */
+// export function findshortest(userinputisgay: string): null | string {
+// 	let longest: string | string[] | null = null;
+// 	for (const split in dadbotArray) {
+// 		const results = userinputisgay.split(split);
+// 		logger.info(results);
+// 		if (results.length > 1) {
+// 			// split always returns 1 item if it didn't split
+// 			results.forEach(r => {
+// 				if (longest) {
+// 					logger.info(r);
+// 					if (r.length < longest.length) {
+// 						logger.info(r);
+// 						longest = r;
+// 					}
+// 				}
+// 			});
+// 		}
+// 	}
+// 	return longest;
+// }

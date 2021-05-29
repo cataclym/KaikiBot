@@ -1,5 +1,5 @@
 import { Command, Listener } from "@cataclym/discord-akairo";
-import { BitFieldResolvable, Message, MessageEmbed, PermissionString } from "discord.js";
+import { Message, MessageEmbed } from "discord.js";
 import logger from "loglevel";
 import { cmdStatsCache } from "../cache/cache";
 import { listenerLog } from "../lib/Util";
@@ -15,7 +15,7 @@ export default class missingPermissionsListener extends Listener {
 
 	// Emitted when a permissions check is failed.
 
-	public async exec(message: Message, command: Command, type: string, missing: BitFieldResolvable<PermissionString>): Promise<Message | void> {
+	public async exec(message: Message, command: Command, type: string, missing: any): Promise<NodeJS.Timeout | void> {
 
 		listenerLog(message, this, logger.info, command);
 
@@ -31,8 +31,8 @@ export default class missingPermissionsListener extends Listener {
 			})
 				.withErrorColor(message));
 
-			return msg.delete({ timeout: 7500 })
-				.catch(logger.error);
+			return this.client.setTimeout(() => msg.delete()
+				.catch(logger.error), 10000);
 
 		}
 	}
