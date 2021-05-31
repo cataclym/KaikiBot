@@ -1,4 +1,5 @@
 import { AkairoClient, CommandHandler, InhibitorHandler, ListenerHandler, MongooseProvider } from "@cataclym/discord-akairo";
+import { Snowflake } from "discord-api-types";
 import { Intents } from "discord.js";
 import { join } from "path";
 import { guildsDB } from "./models";
@@ -12,7 +13,7 @@ export class customClient extends AkairoClient {
 	guildSettings: MongooseProvider;
 	constructor() {
 		super({
-			ownerID: process.env.OWNER,
+			ownerID: process.env.OWNER as Snowflake,
 			intents: [Intents.ALL],
 		},
 		{
