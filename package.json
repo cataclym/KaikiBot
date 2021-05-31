@@ -4,7 +4,7 @@
   "main": "./dist/index.js",
   "scripts": {
     "test": "echo \"Bypass build\" && node ./dist/index.js",
-    "start": "npm run build & npm run index",
+    "start": "npm run build && npm run index",
     "index": "node -r dotenv/config ./dist/index.js",
     "build": "tsc -p src/tsconfig.json"
   },
