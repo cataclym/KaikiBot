@@ -12,7 +12,7 @@ declare module "discord.js" {
     }
 
     export interface GuildMember {
-        hasExcludedRole(member?: GuildMember): Promise<boolean>;
+        hasExcludedRole(member?: GuildMember): boolean;
     }
 
     export interface Message {
@@ -29,7 +29,7 @@ declare module "discord.js" {
 
 import { Guild, GuildMember, Message, MessageEmbed } from "discord.js";
 
-GuildMember.prototype.hasExcludedRole = async function(member?: GuildMember) {
+GuildMember.prototype.hasExcludedRole = function(member?: GuildMember) {
 
 	const memb = member ?? this as GuildMember;
 	const rolename = (memb.guild.client as customClient).guildSettings.get(memb.guild.id, "excludeRole", "");
