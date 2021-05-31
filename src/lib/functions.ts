@@ -1,4 +1,5 @@
 import { AkairoClient } from "@cataclym/discord-akairo";
+import { Snowflake } from "discord-api-types";
 import { Client, Guild, GuildMember, Message, MessageEmbed, User } from "discord.js";
 import logger from "loglevel";
 import { clearRollCache } from "../commands/Tinder/tinder";
@@ -18,7 +19,7 @@ export async function emoteReact(message: Message): Promise<void> {
 	const matches = message.content.toLowerCase().match(regexFromArray) || [];
 
 	for (let i = 0; i < matches.length; i++) {
-		if (!message.guild?.emojis.cache.has(wordObj[matches[i]])) return;
+		if (!message.guild!.emojis.cache.has(wordObj[matches[i]] as Snowflake)) return;
 
 		// Using const aSingleEmoji here throws an error, so I'm using the ID instead after checking it exists.
 		message.react(wordObj[matches[i]]);
@@ -109,7 +110,7 @@ export async function countEmotes(message: Message): Promise<void> {
 			const db = await getGuildDB(guild.id);
 			const ids = emotes.toString().match(/\d+/g);
 			ids?.forEach(async id => {
-				const emote = guild.emojis.cache.get(id);
+				const emote = guild.emojis.cache.get(id as Snowflake);
 				if (emote) {
 					db.emojiStats[emote.id]
 						? db.emojiStats[emote.id]++
@@ -139,7 +140,7 @@ export async function sendDM(message: Message): Promise<Message | undefined> {
 	if (message.author.id === process.env.OWNER) return;
 	// I wont wanna see my own msgs, thank u
 
-	if (!botOwner) botOwner = message.client.users.cache.get(process.env.OWNER!);
+	if (!botOwner) botOwner = message.client.users.cache.get(process.env.OWNER as Snowflake);
 
 	let attachmentLinks = "";
 	logger.info(`message | DM from ${message.author.tag} [${message.author.id}]`);

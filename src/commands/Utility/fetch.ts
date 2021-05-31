@@ -1,4 +1,5 @@
 import { Argument, Command } from "@cataclym/discord-akairo";
+import { Snowflake } from "discord-api-types";
 import { Message, MessageEmbed, User } from "discord.js";
 import { flags } from "../../lib/Util";
 
@@ -14,7 +15,7 @@ export default class FetchUserCommand extends Command {
 					id: "userObject",
 					type: Argument.union("user", async (message: Message, phrase: string) => {
 						try {
-							const u = await message.client.users.fetch(phrase);
+							const u = await message.client.users.fetch(phrase as Snowflake);
 							if (u) return u;
 						}
 						catch {

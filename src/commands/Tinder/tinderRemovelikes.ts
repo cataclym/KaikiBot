@@ -1,4 +1,5 @@
 import { Command } from "@cataclym/discord-akairo";
+import { Snowflake } from "discord-api-types";
 import { Message, MessageEmbed } from "discord.js";
 import { ITinder } from "../../interfaces/db";
 import { errorMessage } from "../../lib/Embeds";
@@ -24,7 +25,7 @@ export default class TinderRemoveLikes extends Command {
 			if (db.likeIDs.length >= integer) {
 			// Matches given number to array item
 				const userID = db.likeIDs.splice(integer, 1),
-					RemovedMember = message.client.users.cache.get(userID.toString());
+					RemovedMember = message.client.users.cache.get(userID.toString() as Snowflake);
 
 				message.channel.send(`Removed ${RemovedMember ? RemovedMember?.username : "<@" + userID + ">"} from list.`).then(SentMsg => {
 					SentMsg.react("✅");

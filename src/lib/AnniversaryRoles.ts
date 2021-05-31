@@ -1,3 +1,4 @@
+import { Snowflake } from "discord-api-types";
 import { Client, Guild, GuildMember, Permissions, Role } from "discord.js";
 import logger from "loglevel";
 import { AnniversaryStrings } from "../struct/constants";
@@ -134,7 +135,7 @@ async function MemberCheckAnniversary(member: GuildMember, AnniversaryRoleC: Rol
 async function getEnabledGuilds(client: Client) {
 
 	const dbRes = await guildsDB.find({ "settings.anniversary": true });
-	return dbRes.map(s => client.guilds.cache.get(s.id)).filter(Boolean) as Guild[];
+	return dbRes.map(s => client.guilds.cache.get(s.id as Snowflake)).filter(Boolean) as Guild[];
 }
 
 async function handleAnniversaryGuilds(enabledGuilds: Guild[], { Day, Month }: {Day: number, Month: number}) {

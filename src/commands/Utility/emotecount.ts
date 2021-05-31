@@ -1,5 +1,6 @@
 import { Command } from "@cataclym/discord-akairo";
 import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
+import { Snowflake } from "discord-api-types";
 import { Guild, Message, MessageEmbed } from "discord.js";
 import { trim } from "../../lib/Util";
 import { getGuildDB } from "../../struct/db";
@@ -37,7 +38,7 @@ export default class EmoteCount extends Command {
 
 		for (const [key, value] of emoteDataPair) {
 
-			const Emote = (message.guild as Guild).emojis.cache.get(key);
+			const Emote = (message.guild as Guild).emojis.cache.get(key as Snowflake);
 
 			if (!Emote) continue;
 

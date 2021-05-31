@@ -1,3 +1,4 @@
+import { Snowflake } from "discord-api-types";
 import { Guild, GuildMember, Message, MessageEmbed, TextChannel } from "discord.js";
 import { TGreetMessage } from "../interfaces/db";
 import { parsePlaceHolders } from "../lib/functions";
@@ -25,7 +26,7 @@ export async function handleGoodbyeMessage(guildMember: GuildMember): Promise<Me
 
 async function sendGreetLeaveMessage(data: TGreetMessage, guild: Guild, guildMember: GuildMember) {
 
-	const channel = guild.channels.cache.get(data.channel) ?? await guild.client.channels.fetch(data.channel, true);
+	const channel = guild.channels.cache.get(data.channel as Snowflake) ?? await guild.client.channels.fetch(data.channel as Snowflake, true);
 	if (channel && channel?.type !== "text" && channel?.type !== "news") return undefined;
 
 	if (data.embed) {

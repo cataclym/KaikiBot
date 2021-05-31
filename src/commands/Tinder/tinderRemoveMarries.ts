@@ -1,4 +1,5 @@
 import { Command } from "@cataclym/discord-akairo";
+import { Snowflake } from "discord-api-types";
 import { Message, MessageEmbed } from "discord.js";
 import { ITinder } from "../../interfaces/db";
 import { errorMessage } from "../../lib/Embeds";
@@ -23,7 +24,7 @@ export default class TinderRemoveMarries extends Command {
 
 			if (db.marriedIDs.length >= integer) {
 				const userID = db.marriedIDs.splice(integer, 1),
-					RemovedMember = message.client.users.cache.get(userID[0]),
+					RemovedMember = message.client.users.cache.get(userID[0] as Snowflake),
 					rDB = await getTinderDB(RemovedMember?.id ?? userID[0]),
 					userNumber = rDB.marriedIDs.indexOf(message.author.id);
 

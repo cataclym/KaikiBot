@@ -1,4 +1,5 @@
 import { Command, PrefixSupplier } from "@cataclym/discord-akairo";
+import { Snowflake } from "discord-api-types";
 import { Guild, Message, MessageEmbed } from "discord.js";
 import { resolveColor } from "../../lib/Color";
 import { trim } from "../../lib/Util";
@@ -47,7 +48,7 @@ export default class MyRoleCommand extends Command {
 
 		if (!roleID) return message.channel.send(await embedFail());
 
-		const myRole = guild.roles.cache.get(roleID);
+		const myRole = guild.roles.cache.get(roleID as Snowflake);
 		name = name?.slice(5);
 
 		if (!myRole) {

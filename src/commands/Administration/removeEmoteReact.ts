@@ -1,4 +1,5 @@
 import { Command } from "@cataclym/discord-akairo";
+import { Snowflake } from "discord-api-types";
 import { Message, MessageEmbed } from "discord.js";
 import { getGuildDB } from "../../struct/db";
 
@@ -24,7 +25,7 @@ export default class RemoveEmoteReactCommand extends Command {
 		const gid = message.guild!.id,
 			db = await getGuildDB(gid),
 			emojiID = db.emojiReactions[trigger],
-			emoji = message.guild?.emojis.cache.get(emojiID);
+			emoji = message.guild?.emojis.cache.get(emojiID as Snowflake);
 
 		if (db.emojiReactions[trigger]) {
 

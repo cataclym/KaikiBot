@@ -1,5 +1,6 @@
 import { Command, PrefixSupplier } from "@cataclym/discord-akairo";
 import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
+import { Snowflake } from "discord-api-types";
 import { Guild, Message, MessageEmbed } from "discord.js";
 import { getGuildDB } from "../../struct/db";
 
@@ -24,7 +25,7 @@ export default class ListUserRoles extends Command {
 		if (roles.length) {
 
 			const mapped = roles
-					.map(([u, r]) => `${message.guild?.members.cache.get(u) || u}: ${message.guild?.roles.cache.get(r) || r}`)
+					.map(([u, r]) => `${message.guild?.members.cache.get(u as Snowflake) || u}: ${message.guild?.roles.cache.get(r as Snowflake) || r}`)
 					.sort(),
 				pages: MessageEmbed[] = [];
 
