@@ -4,9 +4,10 @@
   "main": "./dist/index.js",
   "scripts": {
     "test": "echo \"Bypass build\" && node ./dist/index.js",
-    "start": "npm run build & npm run index",
+    "start": "npm run build && npm run index",
     "index": "node -r dotenv/config ./dist/index.js",
-    "build": "tsc -p src/tsconfig.json"
+    "build": "tsc -p src/tsconfig.json",
+    "version": "auto-changelog -p && git add CHANGELOG.md"
   },
   "keywords": [
     "Discord",
@@ -22,7 +23,7 @@
     "@types/ws": "^7.4.4",
     "canvas": "^2.8.0",
     "discord-api-types": "^0.18.1",
-    "discord.js": "github:discordjs/discord.js",
+    "discord.js": "git+https://github.com/cataclym/discord.js.git",
     "dotenv": "^9.0.2",
     "image-size": "^1.0.0",
     "imagemin": "^8.0.0",
@@ -44,6 +45,7 @@
     "@types/sharp": "^0.28.1",
     "@typescript-eslint/eslint-plugin": "^4.24.0",
     "@typescript-eslint/parser": "^4.24.0",
+    "auto-changelog": "^2.3.0",
     "eslint": "^7.26.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-import-resolver-typescript": "^2.4.0",

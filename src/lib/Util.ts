@@ -52,6 +52,7 @@ export const flags: {[index in UserFlagsString]: string} = {
 	TEAM_USER: "Team User 🏁",
 	VERIFIED_BOT: "Verified Bot ☑️",
 	EARLY_VERIFIED_BOT_DEVELOPER: "Early Verified Developer ✅",
+	DISCORD_CERTIFIED_MODERATOR: "Certified Moderator",
 };
 
 /**

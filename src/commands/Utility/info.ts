@@ -80,7 +80,7 @@ export default class InfoCommand extends Command {
 			emb.setTitle(`Info for ${obj.name}`)
 				.addField("ID", obj.id, true)
 				.addField("Created at", obj.createdAt, true)
-				.addField("Color", obj.hexColor)
+				.addField("Color", obj.hexColor, true)
 				.addField("Members", obj.members.size, true)
 				.addField("Mentionable", obj.mentionable, true)
 				.addField("Hoisted", obj.hoist, true)

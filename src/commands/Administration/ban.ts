@@ -1,4 +1,5 @@
 import { Argument, Command } from "@cataclym/discord-akairo";
+import { Snowflake } from "discord-api-types";
 import { Guild, GuildMember, Message, MessageEmbed, User } from "discord.js";
 
 export default class BanCommand extends Command {
@@ -13,7 +14,7 @@ export default class BanCommand extends Command {
 				{
 					id: "user",
 					type: Argument.union("member", "user", async (_, phrase) => {
-						const u = await this.client.users.fetch(phrase);
+						const u = await this.client.users.fetch(phrase as Snowflake);
 						return u || null;
 					}),
 					otherwise: (m: Message) => new MessageEmbed({

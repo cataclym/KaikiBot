@@ -1,5 +1,5 @@
 import { Command } from "@cataclym/discord-akairo";
-import { Collection, GuildMember, Message, MessageEmbed, Role } from "discord.js";
+import { Collection, Guild, GuildMember, Message, MessageEmbed, Role } from "discord.js";
 import { noArgRole } from "../../lib/Embeds";
 
 export default class RoleDeleteCommand extends Command {
@@ -26,56 +26,40 @@ export default class RoleDeleteCommand extends Command {
 		const deletedRoles: string[] = [];
 		const otherRoles: string[] = [];
 
-		const every = roles.every(async (collection) => {
+		console.log(roles);
 
-			const role = collection.map((r) => r)[0];
+		for await (const collection of roles) {
 
-			if ((role.position < (message.member as GuildMember).roles.highest.position) && !role.managed) {
+			const r = collection.map(_r => _r)[0];
 
-				const dr = await role.delete().then((r) => {
-					if (r.deleted) {
-						deletedRoles.push(r.name);
-						return Promise.resolve(true);
-					}
-				});
+			if ((r.position < (message.member as GuildMember).roles.highest.position)
+                && r.position < ((message.guild as Guild).me as GuildMember).roles.highest.position
+                && !r.managed) {
 
-				if (dr?.valueOf()) {
-					return true;
-				}
-				else {
-					return message.channel.send(new MessageEmbed({
-						description: "Couldn't delete roles!",
-					})
-						.withErrorColor(message)) && false;
-				}
+				r.delete().catch(() => otherRoles.push(r.name));
+				deletedRoles.push(r.name);
 			}
+
 			else {
-				// Pass even if role wasnt deleted
-				// Because it was a hierarchy fail
-				// These roles get summarized at the end, if they happen
-				return otherRoles.push(role.name) && true;
+				otherRoles.push(r.name);
 			}
-		});
+		}
 
-		await Promise.all([every]);
-
-		if (otherRoles.length > 0) {
-			return message.channel.send(new MessageEmbed({
-				description: `Role(s) \`${otherRoles.join("`, `")}\` could not be deleted due to insufficient permissions.`,
-			})
+		if (otherRoles.length) {
+			return message.channel.send(new MessageEmbed()
+				.setDescription(`Role(s) \`${otherRoles.join("`, `")}\` could not be deleted due to insufficient permissions.`)
 				.withErrorColor(message));
 		}
-		else if (every.valueOf()) {
-			return message.channel.send(new MessageEmbed({
-				description: `Deleted: ${roles.map(coll => coll.map(role => role.name)).join(", ")}`,
-			})
+
+		else if (deletedRoles.length) {
+			return message.channel.send(new MessageEmbed()
+				.setDescription(`Deleted: \`${deletedRoles.join("`, `")}\``)
 				.withOkColor(message));
 		}
 
 		else {
-			return message.channel.send(new MessageEmbed({
-				description: "Couldn't delete roles!",
-			})
+			return message.channel.send(new MessageEmbed()
+				.setDescription("Couldn't delete roles!")
 				.withErrorColor(message));
 		}
 	}

@@ -1,4 +1,5 @@
 import { Argument, Command, Flag } from "@cataclym/discord-akairo";
+import { Snowflake } from "discord-api-types";
 import { Message, MessageEmbed, MessageReaction, User } from "discord.js";
 import logger from "loglevel";
 import { tinderRollEmbed } from "../../lib/Embeds";
@@ -66,7 +67,7 @@ export default class TinderMain extends Command {
 
 		const userIDArray = message.client.users.cache.map(user => !user.bot ? user.id : message.member?.id),
 			// This is how I filter out bot users. Please let me know if it can be done better
-			filtered = userIDArray.filter((f: string) => !combined.includes(f) && f !== message.author.id);
+			filtered = userIDArray.filter((f: Snowflake) => !combined.includes(f) && f !== message.author.id);
 
 		if (!filtered.length) {
 			// When there are no more people left
