@@ -6,7 +6,8 @@
     "test": "echo \"Bypass build\" && node ./dist/index.js",
     "start": "npm run build && npm run index",
     "index": "node -r dotenv/config ./dist/index.js",
-    "build": "tsc -p src/tsconfig.json"
+    "build": "tsc -p src/tsconfig.json",
+    "version": "auto-changelog -p && git add CHANGELOG.md"
   },
   "keywords": [
     "Discord",
@@ -44,6 +45,7 @@
     "@types/sharp": "^0.28.1",
     "@typescript-eslint/eslint-plugin": "^4.24.0",
     "@typescript-eslint/parser": "^4.24.0",
+    "auto-changelog": "^2.3.0",
     "eslint": "^7.26.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-import-resolver-typescript": "^2.4.0",
