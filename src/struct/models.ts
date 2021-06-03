@@ -1,5 +1,5 @@
 import { model, Schema } from "mongoose";
-import { IBlacklist, IBotDB, ICommandStats, IGuild, ITinder, IUser } from "../../src/interfaces/db";
+import { IBlacklist, IBotDB, ICommandStats, IGuild, IMoney, ITinder, IUser } from "../../src/interfaces/db";
 import { errorColor, okColor } from "../lib/Util";
 
 export const guildSchema = new Schema({
@@ -128,9 +128,19 @@ export const botSchema = new Schema({
 	},
 });
 
+export const moneySchema = new Schema({
+    id: {
+        type: String, default: "",
+    },
+    amount: {
+        type: Number, default: 0
+    }
+})
+
 export const guildsDB = model<IGuild>("Guild", guildSchema);
 export const commandStatsDB = model<ICommandStats>("CommandStats", commandStatsSchema);
 export const tinderDataDB = model<ITinder>("Tinder", tinderDataSchema);
 export const usersDB = model<IUser>("Member", usersSchema);
 export const blacklistDB = model<IBlacklist>("Blacklist", blacklistSchema);
 export const botDB = model<IBotDB>("BotDB", botSchema);
+export const moneyDB = model<IMoney>("Money", moneySchema);

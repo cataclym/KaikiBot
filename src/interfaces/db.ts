@@ -62,3 +62,8 @@ export interface IBotDB extends Document {
 	activity: string,
     activityType: ActivityType,
 }
+
+export interface IMoney extends Document {
+    id: string,
+    amount: number,
+}
