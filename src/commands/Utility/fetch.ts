@@ -1,4 +1,5 @@
 import { Argument, Command } from "@cataclym/discord-akairo";
+import { Snowflake } from "discord-api-types";
 import { Message, MessageEmbed, User } from "discord.js";
 import { flags } from "../../lib/Util";
 
@@ -14,7 +15,7 @@ export default class FetchUserCommand extends Command {
 					id: "userObject",
 					type: Argument.union("user", async (message: Message, phrase: string) => {
 						try {
-							const u = await message.client.users.fetch(phrase);
+							const u = await message.client.users.fetch(phrase as Snowflake);
 							if (u) return u;
 						}
 						catch {
@@ -44,7 +45,6 @@ export default class FetchUserCommand extends Command {
 				.withOkColor(message);
 
 		userObject.lastMessage ? embed.addField("Last (seen) message", userObject.lastMessage?.createdAt.toLocaleString(), true) : null;
-
 		userFlags.length ? embed.addField("Flags", userFlags.map((flag) => flags[flag]).join("\n"), true) : null;
 		userObject.bot ? embed.addField("Bot", "✅", true) : null;
 		return message.channel.send(embed);

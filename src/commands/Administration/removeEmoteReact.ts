@@ -1,6 +1,6 @@
 import { Command } from "@cataclym/discord-akairo";
+import { Snowflake } from "discord-api-types";
 import { Message, MessageEmbed } from "discord.js";
-import { keyWordCache } from "../../cache/cache";
 import { getGuildDB } from "../../struct/db";
 
 export default class RemoveEmoteReactCommand extends Command {
@@ -24,19 +24,19 @@ export default class RemoveEmoteReactCommand extends Command {
 
 		const gid = message.guild!.id,
 			db = await getGuildDB(gid),
-			emoji = message.guild?.emojis.cache.get(keyWordCache[gid][trigger]);
+			emojiID = db.emojiReactions[trigger],
+			emoji = message.guild?.emojis.cache.get(emojiID as Snowflake);
 
 		if (db.emojiReactions[trigger]) {
 
 			delete db.emojiReactions[trigger];
-			delete keyWordCache[gid][trigger];
 			db.markModified("emojiReactions");
 			db.save();
 
 			return message.channel.send(new MessageEmbed()
 				.setTitle("Removed emoji trigger")
-				.setDescription(`Saying \`${trigger}\` will no longer force me to react with ${emoji?.name ?? keyWordCache[gid][trigger]}`)
-				.setThumbnail(emoji!.url)
+				.setDescription(`Saying \`${trigger}\` will no longer force me to react with ${emoji?.name ?? emojiID}`)
+				.setThumbnail(emoji?.url ?? emojiID)
 				.withOkColor(message),
 			);
 		}

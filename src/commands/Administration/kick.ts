@@ -1,6 +1,5 @@
 import { Command } from "@cataclym/discord-akairo";
-import { Guild } from "discord.js";
-import { MessageEmbed, Message, GuildMember } from "discord.js";
+import { Guild, MessageEmbed, Message, GuildMember } from "discord.js";
 
 export default class KickCommand extends Command {
 	constructor() {

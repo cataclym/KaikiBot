@@ -13,7 +13,7 @@ export default class RoleColorCommand extends Command {
 				{
 					id: "role",
 					type: "role",
-					default: (m: Message) => m.member?.roles.highest,
+					default: (m: Message) => m.member!.roles.highest,
 				},
 				{
 					id: "clr",
@@ -24,50 +24,38 @@ export default class RoleColorCommand extends Command {
 			],
 		});
 	}
-	public async exec(message: Message, { role, clr }: { role: Role | null, clr: string | null }): Promise<Message> {
+	public async exec(message: Message, { role, clr }: { role: Role, clr: string | null }): Promise<Message> {
 
-		if (role) {
-			const { member } = message;
+		const { member } = message;
 
-			if (typeof clr !== "string") {
-				const attachment = new MessageAttachment(await imgFromColor(role.hexColor), "color.png");
-				return message.channel.send({ files: [attachment],
-					embed: new MessageEmbed({
-						title: `Role color of ${role.name}.`,
-						description: `${role.hexColor}`,
-						image: { url: "attachment://color.png" },
-						color: role.hexColor,
-					}),
-				});
-			}
+		if (typeof clr !== "string") {
+			const attachment = new MessageAttachment(await imgFromColor(role.hexColor), "color.png");
+			return message.channel.send({ files: [attachment],
+				embed: new MessageEmbed({
+					title: `Role color of ${role.name}.`,
+					description: `${role.hexColor}`,
+					image: { url: "attachment://color.png" },
+					color: role.hexColor,
+				}),
+			});
+		}
 
-			const { hexColor } = role,
-				newColor = await resolveColor(clr),
-				attachment = new MessageAttachment(await imgFromColor(newColor), "color.png");
+		const { hexColor } = role,
+			newColor = await resolveColor(clr),
+			attachment = new MessageAttachment(await imgFromColor(newColor), "color.png");
 
 
-			if (!member?.permissions.has("MANAGE_ROLES") ||
+		if (!member?.permissions.has("MANAGE_ROLES") ||
                 !(member.roles.highest.position > role.position)) {
-				return message.channel.send(await errorMessage(message, "You do not have `MANAGE_ROLES` permission and/or trying to edit a role above you in the role hierarchy."));
-			}
+			return message.channel.send(await errorMessage(message, "You do not have `MANAGE_ROLES` permission and/or trying to edit a role above you in the role hierarchy."));
+		}
 
-			else if (!message.guild?.me?.permissions.has("MANAGE_ROLES") ||
+		else if (!message.guild?.me?.permissions.has("MANAGE_ROLES") ||
                 !(message.guild?.me?.roles.highest.position > role.position)) {
-				return message.channel.send(await errorMessage(message, "I do not have `MANAGE_ROLES` permission and/or trying to edit a role above me in the role hierarchy."));
-			}
+			return message.channel.send(await errorMessage(message, "I do not have `MANAGE_ROLES` permission and/or trying to edit a role above me in the role hierarchy."));
+		}
 
-			else if (member?.guild.ownerID === message.member?.id) {
-				return role.edit({ color: newColor }).then(r => {
-					return message.channel.send({ files: [attachment],
-						embed: new MessageEmbed({
-							title: `You have changed ${r.name}'s color from ${hexColor} to ${r.hexColor}!`,
-							thumbnail: { url: "attachment://color.png" },
-						})
-							.withOkColor(message),
-					});
-				});
-			}
-
+		else if (member?.guild.ownerID === message.member?.id) {
 			return role.edit({ color: newColor }).then(r => {
 				return message.channel.send({ files: [attachment],
 					embed: new MessageEmbed({
@@ -79,12 +67,14 @@ export default class RoleColorCommand extends Command {
 			});
 		}
 
-		else {
-			return message.channel.send(new MessageEmbed({
-				title: "Error",
-				description: "Role is undefined. Please contact bot owner.",
-			})
-				.withErrorColor(message));
-		}
+		return role.edit({ color: newColor }).then(r => {
+			return message.channel.send({ files: [attachment],
+				embed: new MessageEmbed({
+					title: `You have changed ${r.name}'s color from ${hexColor} to ${r.hexColor}!`,
+					thumbnail: { url: "attachment://color.png" },
+				})
+					.withOkColor(message),
+			});
+		});
 	}
 }

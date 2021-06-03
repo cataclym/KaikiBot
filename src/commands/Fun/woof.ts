@@ -1,5 +1,5 @@
 import { Command } from "@cataclym/discord-akairo";
-import { Message } from "discord.js";
+import { Message, MessageEmbed } from "discord.js";
 import fetch from "node-fetch";
 
 export default class WoofCommand extends Command {
@@ -11,7 +11,9 @@ export default class WoofCommand extends Command {
 	}
 	public async exec(message: Message): Promise<Message | void> {
 
-		return message.channel.send((await fetch("https://dog.ceo/api/breeds/image/random")
-			.then(response => response.json())).message);
+		return message.channel.send(new MessageEmbed()
+			.setImage((await fetch("https://dog.ceo/api/breeds/image/random")
+				.then(response => response.json())).message)
+			.withOkColor());
 	}
 }

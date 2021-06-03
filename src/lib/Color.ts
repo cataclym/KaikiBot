@@ -1,4 +1,4 @@
-import Canvas from "canvas";
+import { createCanvas } from "canvas";
 import { ColorResolvable } from "discord.js";
 import { colors } from "./Colors.json";
 
@@ -157,7 +157,7 @@ export const colorTable: {
 };
 
 export async function imgFromColor(color: ColorResolvable): Promise<Buffer> {
-	const canv = Canvas.createCanvas(128, 128), ctx = canv.getContext("2d");
+	const canv = createCanvas(128, 128), ctx = canv.getContext("2d");
 	ctx.fillStyle = color.toString();
 	ctx.fillRect(0, 0, canv.width, canv.height);
 

@@ -1,23 +1,26 @@
-import { exec } from "child_process";
 import logger from "loglevel";
-import { config } from "./config";
 import { extensionHook } from "./Extensions/Discord";
 import { customClient } from "./struct/client";
 
 logger.setLevel("INFO");
-// Shmart
-exec("git update-index --assume-unchanged src/config.ts", (err, stdout, stderr) => {
-	if (err) logger.error("Untracking changes to config file\n" + err);
-	if (stderr) logger.error("Untracking changes to config file\n" + stderr);
-	logger.info("Untracking changes to src/config.ts");
-});
 
 extensionHook();
 
-process.on("unhandledRejection", error => logger.error(`unhandledRejection | ${(error as Error)?.stack}`));
+process.on("unhandledRejection", (reason: Error, promise) => {
+	logger.warn("Unhandled Rejection at:", promise, "reason:", reason);
+});
 
-new customClient()
-	.login(config.token)
+const client = new customClient();
+
+if (!process.env.PREFIX) {
+	throw new Error("Missing prefix! Set a prefix in .env");
+}
+
+if (!process.env.OWNER) {
+	throw new Error("Missing owner-ID! Please double-check the guide and set an owner in .env");
+}
+
+client.login(process.env.CLIENT_TOKEN)
 	.catch((err: Error) => {
 		return logger.error(err);
 	});

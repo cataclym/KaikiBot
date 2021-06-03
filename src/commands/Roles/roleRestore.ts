@@ -1,4 +1,5 @@
 import { Command } from "@cataclym/discord-akairo";
+import { Snowflake } from "discord-api-types";
 import { Guild, Message, MessageEmbed, GuildMember } from "discord.js";
 import { getGuildDB } from "../../struct/db";
 
@@ -29,7 +30,7 @@ export default class RestoreUserRoles extends Command {
 
 		if (leaveRoles.length) {
 
-			const roleIDArray = leaveRoles.filter(roleString => guild.roles.cache.get(roleString));
+			const roleIDArray = leaveRoles.filter(roleString => guild.roles.cache.get(roleString as Snowflake));
 
 			if (!roleIDArray.length) return;
 

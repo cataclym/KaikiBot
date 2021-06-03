@@ -1,3 +1,4 @@
+import { ActivityType } from "discord-api-types";
 import { ColorResolvable } from "discord.js";
 import { Document } from "mongoose";
 
@@ -18,12 +19,14 @@ export interface IGuild extends Document {
 	emojiStats: {[emojiID: string]: number},
 	emojiReactions: {[keyWord: string]: string},
     illegalWordChannel: { channel: string, word: string; };
-	settings: {
+    blockedCategories: {[categoryID: string]: boolean };
+    settings: {
 		prefix: string,
 		anniversary: boolean,
 		dadBot: boolean,
 		errorColor: ColorResolvable,
 		okColor: ColorResolvable,
+        excludeRole: string,
 		welcome: TGreetMessage,
 		goodbye: TGreetMessage,
 	},
@@ -53,4 +56,9 @@ export interface ICommandStats extends Document {
 
 export interface IBlacklist extends Document {
 	blacklist: {[id: string]: true},
+}
+
+export interface IBotDB extends Document {
+	activity: string,
+    activityType: ActivityType,
 }

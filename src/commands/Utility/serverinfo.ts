@@ -1,6 +1,5 @@
 import { Command, PrefixSupplier } from "@cataclym/discord-akairo";
-import { Guild } from "discord.js";
-import { MessageEmbed, Message } from "discord.js";
+import { Guild, Message, MessageEmbed } from "discord.js";
 
 export default class ServerInfoCommand extends Command {
 	constructor() {
@@ -20,11 +19,10 @@ export default class ServerInfoCommand extends Command {
 		const emb = new MessageEmbed({
 			thumbnail: { url: <string> guild?.iconURL({ size: 2048, dynamic: true }) },
 			title: guild?.name,
-			color: guild?.owner?.displayColor,
 			author: { name: "Server info" },
 			fields: [
 				{ name: "ID", value: guild?.id, inline: true },
-				{ name: "Owner", value: guild?.owner?.user.tag, inline: true },
+				{ name: "Owner", value: message.client.users.cache.get(guild.ownerID)?.tag ?? guild.ownerID, inline: true },
 				{ name: "Members", value: guild?.memberCount, inline: true },
 				{ name:
                     "Channels", value: "Text: **" + guild?.channels.cache.filter((channel) => channel.type === "text").size +
@@ -43,10 +41,9 @@ export default class ServerInfoCommand extends Command {
 
 		guild.systemChannel ? emb.addField("System channel", guild.systemChannel, true) : null;
 		guild.rulesChannel ? emb.addField("Rules channel", guild.rulesChannel, true) : null;
-		guild.embedChannel ? emb.addField("Embed channel", guild.embedChannel, true) : null;
 		guild.publicUpdatesChannel ? emb.addField("Public Updates channel", guild.publicUpdatesChannel, true) : null;
 		guild.widgetChannel ? emb.addField("Widget channel", guild.widgetChannel, true) : null;
 
-		return message.channel.send(emb);
+		return message.channel.send(emb.withOkColor(message));
 	}
 }

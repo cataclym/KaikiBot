@@ -1,5 +1,6 @@
 import { Command, PrefixSupplier } from "@cataclym/discord-akairo";
 import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
+import { Snowflake } from "discord-api-types";
 import { Message, MessageEmbed } from "discord.js";
 import { getGuildDB } from "../../struct/db";
 
@@ -33,7 +34,7 @@ export default class RemoveEmoteReactCommand extends Command {
 			pages.push(new MessageEmbed()
 				.setTitle("Emoji triggers")
 				.setDescription(emojies.slice(p, index).map(([t, e]) => {
-					return `**${t}** => ${message.guild?.emojis.cache.get(e) ?? e}`;
+					return `**${t}** => ${message.guild?.emojis.cache.get(e as Snowflake) ?? e}`;
 				}))
 				.withOkColor(message),
 			);

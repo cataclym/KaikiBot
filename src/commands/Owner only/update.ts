@@ -14,7 +14,7 @@ export default class UpdateCommand extends Command {
 		exec("git pull", async (err, std) => {
 			if (err) {
 				logger.error(err);
-				return message.channel.send(err.message);
+				throw new Error(err.message);
 			}
 			exec("git describe --tags", async (error, stdVer) => {
 				if (error) {

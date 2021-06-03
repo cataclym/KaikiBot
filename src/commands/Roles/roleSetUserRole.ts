@@ -1,4 +1,5 @@
 import { Command, PrefixSupplier } from "@cataclym/discord-akairo";
+import { Snowflake } from "discord-api-types";
 import { Guild } from "discord.js";
 import { GuildMember, MessageEmbed, Message, Role } from "discord.js";
 import { IGuild } from "../../interfaces/db";
@@ -65,7 +66,7 @@ export default class SetUserRoleCommand extends Command {
 
 		if (roleID) {
 
-			const userRole = message.guild?.roles.cache.get(roleID);
+			const userRole = message.guild?.roles.cache.get(roleID as Snowflake);
 
 			try {
 				delete db.userRoles[member.id];
@@ -74,7 +75,7 @@ export default class SetUserRoleCommand extends Command {
 			}
 
 			catch (err) {
-				throw new Error("Failed to delete user role." + err);
+				throw new Error("Failed to delete user role.\n" + err);
 			}
 		}
 

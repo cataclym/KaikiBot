@@ -1,9 +1,9 @@
 import { Argument, Command } from "@cataclym/discord-akairo";
 import { Guild, Message, MessageEmbed } from "discord.js";
-import { setSessionCache } from "../../cache/cache.js";
-import { hexColorTable } from "../../lib/Color.js";
-import { noArgGeneric } from "../../lib/Embeds.js";
-import { getGuildDB } from "../../struct/db.js";
+import { hexColorTable } from "../../lib/Color";
+import { noArgGeneric } from "../../lib/Embeds";
+import { customClient } from "../../struct/client";
+import logger from "loglevel";
 
 export default class ErrorColorConfigCommand extends Command {
 	constructor() {
@@ -19,15 +19,12 @@ export default class ErrorColorConfigCommand extends Command {
 			],
 		});
 	}
-	public async exec(message: Message, { value }: { value: string }): Promise<Message> {
+	public async exec(message: Message, { value }: { value: string | number }): Promise<Message> {
 		const guildID = (message.guild as Guild).id;
 
-		await getGuildDB(guildID).then(async db => {
-			db.settings.errorColor = value;
-			db.markModified("settings.errorColor");
-			await db.save();
-			setSessionCache("errorColorCache", guildID, value);
-		});
+		if (typeof value === "number") value = value.toString(16);
+
+		await (this.client as customClient).guildSettings.set(guildID, "errorColor", value);
 
 		return message.channel.send(new MessageEmbed({
 			title: "Success!",
