@@ -22,13 +22,13 @@ export interface IMoneyService {
      */
     TryTake(id: string, amount: number): Promise<boolean>;
 
-    /**
-     * Forcefully reduce the specified amount from user's balance
-     * If the user user's balance is insufficient, it will take as much as it can
-     * and leave user's balance at 0
-     * @param id Id of the user
-     * @param amount Maximum amount to take
-     * @returns User's updated balance
-     */
-    Reduce(id: string, amount: number): Promise<number>;
+    // /**
+    //  * Forcefully reduce the specified amount from user's balance
+    //  * If the user user's balance is insufficient, it will take as much as it can
+    //  * and leave user's balance at 0
+    //  * @param id Id of the user
+    //  * @param amount Maximum amount to take
+    //  * @returns User's updated balance
+    //  */
+    // Reduce(id: string, amount: number): Promise<bool>;
 }
