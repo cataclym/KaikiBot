@@ -41,7 +41,7 @@ export class MongoMoneyService implements IMoneyService {
             }
         });
 
-        return result.ok > 0;
+        return result.nModified > 0;
     }
 
     async Reduce(id: string, amount: number): Promise<number> {
