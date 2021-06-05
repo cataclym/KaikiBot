@@ -1,5 +1,5 @@
 import { Command } from "@cataclym/discord-akairo";
-import { Message, MessageEmbed, User } from "discord.js";
+import { Message, User } from "discord.js";
 import { IMoneyService } from "../../lib/money/IMoneyService";
 import { MongoMoney } from "../../lib/money/MongoMoneyService";
 
@@ -15,12 +15,9 @@ export default class cash extends Command {
             },
             args: [
                 {
-                    id: "maybeUser",
+                    id: "user",
                     type: "user",
-                    otherwise: (m: Message) => new MessageEmbed({
-                        title: "Can't find this user. Try again.",
-                    })
-                        .withOkColor(m),
+                    default: (m: Message) => m.author,
                 }
             ]
         });
@@ -28,8 +25,7 @@ export default class cash extends Command {
         this._money = MongoMoney;
     }
 
-    public async exec(msg: Message, { maybeUser }: { maybeUser: User | undefined }): Promise<void> {
-        const user = maybeUser ?? msg.author;
+    public async exec(msg: Message, { user }: { user: User }): Promise<void> {
         const moneh = await this._money.Get(user.id);
         await msg.channel.send(`${user.username} has ${moneh} moneh`);
     }
