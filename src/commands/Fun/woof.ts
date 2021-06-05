@@ -14,6 +14,7 @@ export default class WoofCommand extends Command {
 		return message.channel.send(new MessageEmbed()
 			.setImage((await fetch("https://dog.ceo/api/breeds/image/random")
 				.then(response => response.json())).message)
-			.withOkColor());
+			.withOkColor(message)
+        );
 	}
 }
