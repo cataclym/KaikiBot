@@ -1,5 +1,5 @@
 import { Command } from "@cataclym/discord-akairo";
-import { Message, User } from "discord.js";
+import { Message, MessageEmbed, User } from "discord.js";
 import { IMoneyService } from "../../lib/money/IMoneyService";
 import { MongoMoney } from "../../lib/money/MongoMoneyService";
 
@@ -12,7 +12,17 @@ export default class cash extends Command {
             description: {
                 description: "Shows specified user's current balance. If no user is specified, shows your balance",
                 usage: "cash"
-            }
+            },
+            args: [
+                {
+                    id: "maybeUser",
+                    type: "user",
+                    otherwise: (m: Message) => new MessageEmbed({
+                        title: "Can't find this user. Try again.",
+                    })
+                        .withOkColor(m),
+                }
+            ]
         });
 
         this._money = MongoMoney;

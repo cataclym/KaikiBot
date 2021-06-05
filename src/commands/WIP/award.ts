@@ -38,7 +38,7 @@ export default class award extends Command {
     }
 
     public async exec(msg: Message, { amount, user }: { amount: number; user: User; }): Promise<void> {
-        const newAmount = await this._money.Add(msg.author.id, amount);
+        const newAmount = await this._money.Add(user.id, amount);
         await msg.channel.send(`You've awarded ${amount} moneh to ${user.username}.\nThey now have ${newAmount} moneh`);
     }
 }
