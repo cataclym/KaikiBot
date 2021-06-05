@@ -5,7 +5,7 @@ import logger from "loglevel";
 import { clearRollCache } from "../commands/Tinder/tinder";
 import { badWords } from "../struct/constants";
 import { getGuildDB } from "../struct/db";
-import { tinderDataDB } from "../struct/models";
+import { tinderDataModel } from "../struct/models";
 import { birthdayService } from "./AnniversaryRoles";
 import { trim } from "./Util";
 
@@ -52,7 +52,7 @@ export async function tiredNadekoReact(message: Message): Promise<void> {
 export async function ResetRolls(): Promise<void> {
 	// Tinder reset
 	clearRollCache();
-	tinderDataDB.updateMany({ rolls: { $lt: 15 } }, { rolls: 15, temporary: [], likes: 3 }, null, () => {
+	tinderDataModel.updateMany({ rolls: { $lt: 15 } }, { rolls: 15, temporary: [], likes: 3 }, null, () => {
 		logger.info(`mongooseDB | Reset tinder rolls/likes at ${Date()}`);
 	});
 }

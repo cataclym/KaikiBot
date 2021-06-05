@@ -3,7 +3,7 @@ import { Client, Guild, GuildMember, Permissions, Role } from "discord.js";
 import logger from "loglevel";
 import { AnniversaryStrings } from "../struct/constants";
 import { getGuildDB } from "../struct/db";
-import { guildsDB } from "../struct/models";
+import { guildsModel } from "../struct/models";
 
 async function DateObject() {
 	const d = new Date();
@@ -134,7 +134,7 @@ async function MemberCheckAnniversary(member: GuildMember, AnniversaryRoleC: Rol
 
 async function getEnabledGuilds(client: Client) {
 
-	const dbRes = await guildsDB.find({ "settings.anniversary": true });
+	const dbRes = await guildsModel.find({ "settings.anniversary": true });
 	return dbRes.map(s => client.guilds.cache.get(s.id as Snowflake)).filter(Boolean) as Guild[];
 }
 

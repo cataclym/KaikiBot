@@ -137,10 +137,10 @@ export const moneySchema = new Schema({
     }
 })
 
-export const guildsDB = model<IGuild>("Guild", guildSchema);
-export const commandStatsDB = model<ICommandStats>("CommandStats", commandStatsSchema);
-export const tinderDataDB = model<ITinder>("Tinder", tinderDataSchema);
-export const usersDB = model<IUser>("Member", usersSchema);
-export const blacklistDB = model<IBlacklist>("Blacklist", blacklistSchema);
-export const botDB = model<IBotDB>("BotDB", botSchema);
-export const moneyDB = model<IMoney>("Money", moneySchema);
+export const guildsModel = model<IGuild>("Guild", guildSchema);
+export const commandStatsModel = model<ICommandStats>("CommandStats", commandStatsSchema);
+export const tinderDataModel = model<ITinder>("Tinder", tinderDataSchema);
+export const usersModel = model<IUser>("Member", usersSchema);
+export const blacklistModel = model<IBlacklist>("Blacklist", blacklistSchema);
+export const botModel = model<IBotDB>("BotDB", botSchema);
+export const moneyModel = model<IMoney>("Money", moneySchema);

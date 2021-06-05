@@ -2,7 +2,7 @@ import { AkairoClient, CommandHandler, InhibitorHandler, ListenerHandler, Mongoo
 import { Snowflake } from "discord-api-types";
 import { Intents } from "discord.js";
 import { join } from "path";
-import { guildsDB } from "./models";
+import { guildsModel } from "./models";
 
 export const prefixCache: {[index: string]: string} = {};
 
@@ -24,7 +24,7 @@ export class customClient extends AkairoClient {
 			ws: { properties: { $browser: "Discord Android" } },
 		});
 
-		this.guildSettings = new MongooseProvider(guildsDB);
+		this.guildSettings = new MongooseProvider(guildsModel);
 		this.commandHandler = new CommandHandler(this, {
 			allowMention: true,
 			automateCategories: true,

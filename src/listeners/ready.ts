@@ -4,7 +4,7 @@ import logger from "loglevel";
 import { birthdayService } from "../lib/AnniversaryRoles";
 import { dailyResetTimer, emoteDataBaseService } from "../lib/functions";
 import { getBotDB } from "../struct/db";
-import { guildsDB } from "../struct/models";
+import { guildsModel } from "../struct/models";
 
 export default class ReadyListener extends Listener {
 	constructor() {
@@ -38,7 +38,7 @@ export default class ReadyListener extends Listener {
 				logger.info("birthdayService | Service initiated");
 			});
 
-		logger.info(`dataBaseService | ${await guildsDB.countDocuments()} guilds registered in DB.\n`);
+		logger.info(`dataBaseService | ${await guildsModel.countDocuments()} guilds registered in DB.\n`);
 
 		// Let bot owner know when bot goes online.
 		if (["Tsukihi Araragi", "Kaiki Deishū"].includes(this.client.user?.username as string)) {

@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import logger from "loglevel";
-import { connection, connect } from "mongoose";
+import { connect, connection } from "mongoose";
 import { IBlacklist, IBotDB, ICommandStats, IGuild, ITinder, IUser } from "../interfaces/db";
-import { blacklistDB, botDB, commandStatsDB, guildsDB, tinderDataDB, usersDB } from "./models";
+import { blacklistModel, botModel, commandStatsModel, guildsModel, tinderDataModel, usersModel } from "./models";
 
 connect("mongodb://localhost:27017", {
 	useNewUrlParser: true,
@@ -21,12 +21,12 @@ connect("mongodb://localhost:27017", {
 connection.on("error", logger.error.bind(console, "connection error:"));
 
 export async function getUserDB(userID: string): Promise<IUser> {
-	let userDB = await usersDB.findOne({ id: userID });
+	let userDB = await usersModel.findOne({ id: userID });
 	if (userDB) {
 		return userDB;
 	}
 	else {
-		userDB = new usersDB({
+		userDB = new usersModel({
 			id: userID,
 		});
 		await userDB.save().catch(err => logger.error(err));
@@ -36,36 +36,36 @@ export async function getUserDB(userID: string): Promise<IUser> {
 
 export async function getGuildDB(guildID: string): Promise<IGuild> {
 
-	let guildDB = await guildsDB.findOne({ id: guildID });
+	let guildDB = await guildsModel.findOne({ id: guildID });
 
 	if (!guildDB) {
-		guildDB = new guildsDB({ id: guildID });
+		guildDB = new guildsModel({ id: guildID });
 	}
 
 	return await guildDB.save();
 }
 
 export async function getTinderDB(userID: string): Promise<ITinder> {
-	let tinderDB = await tinderDataDB.findOne({ id: userID });
+	let tinderDB = await tinderDataModel.findOne({ id: userID });
 
 	if (tinderDB) {
 		return tinderDB;
 	}
 	else {
-		tinderDB = new tinderDataDB({ id: userID });
+		tinderDB = new tinderDataModel({ id: userID });
 		await tinderDB.save().catch(err => logger.error(err));
 		return tinderDB;
 	}
 }
 
 export async function getCommandStatsDB(): Promise<ICommandStats> {
-	let cmdStatsDB = await commandStatsDB.findOne();
+	let cmdStatsDB = await commandStatsModel.findOne();
 
 	if (cmdStatsDB) {
 		return cmdStatsDB;
 	}
 	else {
-		cmdStatsDB = new commandStatsDB();
+		cmdStatsDB = new commandStatsModel();
 
 		await cmdStatsDB.save().catch(err => logger.error(err));
 		return cmdStatsDB;
@@ -73,13 +73,13 @@ export async function getCommandStatsDB(): Promise<ICommandStats> {
 }
 
 export async function getBlacklistDB(): Promise<IBlacklist> {
-	let blacklist = await blacklistDB.findOne();
+	let blacklist = await blacklistModel.findOne();
 
 	if (blacklist) {
 		return blacklist;
 	}
 	else {
-		blacklist = new blacklistDB();
+		blacklist = new blacklistModel();
 
 		await blacklist.save().catch(err => logger.error(err));
 		return blacklist;
@@ -87,13 +87,13 @@ export async function getBlacklistDB(): Promise<IBlacklist> {
 }
 
 export async function getBotDB(): Promise<IBotDB> {
-	let bot = await botDB.findOne();
+	let bot = await botModel.findOne();
 
 	if (bot) {
 		return bot;
 	}
 	else {
-		bot = new botDB();
+		bot = new botModel();
 
 		await bot.save().catch(err => logger.error(err));
 		return bot;

@@ -1,10 +1,10 @@
-import { moneyDB } from "../../struct/models";
+import { moneyModel } from "../../struct/models";
 import { IMoneyService } from "./IMoneyService";
 
 
 export class MongoMoneyService implements IMoneyService {
     async Get(id: string): Promise<number> {
-        const doc = await moneyDB.findOne({
+        const doc = await moneyModel.findOne({
             id: id
         });
 
@@ -20,7 +20,7 @@ export class MongoMoneyService implements IMoneyService {
             throw new Error("Amount must be greated than 0");
         }
         // todo id must be indexed
-        await moneyDB.updateOne({
+        await moneyModel.updateOne({
             id: id
         }, {
             $inc: {
@@ -31,7 +31,7 @@ export class MongoMoneyService implements IMoneyService {
             new: true
         });
 
-        const doc = await moneyDB.findOne({ id: id });
+        const doc = await moneyModel.findOne({ id: id });
         return doc?.amount ?? 0;
     }
 
@@ -41,7 +41,7 @@ export class MongoMoneyService implements IMoneyService {
         }
 
         console.log(id, amount)
-        const result = await moneyDB.updateOne({
+        const result = await moneyModel.updateOne({
             id: id,
             amount: {
                 $gte: amount
