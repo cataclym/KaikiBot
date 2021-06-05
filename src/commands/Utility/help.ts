@@ -28,14 +28,20 @@ export default class HelpCommand extends Command {
 			let usage = command.description.usage;
 
 			if (usage) {
-				usage = usage instanceof Array ? usage.map(u => `${prefix}${command.id} ${u}`).join("\n") : `${prefix}${command.id} ${usage}`;
+				usage = usage instanceof Array
+					? usage.map(u => `${prefix}${command.id} ${u}`).join("\n")
+					: `${prefix}${command.id} ${usage}`;
 			}
 
 			embed.setTitle(`**Name:** ${command.id}`)
-				.setDescription(`**Aliases:** \`${command.aliases.join("`, `")}\`\n**Description:** ${command.description.description || command.description}\n`)
+				.setDescription(`**Aliases:** \`${command.aliases.join("`, `")}\``)
 				.setFooter(command.categoryID);
 
-			if (command?.description.usage) embed.addField("Usage", usage);
+			embed.addField("**Description:**", command.description.description || "?", false);
+			embed.addField("**Usage:**", usage?.length
+				? usage
+				: `${prefix}${command.id}`, false);
+
 			if (command.userPermissions) embed.addField("Requires", command.userPermissions, false);
 			if (command.ownerOnly) embed.addField("Owner only", "✅", false);
 

@@ -4,7 +4,7 @@
       "allowJs": true,
       "module": "commonJS",
       "esModuleInterop": true,
-      "target": "ESNext",
+      "target": "ES6",
       "noImplicitAny": true,
       "moduleResolution": "node",
       "sourceMap": true,
@@ -15,16 +15,21 @@
       "paths": {
         "*": ["../node_modules/*"]
       },
+      "types": [
+        // add node as an option
+        "node",
+        "reflect-metadata"
+      ],
       "declaration": false,
       "emitDecoratorMetadata": true,
       "experimentalDecorators": true,
-      "typeRoots": ["types", "node_modules/@types"],
-      "lib": ["ES2020", "ES2019", "ES2018", "es2017", "es2016", "es2015", "dom"]
+      "typeRoots": ["types.ts", "../node_modules/@types"],
+      "lib": ["es6", "dom"]
     },
     "references": [      // this is how we declare a dependency from
       { "path": "../" }  // this project to the one at the root dir`
     ],
-    "include": ["./**/*", "./.eslintrc.js", "jest.config.js", "./*", "types", "./Extensions/loglevel.d.ts"],
+    "include": ["./**/*", "./.eslintrc.js", "jest.config.js", "./*", "types.ts", "./Extensions/loglevel.d.ts"],
     "exclude": ["../node_modules/*", "../types/*"]
   }
   

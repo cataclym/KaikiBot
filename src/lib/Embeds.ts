@@ -1,7 +1,6 @@
 import { Command, PrefixSupplier } from "@cataclym/discord-akairo";
 import { Message, MessageEmbed, User } from "discord.js";
 import { getTinderDB } from "../struct/db";
-import { tinderDataDB } from "../struct/models";
 import { poems } from "./Poems";
 
 // export class CustomEmbed extends MessageEmbed {
@@ -46,13 +45,13 @@ export async function DMEMarry(): Promise<MessageEmbed> {
 export async function tinderRollEmbed(message: Message, randomUsr: User, RollsLikes?: string): Promise<MessageEmbed> {
 	const db = await getTinderDB(randomUsr.id),
 		waifus = db.marriedIDs.length,
-		likeIDsDB = await tinderDataDB.find({ tinderData: {} }),
-		flattArray = likeIDsDB
-			.map((ITinderData) => ITinderData.likeIDs)
-			.flat(),
-		randomUsrLikes = flattArray
-			?.filter((id: string) => id === randomUsr.id)
-			.length,
+		// likeIDsDB = await tinderDataDB.find({ tinderData: {} }),
+		// flattArray = likeIDsDB
+		// 	.map((ITinderData) => ITinderData.likeIDs)
+		// 	.flat(),
+		// randomUsrLikes = flattArray
+		// 	?.filter((id: string) => id === randomUsr.id)
+		// 	.length,
 		member = message.guild?.members.cache.get(randomUsr.id);
 
 	return new MessageEmbed()
@@ -61,7 +60,7 @@ export async function tinderRollEmbed(message: Message, randomUsr: User, RollsLi
 		.setTitle(randomUsr.username)
 		.setDescription(member ? "**Nickname**\n" + member?.displayName : "🌐")
 		.addFields(
-			{ name: "**Likes**", value: randomUsrLikes ?? "None", inline: true },
+			// { name: "**Likes**", value: randomUsrLikes ?? "None", inline: true },
 			{ name: "**Waifus**", value: waifus ?? "None", inline: true },
 		)
 		.setFooter(RollsLikes ? "React '❌' to dislike. '💚' To like. '🌟' To super like.\n" + RollsLikes : randomUsr.tag)

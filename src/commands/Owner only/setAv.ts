@@ -1,6 +1,7 @@
 import { Command } from "@cataclym/discord-akairo";
 import Canvas from "canvas";
 import { Message, MessageAttachment } from "discord.js";
+import logger from "loglevel";
 import { noArgGeneric } from "../../lib/Embeds";
 import { calculateAspectRatioFit } from "../../lib/Util";
 
@@ -21,22 +22,24 @@ export default class SetAvatarCommand extends Command {
 	}
 	public async exec(message: Message, { url }: { url: URL}): Promise<Message> {
 
-		const canv = Canvas.createCanvas(128, 128);
-		const img = Canvas.loadImage(url.href);
+		const img = await Canvas.loadImage(url.href);
+		const canv = Canvas.createCanvas(img.width, img.height);
 		const ctx = canv.getContext("2d");
 
-		const { width, height } = calculateAspectRatioFit((await img).width, (await img).height, (await img).width, 128);
+		const { width, height } = calculateAspectRatioFit(img.width, img.height, img.width, img.height);
 
-		ctx.drawImage(await img,
+		ctx.drawImage(img,
 			canv.width / 2 - width / 2,
 			canv.height / 2 - height / 2,
 			width, height);
+
 		const buffer = canv.toBuffer();
+
 		try {
 			this.client.user?.setAvatar(buffer);
 		}
 		catch (error) {
-			console.error(error);
+			logger.error(error);
 			return message.channel.send("Unsupported image type. Please use PNG, JPEG or GIF.");
 		}
 
