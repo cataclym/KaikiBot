@@ -130,7 +130,7 @@ export const botSchema = new Schema({
 
 export const moneySchema = new Schema({
     id: {
-        type: String, default: "",
+        type: String, default: "", index: true
     },
     amount: {
         type: Number, default: 0
