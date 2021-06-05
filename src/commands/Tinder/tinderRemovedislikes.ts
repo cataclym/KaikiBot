@@ -3,7 +3,7 @@ import { Snowflake } from "discord-api-types";
 import { Message, MessageEmbed } from "discord.js";
 import { ITinder } from "../../interfaces/db";
 import { errorMessage } from "../../lib/Embeds";
-import { getTinderDB } from "../../struct/db";
+import { getTinderDocument } from "../../struct/db";
 
 export default class TinderRemoveDislikes extends Command {
 	constructor() {
@@ -18,7 +18,7 @@ export default class TinderRemoveDislikes extends Command {
 		});
 	}
 	public async exec(message: Message, { integer }: { integer: number }): Promise<ITinder> {
-		const db = await getTinderDB(message.author.id);
+		const db = await getTinderDocument(message.author.id);
 
 		if (db.dislikeIDs.length) {
 

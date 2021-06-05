@@ -1,9 +1,8 @@
 import { Command, PrefixSupplier } from "@cataclym/discord-akairo";
 import { Snowflake } from "discord-api-types";
-import { Guild } from "discord.js";
-import { GuildMember, MessageEmbed, Message, Role } from "discord.js";
+import { Guild, GuildMember, Message, MessageEmbed, Role } from "discord.js";
 import { IGuild } from "../../interfaces/db";
-import { getGuildDB } from "../../struct/db";
+import { getGuildDocument } from "../../struct/db";
 
 // Rewrite of Miyano's setuserrole command
 // https://github.com/PlatinumFT/Miyano-v2
@@ -61,7 +60,7 @@ export default class SetUserRoleCommand extends Command {
 			return message.channel.send(await embedFail("This role is higher than your highest, I cannot add this role!"));
 		}
 
-		const db = await getGuildDB(guildID),
+		const db = await getGuildDocument(guildID),
 			roleID = db.userRoles[member.id];
 
 		if (roleID) {

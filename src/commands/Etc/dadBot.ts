@@ -1,7 +1,7 @@
 import { Command } from "@cataclym/discord-akairo";
 import { Message, Util } from "discord.js";
 import { dadbotArray } from "../../struct/constants";
-import { getUserDB } from "../../struct/db";
+import { getUserDocument } from "../../struct/db";
 
 const nickname: {
 	[id: string]: string
@@ -52,7 +52,7 @@ export default class dadBot extends Command {
 
 		if (nick.length <= 32) {
 			const user = message.author,
-				db = await getUserDB(user.id);
+				db = await getUserDocument(user.id);
 
 			db.userNicknames.push(nick);
 

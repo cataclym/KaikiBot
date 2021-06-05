@@ -2,7 +2,7 @@ import { Command, PrefixSupplier } from "@cataclym/discord-akairo";
 import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
 import { Snowflake } from "discord-api-types";
 import { Message, MessageEmbed } from "discord.js";
-import { getGuildDB } from "../../struct/db";
+import { getGuildDocument } from "../../struct/db";
 
 export default class RemoveEmoteReactCommand extends Command {
 	constructor() {
@@ -17,7 +17,7 @@ export default class RemoveEmoteReactCommand extends Command {
 	public async exec(message: Message): Promise<Message> {
 
 		const gid = message.guild!.id,
-			db = await getGuildDB(gid),
+			db = await getGuildDocument(gid),
 			emojies = Object.entries(db.emojiReactions),
 			pages: MessageEmbed[] = [];
 

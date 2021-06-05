@@ -3,7 +3,7 @@ import { MessageEmbed } from "discord.js";
 import logger from "loglevel";
 import { birthdayService } from "../lib/AnniversaryRoles";
 import { dailyResetTimer, emoteDataBaseService } from "../lib/functions";
-import { getBotDB } from "../struct/db";
+import { getBotDocument } from "../struct/db";
 import { guildsModel } from "../struct/models";
 
 export default class ReadyListener extends Listener {
@@ -51,7 +51,7 @@ export default class ReadyListener extends Listener {
 				);
 		}
 
-		const db = await getBotDB();
+		const db = await getBotDocument();
 		if (db.activity.length) this.client.user?.setActivity({ name: db.activity, type: db.activityType });
 	}
 }

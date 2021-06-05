@@ -2,7 +2,7 @@ import { Command } from "@cataclym/discord-akairo";
 import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
 import { Message, MessageEmbed, User } from "discord.js";
 import { IUser } from "../../interfaces/db";
-import { getUserDB } from "../../struct/db";
+import { getUserDocument } from "../../struct/db";
 
 async function add(Embed: MessageEmbed, array: MessageEmbed[]) {
 	array.push(Embed);
@@ -42,7 +42,7 @@ export default class NamesCommand extends Command {
 	public async exec(message: Message, { method, unionUser }: { method: boolean, unionUser: User }): Promise<IUser | Message | void> {
 
 		if (method) {
-			const db = await getUserDB(message.author.id);
+			const db = await getUserDocument(message.author.id);
 			db.userNicknames = [];
 			message.channel.send(new MessageEmbed()
 				.setDescription(`Deleted all of <@${message.author.id}>'s nicknames.\nWell done, you made daddy forget.`)
@@ -56,7 +56,7 @@ export default class NamesCommand extends Command {
 			unionUser = message.author;
 		}
 
-		const db = await getUserDB(unionUser.id),
+		const db = await getUserDocument(unionUser.id),
 			nicknameString = (db.userNicknames.length ? db.userNicknames : ["Empty"]).join(", "),
 			pages: MessageEmbed[] = [];
 

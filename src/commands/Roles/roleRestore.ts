@@ -1,7 +1,7 @@
 import { Command } from "@cataclym/discord-akairo";
 import { Snowflake } from "discord-api-types";
-import { Guild, Message, MessageEmbed, GuildMember } from "discord.js";
-import { getGuildDB } from "../../struct/db";
+import { Guild, GuildMember, Message, MessageEmbed } from "discord.js";
+import { getGuildDocument } from "../../struct/db";
 
 export default class RestoreUserRoles extends Command {
 	constructor() {
@@ -25,7 +25,7 @@ export default class RestoreUserRoles extends Command {
 	public async exec(message: Message, { member }: { member: GuildMember }): Promise<Message | void> {
 
 		const guild = message.guild as Guild,
-			db = await getGuildDB(guild.id),
+			db = await getGuildDocument(guild.id),
 			leaveRoles = db.leaveRoles[member.id];
 
 		if (leaveRoles.length) {

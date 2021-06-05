@@ -8,6 +8,7 @@ connect("mongodb://localhost:27017", {
 	useNewUrlParser: true,
 	useUnifiedTopology: true,
 	dbName: "KaikiDB",
+    useCreateIndex: true,
 })
 	.then(() => {
 		// If it connects log the following
@@ -20,7 +21,7 @@ connect("mongodb://localhost:27017", {
 
 connection.on("error", logger.error.bind(console, "connection error:"));
 
-export async function getUserDB(userID: string): Promise<IUser> {
+export async function getUserDocument(userID: string): Promise<IUser> {
 	let userDB = await usersModel.findOne({ id: userID });
 	if (userDB) {
 		return userDB;
@@ -34,7 +35,7 @@ export async function getUserDB(userID: string): Promise<IUser> {
 	}
 }
 
-export async function getGuildDB(guildID: string): Promise<IGuild> {
+export async function getGuildDocument(guildID: string): Promise<IGuild> {
 
 	let guildDB = await guildsModel.findOne({ id: guildID });
 
@@ -45,7 +46,7 @@ export async function getGuildDB(guildID: string): Promise<IGuild> {
 	return await guildDB.save();
 }
 
-export async function getTinderDB(userID: string): Promise<ITinder> {
+export async function getTinderDocument(userID: string): Promise<ITinder> {
 	let tinderDB = await tinderDataModel.findOne({ id: userID });
 
 	if (tinderDB) {
@@ -58,7 +59,7 @@ export async function getTinderDB(userID: string): Promise<ITinder> {
 	}
 }
 
-export async function getCommandStatsDB(): Promise<ICommandStats> {
+export async function getCommandStatsDocument(): Promise<ICommandStats> {
 	let cmdStatsDB = await commandStatsModel.findOne();
 
 	if (cmdStatsDB) {
@@ -72,7 +73,7 @@ export async function getCommandStatsDB(): Promise<ICommandStats> {
 	}
 }
 
-export async function getBlacklistDB(): Promise<IBlacklist> {
+export async function getBlacklistDocument(): Promise<IBlacklist> {
 	let blacklist = await blacklistModel.findOne();
 
 	if (blacklist) {
@@ -86,7 +87,7 @@ export async function getBlacklistDB(): Promise<IBlacklist> {
 	}
 }
 
-export async function getBotDB(): Promise<IBotDB> {
+export async function getBotDocument(): Promise<IBotDB> {
 	let bot = await botModel.findOne();
 
 	if (bot) {

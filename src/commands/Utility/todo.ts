@@ -2,7 +2,7 @@ import { Argument, Command, Flag, PrefixSupplier } from "@cataclym/discord-akair
 import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
 import { Message, MessageEmbed } from "discord.js";
 import { trim } from "../../lib/Util";
-import { getUserDB } from "../../struct/db";
+import { getUserDocument } from "../../struct/db";
 module.exports = class TodoCommand extends Command {
 	constructor() {
 		super("todo", {
@@ -32,7 +32,7 @@ module.exports = class TodoCommand extends Command {
 	}
 
 	public async exec(message: Message) {
-		const userDB = await getUserDB(message.author.id),
+		const userDB = await getUserDocument(message.author.id),
 			{ todo } = userDB, pages = [],
 			reminderArray = (todo.length
 				? todo.map((str) => trim(str.split(/\r?\n/).join(" "), 204))

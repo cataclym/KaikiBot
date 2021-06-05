@@ -1,4 +1,4 @@
-import { getCommandStatsDB } from "../struct/db";
+import { getCommandStatsDocument } from "../struct/db";
 
 // Anime quotes
 export type respType = { anime: string, character: string, quote: string };
@@ -7,7 +7,7 @@ export const animeQuoteCache: {[character: string]: respType } = {};
 export let cmdStatsCache: {[index: string]: number} = {};
 
 setInterval(async () => {
-	const db = await getCommandStatsDB();
+	const db = await getCommandStatsDocument();
 
 	if (!Object.entries(cmdStatsCache).length) return;
 

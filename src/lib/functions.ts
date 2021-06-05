@@ -4,7 +4,7 @@ import { Client, Guild, GuildMember, Message, MessageEmbed, User } from "discord
 import logger from "loglevel";
 import { clearRollCache } from "../commands/Tinder/tinder";
 import { badWords } from "../struct/constants";
-import { getGuildDB } from "../struct/db";
+import { getGuildDocument } from "../struct/db";
 import { tinderDataModel } from "../struct/models";
 import { birthdayService } from "./AnniversaryRoles";
 import { trim } from "./Util";
@@ -14,7 +14,7 @@ let botOwner: User | undefined;
 // Reacts with emote to specified words
 export async function emoteReact(message: Message): Promise<void> {
 
-	const wordObj = (await getGuildDB((message.guild as Guild).id)).emojiReactions;
+	const wordObj = (await getGuildDocument((message.guild as Guild).id)).emojiReactions;
 	const regexFromArray = new RegExp(Object.keys(wordObj).join("|"), "gi");
 	const matches = message.content.toLowerCase().match(regexFromArray) || [];
 
@@ -73,7 +73,7 @@ export function timeToMidnight(): number {
 
 async function emoteDB(guild: Guild) {
 	let i = 0;
-	const db = await getGuildDB(guild.id);
+	const db = await getGuildDocument(guild.id);
 	for await (const emote of guild.emojis.cache.array()) {
 		if (!(emote.id in db.emojiStats)) {
 			i++;
@@ -107,7 +107,7 @@ export async function countEmotes(message: Message): Promise<void> {
 		const { guild } = message,
 			emotes = message.content.match(/<?(a)?:.+?:\d+>/g);
 		if (emotes) {
-			const db = await getGuildDB(guild.id);
+			const db = await getGuildDocument(guild.id);
 			const ids = emotes.toString().match(/\d+/g);
 			ids?.forEach(async id => {
 				const emote = guild.emojis.cache.get(id as Snowflake);

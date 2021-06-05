@@ -3,7 +3,7 @@ import { Snowflake } from "discord-api-types";
 import { Message, MessageEmbed } from "discord.js";
 import { ITinder } from "../../interfaces/db";
 import { errorMessage } from "../../lib/Embeds";
-import { getTinderDB } from "../../struct/db";
+import { getTinderDocument } from "../../struct/db";
 
 export default class TinderRemoveMarries extends Command {
 	constructor() {
@@ -18,14 +18,14 @@ export default class TinderRemoveMarries extends Command {
 		});
 	}
 	public async exec(message: Message, { integer }: { integer: number }): Promise<ITinder> {
-		const db = await getTinderDB(message.author.id);
+		const db = await getTinderDocument(message.author.id);
 
 		if (db.marriedIDs.length) {
 
 			if (db.marriedIDs.length >= integer) {
 				const userID = db.marriedIDs.splice(integer, 1),
 					RemovedMember = message.client.users.cache.get(userID[0] as Snowflake),
-					rDB = await getTinderDB(RemovedMember?.id ?? userID[0]),
+					rDB = await getTinderDocument(RemovedMember?.id ?? userID[0]),
 					userNumber = rDB.marriedIDs.indexOf(message.author.id);
 
 				if (userNumber !== -1) {

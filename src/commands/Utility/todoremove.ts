@@ -1,7 +1,7 @@
 import { Argument, Command } from "@cataclym/discord-akairo";
 import { Message } from "discord.js";
 import { IUser } from "../../interfaces/db";
-import { getUserDB } from "../../struct/db";
+import { getUserDocument } from "../../struct/db";
 
 export default class todoRemoveCommand extends Command {
 	constructor() {
@@ -18,7 +18,7 @@ export default class todoRemoveCommand extends Command {
 	}
 	public async exec(message: Message, { toRemove }: { toRemove: number | "first" | "last" | "all" }): Promise<IUser | Message> {
 
-		const { author } = message, userDB = await getUserDB(author.id);
+		const { author } = message, userDB = await getUserDocument(author.id);
 
 		if (!userDB.todo.length) {
 			return message.channel.send("Nothing to delete.");

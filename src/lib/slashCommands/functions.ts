@@ -1,10 +1,10 @@
 import { APIMessage, CommandInteraction, GuildMemberRoleManager, Message, MessageEmbed } from "discord.js";
-import { getGuildDB } from "../../struct/db";
+import { getGuildDocument } from "../../struct/db";
 import { Exclude } from "../Embeds";
 
 export async function ExcludeSlashCommand(interaction: CommandInteraction): Promise<Message | APIMessage | any> {
 
-	const db = await getGuildDB(interaction.guildID as string);
+	const db = await getGuildDocument(interaction.guildID as string);
 	const rolename = db.settings.excludeRole;
 
 	let excludedRole = interaction.guild?.roles.cache.find((r) => r.name === rolename);

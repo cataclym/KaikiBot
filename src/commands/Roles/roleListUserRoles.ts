@@ -2,7 +2,7 @@ import { Command, PrefixSupplier } from "@cataclym/discord-akairo";
 import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
 import { Snowflake } from "discord-api-types";
 import { Guild, Message, MessageEmbed } from "discord.js";
-import { getGuildDB } from "../../struct/db";
+import { getGuildDocument } from "../../struct/db";
 
 export default class ListUserRoles extends Command {
 	constructor() {
@@ -19,7 +19,7 @@ export default class ListUserRoles extends Command {
 	public async exec(message: Message): Promise<Message> {
 
 		const guildID = (message.guild as Guild).id,
-			db = await getGuildDB(guildID);
+			db = await getGuildDocument(guildID);
 		const roles = Object.entries(db.userRoles);
 
 		if (roles.length) {

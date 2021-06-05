@@ -4,7 +4,7 @@ import { Message, MessageEmbed, MessageReaction, User } from "discord.js";
 import logger from "loglevel";
 import { tinderRollEmbed } from "../../lib/Embeds";
 import { noMoreLikesOrRolls, tinderDislike, tinderNormalLike, tinderSuperLike } from "../../lib/Tinder";
-import { getTinderDB } from "../../struct/db";
+import { getTinderDocument } from "../../struct/db";
 
 const reactPromises = async (SentMsg: Message) => {
 	await SentMsg.react("❌");
@@ -53,7 +53,7 @@ export default class TinderMain extends Command {
 			return message.channel.send(await tinderRollEmbed(message, args));
 		}
 
-		const tinderUserData = await getTinderDB(message.author.id),
+		const tinderUserData = await getTinderDocument(message.author.id),
 			{ datingIDs, marriedIDs, likeIDs, likes, dislikeIDs, temporary } = tinderUserData;
 		let rolls = rollsCache[message.author.id];
 
@@ -91,7 +91,7 @@ export default class TinderMain extends Command {
 			tinderUserData.rolls = rolls;
 			tinderUserData.markModified("rolls");
 
-			const ramdomUsrData = await getTinderDB(randomUsr.id),
+			const ramdomUsrData = await getTinderDocument(randomUsr.id),
 				SentMsg = await message.channel.send(await tinderRollEmbed(message, randomUsr, RollsLikes));
 
 			reactPromises(SentMsg)

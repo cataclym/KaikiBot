@@ -3,7 +3,7 @@ import { Guild, Message, MessageEmbed } from "discord.js";
 import { IGuild } from "../../interfaces/db";
 import { checkBirthdayOnAdd } from "../../lib/AnniversaryRoles";
 import { noArgGeneric } from "../../lib/Embeds";
-import { getGuildDB } from "../../struct/db";
+import { getGuildDocument } from "../../struct/db";
 
 type values = "enable" | "true" | "disable" | "false";
 const values: values[] = ["enable", "true", "disable", "false"];
@@ -24,7 +24,7 @@ export default class AnniversaryRolesConfigCommand extends Command {
 	}
 	public async exec(message: Message, { value }: { value: values }): Promise<IGuild> {
 		const guildID = (message.guild as Guild).id,
-			db = await getGuildDB(guildID),
+			db = await getGuildDocument(guildID),
 			boolean = db.settings.anniversary,
 			embed = new MessageEmbed()
 				.withOkColor(message);

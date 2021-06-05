@@ -3,7 +3,7 @@ import { Snowflake } from "discord-api-types";
 import { Guild, Message, MessageEmbed } from "discord.js";
 import { resolveColor } from "../../lib/Color";
 import { trim } from "../../lib/Util";
-import { getGuildDB } from "../../struct/db";
+import { getGuildDocument } from "../../struct/db";
 
 export default class MyRoleCommand extends Command {
 	constructor() {
@@ -43,7 +43,7 @@ export default class MyRoleCommand extends Command {
 				.withErrorColor(message);
 		};
 
-		const db = await getGuildDB(guild.id),
+		const db = await getGuildDocument(guild.id),
 			roleID = db.userRoles[message.author.id];
 
 		if (!roleID) return message.channel.send(await embedFail());
