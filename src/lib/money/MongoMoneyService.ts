@@ -3,78 +3,78 @@ import { IMoneyService } from "./IMoneyService";
 
 
 export class MongoMoneyService implements IMoneyService {
-    async Get(id: string): Promise<number> {
-        const doc = await moneyModel.findOne({
-            id: id
-        });
+	async Get(id: string): Promise<number> {
+		const doc = await moneyModel.findOne({
+			id: id,
+		});
 
-        if (doc) {
-            return doc.amount;
-        }
+		if (doc) {
+			return doc.amount;
+		}
 
-        return 0;
-    }
+		return 0;
+	}
 
-    async Add(id: string, amount: number): Promise<number> {
-        if (amount <= 0) {
-            throw new Error("Amount must be greated than 0");
-        }
-        // todo id must be indexed
-        await moneyModel.updateOne({
-            id: id
-        }, {
-            $inc: {
-                amount: amount
-            }
-        }, {
-            upsert: true,
-            new: true
-        });
+	async Add(id: string, amount: number): Promise<number> {
+		if (amount <= 0) {
+			throw new Error("Amount must be greater than 0");
+		}
+		// todo id must be indexed
+		await moneyModel.updateOne({
+			id: id,
+		}, {
+			$inc: {
+				amount: amount,
+			},
+		}, {
+			upsert: true,
+			new: true,
+		});
 
-        const doc = await moneyModel.findOne({ id: id });
-        return doc?.amount ?? 0;
-    }
+		const doc = await moneyModel.findOne({ id: id });
+		return doc?.amount ?? 0;
+	}
 
-    async TryTake(id: string, amount: number): Promise<boolean> {
-        if (amount <= 0) {
-            throw new Error("Amount must be greated than 0");
-        }
+	async TryTake(id: string, amount: number): Promise<boolean> {
+		if (amount <= 0) {
+			throw new Error("Amount must be greater than 0");
+		}
 
-        console.log(id, amount)
-        const result = await moneyModel.updateOne({
-            id: id,
-            amount: {
-                $gte: amount
-            }
-        }, {
-            $inc: {
-                amount: -amount
-            }
-        });
+		console.log(id, amount);
+		const result = await moneyModel.updateOne({
+			id: id,
+			amount: {
+				$gte: amount,
+			},
+		}, {
+			$inc: {
+				amount: -amount,
+			},
+		});
 
-        console.log(result);
-        return result.nModified > 0;
-    }
+		console.log(result);
+		return result.nModified > 0;
+	}
 
-    // async Reduce(id: string, amount: number): Promise<bool> {
-    //     // todo amount must be > 0
-    //     await moneyDB.updateOne({
-    //         id: id
-    //     },
-    //     {
-    //         $set: {
-    //             "$amount": {
-    //                 $cond: {
-    //                     if: { $lt: ["$amount", amount] },
-    //                     then: 0,
-    //                     else: { $inc: -amount }
-    //                 }
-    //             }
-    //         }
-    //     });
+	// async Reduce(id: string, amount: number): Promise<bool> {
+	//     // todo amount must be > 0
+	//     await moneyDB.updateOne({
+	//         id: id
+	//     },
+	//     {
+	//         $set: {
+	//             "$amount": {
+	//                 $cond: {
+	//                     if: { $lt: ["$amount", amount] },
+	//                     then: 0,
+	//                     else: { $inc: -amount }
+	//                 }
+	//             }
+	//         }
+	//     });
 
-    //     return 0;
-    // }
+	//     return 0;
+	// }
 }
 
 export const MongoMoney = new MongoMoneyService();
