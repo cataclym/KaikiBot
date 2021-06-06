@@ -1,15 +1,38 @@
 {
-	"extends": "eslint:recommended",
-	"env": {
+
+	"parser": "@typescript-eslint/parser",
+	// Specifies the ESLint parser
+
+    "plugins": ["@typescript-eslint"],
+
+	"parserOptions": {
+
+		"ecmaVersion": 2020,
+		// Allows for the parsing of modern ECMAScript features
+
+		"sourceType": "module"
+		// Allows for the use of imports
+
+	},
+
+    "env": {
 		"node": true,
 		"es6": true,
 		"commonjs": true
 	},
-	"parserOptions": {
-		"ecmaVersion": 2020
-	},
+
+    "extends": [
+        "eslint:recommended",
+        "plugin:@typescript-eslint/recommended"
+        ],
+
 	"rules": {
-		// "object-property-newline": "warn",
+
+		// Place to specify ESLint rules. Can be used to overwrite rules specified from the extended configs
+
+		// e.g. "@typescript-eslint/explicit-function-return-type": "off",
+        
+		"@typescript-eslint/no-shadow": ["error"],
 		"brace-style": ["error", "stroustrup", { "allowSingleLine": true }],
 		"comma-dangle": ["error", "always-multiline"],
 		"comma-spacing": "error",
@@ -23,13 +46,10 @@
 		"no-console": "off",
 		"no-empty-function": "error",
 		"no-floating-decimal": "error",
-		"no-mixed-spaces-and-tabs": "warn",		
 		"no-inline-comments": "error",
 		"no-lonely-if": "error",
 		"no-multi-spaces": "error",
 		"no-multiple-empty-lines": ["error", { "max": 2, "maxEOF": 1, "maxBOF": 0 }],
-		"no-shadow": "off",
-		// "no-shadow": ["error", { "allow": ["err", "resolve", "reject"] }],
 		"no-trailing-spaces": ["error"],
 		"no-var": "error",
 		"object-curly-spacing": ["error", "always"],
@@ -47,6 +67,8 @@
 		"space-unary-ops": "error",
 		"spaced-comment": "error",
 		"yoda": "error",
-		"keyword-spacing": ["error", { "before": true }]
+		"keyword-spacing": ["error", { "before": true }],
+		"no-mixed-spaces-and-tabs": "warn",
+        "no-shadow": ["error", { "allow": ["err", "resolve", "reject"] }]
 	}
 }
