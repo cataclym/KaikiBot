@@ -4,7 +4,7 @@ import { TYPES } from "./types";
 
 @injectable()
 export class Bot {
-    private client: customClient;
+    public client: customClient;
     private readonly token: string;
 
     constructor(
@@ -25,6 +25,8 @@ export class Bot {
     	if (!process.env.OWNER) {
     		throw new Error("Missing owner-ID! Please double-check the guide and set an owner in .env");
     	}
+
+    	this.client.init();
 
     	return this.client.login(this.token);
     }

@@ -3,7 +3,7 @@ import { Snowflake } from "discord-api-types";
 import { Message, MessageEmbed } from "discord.js";
 import { ITinder } from "../../interfaces/db";
 import { errorMessage } from "../../lib/Embeds";
-import { getTinderDocument } from "../../struct/db";
+import { getTinderDocument } from "../../struct/documentMethods";
 
 export default class TinderRemoveDislikes extends Command {
 	constructor() {

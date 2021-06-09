@@ -2,7 +2,7 @@ import { Argument, Command } from "@cataclym/discord-akairo";
 import { Guild, Message, MessageEmbed, TextChannel } from "discord.js";
 import { hexColorTable } from "../../lib/Color";
 import { okColor } from "../../lib/Util";
-import { getGuildDocument } from "../../struct/db";
+import { getGuildDocument } from "../../struct/documentMethods";
 
 export default class WelcomeConfigCommand extends Command {
 	constructor() {

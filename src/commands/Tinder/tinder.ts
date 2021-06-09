@@ -4,7 +4,7 @@ import { Message, MessageEmbed, MessageReaction, User } from "discord.js";
 import logger from "loglevel";
 import { tinderRollEmbed } from "../../lib/Embeds";
 import { noMoreLikesOrRolls, tinderDislike, tinderNormalLike, tinderSuperLike } from "../../lib/Tinder";
-import { getTinderDocument } from "../../struct/db";
+import { getTinderDocument } from "../../struct/documentMethods";
 
 const reactPromises = async (SentMsg: Message) => {
 	await SentMsg.react("❌");

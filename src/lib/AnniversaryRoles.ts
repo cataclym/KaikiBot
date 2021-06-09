@@ -2,7 +2,7 @@ import { Snowflake } from "discord-api-types";
 import { Client, Guild, GuildMember, Permissions, Role } from "discord.js";
 import logger from "loglevel";
 import { AnniversaryStrings } from "../struct/constants";
-import { getGuildDocument } from "../struct/db";
+import { getGuildDocument } from "../struct/documentMethods";
 import { guildsModel } from "../struct/models";
 
 async function DateObject() {

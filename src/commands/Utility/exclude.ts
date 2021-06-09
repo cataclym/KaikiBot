@@ -1,7 +1,7 @@
 import { Command } from "@cataclym/discord-akairo";
 import { Guild, Message, MessageEmbed } from "discord.js";
 import { Exclude } from "../../lib/Embeds";
-import { getGuildDocument } from "../../struct/db";
+import { getGuildDocument } from "../../struct/documentMethods";
 
 export default class ExcludeCommand extends Command {
 	constructor() {

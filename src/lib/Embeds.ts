@@ -1,6 +1,6 @@
 import { Command, PrefixSupplier } from "@cataclym/discord-akairo";
 import { Message, MessageEmbed, User } from "discord.js";
-import { getTinderDocument } from "../struct/db";
+import { getTinderDocument } from "../struct/documentMethods";
 import { poems } from "./Poems";
 
 // export class CustomEmbed extends MessageEmbed {

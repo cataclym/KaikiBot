@@ -1,4 +1,4 @@
-import { getCommandStatsDocument } from "../struct/db";
+import { getCommandStatsDocument } from "../struct/documentMethods";
 
 // Anime quotes
 export type respType = { anime: string, character: string, quote: string };

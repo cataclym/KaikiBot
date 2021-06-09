@@ -2,7 +2,7 @@ import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-
 import { Message, MessageEmbed, User } from "discord.js";
 import { rollsCache } from "../commands/Tinder/tinder";
 import { ITinder } from "../interfaces/db";
-import { getTinderDocument } from "../struct/db";
+import { getTinderDocument } from "../struct/documentMethods";
 import { hexColorTable } from "./Color";
 import { msToTime, timeToMidnight } from "./functions";
 

@@ -50,7 +50,6 @@
     "@typescript-eslint/parser": "^4.24.0",
     "auto-changelog": "^2.3.0",
     "chai": "^4.2.0",
-    "eslint-config-airbnb-base": "^14.2.1",
     "eslint-import-resolver-typescript": "^2.4.0",
     "eslint-plugin-import": "^2.23.2",
     "eslint": "^7.26.0",

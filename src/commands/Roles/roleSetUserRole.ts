@@ -2,7 +2,7 @@ import { Command, PrefixSupplier } from "@cataclym/discord-akairo";
 import { Snowflake } from "discord-api-types";
 import { Guild, GuildMember, Message, MessageEmbed, Role } from "discord.js";
 import { IGuild } from "../../interfaces/db";
-import { getGuildDocument } from "../../struct/db";
+import { getGuildDocument } from "../../struct/documentMethods";
 
 // Rewrite of Miyano's setuserrole command
 // https://github.com/PlatinumFT/Miyano-v2

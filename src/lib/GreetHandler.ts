@@ -2,7 +2,7 @@ import { Snowflake } from "discord-api-types";
 import { Guild, GuildMember, Message, MessageEmbed, TextChannel } from "discord.js";
 import { TGreetMessage } from "../interfaces/db";
 import { parsePlaceHolders } from "../lib/functions";
-import { getGuildDocument } from "../struct/db";
+import { getGuildDocument } from "../struct/documentMethods";
 
 export async function handleGreetMessage(guildMember: GuildMember): Promise<Message | undefined> {
 

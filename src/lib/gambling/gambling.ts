@@ -43,7 +43,7 @@ numbers: string[];
 ${index1} - ${index2} - ${index3}
 ${index4} - ${index5} - ${index6}
 ${index7} - ${index8} - ${index9}
-| - - - 💵 - - - |`,
+| - - - 💴 - - - |`,
 
 	numbers: [index4, index5, index6] };
 

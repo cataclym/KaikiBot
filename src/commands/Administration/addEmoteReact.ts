@@ -1,7 +1,7 @@
 import { Command } from "@cataclym/discord-akairo";
 import { Guild, GuildEmoji, Message, MessageEmbed } from "discord.js";
 import { noArgGeneric } from "../../lib/Embeds";
-import { getGuildDocument } from "../../struct/db";
+import { getGuildDocument } from "../../struct/documentMethods";
 
 export default class EmoteReactCommand extends Command {
 	constructor() {

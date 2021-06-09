@@ -1,7 +1,7 @@
 import { Argument, Command } from "@cataclym/discord-akairo";
 import { Message } from "discord.js";
 import { IUser } from "../../interfaces/db";
-import { getUserDocument } from "../../struct/db";
+import { getUserDocument } from "../../struct/documentMethods";
 
 export default class todoRemoveCommand extends Command {
 	constructor() {

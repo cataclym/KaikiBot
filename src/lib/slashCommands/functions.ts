@@ -1,5 +1,5 @@
 import { APIMessage, CommandInteraction, GuildMemberRoleManager, Message, MessageEmbed } from "discord.js";
-import { getGuildDocument } from "../../struct/db";
+import { getGuildDocument } from "../../struct/documentMethods";
 import { Exclude } from "../Embeds";
 
 export async function ExcludeSlashCommand(interaction: CommandInteraction): Promise<Message | APIMessage | any> {

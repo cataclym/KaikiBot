@@ -3,7 +3,7 @@ import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-
 import { execSync } from "child_process";
 import { Message, MessageEmbed, version } from "discord.js";
 import * as packageJson from "../../../package.json";
-import { getCommandStatsDocument } from "../../struct/db";
+import { getCommandStatsDocument } from "../../struct/documentMethods";
 
 function format(seconds: number) {
 

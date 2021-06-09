@@ -1,7 +1,7 @@
 import { Command } from "@cataclym/discord-akairo";
 import { Snowflake } from "discord-api-types";
 import { Guild, GuildMember, Message, MessageEmbed } from "discord.js";
-import { getGuildDocument } from "../../struct/db";
+import { getGuildDocument } from "../../struct/documentMethods";
 
 export default class RestoreUserRoles extends Command {
 	constructor() {

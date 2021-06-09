@@ -3,7 +3,7 @@ import { Guild, Message, MessageEmbed } from "discord.js";
 import { IGuild } from "../../interfaces/db";
 import { checkBirthdayOnAdd } from "../../lib/AnniversaryRoles";
 import { noArgGeneric } from "../../lib/Embeds";
-import { getGuildDocument } from "../../struct/db";
+import { getGuildDocument } from "../../struct/documentMethods";
 
 type values = "enable" | "true" | "disable" | "false";
 const values: values[] = ["enable", "true", "disable", "false"];

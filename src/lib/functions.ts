@@ -4,7 +4,7 @@ import { Client, Guild, GuildMember, Message, MessageEmbed, User } from "discord
 import logger from "loglevel";
 import { clearRollCache } from "../commands/Tinder/tinder";
 import { badWords } from "../struct/constants";
-import { getGuildDocument } from "../struct/db";
+import { getGuildDocument } from "../struct/documentMethods";
 import { tinderDataModel } from "../struct/models";
 import { birthdayService } from "./AnniversaryRoles";
 import { trim } from "./Util";

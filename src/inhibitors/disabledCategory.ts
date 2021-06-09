@@ -1,6 +1,6 @@
 import { Command, Inhibitor } from "@cataclym/discord-akairo";
 import { Message } from "discord.js";
-import { getGuildDocument } from "../struct/db";
+import { getGuildDocument } from "../struct/documentMethods";
 export default class BlockModulesInhibitor extends Inhibitor {
 	constructor() {
 		super("blockmodules", {

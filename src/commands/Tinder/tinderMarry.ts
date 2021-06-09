@@ -1,7 +1,7 @@
 import { Command } from "@cataclym/discord-akairo";
 import { Message, MessageEmbed, MessageReaction, User } from "discord.js";
 import { DMEMarry } from "../../lib/Embeds";
-import { getTinderDocument } from "../../struct/db";
+import { getTinderDocument } from "../../struct/documentMethods";
 
 module.exports = class TinderMarryCommand extends Command {
 	constructor() {
