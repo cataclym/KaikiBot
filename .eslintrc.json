@@ -68,7 +68,7 @@
 		"spaced-comment": "error",
 		"yoda": "error",
 		"keyword-spacing": ["error", { "before": true }],
-		"no-mixed-spaces-and-tabs": "warn",
+		"no-mixed-spaces-and-tabs": "off",
         "no-shadow": ["error", { "allow": ["err", "resolve", "reject"] }]
 	}
 }

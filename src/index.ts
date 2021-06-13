@@ -16,5 +16,3 @@ process.on("unhandledRejection", (reason: Error, promise) => {
 const bot = container.get<Bot>(TYPES.Bot);
 
 bot.start().catch(e => logger.error(e));
-
-console.log(bot.client.botSettingID);

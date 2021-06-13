@@ -12,8 +12,7 @@ function format(seconds: number) {
 	const hours = Math.floor(seconds / (60 * 60));
 	seconds %= (60 * 60);
 	const minutes = Math.floor(seconds / 60);
-	const actualSeconds = Math.floor(seconds % 60);
-	return days + "** days**\n" + hours + "** hours**\n" + minutes + "** minutes**\n" + actualSeconds + "** seconds**";
+	return days + "** days**\n" + hours + "** hours**\n" + minutes + "** minutes**";
 }
 module.exports = class StatsCommand extends Command {
 	constructor() {
