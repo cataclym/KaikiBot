@@ -1,11 +1,11 @@
 {
   "name": "kaikideishubot",
-  "version": "3.4.3-Desire",
+  "version": "3.4.31-Desire",
   "main": "./dist/index.js",
   "scripts": {
     "start": "node -r dotenv/config ./dist/index.js",
     "build": "tsc -p src/tsconfig.json",
-    "version": "auto-changelog -p && git add CHANGELOG.md",
+    "version": "auto-changelog -p --template keepachangelog && git add CHANGELOG.md",
     "watch": "tsc -p src/tsconfig.json -w",
     "test": "mocha -r ts-node/register \"tests/**/*.spec.ts\""
   },
