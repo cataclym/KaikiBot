@@ -1,4 +1,9 @@
+import { customClient } from "../../struct/client";
+
 export interface IMoneyService {
+    currencyName: string;
+    currencySymbol: string;
+
     /**
      * Gets specified user's current balance
      * @param id Id of the user
@@ -31,4 +36,11 @@ export interface IMoneyService {
     //  * @returns User's updated balance
     //  */
     // Reduce(id: string, amount: number): Promise<bool>;
+
+    /**
+     * Updates the bot's currency symbol and names, from the database.
+     * @param client Bot client
+     * @returns void
+     */
+    UpdateCurrencyNameAndSymbol(client: customClient): Promise<void>
 }

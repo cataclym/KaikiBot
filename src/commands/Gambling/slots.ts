@@ -28,14 +28,20 @@ export default class slotsCommand extends Command {
     public async exec(message: Message, { amount }: { amount: number }): Promise<void> {
 
     	if (amount < 2) {
-    		message.channel.send("You need to bet more than 2 moneh");
+    		await message.channel.send(new MessageEmbed()
+    			.setDescription(`You need to bet more than 2 ${this._money.currencySymbol}`)
+    			.withErrorColor(message),
+    		);
     		return;
     	}
 
     	const success = await this._money.TryTake(message.author.id, amount);
 
     	if (!success) {
-    		await message.channel.send(`You have less than ${amount} moneh`);
+    		await message.channel.send(new MessageEmbed()
+    			.setDescription(`You have less than ${amount} ${this._money.currencySymbol}`)
+    			.withErrorColor(message),
+    		);
     		return;
     	}
 
@@ -45,8 +51,8 @@ export default class slotsCommand extends Command {
     	// Check if all three indexes are the same before we check if there are 2 similar ones
     	if (result.numbers.every((val, i, arr) => val === arr[0])) {
     		const winAmount = amount * 30;
-    		this._money.Add(message.author.id, winAmount);
-    		result.string += `\n\nYou won ${winAmount}!`;
+    		await this._money.Add(message.author.id, winAmount);
+    		result.string += `\n\nYou won ${winAmount} ${this._money.currencySymbol}!`;
     	}
 
     	// check for two similar indexes
@@ -58,8 +64,8 @@ export default class slotsCommand extends Command {
             || result.numbers[2] === result.numbers[1]) {
 
     		const winAmount = amount * 10;
-    		this._money.Add(message.author.id, winAmount);
-    		result.string += `\n\nYou won ${winAmount}!`;
+    		await this._money.Add(message.author.id, winAmount);
+    		result.string += `\n\nYou won ${winAmount} ${this._money.currencySymbol}!`;
     	}
 
     	else {

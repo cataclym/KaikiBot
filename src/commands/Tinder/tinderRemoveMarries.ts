@@ -1,7 +1,7 @@
 import { Command } from "@cataclym/discord-akairo";
 import { Snowflake } from "discord-api-types";
 import { Message, MessageEmbed } from "discord.js";
-import { ITinder } from "../../interfaces/db";
+import { ITinder } from "../../interfaces/IDocuments";
 import { errorMessage } from "../../lib/Embeds";
 import { getTinderDocument } from "../../struct/documentMethods";
 

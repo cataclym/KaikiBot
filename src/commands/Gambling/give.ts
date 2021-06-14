@@ -38,18 +38,23 @@ export default class give extends Command {
 
     public async exec(msg: Message, { amount, user }: { amount: number, user: User }): Promise<void> {
     	if (user.id === msg.author.id) {
-    		await msg.channel.send("You can't give yourself moneh");
+    		await msg.channel.send(`You can't give yourself ${this._money.currencySymbol}`);
     		return;
     	}
 
     	const success = await this._money.TryTake(msg.author.id, amount);
     	if (!success) {
-    		await msg.channel.send("You don't have enough moneh");
+    		await msg.channel.send(new MessageEmbed()
+    			.setDescription(`You don't have enough ${this._money.currencySymbol}`)
+    			.withErrorColor(msg),
+    		);
     		return;
     	}
 
     	await this._money.Add(user.id, amount);
-
-    	await msg.channel.send(`You've given ${amount} to ${user.username}`);
+    	await msg.channel.send(new MessageEmbed()
+    		.setDescription(`You've given ${amount} ${this._money.currencySymbol} to ${user.username}`)
+    		.withOkColor(msg),
+    	);
     }
 }

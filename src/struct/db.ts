@@ -2,7 +2,7 @@ import logger from "loglevel";
 import { connect, connection } from "mongoose";
 
 export default class mongodb {
-	init() {
+	init(): void {
 		connect("mongodb://localhost:27017", {
 			useNewUrlParser: true,
 			useUnifiedTopology: true,

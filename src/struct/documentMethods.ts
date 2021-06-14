@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import logger from "loglevel";
-import { IBlacklist, IBotDB, ICommandStats, IGuild, ITinder, IUser } from "../interfaces/db";
+import { IBlacklist, IBot, ICommandStats, IGuild, ITinder, IUser } from "../interfaces/IDocuments";
 import { blacklistModel, botModel, commandStatsModel, guildsModel, tinderDataModel, usersModel } from "./models";
 
 export async function getUserDocument(userID: string): Promise<IUser> {
@@ -69,14 +69,13 @@ export async function getBlacklistDocument(): Promise<IBlacklist> {
 	}
 }
 
-export async function getBotDocument(): Promise<IBotDB> {
+export async function getBotDocument(): Promise<IBot> {
 	let bot = await botModel.findOne();
 
 	if (bot) {
 		return bot;
 	}
 	else {
-		await botModel.db.createCollection("botdbs", { capped: true, max: 1, size:999999 });
 		bot = new botModel;
 
 		await bot.save().catch(err => logger.error(err));

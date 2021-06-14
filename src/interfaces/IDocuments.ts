@@ -58,9 +58,14 @@ export interface IBlacklist extends Document {
 	blacklist: {[id: string]: true},
 }
 
-export interface IBotDB extends Document {
-	activity: string,
-    activityType: ActivityType,
+export interface IBot extends Document {
+    id: string,
+	settings: {
+        activity: string,
+        activityType: ActivityType,
+        currencyName: string,
+        currencySymbol: string,
+    }
 }
 
 export interface IMoney extends Document {

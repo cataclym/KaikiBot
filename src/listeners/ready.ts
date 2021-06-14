@@ -3,7 +3,7 @@ import { MessageEmbed } from "discord.js";
 import logger from "loglevel";
 import { birthdayService } from "../lib/AnniversaryRoles";
 import { dailyResetTimer, emoteDataBaseService } from "../lib/functions";
-import { getBotDocument } from "../struct/db";
+import { customClient } from "../struct/client";
 import { guildsModel } from "../struct/models";
 
 export default class ReadyListener extends Listener {
@@ -23,6 +23,8 @@ export default class ReadyListener extends Listener {
 				description: "Excludes you from being targeted by dadbot.",
 			});
 		});
+
+
 		logger.info(`Created slash commands in ${this.client.guilds.cache.size} guilds.`);
 
 		dailyResetTimer(this.client)
@@ -51,7 +53,14 @@ export default class ReadyListener extends Listener {
 				);
 		}
 
-		const db = await getBotDocument();
-		if (db.activity.length) this.client.user?.setActivity({ name: db.activity, type: db.activityType });
+		const botDocument = { activity: await (this.client as customClient).botSettings.get((this.client as customClient).botSettingID, "activity", ""),
+			activityType: await (this.client as customClient).botSettings.get((this.client as customClient).botSettingID, "activityType", "") };
+
+		if (botDocument.activity.length && botDocument.activityType.length) {
+			this.client.user?.setActivity({
+				name: botDocument.activity,
+				type: botDocument.activityType,
+			});
+		}
 	}
 }

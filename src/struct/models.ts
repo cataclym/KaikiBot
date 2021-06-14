@@ -1,5 +1,5 @@
 import { model, Schema } from "mongoose";
-import { IBlacklist, IBotDB, ICommandStats, IGuild, IMoney, ITinder, IUser } from "../../src/interfaces/db";
+import { IBlacklist, IBot, ICommandStats, IGuild, IMoney, ITinder, IUser } from "../interfaces/IDocuments";
 import { errorColor, okColor } from "../lib/Util";
 
 export const guildSchema = new Schema({
@@ -120,27 +120,32 @@ export const blacklistSchema = new Schema({
 });
 
 export const botSchema = new Schema({
-	activity: {
-		type: String, default: "",
+	id: {
+		type: String,
 	},
-	activityType: {
-		type: String, default: "",
+	settings: {
+		type: Object, default: {
+			activity: "",
+			activityType: "",
+			currencyName: "Yen",
+			currencySymbol: "💴",
+		},
 	},
 });
 
 export const moneySchema = new Schema({
-    id: {
-        type: String, default: "", index: true
-    },
-    amount: {
-        type: Number, default: 0
-    }
-})
+	id: {
+		type: String, default: "", index: true,
+	},
+	amount: {
+		type: Number, default: 0,
+	},
+});
 
 export const guildsModel = model<IGuild>("Guild", guildSchema);
 export const commandStatsModel = model<ICommandStats>("CommandStats", commandStatsSchema);
 export const tinderDataModel = model<ITinder>("Tinder", tinderDataSchema);
 export const usersModel = model<IUser>("Member", usersSchema);
 export const blacklistModel = model<IBlacklist>("Blacklist", blacklistSchema);
-export const botModel = model<IBotDB>("BotDB", botSchema);
+export const botModel = model<IBot>("BotDB", botSchema);
 export const moneyModel = model<IMoney>("Money", moneySchema);

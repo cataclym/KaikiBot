@@ -1,80 +1,95 @@
+import { customClient } from "../../struct/client";
 import { moneyModel } from "../../struct/models";
 import { IMoneyService } from "./IMoneyService";
-
+import { getBotDocument } from "../../struct/documentMethods";
 
 export class MongoMoneyService implements IMoneyService {
-	async Get(id: string): Promise<number> {
-		const doc = await moneyModel.findOne({
-			id: id,
-		});
+    currencyName: string;
+    currencySymbol: string;
 
-		if (doc) {
-			return doc.amount;
-		}
+    constructor() {
+    	(async () => {
+    		const doc = await getBotDocument();
+    		this.currencyName = doc.settings.currencyName;
+    		this.currencySymbol = doc.settings.currencySymbol;
+    	})();
+    }
 
-		return 0;
-	}
+    async Get(id: string): Promise<number> {
+    	const doc = await moneyModel.findOne({
+    		id: id,
+    	});
 
-	async Add(id: string, amount: number): Promise<number> {
-		if (amount <= 0) {
-			throw new Error("Amount must be greater than 0");
-		}
-		// todo id must be indexed
-		await moneyModel.updateOne({
-			id: id,
-		}, {
-			$inc: {
-				amount: amount,
-			},
-		}, {
-			upsert: true,
-			new: true,
-		});
+    	if (doc) {
+    		return doc.amount;
+    	}
 
-		const doc = await moneyModel.findOne({ id: id });
-		return doc?.amount ?? 0;
-	}
+    	return 0;
+    }
 
-	async TryTake(id: string, amount: number): Promise<boolean> {
-		if (amount <= 0) {
-			throw new Error("Amount must be greater than 0");
-		}
+    async Add(id: string, amount: number): Promise<number> {
+    	if (amount <= 0) {
+    		throw new Error("Amount must be greater than 0");
+    	}
+    	// todo id must be indexed
+    	await moneyModel.updateOne({
+    		id: id,
+    	}, {
+    		$inc: {
+    			amount: amount,
+    		},
+    	}, {
+    		upsert: true,
+    		new: true,
+    	});
 
-		console.log(id, amount);
-		const result = await moneyModel.updateOne({
-			id: id,
-			amount: {
-				$gte: amount,
-			},
-		}, {
-			$inc: {
-				amount: -amount,
-			},
-		});
+    	const doc = await moneyModel.findOne({ id: id });
+    	return doc?.amount ?? 0;
+    }
 
-		console.log(result);
-		return result.nModified > 0;
-	}
+    async TryTake(id: string, amount: number): Promise<boolean> {
+    	if (amount <= 0) {
+    		throw new Error("Amount must be greater than 0");
+    	}
 
-	// async Reduce(id: string, amount: number): Promise<bool> {
-	//     // todo amount must be > 0
-	//     await moneyDB.updateOne({
-	//         id: id
-	//     },
-	//     {
-	//         $set: {
-	//             "$amount": {
-	//                 $cond: {
-	//                     if: { $lt: ["$amount", amount] },
-	//                     then: 0,
-	//                     else: { $inc: -amount }
-	//                 }
-	//             }
-	//         }
-	//     });
+    	const result = await moneyModel.updateOne({
+    		id: id,
+    		amount: {
+    			$gte: amount,
+    		},
+    	}, {
+    		$inc: {
+    			amount: -amount,
+    		},
+    	});
 
-	//     return 0;
-	// }
+    	return result.nModified > 0;
+    }
+
+    // async Reduce(id: string, amount: number): Promise<bool> {
+    //     // todo amount must be > 0
+    //     await moneyDB.updateOne({
+    //         id: id
+    //     },
+    //     {
+    //         $set: {
+    //             "$amount": {
+    //                 $cond: {
+    //                     if: { $lt: ["$amount", amount] },
+    //                     then: 0,
+    //                     else: { $inc: -amount }
+    //                 }
+    //             }
+    //         }
+    //     });
+
+    //     return 0;
+    // }
+
+    async UpdateCurrencyNameAndSymbol(client: customClient): Promise<void> {
+    	this.currencyName = client.botSettings.get(client.botSettingID, "currencyName", "Yen");
+    	this.currencySymbol = client.botSettings.get(client.botSettingID, "currencySymbol", "💴");
+    }
 }
 
 export const MongoMoney = new MongoMoneyService();

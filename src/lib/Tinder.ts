@@ -1,7 +1,7 @@
 import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
 import { Message, MessageEmbed, User } from "discord.js";
 import { rollsCache } from "../commands/Tinder/tinder";
-import { ITinder } from "../interfaces/db";
+import { ITinder } from "../interfaces/IDocuments";
 import { getTinderDocument } from "../struct/documentMethods";
 import { hexColorTable } from "./Color";
 import { msToTime, timeToMidnight } from "./functions";

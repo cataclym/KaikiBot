@@ -21,7 +21,7 @@ export default class award extends Command {
     				otherwise: (m: Message) => new MessageEmbed({
     					title: "Invalid amount. It must be a number",
     				})
-    					.withOkColor(m),
+    					.withErrorColor(m),
     			},
     			{
     				id: "user",
@@ -29,7 +29,7 @@ export default class award extends Command {
     				otherwise: (m: Message) => new MessageEmbed({
     					title: "Can't find this user. Try again.",
     				})
-    					.withOkColor(m),
+    					.withErrorColor(m),
     			},
     		],
     	});
@@ -39,6 +39,9 @@ export default class award extends Command {
 
     public async exec(msg: Message, { amount, user }: { amount: number; user: User; }): Promise<void> {
     	const newAmount = await this._money.Add(user.id, amount);
-    	await msg.channel.send(`You've awarded ${amount} moneh to ${user.username}.\nThey now have ${newAmount} moneh`);
+    	await msg.channel.send(new MessageEmbed()
+    		.setDescription(`You've awarded ${amount} ${this._money.currencyName} ${this._money.currencySymbol} to ${user.username}.\nThey now have ${newAmount} ${this._money.currencyName}`)
+    		.withOkColor(msg),
+    	);
     }
 }

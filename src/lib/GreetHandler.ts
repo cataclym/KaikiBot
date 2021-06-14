@@ -1,6 +1,6 @@
 import { Snowflake } from "discord-api-types";
 import { Guild, GuildMember, Message, MessageEmbed, TextChannel } from "discord.js";
-import { TGreetMessage } from "../interfaces/db";
+import { TGreetMessage } from "../interfaces/IDocuments";
 import { parsePlaceHolders } from "../lib/functions";
 import { getGuildDocument } from "../struct/documentMethods";
 
