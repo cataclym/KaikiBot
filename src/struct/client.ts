@@ -24,7 +24,8 @@ export class customClient extends AkairoClient {
     		intents: [Intents.ALL],
     		partials: ["REACTION", "CHANNEL"],
     		shards: "auto",
-    		ws: { properties: { $browser: "Discord Android" } },
+    		// Uncomment to have mobile status on bot.
+    		// ws: { properties: { $browser: "Discord Android" } },
     	});
 
     	// Mongoose Providers
@@ -72,21 +73,17 @@ export class customClient extends AkairoClient {
     }
 
     async init(): Promise<void> {
-    	this.botSettingID = await (async () => {
-    		return (await await getBotDocument()
+    	this.botSettingID = await getBotDocument()
     			.then(async m => {
     				if (m.id) {
     					return m.id;
     				}
-
     				else {
     					m.id = m._id;
     					m.markModified("id");
-    					m.save();
+    					await m.save();
     					return m.id;
     				}
-    			})
-    		);
-    	})();
+    			});
     }
 }

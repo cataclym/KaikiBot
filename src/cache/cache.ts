@@ -11,14 +11,13 @@ setInterval(async () => {
 
 	if (!Object.entries(cmdStatsCache).length) return;
 
-	Object.entries(cmdStatsCache)
-		.forEach(async ([id, number]) => {
-			db.count[id]
-				? db.count[id] += number
-				: db.count[id] = number;
-		});
+	for await (const [id, number] of Object.entries(cmdStatsCache)) {
+		db.count[id]
+			? db.count[id] += number
+			: db.count[id] = number;
+	}
 	db.markModified("count");
-	db.save();
+	await db.save();
 
 	cmdStatsCache = {};
 }, 900000);
