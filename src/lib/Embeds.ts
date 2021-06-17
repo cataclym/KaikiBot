@@ -122,3 +122,9 @@ export const reddit = {
 		.withErrorColor(m),
 
 };
+
+export const embedFail = async (message: Message, text = "You do not have a role!") => {
+	return new MessageEmbed()
+		.setDescription(text)
+		.withErrorColor(message);
+};

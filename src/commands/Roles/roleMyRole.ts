@@ -1,9 +1,8 @@
-import { Command, PrefixSupplier } from "@cataclym/discord-akairo";
+import { Argument, Command, Flag, PrefixSupplier } from "@cataclym/discord-akairo";
 import { Snowflake } from "discord-api-types";
 import { Guild, Message, MessageEmbed } from "discord.js";
-import { resolveColor } from "../../lib/Color";
-import { trim } from "../../lib/Util";
 import { getGuildDocument } from "../../struct/documentMethods";
+import { embedFail } from "../../lib/Embeds";
 
 export default class MyRoleCommand extends Command {
 	constructor() {
@@ -17,84 +16,47 @@ export default class MyRoleCommand extends Command {
 			},
 			description: {
 				description: "Checks your assigned user role. Add a hexcode to change the colour.",
-				usage: "name/color FF0000",
+				usage: ["color FF0000", "name Dreb"],
 			},
-			args: [
-				{
-					id: "name",
-					flag: ["name"],
-					match: "rest",
-				},
-				{
-					id: "color",
-					flag: ["color"],
-					match: "option",
-				},
-			],
 		});
 	}
-	public async exec(message: Message, { name, color }: { name?: string, color?: string }): Promise<Message> {
+
+	*args(): unknown {
+		const method = yield {
+			type: [
+				["myrolename", "name"],
+				["myrolecolor", "color", "colour", "clr"],
+			],
+		};
+		if (!Argument.isFailure(method)) {
+			return Flag.continue(method);
+		}
+	}
+
+	public async exec(message: Message): Promise<Message> {
 
 		const guild = (message.guild as Guild);
-
-		const embedFail = async (text = "You do not have a role!") => {
-			return new MessageEmbed()
-				.setDescription(text)
-				.withErrorColor(message);
-		};
 
 		const db = await getGuildDocument(guild.id),
 			roleID = db.userRoles[message.author.id];
 
-		if (!roleID) return message.channel.send(await embedFail());
+		if (!roleID) return message.channel.send(await embedFail(message));
 
 		const myRole = guild.roles.cache.get(roleID as Snowflake);
-		name = name?.slice(5);
 
 		if (!myRole) {
 			delete db.userRoles[message.author.id];
 			db.markModified("userRoles");
-			db.save();
-			return message.channel.send(await embedFail());
+			await db.save();
+			return message.channel.send(await embedFail(message));
 		}
 
-		if (name ?? color) {
-
-			const botRole = message.guild?.me?.roles.highest,
-				isPosition = botRole?.comparePositionTo(myRole);
-
-			if (isPosition && isPosition <= 0) {
-				return message.channel.send(await embedFail("This role is higher than me, I cannot edit this role!"));
-			}
-
-			if (color) {
-				const hexCode = await resolveColor(color),
-					oldHex = myRole.hexColor;
-				await myRole.setColor(hexCode);
-				return message.channel.send(new MessageEmbed()
-					.setDescription(`You have changed ${myRole.name}'s color from ${oldHex} to ${hexCode}!`)
-					.setColor(hexCode),
-				);
-			}
-
-			else {
-				const oldName = myRole.name;
-				await myRole.setName(trim(name!, 32));
-				return message.channel.send(new MessageEmbed()
-					.setDescription(`You have changed ${oldName}'s name to ${name}!`)
-					.setColor(myRole.color),
-				);
-			}
-		}
-
-		else {
-			return message.channel.send(new MessageEmbed()
-				.setAuthor(`Current role assigned to ${message.author.username}`,
-					guild.iconURL({ size: 2048, dynamic: true })
+		return message.channel.send(new MessageEmbed()
+			.setAuthor(`Current role assigned to ${message.author.username}`,
+				guild.iconURL({ size: 2048, dynamic: true })
 						|| message.author.displayAvatarURL({ size: 2048, dynamic: true }))
-				.setColor(myRole.hexColor)
-				.addField("Name", `${myRole.name}`, true)
-				.addField("Colour", `${myRole.hexColor}`, true));
-		}
+			.setColor(myRole.hexColor)
+			.addField("Name", myRole.name, true)
+			.addField("Colour", myRole.hexColor, true));
 	}
 }
