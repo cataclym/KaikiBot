@@ -12,7 +12,7 @@ export default class MyRoleSubCommandColor extends Command {
 			channel: "guild",
 			args: [{
 				id: "color",
-				type: Argument.union("color", (_, phrase) => hexColorTable[phrase.toLowerCase()]),
+				type: Argument.union((_, phrase) => hexColorTable[phrase.toLowerCase()], "color"),
 				otherwise: (m: Message) => new MessageEmbed()
 					.setTitle("Please provide a valid hexcolor or color name")
 					.withErrorColor(m),
