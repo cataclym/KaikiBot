@@ -15,6 +15,13 @@ export default class ExcludeCommand extends Command {
 
 	public async exec(message: Message): Promise<Message | void> {
 
+		if (message.guild!.isDadBotEnabled()) {
+			return message.channel.send(new MessageEmbed()
+				.setTitle("Dadbot is not enabled")
+				.withErrorColor(message),
+			);
+		}
+
 		const db = await getGuildDocument((message.guild as Guild).id);
 
 		let excludedRole = message.guild?.roles.cache.find((r) => r.name === db.settings.excludeRole);
@@ -40,7 +47,8 @@ export default class ExcludeCommand extends Command {
 
 		if (message.member?.roles.cache.find((r) => r === excludedRole) && excludedRole) {
 			await message.member?.roles.remove(excludedRole);
-			return message.channel.send(Exclude.removedRoleEmbed(db.settings.excludeRole));
+			return message.channel.send(Exclude.removedRoleEmbed(db.settings.excludeRole)
+				.withOkColor(message));
 		}
 	}
 }
