@@ -21,7 +21,8 @@ export default class ReadyListener extends Listener {
 			g.commands.create({
 				name: "exclude",
 				description: "Excludes you from being targeted by dadbot.",
-			});
+			})
+				.catch(() => logger.warn(`${g.name} [${g.id}] refused creating slash commands. This is sometimes expected.`));
 		});
 
 
