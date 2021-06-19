@@ -19,14 +19,12 @@ export async function emoteReact(message: Message): Promise<void> {
 	const matches = message.content.toLowerCase().match(regexFromArray) || [];
 
 	for (let i = 0; i < matches.length; i++) {
-		if (!message.guild!.emojis.cache.has(wordObj[matches[i]] as Snowflake)) return;
-
-		// Using const aSingleEmoji here throws an error, so I'm using the ID instead after checking it exists.
+		if (!message.guild?.emojis.cache.has(wordObj[matches[i]] as Snowflake)) return;
 		message.react(wordObj[matches[i]]);
 	}
 }
 
-export async function tiredNadekoReact(message: Message): Promise<void> {
+export async function tiredKaikiCryReact(message: Message): Promise<void> {
 
 	const botName = message.client.user?.username.toLowerCase().split(" ");
 
@@ -118,7 +116,7 @@ export async function countEmotes(message: Message): Promise<void> {
 					db.markModified(`emojiStats.${emote.id}`);
 				}
 			});
-			db.save();
+			await db.save();
 		}
 	}
 }
@@ -138,7 +136,7 @@ export function msToTime(duration: number): string {
 
 export async function sendDM(message: Message): Promise<Message | undefined> {
 	if (message.author.id === process.env.OWNER) return;
-	// I wont wanna see my own msgs, thank u
+	// I don't wanna see my own msgs, thank u
 
 	if (!botOwner) botOwner = message.client.users.cache.get(process.env.OWNER as Snowflake);
 
@@ -154,7 +152,7 @@ export async function sendDM(message: Message): Promise<Message | undefined> {
 	// Attachments (Terrible, I know)
 	const { attachments } = message;
 
-	if (attachments.first()?.url) {
+	if (attachments.first()) {
 
 		const urls: string[] = attachments.map(a => a.url);
 
@@ -176,12 +174,10 @@ export async function sendDM(message: Message): Promise<Message | undefined> {
 
 export async function parsePlaceHolders(input:string, guild: Guild, guildMember: GuildMember): Promise<string> {
 
-	const searchString = input.toLowerCase();
-
-	if (searchString.includes("%guild%")) {
+	if (input.includes("%guild%")) {
 		input = input.replace(/%guild%/ig, guild.name);
 	}
-	if (searchString.includes("%member%")) {
+	if (input.includes("%member%")) {
 		input = input.replace(/%member%/ig, guildMember.user.tag);
 	}
 	return input;

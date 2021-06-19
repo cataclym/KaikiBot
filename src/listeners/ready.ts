@@ -45,7 +45,7 @@ export default class ReadyListener extends Listener {
 
 		// Let bot owner know when bot goes online.
 		if (["Tsukihi Araragi", "Kaiki Deishū"].includes(this.client.user?.username as string)) {
-			await this.client.users.fetch("140788173885276160")
+			await this.client.users.fetch("140788173885276160", true)
 				.then(async user => user
 					.send(new MessageEmbed()
 						.setDescription("Bot is online.")
