@@ -2,9 +2,9 @@ import { Argument, Command, Flag } from "@cataclym/discord-akairo";
 import { Snowflake } from "discord-api-types";
 import { Message, MessageEmbed, MessageReaction, User } from "discord.js";
 import logger from "loglevel";
-import { tinderRollEmbed } from "../../lib/Embeds";
-import { noMoreLikesOrRolls, tinderDislike, tinderNormalLike, tinderSuperLike } from "../../lib/Tinder";
-import { getTinderDocument } from "../../struct/documentMethods";
+import { tinderRollEmbed } from "../../src/lib/Embeds";
+import { noMoreLikesOrRolls, tinderDislike, tinderNormalLike, tinderSuperLike } from "../../src/lib/Tinder";
+import { getTinderDocument } from "../../src/struct/documentMethods";
 
 const reactPromises = async (SentMsg: Message) => {
 	await SentMsg.react("❌");

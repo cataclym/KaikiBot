@@ -2,7 +2,7 @@ import { AkairoClient } from "@cataclym/discord-akairo";
 import { Snowflake } from "discord-api-types";
 import { Client, Guild, GuildMember, Message, MessageEmbed, User } from "discord.js";
 import logger from "loglevel";
-import { clearRollCache } from "../commands/Tinder/tinder";
+// import { clearRollCache } from "../../_wip/Tinder/tinder";
 import { badWords } from "../struct/constants";
 import { getGuildDocument } from "../struct/documentMethods";
 import { tinderDataModel } from "../struct/models";
@@ -49,7 +49,7 @@ export async function tiredKaikiCryReact(message: Message): Promise<void> {
 
 export async function ResetRolls(): Promise<void> {
 	// Tinder reset
-	clearRollCache();
+	// clearRollCache();
 	tinderDataModel.updateMany({ rolls: { $lt: 15 } }, { rolls: 15, temporary: [], likes: 3 }, null, () => {
 		logger.info(`mongooseDB | Reset tinder rolls/likes at ${Date()}`);
 	});
