@@ -31,18 +31,20 @@ export default class RemoveEmoteReactCommand extends Command {
 
 			delete db.emojiReactions[trigger];
 			db.markModified("emojiReactions");
-			db.save();
+			await db.save();
 
-			return message.channel.send(new MessageEmbed()
+			const embed = new MessageEmbed()
 				.setTitle("Removed emoji trigger")
-				.setDescription(`Saying \`${trigger}\` will no longer force me to react with ${emoji?.name ?? emojiID}`)
-				.setThumbnail(emoji?.url ?? emojiID)
-				.withOkColor(message),
-			);
+				.setDescription(`Saying \`${trigger}\` will no longer force me to react with \`${emoji?.name ?? "missing emote"}\``)
+				.withOkColor(message);
+
+			if (emoji) embed.setThumbnail(emoji.url);
+
+			return message.channel.send(embed);
 		}
 
 		else {
-			db.save();
+			await db.save();
 			return message.channel.send(new MessageEmbed()
 				.setTitle("Not found")
 				.setDescription("Trigger not found in the database")
