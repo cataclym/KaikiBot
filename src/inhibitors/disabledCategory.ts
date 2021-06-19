@@ -14,7 +14,7 @@ export default class BlockModulesInhibitor extends Inhibitor {
 
 			if (command.id === "togglecategory") return false;
 
-			return !!(await getGuildDocument(message.guild.id)).blockedCategories[command.category.id];
+			return (await getGuildDocument(message.guild.id)).blockedCategories[command.category.id];
 		}
 		return false;
 	}
