@@ -23,7 +23,7 @@
     "@types/ws": "^7.4.4",
     "canvas": "^2.8.0",
     "discord-api-types": "^0.18.1",
-    "discord.js": "git+https://github.com/cataclym/discord.js.git",
+    "discord.js": "discordjs/discord.js",
     "dotenv": "^9.0.2",
     "image-size": "^1.0.0",
     "imagemin": "^8.0.0",

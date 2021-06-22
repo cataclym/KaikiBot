@@ -18,7 +18,7 @@ export default class errorListener extends Listener {
 	public async exec(error: Error, message: Message, command: Command): Promise<void> {
 
         listenerLog(message, this, logger.warn, command, `${error.stack}\n`);
-        message.channel.send(await errorMessage(message, await codeblock(error.message, "xl")));
+        message.channel.send({ embeds: [await errorMessage(message, await codeblock(error.message, "xl"))] });
 
 		cmdStatsCache[command.id]
 			? cmdStatsCache[command.id]++
