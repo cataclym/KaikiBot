@@ -1,6 +1,6 @@
 import { Listener } from "@cataclym/discord-akairo";
 import { Message } from "discord.js";
-import { countEmotes, emoteReact, sendDM, tiredNadekoReact } from "../lib/functions";
+import { countEmotes } from "../lib/functions";
 
 export default class MessageListener extends Listener {
 	constructor() {
@@ -12,18 +12,9 @@ export default class MessageListener extends Listener {
 
 	public async exec(message: Message): Promise<void> {
 
-		if (message.webhookID || message.author.bot) return;
+		if (message.webhookID || message.author.bot || !message.guild) return;
 
-		tiredNadekoReact(message);
+		countEmotes(message);
 
-		if (message.channel.type !== "dm") {
-			// Guild only
-			countEmotes(message);
-			emoteReact(message);
-		}
-
-		else {
-			sendDM(message);
-		}
 	}
 }

@@ -1,7 +1,7 @@
 import { Argument, Command, Flag, PrefixSupplier } from "@cataclym/discord-akairo";
 import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
 import { Guild, Message, MessageEmbed } from "discord.js";
-import { getGuildDB } from "../../struct/db";
+import { getGuildDocument } from "../../struct/documentMethods";
 
 export default class ConfigCommand extends Command {
 	constructor() {
@@ -43,7 +43,7 @@ export default class ConfigCommand extends Command {
 
 	public async exec(message: Message): Promise<Message> {
 
-		const db = await getGuildDB((message.guild as Guild).id),
+		const db = await getGuildDocument((message.guild as Guild).id),
 			{ anniversary, dadBot, prefix, errorColor, okColor, welcome, goodbye } = db.settings,
 			welcomeEmbed = new MessageEmbed()
 				.setColor(welcome.color)

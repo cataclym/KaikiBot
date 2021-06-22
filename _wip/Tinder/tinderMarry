@@ -1,7 +1,7 @@
 import { Command } from "@cataclym/discord-akairo";
 import { Message, MessageEmbed, MessageReaction, User } from "discord.js";
-import { DMEMarry } from "../../lib/Embeds";
-import { getTinderDB } from "../../struct/db";
+import { DMEMarry } from "../../src/lib/Embeds";
+import { getTinderDocument } from "../../src/struct/documentMethods";
 
 module.exports = class TinderMarryCommand extends Command {
 	constructor() {
@@ -19,12 +19,12 @@ module.exports = class TinderMarryCommand extends Command {
 		});
 	}
 	public async exec(message: Message, { user }: { user: User}) {
-		const db = await getTinderDB(user.id),
+		const db = await getTinderDocument(user.id),
 			ArgDates = db.datingIDs;
 
 		if (ArgDates.includes(message.author.id)) {
 
-			const authorDB = await getTinderDB(message.author.id),
+			const authorDB = await getTinderDocument(message.author.id),
 				MarryMatches = authorDB.marriedIDs.filter((f: string) => db.marriedIDs.includes(f));
 
 			if (!MarryMatches.includes(user.id)) {

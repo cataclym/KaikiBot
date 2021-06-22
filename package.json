@@ -1,11 +1,11 @@
 {
   "name": "kaikideishubot",
-  "version": "3.4.3-Desire",
+  "version": "3.4.32-Desire",
   "main": "./dist/index.js",
   "scripts": {
     "start": "node -r dotenv/config ./dist/index.js",
     "build": "tsc -p src/tsconfig.json",
-    "version": "auto-changelog -p && git add CHANGELOG.md",
+    "version": "auto-changelog -p --template keepachangelog && git add CHANGELOG.md",
     "watch": "tsc -p src/tsconfig.json -w",
     "test": "mocha -r ts-node/register \"tests/**/*.spec.ts\""
   },
@@ -26,8 +26,8 @@
     "discord.js": "git+https://github.com/cataclym/discord.js.git",
     "dotenv": "^9.0.2",
     "image-size": "^1.0.0",
-    "imagemin-gifsicle": "^7.0.0",
     "imagemin": "^8.0.0",
+    "imagemin-gifsicle": "^7.0.0",
     "inversify": "^5.0.1",
     "kaori": "^2.0.4",
     "loglevel": "^1.7.1",
@@ -50,7 +50,6 @@
     "@typescript-eslint/parser": "^4.24.0",
     "auto-changelog": "^2.3.0",
     "chai": "^4.2.0",
-    "eslint-config-airbnb-base": "^14.2.1",
     "eslint-import-resolver-typescript": "^2.4.0",
     "eslint-plugin-import": "^2.23.2",
     "eslint": "^7.26.0",

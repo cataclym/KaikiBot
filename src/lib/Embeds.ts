@@ -1,6 +1,6 @@
 import { Command, PrefixSupplier } from "@cataclym/discord-akairo";
 import { Message, MessageEmbed, User } from "discord.js";
-import { getTinderDB } from "../struct/db";
+import { getTinderDocument } from "../struct/documentMethods";
 import { poems } from "./Poems";
 
 // export class CustomEmbed extends MessageEmbed {
@@ -43,7 +43,7 @@ export async function DMEMarry(): Promise<MessageEmbed> {
 }
 
 export async function tinderRollEmbed(message: Message, randomUsr: User, RollsLikes?: string): Promise<MessageEmbed> {
-	const db = await getTinderDB(randomUsr.id),
+	const db = await getTinderDocument(randomUsr.id),
 		waifus = db.marriedIDs.length,
 		// likeIDsDB = await tinderDataDB.find({ tinderData: {} }),
 		// flattArray = likeIDsDB
@@ -121,4 +121,10 @@ export const reddit = {
 	})
 		.withErrorColor(m),
 
+};
+
+export const embedFail = async (message: Message, text = "You do not have a role!") => {
+	return new MessageEmbed()
+		.setDescription(text)
+		.withErrorColor(message);
 };

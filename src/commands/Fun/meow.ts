@@ -1,5 +1,5 @@
 import { Command } from "@cataclym/discord-akairo";
-import { Message } from "discord.js";
+import { Message, MessageEmbed } from "discord.js";
 import fetch from "node-fetch";
 
 export default class MeowCommand extends Command {
@@ -11,7 +11,10 @@ export default class MeowCommand extends Command {
 	}
 	public async exec(message: Message): Promise<Message | void> {
 
-		return message.channel.send((await fetch("https://aws.random.cat/meow")
-			.then(response => response.json())).file);
+		return message.channel.send(new MessageEmbed()
+            .setImage((await fetch("https://aws.random.cat/meow")
+			    .then(response => response.json())).file)
+            .withOkColor(message)
+        );
 	}
 }

@@ -1,6 +1,6 @@
 import { Command } from "@cataclym/discord-akairo";
 import { Message } from "discord.js";
-import { TinderHelp } from "../../lib/Embeds";
+import { TinderHelp } from "../../src/lib/Embeds";
 
 export default class TinderHelpCommand extends Command {
 	constructor() {

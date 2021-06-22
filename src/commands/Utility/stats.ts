@@ -3,7 +3,7 @@ import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-
 import { execSync } from "child_process";
 import { Message, MessageEmbed, version } from "discord.js";
 import * as packageJson from "../../../package.json";
-import { getCommandStatsDB } from "../../struct/db";
+import { getCommandStatsDocument } from "../../struct/documentMethods";
 
 function format(seconds: number) {
 
@@ -12,8 +12,7 @@ function format(seconds: number) {
 	const hours = Math.floor(seconds / (60 * 60));
 	seconds %= (60 * 60);
 	const minutes = Math.floor(seconds / 60);
-	const actualSeconds = Math.floor(seconds % 60);
-	return days + "** days**\n" + hours + "** hours**\n" + minutes + "** minutes**\n" + actualSeconds + "** seconds**";
+	return days + "** days**\n" + hours + "** hours**\n" + minutes + "** minutes**";
 }
 module.exports = class StatsCommand extends Command {
 	constructor() {
@@ -28,7 +27,7 @@ module.exports = class StatsCommand extends Command {
 			createEmbed = () => new MessageEmbed()
 				.setAuthor("© 2020 @Cata#2702", message.client.user?.displayAvatarURL({ dynamic: true }), packageJson.repository.url)
 				.withOkColor(message),
-			db = await getCommandStatsDB(),
+			db = await getCommandStatsDocument(),
 			stats = Object.entries(db.count).sort((a, b) => b[1] - a[1]);
 
 		const pages = [new MessageEmbed()

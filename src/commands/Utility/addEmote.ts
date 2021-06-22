@@ -4,10 +4,7 @@ import sizeOf from "image-size";
 import { noArgGeneric } from "../../lib/Embeds";
 import { deleteImage, getFileOut, getFilesizeInBytes, resizeImage, saveEmoji, saveFile } from "../../lib/Emote";
 import { trim } from "../../lib/Util";
-
-const emoteRegex = /<(a?)((!?\d+)|(:.+?:\d+))>/g;
-const imgRegex = /(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|gif|png|jpeg)/gi;
-// Credit to https://github.com/Snitt/emojibotten/blob/master/commands/management/emoji.js
+import { EMOTE_REGEX, IMAGE_REGEX } from "../../struct/constants";
 
 export default class AddEmoteCommand extends Command {
 	constructor() {
@@ -21,7 +18,7 @@ export default class AddEmoteCommand extends Command {
 			args: [
 				{
 					id: "url",
-					type: Argument.union(imgRegex, emoteRegex, (m: Message) => {
+					type: Argument.union(IMAGE_REGEX, EMOTE_REGEX, (m: Message) => {
 						if (m.attachments.first()) {
 							return m.attachments.first();
 						}

@@ -2,7 +2,7 @@ import { Argument, Command } from "@cataclym/discord-akairo";
 import { Guild, Message, MessageEmbed, TextChannel } from "discord.js";
 import { hexColorTable } from "../../lib/Color";
 import { okColor } from "../../lib/Util";
-import { getGuildDB } from "../../struct/db";
+import { getGuildDocument } from "../../struct/documentMethods";
 
 export default class GoodbyeConfigCommand extends Command {
 	constructor() {
@@ -57,7 +57,7 @@ export default class GoodbyeConfigCommand extends Command {
 
 		if (toggle) {
 
-			const db = await getGuildDB(guildID);
+			const db = await getGuildDocument(guildID);
 
 			if (db.settings.goodbye.enabled) {
 				db.settings.goodbye.enabled = false;
@@ -86,7 +86,7 @@ export default class GoodbyeConfigCommand extends Command {
 		}
 
 		else {
-			await getGuildDB(guildID)
+			await getGuildDocument(guildID)
 				.then(async db => {
 					db.settings.goodbye = {
 						enabled: true,

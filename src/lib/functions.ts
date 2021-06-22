@@ -2,10 +2,10 @@ import { AkairoClient } from "@cataclym/discord-akairo";
 import { Snowflake } from "discord-api-types";
 import { Client, Guild, GuildMember, Message, MessageEmbed, User } from "discord.js";
 import logger from "loglevel";
-import { clearRollCache } from "../commands/Tinder/tinder";
+// import { clearRollCache } from "../../_wip/Tinder/tinder";
 import { badWords } from "../struct/constants";
-import { getGuildDB } from "../struct/db";
-import { tinderDataDB } from "../struct/models";
+import { getGuildDocument } from "../struct/documentMethods";
+import { tinderDataModel } from "../struct/models";
 import { birthdayService } from "./AnniversaryRoles";
 import { trim } from "./Util";
 
@@ -14,19 +14,17 @@ let botOwner: User | undefined;
 // Reacts with emote to specified words
 export async function emoteReact(message: Message): Promise<void> {
 
-	const wordObj = (await getGuildDB((message.guild as Guild).id)).emojiReactions;
+	const wordObj = (await getGuildDocument((message.guild as Guild).id)).emojiReactions;
 	const regexFromArray = new RegExp(Object.keys(wordObj).join("|"), "gi");
 	const matches = message.content.toLowerCase().match(regexFromArray) || [];
 
 	for (let i = 0; i < matches.length; i++) {
-		if (!message.guild!.emojis.cache.has(wordObj[matches[i]] as Snowflake)) return;
-
-		// Using const aSingleEmoji here throws an error, so I'm using the ID instead after checking it exists.
+		if (!message.guild?.emojis.cache.has(wordObj[matches[i]] as Snowflake)) return;
 		message.react(wordObj[matches[i]]);
 	}
 }
 
-export async function tiredNadekoReact(message: Message): Promise<void> {
+export async function tiredKaikiCryReact(message: Message): Promise<void> {
 
 	const botName = message.client.user?.username.toLowerCase().split(" ");
 
@@ -51,8 +49,8 @@ export async function tiredNadekoReact(message: Message): Promise<void> {
 
 export async function ResetRolls(): Promise<void> {
 	// Tinder reset
-	clearRollCache();
-	tinderDataDB.updateMany({ rolls: { $lt: 15 } }, { rolls: 15, temporary: [], likes: 3 }, null, () => {
+	// clearRollCache();
+	tinderDataModel.updateMany({ rolls: { $lt: 15 } }, { rolls: 15, temporary: [], likes: 3 }, null, () => {
 		logger.info(`mongooseDB | Reset tinder rolls/likes at ${Date()}`);
 	});
 }
@@ -73,7 +71,7 @@ export function timeToMidnight(): number {
 
 async function emoteDB(guild: Guild) {
 	let i = 0;
-	const db = await getGuildDB(guild.id);
+	const db = await getGuildDocument(guild.id);
 	for await (const emote of guild.emojis.cache.array()) {
 		if (!(emote.id in db.emojiStats)) {
 			i++;
@@ -107,7 +105,7 @@ export async function countEmotes(message: Message): Promise<void> {
 		const { guild } = message,
 			emotes = message.content.match(/<?(a)?:.+?:\d+>/g);
 		if (emotes) {
-			const db = await getGuildDB(guild.id);
+			const db = await getGuildDocument(guild.id);
 			const ids = emotes.toString().match(/\d+/g);
 			ids?.forEach(async id => {
 				const emote = guild.emojis.cache.get(id as Snowflake);
@@ -118,7 +116,7 @@ export async function countEmotes(message: Message): Promise<void> {
 					db.markModified(`emojiStats.${emote.id}`);
 				}
 			});
-			db.save();
+			await db.save();
 		}
 	}
 }
@@ -138,7 +136,7 @@ export function msToTime(duration: number): string {
 
 export async function sendDM(message: Message): Promise<Message | undefined> {
 	if (message.author.id === process.env.OWNER) return;
-	// I wont wanna see my own msgs, thank u
+	// I don't wanna see my own msgs, thank u
 
 	if (!botOwner) botOwner = message.client.users.cache.get(process.env.OWNER as Snowflake);
 
@@ -154,7 +152,7 @@ export async function sendDM(message: Message): Promise<Message | undefined> {
 	// Attachments (Terrible, I know)
 	const { attachments } = message;
 
-	if (attachments.first()?.url) {
+	if (attachments.first()) {
 
 		const urls: string[] = attachments.map(a => a.url);
 
@@ -176,12 +174,10 @@ export async function sendDM(message: Message): Promise<Message | undefined> {
 
 export async function parsePlaceHolders(input:string, guild: Guild, guildMember: GuildMember): Promise<string> {
 
-	const searchString = input.toLowerCase();
-
-	if (searchString.includes("%guild%")) {
+	if (input.includes("%guild%")) {
 		input = input.replace(/%guild%/ig, guild.name);
 	}
-	if (searchString.includes("%member%")) {
+	if (input.includes("%member%")) {
 		input = input.replace(/%member%/ig, guildMember.user.tag);
 	}
 	return input;

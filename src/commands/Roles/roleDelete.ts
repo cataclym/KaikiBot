@@ -26,8 +26,6 @@ export default class RoleDeleteCommand extends Command {
 		const deletedRoles: string[] = [];
 		const otherRoles: string[] = [];
 
-		console.log(roles);
-
 		for await (const collection of roles) {
 
 			const r = collection.map(_r => _r)[0];

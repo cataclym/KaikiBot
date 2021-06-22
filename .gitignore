@@ -127,6 +127,7 @@ config.json
 
 # Output dir
 dist/
+dist_backup/
 
 credentials.json
 

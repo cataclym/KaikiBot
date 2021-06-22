@@ -30,7 +30,8 @@ export default class RoleColorCommand extends Command {
 
 		if (typeof clr !== "string") {
 			const attachment = new MessageAttachment(await imgFromColor(role.hexColor), "color.png");
-			return message.channel.send({ files: [attachment],
+			return message.channel.send({
+				files: [attachment],
 				embed: new MessageEmbed({
 					title: `Role color of ${role.name}.`,
 					description: `${role.hexColor}`,
@@ -45,13 +46,14 @@ export default class RoleColorCommand extends Command {
 			attachment = new MessageAttachment(await imgFromColor(newColor), "color.png");
 
 
-		if (!member?.permissions.has("MANAGE_ROLES") ||
-                !(member.roles.highest.position > role.position)) {
+		if ((!member?.permissions.has("MANAGE_ROLES")
+			|| !(member.roles.highest.position > role.position))
+			&& message.guild!.ownerID !== member!.id) {
 			return message.channel.send(await errorMessage(message, "You do not have `MANAGE_ROLES` permission and/or trying to edit a role above you in the role hierarchy."));
 		}
 
-		else if (!message.guild?.me?.permissions.has("MANAGE_ROLES") ||
-                !(message.guild?.me?.roles.highest.position > role.position)) {
+		else if (!message.guild?.me?.permissions.has("MANAGE_ROLES")
+			|| !(message.guild?.me?.roles.highest.position > role.position)) {
 			return message.channel.send(await errorMessage(message, "I do not have `MANAGE_ROLES` permission and/or trying to edit a role above me in the role hierarchy."));
 		}
 

@@ -29,7 +29,7 @@
     "references": [      // this is how we declare a dependency from
       { "path": "../" }  // this project to the one at the root dir`
     ],
-    "include": ["./**/*", "./.eslintrc.js", "jest.config.js", "./*", "types.ts", "./Extensions/loglevel.d.ts"],
+    "include": ["./**/*", "jest.config.js", "./*", "types.ts", "./Extensions/loglevel.d.ts"],
     "exclude": ["../node_modules/*", "../types/*"]
   }
   

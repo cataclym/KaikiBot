@@ -6,3 +6,7 @@ export const AnniversaryStrings = {
 	roleNameJoin: "Join Anniversary",
 	roleNameCreated: "Cake Day",
 };
+
+export const EMOTE_REGEX = /<(a?)((!?\d+)|(:.+?:\d+))>/g;
+export const IMAGE_REGEX = /(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|gif|png|jpeg)/gi;
+// Credit to https://github.com/Snitt/emojibotten/blob/master/commands/management/emoji.js

@@ -16,7 +16,7 @@ export default class AvatarCommand extends Command {
 		});
 	}
 	public async exec(message: Message, { user }: { user: User }): Promise<Message> {
-		const av = user.avatarURL({ size: 2048, dynamic: true, format: "png" || "gif" }) || user.displayAvatarURL({ size: 2048, dynamic: true, format: "png" || "gif" });
+		const av = user.displayAvatarURL({ size: 2048, dynamic: true });
 		return message.channel.send(new MessageEmbed({
 			title: user.tag,
 			description: `[Link](${av})`,

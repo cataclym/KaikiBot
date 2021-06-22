@@ -1,5 +1,5 @@
 import { Command } from "@cataclym/discord-akairo";
-import { Message, MessageEmbed, Role, GuildMember } from "discord.js";
+import { GuildMember, Message, MessageEmbed, Role } from "discord.js";
 
 export default class RoleAssignCommand extends Command {
 	constructor() {
@@ -32,7 +32,7 @@ export default class RoleAssignCommand extends Command {
 	}
 	public async exec(message: Message, { member, role }: { member: GuildMember, role: Role }): Promise<Message> {
 
-		if ((role.position < (message.member as GuildMember).roles.highest.position) && !role.managed) {
+		if ((role.position < (message.member as GuildMember).roles.highest.position) && !role.managed || message.guild?.ownerID === message.member?.id) {
 			if (!member.roles.cache.has(role.id)) {
 
 				await member.roles.add(role);

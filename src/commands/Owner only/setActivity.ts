@@ -2,7 +2,7 @@ import { Command, FailureData } from "@cataclym/discord-akairo";
 import { ActivityType } from "discord-api-types";
 import { Message, MessageEmbed } from "discord.js";
 import { noArgGeneric } from "../../lib/Embeds";
-import { getBotDB } from "../../struct/db";
+import { getBotDocument } from "../../struct/documentMethods";
 const validTypes = ["PLAYING", "STREAMING", "LISTENING", "WATCHING", "COMPETING"];
 
 export default class SetActivityCommand extends Command {
@@ -33,12 +33,11 @@ export default class SetActivityCommand extends Command {
 
 		message.client.user?.setActivity({ type, name });
 
-		const db = await getBotDB();
-		db.activity = name;
-		db.activityType = type;
-		db.markModified("activity");
-		db.markModified("activityType");
-		db.save();
+		const botDocument = await getBotDocument();
+		botDocument.settings.activity = name;
+		botDocument.settings.activityType = type;
+		botDocument.markModified("settings");
+		botDocument.save();
 
 		return message.channel.send(new MessageEmbed()
 			.addField("Status changed", `**Type**: ${type}\n**Activity**: ${name}`)

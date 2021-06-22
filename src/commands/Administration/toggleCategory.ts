@@ -1,7 +1,7 @@
 import { Category, Command } from "@cataclym/discord-akairo";
 import { Guild, Message, MessageEmbed } from "discord.js";
 import { noArgGeneric } from "../../lib/Embeds";
-import { getGuildDB } from "../../struct/db";
+import { getGuildDocument } from "../../struct/documentMethods";
 
 export default class ToggleCategoryCommand extends Command {
 	constructor() {
@@ -31,7 +31,7 @@ export default class ToggleCategoryCommand extends Command {
 	public async exec(message: Message, { category }: { category: Category<string, Command> }): Promise<Message> {
 
 		const guild = (message.guild as Guild),
-			db = await getGuildDB(guild.id),
+			db = await getGuildDocument(guild.id),
 			bool = !db.blockedCategories[category.id];
 
 		db.blockedCategories[category.id] = bool;

@@ -2,8 +2,8 @@ import { Snowflake } from "discord-api-types";
 import { Client, Guild, GuildMember, Permissions, Role } from "discord.js";
 import logger from "loglevel";
 import { AnniversaryStrings } from "../struct/constants";
-import { getGuildDB } from "../struct/db";
-import { guildsDB } from "../struct/models";
+import { getGuildDocument } from "../struct/documentMethods";
+import { guildsModel } from "../struct/models";
 
 async function DateObject() {
 	const d = new Date();
@@ -26,7 +26,7 @@ async function birthdayService(client: Client): Promise<void> {
 
 async function checkBirthdayOnAdd(guild: Guild): Promise<void> {
 
-	const enabled = (await getGuildDB(guild.id)).settings.anniversary,
+	const enabled = (await getGuildDocument(guild.id)).settings.anniversary,
 		{ Day, Month } = await DateObject();
 
 	logger.info(`birthdayService | Checking newly added guild ${guild.name} [${guild.id}]`);
@@ -61,7 +61,7 @@ async function checkBirthdayOnAdd(guild: Guild): Promise<void> {
 
 async function checkAnniversaryMember(member: GuildMember): Promise<void> {
 	const { guild } = member,
-		enabled = (await getGuildDB(guild.id)).settings.anniversary;
+		enabled = (await getGuildDocument(guild.id)).settings.anniversary;
 
 	if (enabled) {
 		const { Day, Month } = await DateObject();
@@ -134,7 +134,7 @@ async function MemberCheckAnniversary(member: GuildMember, AnniversaryRoleC: Rol
 
 async function getEnabledGuilds(client: Client) {
 
-	const dbRes = await guildsDB.find({ "settings.anniversary": true });
+	const dbRes = await guildsModel.find({ "settings.anniversary": true });
 	return dbRes.map(s => client.guilds.cache.get(s.id as Snowflake)).filter(Boolean) as Guild[];
 }
 

@@ -5,7 +5,6 @@ import { Bot } from "./struct/bot";
 import { TYPES } from "./struct/types";
 
 logger.setLevel("INFO");
-
 extensionHook();
 
 process.on("unhandledRejection", (reason: Error, promise) => {

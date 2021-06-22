@@ -1,7 +1,7 @@
 import { Command } from "@cataclym/discord-akairo";
 import { Guild, GuildEmoji, Message, MessageEmbed } from "discord.js";
 import { noArgGeneric } from "../../lib/Embeds";
-import { getGuildDB } from "../../struct/db";
+import { getGuildDocument } from "../../struct/documentMethods";
 
 export default class EmoteReactCommand extends Command {
 	constructor() {
@@ -31,7 +31,7 @@ export default class EmoteReactCommand extends Command {
 
 		trigger = trigger.toLowerCase();
 		const gid = (message.guild as Guild).id,
-			db = await getGuildDB(gid);
+			db = await getGuildDocument(gid);
 		db.emojiReactions[trigger] = emoji.id;
 		db.markModified(`emojiReactions.${trigger}`);
 		db.save();

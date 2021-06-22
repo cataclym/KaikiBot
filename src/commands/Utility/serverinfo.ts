@@ -16,8 +16,9 @@ export default class ServerInfoCommand extends Command {
 		});
 	}
 	public async exec(message: Message, { guild }: { guild: Guild }): Promise<Message> {
+
 		const emb = new MessageEmbed({
-			thumbnail: { url: <string> guild?.iconURL({ size: 2048, dynamic: true }) },
+			thumbnail: { url: <string> guild?.iconURL({ format: "png", size: 2048, dynamic: true }) },
 			title: guild?.name,
 			author: { name: "Server info" },
 			fields: [

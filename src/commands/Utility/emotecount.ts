@@ -3,7 +3,7 @@ import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-
 import { Snowflake } from "discord-api-types";
 import { Guild, Message, MessageEmbed } from "discord.js";
 import { trim } from "../../lib/Util";
-import { getGuildDB } from "../../struct/db";
+import { getGuildDocument } from "../../struct/documentMethods";
 
 export default class EmoteCount extends Command {
 	constructor() {
@@ -24,7 +24,7 @@ export default class EmoteCount extends Command {
 
 		const data: string[] = [],
 			pages: MessageEmbed[] = [],
-			guildDB = await getGuildDB((message.guild as Guild).id),
+			guildDB = await getGuildDocument((message.guild as Guild).id),
 			GuildEmoteCount = guildDB.emojiStats,
 
 			baseEmbed = new MessageEmbed()

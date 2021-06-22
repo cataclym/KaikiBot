@@ -1,7 +1,7 @@
 import { Command } from "@cataclym/discord-akairo";
 import { Snowflake } from "discord-api-types";
 import { Message, MessageEmbed } from "discord.js";
-import { getGuildDB } from "../../struct/db";
+import { getGuildDocument } from "../../struct/documentMethods";
 
 export default class RemoveEmoteReactCommand extends Command {
 	constructor() {
@@ -23,7 +23,7 @@ export default class RemoveEmoteReactCommand extends Command {
 	public async exec(message: Message, { trigger }: { trigger: string }): Promise<Message> {
 
 		const gid = message.guild!.id,
-			db = await getGuildDB(gid),
+			db = await getGuildDocument(gid),
 			emojiID = db.emojiReactions[trigger],
 			emoji = message.guild?.emojis.cache.get(emojiID as Snowflake);
 
@@ -31,18 +31,20 @@ export default class RemoveEmoteReactCommand extends Command {
 
 			delete db.emojiReactions[trigger];
 			db.markModified("emojiReactions");
-			db.save();
+			await db.save();
 
-			return message.channel.send(new MessageEmbed()
+			const embed = new MessageEmbed()
 				.setTitle("Removed emoji trigger")
-				.setDescription(`Saying \`${trigger}\` will no longer force me to react with ${emoji?.name ?? emojiID}`)
-				.setThumbnail(emoji?.url ?? emojiID)
-				.withOkColor(message),
-			);
+				.setDescription(`Saying \`${trigger}\` will no longer force me to react with \`${emoji?.name ?? "missing emote"}\``)
+				.withOkColor(message);
+
+			if (emoji) embed.setThumbnail(emoji.url);
+
+			return message.channel.send(embed);
 		}
 
 		else {
-			db.save();
+			await db.save();
 			return message.channel.send(new MessageEmbed()
 				.setTitle("Not found")
 				.setDescription("Trigger not found in the database")

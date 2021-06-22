@@ -1,9 +1,9 @@
 import { Command } from "@cataclym/discord-akairo";
 import { Snowflake } from "discord-api-types";
 import { Message, MessageEmbed } from "discord.js";
-import { ITinder } from "../../interfaces/db";
-import { errorMessage } from "../../lib/Embeds";
-import { getTinderDB } from "../../struct/db";
+import { ITinder } from "../../src/interfaces/IDocuments";
+import { errorMessage } from "../../src/lib/Embeds";
+import { getTinderDocument } from "../../src/struct/documentMethods";
 
 export default class TinderRemoveLikes extends Command {
 	constructor() {
@@ -18,7 +18,7 @@ export default class TinderRemoveLikes extends Command {
 		});
 	}
 	public async exec(message: Message, { integer }: { integer: number }): Promise<ITinder> {
-		const db = await getTinderDB(message.author.id);
+		const db = await getTinderDocument(message.author.id);
 
 		if (db.likeIDs.length) {
 
