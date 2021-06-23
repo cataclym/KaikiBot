@@ -17,7 +17,7 @@ module.exports = class KillBotProcess extends Command {
 			.addField("Shutting down", "See you later", false)
 			.withOkColor(message);
 
-		await message.channel.send(embed);
+		await message.channel.send({ embeds: [embed] });
 		console.log("Shutting down");
 		process.exit(1);
 	}

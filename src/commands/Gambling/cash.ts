@@ -27,9 +27,9 @@ export default class cash extends Command {
 
     public async exec(msg: Message, { user }: { user: User }): Promise<void> {
     	const moneh = await this._money.Get(user.id);
-    	await msg.channel.send(new MessageEmbed()
+    	await msg.channel.send({ embeds: [new MessageEmbed()
     		.setDescription(`${user.username} has ${moneh} ${this._money.currencyName} ${this._money.currencySymbol}`)
-    		.withOkColor(msg),
-    	);
+    		.withOkColor(msg)],
+    	});
     }
 }

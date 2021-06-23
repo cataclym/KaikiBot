@@ -36,11 +36,12 @@ export default class EmoteReactCommand extends Command {
 		db.markModified(`emojiReactions.${trigger}`);
 		db.save();
 
-		return message.channel.send(new MessageEmbed()
-			.setTitle("New emoji trigger added")
-			.setDescription(`Saying \`${trigger}\` will force me to react with ${emoji}`)
-			.setThumbnail(emoji.url)
-			.withOkColor(message),
-		);
+		return message.channel.send({ embeds:
+			[new MessageEmbed()
+				.setTitle("New emoji trigger added")
+				.setDescription(`Saying \`${trigger}\` will force me to react with ${emoji}`)
+				.setThumbnail(emoji.url)
+				.withOkColor(message)],
+		});
 	}
 }

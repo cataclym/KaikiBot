@@ -44,7 +44,7 @@ export default class CheckPermissionsCommand extends Command {
 			);
 
 			if (message.channel.id !== channel.id) {
-				return message.channel.send(pages[0]);
+				return message.channel.send({ embeds: [pages[0]] });
 			}
 		}
 

@@ -11,10 +11,11 @@ export default class MeowCommand extends Command {
 	}
 	public async exec(message: Message): Promise<Message | void> {
 
-		return message.channel.send(new MessageEmbed()
-            .setImage((await fetch("https://aws.random.cat/meow")
-			    .then(response => response.json())).file)
-            .withOkColor(message)
-        );
+		return message.channel.send({
+			embeds: [new MessageEmbed()
+				.setImage((await fetch("https://aws.random.cat/meow")
+					.then(response => response.json())).file)
+				.withOkColor(message)],
+		});
 	}
 }

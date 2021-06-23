@@ -36,27 +36,30 @@ export default class DeleteEmoteCommand extends Command {
 					const deleted = await newEmote.delete();
 
 					if (!deleted) {
-						return message.channel.send(new MessageEmbed({
-							title: "Error occured",
+						return message.channel.send({ embeds: [new MessageEmbed({
+							title: "Error occurred",
 							description: "Some or all emotes could not be deleted.",
 						})
-							.withErrorColor(message));
+							.withErrorColor(message)],
+						});
 					}
 				}
 				else {
-					return message.channel.send(new MessageEmbed({
-						title: "Error occured",
-						description: "Not valid emote(s).",
-					})
-						.withErrorColor(message));
+					return message.channel.send({
+						embeds: [new MessageEmbed({
+							title: "Error occurred",
+							description: "Not valid emote(s).",
+						})
+							.withErrorColor(message)],
+					});
 				}
 			}
 
-			return message.channel.send(new MessageEmbed({
-				title: "Success!",
-				description: `Deleted:\n${trim(emotes.map((es) => es.map((e) => e)).join("\n"), 2048)}`,
-			})
-				.withOkColor(message));
+			return message.channel.send({ embeds: [new MessageEmbed()
+				.setTitle("Success!")
+				.setDescription(`Deleted:\n${trim(emotes.map((es) => es.map((e) => e)).join("\n"), 2048)}`)
+				.withOkColor(message)],
+			});
 		})();
 	}
 }

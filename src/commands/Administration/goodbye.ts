@@ -71,18 +71,20 @@ export default class GoodbyeConfigCommand extends Command {
 			const enabledOrDisabled = db.settings.goodbye.enabled;
 
 			await db.save();
-			return message.channel.send(new MessageEmbed()
-				.setDescription(`${enabledOrDisabled ? "Enabled" : "Disabled"} goodbye message`)
-				.withOkColor(message),
-			);
+			return message.channel.send({
+				embeds: [new MessageEmbed()
+					.setDescription(`${enabledOrDisabled ? "Enabled" : "Disabled"} goodbye message`)
+					.withOkColor(message)],
+			});
 		}
 
 		if (msg.length > 1500) {
-			return message.channel.send(new MessageEmbed()
-				.setTitle("Message too long")
-				.setDescription("Message exceeded 1500 characters, please make sure goodbye message is under 1500 characters.")
-				.withErrorColor(message),
-			);
+			return message.channel.send({
+				embeds: [new MessageEmbed()
+					.setTitle("Message too long")
+					.setDescription("Message exceeded 1500 characters, please make sure goodbye message is under 1500 characters.")
+					.withErrorColor(message)],
+			});
 		}
 
 		else {
@@ -102,12 +104,13 @@ export default class GoodbyeConfigCommand extends Command {
 				});
 		}
 
-		return message.channel.send(new MessageEmbed({
+		return message.channel.send({ embeds: [new MessageEmbed({
 			title: "Set goodbye message",
 			description: `**Image**: ${image.valueOf() ? "Enabled" : "Disabled"}\n
 			**Embed**: ${embed ? `Enabled (${color})` : "Disabled"}\n
 			**Channel**: ${channel.name} [${channel.id}]`,
 		})
-			.withOkColor(message));
+			.withOkColor(message)],
+		});
 	}
 }

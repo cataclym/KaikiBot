@@ -21,9 +21,9 @@ export default class ExecCommand extends Command {
 	}
 	public async exec(message: Message, { command }: { command: string }): Promise<ChildProcess> {
 
-		return exec(command, async (e, stdout) => message.channel.send(new MessageEmbed()
+		return exec(command, async (e, stdout) => message.channel.send({ embeds: [new MessageEmbed()
 			.setAuthor("Executed command", message.client.user?.displayAvatarURL({ dynamic: true }))
 			.setDescription(trim(await codeblock(stdout), 2000))
-			.withOkColor(message)));
+			.withOkColor(message)] }));
 	}
 }

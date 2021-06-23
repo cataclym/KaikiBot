@@ -38,9 +38,10 @@ export default class ToggleCategoryCommand extends Command {
 		db.markModified(`blockedCategories.${category.id}`);
 		db.save();
 
-		return message.channel.send(new MessageEmbed()
-			.setDescription(`${category.id} has been ${bool ? "disabled" : "enabled"}.`)
-			.withOkColor(message),
-		);
+		return message.channel.send({
+			embeds: [new MessageEmbed()
+				.setDescription(`${category.id} has been ${bool ? "disabled" : "enabled"}.`)
+				.withOkColor(message)],
+		});
 	}
 }

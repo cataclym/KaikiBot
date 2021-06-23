@@ -11,6 +11,6 @@ export default class Neko extends Command {
 		});
 	}
 	public async exec(message: Message): Promise<Message> {
-		return message.channel.send(await sendWaifuPics(message, "neko"));
+		return message.channel.send({ embeds: [await sendWaifuPics(message, "neko")] });
 	}
 }

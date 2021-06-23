@@ -16,7 +16,7 @@ export default class Cuddle extends Command {
 		});
 	}
 	public async exec(message: Message, { mention }: { mention: GuildMember | null }): Promise<Message> {
-		return message.channel.send(await sendWaifuPics(message, "cuddle", mention));
+		return message.channel.send({ embeds: [await sendWaifuPics(message, "cuddle", mention)] });
 	}
 }
 

@@ -16,10 +16,11 @@ export default class ExcludeCommand extends Command {
 	public async exec(message: Message): Promise<Message | void> {
 
 		if (message.guild!.isDadBotEnabled()) {
-			return message.channel.send(new MessageEmbed()
-				.setTitle("Dadbot is not enabled")
-				.withErrorColor(message),
-			);
+			return message.channel.send({
+				embeds: [new MessageEmbed()
+					.setTitle("Dadbot is not enabled")
+					.withErrorColor(message)],
+			});
 		}
 
 		const db = await getGuildDocument((message.guild as Guild).id);
@@ -31,24 +32,27 @@ export default class ExcludeCommand extends Command {
 				name: db.settings.excludeRole,
 				reason: "Role didn't exist yet.",
 			});
-			await (message.channel.send(new MessageEmbed({
-				title: "Error!",
-				description: `A role with name \`${db.settings.excludeRole}\` was not found in guild. Creating... `,
-				footer: { text: "Beep boop..." },
-			})
-				.withErrorColor(message)));
+
+			await (message.channel.send({
+				embeds: [new MessageEmbed({
+					title: "Error!",
+					description: `A role with name \`${db.settings.excludeRole}\` was not found in guild. Creating... `,
+					footer: { text: "Beep boop..." },
+				})
+					.withErrorColor(message)],
+			}));
 		}
 
 		if (!message.member?.roles.cache.find((r) => r === excludedRole) && excludedRole) {
 			await message.member?.roles.add(excludedRole);
-			return message.channel.send(Exclude.addedRoleEmbed(db.settings.excludeRole)
-				.withOkColor(message));
+			return message.channel.send({ embeds: [Exclude.addedRoleEmbed(db.settings.excludeRole)
+				.withOkColor(message)] });
 		}
 
 		if (message.member?.roles.cache.find((r) => r === excludedRole) && excludedRole) {
 			await message.member?.roles.remove(excludedRole);
-			return message.channel.send(Exclude.removedRoleEmbed(db.settings.excludeRole)
-				.withOkColor(message));
+			return message.channel.send({ embeds: [Exclude.removedRoleEmbed(db.settings.excludeRole)
+				.withOkColor(message)] });
 		}
 	}
 }

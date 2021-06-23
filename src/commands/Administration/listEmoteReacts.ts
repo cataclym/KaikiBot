@@ -22,11 +22,12 @@ export default class RemoveEmoteReactCommand extends Command {
 			pages: MessageEmbed[] = [];
 
 		if (!emojies?.length) {
-			return message.channel.send(new MessageEmbed()
-				.setTitle("No triggers")
-				.setDescription(`Add triggers with ${(this.handler.prefix as PrefixSupplier)(message)}aer`)
-				.withErrorColor(message),
-			);
+			return message.channel.send({
+				embeds: [new MessageEmbed()
+					.setTitle("No triggers")
+					.setDescription(`Add triggers with ${(this.handler.prefix as PrefixSupplier)(message)}aer`)
+					.withErrorColor(message)],
+			});
 		}
 
 		for (let index = 15, p = 0; p < emojies.length; index += 15, p += 15) {
@@ -35,9 +36,8 @@ export default class RemoveEmoteReactCommand extends Command {
 				.setTitle("Emoji triggers")
 				.setDescription(emojies.slice(p, index).map(([t, e]) => {
 					return `**${t}** => ${message.guild?.emojis.cache.get(e as Snowflake) ?? e}`;
-				}))
-				.withOkColor(message),
-			);
+				}).join("\n"))
+				.withOkColor(message));
 		}
 
 		return editMessageWithPaginatedEmbeds(message, pages, {});

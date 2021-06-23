@@ -48,7 +48,7 @@ export default class commandsList extends Command {
 					.map(cmd => `**${prefix}${cmd}** [\`${cmd.aliases.join("`, `")}\`]`)
 					.join("\n") || "Empty");
 			}
-			return message.channel.send(embed);
+			return message.channel.send({ embeds: [embed] });
 		}
 
 		else {
@@ -64,7 +64,7 @@ export default class commandsList extends Command {
 					url: "https://cdn.discordapp.com/attachments/717045690022363229/726600392107884646/3391ce4715f3c814d6067911438e5bf7.png",
 				},
 				footer: {
-					icon_url: (message.client.users.cache.get("140788173885276160") || (await message.client.users.fetch("140788173885276160", true)))
+					icon_url: (message.client.users.cache.get("140788173885276160") || (await message.client.users.fetch("140788173885276160", { cache: true })))
 						.displayAvatarURL({ dynamic: true }),
 				},
 			})
@@ -75,7 +75,7 @@ export default class commandsList extends Command {
 
 				embed.addField(_category.id, `Commands: **${_category.size}**`, true);
 			}
-			return message.channel.send(embed);
+			return message.channel.send({ embeds: [embed] });
 		}
 	}
 }

@@ -29,7 +29,7 @@ export default class EmoteCount extends Command {
 
 			baseEmbed = new MessageEmbed()
 				.setTitle("Emote count")
-				.setAuthor(message.guild?.name)
+				.setAuthor((message.guild as Guild).name)
 				.withOkColor(message),
 
 			emoteDataPair = Object

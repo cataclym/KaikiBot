@@ -11,6 +11,6 @@ export default class Waifu extends Command {
 		});
 	}
 	public async exec(message: Message): Promise<Message> {
-		return message.channel.send(await sendWaifuPics(message, "waifu"));
+		return message.channel.send({ embeds: [await sendWaifuPics(message, "waifu")] });
 	}
 }

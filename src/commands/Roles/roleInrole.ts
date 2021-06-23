@@ -34,7 +34,7 @@ export default class RoleInRoleCommand extends Command {
 				const currentPageUsers = data.slice(p, i),
 					emb = new MessageEmbed()
 						.setTitle(`Users in ${role.name} (${data.length})`)
-						.setAuthor(message.guild?.name)
+						.setAuthor(message.guild?.name ?? "Null")
 						.addField("•", currentPageUsers
 							.slice(0, 20)
 							.map(u => `${u.user} - ${u.user.username}`)

@@ -29,6 +29,6 @@ export default class SquishCommand extends Command {
 		});
 
 
-		return message.channel.send({ files: [attachment], embed: embed });
+		return message.channel.send({ files: [attachment], embeds: [embed] });
 	}
 }

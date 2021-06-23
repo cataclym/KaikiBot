@@ -36,27 +36,32 @@ export default class RoleRemoveCommand extends Command {
 
 				await member.roles.remove(role);
 
-				return message.channel.send(new MessageEmbed({
+				return message.channel.send({ embeds: [new MessageEmbed({
 					title: "Success!",
 					description: `Removed ${role} from ${member.user}`,
 				})
-					.withOkColor(message));
+					.withOkColor(message)],
+				});
 			}
 
 			else {
-				return message.channel.send(new MessageEmbed({
-					title: "Error",
-					description: `${member} doesn't have ${role}`,
-				})
-					.withErrorColor(message));
+				return message.channel.send({
+					embeds: [new MessageEmbed({
+						title: "Error",
+						description: `${member} doesn't have ${role}`,
+					})
+						.withErrorColor(message)],
+				});
 			}
 		}
 
 		else {
-			return message.channel.send(new MessageEmbed({
-				title: "Insufficient permission(s).",
-			})
-				.withErrorColor(message));
+			return message.channel.send({
+				embeds: [new MessageEmbed({
+					title: "Insufficient permission(s).",
+				})
+					.withErrorColor(message)],
+			});
 		}
 	}
 }

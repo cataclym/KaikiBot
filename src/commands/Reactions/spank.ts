@@ -18,15 +18,17 @@ export default class spank extends Command {
 	}
 	public async exec(message: Message, { mention }: { mention: GuildMember | null }): Promise<Message> {
 		if (message.channel.type === "text" && message.channel.nsfw) {
-			return message.channel.send(await sendNekosPics(message, "spank", mention));
+			return message.channel.send({ embeds: [await sendNekosPics(message, "spank", mention)] });
 		}
 
 		else {
-			return message.channel.send(new MessageEmbed({
-				title: "Error",
-				description: "Channel is not NSFW.",
-			})
-				.withErrorColor(message));
+			return message.channel.send({
+				embeds: [new MessageEmbed({
+					title: "Error",
+					description: "Channel is not NSFW.",
+				})
+					.withErrorColor(message)],
+			});
 		}
 	}
 }

@@ -41,8 +41,8 @@ export async function ExcludeSlashCommand(interaction: CommandInteraction): Prom
         && excludedRole) {
 		await interaction.member?.roles.add(excludedRole);
 		return created
-			? interaction.webhook.send(Exclude.addedRoleEmbed(roleName)
-				.withOkColor())
+			? interaction.webhook.send({ embeds: [Exclude.addedRoleEmbed(roleName)
+				.withOkColor()] })
 			: interaction.reply({ ephemeral: true, embeds: [Exclude.addedRoleEmbed(roleName)
 				.withOkColor()] });
 	}
@@ -50,8 +50,8 @@ export async function ExcludeSlashCommand(interaction: CommandInteraction): Prom
 	if (interaction.member?.roles instanceof GuildMemberRoleManager && interaction.member?.roles.cache.find((r) => r === excludedRole) && excludedRole) {
 		await interaction.member?.roles.remove(excludedRole);
 		return created
-			? interaction.webhook.send(Exclude.removedRoleEmbed(roleName)
-				.withOkColor())
+			? interaction.webhook.send({ embeds: [Exclude.removedRoleEmbed(roleName)
+				.withOkColor()] })
 			: interaction.reply({ ephemeral: true, embeds: [Exclude.removedRoleEmbed(roleName)
 				.withOkColor()] });
 	}

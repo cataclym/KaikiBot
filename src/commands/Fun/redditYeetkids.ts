@@ -54,7 +54,7 @@ export default class YeetCommand extends Command {
 				else yeetEmbed.setImage(randomRedditPost.url);
 			}
 
-			return message.channel.send(yeetEmbed);
+			return message.channel.send({ embeds: [yeetEmbed] });
 		}
 	}
 }

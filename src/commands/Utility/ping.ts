@@ -14,10 +14,11 @@ export default class PingCommand extends Command {
 			WSTime: number = Math.abs(message.client.ws.ping),
 			ClientTime: number = InitialMSG.createdTimestamp - message.createdTimestamp;
 
-		return InitialMSG.edit(null, new MessageEmbed()
+		return InitialMSG.edit({ embeds: [new MessageEmbed()
 			.addFields([
 				{ name: "WebSocket ping", value: WSTime + " ms", inline: true },
 				{ name: "Client ping", value: ClientTime + " ms", inline: true }])
-			.withOkColor(message));
+			.withOkColor(message)],
+		});
 	}
 }

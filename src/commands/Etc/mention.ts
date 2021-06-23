@@ -15,11 +15,13 @@ export default class MentionCommand extends Command {
 
 	public async exec(msg: Message): Promise<NodeJS.Timeout> {
 
-		const embed = msg.channel.send(new MessageEmbed({
-			title: `Hi ${msg.author.username}, what's up?`,
-			description: `If you need help type \`${(this.handler.prefix as PrefixSupplier)(msg)}help\`.`,
-		})
-			.withOkColor(msg));
+		const embed = msg.channel.send({
+			embeds: [new MessageEmbed({
+				title: `Hi ${msg.author.username}, what's up?`,
+				description: `If you need help type \`${(this.handler.prefix as PrefixSupplier)(msg)}help\`.`,
+			})
+				.withOkColor(msg)],
+		});
 
 		return this.client.setTimeout(async () => (await embed).delete(), 10000);
 	}

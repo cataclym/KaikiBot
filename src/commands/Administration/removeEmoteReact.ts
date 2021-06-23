@@ -40,16 +40,17 @@ export default class RemoveEmoteReactCommand extends Command {
 
 			if (emoji) embed.setThumbnail(emoji.url);
 
-			return message.channel.send(embed);
+			return message.channel.send({ embeds: [embed] });
 		}
 
 		else {
 			await db.save();
-			return message.channel.send(new MessageEmbed()
-				.setTitle("Not found")
-				.setDescription("Trigger not found in the database")
-				.withErrorColor(message),
-			);
+			return message.channel.send({
+				embeds: [new MessageEmbed()
+					.setTitle("Not found")
+					.setDescription("Trigger not found in the database")
+					.withErrorColor(message)],
+			});
 		}
 	}
 }

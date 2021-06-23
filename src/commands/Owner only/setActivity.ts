@@ -39,9 +39,10 @@ export default class SetActivityCommand extends Command {
 		botDocument.markModified("settings");
 		botDocument.save();
 
-		return message.channel.send(new MessageEmbed()
-			.addField("Status changed", `**Type**: ${type}\n**Activity**: ${name}`)
-			.withOkColor(message),
-		);
+		return message.channel.send({
+			embeds: [new MessageEmbed()
+				.addField("Status changed", `**Type**: ${type}\n**Activity**: ${name}`)
+				.withOkColor(message)],
+		});
 	}
 }

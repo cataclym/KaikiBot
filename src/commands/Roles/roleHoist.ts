@@ -29,10 +29,11 @@ export default class RoleHoistCommand extends Command {
 			role.setHoist(true);
 		}
 
-		return message.channel.send(new MessageEmbed({
-			description: `Toggled ${role.name}'s hoist status to ${!role.hoist}.`,
-		})
-			.withOkColor(message));
-
+		return message.channel.send({
+			embeds: [new MessageEmbed({
+				description: `Toggled ${role.name}'s hoist status to ${!role.hoist}.`,
+			})
+				.withOkColor(message)],
+		});
 	}
 }

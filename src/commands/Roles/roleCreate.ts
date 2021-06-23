@@ -22,28 +22,17 @@ export default class RoleCreateCommand extends Command {
 	}
 	public async exec(message: Message, { name }: { name: string }): Promise<Message> {
 
-		try {
+		const createdRole = await message.guild?.roles.create({ name:  name });
 
-			const createdRole = await message.guild?.roles.create({ name:  name });
-
-			if (!createdRole) {
-				throw ("Role creation failed.");
-			}
-
-			return message.channel.send(new MessageEmbed({
-				title: "Success!",
-				description: `Created ${createdRole}!`,
-			})
-				.withOkColor(message));
+		if (!createdRole) {
+			throw ("Role creation failed.");
 		}
 
-		catch (e) {
-			return message.channel.send(new MessageEmbed({
-				title: "Error!",
-				description: "An error occured. Could not create role.",
-				footer: { text: e },
-			})
-				.withErrorColor(message));
-		}
+		return message.channel.send({ embeds: [new MessageEmbed({
+			title: "Success!",
+			description: `Created ${createdRole}!`,
+		})
+			.withOkColor(message)],
+		});
 	}
 }

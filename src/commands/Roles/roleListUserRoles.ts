@@ -43,11 +43,12 @@ export default class ListUserRoles extends Command {
 		}
 
 		else {
-			return message.channel.send(new MessageEmbed()
-				.withErrorColor(message)
-				.setTitle("No user roles")
-				.setDescription("This guild has not used this feature yet."),
-			);
+			return message.channel.send({
+				embeds: [new MessageEmbed()
+					.withErrorColor(message)
+					.setTitle("No user roles")
+					.setDescription("This guild has not used this feature yet.")],
+			});
 		}
 	}
 }

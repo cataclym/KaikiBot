@@ -20,11 +20,13 @@ export default class ReloadCommand extends Command {
 	public async exec(message: Message, { command }: { command: Command}): Promise<Message> {
 
 		command.reload();
-		return message.channel.send(new MessageEmbed({
-			title: "Command reloaded",
-			description: command.filepath,
-			footer: { text: "Command: " + command.id },
-		})
-			.withOkColor(message));
+		return message.channel.send({
+			embeds: [new MessageEmbed({
+				title: "Command reloaded",
+				description: command.filepath,
+				footer: { text: "Command: " + command.id },
+			})
+				.withOkColor(message)],
+		});
 	}
 }

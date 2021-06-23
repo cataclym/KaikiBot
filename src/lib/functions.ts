@@ -168,7 +168,7 @@ export async function sendDM(message: Message): Promise<Message | undefined> {
 			.setFooter(urls.join("\n"));
 	}
 
-	return botOwner?.send({ content: attachmentLinks ?? null, embed: embed });
+	return botOwner?.send({ content: attachmentLinks ?? null, embeds: [embed] });
 
 }
 

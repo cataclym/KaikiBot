@@ -40,7 +40,7 @@ export default class MyRoleCommand extends Command {
 		const db = await getGuildDocument(guild.id),
 			roleID = db.userRoles[message.author.id];
 
-		if (!roleID) return message.channel.send(await embedFail(message));
+		if (!roleID) return message.channel.send({ embeds: [await embedFail(message)] });
 
 		const myRole = guild.roles.cache.get(roleID as Snowflake);
 
@@ -48,15 +48,17 @@ export default class MyRoleCommand extends Command {
 			delete db.userRoles[message.author.id];
 			db.markModified("userRoles");
 			await db.save();
-			return message.channel.send(await embedFail(message));
+			return message.channel.send({ embeds: [await embedFail(message)] });
 		}
 
-		return message.channel.send(new MessageEmbed()
-			.setAuthor(`Current role assigned to ${message.author.username}`,
-				guild.iconURL({ size: 2048, dynamic: true })
-						|| message.author.displayAvatarURL({ size: 2048, dynamic: true }))
-			.setColor(myRole.hexColor)
-			.addField("Name", myRole.name, true)
-			.addField("Colour", myRole.hexColor, true));
+		return message.channel.send({
+			embeds: [new MessageEmbed()
+				.setAuthor(`Current role assigned to ${message.author.username}`,
+					guild.iconURL({ size: 2048, dynamic: true })
+					|| message.author.displayAvatarURL({ size: 2048, dynamic: true }))
+				.setColor(myRole.hexColor)
+				.addField("Name", myRole.name, true)
+				.addField("Colour", myRole.hexColor, true)],
+		});
 	}
 }

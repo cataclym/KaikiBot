@@ -40,17 +40,19 @@ export default class take extends Command {
     public async exec(msg: Message, { amount, user }: { amount: number; user: User; }): Promise<void> {
     	const success = await this._money.TryTake(user.id, amount);
     	if (!success) {
-    		await msg.channel.send(new MessageEmbed()
-    			.setDescription(`${user.username} has less than ${amount} ${this._money.currencySymbol}`)
-    			.withErrorColor(msg),
-    		);
+    		await msg.channel.send({
+    			embeds: [new MessageEmbed()
+    				.setDescription(`${user.username} has less than ${amount} ${this._money.currencySymbol}`)
+    				.withErrorColor(msg)],
+    		});
     		return;
     	}
 
-    	await msg.channel.send(new MessageEmbed()
-    		.setDescription(`Successfully took ${amount} ${this._money.currencySymbol} from ${user.username}`)
-    		.withOkColor(msg),
-    	);
+    	await msg.channel.send({
+    		embeds: [new MessageEmbed()
+    			.setDescription(`Successfully took ${amount} ${this._money.currencySymbol} from ${user.username}`)
+    			.withOkColor(msg)],
+    	});
     }
 }
 

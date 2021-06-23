@@ -25,4 +25,3 @@ export default class errorListener extends Listener {
 			: cmdStatsCache[command.id] = 1;
 	}
 }
-

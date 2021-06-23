@@ -18,10 +18,11 @@ export default class ChannelNsfwCommand extends Command {
 
 		channel.setNSFW(!channel.nsfw, `${message.author.tag} toggled NSFW.`);
 
-		return message.channel.send(new MessageEmbed({
-			description: `NSFW in ${channel.name} has been ${!channel.nsfw ? "enabled" : "disabled"}.`,
-		})
-			.withOkColor(message),
-		);
+		return message.channel.send({
+			embeds: [new MessageEmbed({
+				description: `NSFW in ${channel.name} has been ${!channel.nsfw ? "enabled" : "disabled"}.`,
+			})
+				.withOkColor(message)],
+		});
 	}
 }

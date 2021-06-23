@@ -30,14 +30,15 @@ export default class DeleteChannelCommand extends Command {
 
 		const deletedChannels = await Promise.all(([] as Promise<Channel>[]).concat(...await deleteChannels()));
 
-		return m.channel.send(new MessageEmbed()
-			.setTitle("Channels deleted")
-			.addField("Deleted:", (await Promise.all(deletedChannels
-				.map(async (c) => ["unknown", "group", "dm"].includes(c.type)
-					? c.id
-					: `#${(c as GuildChannel).name} [${c.id}]`,
-				))).join("\n"))
-			.withOkColor(m),
-		);
+		return m.channel.send({
+			embeds: [new MessageEmbed()
+				.setTitle("Channels deleted")
+				.addField("Deleted:", (await Promise.all(deletedChannels
+					.map(async (c) => ["unknown", "group", "dm"].includes(c.type)
+						? c.id
+						: `#${(c as GuildChannel).name} [${c.id}]`,
+					))).join("\n"))
+				.withOkColor(m)],
+		});
 	}
 }

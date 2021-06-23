@@ -26,11 +26,13 @@ export default class ErrorColorConfigCommand extends Command {
 
 		await (this.client as customClient).guildSettings.set(guildID, "errorColor", value);
 
-		return message.channel.send(new MessageEmbed({
-			title: "Success!",
-			description: `errorColor has been set to \`${value}\` !`,
-		})
-			.withOkColor(message));
+		return message.channel.send({
+			embeds: [new MessageEmbed({
+				title: "Success!",
+				description: `errorColor has been set to \`${value}\` !`,
+			})
+				.withOkColor(message)],
+		});
 	}
 
 }

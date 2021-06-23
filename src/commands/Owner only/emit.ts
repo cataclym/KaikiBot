@@ -38,9 +38,11 @@ export default class EmitCommand extends Command {
 			: this.handler.emit(event.id, member, eventArguments);
 
 		if (value) {
-			return message.channel.send(new MessageEmbed({
-				description: `Emitted ${event.id}.`,
-			}));
+			return message.channel.send({ embeds:
+					[new MessageEmbed({
+						description: `Emitted ${event.id}.`,
+					})],
+			});
 		}
 	}
 }

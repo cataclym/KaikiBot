@@ -23,7 +23,7 @@ export default class RoleListCommand extends Command {
 
 				const dEmbed = new MessageEmbed()
 					.setTitle(`Role list (${roleArray.length})`)
-					.setAuthor(message.guild?.name)
+					.setAuthor(message.guild?.name ?? "Null")
 					.addField("\u200B", data
 						.slice(p, i - 25)
 						.join("\n"), true)

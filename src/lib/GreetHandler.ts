@@ -26,7 +26,7 @@ export async function handleGoodbyeMessage(guildMember: GuildMember): Promise<Me
 
 async function sendGreetLeaveMessage(data: TGreetMessage, guild: Guild, guildMember: GuildMember) {
 
-	const channel = guild.channels.cache.get(data.channel as Snowflake) ?? await guild.client.channels.fetch(data.channel as Snowflake, true);
+	const channel = guild.channels.cache.get(data.channel as Snowflake) ?? await guild.client.channels.fetch(data.channel as Snowflake, { cache: true });
 	if (channel && channel?.type !== "text" && channel?.type !== "news") return undefined;
 
 	if (data.embed) {
@@ -37,7 +37,7 @@ async function sendGreetLeaveMessage(data: TGreetMessage, guild: Guild, guildMem
 		if (data.image) {
 			embed.setImage(data.image);
 		}
-		return (channel as TextChannel).send(embed);
+		return (channel as TextChannel).send({ embeds: [embed] });
 	}
 
 	else {

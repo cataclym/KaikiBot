@@ -22,6 +22,6 @@ export default class HentaiBombCommand extends Command {
 
 		const megaResponse = (await grabHentai(category ?? typesArray[Math.floor(Math.random() * typesArray.length)], "bomb")).splice(0, 5);
 
-		return message.channel.send(megaResponse, { split: true });
+		return message.channel.send({ content: megaResponse.join("\n"), split: true });
 	}
 }

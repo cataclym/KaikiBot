@@ -52,33 +52,35 @@ export default class BanCommand extends Command {
 
 		if (!guildMember) {
 			await message.guild?.members.ban(user, { reason: reason });
-			return message.channel.send(successBan);
+			return message.channel.send({ embeds: [successBan] });
 		}
 
 		// Check if member is bannable
 		if (message.author.id !== message.guild?.ownerID &&
 			(message.member as GuildMember).roles.highest.position <= guildMember.roles.highest.position) {
 
-			return message.channel.send(new MessageEmbed({
+			return message.channel.send({ embeds: [new MessageEmbed({
 				description: `${message.author}, You can't use this command on users with a role higher or equal to yours in the role hierarchy.`,
 			})
-				.withErrorColor(message));
+				.withErrorColor(message)] });
 		}
 
 		// x2
 		else if (guildClientMember.roles.highest.position <= guildMember.roles.highest.position) {
-			return message.channel.send(new MessageEmbed({
+			return message.channel.send({ embeds: [new MessageEmbed({
 				description: "Sorry, I don't have permissions to ban this member.",
 			})
-				.withErrorColor(message));
+				.withErrorColor(message)],
+			});
 		}
 
 		await message.guild?.members.ban(user, { reason: reason }).then(m => {
 			try {
-				(m as GuildMember | User).send(new MessageEmbed({
+				(m as GuildMember | User).send({ embeds: [new MessageEmbed({
 					description: `You have been banned from ${message.guild?.name}.\nReason: ${reason}`,
 				})
-					.withOkColor(message));
+					.withOkColor(message)],
+				});
 			}
 			catch {
 				// ignored
@@ -86,6 +88,6 @@ export default class BanCommand extends Command {
 		})
 			.catch((err) => console.log(err));
 
-		return message.channel.send(successBan);
+		return message.channel.send({ embeds: [successBan] });
 	}
 }

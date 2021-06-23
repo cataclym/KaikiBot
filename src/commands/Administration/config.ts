@@ -79,11 +79,11 @@ export default class ConfigCommand extends Command {
 						: prefix, true)
 				.addField("Embed error color",
 					errorColor.toString().startsWith("#")
-						? errorColor
+						? errorColor.toString()
 						: "#" + errorColor.toString(16), true)
 				.addField("Embed ok color",
 					okColor.toString().startsWith("#")
-						? okColor
+						? okColor.toString()
 						: "#" + okColor.toString(16), true)
 				.addField("\u200B", "\u200B", true)
 				.addField("Welcome message",

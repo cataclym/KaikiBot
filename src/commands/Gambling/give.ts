@@ -44,17 +44,19 @@ export default class give extends Command {
 
     	const success = await this._money.TryTake(msg.author.id, amount);
     	if (!success) {
-    		await msg.channel.send(new MessageEmbed()
-    			.setDescription(`You don't have enough ${this._money.currencySymbol}`)
-    			.withErrorColor(msg),
-    		);
+    		await msg.channel.send({
+    			embeds: [new MessageEmbed()
+    				.setDescription(`You don't have enough ${this._money.currencySymbol}`)
+    				.withErrorColor(msg)],
+    		});
     		return;
     	}
 
     	await this._money.Add(user.id, amount);
-    	await msg.channel.send(new MessageEmbed()
-    		.setDescription(`You've given ${amount} ${this._money.currencySymbol} to ${user.username}`)
-    		.withOkColor(msg),
-    	);
+    	await msg.channel.send({
+    		embeds: [new MessageEmbed()
+    			.setDescription(`You've given ${amount} ${this._money.currencySymbol} to ${user.username}`)
+    			.withOkColor(msg)],
+    	});
     }
 }

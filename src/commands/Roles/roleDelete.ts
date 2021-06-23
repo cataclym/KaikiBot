@@ -44,21 +44,26 @@ export default class RoleDeleteCommand extends Command {
 		}
 
 		if (otherRoles.length) {
-			return message.channel.send(new MessageEmbed()
+			return message.channel.send({ embeds: [new MessageEmbed()
 				.setDescription(`Role(s) \`${otherRoles.join("`, `")}\` could not be deleted due to insufficient permissions.`)
-				.withErrorColor(message));
+				.withErrorColor(message)],
+			});
 		}
 
 		else if (deletedRoles.length) {
-			return message.channel.send(new MessageEmbed()
-				.setDescription(`Deleted: \`${deletedRoles.join("`, `")}\``)
-				.withOkColor(message));
+			return message.channel.send({
+				embeds: [new MessageEmbed()
+					.setDescription(`Deleted: \`${deletedRoles.join("`, `")}\``)
+					.withOkColor(message)],
+			});
 		}
 
 		else {
-			return message.channel.send(new MessageEmbed()
-				.setDescription("Couldn't delete roles!")
-				.withErrorColor(message));
+			return message.channel.send({
+				embeds: [new MessageEmbed()
+					.setDescription("Couldn't delete roles!")
+					.withErrorColor(message)],
+			});
 		}
 	}
 }

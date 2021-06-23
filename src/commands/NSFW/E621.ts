@@ -30,11 +30,11 @@ export default class E621Command extends Command {
 
 			if (post.tags.character.length) emb.addField("Character(s)", post.tags.character.join(", "), true);
 
-			return message.channel.send(emb);
+			return message.channel.send({ embeds: [emb] });
 		}
 
 		else {
-			return message.channel.send(await errorMessage(message, "No data received"));
+			return message.channel.send({ embeds: [await errorMessage(message, "No data received")] });
 		}
 	}
 }

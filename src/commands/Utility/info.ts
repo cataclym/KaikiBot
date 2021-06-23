@@ -43,8 +43,8 @@ export default class InfoCommand extends Command {
 					.addField("ID", obj.id, true)
 					.addField("Userlimit", obj.userLimit === 0
 						? "No limit"
-						: obj.userLimit, true)
-					.addField("Created at", obj.createdAt, true)
+						: obj.userLimit.toString(), true)
+					.addField("Created at", obj.createdAt.toString(), true)
 					.addField("Bitrate", obj.bitrate / 1000 + "kbps", true);
 
 				if (obj.parent) emb.addField("Parent", `${obj.parent.name} [${obj.parentID}]`, true);
@@ -53,8 +53,8 @@ export default class InfoCommand extends Command {
 			else if (obj instanceof TextChannel || obj instanceof NewsChannel || obj instanceof StoreChannel) {
 				emb.setTitle(`Info about text channel: ${obj.name}`)
 					.addField("ID", obj.id)
-					.addField("NSFW", obj.nsfw)
-					.addField("Created at", obj.createdAt);
+					.addField("NSFW", obj.nsfw ? "Enabled" : "Disabled")
+					.addField("Created at", obj.createdAt.toString());
 
 				if (obj.parent) emb.addField("Parent", `${obj.parent.name} [${obj.parentID}]`, true);
 			}
@@ -62,8 +62,8 @@ export default class InfoCommand extends Command {
 			else if (obj instanceof CategoryChannel) {
 				emb.setTitle(`Info about category channel: ${obj.name}`)
 					.addField("ID", obj.id)
-					.addField("Children", obj.children.size)
-					.addField("Created at", obj.createdAt);
+					.addField("Children", String(obj.children.size))
+					.addField("Created at", obj.createdAt.toString());
 
 				if (obj.parent) emb.addField("Parent", `${obj.parent.name} [${obj.parentID}]`, true);
 			}
@@ -75,10 +75,10 @@ export default class InfoCommand extends Command {
 				.setDescription(obj.displayName)
 				.setThumbnail(obj.user.displayAvatarURL({ dynamic: true }))
 				.addField("ID", obj.id, true)
-				.addField("Joined Server", obj.joinedAt, true)
-				.addField("Joined Discord", obj.user.createdAt, true)
-				.addField("Roles", obj.roles.cache.size, true)
-				.addField("Highest role", obj.roles.highest, true);
+				.addField("Joined Server", obj.joinedAt?.toString() ?? "Dunno", true)
+				.addField("Joined Discord", obj.user.createdAt.toString(), true)
+				.addField("Roles", String(obj.roles.cache.size), true)
+				.addField("Highest role", obj.roles.highest.toString(), true);
 
 			const uFlags = obj.user.flags?.toArray();
 
@@ -92,20 +92,20 @@ export default class InfoCommand extends Command {
 		else if (obj instanceof Role) {
 			emb.setTitle(`Info about role: ${obj.name}`)
 				.addField("ID", obj.id, true)
-				.addField("Created at", obj.createdAt, true)
+				.addField("Created at", obj.createdAt.toString(), true)
 				.addField("Color", obj.hexColor, true)
-				.addField("Members", obj.members.size, true)
-				.addField("Mentionable", obj.mentionable, true)
-				.addField("Hoisted", obj.hoist, true)
-				.addField("Position", obj.position, true);
+				.addField("Members", String(obj.members.size), true)
+				.addField("Mentionable", String(obj.mentionable), true)
+				.addField("Hoisted", String(obj.hoist), true)
+				.addField("Position", String(obj.position), true);
 		}
 
 		else if (obj instanceof Emoji) {
 			emb.setTitle(`Info about Emoji: ${obj.name} ${obj}`)
-				.addField("Name", obj.name, true)
-				.addField("ID", obj.id, true)
-				.addField("Created at", obj.createdAt, true)
-				.addField("Animated", obj.animated, true);
+				.addField("Name", obj.name ?? "Null", true)
+				.addField("ID", obj.id ?? "Null", true)
+				.addField("Created at", obj.createdAt?.toString() ?? "Null", true)
+				.addField("Animated", obj.animated ? "Yes" : "No", true);
 
 			if (obj.url) {
 				emb.setImage(obj.url)
@@ -116,7 +116,7 @@ export default class InfoCommand extends Command {
 		else if (obj instanceof Message) {
 			emb.setTitle(`Info about message in channel: ${(obj.channel as TextChannel).name}`)
 				.addField("ID", obj.id, true)
-				.addField("Created at", obj.createdAt, true)
+				.addField("Created at", obj.createdAt.toString(), true)
 				.addField("Author", obj.author.tag, true)
 				.addField("Link", obj.url, true);
 		}
@@ -125,7 +125,7 @@ export default class InfoCommand extends Command {
 
 			const emoji = obj.match[0].toString().split(":");
 
-			if (emoji.length < 3) return message.channel.send(noArgGeneric(message));
+			if (emoji.length < 3) return message.channel.send({ embeds: [noArgGeneric(message)] });
 
 			const id = emoji[2].replace(">", "");
 			const link = `https://cdn.discordapp.com/emojis/${id}.${emoji[0] === "<a" ? "gif" : "png"}`;
@@ -145,7 +145,7 @@ export default class InfoCommand extends Command {
 				.addField("Raw", obj.emoji, true);
 		}
 
-		return message.channel.send(emb);
+		return message.channel.send({ embeds: [emb] });
 
 	}
 }

@@ -24,12 +24,14 @@ export default class missingPermissionsListener extends Listener {
 			: cmdStatsCache[command.id] = 1;
 
 		if (message.channel.type !== "dm") {
-			const msg = await message.channel.send(new MessageEmbed({
-				title: "Missing permissions",
-				description: `${type === "client" ? "Client" : "User"} can't execute \`${command.id}\` due to missing permissions.`,
-				footer: { text: `Missing: ${missing}` },
-			})
-				.withErrorColor(message));
+			const msg = await message.channel.send({ embeds:
+				[new MessageEmbed({
+					title: "Missing permissions",
+					description: `${type === "client" ? "Client" : "User"} can't execute \`${command.id}\` due to missing permissions.`,
+					footer: { text: `Missing: ${missing}` },
+				})
+					.withErrorColor(message)],
+			});
 
 			return this.client.setTimeout(() => msg.delete()
 				.catch(logger.error), 10000);

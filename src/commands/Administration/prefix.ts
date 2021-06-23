@@ -26,12 +26,13 @@ export default class PrefixConfigCommand extends Command {
 
 		prefixCache[guildID] = value;
 
-		return message.channel.send(new MessageEmbed({
-			title: "Success!",
-			description: `Prefix has been set to \`${value}\` !`,
-			footer: { text: `Old prefix: \`${oldPrefix}\`` },
-		})
-			.withOkColor(message),
-		);
+		return message.channel.send({
+			embeds:	[new MessageEmbed({
+				title: "Success!",
+				description: `Prefix has been set to \`${value}\` !`,
+				footer: { text: `Old prefix: \`${oldPrefix}\`` },
+			})
+				.withOkColor(message)],
+		});
 	}
 }

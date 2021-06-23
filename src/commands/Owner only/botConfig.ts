@@ -68,11 +68,12 @@ export default class BotConfigCommand extends Command {
 
 		await this._money.UpdateCurrencyNameAndSymbol(this.client as customClient);
 
-		return message.channel.send(new MessageEmbed()
-			.setTitle("Changed bot configuration")
-			.addField("Old Value", oldValue)
-			.addField("New value", name)
-			.withOkColor(message),
-		);
+		return message.channel.send({
+			embeds: [new MessageEmbed()
+				.setTitle("Changed bot configuration")
+				.addField("Old Value", oldValue)
+				.addField("New value", name)
+				.withOkColor(message)],
+		});
 	}
 }

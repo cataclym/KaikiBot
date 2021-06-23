@@ -46,7 +46,7 @@ export default class ColorCommand extends Command {
 		}
 
 		if (typeof color != "string") {
-			return message.channel.send(noArgGeneric(message));
+			return message.channel.send({ embeds: [noArgGeneric(message)] });
 		}
 
 		// Someone pls format this better ty^^
@@ -58,12 +58,12 @@ export default class ColorCommand extends Command {
 			}),
 			attachment = new MessageAttachment(await imgFromColor(clrStr !== "RANDOM" ? clrStr : embed.hexColor ?? "#000000"), "color.png");
 
-		if (clrStr === "RANDOM") embed.setDescription(embed.hexColor?.toString());
+		if (clrStr === "RANDOM") embed.setDescription(embed.hexColor?.toString() ?? "null");
 
 		embed.setImage("attachment://color.png");
 
 		return message.channel.send({ files: [attachment],
-			embed: embed,
+			embeds: [embed],
 		});
 	}
 }

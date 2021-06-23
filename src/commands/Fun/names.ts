@@ -44,10 +44,11 @@ export default class NamesCommand extends Command {
 		if (method) {
 			const db = await getUserDocument(message.author.id);
 			db.userNicknames = [];
-			message.channel.send(new MessageEmbed()
-				.setDescription(`Deleted all of <@${message.author.id}>'s nicknames.\nWell done, you made daddy forget.`)
-				.withOkColor(message),
-			);
+			message.channel.send({
+				embeds: [new MessageEmbed()
+					.setDescription(`Deleted all of <@${message.author.id}>'s nicknames.\nWell done, you made daddy forget.`)
+					.withOkColor(message)],
+			});
 			db.markModified("userNicknames");
 			return db.save();
 		}

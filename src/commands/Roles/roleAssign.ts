@@ -37,25 +37,28 @@ export default class RoleAssignCommand extends Command {
 
 				await member.roles.add(role);
 
-				return message.channel.send(new MessageEmbed({
+				return message.channel.send({ embeds: [new MessageEmbed({
 					title: "Success!",
 					description: `Added ${role} to ${member.user}`,
 				})
-					.withOkColor(message));
+					.withOkColor(message)],
+				});
 			}
 			else {
-				return message.channel.send(new MessageEmbed({
+				return message.channel.send({ embeds: [new MessageEmbed({
 					title: "Error",
 					description: `${member} already has ${role}`,
 				})
-					.withErrorColor(message));
+					.withErrorColor(message)],
+				});
 			}
 		}
 		else {
-			return message.channel.send(new MessageEmbed({
+			return message.channel.send({ embeds: [new MessageEmbed({
 				title: "Insufficient permission(s).",
 			})
-				.withErrorColor(message));
+				.withErrorColor(message)],
+			});
 		}
 	}
 }

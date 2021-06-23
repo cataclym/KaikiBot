@@ -24,7 +24,7 @@ export default class ServerInfoCommand extends Command {
 			fields: [
 				{ name: "ID", value: guild?.id, inline: true },
 				{ name: "Owner", value: message.client.users.cache.get(guild.ownerID)?.tag ?? guild.ownerID, inline: true },
-				{ name: "Members", value: guild?.memberCount, inline: true },
+				{ name: "Members", value: String(guild?.memberCount), inline: true },
 				{ name:
                     "Channels", value: "Text: **" + guild?.channels.cache.filter((channel) => channel.type === "text").size +
                     "**\nVoice: **" + guild?.channels.cache.filter((channel) => channel.type === "voice").size +
@@ -32,19 +32,18 @@ export default class ServerInfoCommand extends Command {
                     "**\nNews: **" + guild?.channels.cache.filter((channel) => channel.type === "news").size +
                     "**\nStore: **" + guild?.channels.cache.filter((channel) => channel.type === "store").size + "**", inline: true },
 				{ name: "Created At", value: guild?.createdAt.toDateString(), inline: true },
-				{ name: "Region", value: guild?.region, inline: true },
-				{ name: "Roles", value: guild?.roles.cache.size, inline: true },
+				{ name: "Roles", value: String(guild?.roles.cache.size), inline: true },
 				{ name: "Features", value: guild?.features.length ? guild?.features.join("\n") : "NONE", inline: true },
 				{ name: "Custom Emojis", value: "Count: **" + guild?.emojis.cache.size +
                     "**\nSee them with `" + (this.handler.prefix as PrefixSupplier)(message) + "emotecount`", inline: true },
 			],
 		});
 
-		guild.systemChannel ? emb.addField("System channel", guild.systemChannel, true) : null;
-		guild.rulesChannel ? emb.addField("Rules channel", guild.rulesChannel, true) : null;
-		guild.publicUpdatesChannel ? emb.addField("Public Updates channel", guild.publicUpdatesChannel, true) : null;
-		guild.widgetChannel ? emb.addField("Widget channel", guild.widgetChannel, true) : null;
+		guild.systemChannel ? emb.addField("System channel", guild.systemChannel.toString(), true) : null;
+		guild.rulesChannel ? emb.addField("Rules channel", guild.rulesChannel.toString(), true) : null;
+		guild.publicUpdatesChannel ? emb.addField("Public Updates channel", guild.publicUpdatesChannel.toString(), true) : null;
+		guild.widgetChannel ? emb.addField("Widget channel", guild.widgetChannel.toString(), true) : null;
 
-		return message.channel.send(emb.withOkColor(message));
+		return message.channel.send({ embeds: [emb.withOkColor(message)] });
 	}
 }

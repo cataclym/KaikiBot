@@ -32,33 +32,35 @@ export default class mcpingCommand extends Command {
 			const embed = new MessageEmbed()
 				.setTitle("Ping! Server is online")
 				.setDescription(`${result.ip}:${result.port} ${result?.hostname?.length ? "/ " + result?.hostname : "" }`)
-				.addFields([
+				.addFields(
+					// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+					// @ts-ignore
 					{ name: "Version", value: result.version, inline: true },
 					{ name: "MOTD", value: result.motd.clean, inline: true },
 					{ name: "Players", value: `${result.players.online}/${result.players.max}`, inline: true },
 					{ name: "Plugins", value: result.plugins?.names.length ? trim(result.plugins?.names.join(", "), 1024) : "None", inline: true },
 					{ name: "Software", value: result?.software ?? "Unknown", inline: true },
 					{ name: "Mods", value: result.mods?.names.length ? trim(result.mods?.names.join(", "), 1024) : "None", inline: true },
-				])
+				)
 				.withOkColor(message);
 
 			if (attachment) {
 				embed.setImage("attachment://icon.png");
 				return message.channel.send({
 					files: [attachment],
-					embed,
+					embeds: [embed],
 				});
 			}
 
 			else {
-				return message.channel.send(embed);
+				return message.channel.send({ embeds: [embed] });
 			}
 		}
 
 		else {
-			return message.channel.send(new MessageEmbed()
+			return message.channel.send({ embeds: [new MessageEmbed()
 				.setTitle("No ping :< Server is offline")
-				.withErrorColor(message));
+				.withErrorColor(message)] });
 		}
 	}
 }

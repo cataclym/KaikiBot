@@ -42,20 +42,22 @@ export default class HelpCommand extends Command {
 				? usage
 				: `${prefix}${command.id}`, false);
 
-			if (command.userPermissions) embed.addField("Requires", command.userPermissions, false);
+			if (command.userPermissions) embed.addField("Requires", command.userPermissions.toString(), false);
 			if (command.ownerOnly) embed.addField("Owner only", "✅", false);
 
-			return message.channel.send(embed);
+			return message.channel.send({ embeds: [embed] });
 		}
 
 		else if (typeof command === "string") {
-			return message.channel.send(new MessageEmbed({
-				description: `**${message.author.tag}** Command \`${command}\` not found.`,
-			})
-				.withErrorColor(message));
+			return message.channel.send({
+				embeds: [new MessageEmbed({
+					description: `**${message.author.tag}** Command \`${command}\` not found.`,
+				})
+					.withErrorColor(message)],
+			});
 		}
 
-		const AvUrl = (message.client.users.cache.get("140788173885276160") || (await message.client.users.fetch("140788173885276160", true)))
+		const AvUrl = (message.client.users.cache.get("140788173885276160") || (await message.client.users.fetch("140788173885276160", { cache: true })))
 			.displayAvatarURL({ dynamic: true });
 
 		embed.setTitle(`${message.client.user?.username} help page`)
@@ -68,7 +70,7 @@ export default class HelpCommand extends Command {
 				message.author.displayAvatarURL({ dynamic: true }), repository.url)
 			.setFooter("Made by Cata <3", AvUrl);
 
-		return message.channel.send(embed);
+		return message.channel.send({ embeds: [embed] });
 	}
 }
 

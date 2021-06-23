@@ -35,17 +35,18 @@ export default class RestoreUserRoles extends Command {
 			if (!roleIDArray.length) return;
 
 			member.roles.add(roleIDArray);
-			return message.channel.send(new MessageEmbed()
-				.setDescription(`Restored roles of ${member.user.tag}`)
-				.withOkColor(message),
-			);
+			return message.channel.send({
+				embeds: [new MessageEmbed()
+					.setDescription(`Restored roles of ${member.user.tag}`)
+					.withOkColor(message)],
+			});
 		}
 
 		else {
-			return message.channel.send(new MessageEmbed()
+			return message.channel.send({ embeds: [new MessageEmbed()
 				.setDescription("This user's roles have not been saved, or user has never left the guild.")
-				.withErrorColor(message),
-			);
+				.withErrorColor(message)],
+			});
 		}
 	}
 }

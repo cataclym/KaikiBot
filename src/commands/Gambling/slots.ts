@@ -28,20 +28,22 @@ export default class slotsCommand extends Command {
     public async exec(message: Message, { amount }: { amount: number }): Promise<void> {
 
     	if (amount < 2) {
-    		await message.channel.send(new MessageEmbed()
-    			.setDescription(`You need to bet more than 2 ${this._money.currencySymbol}`)
-    			.withErrorColor(message),
-    		);
+    		await message.channel.send({
+    			embeds: [new MessageEmbed()
+    				.setDescription(`You need to bet more than 2 ${this._money.currencySymbol}`)
+    				.withErrorColor(message)],
+    		});
     		return;
     	}
 
     	const success = await this._money.TryTake(message.author.id, amount);
 
     	if (!success) {
-    		await message.channel.send(new MessageEmbed()
-    			.setDescription(`You have less than ${amount} ${this._money.currencySymbol}`)
-    			.withErrorColor(message),
-    		);
+    		await message.channel.send({
+    			embeds: [new MessageEmbed()
+    				.setDescription(`You have less than ${amount} ${this._money.currencySymbol}`)
+    				.withErrorColor(message)],
+    		});
     		return;
     	}
 

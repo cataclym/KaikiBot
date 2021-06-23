@@ -17,6 +17,6 @@ export default class Yeet extends Command {
 		});
 	}
 	public async exec(message: Message, { mention }: { mention: GuildMember | null }): Promise<Message> {
-		return message.channel.send(await sendWaifuPics(message, "yeet", mention));
+		return message.channel.send({ embeds: [await sendWaifuPics(message, "yeet", mention)] });
 	}
 }

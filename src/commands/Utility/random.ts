@@ -35,10 +35,10 @@ module.exports = class RandomNumberCommand extends Command {
 			number2 = args.int2;
 		embed.setFooter(`Random number between ${number1} and ${number2}`);
 		if (number1 > number2) {
-			embed.setDescription(getRndInteger(number2, number1));
+			embed.setDescription(String(getRndInteger(number2, number1)));
 		}
 		else {
-			embed.setDescription(getRndInteger(number1, number2));
+			embed.setDescription(String(getRndInteger(number1, number2)));
 		}
 		return message.util?.send(embed);
 

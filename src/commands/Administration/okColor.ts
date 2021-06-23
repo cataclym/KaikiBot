@@ -25,10 +25,12 @@ export default class OkColorConfigCommand extends Command {
 
 		await (this.client as customClient).guildSettings.set(guildID, "okColor", value);
 
-		return message.channel.send(new MessageEmbed({
-			title: "Success!",
-			description: `okColor has been set to \`${value}\` !`,
-		})
-			.withOkColor(message));
+		return message.channel.send({
+			embeds: [new MessageEmbed({
+				title: "Success!",
+				description: `okColor has been set to \`${value}\` !`,
+			})
+				.withOkColor(message)],
+		});
 	}
 }

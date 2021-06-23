@@ -47,6 +47,6 @@ export default class FetchUserCommand extends Command {
 		userObject.lastMessage ? embed.addField("Last (seen) message", userObject.lastMessage?.createdAt.toLocaleString(), true) : null;
 		userFlags.length ? embed.addField("Flags", userFlags.map((flag) => flags[flag]).join("\n"), true) : null;
 		userObject.bot ? embed.addField("Bot", "✅", true) : null;
-		return message.channel.send(embed);
+		return message.channel.send({ embeds: [embed] });
 	}
 }

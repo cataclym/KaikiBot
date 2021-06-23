@@ -51,13 +51,13 @@ export default class SetUserRoleCommand extends Command {
 			isPosition = botRole?.comparePositionTo(role);
 
 		if (!isPosition || (isPosition <= 0)) {
-			return message.channel.send(await embedFail("This role is higher than me, I cannot add this role!"));
+			return message.channel.send({ embeds: [await embedFail("This role is higher than me, I cannot add this role!")] });
 		}
 
 		else if (message.author.id !== message.guild?.ownerID &&
 			(message.member as GuildMember).roles.highest.position <= member.roles.highest.position) {
 
-			return message.channel.send(await embedFail("This role is higher than your highest, I cannot add this role!"));
+			return message.channel.send({ embeds: [await embedFail("This role is higher than your highest, I cannot add this role!")] });
 		}
 
 		const db = await getGuildDocument(guildID),
@@ -70,7 +70,7 @@ export default class SetUserRoleCommand extends Command {
 			try {
 				delete db.userRoles[member.id];
 				await member.roles.remove(userRole ?? roleID);
-				message.channel.send(await embedSuccess(`Removed role ${(userRole)?.name ?? roleID} from ${member.user.username}`));
+				message.channel.send({ embeds: [await embedSuccess(`Removed role ${(userRole)?.name ?? roleID} from ${member.user.username}`)] });
 			}
 
 			catch (err) {
@@ -81,7 +81,7 @@ export default class SetUserRoleCommand extends Command {
 		else {
 			db.userRoles[member.id] = role.id;
 			await member.roles.add(role);
-			message.channel.send(await embedSuccess(`Adding role ${role.name} to ${member.user.username}`));
+			message.channel.send({ embeds: [await embedSuccess(`Adding role ${role.name} to ${member.user.username}`)] });
 		}
 		db.markModified("userRoles");
 		return db.save();

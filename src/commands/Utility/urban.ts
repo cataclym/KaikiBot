@@ -27,14 +27,16 @@ export default class UrbanDictCommand extends Command {
 		const { list } = await fetch(`https://api.urbandictionary.com/v0/define?${query}`).then(response => response.json());
 
 		if (!list.length) {
-			return message.channel.send(new MessageEmbed({
-				description: `No results found for **${term}**.`,
-			})
-				.withErrorColor(message));
+			return message.channel.send({
+				embeds: [new MessageEmbed({
+					description: `No results found for **${term}**.`,
+				})
+					.withErrorColor(message)],
+			});
 		}
 		const pages: MessageEmbed[] = [];
-		list.forEach(async (result: Record<string, string>) => {
-			return pages.push(new MessageEmbed()
+		for (const result of list) {
+			pages.push(new MessageEmbed()
 				.setTitle(result.word)
 				.setURL(result.permalink)
 				.addFields(
@@ -44,7 +46,7 @@ export default class UrbanDictCommand extends Command {
 				)
 				.withOkColor(message),
 			);
-		});
+		}
 		return editMessageWithPaginatedEmbeds(message, pages, {});
 	}
 }

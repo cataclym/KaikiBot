@@ -29,10 +29,11 @@ export default class RoleMentionableCommand extends Command {
 			role.setMentionable(true);
 		}
 
-		return message.channel.send(new MessageEmbed({
-			description: `Toggled ${role.name}'s mentionable status to ${!role.mentionable}.`,
-		})
-			.withOkColor(message));
-
+		return message.channel.send({
+			embeds: [new MessageEmbed({
+				description: `Toggled ${role.name}'s mentionable status to ${!role.mentionable}.`,
+			})
+				.withOkColor(message)],
+		});
 	}
 }

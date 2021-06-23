@@ -30,11 +30,11 @@ export default class DadBotConfigCommand extends Command {
 					(message.client as customClient).guildSettings.set(guildID, "dadBot", true);
 					embed.setDescription(`DadBot functionality has been enabled in ${message.guild?.name}!
 					\nIndividual users can still disable dadbot on themselves with ${(this.handler.prefix as PrefixSupplier)(message)}exclude.`);
-					return message.channel.send(embed);
+					return message.channel.send({ embeds: [embed] });
 				}
 				else {
 					embed.setDescription("You have already enabled DadBot.");
-					return message.channel.send(embed);
+					return message.channel.send({ embeds: [embed] });
 				}
 			}
 			case ("disable"):
@@ -42,11 +42,11 @@ export default class DadBotConfigCommand extends Command {
 				if (isEnabled) {
 					(message.client as customClient).guildSettings.set(guildID, "dadBot", false);
 					embed.setDescription(`DadBot functionality has been disabled in ${message.guild?.name}!`);
-					return message.channel.send(embed);
+					return message.channel.send({ embeds: [embed] });
 				}
 				else {
 					embed.setDescription("You have already disabled DadBot.");
-					return message.channel.send(embed);
+					return message.channel.send({ embeds: [embed] });
 				}
 			}
 		}
