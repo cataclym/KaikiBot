@@ -1,13 +1,16 @@
 import { Command } from "@cataclym/discord-akairo";
 import { Snowflake } from "discord-api-types";
-import { Guild, GuildMember, Message, MessageEmbed } from "discord.js";
+import { Guild, GuildMember, Message, MessageEmbed, Permissions } from "discord.js";
 import { getGuildDocument } from "../../struct/documentMethods";
+import logger from "loglevel";
+import { trim } from "../../lib/Util";
 
 export default class RestoreUserRoles extends Command {
 	constructor() {
 		super("restore", {
 			aliases: ["restore"],
 			userPermissions: ["ADMINISTRATOR", "MANAGE_ROLES"],
+			clientPermissions: [Permissions.FLAGS.MANAGE_ROLES],
 			description: { description: "Restores roles for a user who has previously left the server.", usage: "@dreb" },
 			channel: "guild",
 			args: [
@@ -16,7 +19,7 @@ export default class RestoreUserRoles extends Command {
 					type: "member",
 					prompt: {
 						start: "Specify a member?",
-						retry: "I-I-Invalid member! Try again.",
+						retry: "I-I-Invalid member! Please try again...",
 					},
 				},
 			],
@@ -28,15 +31,20 @@ export default class RestoreUserRoles extends Command {
 			db = await getGuildDocument(guild.id),
 			leaveRoles = db.leaveRoles[member.id];
 
-		if (leaveRoles.length) {
+		if (leaveRoles && leaveRoles.length) {
 
-			const roleIDArray = leaveRoles.filter(roleString => guild.roles.cache.get(roleString as Snowflake));
+			const roleIDArray = leaveRoles
+				.map(roleString => guild.roles.cache.get(roleString as Snowflake))
+				.filter(r => r?.position !== 0)
+				.filter(Boolean);
 
-			if (!roleIDArray.length) return;
+			if (roleIDArray.every(r => r!.position > message.guild!.me!.roles.highest.position)) throw new Error("One or more roles' position is too high for me to add");
 
-			member.roles.add(roleIDArray);
+			await member.roles.add(roleIDArray.map(r => r!.id));
+
 			return message.channel.send(new MessageEmbed()
 				.setDescription(`Restored roles of ${member.user.tag}`)
+				.addField("Added Roles", trim(roleIDArray.join("\n"), 1024))
 				.withOkColor(message),
 			);
 		}
