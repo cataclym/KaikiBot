@@ -50,6 +50,6 @@ export default class SimpCommand extends Command {
 		ctx.drawImage(avatar, 300, 140, 100, 100);
 
 		const attachment = new MessageAttachment(canvas.toBuffer(), "Simper.jpg");
-		await message.util?.send(`Haha, you're a simp!! ${member.user}`, attachment);
+		await message.channel.send(`Haha, you're a simp!! ${member.user}`, attachment);
 	}
 }

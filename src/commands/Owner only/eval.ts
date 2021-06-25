@@ -24,14 +24,12 @@ export default class EvalCommand extends Command {
 			],
 		});
 	}
-	public async exec(message: Message, { code }: { code: string }): Promise<Message | void> {
+	public async exec(message: Message, { code }: { code: string }): Promise<Message | Message[]> {
 		try {
 			let evaled = await eval("(async () => " + code + ")()");
 
-			if (typeof evaled !== "string") {
-				evaled = (await import("util")).inspect(evaled);
-			}
-			return message.util?.send({
+			evaled = (await import("util")).inspect(evaled);
+			return message.channel.send({
 				content: clean(evaled),
 				options: { split: true, code:"x1" } });
 		}

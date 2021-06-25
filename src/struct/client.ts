@@ -17,9 +17,6 @@ export class customClient extends AkairoClient {
     constructor() {
     	super({
     		ownerID: process.env.OWNER as Snowflake,
-    		intents: [Intents.ALL],
-    	},
-    	{
     		allowedMentions: { parse: ["users"], repliedUser: true },
     		intents: [Intents.ALL],
     		partials: ["REACTION", "CHANNEL"],

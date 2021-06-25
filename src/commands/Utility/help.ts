@@ -25,11 +25,11 @@ export default class HelpCommand extends Command {
 
 		if (command instanceof Command) {
 
-			let usage = command.description.usage;
+			let usage;
 
-			if (usage) {
-				usage = usage instanceof Array
-					? usage.map(u => `${prefix}${command.id} ${u}`).join("\n")
+			if (typeof command.description !== "string") {
+				usage = command.description.usage instanceof Array
+					? command.description.usage.map(u => `${prefix}${command.id} ${u}`).join("\n")
 					: `${prefix}${command.id} ${usage}`;
 			}
 
@@ -37,8 +37,8 @@ export default class HelpCommand extends Command {
 				.setDescription(`**Aliases:** \`${command.aliases.join("`, `")}\``)
 				.setFooter(command.categoryID);
 
-			embed.addField("**Description:**", command.description.description || "?", false);
-			embed.addField("**Usage:**", usage?.length
+			embed.addField("**Description:**", typeof command.description === "string" ? "?" : command.description.description, false);
+			embed.addField("**Usage:**", usage && usage.length
 				? usage
 				: `${prefix}${command.id}`, false);
 

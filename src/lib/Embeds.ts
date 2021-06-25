@@ -76,11 +76,11 @@ export const noArgGeneric = (message: Message): MessageEmbed => {
 	const cmd = message.util?.parsed?.command;
 	const prefix = (cmd?.handler.prefix as PrefixSupplier)(message);
 
-	let usage = cmd?.description.usage;
+	let usage;
 
-	if (usage) {
-		if (Array.isArray(usage)) {
-			usage = usage.map(u => `${prefix}${cmd?.id} ${u}`).join("\n");
+	if (typeof cmd?.description !== "string") {
+		if (Array.isArray(cmd?.description.usage)) {
+			usage = cmd?.description.usage.map((u: string) => `${prefix}${cmd?.id} ${u}`).join("\n");
 		}
 		else {
 			usage = `${prefix}${cmd?.id} ${usage}`;

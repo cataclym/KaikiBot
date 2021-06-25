@@ -51,6 +51,6 @@ module.exports = class DeadbeatCommand extends Command {
 		ctx.drawImage(avatar, 620, 100, 100, 100);
 
 		const attachment = new Discord.MessageAttachment(canvas.toBuffer(), "deadBeats.jpg");
-		await message.util?.send(`Deadbeat 👉 ${member.user}`, attachment);
+		await message.channel.send(`Deadbeat 👉 ${member.user}`, attachment);
 	}
 };
