@@ -40,11 +40,20 @@ export default class RestoreUserRoles extends Command {
 
 			if (roleIDArray.every(r => r!.position > message.guild!.me!.roles.highest.position)) throw new Error("One or more roles' position is too high for me to add");
 
-			await member.roles.add(roleIDArray.map(r => r!.id));
+			const rolesToAdd = roleIDArray.filter(r => !member.roles.cache.has(r!.id));
+
+			if (!rolesToAdd.length) {
+				return message.channel.send(new MessageEmbed()
+					.setDescription("This member already has all the roles.")
+					.withErrorColor(message),
+				);
+			}
+
+			await member.roles.add(rolesToAdd.map(r => r!.id));
 
 			return message.channel.send(new MessageEmbed()
 				.setDescription(`Restored roles of ${member.user.tag}`)
-				.addField("Added Roles", trim(roleIDArray.join("\n"), 1024))
+				.addField("Added Roles", trim(rolesToAdd.join("\n"), 1024))
 				.withOkColor(message),
 			);
 		}
