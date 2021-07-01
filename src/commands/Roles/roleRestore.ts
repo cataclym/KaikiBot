@@ -2,7 +2,6 @@ import { Command } from "@cataclym/discord-akairo";
 import { Snowflake } from "discord-api-types";
 import { Guild, GuildMember, Message, MessageEmbed, Permissions } from "discord.js";
 import { getGuildDocument } from "../../struct/documentMethods";
-import logger from "loglevel";
 import { trim } from "../../lib/Util";
 
 export default class RestoreUserRoles extends Command {
@@ -17,10 +16,9 @@ export default class RestoreUserRoles extends Command {
 				{
 					id: "member",
 					type: "member",
-					prompt: {
-						start: "Specify a member?",
-						retry: "I-I-Invalid member! Please try again...",
-					},
+					otherwise: (m) => new MessageEmbed()
+						.setDescription("Please provide a valid member")
+						.withErrorColor(m),
 				},
 			],
 		});
@@ -33,13 +31,17 @@ export default class RestoreUserRoles extends Command {
 
 		if (leaveRoles && leaveRoles.length) {
 
+			// Get all roles that still exist in guild.
+			// Filter everyone role
+			// Then filter out undefined.
 			const roleIDArray = leaveRoles
 				.map(roleString => guild.roles.cache.get(roleString as Snowflake))
 				.filter(r => r?.position !== 0)
 				.filter(Boolean);
 
-			if (roleIDArray.every(r => r!.position > message.guild!.me!.roles.highest.position)) throw new Error("One or more roles' position is too high for me to add");
+			if (roleIDArray.every(r => r!.position > message.guild!.me!.roles.highest.position)) throw new Error("One or more roles are above me in the hierarchy");
 
+			// Making sure bot doesn't add roles the user already have
 			const rolesToAdd = roleIDArray.filter(r => !member.roles.cache.has(r!.id));
 
 			if (!rolesToAdd.length) {
@@ -49,18 +51,20 @@ export default class RestoreUserRoles extends Command {
 				);
 			}
 
+			// Add all roles
+			// Map roles to ID, because D.js didn't like it otherwise
 			await member.roles.add(rolesToAdd.map(r => r!.id));
 
 			return message.channel.send(new MessageEmbed()
-				.setDescription(`Restored roles of ${member.user.tag}`)
-				.addField("Added Roles", trim(rolesToAdd.join("\n"), 1024))
+				.setDescription(`Restored roles of \`${member.user.tag}\` [${member.id}]`)
+				.addField("Roles added", trim(rolesToAdd.join("\n"), 1024))
 				.withOkColor(message),
 			);
 		}
 
 		else {
 			return message.channel.send(new MessageEmbed()
-				.setDescription("This user's roles have not been saved, or user has never left the guild.")
+				.setDescription("This user's roles have not been saved, or they have not left the guild.")
 				.withErrorColor(message),
 			);
 		}
