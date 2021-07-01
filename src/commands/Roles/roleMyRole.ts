@@ -1,4 +1,4 @@
-import { Argument, Command, Flag, PrefixSupplier } from "@cataclym/discord-akairo";
+import { Argument, Command, Flag, PrefixSupplier } from "discord-akairo";
 import { Snowflake } from "discord-api-types";
 import { Guild, Message, MessageEmbed } from "discord.js";
 import { getGuildDocument } from "../../struct/documentMethods";

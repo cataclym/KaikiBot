@@ -1,4 +1,4 @@
-import { Command } from "@cataclym/discord-akairo";
+import { Command } from "discord-akairo";
 import { errorColor, okColor } from "../lib/Util";
 import { customClient } from "../struct/client";
 import logger from "loglevel";

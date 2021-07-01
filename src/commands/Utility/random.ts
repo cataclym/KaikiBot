@@ -1,5 +1,5 @@
 import { MessageEmbed } from "discord.js";
-import { Command } from "@cataclym/discord-akairo";
+import { Command } from "discord-akairo";
 import { Message } from "discord.js";
 
 module.exports = class RandomNumberCommand extends Command {

@@ -1,4 +1,4 @@
-import { Command, PrefixSupplier } from "@cataclym/discord-akairo";
+import { Command, PrefixSupplier } from "discord-akairo";
 import { Message, MessageEmbed, User } from "discord.js";
 
 export default class MentionCommand extends Command {

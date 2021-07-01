@@ -1,4 +1,4 @@
-import { Argument, Command } from "@cataclym/discord-akairo";
+import { Argument, Command } from "discord-akairo";
 import { Guild, Message, MessageEmbed } from "discord.js";
 import { hexColorTable } from "../../lib/Color";
 import { noArgGeneric } from "../../lib/Embeds";

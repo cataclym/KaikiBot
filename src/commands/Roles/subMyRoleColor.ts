@@ -1,6 +1,6 @@
 import { hexColorTable, resolveColor } from "../../lib/Color";
 import { Guild, Message, MessageEmbed } from "discord.js";
-import { Argument, Command } from "@cataclym/discord-akairo";
+import { Argument, Command } from "discord-akairo";
 import { embedFail } from "../../lib/Embeds";
 import { getGuildDocument } from "../../struct/documentMethods";
 import { Snowflake } from "discord-api-types";

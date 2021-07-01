@@ -1,4 +1,4 @@
-import { Argument, Command } from "@cataclym/discord-akairo";
+import { Argument, Command } from "discord-akairo";
 import { Snowflake } from "discord-api-types";
 import { Message, MessageEmbed, User } from "discord.js";
 import { flags } from "../../lib/Util";

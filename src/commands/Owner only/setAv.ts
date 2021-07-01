@@ -1,4 +1,4 @@
-import { Command } from "@cataclym/discord-akairo";
+import { Command } from "discord-akairo";
 import Canvas from "canvas";
 import { Message, MessageAttachment } from "discord.js";
 import logger from "loglevel";

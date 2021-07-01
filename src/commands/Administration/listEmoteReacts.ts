@@ -1,4 +1,4 @@
-import { Command, PrefixSupplier } from "@cataclym/discord-akairo";
+import { Command, PrefixSupplier } from "discord-akairo";
 import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
 import { Snowflake } from "discord-api-types";
 import { Message, MessageEmbed } from "discord.js";

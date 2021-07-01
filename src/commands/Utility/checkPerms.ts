@@ -1,4 +1,4 @@
-import { Argument, Command } from "@cataclym/discord-akairo";
+import { Argument, Command } from "discord-akairo";
 import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
 import { GuildMember, Message, MessageEmbed, Role, TextChannel } from "discord.js";
 import { codeblock } from "../../lib/Util";

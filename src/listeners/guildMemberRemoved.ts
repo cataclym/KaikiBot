@@ -1,4 +1,4 @@
-import { Listener } from "@cataclym/discord-akairo";
+import { Listener } from "discord-akairo";
 import { GuildMember } from "discord.js";
 import { handleGoodbyeMessage } from "../lib/GreetHandler";
 import { getGuildDocument } from "../struct/documentMethods";

@@ -1,4 +1,4 @@
-import { Command, Listener } from "@cataclym/discord-akairo";
+import { Command, Listener } from "discord-akairo";
 import { Message, MessageEmbed } from "discord.js";
 import logger from "loglevel";
 import { cmdStatsCache } from "../cache/cache";

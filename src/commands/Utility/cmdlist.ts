@@ -1,4 +1,4 @@
-import { Argument, Category, Command, PrefixSupplier } from "@cataclym/discord-akairo";
+import { Argument, Category, Command, PrefixSupplier } from "discord-akairo";
 import { Message, MessageEmbed } from "discord.js";
 import { name, repository, version } from "../../../package.json";
 import { noArgGeneric } from "../../lib/Embeds";

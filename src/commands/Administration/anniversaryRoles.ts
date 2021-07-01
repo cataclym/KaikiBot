@@ -1,4 +1,4 @@
-import { Command } from "@cataclym/discord-akairo";
+import { Command } from "discord-akairo";
 import { Guild, Message, MessageEmbed } from "discord.js";
 import { IGuild } from "../../interfaces/IDocuments";
 import { checkBirthdayOnAdd } from "../../lib/AnniversaryRoles";

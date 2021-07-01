@@ -1,4 +1,4 @@
-import { Command, Listener } from "@cataclym/discord-akairo";
+import { Command, Listener } from "discord-akairo";
 import { ClientUser, ColorResolvable, Message, User, UserFlagsString } from "discord.js";
 import { hexColorTable } from "./Color";
 

@@ -1,4 +1,4 @@
-import { Command } from "@cataclym/discord-akairo";
+import { Command } from "discord-akairo";
 import Canvas, { loadImage } from "canvas";
 import { GuildMember, Message, MessageAttachment } from "discord.js";
 // Canvas.registerFont("../../../lmsans9-regular.otf", { family: "Latin Modern Sans", style: "regular" });

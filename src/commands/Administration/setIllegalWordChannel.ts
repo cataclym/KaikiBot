@@ -1,4 +1,4 @@
-// import { Command } from "@cataclym/discord-akairo";
+// import { Command } from "discord-akairo";
 // import { Message, MessageEmbed, TextChannel } from "discord.js";
 // import { getGuildDB } from "../../struct/db";
 

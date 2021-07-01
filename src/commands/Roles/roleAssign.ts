@@ -1,4 +1,4 @@
-import { Command } from "@cataclym/discord-akairo";
+import { Command } from "discord-akairo";
 import { GuildMember, Message, MessageEmbed, Role } from "discord.js";
 
 export default class RoleAssignCommand extends Command {

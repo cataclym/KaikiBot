@@ -1,4 +1,4 @@
-import { Command } from "@cataclym/discord-akairo";
+import { Command } from "discord-akairo";
 import { GuildMember, Message, MessageEmbed, Role, UserFlagsString } from "discord.js";
 import { flags, getUserPresenceAsync } from "../../lib/Util";
 

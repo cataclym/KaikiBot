@@ -1,4 +1,4 @@
-import { Command, Inhibitor } from "@cataclym/discord-akairo";
+import { Command, Inhibitor } from "discord-akairo";
 import { MessageEmbed } from "discord.js";
 import { TextChannel } from "discord.js";
 import { Message } from "discord.js";

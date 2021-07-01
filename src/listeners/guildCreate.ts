@@ -1,4 +1,4 @@
-import { Listener } from "@cataclym/discord-akairo";
+import { Listener } from "discord-akairo";
 import { Guild } from "discord.js";
 import { checkBirthdayOnAdd } from "../lib/AnniversaryRoles";
 import { emoteDataBaseService } from "../lib/functions";

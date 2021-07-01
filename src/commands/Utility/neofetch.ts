@@ -1,5 +1,5 @@
 /* eslint-disable no-useless-escape */
-import { Command } from "@cataclym/discord-akairo";
+import { Command } from "discord-akairo";
 import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
 import { exec } from "child_process";
 import { Message, MessageEmbed } from "discord.js";

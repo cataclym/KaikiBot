@@ -1,4 +1,4 @@
-import { Argument, Command } from "@cataclym/discord-akairo";
+import { Argument, Command } from "discord-akairo";
 import { Message, MessageAttachment } from "discord.js";
 import sizeOf from "image-size";
 import { noArgGeneric } from "../../lib/Embeds";

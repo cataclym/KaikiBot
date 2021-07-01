@@ -1,4 +1,4 @@
-import { AkairoClient, CommandHandler, InhibitorHandler, ListenerHandler, MongooseProvider } from "@cataclym/discord-akairo";
+import { AkairoClient, CommandHandler, InhibitorHandler, ListenerHandler, MongooseProvider } from "discord-akairo";
 import { Snowflake } from "discord-api-types";
 import { Intents } from "discord.js";
 import { join } from "path";
@@ -17,9 +17,6 @@ export class customClient extends AkairoClient {
     constructor() {
     	super({
     		ownerID: process.env.OWNER as Snowflake,
-    		intents: [Intents.ALL],
-    	},
-    	{
     		allowedMentions: { parse: ["users"], repliedUser: true },
     		intents: [Intents.ALL],
     		partials: ["REACTION", "CHANNEL"],

@@ -1,4 +1,4 @@
-import { Category, Command } from "@cataclym/discord-akairo";
+import { Category, Command } from "discord-akairo";
 import { Guild, Message, MessageEmbed } from "discord.js";
 import { noArgGeneric } from "../../lib/Embeds";
 import { getGuildDocument } from "../../struct/documentMethods";

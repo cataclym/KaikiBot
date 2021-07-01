@@ -1,4 +1,4 @@
-import { Listener } from "@cataclym/discord-akairo";
+import { Listener } from "discord-akairo";
 import logger from "loglevel";
 
 

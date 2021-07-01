@@ -1,4 +1,4 @@
-import { Command } from "@cataclym/discord-akairo";
+import { Command } from "discord-akairo";
 import { Snowflake } from "discord-api-types";
 import { Message, MessageEmbed } from "discord.js";
 import { getGuildDocument } from "../../struct/documentMethods";

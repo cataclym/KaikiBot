@@ -1,4 +1,4 @@
-import { Argument, Command, PrefixSupplier } from "@cataclym/discord-akairo";
+import { Argument, Command, PrefixSupplier } from "discord-akairo";
 import { execSync } from "child_process";
 import { Message, MessageEmbed } from "discord.js";
 import { name, repository, version } from "../../../package.json";

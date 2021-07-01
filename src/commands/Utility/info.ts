@@ -1,4 +1,4 @@
-import { Argument, Command } from "@cataclym/discord-akairo";
+import { Argument, Command } from "discord-akairo";
 import { CategoryChannel, Channel, Emoji, GuildMember, Message, MessageEmbed, NewsChannel, Role, StageChannel, StoreChannel, TextChannel, VoiceChannel } from "discord.js";
 import * as emojis from "node-emoji";
 import { noArgGeneric } from "../../lib/Embeds";

@@ -1,4 +1,4 @@
-import { Command } from "@cataclym/discord-akairo";
+import { Command } from "discord-akairo";
 import { Message, MessageEmbed } from "discord.js";
 import { Image } from "kaori/typings/Image";
 import { grabHentaiPictureAsync, grabHentai, typesArray, postHentai } from "./hentaiService";

@@ -1,4 +1,4 @@
-import { Command, Listener } from "@cataclym/discord-akairo";
+import { Command, Listener } from "discord-akairo";
 import { GuildMember, Message, MessageEmbed } from "discord.js";
 import { noArgGeneric } from "../../lib/Embeds";
 

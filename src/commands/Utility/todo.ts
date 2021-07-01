@@ -1,4 +1,4 @@
-import { Argument, Command, Flag, PrefixSupplier } from "@cataclym/discord-akairo";
+import { Argument, Command, Flag, PrefixSupplier } from "discord-akairo";
 import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
 import { Message, MessageEmbed } from "discord.js";
 import { trim } from "../../lib/Util";

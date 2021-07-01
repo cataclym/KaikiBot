@@ -1,4 +1,4 @@
-import { AkairoClient } from "@cataclym/discord-akairo";
+import { AkairoClient } from "discord-akairo";
 import { Snowflake } from "discord-api-types";
 import { Client, Guild, GuildMember, Message, MessageEmbed, User } from "discord.js";
 import logger from "loglevel";

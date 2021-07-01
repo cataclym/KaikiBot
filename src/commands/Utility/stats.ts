@@ -1,4 +1,4 @@
-import Akairo, { Command } from "@cataclym/discord-akairo";
+import Akairo, { Command } from "discord-akairo";
 import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
 import { execSync } from "child_process";
 import { Message, MessageEmbed, version } from "discord.js";

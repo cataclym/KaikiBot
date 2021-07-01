@@ -1,4 +1,4 @@
-import { Command, FailureData } from "@cataclym/discord-akairo";
+import { Command, FailureData } from "discord-akairo";
 import { Message, MessageEmbed } from "discord.js";
 import { noArgGeneric } from "../../lib/Embeds";
 import { codeblock } from "../../lib/Util";

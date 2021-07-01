@@ -1,4 +1,4 @@
-import { Command } from "@cataclym/discord-akairo";
+import { Command } from "discord-akairo";
 import { Message, Util } from "discord.js";
 import { dadbotArray } from "../../struct/constants";
 import { getUserDocument } from "../../struct/documentMethods";

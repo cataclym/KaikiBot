@@ -1,4 +1,4 @@
-import { Command, PrefixSupplier } from "@cataclym/discord-akairo";
+import { Command, PrefixSupplier } from "discord-akairo";
 import { Snowflake } from "discord-api-types";
 import { Guild, GuildMember, Message, MessageEmbed, Role } from "discord.js";
 import { IGuild } from "../../interfaces/IDocuments";

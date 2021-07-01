@@ -1,4 +1,4 @@
-import { Command } from "@cataclym/discord-akairo";
+import { Command } from "discord-akairo";
 import { Message } from "discord.js";
 import sendWaifuPics from "../../lib/waifuPics";
 

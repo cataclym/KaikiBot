@@ -1,4 +1,4 @@
-// import { Command } from "@cataclym/discord-akairo";
+// import { Command } from "discord-akairo";
 // import { Message, MessageEmbed } from "discord.js";
 // import fetch from "node-fetch";
 // import { errorMessage } from "../../lib/Embeds";

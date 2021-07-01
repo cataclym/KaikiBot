@@ -1,4 +1,4 @@
-import { Listener } from "@cataclym/discord-akairo";
+import { Listener } from "discord-akairo";
 import { MessageEmbed } from "discord.js";
 import logger from "loglevel";
 import { birthdayService } from "../lib/AnniversaryRoles";

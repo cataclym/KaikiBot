@@ -1,4 +1,4 @@
-import { Command } from "@cataclym/discord-akairo";
+import { Command } from "discord-akairo";
 import { Message, MessageEmbed } from "discord.js";
 import { errorMessage } from "../../lib/Embeds";
 import { trim } from "../../lib/Util";

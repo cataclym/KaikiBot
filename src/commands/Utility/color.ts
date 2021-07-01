@@ -1,4 +1,4 @@
-import { Command } from "@cataclym/discord-akairo";
+import { Command } from "discord-akairo";
 import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
 import { Message, MessageAttachment, MessageEmbed } from "discord.js";
 import { hexColorTable, imgFromColor, resolveColor } from "../../lib/Color";

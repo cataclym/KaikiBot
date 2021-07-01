@@ -1,6 +1,6 @@
 import Canvas, { loadImage } from "canvas";
 import Discord, { Message } from "discord.js";
-import { Command } from "@cataclym/discord-akairo";
+import { Command } from "discord-akairo";
 const background = async () => await loadImage("https://cdn.discordapp.com/attachments/717045059215687691/763459004352954368/deadbeats.jpg");
 
 module.exports = class DeadbeatCommand extends Command {

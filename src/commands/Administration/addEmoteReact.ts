@@ -1,4 +1,4 @@
-import { Command } from "@cataclym/discord-akairo";
+import { Command } from "discord-akairo";
 import { Guild, GuildEmoji, Message, MessageEmbed } from "discord.js";
 import { noArgGeneric } from "../../lib/Embeds";
 import { getGuildDocument } from "../../struct/documentMethods";
@@ -10,8 +10,7 @@ export default class EmoteReactCommand extends Command {
 			userPermissions: "MANAGE_EMOJIS",
 			clientPermissions: "ADD_REACTIONS",
 			channel: "guild",
-			description: { description: "Add triggers for the bot to react with emojis/emotes to. Use quotes for triggers with spaces.",
-				usage: ["red :red:", "anime :weeaboosgetout:"] },
+			description: "Add triggers for the bot to react with emojis/emotes to. Use quotes for triggers with spaces.",
 			args: [
 				{
 					id: "trigger",

@@ -1,4 +1,4 @@
-import { Command, PrefixSupplier } from "@cataclym/discord-akairo";
+import { Command, PrefixSupplier } from "discord-akairo";
 import { Message, MessageEmbed, User } from "discord.js";
 import { getTinderDocument } from "../struct/documentMethods";
 import { poems } from "./Poems";

@@ -1,4 +1,4 @@
-import { Command } from "@cataclym/discord-akairo";
+import { Command } from "discord-akairo";
 import { ChildProcess, exec } from "child_process";
 import { Message, MessageEmbed } from "discord.js";
 import { codeblock, trim } from "../../lib/Util";

@@ -1,6 +1,6 @@
 import { trim } from "../../lib/Util";
 import { Guild, Message, MessageEmbed } from "discord.js";
-import { Command } from "@cataclym/discord-akairo";
+import { Command } from "discord-akairo";
 import { embedFail } from "../../lib/Embeds";
 import { getGuildDocument } from "../../struct/documentMethods";
 import { Snowflake } from "discord-api-types";

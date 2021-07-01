@@ -1,4 +1,4 @@
-import { Listener } from "@cataclym/discord-akairo";
+import { Listener } from "discord-akairo";
 import { Interaction } from "discord.js";
 import logger from "loglevel";
 import { errorMessage } from "../lib/Embeds";
