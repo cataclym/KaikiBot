@@ -1,16 +1,12 @@
-import { Command } from "discord-akairo";
 import { Message } from "discord.js";
+import { KaikiCommand } from "Kaiki";
+import { codeblock } from "../../lib/Util";
 
 const clean = (text: string) => {
-	if (typeof (text) === "string") {
-		return text.replace(/`/g, "`" + String.fromCharCode(8203)).replace(/@/g, "@" + String.fromCharCode(8203));
-	}
-	else {
-		return text;
-	}
+	return text.replace(/`/g, "`" + String.fromCharCode(8203)).replace(/@/g, "@" + String.fromCharCode(8203));
 };
 
-export default class EvalCommand extends Command {
+export default class EvalCommand extends KaikiCommand {
 	constructor() {
 		super("eval", {
 			aliases: ["eval"],

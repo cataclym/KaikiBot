@@ -1,14 +1,15 @@
-import { Command } from "discord-akairo";
 import { Message, MessageEmbed, Role } from "discord.js";
 import { noArgRole } from "../../lib/Embeds";
+import { KaikiCommand } from "Kaiki";
 
-export default class RoleMentionableCommand extends Command {
+export default class RoleMentionableCommand extends KaikiCommand {
 	constructor() {
 		super("rolementionable", {
 			aliases: ["rolementionable", "rolem", "mentionable"],
 			clientPermissions: "MANAGE_ROLES",
 			userPermissions: "MANAGE_ROLES",
-			description: { description: "Toggles if a role is mentionable", usage: "@gamers" },
+			description: "Toggles if a role is mentionable",
+			usage: "@gamers",
 			channel: "guild",
 			args: [
 				{

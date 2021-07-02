@@ -1,19 +1,17 @@
-import { Command } from "discord-akairo";
 import { Message, MessageEmbed, User } from "discord.js";
 import { IMoneyService } from "../../lib/money/IMoneyService";
 import { MongoMoney } from "../../lib/money/MongoMoneyService";
+import { KaikiCommand } from "Kaiki";
 
 
-export default class take extends Command {
+export default class take extends KaikiCommand {
     private readonly _money: IMoneyService;
     constructor() {
     	super("take", {
     		ownerOnly: true,
     		aliases: ["take"],
-    		description: {
-    			description: "Takes money from the specified user",
-    			usage: "take 50 @Cata",
-    		},
+    		description: "Takes money from the specified user",
+    		usage: "take 50 @Cata",
     		args: [
     			{
     				id: "amount",

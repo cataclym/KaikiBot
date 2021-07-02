@@ -1,20 +1,19 @@
 import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
-import { Command } from "discord-akairo";
 import { GuildMember, Role, MessageEmbed, Message } from "discord.js";
+import { KaikiCommand } from "Kaiki";
 
-export default class RoleInRoleCommand extends Command {
+export default class RoleInRoleCommand extends KaikiCommand {
 	constructor() {
 		super("inrole", {
 			aliases: ["inrole"],
-			description: { description: "Lists all users in role", usage: "" },
+			description: "Lists all users in role",
+			usage: "",
 			channel: "guild",
-			args: [
-				{
-					id: "role",
-					type: "role",
-					default: (message: Message) => message.member?.roles.highest,
-				},
-			],
+			args: [{
+				id: "role",
+				type: "role",
+				default: (message: Message) => message.member?.roles.highest,
+			}],
 		});
 	}
 

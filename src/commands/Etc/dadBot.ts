@@ -1,14 +1,14 @@
-import { Command } from "discord-akairo";
 import { Message, Util } from "discord.js";
 import { dadbotArray } from "../../struct/constants";
 import { getUserDocument } from "../../struct/documentMethods";
+import { KaikiCommand } from "Kaiki";
 
 const nickname: {
 	[id: string]: string
 } = {};
 
 // dad bot
-export default class dadBot extends Command {
+export default class dadBot extends KaikiCommand {
 	constructor() {
 		super("dadbot", {
 			channel: "guild",

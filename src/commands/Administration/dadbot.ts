@@ -1,9 +1,10 @@
-import { Command, PrefixSupplier } from "discord-akairo";
+import { PrefixSupplier } from "discord-akairo";
 import { Guild, Message, MessageEmbed } from "discord.js";
 import { noArgGeneric } from "../../lib/Embeds";
 import { customClient } from "../../struct/client";
+import { KaikiCommand } from "Kaiki";
 
-export default class DadBotConfigCommand extends Command {
+export default class DadBotConfigCommand extends KaikiCommand {
 	constructor() {
 		super("config-dadbot", {
 			userPermissions: "ADMINISTRATOR",
@@ -27,7 +28,7 @@ export default class DadBotConfigCommand extends Command {
 			case ("enable"):
 			case ("true"): {
 				if (!isEnabled) {
-					(message.client as customClient).guildSettings.set(guildID, "dadBot", true);
+					await (message.client as customClient).guildSettings.set(guildID, "dadBot", true);
 					embed.setDescription(`DadBot functionality has been enabled in ${message.guild?.name}!
 					\nIndividual users can still disable dadbot on themselves with ${(this.handler.prefix as PrefixSupplier)(message)}exclude.`);
 					return message.channel.send({ embeds: [embed] });
@@ -40,7 +41,7 @@ export default class DadBotConfigCommand extends Command {
 			case ("disable"):
 			case ("false"): {
 				if (isEnabled) {
-					(message.client as customClient).guildSettings.set(guildID, "dadBot", false);
+					await (message.client as customClient).guildSettings.set(guildID, "dadBot", false);
 					embed.setDescription(`DadBot functionality has been disabled in ${message.guild?.name}!`);
 					return message.channel.send({ embeds: [embed] });
 				}

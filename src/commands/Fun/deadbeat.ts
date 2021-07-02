@@ -1,13 +1,14 @@
 import Canvas, { loadImage } from "canvas";
 import Discord, { Message } from "discord.js";
-import { Command } from "discord-akairo";
+import { KaikiCommand } from "Kaiki";
 const background = async () => await loadImage("https://cdn.discordapp.com/attachments/717045059215687691/763459004352954368/deadbeats.jpg");
 
-module.exports = class DeadbeatCommand extends Command {
+module.exports = class DeadbeatCommand extends KaikiCommand {
 	constructor() {
 		super("deadbeat", {
 			aliases: ["dead", "deadbeat"],
-			description: { description: "Just try it", usage: "@dreb" },
+			description: "Just try it",
+			usage: "@dreb",
 			cooldown: 8000,
 			typing: true,
 			args: [{
@@ -51,6 +52,6 @@ module.exports = class DeadbeatCommand extends Command {
 		ctx.drawImage(avatar, 620, 100, 100, 100);
 
 		const attachment = new Discord.MessageAttachment(canvas.toBuffer(), "deadBeats.jpg");
-		await message.util?.send(`Deadbeat 👉 ${member.user}`, attachment);
+		await message.channel.send({ content: `Deadbeat 👉 ${member.user}`, files: [attachment] });
 	}
 };

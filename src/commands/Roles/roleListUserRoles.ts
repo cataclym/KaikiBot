@@ -3,12 +3,14 @@ import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-
 import { Snowflake } from "discord-api-types";
 import { Guild, Message, MessageEmbed } from "discord.js";
 import { getGuildDocument } from "../../struct/documentMethods";
+import { KaikiCommand } from "Kaiki";
 
-export default class ListUserRoles extends Command {
+export default class ListUserRoles extends KaikiCommand {
 	constructor() {
 		super("listuserroles", {
 			aliases: ["listuserroles", "lur"],
-			description: { description: "List all custom assigned roles.", usage: "" },
+			description: "List all custom assigned roles.",
+			usage: "",
 			prefix: (msg: Message) => {
 				const p = (this.handler.prefix as PrefixSupplier)(msg);
 				return [p as string, ";"];

@@ -1,34 +1,33 @@
-import { Argument, Command } from "discord-akairo";
+import { Argument } from "discord-akairo";
 import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
 import { GuildMember, Message, MessageEmbed, Role, TextChannel } from "discord.js";
 import { codeblock } from "../../lib/Util";
+import { KaikiCommand } from "Kaiki";
 
-export default class CheckPermissionsCommand extends Command {
+export default class CheckPermissionsCommand extends KaikiCommand {
 	constructor() {
 		super("checkpermissions", {
 			aliases: ["checkperms", "cp", "perms"],
-			description: {
-				description: "Lists perms for role/member",
-				usage: ["", "@user", "@role", "@user #channel"] },
-			args: [
-				{
-					id: "input",
-					type: Argument.union("role", "member"),
-					default: (message: Message) => message.member,
-				},
-				{
-					id: "channel",
-					type: "textChannel",
-					default: (message: Message) => message.channel,
-				},
-			],
+			description: "Lists perms for role/member",
+			usage: ["", "@user", "@role", "@user #channel"],
+			channel: "guild",
+			args: [{
+				id: "input",
+				type: Argument.union("role", "member"),
+				default: (message: Message) => message.member,
+			},
+			{
+				id: "channel",
+				type: "textChannel",
+				default: (message: Message) => message.channel,
+			}],
 		});
 	}
 
 	public async exec(message: Message, { input, channel }: { input: Role | GuildMember, channel: TextChannel }): Promise<Message> {
 
 		const { permissions } = input,
-			permissionsIn = input.permissionsIn(message.channel),
+			permissionsIn = input.permissionsIn(message.channel as TextChannel),
 			inputName = input instanceof Role ? input.name : input.user.tag;
 
 		const pages = [];

@@ -1,19 +1,20 @@
-import { Argument, Command } from "discord-akairo";
+import { Argument } from "discord-akairo";
 import { CategoryChannel, Channel, Emoji, GuildMember, Message, MessageEmbed, NewsChannel, Role, StageChannel, StoreChannel, TextChannel, VoiceChannel } from "discord.js";
 import * as emojis from "node-emoji";
 import { noArgGeneric } from "../../lib/Embeds";
 import { flags } from "../../lib/Util";
 import { EMOTE_REGEX } from "../../struct/constants";
+import { KaikiCommand } from "Kaiki";
 
 type regexpType = { match: RegExpMatchArray };
 
-export default class InfoCommand extends Command {
+export default class InfoCommand extends KaikiCommand {
 	constructor() {
 		super("info", {
 			aliases: ["info"],
 			channel: "guild",
-			description: { description: "Returns info on a channel, role, member, emoji, or message",
-				usage: ["#channel", "@member", "@role", ":coolCustomEmoji:", "messageID" ] },
+			description: "Returns info on a channel, role, member, emoji, or message",
+			usage: ["#channel", "@member", "@role", ":coolCustomEmoji:", "messageID" ],
 			args: [
 				{
 					id: "obj",

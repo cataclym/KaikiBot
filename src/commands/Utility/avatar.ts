@@ -1,11 +1,12 @@
-import { Command } from "discord-akairo";
 import { User, Message, MessageEmbed } from "discord.js";
+import { KaikiCommand } from "Kaiki";
 
-export default class AvatarCommand extends Command {
+export default class AvatarCommand extends KaikiCommand {
 	constructor() {
 		super("avatar", {
 			aliases: ["avatar", "av"],
-			description: { description: "Shows a mentioned person's avatar.", usage: "@dreb" },
+			description: "Shows a mentioned person's avatar.",
+			usage: "@dreb",
 			args: [
 				{
 					id: "user",

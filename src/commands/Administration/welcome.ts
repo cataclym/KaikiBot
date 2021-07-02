@@ -1,10 +1,11 @@
-import { Argument, Command } from "discord-akairo";
+import { Argument } from "discord-akairo";
 import { Guild, Message, MessageEmbed, TextChannel } from "discord.js";
 import { hexColorTable } from "../../lib/Color";
 import { okColor } from "../../lib/Util";
 import { getGuildDocument } from "../../struct/documentMethods";
+import { KaikiCommand } from "Kaiki";
 
-export default class WelcomeConfigCommand extends Command {
+export default class WelcomeConfigCommand extends KaikiCommand {
 	constructor() {
 		super("config-welcome", {
 			userPermissions: "ADMINISTRATOR",

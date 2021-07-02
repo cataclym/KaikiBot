@@ -1,12 +1,12 @@
-import { Command } from "discord-akairo";
 import { Guild, Message, MessageEmbed } from "discord.js";
 import { Exclude } from "../../lib/Embeds";
 import { getGuildDocument } from "../../struct/documentMethods";
+import { KaikiCommand } from "Kaiki";
 
-export default class ExcludeCommand extends Command {
+export default class ExcludeCommand extends KaikiCommand {
 	constructor() {
 		super("exclude", {
-			description: { description: "Adds or removes excluded role from user. Excludes the user from being targeted by dadbot." },
+			description: "Adds or removes excluded role from user. Excludes the user from being targeted by dadbot.",
 			aliases: ["exclude", "e", "excl"],
 			clientPermissions: "MANAGE_ROLES",
 			channel: "guild",

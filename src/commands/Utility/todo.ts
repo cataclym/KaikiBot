@@ -1,16 +1,16 @@
-import { Argument, Command, Flag, PrefixSupplier } from "discord-akairo";
+import { Argument, Flag, PrefixSupplier } from "discord-akairo";
 import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
 import { Message, MessageEmbed } from "discord.js";
 import { trim } from "../../lib/Util";
 import { getUserDocument } from "../../struct/documentMethods";
-module.exports = class TodoCommand extends Command {
+import { KaikiCommand } from "Kaiki";
+
+module.exports = class TodoCommand extends KaikiCommand {
 	constructor() {
 		super("todo", {
 			aliases: ["todo", "note"],
-			description: {
-				description: "A personal todo list. The items are limited to 204 characters. Intended for small notes, not detailed cooking recipies.",
-				usage: ["", "add make cake 07/07/2020", "remove 5", "remove last", "remove first", "remove all", "rm 1"],
-			},
+			description: "A personal todo list. The items are limited to 204 characters. Intended for small notes, not detailed cooking recipies.",
+			usage: ["", "add make cake 07/07/2020", "remove 5", "remove last", "remove first", "remove all", "rm 1"],
 		});
 	}
 	*args(): Generator<{

@@ -42,7 +42,7 @@ export default class UnbanCommand extends Command {
 		else {
 			return message.channel.send({
 				embeds: [new MessageEmbed({
-					description: "This user is not banned.",
+					description: `\`${user.tag}\` is not banned.`,
 				})
 					.withErrorColor(message)],
 			});

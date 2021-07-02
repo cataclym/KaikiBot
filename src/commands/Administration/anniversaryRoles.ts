@@ -1,4 +1,4 @@
-import { Command } from "discord-akairo";
+import { KaikiCommand } from "Kaiki";
 import { Guild, Message, MessageEmbed } from "discord.js";
 import { IGuild } from "../../interfaces/IDocuments";
 import { checkBirthdayOnAdd } from "../../lib/AnniversaryRoles";
@@ -8,7 +8,7 @@ import { getGuildDocument } from "../../struct/documentMethods";
 type values = "enable" | "true" | "disable" | "false";
 const values: values[] = ["enable", "true", "disable", "false"];
 
-export default class AnniversaryRolesConfigCommand extends Command {
+export default class AnniversaryRolesConfigCommand extends KaikiCommand {
 	constructor() {
 		super("config-anniversary", {
 			userPermissions: "ADMINISTRATOR",

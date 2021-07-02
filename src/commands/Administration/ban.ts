@@ -1,14 +1,16 @@
-import { Argument, Command } from "discord-akairo";
+import { Argument } from "discord-akairo";
+import { KaikiCommand } from "Kaiki";
 import { Snowflake } from "discord-api-types";
 import { Guild, GuildMember, Message, MessageEmbed, User } from "discord.js";
 
-export default class BanCommand extends Command {
+export default class BanCommand extends KaikiCommand {
 	constructor() {
 		super("ban", {
 			aliases: ["ban", "bean", "b"],
 			userPermissions: ["BAN_MEMBERS"],
 			clientPermissions: "BAN_MEMBERS",
-			description: { description: "Bans a user by ID or name with an optional message.", usage: "<@some Guy> Your behaviour is harmful." },
+			description: "Bans a user by ID or name with an optional message.",
+			usage: "<@Not_Dreb> Your behaviour is harmful.",
 			channel: "guild",
 			args: [
 				{

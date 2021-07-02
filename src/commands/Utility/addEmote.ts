@@ -1,16 +1,18 @@
-import { Argument, Command } from "discord-akairo";
+import { Argument } from "discord-akairo";
 import { Message, MessageAttachment } from "discord.js";
 import sizeOf from "image-size";
 import { noArgGeneric } from "../../lib/Embeds";
 import { deleteImage, getFileOut, getFilesizeInBytes, resizeImage, saveEmoji, saveFile } from "../../lib/Emote";
 import { trim } from "../../lib/Util";
 import { EMOTE_REGEX, IMAGE_REGEX } from "../../struct/constants";
+import { KaikiCommand } from "Kaiki";
 
-export default class AddEmoteCommand extends Command {
+export default class AddEmoteCommand extends KaikiCommand {
 	constructor() {
 		super("addemote", {
 			aliases: ["addemote", "ae"],
-			description: { description: "Adds an emote from an image link or attached image, with an optional name.", usage: "<image link> Emotename" },
+			description: "Adds an emote from an image link or attached image, with an optional name.",
+			usage: "<image link> Emotename",
 			clientPermissions: "MANAGE_EMOJIS",
 			userPermissions: "MANAGE_EMOJIS",
 			typing: true,

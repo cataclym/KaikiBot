@@ -1,13 +1,14 @@
 import { Command } from "discord-akairo";
 import { Channel, Collection, GuildChannel, Message, MessageEmbed, Permissions } from "discord.js";
 import { noArgGeneric } from "../../lib/Embeds";
+import { KaikiCommand } from "Kaiki";
 
-export default class DeleteChannelCommand extends Command {
+export default class DeleteChannelCommand extends KaikiCommand {
 	constructor() {
 		super("deletechannel", {
 			aliases: ["deletechannel", "dtchnl", "delchan"],
-			description: { description: "Deletes one or more channels. Also deletes categories and voice channels.",
-				usage: "#channel1 #channel2 #channel3" },
+			description: "Deletes one or more channels. Also deletes categories and voice channels.",
+			usage: "#channel1 #channel2 #channel3",
 			channel: "guild",
 			userPermissions: Permissions.FLAGS.MANAGE_CHANNELS,
 			clientPermissions: Permissions.FLAGS.MANAGE_CHANNELS,

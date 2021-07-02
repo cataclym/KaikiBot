@@ -1,11 +1,11 @@
-import { Argument, Command } from "discord-akairo";
+import { Argument } from "discord-akairo";
 import { Guild, Message, MessageEmbed } from "discord.js";
 import { hexColorTable } from "../../lib/Color";
 import { noArgGeneric } from "../../lib/Embeds";
 import { customClient } from "../../struct/client";
-import logger from "loglevel";
+import { KaikiCommand } from "Kaiki";
 
-export default class ErrorColorConfigCommand extends Command {
+export default class ErrorColorConfigCommand extends KaikiCommand {
 	constructor() {
 		super("config-errorcolor", {
 			userPermissions: "ADMINISTRATOR",

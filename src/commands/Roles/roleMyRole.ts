@@ -3,8 +3,9 @@ import { Snowflake } from "discord-api-types";
 import { Guild, Message, MessageEmbed } from "discord.js";
 import { getGuildDocument } from "../../struct/documentMethods";
 import { embedFail } from "../../lib/Embeds";
+import { KaikiCommand } from "Kaiki";
 
-export default class MyRoleCommand extends Command {
+export default class MyRoleCommand extends KaikiCommand {
 	constructor() {
 		super("myrole", {
 			aliases: ["myrole", "mr"],
@@ -14,10 +15,8 @@ export default class MyRoleCommand extends Command {
 				const p = (this.handler.prefix as PrefixSupplier)(msg);
 				return [p as string, ";"];
 			},
-			description: {
-				description: "Checks your assigned user role. Add a hexcode to change the colour.",
-				usage: ["color FF0000", "name Dreb"],
-			},
+			description: "Checks your assigned user role. Add a hexcode to change the colour.",
+			usage: ["color FF0000", "name Dreb"],
 		});
 	}
 

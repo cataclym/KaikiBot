@@ -1,7 +1,8 @@
-import { Command, PrefixSupplier } from "discord-akairo";
+import { PrefixSupplier } from "discord-akairo";
 import { Message, MessageEmbed, User } from "discord.js";
+import { KaikiCommand } from "Kaiki";
 
-export default class MentionCommand extends Command {
+export default class MentionCommand extends KaikiCommand {
 	constructor() {
 		super("mention", {
 			channel: "guild",

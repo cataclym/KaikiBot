@@ -1,9 +1,9 @@
-import { Command } from "discord-akairo";
 import { ChildProcess, exec } from "child_process";
 import { Message, MessageEmbed } from "discord.js";
 import { codeblock, trim } from "../../lib/Util";
+import { KaikiCommand } from "Kaiki";
 
-export default class ExecCommand extends Command {
+export default class ExecCommand extends KaikiCommand {
 	constructor() {
 		super("exec", {
 			aliases: ["exec"],

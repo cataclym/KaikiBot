@@ -1,11 +1,12 @@
-import { Command } from "discord-akairo";
 import { Message, MessageEmbed, Role } from "discord.js";
+import { KaikiCommand } from "Kaiki";
 
-export default class RoleInfoCommand extends Command {
+export default class RoleInfoCommand extends KaikiCommand {
 	constructor() {
 		super("roleinfo", {
 			aliases: ["roleinfo", "role", "rinfo"],
-			description: { description: "Shows info about a given role. If no role is supplied, it defaults to current one.", usage: "@Gamers" },
+			description: "Shows info about a given role. If no role is supplied, it defaults to current one.",
+			usage: "@Gamers",
 			channel: "guild",
 			args: [
 				{
@@ -17,6 +18,7 @@ export default class RoleInfoCommand extends Command {
 			],
 		});
 	}
+
 	public async exec(message: Message, { role }: { role: Role }): Promise<Message> {
 		return message.channel.send({
 			embeds: [new MessageEmbed({

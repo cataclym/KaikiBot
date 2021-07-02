@@ -1,11 +1,12 @@
-import { Command, PrefixSupplier } from "discord-akairo";
+import { PrefixSupplier } from "discord-akairo";
 import { Guild, Message, MessageEmbed } from "discord.js";
+import { KaikiCommand } from "Kaiki";
 
-export default class ServerInfoCommand extends Command {
+export default class ServerInfoCommand extends KaikiCommand {
 	constructor() {
 		super("serverinfo", {
 			aliases: ["serverinfo", "sinfo"],
-			description: { description: "Shows information about the current server." },
+			description: "Shows information about the current server.",
 			args: [
 				{
 					id: "guild",

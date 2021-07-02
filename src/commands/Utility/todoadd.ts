@@ -1,8 +1,9 @@
-import { Command } from "discord-akairo";
 import { Message, MessageReaction } from "discord.js";
 import { noArgGeneric } from "../../lib/Embeds";
 import { getUserDocument } from "../../struct/documentMethods";
-export default class todoAddCommand extends Command {
+import { KaikiCommand } from "Kaiki";
+
+export default class todoAddCommand extends KaikiCommand {
 	constructor() {
 		super("add", {
 			args: [
@@ -15,6 +16,7 @@ export default class todoAddCommand extends Command {
 			],
 		});
 	}
+
 	public async exec(message: Message, { toAdd }: { toAdd: string}): Promise<MessageReaction> {
 		await getUserDocument(message.author.id).then(db => {
 			db.todo.push(toAdd);

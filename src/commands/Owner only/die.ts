@@ -1,12 +1,12 @@
 import { MessageEmbed } from "discord.js";
-import { Command } from "discord-akairo";
 import { Message } from "discord.js";
+import { KaikiCommand } from "Kaiki";
 
-module.exports = class KillBotProcess extends Command {
+module.exports = class KillBotProcess extends KaikiCommand {
 	constructor() {
 		super("die", {
 			aliases: ["die", "kill", "shutdown"],
-			description: { description: "Shuts down bot." },
+			description: "Shuts down bot.",
 			ownerOnly: true,
 		});
 	}

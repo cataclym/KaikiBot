@@ -1,13 +1,13 @@
-import { Command } from "discord-akairo";
 import { GuildMember, Message } from "discord.js";
 import sendWaifuPics from "../../lib/waifuPics";
+import { KaikiCommand } from "Kaiki";
 
-export default class Pat extends Command {
+export default class Pat extends KaikiCommand {
 	constructor() {
 		super("pat", {
 			aliases: ["pat"],
-			description: { description: "Pat a cat!\nOr a guildmember...",
-				usage: ["", "@dreb"] },
+			description: "Pat a cat!\nOr a guildmember...",
+			usage: ["", "@dreb"],
 			typing: true,
 			args: [{
 				id: "mention",
@@ -16,6 +16,7 @@ export default class Pat extends Command {
 			}],
 		});
 	}
+
 	public async exec(message: Message, { mention }: { mention: GuildMember | null }): Promise<Message> {
 		return message.channel.send({ embeds: [await sendWaifuPics(message, "pat", mention)] });
 	}

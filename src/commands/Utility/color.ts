@@ -1,17 +1,15 @@
-import { Command } from "discord-akairo";
 import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
-import { Message, MessageAttachment, MessageEmbed } from "discord.js";
+import { ColorResolvable, Message, MessageAttachment, MessageEmbed } from "discord.js";
 import { hexColorTable, imgFromColor, resolveColor } from "../../lib/Color";
 import { noArgGeneric } from "../../lib/Embeds";
+import { KaikiCommand } from "Kaiki";
 
-export default class ColorCommand extends Command {
+export default class ColorCommand extends KaikiCommand {
 	constructor() {
 		super("color", {
 			aliases: ["color", "clr"],
-			description: {
-				description: "Returns a representation of a color string, or shows list of available color names to use.",
-				usage: ["", "list"],
-			},
+			description: "Returns a representation of a color string, or shows list of available color names to use.",
+			usage: ["", "list"],
 			args: [
 				{
 					id: "list",
@@ -38,7 +36,7 @@ export default class ColorCommand extends Command {
 				pages.push(new MessageEmbed({
 					title: "List of all available color names",
 					description: colorList.slice(p, index).join("\n"),
-					color: embedColor,
+					color: embedColor as ColorResolvable,
 				}));
 			}
 

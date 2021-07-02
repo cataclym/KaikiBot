@@ -1,12 +1,13 @@
-import { Command } from "discord-akairo";
 import { Message, MessageEmbed } from "discord.js";
 import fetch from "node-fetch";
+import { KaikiCommand } from "Kaiki";
 
-export default class MeowCommand extends Command {
+export default class MeowCommand extends KaikiCommand {
 	constructor() {
 		super("meow", {
 			aliases: ["meow"],
-			description: { description: "Meow.", usage: "" },
+			description: "Meow.",
+			usage: "",
 		});
 	}
 	public async exec(message: Message): Promise<Message | void> {

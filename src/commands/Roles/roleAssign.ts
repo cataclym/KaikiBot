@@ -1,11 +1,12 @@
-import { Command } from "discord-akairo";
 import { GuildMember, Message, MessageEmbed, Role } from "discord.js";
+import { KaikiCommand } from "Kaiki";
 
-export default class RoleAssignCommand extends Command {
+export default class RoleAssignCommand extends KaikiCommand {
 	constructor() {
 		super("roleassign", {
 			aliases: ["roleassign", "setrole", "sr"],
-			description: { description: "Gives a role to a user. The role you specify has to be lower in the role hierarchy than your highest role.", usage: "@Dreb Gamer" },
+			description: "Gives a role to a user. The role you specify has to be lower in the role hierarchy than your highest role.",
+			usage: "@Dreb Gamer",
 			clientPermissions: "MANAGE_ROLES",
 			userPermissions: "MANAGE_ROLES",
 			channel: "guild",

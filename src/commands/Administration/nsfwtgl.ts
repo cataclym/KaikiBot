@@ -1,13 +1,14 @@
-import { Command } from "discord-akairo";
 import { Message, MessageEmbed, TextChannel } from "discord.js";
+import { KaikiCommand } from "Kaiki";
 
-export default class ChannelNsfwCommand extends Command {
+export default class ChannelNsfwCommand extends KaikiCommand {
 	constructor() {
 		super("nsfwtgl", {
 			aliases: ["nsfwtgl", "nsfw", "nsfwtoggle"],
 			clientPermissions: "MANAGE_CHANNELS",
 			userPermissions: "MANAGE_CHANNELS",
-			description: { description: "Toggles if a channel is NSFW", usage: "" },
+			description: "Toggles if a channel is NSFW",
+			usage: "",
 			channel: "guild",
 		});
 	}
@@ -16,7 +17,7 @@ export default class ChannelNsfwCommand extends Command {
 
 		const channel = message.channel as TextChannel;
 
-		channel.setNSFW(!channel.nsfw, `${message.author.tag} toggled NSFW.`);
+		await channel.setNSFW(!channel.nsfw, `${message.author.tag} toggled NSFW.`);
 
 		return message.channel.send({
 			embeds: [new MessageEmbed({

@@ -1,14 +1,15 @@
-import { Command } from "discord-akairo";
 import { Collection, Guild, GuildMember, Message, MessageEmbed, Role } from "discord.js";
 import { noArgRole } from "../../lib/Embeds";
+import { KaikiCommand } from "Kaiki";
 
-export default class RoleDeleteCommand extends Command {
+export default class RoleDeleteCommand extends KaikiCommand {
 	constructor() {
 		super("roledelete", {
 			aliases: ["roledelete", "deleterole", "dr"],
 			clientPermissions: "MANAGE_ROLES",
 			userPermissions: "MANAGE_ROLES",
-			description: { description: "Deletes one or more roles", usage: "@gamers @streamers @weebs" },
+			description: "Deletes one or more roles",
+			usage: "@gamers @streamers @weebs",
 			channel: "guild",
 			args: [
 				{

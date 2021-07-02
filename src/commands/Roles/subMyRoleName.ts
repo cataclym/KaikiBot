@@ -1,11 +1,11 @@
 import { trim } from "../../lib/Util";
 import { Guild, Message, MessageEmbed } from "discord.js";
-import { Command } from "discord-akairo";
 import { embedFail } from "../../lib/Embeds";
 import { getGuildDocument } from "../../struct/documentMethods";
 import { Snowflake } from "discord-api-types";
+import { KaikiCommand } from "Kaiki";
 
-export default class MyRoleSubCommandName extends Command {
+export default class MyRoleSubCommandName extends KaikiCommand {
 	constructor() {
 		super("myrolename", {
 			clientPermissions: ["MANAGE_ROLES"],

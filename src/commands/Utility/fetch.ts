@@ -1,15 +1,17 @@
-import { Argument, Command } from "discord-akairo";
+import { Argument } from "discord-akairo";
 import { Snowflake } from "discord-api-types";
 import { Message, MessageEmbed, User } from "discord.js";
 import { flags } from "../../lib/Util";
+import { KaikiCommand } from "Kaiki";
 
 
-export default class FetchUserCommand extends Command {
+export default class FetchUserCommand extends KaikiCommand {
 	constructor() {
 		super("fetch", {
 			cooldown: 30000,
 			aliases: ["fu", "fetch"],
-			description: { description: "Fetches a discord user, shows relevant information. 30sec cooldown.", usage: "<id>" },
+			description: "Fetches a discord user, shows relevant information. 30sec cooldown.",
+			usage: "<id>",
 			args: [
 				{
 					id: "userObject",

@@ -1,18 +1,20 @@
-import { Command, PrefixSupplier } from "discord-akairo";
+import { PrefixSupplier } from "discord-akairo";
 import { Snowflake } from "discord-api-types";
 import { Guild, GuildMember, Message, MessageEmbed, Role } from "discord.js";
 import { IGuild } from "../../interfaces/IDocuments";
 import { getGuildDocument } from "../../struct/documentMethods";
+import { KaikiCommand } from "Kaiki";
 
 // Rewrite of Miyano's setuserrole command
 // https://github.com/PlatinumFT/Miyano-v2
 // Thanks Plat.
 
-export default class SetUserRoleCommand extends Command {
+export default class SetUserRoleCommand extends KaikiCommand {
 	constructor() {
 		super("setuserrole", {
 			aliases: ["setuserrole", "sur"],
-			description: { description: "Assigns a role to a user.", usage: "@Platinum [role]" },
+			description: "Assigns a role to a user.",
+			usage: "@Platinum [role]",
 			clientPermissions: ["MANAGE_ROLES"],
 			userPermissions: ["MANAGE_ROLES"],
 			prefix: (msg: Message) => {
@@ -34,6 +36,7 @@ export default class SetUserRoleCommand extends Command {
 			],
 		});
 	}
+
 	public async exec(message: Message, args: { member: GuildMember, role: Role }): Promise<Message | IGuild> {
 
 		const { role, member } = args,

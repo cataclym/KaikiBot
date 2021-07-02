@@ -1,14 +1,16 @@
 import { MessageEmbed } from "discord.js";
-import { Command } from "discord-akairo";
 import { Message } from "discord.js";
+import { KaikiCommand } from "Kaiki";
 
-module.exports = class RandomNumberCommand extends Command {
+function getRndInteger(min: number, max: number) {
+	return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+export default class RandomNumberCommand extends KaikiCommand {
 	constructor() {
 		super("random", {
-			description:  {
-				usage: ["1 10", "25"],
-				description: "Sends a random number between your two inputs.",
-			},
+			usage: ["1 10", "25"],
+			description: "Sends a random number between your two inputs.",
 			args: [{
 				id: "int",
 				type: "integer",

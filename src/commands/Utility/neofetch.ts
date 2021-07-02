@@ -6,13 +6,15 @@ import { Message, MessageEmbed } from "discord.js";
 import logger from "loglevel";
 import { distros } from "../../lib/distros.json";
 import { codeblock } from "../../lib/Util";
+import { KaikiCommand } from "Kaiki";
 
 
-export default class NeofetchCommand extends Command {
+export default class NeofetchCommand extends KaikiCommand {
 	constructor() {
 		super("neofetch", {
 			aliases: ["neofetch", "neo"],
-			description: { description: "Displays neofetch ascii art", usage: ["", "opensuse", "list"] },
+			description: "Displays neofetch ascii art",
+			usage: ["", "opensuse", "list"],
 			cooldown: 2000,
 			typing: true,
 			args: [{
@@ -27,6 +29,7 @@ export default class NeofetchCommand extends Command {
 			}],
 		});
 	}
+
 	public async exec(message: Message, { os, list }: { os: string | null, list: boolean }): Promise<Message | void> {
 
 		if (list) {

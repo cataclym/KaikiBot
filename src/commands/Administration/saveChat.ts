@@ -1,12 +1,13 @@
-import { Command } from "discord-akairo";
 import { Message, MessageReaction } from "discord.js";
 import { noArgGeneric } from "../../lib/Embeds";
+import { KaikiCommand } from "Kaiki";
 
-export default class SaveChatCommand extends Command {
+export default class SaveChatCommand extends KaikiCommand {
 	constructor() {
 		super("savechat", {
 			aliases: ["savechat"],
-			description: { description: "Saves a number of messages, and sends it to you.", usage: "100" },
+			description: "Saves a number of messages, and sends it to you.",
+			usage: "100",
 			userPermissions: "MANAGE_MESSAGES",
 			channel: "guild",
 			args: [

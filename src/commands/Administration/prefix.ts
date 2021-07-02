@@ -1,9 +1,9 @@
-import { Command } from "discord-akairo";
 import { Guild, Message, MessageEmbed } from "discord.js";
 import { noArgGeneric } from "../../lib/Embeds";
 import { prefixCache } from "../../struct/client";
+import { KaikiCommand } from "Kaiki";
 
-export default class PrefixConfigCommand extends Command {
+export default class PrefixConfigCommand extends KaikiCommand {
 	constructor() {
 		super("config-prefix", {
 			userPermissions: ["ADMINISTRATOR"],
@@ -22,7 +22,7 @@ export default class PrefixConfigCommand extends Command {
 		const guildID = (message.guild as Guild).id,
 			oldPrefix = message.client.guildSettings.get(guildID, "prefix", process.env.PREFIX);
 
-		message.client.guildSettings.set(guildID, "prefix", value);
+		await message.client.guildSettings.set(guildID, "prefix", value);
 
 		prefixCache[guildID] = value;
 

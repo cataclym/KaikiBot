@@ -1,13 +1,15 @@
-import { Argument, Command, PrefixSupplier } from "discord-akairo";
+import { Argument, PrefixSupplier } from "discord-akairo";
 import { execSync } from "child_process";
 import { Message, MessageEmbed } from "discord.js";
 import { name, repository, version } from "../../../package.json";
+import { KaikiCommand } from "Kaiki";
 
-export default class HelpCommand extends Command {
+export default class HelpCommand extends KaikiCommand {
 	constructor() {
 		super("help", {
 			aliases: ["help", "h"],
-			description: { description: "Shows command info", usage: "ping" },
+			description: "Shows command info",
+			usage: "ping",
 			args: [{
 				id: "command",
 				type: Argument.union("commandAlias", "string"),
@@ -15,7 +17,7 @@ export default class HelpCommand extends Command {
 		});
 	}
 
-	public async exec(message: Message, args: { command: Command | string } | undefined): Promise<Message> {
+	public async exec(message: Message, args: { command: KaikiCommand | string } | undefined): Promise<Message> {
 
 		const prefix = (this.handler.prefix as PrefixSupplier)(message);
 
@@ -23,9 +25,9 @@ export default class HelpCommand extends Command {
 		const embed = new MessageEmbed()
 			.withOkColor(message);
 
-		if (command instanceof Command) {
+		if (command instanceof KaikiCommand) {
 
-			let usage = command.description.usage;
+			let { usage } = command;
 
 			if (usage) {
 				usage = usage instanceof Array

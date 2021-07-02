@@ -1,13 +1,14 @@
 import { MessageEmbed, Message } from "discord.js";
-import { Command } from "discord-akairo";
+import { KaikiCommand } from "Kaiki";
 
-export default class PingCommand extends Command {
+export default class PingCommand extends KaikiCommand {
 	public constructor() {
 		super("ping", {
-			description: { description: "Ping the bot and websocket to see if there are latency issues." },
+			description: "Ping the bot and websocket to see if there are latency issues.",
 			aliases: ["p", "ping"],
 		});
 	}
+
 	public async exec(message: Message): Promise<Message> {
 
 		const InitialMSG: Message = await message.channel.send("Pinging...!"),

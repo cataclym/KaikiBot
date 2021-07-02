@@ -1,12 +1,13 @@
-import { Command } from "discord-akairo";
 import { Message, MessageEmbed } from "discord.js";
 import { noArgGeneric } from "../../lib/Embeds";
+import { KaikiCommand } from "Kaiki";
 
-export default class RoleCreateCommand extends Command {
+export default class RoleCreateCommand extends KaikiCommand {
 	constructor() {
 		super("rolecreate", {
 			aliases: ["rolecreate", "createrole", "rc", "cr"],
-			description: { description: "Creates a role with a given name.", usage: "GAMERS" },
+			description: "Creates a role with a given name.",
+			usage: "GAMERS",
 			clientPermissions: "MANAGE_ROLES",
 			userPermissions: "MANAGE_ROLES",
 			channel: "guild",
@@ -20,6 +21,7 @@ export default class RoleCreateCommand extends Command {
 			],
 		});
 	}
+
 	public async exec(message: Message, { name }: { name: string }): Promise<Message> {
 
 		const createdRole = await message.guild?.roles.create({ name:  name });

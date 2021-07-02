@@ -1,14 +1,16 @@
-import { Command } from "discord-akairo";
 import { Message, MessageEmbed } from "discord.js";
 import fetch from "node-fetch";
+import { KaikiCommand } from "Kaiki";
 
-export default class WoofCommand extends Command {
+export default class WoofCommand extends KaikiCommand {
 	constructor() {
 		super("woof", {
 			aliases: ["woof"],
-			description: { description: "Woof.", usage: "" },
+			description: "Woof.",
+			usage: "",
 		});
 	}
+
 	public async exec(message: Message): Promise<Message | void> {
 
 		return message.channel.send({ embeds: [new MessageEmbed()

@@ -10,7 +10,7 @@ export default class DadJokeCommand extends Command {
 			cooldown: 8000,
 			typing: true,
 			aliases: ["dadjoke", "dadjokes"],
-			description: { description: "Returns a dadjoke." },
+			description: "Returns a dadjoke.",
 		});
 	}
 
@@ -28,7 +28,7 @@ export default class DadJokeCommand extends Command {
 
 			const randomRedditPost = data[Math.floor(Math.random() * data.length) + 1];
 
-			return message?.util?.send(new MessageEmbed({
+			return message?.util?.send({ embeds: [new MessageEmbed({
 				title: randomRedditPost.title ? trim(randomRedditPost.title, 256) : "\u200B",
 				description: randomRedditPost.selftext ? trim(randomRedditPost.selftext, 2048) : "\u200B",
 				author: {
@@ -42,7 +42,8 @@ export default class DadJokeCommand extends Command {
 					text: `${randomRedditPost.ups} updoots`,
 				},
 			})
-				.withOkColor(message));
+				.withOkColor(message)],
+			});
 		}
 	}
 }

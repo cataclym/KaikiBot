@@ -2,14 +2,16 @@ import { Category, Command } from "discord-akairo";
 import { Guild, Message, MessageEmbed } from "discord.js";
 import { noArgGeneric } from "../../lib/Embeds";
 import { getGuildDocument } from "../../struct/documentMethods";
+import { KaikiCommand } from "Kaiki";
 
-export default class ToggleCategoryCommand extends Command {
+export default class ToggleCategoryCommand extends KaikiCommand {
 	constructor() {
 		super("togglecategory", {
 			aliases: ["togglecategory", "tc"],
 			userPermissions: "ADMINISTRATOR",
 			channel: "guild",
-			description: { description: "Toggles a category", usage: "Anime" },
+			description: "Toggles a category",
+			usage: "Anime",
 			args: [
 				{
 					id: "category",
@@ -36,7 +38,7 @@ export default class ToggleCategoryCommand extends Command {
 
 		db.blockedCategories[category.id] = bool;
 		db.markModified(`blockedCategories.${category.id}`);
-		db.save();
+		await db.save();
 
 		return message.channel.send({
 			embeds: [new MessageEmbed()

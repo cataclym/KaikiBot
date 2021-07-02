@@ -1,11 +1,12 @@
-import { hexColorTable, resolveColor } from "../../lib/Color";
-import { Guild, Message, MessageEmbed } from "discord.js";
-import { Argument, Command } from "discord-akairo";
+import { hexColorTable } from "../../lib/Color";
+import { ColorResolvable, Guild, Message, MessageEmbed } from "discord.js";
+import { Argument } from "discord-akairo";
 import { embedFail } from "../../lib/Embeds";
 import { getGuildDocument } from "../../struct/documentMethods";
 import { Snowflake } from "discord-api-types";
+import { KaikiCommand } from "Kaiki";
 
-export default class MyRoleSubCommandColor extends Command {
+export default class MyRoleSubCommandColor extends KaikiCommand {
 	constructor() {
 		super("myrolecolor", {
 			clientPermissions: ["MANAGE_ROLES"],
@@ -48,11 +49,11 @@ export default class MyRoleSubCommandColor extends Command {
 		}
 
 		const oldHex = myRole.hexColor;
-		await myRole.setColor(color);
+		await myRole.setColor(color as ColorResolvable);
 		return message.channel.send({
 			embeds: [new MessageEmbed()
 				.setDescription(`You have changed \`${myRole.name}\`'s color from \`${oldHex}\` to \`${color}\`!`)
-				.setColor(color)],
+				.setColor(color as ColorResolvable)],
 		});
 	}
 }

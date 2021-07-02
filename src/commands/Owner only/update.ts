@@ -1,12 +1,12 @@
-import { Command } from "discord-akairo";
 import { exec } from "child_process";
 import { Message } from "discord.js";
 import { codeblock, trim } from "../../lib/Util";
 import fs from "fs";
 import logger from "loglevel";
 import * as path from "path";
+import { KaikiCommand } from "Kaiki";
 
-export default class UpdateCommand extends Command {
+export default class UpdateCommand extends KaikiCommand {
 	constructor() {
 		super("update", {
 			aliases: ["update"],

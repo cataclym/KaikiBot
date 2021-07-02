@@ -4,6 +4,7 @@ import { execSync } from "child_process";
 import { Message, MessageEmbed, version } from "discord.js";
 import * as packageJson from "../../../package.json";
 import { getCommandStatsDocument } from "../../struct/documentMethods";
+import { KaikiCommand } from "Kaiki";
 
 function format(seconds: number) {
 
@@ -14,11 +15,11 @@ function format(seconds: number) {
 	const minutes = Math.floor(seconds / 60);
 	return days + "** days**\n" + hours + "** hours**\n" + minutes + "** minutes**";
 }
-module.exports = class StatsCommand extends Command {
+module.exports = class StatsCommand extends KaikiCommand {
 	constructor() {
 		super("stats", {
 			aliases: ["stats"],
-			description: { description: "Statistics and information" },
+			description: "Statistics and information",
 		});
 	}
 	public async exec(message: Message) {
@@ -66,7 +67,6 @@ module.exports = class StatsCommand extends Command {
 			pages.push(emb);
 		}
 
-		await Promise.resolve(pages);
 		return editMessageWithPaginatedEmbeds(message, pages, {});
 	}
 };

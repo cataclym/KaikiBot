@@ -1,15 +1,16 @@
-import { Command } from "discord-akairo";
 import Canvas from "canvas";
 import { Message, MessageAttachment } from "discord.js";
 import logger from "loglevel";
 import { noArgGeneric } from "../../lib/Embeds";
 import { calculateAspectRatioFit } from "../../lib/Util";
+import { KaikiCommand } from "Kaiki";
 
-export default class SetAvatarCommand extends Command {
+export default class SetAvatarCommand extends KaikiCommand {
 	constructor() {
 		super("setavatar", {
 			aliases: ["setavatar", "setav"],
-			description: { description: "Assigns the bot a new avatar.", usage: "http://discord.com/media/1231231231231312321/1231231312323132.png" },
+			description: "Assigns the bot a new avatar.",
+			usage: "http://discord.com/media/1231231231231312321/1231231312323132.png",
 			ownerOnly: true,
 			args: [
 				{

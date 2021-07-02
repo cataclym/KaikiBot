@@ -1,14 +1,15 @@
-import { Command } from "discord-akairo";
 import { Guild } from "discord.js";
 import { GuildMember, Message, MessageEmbed, Role } from "discord.js";
 import { errorMessage, noArgGeneric } from "../../lib/Embeds";
 import { trim } from "../../lib/Util";
+import { KaikiCommand } from "Kaiki";
 
-export default class RoleRenameCommand extends Command {
+export default class RoleRenameCommand extends KaikiCommand {
 	constructor() {
 		super("rolerename", {
 			aliases: ["rolerename", "rolename", "rn"],
-			description: { description: "Renames a given role. The role you specify has to be lower in the role hierarchy than your highest role. Use 'quotes around rolename with spaces'.", usage: "@Gamer weeb" },
+			description: "Renames a given role. The role you specify has to be lower in the role hierarchy than your highest role. Use 'quotes around rolename with spaces'.",
+			usage: "@Gamer weeb",
 			clientPermissions: "MANAGE_ROLES",
 			userPermissions: "MANAGE_ROLES",
 			channel: "guild",
@@ -31,7 +32,6 @@ export default class RoleRenameCommand extends Command {
 		});
 	}
 	public async exec(message: Message, { role, name }: { role: Role, name: string }): Promise<Message> {
-
 
 		if ((role.position < (message.member as GuildMember).roles.highest.position)
             && (role.position < ((message.guild as Guild).me as GuildMember).roles.highest.position)

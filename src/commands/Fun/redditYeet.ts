@@ -1,15 +1,15 @@
-import { Command } from "discord-akairo";
 import Discord, { Message } from "discord.js";
 import fetch from "node-fetch";
 import { PurpleData, RedditData } from "../../interfaces/IRedditAPI";
 import { trim } from "../../lib/Util";
+import { KaikiCommand } from "Kaiki";
 
-export default class YeetCommand extends Command {
+export default class YeetCommand extends KaikiCommand {
 	constructor() {
 		super("reddityeet", {
 			aliases: ["reddityeet", "ryeet", "ry"],
 			typing: true,
-			description: { description: "Returns yeet..." },
+			description: "Returns yeet...",
 		});
 	}
 
@@ -43,7 +43,7 @@ export default class YeetCommand extends Command {
 			})
 				.withOkColor();
 
-			return message.util?.send(embed);
+			return message.channel.send({ embeds: [embed] });
 		}
 	}
 }

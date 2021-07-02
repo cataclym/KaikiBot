@@ -1,14 +1,14 @@
-import { Command } from "discord-akairo";
 import { Message, MessageEmbed } from "discord.js";
 import { errorMessage } from "../../lib/Embeds";
 import { trim } from "../../lib/Util";
 import { DapiGrabber, DapiSearchType } from "./hentaiService";
+import { KaikiCommand } from "Kaiki";
 
-export default class E621Command extends Command {
+export default class E621Command extends KaikiCommand {
 	constructor() {
 		super("e621", {
 			aliases: ["e621"],
-			description: { description: "e621 :hahaa:" },
+			description: "e621 :hahaa:",
 			typing: true,
 			args: [{
 				id: "tags",

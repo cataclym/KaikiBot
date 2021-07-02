@@ -1,17 +1,17 @@
-import { Command } from "discord-akairo";
 import { Message, MessageEmbed } from "discord.js";
 import { playSlots } from "../../lib/gambling/gambling";
 import { IMoneyService } from "../../lib/money/IMoneyService";
 import { MongoMoney } from "../../lib/money/MongoMoneyService";
+import { KaikiCommand } from "Kaiki";
 
-export default class slotsCommand extends Command {
+export default class slotsCommand extends KaikiCommand {
 
     private readonly _money: IMoneyService;
     constructor() {
     	super("Slots", {
     		aliases: ["slots", "slot"],
-    		description: { description: "Bet a certan amount in the slot machine.",
-    			usage: "<amount>" },
+    		description: "Bet a certan amount in the slot machine.",
+    		usage: "<amount>",
     		args: [
     			{
     				id: "amount",
@@ -48,7 +48,6 @@ export default class slotsCommand extends Command {
     	}
 
     	const result = await playSlots();
-
 
     	// Check if all three indexes are the same before we check if there are 2 similar ones
     	if (result.numbers.every((val, i, arr) => val === arr[0])) {

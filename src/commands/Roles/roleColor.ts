@@ -1,13 +1,14 @@
-import { Command } from "discord-akairo";
 import { Message, MessageAttachment, MessageEmbed, Role } from "discord.js";
 import { imgFromColor, resolveColor } from "../../lib/Color";
 import { errorMessage } from "../../lib/Embeds";
+import { KaikiCommand } from "Kaiki";
 
-export default class RoleColorCommand extends Command {
+export default class RoleColorCommand extends KaikiCommand {
 	constructor() {
 		super("rolecolor", {
 			aliases: ["rolecolor", "roleclr", "rclr"],
-			description: { description: "Displays the color of a given role, or your highest role.", usage: "@Gamer ff00ff" },
+			description: "Displays the color of a given role, or your highest role.",
+			usage: "@Gamer ff00ff",
 			channel: "guild",
 			args: [
 				{

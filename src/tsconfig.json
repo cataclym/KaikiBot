@@ -13,7 +13,8 @@
       "outDir": "../dist/",
       "baseUrl": ".",
       "paths": {
-        "*": ["../node_modules/*"]
+        "*": ["../node_modules/*"],
+        "Kaiki": ["lib/KaikiClass"]
       },
       "types": [
         // add node as an option
@@ -32,4 +33,3 @@
     "include": ["./**/*", "jest.config.js", "./*", "types.ts", "./Extensions/loglevel.d.ts"],
     "exclude": ["../node_modules/*", "../types/*"]
   }
-  

@@ -1,16 +1,17 @@
-import { Command } from "discord-akairo";
 import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
 import { Snowflake } from "discord-api-types";
 import { Guild, Message, MessageEmbed } from "discord.js";
 import { trim } from "../../lib/Util";
 import { getGuildDocument } from "../../struct/documentMethods";
+import { KaikiCommand } from "Kaiki";
 
-export default class EmoteCount extends Command {
+export default class EmoteCount extends KaikiCommand {
 	constructor() {
 		super("emotecount", {
 			cooldown: 15000,
 			aliases: ["emotecount", "emojicount", "ec"],
-			description: { description: "Shows amount of times each emote has been used", usage: ["", "-s", "--small"] },
+			description: "Shows amount of times each emote has been used",
+			usage: ["", "-s", "--small"],
 			channel: "guild",
 			args: [{
 				id: "flag",

@@ -1,18 +1,19 @@
-import { Command } from "discord-akairo";
 import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
 import { Message, MessageEmbed, User } from "discord.js";
 import { IUser } from "../../interfaces/IDocuments";
 import { getUserDocument } from "../../struct/documentMethods";
+import { KaikiCommand } from "Kaiki";
 
 async function add(Embed: MessageEmbed, array: MessageEmbed[]) {
 	array.push(Embed);
 }
 
-export default class NamesCommand extends Command {
+export default class NamesCommand extends KaikiCommand {
 	constructor() {
 		super("names", {
 			aliases: ["name", "names"],
-			description: { description: "Returns all your daddy nicknames", usage: "@dreb" },
+			description: "Returns all your daddy nicknames",
+			usage: "@dreb",
 		});
 	}
 	*args(): Generator<{
@@ -69,7 +70,6 @@ export default class NamesCommand extends Command {
 				.withOkColor(message),
 			pages);
 		}
-		await Promise.resolve(pages);
 
 		return editMessageWithPaginatedEmbeds(message, pages, {});
 	}

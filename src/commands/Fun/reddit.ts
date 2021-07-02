@@ -1,16 +1,17 @@
-import { Command } from "discord-akairo";
 import { Message, MessageEmbed, TextChannel } from "discord.js";
 import fetch from "node-fetch";
 import { PurpleData, RedditData } from "../../interfaces/IRedditAPI";
 import { reddit } from "../../lib/Embeds";
 import { trim } from "../../lib/Util";
+import { KaikiCommand } from "Kaiki";
 
-export default class RedditCommand extends Command {
+export default class RedditCommand extends KaikiCommand {
 	constructor() {
 		super("reddit", {
 			aliases: ["reddit"],
 			typing: true,
-			description: { description: "Returns a random reddit post, from a specified subreddit.", usage: "anime" },
+			description: "Returns a random reddit post, from a specified subreddit.",
+			usage: "anime",
 			args: [
 				{
 					id: "sub",
@@ -42,7 +43,7 @@ export default class RedditCommand extends Command {
 			// We don´t want nsfw in normal channels, do we?
 			if (data.over_18 && (!(message.channel as TextChannel)?.nsfw ||	message.channel.type !== "dm")) {
 				return message.channel.send({ embeds: [new MessageEmbed({
-					title: "This post is marked as NSFW",
+					title: "This post is NSFW",
 					description: "Cannot show NSFW in DMs or non-NSFW channels",
 				})
 					.withErrorColor(message)],

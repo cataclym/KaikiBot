@@ -2,15 +2,14 @@ import { Argument, Category, Command, PrefixSupplier } from "discord-akairo";
 import { Message, MessageEmbed } from "discord.js";
 import { name, repository, version } from "../../../package.json";
 import { noArgGeneric } from "../../lib/Embeds";
+import { KaikiCommand } from "Kaiki";
 
-export default class commandsList extends Command {
+export default class commandsList extends KaikiCommand {
 	constructor() {
 		super("cmdlist", {
 			aliases: ["commands", "cmds", "cmdlist"],
-			description: {
-				description: "Shows categories, or commands if provided with a category.",
-				usage: ["", "admin"] },
-
+			description: "Shows categories, or commands if provided with a category.",
+			usage: ["", "admin"],
 			args: [
 				{
 					id: "category",

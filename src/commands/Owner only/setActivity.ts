@@ -1,15 +1,17 @@
-import { Command, FailureData } from "discord-akairo";
+import { FailureData } from "discord-akairo";
 import { ActivityType } from "discord-api-types";
 import { Message, MessageEmbed } from "discord.js";
 import { noArgGeneric } from "../../lib/Embeds";
 import { getBotDocument } from "../../struct/documentMethods";
+import { KaikiCommand } from "Kaiki";
 const validTypes = ["PLAYING", "STREAMING", "LISTENING", "WATCHING", "COMPETING"];
 
-export default class SetActivityCommand extends Command {
+export default class SetActivityCommand extends KaikiCommand {
 	constructor() {
 		super("setactivity", {
 			aliases: ["setactivity", "setac"],
-			description: { description: "Set the bot's activity, persistent through reboot.", usage: ["<type> <Activity>", "playing with Dreb"] },
+			description: "Set the bot's activity.",
+			usage: ["<type> <Activity>", "playing with Dreb"],
 			ownerOnly: true,
 			args: [
 				{

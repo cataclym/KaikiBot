@@ -1,14 +1,15 @@
-import { Command } from "discord-akairo";
 import { Snowflake } from "discord-api-types";
 import { Guild, GuildMember, Message, MessageEmbed } from "discord.js";
 import { getGuildDocument } from "../../struct/documentMethods";
+import { KaikiCommand } from "Kaiki";
 
-export default class RestoreUserRoles extends Command {
+export default class RestoreUserRoles extends KaikiCommand {
 	constructor() {
 		super("restore", {
 			aliases: ["restore"],
 			userPermissions: ["ADMINISTRATOR", "MANAGE_ROLES"],
-			description: { description: "Restores roles for a user who has previously left the server.", usage: "@dreb" },
+			description: "Restores roles for a user who has previously left the server.",
+			usage: "@dreb",
 			channel: "guild",
 			args: [
 				{

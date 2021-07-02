@@ -1,10 +1,12 @@
-import { Command } from "discord-akairo";
 import { Message, MessageEmbed } from "discord.js";
-export default class InviteCommand extends Command {
+import { KaikiCommand } from "Kaiki";
+
+export default class InviteCommand extends KaikiCommand {
 	constructor() {
 		super("invite", {
 			aliases: ["invite", "inv"],
-			description: { description: "Get a link to invite the bot to your server.", usage: "" },
+			description: "Get a link to invite the bot to your server.",
+			usage: "",
 		});
 	}
 	public async exec(message: Message): Promise<Message> {

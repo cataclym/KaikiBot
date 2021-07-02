@@ -1,17 +1,16 @@
-import { Argument, Command, Flag, PrefixSupplier } from "discord-akairo";
+import { Argument, Flag, PrefixSupplier } from "discord-akairo";
 import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
 import { Guild, Message, MessageEmbed } from "discord.js";
 import { getGuildDocument } from "../../struct/documentMethods";
+import { KaikiCommand } from "Kaiki";
 
-export default class ConfigCommand extends Command {
+export default class ConfigCommand extends KaikiCommand {
 	constructor() {
 		super("config", {
 			aliases: ["config", "configure"],
 			channel: "guild",
-			description: {
-				description: "Configure or display guild specific settings. Will always respond to default prefix.",
-				usage: ["", "dadbot enable", "anniversary enable", "prefix !", "okcolor <hex>", "errorcolor <hex>", "welcome/goodbye [channel] [-e] [-c yellow] [-i http://link.png] [message]"],
-			},
+			description: "Configure or display guild specific settings. Will always respond to default prefix.",
+			usage: ["", "dadbot enable", "anniversary enable", "prefix !", "okcolor <hex>", "errorcolor <hex>", "welcome/goodbye [channel] [-e] [-c yellow] [-i http://link.png] [message]"],
 			prefix: (msg: Message) => {
 				const p = (this.handler.prefix as PrefixSupplier)(msg);
 				return [p as string, "-"];

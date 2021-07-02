@@ -1,16 +1,17 @@
-import { Command } from "discord-akairo";
 import { Message, MessageAttachment, MessageEmbed } from "discord.js";
 import fetch from "node-fetch";
 import { ServerOffline, ServerOnline } from "../../interfaces/IMinecraftServerPing";
 import { noArgGeneric } from "../../lib/Embeds";
 import { trim } from "../../lib/Util";
+import { KaikiCommand } from "Kaiki";
 
 
-export default class mcpingCommand extends Command {
+export default class mcpingCommand extends KaikiCommand {
 	constructor() {
 		super("mcping", {
 			aliases: ["mcping"],
-			description: { description: "", usage: "" },
+			description: "",
+			usage: "",
 			args: [{
 				id: "term",
 				match: "rest",

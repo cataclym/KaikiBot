@@ -1,13 +1,13 @@
-import { Command } from "discord-akairo";
 import { GuildMember, Message } from "discord.js";
 import sendWaifuPics from "../../lib/waifuPics";
+import { KaikiCommand } from "Kaiki";
 
-export default class Bonk extends Command {
+export default class Bonk extends KaikiCommand {
 	constructor() {
 		super("bonk", {
 			aliases: ["bonk"],
-			description: { description: "When you need to bonk some horny teens",
-				usage: ["", "@dreb"] },
+			description: "When you need to bonk some horny teens",
+			usage: ["", "@dreb"],
 			typing: true,
 			args: [{
 				id: "mention",
@@ -16,6 +16,7 @@ export default class Bonk extends Command {
 			}],
 		});
 	}
+
 	public async exec(message: Message, { mention }: { mention: GuildMember | null }): Promise<Message> {
 		return message.channel.send({ embeds: [await sendWaifuPics(message, "bonk", mention)] });
 	}

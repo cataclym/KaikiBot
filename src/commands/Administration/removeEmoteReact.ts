@@ -1,16 +1,16 @@
-import { Command } from "discord-akairo";
 import { Snowflake } from "discord-api-types";
 import { Message, MessageEmbed } from "discord.js";
 import { getGuildDocument } from "../../struct/documentMethods";
+import { KaikiCommand } from "Kaiki";
 
-export default class RemoveEmoteReactCommand extends Command {
+export default class RemoveEmoteReactCommand extends KaikiCommand {
 	constructor() {
 		super("removereact", {
 			aliases: ["removereact", "rer"],
 			userPermissions: "MANAGE_EMOJIS",
 			channel: "guild",
-			description: { description: "Remove emotereact triggers.",
-				usage: ["anime"] },
+			description: "Remove emotereact triggers.",
+			usage: ["anime"],
 			args: [
 				{
 					id: "trigger",

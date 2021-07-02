@@ -1,11 +1,13 @@
 import { Command } from "discord-akairo";
 import { Message, MessageEmbed, Role, GuildMember } from "discord.js";
+import { KaikiCommand } from "Kaiki";
 
-export default class RoleRemoveCommand extends Command {
+export default class RoleRemoveCommand extends KaikiCommand {
 	constructor() {
 		super("roleremove", {
 			aliases: ["roleremove", "removerole", "rr"],
-			description: { description: "Takes away a user's role. The role you specify has to be lower in the role hierarchy than your highest role.", usage: "@Dreb Gamer" },
+			description: "Takes away a user's role. The role you specify has to be lower in the role hierarchy than your highest role.",
+			usage: "@Dreb Gamer",
 			clientPermissions: "MANAGE_ROLES",
 			userPermissions: "MANAGE_ROLES",
 			channel: "guild",

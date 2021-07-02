@@ -1,14 +1,15 @@
-import { Command } from "discord-akairo";
 import { Message, MessageEmbed, Role } from "discord.js";
 import { noArgRole } from "../../lib/Embeds";
+import { KaikiCommand } from "Kaiki";
 
-export default class RoleHoistCommand extends Command {
+export default class RoleHoistCommand extends KaikiCommand {
 	constructor() {
 		super("rolehoist", {
 			aliases: ["rolehoist", "hoistrole", "hoist"],
 			clientPermissions: "MANAGE_ROLES",
 			userPermissions: "MANAGE_ROLES",
-			description: { description: "Hoists or unhoists a role", usage: "@gamers" },
+			description: "Hoists or unhoists a role",
+			usage: "@gamers",
 			channel: "guild",
 			args: [
 				{
@@ -25,6 +26,7 @@ export default class RoleHoistCommand extends Command {
 		if (role.hoist) {
 			role.setHoist(false);
 		}
+
 		else {
 			role.setHoist(true);
 		}

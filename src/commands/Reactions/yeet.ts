@@ -1,13 +1,13 @@
-import { Command } from "discord-akairo";
 import { GuildMember, Message } from "discord.js";
 import sendWaifuPics from "../../lib/waifuPics";
+import { KaikiCommand } from "Kaiki";
 
-export default class Yeet extends Command {
+export default class Yeet extends KaikiCommand {
 	constructor() {
 		super("yeet", {
 			aliases: ["yeet"],
-			description: { description: "Yeeeeeeeeeeeeeeeeeee\neeeeeeeeeeeeeeeet",
-				usage: ["", "@dreb"] },
+			description: "Yeeeeeeeeeeeeeeeeeee\neeeeeeeeeeeeeeeet",
+			usage: ["", "@dreb"],
 			typing: true,
 			args: [{
 				id: "mention",
@@ -16,6 +16,7 @@ export default class Yeet extends Command {
 			}],
 		});
 	}
+
 	public async exec(message: Message, { mention }: { mention: GuildMember | null }): Promise<Message> {
 		return message.channel.send({ embeds: [await sendWaifuPics(message, "yeet", mention)] });
 	}

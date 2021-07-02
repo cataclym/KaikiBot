@@ -1,12 +1,12 @@
-import { Command } from "discord-akairo";
 import { Message, MessageEmbed } from "discord.js";
 import { noArgGeneric } from "../../lib/Embeds";
+import { KaikiCommand } from "Kaiki";
 
-export default class ReloadCommand extends Command {
+export default class ReloadCommand extends KaikiCommand {
 	constructor() {
 		super("reload", {
 			aliases: ["re", "reload"],
-			description: { description: "Reloads a command. Note: It does not run the TypeScript compiler." },
+			description: "Reloads a command. Note: It does not run the TypeScript compiler.",
 			ownerOnly: true,
 			args: [
 				{
@@ -17,7 +17,7 @@ export default class ReloadCommand extends Command {
 			],
 		});
 	}
-	public async exec(message: Message, { command }: { command: Command}): Promise<Message> {
+	public async exec(message: Message, { command }: { command: KaikiCommand}): Promise<Message> {
 
 		command.reload();
 		return message.channel.send({
