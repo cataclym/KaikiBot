@@ -173,15 +173,15 @@ export async function resolveColor(color: string): Promise<ColorResolvable> {
 		: colors.find(c => c.name === color || c.hex === color)?.hex;
 
 	if (clrStr) {
-		return clrStr.startsWith("#")
+		return (clrStr.startsWith("#")
 			? clrStr
-			: `#${clrStr}`;
+			: `#${clrStr}`) as ColorResolvable;
 	}
 
 	else {
-		return color.startsWith("#")
+		return (color.startsWith("#")
 			? color
-			: `#${color}`;
+			: `#${color}`) as ColorResolvable;
 	}
 
 }

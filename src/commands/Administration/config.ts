@@ -1,8 +1,9 @@
 import { Argument, Flag, PrefixSupplier } from "discord-akairo";
 import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
-import { Guild, Message, MessageEmbed } from "discord.js";
+import { ColorResolvable, Guild, Message, MessageEmbed } from "discord.js";
 import { getGuildDocument } from "../../struct/documentMethods";
 import { KaikiCommand } from "Kaiki";
+import { Color } from "sharp";
 
 export default class ConfigCommand extends KaikiCommand {
 	constructor() {
@@ -45,11 +46,11 @@ export default class ConfigCommand extends KaikiCommand {
 		const db = await getGuildDocument((message.guild as Guild).id),
 			{ anniversary, dadBot, prefix, errorColor, okColor, welcome, goodbye } = db.settings,
 			welcomeEmbed = new MessageEmbed()
-				.setColor(welcome.color)
+				.setColor(welcome.color as ColorResolvable)
 				.setAuthor("Welcome embed preview")
 				.setDescription(welcome.message),
 			goodbyeEmbed = new MessageEmbed()
-				.setColor(goodbye.color)
+				.setColor(goodbye.color as ColorResolvable)
 				.setAuthor("Goodbye embed preview")
 				.setDescription(goodbye.message);
 

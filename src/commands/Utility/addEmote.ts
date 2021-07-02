@@ -29,9 +29,10 @@ export default class AddEmoteCommand extends KaikiCommand {
 				},
 				{
 					id: "name",
-					type: Argument.union((m: Message) => {
-						if (!!m.attachments.first() && !!m.args(this)) {
-							return m.args(this);
+					// I forgot why this was a thing
+					type: Argument.union((m: Message, phrase) => {
+						if (!!m.attachments.first() && phrase) {
+							return phrase;
 						}
 					}, "string"),
 					match: "rest",

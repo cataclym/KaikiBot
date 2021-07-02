@@ -19,7 +19,7 @@ type APIs = "bonk"
 	| "slap";
 
 const WaifuData: {
-        [str in APIs]: { action: string | boolean, color: ColorResolvable, append?: string }
+        [str in APIs]: { action: string | boolean, color: ColorResolvable | String, append?: string }
 	} = {
 		"waifu": {
 			action: false,
@@ -96,7 +96,7 @@ export default async function sendWaifuPics(message: Message, API: APIs, mention
 	const result = (await (await fetch(`https://api.waifu.pics/sfw/${API}`)).json())["url"];
 
 	const embed = new MessageEmbed({
-		color: color,
+		color: color as ColorResolvable,
 		image: { url: result },
 		footer: { icon_url: (mention?.user || message.author).displayAvatarURL({ dynamic: true }) },
 	});

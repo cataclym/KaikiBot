@@ -1,5 +1,5 @@
 import { Snowflake } from "discord-api-types";
-import { Guild, GuildMember, Message, MessageEmbed, TextChannel } from "discord.js";
+import { ColorResolvable, Guild, GuildMember, Message, MessageEmbed, TextChannel } from "discord.js";
 import { TGreetMessage } from "../interfaces/IDocuments";
 import { parsePlaceHolders } from "../lib/functions";
 import { getGuildDocument } from "../struct/documentMethods";
@@ -31,7 +31,7 @@ async function sendGreetLeaveMessage(data: TGreetMessage, guild: Guild, guildMem
 
 	if (data.embed) {
 		const embed = new MessageEmbed()
-			.setColor(data.color)
+			.setColor(data.color as ColorResolvable)
 			.setDescription(await parsePlaceHolders(data.message, guild, guildMember));
 
 		if (data.image) {
