@@ -64,7 +64,7 @@ export default class UpdateCommand extends KaikiCommand {
 			});
 		}
 		catch (e) {
-			throw new Error("An error occurred during update. Please update manually\nGITLAB LINK TO GUIDE HERE.");
+			throw new Error("An error occurred during update. Please update manually\n<GITLAB LINK TO GUIDE HERE.>\n" + await codeblock(e.message, "xl"));
 			// TODO: add link to update.md on gitlab
 		}
 	}

@@ -46,9 +46,16 @@ export default class FetchUserCommand extends KaikiCommand {
 					{ name: "Account date", value: userObject?.createdAt?.toDateString(), inline: true }])
 				.withOkColor(message);
 
-		userObject.lastMessage ? embed.addField("Last (seen) message", userObject.lastMessage?.createdAt.toLocaleString(), true) : null;
-		userFlags.length ? embed.addField("Flags", userFlags.map((flag) => flags[flag]).join("\n"), true) : null;
-		userObject.bot ? embed.addField("Bot", "✅", true) : null;
+		if (userObject.lastMessage) {
+			embed.addField("Last (seen) message", userObject.lastMessage?.createdAt.toLocaleString(), true);
+		}
+		if (userFlags.length) {
+			embed.addField("Flags", userFlags.map((flag) => flags[flag]).join("\n"), true);
+		}
+		if (userObject.bot) {
+			embed.addField("Bot", "✅", true);
+		}
+
 		return message.channel.send({ embeds: [embed] });
 	}
 }

@@ -1,11 +1,10 @@
-import { Command } from "discord-akairo";
 import { errorColor, okColor } from "../lib/Util";
 import { customClient } from "../struct/client";
-import logger from "loglevel";
 
 export const extensionHook = (): void => {
 	return;
 };
+
 declare module "discord.js" {
     export interface Guild {
         isDadBotEnabled(guild?: Guild): boolean;
@@ -16,7 +15,6 @@ declare module "discord.js" {
     }
 
     export interface Message {
-        args(command: Command): string | undefined;
         getMemberColorAsync(member?: GuildMember): Promise<ColorResolvable>;
         client: customClient;
     }

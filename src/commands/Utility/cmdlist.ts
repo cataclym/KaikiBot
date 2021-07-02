@@ -38,16 +38,13 @@ export default class commandsList extends KaikiCommand {
 		const prefix = (this.handler.prefix as PrefixSupplier)(message);
 
 		if (category) {
-			const embed = new MessageEmbed()
+			return message.channel.send({ embeds: [new MessageEmbed()
 				.setTitle(`Commands in ${category.id}`)
-				.withOkColor(message);
-			{
-				embed.setDescription(category
+				.setDescription(category
 					.filter(cmd => cmd.aliases.length > 0)
 					.map(cmd => `**${prefix}${cmd}** [\`${cmd.aliases.join("`, `")}\`]`)
-					.join("\n") || "Empty");
-			}
-			return message.channel.send({ embeds: [embed] });
+					.join("\n") || "Empty")
+				.withOkColor(message)] });
 		}
 
 		else {

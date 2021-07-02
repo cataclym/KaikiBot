@@ -35,14 +35,13 @@ export default class HelpCommand extends KaikiCommand {
 					: `${prefix}${command.id} ${usage}`;
 			}
 
-			embed.setTitle(`**Name:** ${command.id}`)
+			embed.setTitle(`${command.id}`)
 				.setDescription(`**Aliases:** \`${command.aliases.join("`, `")}\``)
-				.setFooter(command.categoryID);
-
-			embed.addField("**Description:**", command.description.description || "?", false);
-			embed.addField("**Usage:**", usage?.length
-				? usage
-				: `${prefix}${command.id}`, false);
+				.setFooter(command.categoryID)
+				.addField("**Description:**", command.description.description || "?", false)
+				.addField("**Usage:**", usage?.length
+					? usage
+					: `${prefix}${command.id}`, false);
 
 			if (command.userPermissions) embed.addField("Requires", command.userPermissions.toString(), false);
 			if (command.ownerOnly) embed.addField("Owner only", "✅", false);

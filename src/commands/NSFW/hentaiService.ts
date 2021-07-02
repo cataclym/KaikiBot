@@ -7,11 +7,11 @@ import querystring from "querystring";
 import { repository, version } from "../../../package.json";
 import { Post, responseE621 } from "../../interfaces/IDapi";
 
-const sites: string[] = ["danbooru", "yandere"];
+const sites = ["danbooru", "yandere"];
 
 export enum DapiSearchType {
-    E621,
-    Danbooru,
+	E621,
+	Danbooru,
 }
 
 const options = {
@@ -21,8 +21,7 @@ const options = {
 	},
 };
 
-export type types =
-"waifu" | "neko" | "trap" | "blowjob";
+export type types = "waifu" | "neko" | "trap" | "blowjob";
 
 export const typesArray: types[] = ["waifu", "neko", "trap", "blowjob"];
 

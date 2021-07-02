@@ -25,11 +25,12 @@ export default class SaveChatCommand extends KaikiCommand {
 
 		const collection = await message.channel.messages.fetch({ limit: amount, before: message.id });
 
-		await message.member?.send({ content: collection.map(m => {
-			return `${m.createdAt.toTimeString().slice(0, 8)} ${m.createdAt.toDateString()}-\`${m.author.tag}\`: ` + m.content +
-                (m.attachments ? m.attachments.map(a => a.url).join("\n") : "") +
-                (m.embeds ? m.embeds.map(e => `Embed-${e.type || e.type}`).join("\n") : "");
-		}).reverse().join("\n"), split: true });
+		await message.member?.send({
+			content: collection.map(m => {
+				return `${m.createdAt.toTimeString().slice(0, 8)} ${m.createdAt.toDateString()}-\`${m.author.tag}\`: ` + m.content +
+                (m.attachments ? m.attachments.map(a => a.url).join("\n") : "");
+			}).reverse().join("\n"),
+		});
 
 		return message.react("✅");
 	}

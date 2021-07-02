@@ -8,7 +8,7 @@ export type TGreetMessage = {
 	message: string,
 	image: false | string,
 	embed: boolean,
-	color: ColorResolvable,
+	color: string | number,
 }
 
 export interface IGuild extends Document {
