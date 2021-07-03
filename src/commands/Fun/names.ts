@@ -2,7 +2,7 @@ import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-
 import { Message, MessageEmbed, User } from "discord.js";
 import { IUser } from "../../interfaces/IDocuments";
 import { getUserDocument } from "../../struct/documentMethods";
-import { KaikiCommand } from "Kaiki";
+import { KaikiCommand } from "../../lib/KaikiClass";
 
 async function add(Embed: MessageEmbed, array: MessageEmbed[]) {
 	array.push(Embed);

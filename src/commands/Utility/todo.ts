@@ -3,7 +3,7 @@ import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-
 import { Message, MessageEmbed } from "discord.js";
 import { trim } from "../../lib/Util";
 import { getUserDocument } from "../../struct/documentMethods";
-import { KaikiCommand } from "Kaiki";
+import { KaikiCommand } from "../../lib/KaikiClass";
 
 module.exports = class TodoCommand extends KaikiCommand {
 	constructor() {

@@ -1,6 +1,6 @@
 import { MessageEmbed } from "discord.js";
 import { Message } from "discord.js";
-import { KaikiCommand } from "Kaiki";
+import { KaikiCommand } from "../../lib/KaikiClass";
 
 module.exports = class KillBotProcess extends KaikiCommand {
 	constructor() {

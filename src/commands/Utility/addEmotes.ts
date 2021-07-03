@@ -3,7 +3,7 @@ import { Message } from "discord.js";
 import sizeOf from "image-size";
 import { noArgGeneric } from "../../lib/Embeds";
 import { deleteImage, getFileOut, resizeImage, saveEmoji, saveFile } from "../../lib/Emote";
-import { KaikiCommand } from "Kaiki";
+import { KaikiCommand } from "../../lib/KaikiClass";
 const imgRegex = /(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|gif|png|jpeg)/gi;
 // Credit to https://github.com/Snitt/emojibotten/blob/master/commands/management/emoji.js
 export default class AddEmotesCommand extends KaikiCommand {

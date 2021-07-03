@@ -4,7 +4,7 @@ import fetch from "node-fetch";
 import querystring from "querystring";
 import { noArgGeneric } from "../../lib/Embeds";
 import { trim } from "../../lib/Util";
-import { KaikiCommand } from "Kaiki";
+import { KaikiCommand } from "../../lib/KaikiClass";
 
 export default class UrbanDictCommand extends KaikiCommand {
 	constructor() {

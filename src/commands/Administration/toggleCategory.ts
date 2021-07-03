@@ -2,7 +2,7 @@ import { Category, Command } from "discord-akairo";
 import { Guild, Message, MessageEmbed } from "discord.js";
 import { noArgGeneric } from "../../lib/Embeds";
 import { getGuildDocument } from "../../struct/documentMethods";
-import { KaikiCommand } from "Kaiki";
+import { KaikiCommand } from "../../lib/KaikiClass";
 
 export default class ToggleCategoryCommand extends KaikiCommand {
 	constructor() {

@@ -3,7 +3,7 @@ import fetch from "node-fetch";
 import { PurpleData, RedditData } from "../../interfaces/IRedditAPI";
 import { reddit } from "../../lib/Embeds";
 import { trim } from "../../lib/Util";
-import { KaikiCommand } from "Kaiki";
+import { KaikiCommand } from "../../lib/KaikiClass";
 
 export default class RedditCommand extends KaikiCommand {
 	constructor() {

@@ -1,6 +1,6 @@
 import { Message, MessageEmbed } from "discord.js";
 import fetch from "node-fetch";
-import { KaikiCommand } from "Kaiki";
+import { KaikiCommand } from "../../lib/KaikiClass";
 
 export default class WoofCommand extends KaikiCommand {
 	constructor() {

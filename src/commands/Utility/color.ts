@@ -2,7 +2,7 @@ import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-
 import { ColorResolvable, Message, MessageAttachment, MessageEmbed } from "discord.js";
 import { hexColorTable, imgFromColor, resolveColor } from "../../lib/Color";
 import { noArgGeneric } from "../../lib/Embeds";
-import { KaikiCommand } from "Kaiki";
+import { KaikiCommand } from "../../lib/KaikiClass";
 
 export default class ColorCommand extends KaikiCommand {
 	constructor() {

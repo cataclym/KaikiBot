@@ -2,7 +2,7 @@ import Discord, { Message } from "discord.js";
 import fetch from "node-fetch";
 import { PurpleData, RedditData } from "../../interfaces/IRedditAPI";
 import { trim } from "../../lib/Util";
-import { KaikiCommand } from "Kaiki";
+import { KaikiCommand } from "../../lib/KaikiClass";
 
 export default class YeetCommand extends KaikiCommand {
 	constructor() {

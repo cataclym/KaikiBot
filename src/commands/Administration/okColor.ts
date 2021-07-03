@@ -3,7 +3,7 @@ import { Guild, Message, MessageEmbed } from "discord.js";
 import { hexColorTable } from "../../lib/Color";
 import { noArgGeneric } from "../../lib/Embeds";
 import { customClient } from "../../struct/client";
-import { KaikiCommand } from "Kaiki";
+import { KaikiCommand } from "../../lib/KaikiClass";
 
 export default class OkColorConfigCommand extends KaikiCommand {
 	constructor() {

@@ -1,5 +1,5 @@
 import { MessageEmbed, Message } from "discord.js";
-import { KaikiCommand } from "Kaiki";
+import { KaikiCommand } from "../../lib/KaikiClass";
 
 export default class PingCommand extends KaikiCommand {
 	public constructor() {

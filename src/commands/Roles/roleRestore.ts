@@ -1,7 +1,7 @@
 import { Snowflake } from "discord-api-types";
 import { Guild, GuildMember, Message, MessageEmbed } from "discord.js";
 import { getGuildDocument } from "../../struct/documentMethods";
-import { KaikiCommand } from "Kaiki";
+import { KaikiCommand } from "../../lib/KaikiClass";
 
 export default class RestoreUserRoles extends KaikiCommand {
 	constructor() {
@@ -35,7 +35,7 @@ export default class RestoreUserRoles extends KaikiCommand {
 
 			if (!roleIDArray.length) return;
 
-			member.roles.add(roleIDArray);
+			member.roles.add(roleIDArray as Snowflake[]);
 			return message.channel.send({
 				embeds: [new MessageEmbed()
 					.setDescription(`Restored roles of ${member.user.tag}`)

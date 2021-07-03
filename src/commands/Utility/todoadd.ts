@@ -1,7 +1,7 @@
 import { Message, MessageReaction } from "discord.js";
 import { noArgGeneric } from "../../lib/Embeds";
 import { getUserDocument } from "../../struct/documentMethods";
-import { KaikiCommand } from "Kaiki";
+import { KaikiCommand } from "../../lib/KaikiClass";
 
 export default class todoAddCommand extends KaikiCommand {
 	constructor() {

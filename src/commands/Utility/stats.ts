@@ -4,7 +4,7 @@ import { execSync } from "child_process";
 import { Message, MessageEmbed, version } from "discord.js";
 import * as packageJson from "../../../package.json";
 import { getCommandStatsDocument } from "../../struct/documentMethods";
-import { KaikiCommand } from "Kaiki";
+import { KaikiCommand } from "../../lib/KaikiClass";
 
 function format(seconds: number) {
 

@@ -6,7 +6,7 @@ import { Message, MessageEmbed } from "discord.js";
 import logger from "loglevel";
 import { distros } from "../../lib/distros.json";
 import { codeblock } from "../../lib/Util";
-import { KaikiCommand } from "Kaiki";
+import { KaikiCommand } from "../../lib/KaikiClass";
 
 
 export default class NeofetchCommand extends KaikiCommand {

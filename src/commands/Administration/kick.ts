@@ -1,5 +1,5 @@
 import { Guild, GuildMember, Message, MessageEmbed } from "discord.js";
-import { KaikiCommand } from "Kaiki";
+import { KaikiCommand } from "../../lib/KaikiClass";
 
 export default class KickCommand extends KaikiCommand {
 	constructor() {

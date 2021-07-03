@@ -1,5 +1,5 @@
 import { Guild, GuildEmoji, Message, MessageEmbed } from "discord.js";
-import { KaikiCommand } from "Kaiki";
+import { KaikiCommand } from "../../lib/KaikiClass";
 import { noArgGeneric } from "../../lib/Embeds";
 import { getGuildDocument } from "../../struct/documentMethods";
 

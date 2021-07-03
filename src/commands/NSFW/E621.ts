@@ -2,7 +2,7 @@ import { Message, MessageEmbed } from "discord.js";
 import { errorMessage } from "../../lib/Embeds";
 import { trim } from "../../lib/Util";
 import { DapiGrabber, DapiSearchType } from "./hentaiService";
-import { KaikiCommand } from "Kaiki";
+import { KaikiCommand } from "../../lib/KaikiClass";
 
 export default class E621Command extends KaikiCommand {
 	constructor() {

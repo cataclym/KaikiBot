@@ -2,7 +2,7 @@ import { Argument, PrefixSupplier } from "discord-akairo";
 import { execSync } from "child_process";
 import { Message, MessageEmbed } from "discord.js";
 import { name, repository, version } from "../../../package.json";
-import { KaikiCommand } from "Kaiki";
+import { KaikiCommand } from "../../lib/KaikiClass";
 
 export default class HelpCommand extends KaikiCommand {
 	constructor() {

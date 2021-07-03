@@ -1,4 +1,4 @@
-import { KaikiCommand } from "Kaiki";
+import { KaikiCommand } from "../../lib/KaikiClass";
 import { Guild, Message, MessageEmbed } from "discord.js";
 import { IGuild } from "../../interfaces/IDocuments";
 import { checkBirthdayOnAdd } from "../../lib/AnniversaryRoles";

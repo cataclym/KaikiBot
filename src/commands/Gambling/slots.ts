@@ -2,7 +2,7 @@ import { Message, MessageEmbed } from "discord.js";
 import { playSlots } from "../../lib/gambling/gambling";
 import { IMoneyService } from "../../lib/money/IMoneyService";
 import { MongoMoney } from "../../lib/money/MongoMoneyService";
-import { KaikiCommand } from "Kaiki";
+import { KaikiCommand } from "../../lib/KaikiClass";
 
 export default class slotsCommand extends KaikiCommand {
 

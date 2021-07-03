@@ -3,7 +3,7 @@ import { Snowflake } from "discord-api-types";
 import { Guild, GuildMember, Message, MessageEmbed, Role } from "discord.js";
 import { IGuild } from "../../interfaces/IDocuments";
 import { getGuildDocument } from "../../struct/documentMethods";
-import { KaikiCommand } from "Kaiki";
+import { KaikiCommand } from "../../lib/KaikiClass";
 
 // Rewrite of Miyano's setuserrole command
 // https://github.com/PlatinumFT/Miyano-v2
@@ -72,7 +72,7 @@ export default class SetUserRoleCommand extends KaikiCommand {
 
 			try {
 				delete db.userRoles[member.id];
-				await member.roles.remove(userRole ?? roleID);
+				await member.roles.remove(userRole ?? roleID as Snowflake);
 				message.channel.send({ embeds: [await embedSuccess(`Removed role ${(userRole)?.name ?? roleID} from ${member.user.username}`)] });
 			}
 

@@ -1,7 +1,7 @@
 import { Collection, GuildEmoji, Message, MessageEmbed } from "discord.js";
 import { noArgGeneric } from "../../lib/Embeds";
 import { trim } from "../../lib/Util";
-import { KaikiCommand } from "Kaiki";
+import { KaikiCommand } from "../../lib/KaikiClass";
 const timer = (ms: number) => new Promise(res => setTimeout(res, ms));
 export default class DeleteEmoteCommand extends KaikiCommand {
 	constructor() {

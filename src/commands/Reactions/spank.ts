@@ -1,6 +1,6 @@
 import { GuildMember, Message, MessageEmbed } from "discord.js";
 import sendNekosPics from "../../lib/nekos.life";
-import { KaikiCommand } from "Kaiki";
+import { KaikiCommand } from "../../lib/KaikiClass";
 
 export default class spank extends KaikiCommand {
 	constructor() {

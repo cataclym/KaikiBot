@@ -1,6 +1,6 @@
 import { Message } from "discord.js";
 import sendWaifuPics from "../../lib/waifuPics";
-import { KaikiCommand } from "Kaiki";
+import { KaikiCommand } from "../../lib/KaikiClass";
 
 export default class Waifu extends KaikiCommand {
 	constructor() {

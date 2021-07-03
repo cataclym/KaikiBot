@@ -1,5 +1,5 @@
 import { Message, MessageEmbed, TextChannel } from "discord.js";
-import { KaikiCommand } from "Kaiki";
+import { KaikiCommand } from "../../lib/KaikiClass";
 
 export default class ChannelNsfwCommand extends KaikiCommand {
 	constructor() {

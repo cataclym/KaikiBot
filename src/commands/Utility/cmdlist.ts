@@ -2,7 +2,7 @@ import { Argument, Category, Command, PrefixSupplier } from "discord-akairo";
 import { Message, MessageEmbed } from "discord.js";
 import { name, repository, version } from "../../../package.json";
 import { noArgGeneric } from "../../lib/Embeds";
-import { KaikiCommand } from "Kaiki";
+import { KaikiCommand } from "../../lib/KaikiClass";
 
 export default class commandsList extends KaikiCommand {
 	constructor() {

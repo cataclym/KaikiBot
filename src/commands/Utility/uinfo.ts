@@ -1,6 +1,6 @@
 import { GuildMember, Message, MessageEmbed, Role, UserFlagsString } from "discord.js";
 import { flags, getUserPresenceAsync } from "../../lib/Util";
-import { KaikiCommand } from "Kaiki";
+import { KaikiCommand } from "../../lib/KaikiClass";
 
 export default class UserInfoCommand extends KaikiCommand {
 	constructor() {

@@ -1,7 +1,7 @@
 import { Message, Util } from "discord.js";
 import { dadbotArray } from "../../struct/constants";
 import { getUserDocument } from "../../struct/documentMethods";
-import { KaikiCommand } from "Kaiki";
+import { KaikiCommand } from "../../lib/KaikiClass";
 
 const nickname: {
 	[id: string]: string

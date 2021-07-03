@@ -2,7 +2,7 @@ import { Argument, Flag, PrefixSupplier } from "discord-akairo";
 import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
 import { ColorResolvable, Guild, Message, MessageEmbed } from "discord.js";
 import { getGuildDocument } from "../../struct/documentMethods";
-import { KaikiCommand } from "Kaiki";
+import { KaikiCommand } from "../../lib/KaikiClass";
 import { Color } from "sharp";
 
 export default class ConfigCommand extends KaikiCommand {

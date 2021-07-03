@@ -1,7 +1,7 @@
 import { Guild, Message, MessageEmbed } from "discord.js";
 import { noArgGeneric } from "../../lib/Embeds";
 import { prefixCache } from "../../struct/client";
-import { KaikiCommand } from "Kaiki";
+import { KaikiCommand } from "../../lib/KaikiClass";
 
 export default class PrefixConfigCommand extends KaikiCommand {
 	constructor() {

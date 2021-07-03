@@ -4,7 +4,7 @@ import { Argument } from "discord-akairo";
 import { embedFail } from "../../lib/Embeds";
 import { getGuildDocument } from "../../struct/documentMethods";
 import { Snowflake } from "discord-api-types";
-import { KaikiCommand } from "Kaiki";
+import { KaikiCommand } from "../../lib/KaikiClass";
 
 export default class MyRoleSubCommandColor extends KaikiCommand {
 	constructor() {

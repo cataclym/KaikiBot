@@ -1,6 +1,6 @@
 import { Message, MessageEmbed } from "discord.js";
 import { noArgGeneric } from "../../lib/Embeds";
-import { KaikiCommand } from "Kaiki";
+import { KaikiCommand } from "../../lib/KaikiClass";
 
 export default class ReloadCommand extends KaikiCommand {
 	constructor() {

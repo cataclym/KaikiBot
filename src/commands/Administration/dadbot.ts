@@ -2,7 +2,7 @@ import { PrefixSupplier } from "discord-akairo";
 import { Guild, Message, MessageEmbed } from "discord.js";
 import { noArgGeneric } from "../../lib/Embeds";
 import { customClient } from "../../struct/client";
-import { KaikiCommand } from "Kaiki";
+import { KaikiCommand } from "../../lib/KaikiClass";
 
 export default class DadBotConfigCommand extends KaikiCommand {
 	constructor() {

@@ -4,7 +4,7 @@ import * as emojis from "node-emoji";
 import { noArgGeneric } from "../../lib/Embeds";
 import { flags } from "../../lib/Util";
 import { EMOTE_REGEX } from "../../struct/constants";
-import { KaikiCommand } from "Kaiki";
+import { KaikiCommand } from "../../lib/KaikiClass";
 
 type regexpType = { match: RegExpMatchArray };
 
