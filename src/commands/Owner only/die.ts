@@ -1,5 +1,4 @@
-import { MessageActionRow, MessageComponentInteractionCollector, MessageEmbed } from "discord.js";
-import { Message, MessageButton } from "discord.js";
+import { Message, MessageButton, MessageActionRow, InteractionCollector, MessageEmbed } from "discord.js";
 import { KaikiCommand } from "../../lib/KaikiClass";
 import logger from "loglevel";
 
@@ -28,7 +27,8 @@ export default class KillBotProcess extends KaikiCommand {
 			})],
 		});
 
-		const buttonListener = new MessageComponentInteractionCollector(deleteMsg, {
+		const buttonListener = new InteractionCollector(message.client, {
+			message: deleteMsg,
 			dispose: true,
 			time: 20000,
 			idle: 20000,
@@ -40,11 +40,14 @@ export default class KillBotProcess extends KaikiCommand {
 			buttonListener.stop();
 			await deleteMsg.delete();
 
-			await mci.reply({ ephemeral: true, embeds: [new MessageEmbed()
-				.setAuthor("Dying", message.client.user?.displayAvatarURL({ dynamic: true }))
-				.addField("Shutting down", "See you later", false)
-				.withOkColor(message)],
-			});
+			if (mci.isButton()) {
+				await mci.reply({
+					ephemeral: true, embeds: [new MessageEmbed()
+						.setAuthor("Dying", message.client.user?.displayAvatarURL({ dynamic: true }))
+						.addField("Shutting down", "See you later", false)
+						.withOkColor(message)],
+				});
+			}
 
 			logger.warn("Shutting down");
 			process.exit();
