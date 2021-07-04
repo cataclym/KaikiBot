@@ -27,11 +27,11 @@ export default class HelpCommand extends KaikiCommand {
 		if (command instanceof KaikiCommand) {
 
 			let usage;
-			usage = command.usage;
+			const cmdUsage = command.usage;
 
 			if (typeof command.description !== "string") {
-				usage = command.description.usage instanceof Array
-					? command.description.usage.map(u => `${prefix}${command.id} ${u}`).join("\n")
+				usage = cmdUsage instanceof Array
+					? cmdUsage.map(u => `${prefix}${command.id} ${u}`).join("\n")
 					: `${prefix}${command.id} ${usage}`;
 			}
 
