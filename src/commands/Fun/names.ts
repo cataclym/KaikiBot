@@ -1,4 +1,4 @@
-import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
+import { sendPaginatedMessage } from "@cataclym/discord.js-pagination-ts-nsb";
 import { Message, MessageEmbed, User } from "discord.js";
 import { IUser } from "../../interfaces/IDocuments";
 import { getUserDocument } from "../../struct/documentMethods";
@@ -71,6 +71,6 @@ export default class NamesCommand extends KaikiCommand {
 			pages);
 		}
 
-		return editMessageWithPaginatedEmbeds(message, pages, {});
+		return sendPaginatedMessage(message, pages, {});
 	}
 }

@@ -1,4 +1,4 @@
-import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
+import { sendPaginatedMessage } from "@cataclym/discord.js-pagination-ts-nsb";
 import { ColorResolvable, Message, MessageAttachment, MessageEmbed } from "discord.js";
 import { hexColorTable, imgFromColor, resolveColor } from "../../lib/Color";
 import { noArgGeneric } from "../../lib/Embeds";
@@ -40,7 +40,7 @@ export default class ColorCommand extends KaikiCommand {
 				}));
 			}
 
-			return editMessageWithPaginatedEmbeds(message, pages, {});
+			return sendPaginatedMessage(message, pages, {});
 		}
 
 		if (typeof color != "string") {

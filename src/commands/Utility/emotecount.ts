@@ -1,4 +1,4 @@
-import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
+import { sendPaginatedMessage } from "@cataclym/discord.js-pagination-ts-nsb";
 import { Snowflake } from "discord-api-types";
 import { Guild, Message, MessageEmbed } from "discord.js";
 import { trim } from "../../lib/Util";
@@ -66,6 +66,6 @@ export default class EmoteCount extends KaikiCommand {
 				);
 			}
 		}
-		return editMessageWithPaginatedEmbeds(message, pages, {});
+		return sendPaginatedMessage(message, pages, {});
 	}
 }

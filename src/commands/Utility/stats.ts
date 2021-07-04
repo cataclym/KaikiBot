@@ -1,5 +1,5 @@
 import Akairo, { Command } from "discord-akairo";
-import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
+import { sendPaginatedMessage } from "@cataclym/discord.js-pagination-ts-nsb";
 import { execSync } from "child_process";
 import { Message, MessageEmbed, version } from "discord.js";
 import * as packageJson from "../../../package.json";
@@ -34,21 +34,19 @@ module.exports = class StatsCommand extends KaikiCommand {
 		const pages = [new MessageEmbed()
 			.setAuthor(`${packageJson.name} v${packageJson.version}-${execSync("git rev-parse --short HEAD").toString()}`, message.client.user?.displayAvatarURL({ dynamic: true }), packageJson.repository.url)
 			.setDescription("**Built using**:")
-			.addFields(
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-				// @ts-ignore
+			.addFields([
 				{ name: "Discord.js library", value: `[Discord.js](https://discord.js.org/#/ 'Discord.js website') v${version}`, inline: true },
 				{ name: "Discord-Akairo framework", value: `[Discord-Akairo](https://discord-akairo.github.io/#/ 'Discord-Akairo website') v${Akairo.version}`, inline: true },
 				{ name: "Running on Node.js", value: `[Node.js](https://nodejs.org/en/ 'Node.js website') ${process.version}`, inline: true },
 				{ name: "Memory Usage", value: `${Math.round(process.memoryUsage().heapUsed / 1024 / 1024)}MB`, inline: true },
-				{ name: "Uptime", value: format(process.uptime()), inline: true },
-				{ name: "Users", value: message.client.users.cache.size, inline: true },
+				{ name: "Uptime", value: String(format(process.uptime())), inline: true },
+				{ name: "Users", value: String(message.client.users.cache.size), inline: true },
 				{ name: "Presence", value: `Guilds: **${guildCache.size}**\nText channels: **${guildCache
 					.map(g => g.channels.cache
 						.filter(channel => (channel.type !== "voice") && channel.type !== "category").size)
 					.reduce((a, b) => a + b, 0)}**\nVoice channels: **${guildCache
 					.map(g => g.channels.cache.filter(channel => channel.type === "voice").size)
-					.reduce((a, b) => a + b, 0)}**`, inline: true })
+					.reduce((a, b) => a + b, 0)}**`, inline: true }])
 			.withOkColor(message)];
 
 		for (let i = 0, l = 25; i < stats.length; i += 25, l += 25) {
@@ -67,6 +65,6 @@ module.exports = class StatsCommand extends KaikiCommand {
 			pages.push(emb);
 		}
 
-		return editMessageWithPaginatedEmbeds(message, pages, {});
+		return sendPaginatedMessage(message, pages, {});
 	}
 };

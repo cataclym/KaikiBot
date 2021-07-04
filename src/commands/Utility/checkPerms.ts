@@ -1,5 +1,5 @@
 import { Argument } from "discord-akairo";
-import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
+import { sendPaginatedMessage } from "@cataclym/discord.js-pagination-ts-nsb";
 import { GuildMember, Message, MessageEmbed, Role, TextChannel } from "discord.js";
 import { codeblock } from "../../lib/Util";
 import { KaikiCommand } from "../../lib/KaikiClass";
@@ -69,6 +69,6 @@ export default class CheckPermissionsCommand extends KaikiCommand {
 			);
 		}
 
-		return editMessageWithPaginatedEmbeds(message, pages, {});
+		return sendPaginatedMessage(message, pages, {});
 	}
 }

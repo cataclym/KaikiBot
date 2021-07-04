@@ -1,6 +1,6 @@
 /* eslint-disable no-useless-escape */
 import { Command } from "discord-akairo";
-import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
+import { sendPaginatedMessage } from "@cataclym/discord.js-pagination-ts-nsb";
 import { exec } from "child_process";
 import { Message, MessageEmbed } from "discord.js";
 import logger from "loglevel";
@@ -41,7 +41,7 @@ export default class NeofetchCommand extends KaikiCommand {
 					.setDescription(await codeblock(distros.slice(p, i).join(", "), "json"))
 					.withOkColor(message));
 			}
-			return editMessageWithPaginatedEmbeds(message, pages, {});
+			return sendPaginatedMessage(message, pages, {});
 		}
 
 		else {

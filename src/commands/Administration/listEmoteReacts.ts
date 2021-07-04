@@ -1,5 +1,5 @@
 import { PrefixSupplier } from "discord-akairo";
-import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
+import { sendPaginatedMessage } from "@cataclym/discord.js-pagination-ts-nsb";
 import { Snowflake } from "discord-api-types";
 import { Message, MessageEmbed } from "discord.js";
 import { getGuildDocument } from "../../struct/documentMethods";
@@ -19,10 +19,10 @@ export default class RemoveEmoteReactCommand extends KaikiCommand {
 
 		const gid = message.guild!.id,
 			db = await getGuildDocument(gid),
-			emojies = Object.entries(db.emojiReactions),
+			emojis = Object.entries(db.emojiReactions),
 			pages: MessageEmbed[] = [];
 
-		if (!emojies?.length) {
+		if (!emojis?.length) {
 			return message.channel.send({
 				embeds: [new MessageEmbed()
 					.setTitle("No triggers")
@@ -31,16 +31,16 @@ export default class RemoveEmoteReactCommand extends KaikiCommand {
 			});
 		}
 
-		for (let index = 15, p = 0; p < emojies.length; index += 15, p += 15) {
+		for (let index = 15, p = 0; p < emojis.length; index += 15, p += 15) {
 
 			pages.push(new MessageEmbed()
 				.setTitle("Emoji triggers")
-				.setDescription(emojies.slice(p, index).map(([t, e]) => {
+				.setDescription(emojis.slice(p, index).map(([t, e]) => {
 					return `**${t}** => ${message.guild?.emojis.cache.get(e as Snowflake) ?? e}`;
 				}).join("\n"))
 				.withOkColor(message));
 		}
 
-		return editMessageWithPaginatedEmbeds(message, pages, {});
+		return sendPaginatedMessage(message, pages, {});
 	}
 }
