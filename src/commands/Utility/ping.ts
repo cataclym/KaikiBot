@@ -11,15 +11,16 @@ export default class PingCommand extends KaikiCommand {
 
 	public async exec(message: Message): Promise<Message> {
 
-		const InitialMSG: Message = await message.channel.send("Pinging...!"),
-			WSTime: number = Math.abs(message.client.ws.ping),
-			ClientTime: number = InitialMSG.createdTimestamp - message.createdTimestamp;
+		const initialMsg = await message.channel.send("Pinging...!"),
+			wsTime = Math.abs(message.client.ws.ping),
+			clientTime = initialMsg.createdTimestamp - message.createdTimestamp;
 
-		return InitialMSG.edit({ embeds: [new MessageEmbed()
+		return initialMsg.edit({ embeds: [new MessageEmbed()
 			.addFields([
-				{ name: "WebSocket ping", value: WSTime + " ms", inline: true },
-				{ name: "Client ping", value: ClientTime + " ms", inline: true }])
+				{ name: "WebSocket ping", value: wsTime + " ms", inline: true },
+				{ name: "Client ping", value: clientTime + " ms", inline: true }])
 			.withOkColor(message)],
+		content: null,
 		});
 	}
 }

@@ -19,11 +19,10 @@ export default class HelpCommand extends KaikiCommand {
 
 	public async exec(message: Message, args: { command: KaikiCommand | string } | undefined): Promise<Message> {
 
-		const prefix = (this.handler.prefix as PrefixSupplier)(message);
-
-		const command = args?.command;
-		const embed = new MessageEmbed()
-			.withOkColor(message);
+		const prefix = (this.handler.prefix as PrefixSupplier)(message),
+			command = args?.command,
+			embed = new MessageEmbed()
+				.withOkColor(message);
 
 		if (command instanceof KaikiCommand) {
 
@@ -35,16 +34,15 @@ export default class HelpCommand extends KaikiCommand {
 					: `${prefix}${command.id} ${usage}`;
 			}
 
-			embed.setTitle(`${command.id}`)
+			embed.setTitle(`Command: ${command.id}`)
 				.setDescription(`**Aliases:** \`${command.aliases.join("`, `")}\``)
 				.setFooter(command.categoryID)
-				.addField("**Description:**", command.description.description || "?", false)
+				.addField("**Description:**", command.description || "?", false)
 				.addField("**Usage:**", usage?.length
 					? usage
 					: `${prefix}${command.id}`, false);
 
 			if (command.userPermissions) embed.addField("Requires", command.userPermissions.toString(), false);
-			if (command.ownerOnly) embed.addField("Owner only", "✅", false);
 
 			return message.channel.send({ embeds: [embed] });
 		}
