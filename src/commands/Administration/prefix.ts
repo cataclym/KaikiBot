@@ -1,9 +1,9 @@
-import { Command } from "@cataclym/discord-akairo";
 import { Guild, Message, MessageEmbed } from "discord.js";
 import { noArgGeneric } from "../../lib/Embeds";
 import { prefixCache } from "../../struct/client";
+import { KaikiCommand } from "../../lib/KaikiClass";
 
-export default class PrefixConfigCommand extends Command {
+export default class PrefixConfigCommand extends KaikiCommand {
 	constructor() {
 		super("config-prefix", {
 			userPermissions: ["ADMINISTRATOR"],
@@ -22,16 +22,17 @@ export default class PrefixConfigCommand extends Command {
 		const guildID = (message.guild as Guild).id,
 			oldPrefix = message.client.guildSettings.get(guildID, "prefix", process.env.PREFIX);
 
-		message.client.guildSettings.set(guildID, "prefix", value);
+		await message.client.guildSettings.set(guildID, "prefix", value);
 
 		prefixCache[guildID] = value;
 
-		return message.channel.send(new MessageEmbed({
-			title: "Success!",
-			description: `Prefix has been set to \`${value}\` !`,
-			footer: { text: `Old prefix: \`${oldPrefix}\`` },
-		})
-			.withOkColor(message),
-		);
+		return message.channel.send({
+			embeds:	[new MessageEmbed({
+				title: "Success!",
+				description: `Prefix has been set to \`${value}\` !`,
+				footer: { text: `Old prefix: \`${oldPrefix}\`` },
+			})
+				.withOkColor(message)],
+		});
 	}
 }

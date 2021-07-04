@@ -1,16 +1,17 @@
-import { Command } from "@cataclym/discord-akairo";
 import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
 import { Message, MessageEmbed } from "discord.js";
 import fetch from "node-fetch";
 import querystring from "querystring";
 import { noArgGeneric } from "../../lib/Embeds";
 import { trim } from "../../lib/Util";
+import { KaikiCommand } from "../../lib/KaikiClass";
 
-export default class UrbanDictCommand extends Command {
+export default class UrbanDictCommand extends KaikiCommand {
 	constructor() {
 		super("urbandict", {
 			aliases: ["urbandict", "urban", "ud"],
-			description: { description: "Searches Urban Dictionary for a word or sentence", usage: ["Watermelon", "anime"] },
+			description: "Searches Urban Dictionary for a word or sentence",
+			usage: ["Watermelon", "anime"],
 			args: [
 				{
 					id: "term",
@@ -27,14 +28,16 @@ export default class UrbanDictCommand extends Command {
 		const { list } = await fetch(`https://api.urbandictionary.com/v0/define?${query}`).then(response => response.json());
 
 		if (!list.length) {
-			return message.channel.send(new MessageEmbed({
-				description: `No results found for **${term}**.`,
-			})
-				.withErrorColor(message));
+			return message.channel.send({
+				embeds: [new MessageEmbed({
+					description: `No results found for **${term}**.`,
+				})
+					.withErrorColor(message)],
+			});
 		}
 		const pages: MessageEmbed[] = [];
-		list.forEach(async (result: Record<string, string>) => {
-			return pages.push(new MessageEmbed()
+		for (const result of list) {
+			pages.push(new MessageEmbed()
 				.setTitle(result.word)
 				.setURL(result.permalink)
 				.addFields(
@@ -44,7 +47,7 @@ export default class UrbanDictCommand extends Command {
 				)
 				.withOkColor(message),
 			);
-		});
+		}
 		return editMessageWithPaginatedEmbeds(message, pages, {});
 	}
 }

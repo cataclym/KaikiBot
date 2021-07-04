@@ -1,10 +1,11 @@
-import { Argument, Command } from "@cataclym/discord-akairo";
+import { Argument } from "discord-akairo";
 import { Guild, Message, MessageEmbed, TextChannel } from "discord.js";
 import { hexColorTable } from "../../lib/Color";
 import { okColor } from "../../lib/Util";
 import { getGuildDocument } from "../../struct/documentMethods";
+import { KaikiCommand } from "../../lib/KaikiClass";
 
-export default class WelcomeConfigCommand extends Command {
+export default class WelcomeConfigCommand extends KaikiCommand {
 	constructor() {
 		super("config-welcome", {
 			userPermissions: "ADMINISTRATOR",
@@ -71,18 +72,20 @@ export default class WelcomeConfigCommand extends Command {
 			const enabledOrDisabled = db.settings.welcome.enabled;
 
 			await db.save();
-			return message.channel.send(new MessageEmbed()
-				.setDescription(`${enabledOrDisabled ? "Enabled" : "Disabled"} welcome message`)
-				.withOkColor(message),
-			);
+			return message.channel.send({
+				embeds: [new MessageEmbed()
+					.setDescription(`${enabledOrDisabled ? "Enabled" : "Disabled"} welcome message`)
+					.withOkColor(message)],
+			});
 		}
 
 		if (msg.length > 1500) {
-			return message.channel.send(new MessageEmbed()
-				.setTitle("Message too long")
-				.setDescription("Message exceeded 1500 characters, please make sure welcome message is under 1500 characters.")
-				.withErrorColor(message),
-			);
+			return message.channel.send({
+				embeds: [new MessageEmbed()
+					.setTitle("Message too long")
+					.setDescription("Message exceeded 1500 characters, please make sure welcome message is under 1500 characters.")
+					.withErrorColor(message)],
+			});
 		}
 
 		else {
@@ -102,12 +105,14 @@ export default class WelcomeConfigCommand extends Command {
 				});
 		}
 
-		return message.channel.send(new MessageEmbed({
-			title: "Set welcome message",
-			description: `**Image**: ${image.valueOf() ? "Enabled" : "Disabled"}\n
+		return message.channel.send({
+			embeds: [new MessageEmbed({
+				title: "Set welcome message",
+				description: `**Image**: ${image.valueOf() ? "Enabled" : "Disabled"}\n
 			**Embed**: ${embed ? `Enabled (${color})` : "Disabled"}\n
 			**Channel**: ${channel.name} [${channel.id}]`,
-		})
-			.withOkColor(message));
+			})
+				.withOkColor(message)],
+		});
 	}
 }

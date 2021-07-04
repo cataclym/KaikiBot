@@ -1,12 +1,12 @@
-import { Command } from "@cataclym/discord-akairo";
 import { exec } from "child_process";
 import { Message } from "discord.js";
 import { codeblock, trim } from "../../lib/Util";
 import fs from "fs";
 import logger from "loglevel";
 import * as path from "path";
+import { KaikiCommand } from "../../lib/KaikiClass";
 
-export default class UpdateCommand extends Command {
+export default class UpdateCommand extends KaikiCommand {
 	constructor() {
 		super("update", {
 			aliases: ["update"],
@@ -64,7 +64,7 @@ export default class UpdateCommand extends Command {
 			});
 		}
 		catch (e) {
-			throw new Error("An error occurred during update. Please update manually\nGITLAB LINK TO GUIDE HERE.");
+			throw new Error("An error occurred during update. Please update manually\n<GITLAB LINK TO GUIDE HERE.>\n" + await codeblock(e.message, "xl"));
 			// TODO: add link to update.md on gitlab
 		}
 	}

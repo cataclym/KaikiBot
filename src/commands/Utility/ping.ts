@@ -1,23 +1,26 @@
 import { MessageEmbed, Message } from "discord.js";
-import { Command } from "@cataclym/discord-akairo";
+import { KaikiCommand } from "../../lib/KaikiClass";
 
-export default class PingCommand extends Command {
+export default class PingCommand extends KaikiCommand {
 	public constructor() {
 		super("ping", {
-			description: { description: "Ping the bot and websocket to see if there are latency issues." },
+			description: "Ping the bot and websocket to see if there are latency issues.",
 			aliases: ["p", "ping"],
 		});
 	}
+
 	public async exec(message: Message): Promise<Message> {
 
-		const InitialMSG: Message = await message.channel.send("Pinging...!"),
-			WSTime: number = Math.abs(message.client.ws.ping),
-			ClientTime: number = InitialMSG.createdTimestamp - message.createdTimestamp;
+		const initialMsg = await message.channel.send("Pinging...!"),
+			wsTime = Math.abs(message.client.ws.ping),
+			clientTime = initialMsg.createdTimestamp - message.createdTimestamp;
 
-		return InitialMSG.edit(null, new MessageEmbed()
+		return initialMsg.edit({ embeds: [new MessageEmbed()
 			.addFields([
-				{ name: "WebSocket ping", value: WSTime + " ms", inline: true },
-				{ name: "Client ping", value: ClientTime + " ms", inline: true }])
-			.withOkColor(message));
+				{ name: "WebSocket ping", value: wsTime + " ms", inline: true },
+				{ name: "Client ping", value: clientTime + " ms", inline: true }])
+			.withOkColor(message)],
+		content: null,
+		});
 	}
 }

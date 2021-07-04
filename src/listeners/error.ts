@@ -1,5 +1,5 @@
 /* eslint-disable indent */
-import { Command, Listener } from "@cataclym/discord-akairo";
+import { Command, Listener } from "discord-akairo";
 import { Message } from "discord.js";
 import logger from "loglevel";
 import { cmdStatsCache } from "../cache/cache";
@@ -18,11 +18,10 @@ export default class errorListener extends Listener {
 	public async exec(error: Error, message: Message, command: Command): Promise<void> {
 
         listenerLog(message, this, logger.warn, command, `${error.stack}\n`);
-        message.channel.send(await errorMessage(message, await codeblock(error.message, "xl")));
+        message.channel.send({ embeds: [await errorMessage(message, await codeblock(error.message, "xl"))] });
 
 		cmdStatsCache[command.id]
 			? cmdStatsCache[command.id]++
 			: cmdStatsCache[command.id] = 1;
 	}
 }
-

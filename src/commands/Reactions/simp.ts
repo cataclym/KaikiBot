@@ -1,13 +1,15 @@
-import { Command } from "@cataclym/discord-akairo";
 import Canvas, { loadImage } from "canvas";
 import { GuildMember, Message, MessageAttachment } from "discord.js";
-// Canvas.registerFont("../../../lmsans9-regular.otf", { family: "Latin Modern Sans", style: "regular" });
+import { KaikiCommand } from "../../lib/KaikiClass";
+
 const background = async () => await loadImage("https://cdn.discordapp.com/attachments/717045059215687691/763459005137420328/simp.jpg");
-export default class SimpCommand extends Command {
+
+export default class SimpCommand extends KaikiCommand {
 	constructor() {
 		super("simp", {
 			aliases: ["simp"],
-			description: { description: "Embarrass your simp friend", usage: "@dreb" },
+			description: "Embarrass your simp friend",
+			usage: "@dreb",
 			cooldown: 8000,
 			typing: true,
 			args: [{
@@ -50,6 +52,6 @@ export default class SimpCommand extends Command {
 		ctx.drawImage(avatar, 300, 140, 100, 100);
 
 		const attachment = new MessageAttachment(canvas.toBuffer(), "Simper.jpg");
-		await message.channel.send(`Haha, you're a simp!! ${member.user}`, attachment);
+		await message.channel.send({ content: `Haha, you're a simp!! ${member.user}`, files: [attachment] });
 	}
 }

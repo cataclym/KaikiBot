@@ -1,16 +1,17 @@
-import { Command } from "@cataclym/discord-akairo";
 import { Message, MessageEmbed, TextChannel } from "discord.js";
 import fetch from "node-fetch";
 import { PurpleData, RedditData } from "../../interfaces/IRedditAPI";
 import { reddit } from "../../lib/Embeds";
 import { trim } from "../../lib/Util";
+import { KaikiCommand } from "../../lib/KaikiClass";
 
-export default class RedditCommand extends Command {
+export default class RedditCommand extends KaikiCommand {
 	constructor() {
 		super("reddit", {
 			aliases: ["reddit"],
 			typing: true,
-			description: { description: "Returns a random reddit post, from a specified subreddit.", usage: "anime" },
+			description: "Returns a random reddit post, from a specified subreddit.",
+			usage: "anime",
 			args: [
 				{
 					id: "sub",
@@ -25,7 +26,7 @@ export default class RedditCommand extends Command {
 
 		const promise = await fetch(`https://www.reddit.com/r/${sub}/random/.json`);
 
-		if (!promise.ok) return message.channel.send(await reddit.noDataReceived(message));
+		if (!promise.ok) return message.channel.send({ embeds: [await reddit.noDataReceived(message)] });
 
 		return promise.json()
 			.then((json: RedditData | RedditData[]) => Array.isArray(json)
@@ -36,16 +37,17 @@ export default class RedditCommand extends Command {
 		async function postRandomTitle(data: PurpleData) {
 
 			if (!data) {
-				return message.channel.send(await reddit.noDataReceived(message));
+				return message.channel.send({ embeds: [await reddit.noDataReceived(message)] });
 			}
 
 			// We don´t want nsfw in normal channels, do we?
 			if (data.over_18 && (!(message.channel as TextChannel)?.nsfw ||	message.channel.type !== "dm")) {
-				return message.channel.send(new MessageEmbed({
-					title: "This post is marked as NSFW",
+				return message.channel.send({ embeds: [new MessageEmbed({
+					title: "This post is NSFW",
 					description: "Cannot show NSFW in DMs or non-NSFW channels",
 				})
-					.withErrorColor(message))
+					.withErrorColor(message)],
+				})
 					.then(msg => setTimeout(() => {
 						message.delete();
 						msg.delete();
@@ -67,7 +69,7 @@ export default class RedditCommand extends Command {
 				? embed.setImage(data.url)
 				: message.channel.send(data.url ?? data.permalink);
 
-			return message.channel.send(embed);
+			return message.channel.send({ embeds: [embed] });
 		}
 	}
 }

@@ -1,4 +1,4 @@
-import { Listener } from "@cataclym/discord-akairo";
+import { Listener } from "discord-akairo";
 import { Message } from "discord.js";
 import { countEmotes } from "../lib/functions";
 

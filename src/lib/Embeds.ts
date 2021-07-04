@@ -1,4 +1,4 @@
-import { Command, PrefixSupplier } from "@cataclym/discord-akairo";
+import { Command, PrefixSupplier } from "discord-akairo";
 import { Message, MessageEmbed, User } from "discord.js";
 import { getTinderDocument } from "../struct/documentMethods";
 import { poems } from "./Poems";
@@ -59,10 +59,7 @@ export async function tinderRollEmbed(message: Message, randomUsr: User, RollsLi
 		.setAuthor(tinderSlogan[Math.floor(Math.random() * tinderSlogan.length)])
 		.setTitle(randomUsr.username)
 		.setDescription(member ? "**Nickname**\n" + member?.displayName : "🌐")
-		.addFields(
-			// { name: "**Likes**", value: randomUsrLikes ?? "None", inline: true },
-			{ name: "**Waifus**", value: waifus ?? "None", inline: true },
-		)
+		.addField("**Waifus**", waifus.toString() ?? "None", true)
 		.setFooter(RollsLikes ? "React '❌' to dislike. '💚' To like. '🌟' To super like.\n" + RollsLikes : randomUsr.tag)
 		.setImage(randomUsr.displayAvatarURL({ dynamic: true, size: 128 }));
 }

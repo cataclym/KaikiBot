@@ -1,4 +1,4 @@
-import { Argument, Command } from "@cataclym/discord-akairo";
+import { Argument, Command } from "discord-akairo";
 import { Snowflake } from "discord-api-types/globals";
 import { Message, MessageEmbed, User } from "discord.js";
 
@@ -32,17 +32,20 @@ export default class UnbanCommand extends Command {
 
 		if (bans?.find((u) => u.user.id === user.id)) {
 			await message.guild?.members.unban(user);
-			return message.channel.send(new MessageEmbed({
+			return message.channel.send({ embeds: [new MessageEmbed({
 				description: `Unbanned ${user.tag}.`,
 			})
-				.withOkColor(message));
+				.withOkColor(message)],
+			});
 		}
 
 		else {
-			return message.channel.send(new MessageEmbed({
-				description: "This user is not banned.",
-			})
-				.withErrorColor(message));
+			return message.channel.send({
+				embeds: [new MessageEmbed({
+					description: `\`${user.tag}\` is not banned.`,
+				})
+					.withErrorColor(message)],
+			});
 		}
 	}
 }

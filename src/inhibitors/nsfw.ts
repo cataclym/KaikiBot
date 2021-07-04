@@ -1,4 +1,4 @@
-import { Command, Inhibitor } from "@cataclym/discord-akairo";
+import { Command, Inhibitor } from "discord-akairo";
 import { MessageEmbed } from "discord.js";
 import { TextChannel } from "discord.js";
 import { Message } from "discord.js";
@@ -13,11 +13,13 @@ export default class NSFWInhibitor extends Inhibitor {
 
 		if (message.guild) {
 			if (command.categoryID === "NSFW" && !(message.channel as TextChannel).nsfw) {
-				message.channel.send(new MessageEmbed({
-					title: "Error",
-					description: "Channel is not NSFW.",
-				})
-					.withErrorColor(message));
+				message.channel.send({
+					embeds: [new MessageEmbed({
+						title: "Error",
+						description: "Channel is not NSFW.",
+					})
+						.withErrorColor(message)],
+				});
 				return true;
 			}
 		}

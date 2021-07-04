@@ -1,16 +1,16 @@
-import { Command } from "@cataclym/discord-akairo";
 import Discord, { Message } from "discord.js";
 import fetch from "node-fetch";
 import { PurpleData, RedditData } from "../../interfaces/IRedditAPI";
 import { trim } from "../../lib/Util";
+import { KaikiCommand } from "../../lib/KaikiClass";
 
-export default class YeetCommand extends Command {
+export default class YeetCommand extends KaikiCommand {
 	constructor() {
 		super("reddityeetkids", {
 			cooldown: 8000,
 			aliases: ["reddityeetkids", "yeetkids", "ryk"],
 			typing: true,
-			description: { description: "Returns yeet..." },
+			description: "Returns yeet...",
 		});
 	}
 
@@ -54,7 +54,7 @@ export default class YeetCommand extends Command {
 				else yeetEmbed.setImage(randomRedditPost.url);
 			}
 
-			return message.channel.send(yeetEmbed);
+			return message.channel.send({ embeds: [yeetEmbed] });
 		}
 	}
 }

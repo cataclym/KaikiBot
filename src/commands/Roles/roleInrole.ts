@@ -1,20 +1,19 @@
 import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
-import { Command } from "@cataclym/discord-akairo";
 import { GuildMember, Role, MessageEmbed, Message } from "discord.js";
+import { KaikiCommand } from "../../lib/KaikiClass";
 
-export default class RoleInRoleCommand extends Command {
+export default class RoleInRoleCommand extends KaikiCommand {
 	constructor() {
 		super("inrole", {
 			aliases: ["inrole"],
-			description: { description: "Lists all users in role", usage: "" },
+			description: "Lists all users in role",
+			usage: "",
 			channel: "guild",
-			args: [
-				{
-					id: "role",
-					type: "role",
-					default: (message: Message) => message.member?.roles.highest,
-				},
-			],
+			args: [{
+				id: "role",
+				type: "role",
+				default: (message: Message) => message.member?.roles.highest,
+			}],
 		});
 	}
 
@@ -34,7 +33,7 @@ export default class RoleInRoleCommand extends Command {
 				const currentPageUsers = data.slice(p, i),
 					emb = new MessageEmbed()
 						.setTitle(`Users in ${role.name} (${data.length})`)
-						.setAuthor(message.guild?.name)
+						.setAuthor(message.guild?.name ?? "Null")
 						.addField("•", currentPageUsers
 							.slice(0, 20)
 							.map(u => `${u.user} - ${u.user.username}`)

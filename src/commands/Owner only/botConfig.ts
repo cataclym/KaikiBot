@@ -1,23 +1,22 @@
-import { Command, FailureData } from "@cataclym/discord-akairo";
+import { FailureData } from "discord-akairo";
 import { Message, MessageEmbed } from "discord.js";
 import { noArgGeneric } from "../../lib/Embeds";
 import { codeblock } from "../../lib/Util";
 import { customClient } from "../../struct/client";
 import { IMoneyService } from "../../lib/money/IMoneyService";
 import { MongoMoney } from "../../lib/money/MongoMoneyService";
+import { KaikiCommand } from "../../lib/KaikiClass";
 
 const validTypes = ["currencyname", "currencysymbol"];
 
-export default class BotConfigCommand extends Command {
+export default class BotConfigCommand extends KaikiCommand {
 	private readonly _money: IMoneyService;
 
 	constructor() {
 		super("botconfig", {
 			aliases: ["botconfig", "bc"],
-			description: {
-				description: "Change various bot configurations. Run without arguments to see current settings.",
-				usage: ["<setting> <value>", "currencyname Europe Dollars"]
-			},
+			description: "Change various bot configurations. Run without arguments to see current settings.",
+			usage: ["<setting> <value>", "currencyname Europe Dollars"],
 			ownerOnly: true,
 			args: [
 				{
@@ -68,11 +67,12 @@ export default class BotConfigCommand extends Command {
 
 		await this._money.UpdateCurrencyNameAndSymbol(this.client as customClient);
 
-		return message.channel.send(new MessageEmbed()
-			.setTitle("Changed bot configuration")
-			.addField("Old Value", oldValue)
-			.addField("New value", name)
-			.withOkColor(message),
-		);
+		return message.channel.send({
+			embeds: [new MessageEmbed()
+				.setTitle("Changed bot configuration")
+				.addField("Old Value", oldValue)
+				.addField("New value", name)
+				.withOkColor(message)],
+		});
 	}
 }

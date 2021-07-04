@@ -1,17 +1,15 @@
-import { Command } from "@cataclym/discord-akairo";
 import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
-import { Message, MessageAttachment, MessageEmbed } from "discord.js";
+import { ColorResolvable, Message, MessageAttachment, MessageEmbed } from "discord.js";
 import { hexColorTable, imgFromColor, resolveColor } from "../../lib/Color";
 import { noArgGeneric } from "../../lib/Embeds";
+import { KaikiCommand } from "../../lib/KaikiClass";
 
-export default class ColorCommand extends Command {
+export default class ColorCommand extends KaikiCommand {
 	constructor() {
 		super("color", {
 			aliases: ["color", "clr"],
-			description: {
-				description: "Returns a representation of a color string, or shows list of available color names to use.",
-				usage: ["", "list"],
-			},
+			description: "Returns a representation of a color string, or shows list of available color names to use.",
+			usage: ["", "list"],
 			args: [
 				{
 					id: "list",
@@ -38,7 +36,7 @@ export default class ColorCommand extends Command {
 				pages.push(new MessageEmbed({
 					title: "List of all available color names",
 					description: colorList.slice(p, index).join("\n"),
-					color: embedColor,
+					color: embedColor as ColorResolvable,
 				}));
 			}
 
@@ -46,7 +44,7 @@ export default class ColorCommand extends Command {
 		}
 
 		if (typeof color != "string") {
-			return message.channel.send(noArgGeneric(message));
+			return message.channel.send({ embeds: [noArgGeneric(message)] });
 		}
 
 		// Someone pls format this better ty^^
@@ -58,12 +56,12 @@ export default class ColorCommand extends Command {
 			}),
 			attachment = new MessageAttachment(await imgFromColor(clrStr !== "RANDOM" ? clrStr : embed.hexColor ?? "#000000"), "color.png");
 
-		if (clrStr === "RANDOM") embed.setDescription(embed.hexColor?.toString());
+		if (clrStr === "RANDOM") embed.setDescription(embed.hexColor?.toString() ?? "null");
 
 		embed.setImage("attachment://color.png");
 
 		return message.channel.send({ files: [attachment],
-			embed: embed,
+			embeds: [embed],
 		});
 	}
 }

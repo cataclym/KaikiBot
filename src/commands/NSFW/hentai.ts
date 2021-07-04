@@ -1,13 +1,12 @@
-import { Command } from "@cataclym/discord-akairo";
-import { Message, MessageEmbed } from "discord.js";
-import { Image } from "kaori/typings/Image";
-import { grabHentaiPictureAsync, grabHentai, typesArray, postHentai } from "./hentaiService";
+import { Message } from "discord.js";
+import { grabHentai, typesArray, postHentai } from "./hentaiService";
+import { KaikiCommand } from "../../lib/KaikiClass";
 
-export default class HentaiCommand extends Command {
+export default class HentaiCommand extends KaikiCommand {
 	constructor() {
 		super("hentai", {
 			aliases: ["hentai"],
-			description: { description: "Fetches hentai images from Booru boards" },
+			description: "Fetches hentai images from Booru boards",
 			typing: true,
 			args: [{
 				id: "tags",
@@ -17,6 +16,7 @@ export default class HentaiCommand extends Command {
 			}],
 		});
 	}
+
 	public async exec(message: Message, { tags }: { tags: string }): Promise<Message> {
 
 		if (!tags) {

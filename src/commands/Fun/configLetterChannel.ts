@@ -1,4 +1,4 @@
-// import { Argument, Command } from "@cataclym/discord-akairo";
+// import { Argument, Command } from "discord-akairo";
 // import { Message, TextChannel } from "discord.js";
 // import db from "quick.db";
 // const guildConfig = new db.table("guildConfig");

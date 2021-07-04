@@ -1,17 +1,17 @@
-import { Command } from "@cataclym/discord-akairo";
 import { Guild, GuildEmoji, Message, MessageEmbed } from "discord.js";
+import { KaikiCommand } from "../../lib/KaikiClass";
 import { noArgGeneric } from "../../lib/Embeds";
 import { getGuildDocument } from "../../struct/documentMethods";
 
-export default class EmoteReactCommand extends Command {
+export default class EmoteReactCommand extends KaikiCommand {
 	constructor() {
 		super("addemotereact", {
 			aliases: ["addemotereact", "emotereact", "aer"],
 			userPermissions: "MANAGE_EMOJIS",
 			clientPermissions: "ADD_REACTIONS",
 			channel: "guild",
-			description: { description: "Add triggers for the bot to react with emojis/emotes to. Use quotes for triggers with spaces.",
-				usage: ["red :red:", "anime :weeaboosgetout:"] },
+			description: "Add triggers for the bot to react with emojis/emotes to. Use quotes for triggers with spaces.",
+			usage: ["red :red:", "anime :weeaboosgetout:"],
 			args: [
 				{
 					id: "trigger",
@@ -36,11 +36,12 @@ export default class EmoteReactCommand extends Command {
 		db.markModified(`emojiReactions.${trigger}`);
 		db.save();
 
-		return message.channel.send(new MessageEmbed()
-			.setTitle("New emoji trigger added")
-			.setDescription(`Saying \`${trigger}\` will force me to react with ${emoji}`)
-			.setThumbnail(emoji.url)
-			.withOkColor(message),
-		);
+		return message.channel.send({ embeds:
+			[new MessageEmbed()
+				.setTitle("New emoji trigger added")
+				.setDescription(`Saying \`${trigger}\` will force me to react with ${emoji}`)
+				.setThumbnail(emoji.url)
+				.withOkColor(message)],
+		});
 	}
 }

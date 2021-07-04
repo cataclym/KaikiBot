@@ -1,13 +1,15 @@
-import { Argument, Command, PrefixSupplier } from "@cataclym/discord-akairo";
+import { Argument, PrefixSupplier } from "discord-akairo";
 import { execSync } from "child_process";
 import { Message, MessageEmbed } from "discord.js";
 import { name, repository, version } from "../../../package.json";
+import { KaikiCommand } from "../../lib/KaikiClass";
 
-export default class HelpCommand extends Command {
+export default class HelpCommand extends KaikiCommand {
 	constructor() {
 		super("help", {
 			aliases: ["help", "h"],
-			description: { description: "Shows command info", usage: "ping" },
+			description: "Shows command info",
+			usage: "ping",
 			args: [{
 				id: "command",
 				type: Argument.union("commandAlias", "string"),
@@ -15,17 +17,17 @@ export default class HelpCommand extends Command {
 		});
 	}
 
-	public async exec(message: Message, args: { command: Command | string } | undefined): Promise<Message> {
+	public async exec(message: Message, args: { command: KaikiCommand | string } | undefined): Promise<Message> {
 
-		const prefix = (this.handler.prefix as PrefixSupplier)(message);
+		const prefix = (this.handler.prefix as PrefixSupplier)(message),
+			command = args?.command,
+			embed = new MessageEmbed()
+				.withOkColor(message);
 
-		const command = args?.command;
-		const embed = new MessageEmbed()
-			.withOkColor(message);
-
-		if (command instanceof Command) {
+		if (command instanceof KaikiCommand) {
 
 			let usage;
+			usage = command.usage;
 
 			if (typeof command.description !== "string") {
 				usage = command.description.usage instanceof Array
@@ -33,29 +35,29 @@ export default class HelpCommand extends Command {
 					: `${prefix}${command.id} ${usage}`;
 			}
 
-			embed.setTitle(`**Name:** ${command.id}`)
+			embed.setTitle(`Command: ${command.id}`)
 				.setDescription(`**Aliases:** \`${command.aliases.join("`, `")}\``)
-				.setFooter(command.categoryID);
+				.setFooter(command.categoryID)
+				.addField("**Description:**", command.description || "?", false)
+				.addField("**Usage:**", usage && usage.length
+					? usage
+					: `${prefix}${command.id}`, false);
 
-			embed.addField("**Description:**", typeof command.description === "string" ? "?" : command.description.description, false);
-			embed.addField("**Usage:**", usage && usage.length
-				? usage
-				: `${prefix}${command.id}`, false);
+			if (command.userPermissions) embed.addField("Requires", command.userPermissions.toString(), false);
 
-			if (command.userPermissions) embed.addField("Requires", command.userPermissions, false);
-			if (command.ownerOnly) embed.addField("Owner only", "✅", false);
-
-			return message.channel.send(embed);
+			return message.channel.send({ embeds: [embed] });
 		}
 
 		else if (typeof command === "string") {
-			return message.channel.send(new MessageEmbed({
-				description: `**${message.author.tag}** Command \`${command}\` not found.`,
-			})
-				.withErrorColor(message));
+			return message.channel.send({
+				embeds: [new MessageEmbed({
+					description: `**${message.author.tag}** Command \`${command}\` not found.`,
+				})
+					.withErrorColor(message)],
+			});
 		}
 
-		const AvUrl = (message.client.users.cache.get("140788173885276160") || (await message.client.users.fetch("140788173885276160", true)))
+		const AvUrl = (message.client.users.cache.get("140788173885276160") || (await message.client.users.fetch("140788173885276160", { cache: true })))
 			.displayAvatarURL({ dynamic: true });
 
 		embed.setTitle(`${message.client.user?.username} help page`)
@@ -68,7 +70,7 @@ export default class HelpCommand extends Command {
 				message.author.displayAvatarURL({ dynamic: true }), repository.url)
 			.setFooter("Made by Cata <3", AvUrl);
 
-		return message.channel.send(embed);
+		return message.channel.send({ embeds: [embed] });
 	}
 }
 

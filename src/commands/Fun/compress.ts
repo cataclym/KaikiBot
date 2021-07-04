@@ -1,12 +1,13 @@
-import { Command } from "@cataclym/discord-akairo";
 import { GuildMember, Message, MessageEmbed, MessageAttachment } from "discord.js";
 import canvas from "canvas";
+import { KaikiCommand } from "../../lib/KaikiClass";
 
-export default class SquishCommand extends Command {
+export default class SquishCommand extends KaikiCommand {
 	constructor() {
 		super("compress", {
 			aliases: ["compress"],
-			description: { description: "Compresses given member's avatar...", usage: "@dreb" },
+			description: "Compresses given member's avatar...",
+			usage: "@dreb",
 			args: [
 				{
 					id: "member",
@@ -28,7 +29,6 @@ export default class SquishCommand extends Command {
 			color: member.displayColor,
 		});
 
-
-		return message.channel.send({ files: [attachment], embed: embed });
+		return message.channel.send({ files: [attachment], embeds: [embed] });
 	}
 }

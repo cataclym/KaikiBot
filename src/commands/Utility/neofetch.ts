@@ -1,18 +1,20 @@
 /* eslint-disable no-useless-escape */
-import { Command } from "@cataclym/discord-akairo";
+import { Command } from "discord-akairo";
 import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
 import { exec } from "child_process";
 import { Message, MessageEmbed } from "discord.js";
 import logger from "loglevel";
 import { distros } from "../../lib/distros.json";
 import { codeblock } from "../../lib/Util";
+import { KaikiCommand } from "../../lib/KaikiClass";
 
 
-export default class NeofetchCommand extends Command {
+export default class NeofetchCommand extends KaikiCommand {
 	constructor() {
 		super("neofetch", {
 			aliases: ["neofetch", "neo"],
-			description: { description: "Displays neofetch ascii art", usage: ["", "opensuse", "list"] },
+			description: "Displays neofetch ascii art",
+			usage: ["", "opensuse", "list"],
 			cooldown: 2000,
 			typing: true,
 			args: [{
@@ -27,6 +29,7 @@ export default class NeofetchCommand extends Command {
 			}],
 		});
 	}
+
 	public async exec(message: Message, { os, list }: { os: string | null, list: boolean }): Promise<Message | void> {
 
 		if (list) {

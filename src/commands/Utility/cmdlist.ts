@@ -1,16 +1,15 @@
-import { Argument, Category, Command, PrefixSupplier } from "@cataclym/discord-akairo";
+import { Argument, Category, Command, PrefixSupplier } from "discord-akairo";
 import { Message, MessageEmbed } from "discord.js";
 import { name, repository, version } from "../../../package.json";
 import { noArgGeneric } from "../../lib/Embeds";
+import { KaikiCommand } from "../../lib/KaikiClass";
 
-export default class commandsList extends Command {
+export default class commandsList extends KaikiCommand {
 	constructor() {
 		super("cmdlist", {
 			aliases: ["commands", "cmds", "cmdlist"],
-			description: {
-				description: "Shows categories, or commands if provided with a category.",
-				usage: ["", "admin"] },
-
+			description: "Shows categories, or commands if provided with a category.",
+			usage: ["", "admin"],
 			args: [
 				{
 					id: "category",
@@ -39,16 +38,13 @@ export default class commandsList extends Command {
 		const prefix = (this.handler.prefix as PrefixSupplier)(message);
 
 		if (category) {
-			const embed = new MessageEmbed()
+			return message.channel.send({ embeds: [new MessageEmbed()
 				.setTitle(`Commands in ${category.id}`)
-				.withOkColor(message);
-			{
-				embed.setDescription(category
+				.setDescription(category
 					.filter(cmd => cmd.aliases.length > 0)
 					.map(cmd => `**${prefix}${cmd}** [\`${cmd.aliases.join("`, `")}\`]`)
-					.join("\n") || "Empty");
-			}
-			return message.channel.send(embed);
+					.join("\n") || "Empty")
+				.withOkColor(message)] });
 		}
 
 		else {
@@ -64,7 +60,7 @@ export default class commandsList extends Command {
 					url: "https://cdn.discordapp.com/attachments/717045690022363229/726600392107884646/3391ce4715f3c814d6067911438e5bf7.png",
 				},
 				footer: {
-					icon_url: (message.client.users.cache.get("140788173885276160") || (await message.client.users.fetch("140788173885276160", true)))
+					icon_url: (message.client.users.cache.get("140788173885276160") || (await message.client.users.fetch("140788173885276160", { cache: true })))
 						.displayAvatarURL({ dynamic: true }),
 				},
 			})
@@ -75,7 +71,7 @@ export default class commandsList extends Command {
 
 				embed.addField(_category.id, `Commands: **${_category.size}**`, true);
 			}
-			return message.channel.send(embed);
+			return message.channel.send({ embeds: [embed] });
 		}
 	}
 }

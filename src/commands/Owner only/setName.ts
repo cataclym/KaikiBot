@@ -1,12 +1,13 @@
-import { Command } from "@cataclym/discord-akairo";
 import { Message } from "discord.js";
 import { noArgGeneric } from "../../lib/Embeds";
+import { KaikiCommand } from "../../lib/KaikiClass";
 
-export default class SetNameCommand extends Command {
+export default class SetNameCommand extends KaikiCommand {
 	constructor() {
 		super("setname", {
 			aliases: ["setname"],
-			description: { description: "Assigns the bot a new name/username.", usage: "Medusa" },
+			description: "Assigns the bot a new name/username.",
+			usage: "Medusa",
 			ownerOnly: true,
 			args: [
 				{

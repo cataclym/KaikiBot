@@ -1,18 +1,16 @@
-import { Command } from "@cataclym/discord-akairo";
 import { Message, MessageEmbed, User } from "discord.js";
 import { IMoneyService } from "../../lib/money/IMoneyService";
 import { MongoMoney } from "../../lib/money/MongoMoneyService";
+import { KaikiCommand } from "../../lib/KaikiClass";
 
-export default class give extends Command {
+export default class give extends KaikiCommand {
     private readonly _money: IMoneyService;
 
     constructor() {
     	super("give", {
     		aliases: ["give"],
-    		description: {
-    			description: "Gives money to another user",
-    			usage: "give 50 @Cata",
-    		},
+    		description: "Gives money to another user",
+    		usage: "give 50 @Cata",
     		args: [
     			{
     				id: "amount",
@@ -44,17 +42,19 @@ export default class give extends Command {
 
     	const success = await this._money.TryTake(msg.author.id, amount);
     	if (!success) {
-    		await msg.channel.send(new MessageEmbed()
-    			.setDescription(`You don't have enough ${this._money.currencySymbol}`)
-    			.withErrorColor(msg),
-    		);
+    		await msg.channel.send({
+    			embeds: [new MessageEmbed()
+    				.setDescription(`You don't have enough ${this._money.currencySymbol}`)
+    				.withErrorColor(msg)],
+    		});
     		return;
     	}
 
     	await this._money.Add(user.id, amount);
-    	await msg.channel.send(new MessageEmbed()
-    		.setDescription(`You've given ${amount} ${this._money.currencySymbol} to ${user.username}`)
-    		.withOkColor(msg),
-    	);
+    	await msg.channel.send({
+    		embeds: [new MessageEmbed()
+    			.setDescription(`You've given ${amount} ${this._money.currencySymbol} to ${user.username}`)
+    			.withOkColor(msg)],
+    	});
     }
 }

@@ -1,7 +1,8 @@
-import { Command, PrefixSupplier } from "@cataclym/discord-akairo";
+import { PrefixSupplier } from "discord-akairo";
 import { Message, MessageEmbed, User } from "discord.js";
+import { KaikiCommand } from "../../lib/KaikiClass";
 
-export default class MentionCommand extends Command {
+export default class MentionCommand extends KaikiCommand {
 	constructor() {
 		super("mention", {
 			channel: "guild",
@@ -15,11 +16,13 @@ export default class MentionCommand extends Command {
 
 	public async exec(msg: Message): Promise<NodeJS.Timeout> {
 
-		const embed = msg.channel.send(new MessageEmbed({
-			title: `Hi ${msg.author.username}, what's up?`,
-			description: `If you need help type \`${(this.handler.prefix as PrefixSupplier)(msg)}help\`.`,
-		})
-			.withOkColor(msg));
+		const embed = msg.channel.send({
+			embeds: [new MessageEmbed({
+				title: `Hi ${msg.author.username}, what's up?`,
+				description: `If you need help type \`${(this.handler.prefix as PrefixSupplier)(msg)}help\`.`,
+			})
+				.withOkColor(msg)],
+		});
 
 		return this.client.setTimeout(async () => (await embed).delete(), 10000);
 	}

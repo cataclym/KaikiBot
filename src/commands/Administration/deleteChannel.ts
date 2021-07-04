@@ -1,13 +1,14 @@
-import { Command } from "@cataclym/discord-akairo";
+import { Command } from "discord-akairo";
 import { Channel, Collection, GuildChannel, Message, MessageEmbed, Permissions } from "discord.js";
 import { noArgGeneric } from "../../lib/Embeds";
+import { KaikiCommand } from "../../lib/KaikiClass";
 
-export default class DeleteChannelCommand extends Command {
+export default class DeleteChannelCommand extends KaikiCommand {
 	constructor() {
 		super("deletechannel", {
 			aliases: ["deletechannel", "dtchnl", "delchan"],
-			description: { description: "Deletes one or more channels. Also deletes categories and voice channels.",
-				usage: "#channel1 #channel2 #channel3" },
+			description: "Deletes one or more channels. Also deletes categories and voice channels.",
+			usage: "#channel1 #channel2 #channel3",
 			channel: "guild",
 			userPermissions: Permissions.FLAGS.MANAGE_CHANNELS,
 			clientPermissions: Permissions.FLAGS.MANAGE_CHANNELS,
@@ -30,14 +31,15 @@ export default class DeleteChannelCommand extends Command {
 
 		const deletedChannels = await Promise.all(([] as Promise<Channel>[]).concat(...await deleteChannels()));
 
-		return m.channel.send(new MessageEmbed()
-			.setTitle("Channels deleted")
-			.addField("Deleted:", (await Promise.all(deletedChannels
-				.map(async (c) => ["unknown", "group", "dm"].includes(c.type)
-					? c.id
-					: `#${(c as GuildChannel).name} [${c.id}]`,
-				))).join("\n"))
-			.withOkColor(m),
-		);
+		return m.channel.send({
+			embeds: [new MessageEmbed()
+				.setTitle("Channels deleted")
+				.addField("Deleted:", (await Promise.all(deletedChannels
+					.map(async (c) => ["unknown", "group", "dm"].includes(c.type)
+						? c.id
+						: `#${(c as GuildChannel).name} [${c.id}]`,
+					))).join("\n"))
+				.withOkColor(m)],
+		});
 	}
 }

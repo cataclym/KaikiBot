@@ -1,13 +1,14 @@
-import { Command } from "@cataclym/discord-akairo";
 import { Collection, GuildEmoji, Message, MessageEmbed } from "discord.js";
 import { noArgGeneric } from "../../lib/Embeds";
 import { trim } from "../../lib/Util";
+import { KaikiCommand } from "../../lib/KaikiClass";
 const timer = (ms: number) => new Promise(res => setTimeout(res, ms));
-export default class DeleteEmoteCommand extends Command {
+export default class DeleteEmoteCommand extends KaikiCommand {
 	constructor() {
 		super("deleteemote", {
 			aliases: ["deleteemote", "de"],
-			description: { description: "Deletes one or multiple emotes/emoji. Multiple emotes take longer, to avoid ratelimits. Keep a space between all emotes you wish to delete.", usage: "<:NadekoSip:>" },
+			description: "Deletes one or multiple emotes/emoji. Multiple emotes take longer, to avoid ratelimits. Keep a space between all emotes you wish to delete.",
+			usage: "<:NadekoSip:>",
 			clientPermissions: "MANAGE_EMOJIS",
 			userPermissions: "MANAGE_EMOJIS",
 			channel: "guild",
@@ -36,27 +37,30 @@ export default class DeleteEmoteCommand extends Command {
 					const deleted = await newEmote.delete();
 
 					if (!deleted) {
-						return message.channel.send(new MessageEmbed({
-							title: "Error occured",
+						return message.channel.send({ embeds: [new MessageEmbed({
+							title: "Error occurred",
 							description: "Some or all emotes could not be deleted.",
 						})
-							.withErrorColor(message));
+							.withErrorColor(message)],
+						});
 					}
 				}
 				else {
-					return message.channel.send(new MessageEmbed({
-						title: "Error occured",
-						description: "Not valid emote(s).",
-					})
-						.withErrorColor(message));
+					return message.channel.send({
+						embeds: [new MessageEmbed({
+							title: "Error occurred",
+							description: "Not valid emote(s).",
+						})
+							.withErrorColor(message)],
+					});
 				}
 			}
 
-			return message.channel.send(new MessageEmbed({
-				title: "Success!",
-				description: `Deleted:\n${trim(emotes.map((es) => es.map((e) => e)).join("\n"), 2048)}`,
-			})
-				.withOkColor(message));
+			return message.channel.send({ embeds: [new MessageEmbed()
+				.setTitle("Success!")
+				.setDescription(`Deleted:\n${trim(emotes.map((es) => es.map((e) => e)).join("\n"), 2048)}`)
+				.withOkColor(message)],
+			});
 		})();
 	}
 }

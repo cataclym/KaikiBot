@@ -1,5 +1,5 @@
 import { Snowflake } from "discord-api-types";
-import { Guild, GuildMember, Message, MessageEmbed, TextChannel } from "discord.js";
+import { ColorResolvable, Guild, GuildMember, Message, MessageEmbed, TextChannel } from "discord.js";
 import { TGreetMessage } from "../interfaces/IDocuments";
 import { parsePlaceHolders } from "../lib/functions";
 import { getGuildDocument } from "../struct/documentMethods";
@@ -26,18 +26,18 @@ export async function handleGoodbyeMessage(guildMember: GuildMember): Promise<Me
 
 async function sendGreetLeaveMessage(data: TGreetMessage, guild: Guild, guildMember: GuildMember) {
 
-	const channel = guild.channels.cache.get(data.channel as Snowflake) ?? await guild.client.channels.fetch(data.channel as Snowflake, true);
+	const channel = guild.channels.cache.get(data.channel as Snowflake) ?? await guild.client.channels.fetch(data.channel as Snowflake, { cache: true });
 	if (channel && channel?.type !== "text" && channel?.type !== "news") return undefined;
 
 	if (data.embed) {
 		const embed = new MessageEmbed()
-			.setColor(data.color)
+			.setColor(data.color as ColorResolvable)
 			.setDescription(await parsePlaceHolders(data.message, guild, guildMember));
 
 		if (data.image) {
 			embed.setImage(data.image);
 		}
-		return (channel as TextChannel).send(embed);
+		return (channel as TextChannel).send({ embeds: [embed] });
 	}
 
 	else {

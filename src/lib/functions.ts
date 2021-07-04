@@ -1,4 +1,4 @@
-import { AkairoClient } from "@cataclym/discord-akairo";
+import { AkairoClient } from "discord-akairo";
 import { Snowflake } from "discord-api-types";
 import { Client, Guild, GuildMember, Message, MessageEmbed, User } from "discord.js";
 import logger from "loglevel";
@@ -168,7 +168,7 @@ export async function sendDM(message: Message): Promise<Message | undefined> {
 			.setFooter(urls.join("\n"));
 	}
 
-	return botOwner?.send({ content: attachmentLinks ?? null, embed: embed });
+	return botOwner?.send({ content: attachmentLinks ?? null, embeds: [embed] });
 
 }
 

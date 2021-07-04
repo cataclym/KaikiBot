@@ -1,19 +1,17 @@
-import { Command } from "@cataclym/discord-akairo";
 import { Message, MessageEmbed, User } from "discord.js";
 import { IMoneyService } from "../../lib/money/IMoneyService";
 import { MongoMoney } from "../../lib/money/MongoMoneyService";
+import { KaikiCommand } from "../../lib/KaikiClass";
 
-export default class award extends Command {
+export default class award extends KaikiCommand {
     private readonly _money: IMoneyService;
 
     constructor() {
     	super("award", {
     		ownerOnly: true,
     		aliases: ["award"],
-    		description: {
-    			description: "",
-    			usage: "award 50 @Cata",
-    		},
+    		description: "",
+    		usage: "award 50 @Cata",
     		args: [
     			{
     				id: "amount",
@@ -39,9 +37,10 @@ export default class award extends Command {
 
     public async exec(msg: Message, { amount, user }: { amount: number; user: User; }): Promise<void> {
     	const newAmount = await this._money.Add(user.id, amount);
-    	await msg.channel.send(new MessageEmbed()
-    		.setDescription(`You've awarded ${amount} ${this._money.currencyName} ${this._money.currencySymbol} to ${user.username}.\nThey now have ${newAmount} ${this._money.currencyName}`)
-    		.withOkColor(msg),
-    	);
+    	await msg.channel.send({
+    		embeds: [new MessageEmbed()
+    			.setDescription(`You've awarded ${amount} ${this._money.currencyName} ${this._money.currencySymbol} to ${user.username}.\nThey now have ${newAmount} ${this._money.currencyName}`)
+    			.withOkColor(msg)],
+    	});
     }
 }

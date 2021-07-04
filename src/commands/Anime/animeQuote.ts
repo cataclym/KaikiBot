@@ -1,15 +1,16 @@
-import { Command } from "@cataclym/discord-akairo";
 import { Message } from "discord.js";
 import logger from "loglevel";
 import fetch from "node-fetch";
 import { animeQuoteCache, respType } from "../../cache/cache";
 import { sendQuote } from "../../lib/APIs";
+import { KaikiCommand } from "../../lib/KaikiClass";
 
-export default class AnimeQuoteCommand extends Command {
+export default class AnimeQuoteCommand extends KaikiCommand {
 	constructor() {
 		super("animequote", {
 			aliases: ["animequote", "aq"],
-			description: { description: "Shows a random anime quote...", usage: "" },
+			description: "Shows a random anime quote...",
+			usage: "",
 			typing: true,
 		});
 	}

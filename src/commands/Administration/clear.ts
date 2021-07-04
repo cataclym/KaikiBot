@@ -1,14 +1,15 @@
-import { Command } from "@cataclym/discord-akairo";
 import { Channel, TextChannel } from "discord.js";
+import { KaikiCommand } from "../../lib/KaikiClass";
 
-export default class ClearCommand extends Command {
+export default class ClearCommand extends KaikiCommand {
 	constructor() {
 		super("clear", {
 			aliases: ["clear", "prune"],
 			userPermissions: "MANAGE_MESSAGES",
 			clientPermissions: "MANAGE_MESSAGES",
 			channel: "guild",
-			description: { description: "Clears up to 100 messages in the current channel.", usage: "69" },
+			description: "Clears up to 100 messages in the current channel.",
+			usage: "69",
 			args: [
 				{
 					id: "int",

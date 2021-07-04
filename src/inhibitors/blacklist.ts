@@ -1,4 +1,4 @@
-// import { Inhibitor } from "@cataclym/discord-akairo";
+// import { Inhibitor } from "discord-akairo";
 // import { Message } from "discord.js";
 
 // export const blacklistCache: {[id: string]: true} = {};

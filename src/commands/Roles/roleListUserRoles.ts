@@ -1,14 +1,16 @@
-import { Command, PrefixSupplier } from "@cataclym/discord-akairo";
+import { Command, PrefixSupplier } from "discord-akairo";
 import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
 import { Snowflake } from "discord-api-types";
 import { Guild, Message, MessageEmbed } from "discord.js";
 import { getGuildDocument } from "../../struct/documentMethods";
+import { KaikiCommand } from "../../lib/KaikiClass";
 
-export default class ListUserRoles extends Command {
+export default class ListUserRoles extends KaikiCommand {
 	constructor() {
 		super("listuserroles", {
 			aliases: ["listuserroles", "lur"],
-			description: { description: "List all custom assigned roles.", usage: "" },
+			description: "List all custom assigned roles.",
+			usage: "",
 			prefix: (msg: Message) => {
 				const p = (this.handler.prefix as PrefixSupplier)(msg);
 				return [p as string, ";"];
@@ -43,11 +45,12 @@ export default class ListUserRoles extends Command {
 		}
 
 		else {
-			return message.channel.send(new MessageEmbed()
-				.withErrorColor(message)
-				.setTitle("No user roles")
-				.setDescription("This guild has not used this feature yet."),
-			);
+			return message.channel.send({
+				embeds: [new MessageEmbed()
+					.withErrorColor(message)
+					.setTitle("No user roles")
+					.setDescription("This guild has not used this feature yet.")],
+			});
 		}
 	}
 }

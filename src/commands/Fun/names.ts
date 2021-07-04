@@ -1,18 +1,19 @@
-import { Command } from "@cataclym/discord-akairo";
 import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
 import { Message, MessageEmbed, User } from "discord.js";
 import { IUser } from "../../interfaces/IDocuments";
 import { getUserDocument } from "../../struct/documentMethods";
+import { KaikiCommand } from "../../lib/KaikiClass";
 
 async function add(Embed: MessageEmbed, array: MessageEmbed[]) {
 	array.push(Embed);
 }
 
-export default class NamesCommand extends Command {
+export default class NamesCommand extends KaikiCommand {
 	constructor() {
 		super("names", {
 			aliases: ["name", "names"],
-			description: { description: "Returns all your daddy nicknames", usage: "@dreb" },
+			description: "Returns all your daddy nicknames",
+			usage: "@dreb",
 		});
 	}
 	*args(): Generator<{
@@ -44,10 +45,11 @@ export default class NamesCommand extends Command {
 		if (method) {
 			const db = await getUserDocument(message.author.id);
 			db.userNicknames = [];
-			message.channel.send(new MessageEmbed()
-				.setDescription(`Deleted all of <@${message.author.id}>'s nicknames.\nWell done, you made daddy forget.`)
-				.withOkColor(message),
-			);
+			message.channel.send({
+				embeds: [new MessageEmbed()
+					.setDescription(`Deleted all of <@${message.author.id}>'s nicknames.\nWell done, you made daddy forget.`)
+					.withOkColor(message)],
+			});
 			db.markModified("userNicknames");
 			return db.save();
 		}
@@ -68,7 +70,6 @@ export default class NamesCommand extends Command {
 				.withOkColor(message),
 			pages);
 		}
-		await Promise.resolve(pages);
 
 		return editMessageWithPaginatedEmbeds(message, pages, {});
 	}

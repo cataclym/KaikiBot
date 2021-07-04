@@ -1,16 +1,17 @@
-import { Command } from "@cataclym/discord-akairo";
 import { Snowflake } from "discord-api-types";
 import { Guild, GuildMember, Message, MessageEmbed, Permissions } from "discord.js";
 import { getGuildDocument } from "../../struct/documentMethods";
 import { trim } from "../../lib/Util";
+import { KaikiCommand } from "../../lib/KaikiClass";
 
-export default class RestoreUserRoles extends Command {
+export default class RestoreUserRoles extends KaikiCommand {
 	constructor() {
 		super("restore", {
 			aliases: ["restore"],
 			userPermissions: ["ADMINISTRATOR", "MANAGE_ROLES"],
 			clientPermissions: [Permissions.FLAGS.MANAGE_ROLES],
-			description: { description: "Restores roles for a user who has previously left the server.", usage: "@dreb" },
+			description: "Restores roles for a user who has previously left the server.",
+			usage: "@dreb",
 			channel: "guild",
 			args: [
 				{
@@ -45,28 +46,31 @@ export default class RestoreUserRoles extends Command {
 			const rolesToAdd = roleIDArray.filter(r => !member.roles.cache.has(r!.id));
 
 			if (!rolesToAdd.length) {
-				return message.channel.send(new MessageEmbed()
-					.setDescription("This member already has all the roles.")
-					.withErrorColor(message),
-				);
+				return message.channel.send({
+					embeds: [new MessageEmbed()
+						.setDescription("This member already has all the roles.")
+						.withErrorColor(message)],
+				});
 			}
 
 			// Add all roles
 			// Map roles to ID, because D.js didn't like it otherwise
 			await member.roles.add(rolesToAdd.map(r => r!.id));
 
-			return message.channel.send(new MessageEmbed()
-				.setDescription(`Restored roles of \`${member.user.tag}\` [${member.id}]`)
-				.addField("Roles added", trim(rolesToAdd.join("\n"), 1024))
-				.withOkColor(message),
-			);
+			return message.channel.send({
+				embeds: [new MessageEmbed()
+					.setDescription(`Restored roles of \`${member.user.tag}\` [${member.id}]`)
+					.addField("Roles added", trim(rolesToAdd.join("\n"), 1024))
+					.withOkColor(message)],
+			});
 		}
 
 		else {
-			return message.channel.send(new MessageEmbed()
-				.setDescription("This user's roles have not been saved, or they have not left the guild.")
-				.withErrorColor(message),
-			);
+			return message.channel.send({
+				embeds: [new MessageEmbed()
+					.setDescription("This user's roles have not been saved, or they have not left the guild.")
+					.withErrorColor(message)],
+			});
 		}
 	}
 }

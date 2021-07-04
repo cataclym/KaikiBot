@@ -1,13 +1,13 @@
-import { Command } from "@cataclym/discord-akairo";
 import { GuildMember, Message } from "discord.js";
 import sendWaifuPics from "../../lib/waifuPics";
+import { KaikiCommand } from "../../lib/KaikiClass";
 
-export default class Slap extends Command {
+export default class Slap extends KaikiCommand {
 	constructor() {
 		super("slap", {
 			aliases: ["slap"],
-			description: { description: "Slap your favorite",
-				usage: ["", "@dreb"] },
+			description: "Slap your favorite",
+			usage: ["", "@dreb"],
 			typing: true,
 			args: [{
 				id: "mention",
@@ -16,7 +16,8 @@ export default class Slap extends Command {
 			}],
 		});
 	}
+
 	public async exec(message: Message, { mention }: { mention: GuildMember | null }): Promise<Message> {
-		return message.channel.send(await sendWaifuPics(message, "slap", mention));
+		return message.channel.send({ embeds: [await sendWaifuPics(message, "slap", mention)] });
 	}
 }

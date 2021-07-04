@@ -1,13 +1,14 @@
-import { Command } from "@cataclym/discord-akairo";
+import { Command } from "discord-akairo";
 import { Message, MessageEmbed } from "discord.js";
 import { grabHentai, typesArray } from "./hentaiService";
+import { KaikiCommand } from "../../lib/KaikiClass";
 
-export default class HentaiBombCommand extends Command {
+export default class HentaiBombCommand extends KaikiCommand {
 	constructor() {
 		super("hentaibomb", {
 			aliases: ["hentaibomb", "hb"],
-			description: { description: "Posts 5 NSFW images, using the waifu.pics API",
-				usage: typesArray },
+			description: "Posts 5 NSFW images, using the waifu.pics API",
+			usage: typesArray,
 			args: [
 				{
 					id: "category",
@@ -22,6 +23,6 @@ export default class HentaiBombCommand extends Command {
 
 		const megaResponse = (await grabHentai(category ?? typesArray[Math.floor(Math.random() * typesArray.length)], "bomb")).splice(0, 5);
 
-		return message.channel.send(megaResponse, { split: true });
+		return message.channel.send({ content: megaResponse.join("\n") });
 	}
 }

@@ -5,7 +5,7 @@ import { hexColorTable } from "./Color";
 type APIs = "spank";
 
 const NekosData: {
-        [str in APIs]: { action: string | boolean, color: ColorResolvable, append?: string }
+        [str in APIs]: { action: string | boolean, color: ColorResolvable | string, append?: string }
 	} = {
 		"spank": {
 			action: "spanked",
@@ -20,7 +20,7 @@ export default async function sendNekosPics(message: Message, API: APIs, mention
 		{ action, color, append } = data,
 		result = await (await (await fetch(`https://nekos.life/api/v2/img/${API}`)).json())["url"],
 		embed = new MessageEmbed({
-			color: color,
+			color: color as ColorResolvable,
 			image: { url: result },
 			footer: { icon_url: (mention?.user || message.author).displayAvatarURL({ dynamic: true }) },
 		});

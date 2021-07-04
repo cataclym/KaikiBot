@@ -1,12 +1,13 @@
 import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
-import { Command } from "@cataclym/discord-akairo";
 import { Guild, Role, MessageEmbed, Message } from "discord.js";
+import { KaikiCommand } from "../../lib/KaikiClass";
 
-export default class RoleListCommand extends Command {
+export default class RoleListCommand extends KaikiCommand {
 	constructor() {
 		super("rolelist", {
 			aliases: ["rolelist", "roles"],
-			description: { description: "Lists all roles", usage: "" },
+			description: "Lists all roles",
+			usage: "",
 			channel: "guild",
 		});
 	}
@@ -23,7 +24,7 @@ export default class RoleListCommand extends Command {
 
 				const dEmbed = new MessageEmbed()
 					.setTitle(`Role list (${roleArray.length})`)
-					.setAuthor(message.guild?.name)
+					.setAuthor(message.guild?.name ?? "Null")
 					.addField("\u200B", data
 						.slice(p, i - 25)
 						.join("\n"), true)

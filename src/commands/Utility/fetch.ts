@@ -1,15 +1,17 @@
-import { Argument, Command } from "@cataclym/discord-akairo";
+import { Argument } from "discord-akairo";
 import { Snowflake } from "discord-api-types";
 import { Message, MessageEmbed, User } from "discord.js";
 import { flags } from "../../lib/Util";
+import { KaikiCommand } from "../../lib/KaikiClass";
 
 
-export default class FetchUserCommand extends Command {
+export default class FetchUserCommand extends KaikiCommand {
 	constructor() {
 		super("fetch", {
 			cooldown: 30000,
 			aliases: ["fu", "fetch"],
-			description: { description: "Fetches a discord user, shows relevant information. 30sec cooldown.", usage: "<id>" },
+			description: "Fetches a discord user, shows relevant information. 30sec cooldown.",
+			usage: "<id>",
 			args: [
 				{
 					id: "userObject",
@@ -44,9 +46,16 @@ export default class FetchUserCommand extends Command {
 					{ name: "Account date", value: userObject?.createdAt?.toDateString(), inline: true }])
 				.withOkColor(message);
 
-		userObject.lastMessage ? embed.addField("Last (seen) message", userObject.lastMessage?.createdAt.toLocaleString(), true) : null;
-		userFlags.length ? embed.addField("Flags", userFlags.map((flag) => flags[flag]).join("\n"), true) : null;
-		userObject.bot ? embed.addField("Bot", "✅", true) : null;
-		return message.channel.send(embed);
+		if (userObject.lastMessage) {
+			embed.addField("Last (seen) message", userObject.lastMessage?.createdAt.toLocaleString(), true);
+		}
+		if (userFlags.length) {
+			embed.addField("Flags", userFlags.map((flag) => flags[flag]).join("\n"), true);
+		}
+		if (userObject.bot) {
+			embed.addField("Bot", "✅", true);
+		}
+
+		return message.channel.send({ embeds: [embed] });
 	}
 }

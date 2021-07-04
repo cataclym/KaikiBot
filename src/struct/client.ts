@@ -1,4 +1,4 @@
-import { AkairoClient, CommandHandler, InhibitorHandler, ListenerHandler, MongooseProvider } from "@cataclym/discord-akairo";
+import { AkairoClient, CommandHandler, InhibitorHandler, ListenerHandler, MongooseProvider } from "discord-akairo";
 import { Snowflake } from "discord-api-types";
 import { Intents } from "discord.js";
 import { join } from "path";

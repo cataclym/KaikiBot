@@ -1,10 +1,11 @@
-import { Argument, Command } from "@cataclym/discord-akairo";
+import { Argument } from "discord-akairo";
 import { Guild, Message, MessageEmbed } from "discord.js";
 import { hexColorTable } from "../../lib/Color";
 import { noArgGeneric } from "../../lib/Embeds";
 import { customClient } from "../../struct/client";
+import { KaikiCommand } from "../../lib/KaikiClass";
 
-export default class OkColorConfigCommand extends Command {
+export default class OkColorConfigCommand extends KaikiCommand {
 	constructor() {
 		super("config-okcolor", {
 			userPermissions: "ADMINISTRATOR",
@@ -25,10 +26,12 @@ export default class OkColorConfigCommand extends Command {
 
 		await (this.client as customClient).guildSettings.set(guildID, "okColor", value);
 
-		return message.channel.send(new MessageEmbed({
-			title: "Success!",
-			description: `okColor has been set to \`${value}\` !`,
-		})
-			.withOkColor(message));
+		return message.channel.send({
+			embeds: [new MessageEmbed({
+				title: "Success!",
+				description: `okColor has been set to \`${value}\` !`,
+			})
+				.withOkColor(message)],
+		});
 	}
 }

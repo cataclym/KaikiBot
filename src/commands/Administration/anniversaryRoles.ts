@@ -1,4 +1,4 @@
-import { Command } from "@cataclym/discord-akairo";
+import { KaikiCommand } from "../../lib/KaikiClass";
 import { Guild, Message, MessageEmbed } from "discord.js";
 import { IGuild } from "../../interfaces/IDocuments";
 import { checkBirthdayOnAdd } from "../../lib/AnniversaryRoles";
@@ -8,7 +8,7 @@ import { getGuildDocument } from "../../struct/documentMethods";
 type values = "enable" | "true" | "disable" | "false";
 const values: values[] = ["enable", "true", "disable", "false"];
 
-export default class AnniversaryRolesConfigCommand extends Command {
+export default class AnniversaryRolesConfigCommand extends KaikiCommand {
 	constructor() {
 		super("config-anniversary", {
 			userPermissions: "ADMINISTRATOR",
@@ -35,10 +35,10 @@ export default class AnniversaryRolesConfigCommand extends Command {
 				if (!boolean) {
 					db.settings.anniversary = true;
 					checkBirthdayOnAdd(message.guild as Guild);
-					message.channel.send(embed.setDescription(`Anniversary-roles functionality has been enabled in ${message.guild?.name}!`));
+					message.channel.send({ embeds: [embed.setDescription(`Anniversary-roles functionality has been enabled in ${message.guild?.name}!`)] });
 				}
 				else {
-					message.channel.send(embed.setDescription("You have already enabled Anniversary-roles."));
+					message.channel.send({ embeds: [embed.setDescription("You have already enabled Anniversary-roles.")] });
 				}
 				break;
 			}
@@ -46,10 +46,10 @@ export default class AnniversaryRolesConfigCommand extends Command {
 			case ("false"): {
 				if (boolean) {
 					db.settings.anniversary = false;
-					message.channel.send(embed.setDescription(`Anniversary-roles functionality has been disabled in ${message.guild?.name}!`));
+					message.channel.send({ embeds: [embed.setDescription(`Anniversary-roles functionality has been disabled in ${message.guild?.name}!`)] });
 				}
 				else {
-					message.channel.send(embed.setDescription("You have already disabled Anniversary-roles."));
+					message.channel.send({ embeds: [embed.setDescription("You have already disabled Anniversary-roles.")] });
 				}
 			}
 		}

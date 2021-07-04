@@ -1,17 +1,17 @@
-import { Argument, Command, Flag, PrefixSupplier } from "@cataclym/discord-akairo";
+import { Argument, Flag, PrefixSupplier } from "discord-akairo";
 import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
-import { Guild, Message, MessageEmbed } from "discord.js";
+import { ColorResolvable, Guild, Message, MessageEmbed } from "discord.js";
 import { getGuildDocument } from "../../struct/documentMethods";
+import { KaikiCommand } from "../../lib/KaikiClass";
+import { Color } from "sharp";
 
-export default class ConfigCommand extends Command {
+export default class ConfigCommand extends KaikiCommand {
 	constructor() {
 		super("config", {
 			aliases: ["config", "configure"],
 			channel: "guild",
-			description: {
-				description: "Configure or display guild specific settings. Will always respond to default prefix.",
-				usage: ["", "dadbot enable", "anniversary enable", "prefix !", "okcolor <hex>", "errorcolor <hex>", "welcome/goodbye [channel] [-e] [-c yellow] [-i http://link.png] [message]"],
-			},
+			description: "Configure or display guild specific settings. Will always respond to default prefix.",
+			usage: ["", "dadbot enable", "anniversary enable", "prefix !", "okcolor <hex>", "errorcolor <hex>", "welcome/goodbye [channel] [-e] [-c yellow] [-i http://link.png] [message]"],
 			prefix: (msg: Message) => {
 				const p = (this.handler.prefix as PrefixSupplier)(msg);
 				return [p as string, "-"];
@@ -46,11 +46,11 @@ export default class ConfigCommand extends Command {
 		const db = await getGuildDocument((message.guild as Guild).id),
 			{ anniversary, dadBot, prefix, errorColor, okColor, welcome, goodbye } = db.settings,
 			welcomeEmbed = new MessageEmbed()
-				.setColor(welcome.color)
+				.setColor(welcome.color as ColorResolvable)
 				.setAuthor("Welcome embed preview")
 				.setDescription(welcome.message),
 			goodbyeEmbed = new MessageEmbed()
-				.setColor(goodbye.color)
+				.setColor(goodbye.color as ColorResolvable)
 				.setAuthor("Goodbye embed preview")
 				.setDescription(goodbye.message);
 
@@ -79,11 +79,11 @@ export default class ConfigCommand extends Command {
 						: prefix, true)
 				.addField("Embed error color",
 					errorColor.toString().startsWith("#")
-						? errorColor
+						? errorColor.toString()
 						: "#" + errorColor.toString(16), true)
 				.addField("Embed ok color",
 					okColor.toString().startsWith("#")
-						? okColor
+						? okColor.toString()
 						: "#" + okColor.toString(16), true)
 				.addField("\u200B", "\u200B", true)
 				.addField("Welcome message",

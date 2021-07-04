@@ -1,17 +1,17 @@
-import { Command } from "@cataclym/discord-akairo";
 import { Message, MessageEmbed } from "discord.js";
 import { playSlots } from "../../lib/gambling/gambling";
 import { IMoneyService } from "../../lib/money/IMoneyService";
 import { MongoMoney } from "../../lib/money/MongoMoneyService";
+import { KaikiCommand } from "../../lib/KaikiClass";
 
-export default class slotsCommand extends Command {
+export default class slotsCommand extends KaikiCommand {
 
     private readonly _money: IMoneyService;
     constructor() {
     	super("Slots", {
     		aliases: ["slots", "slot"],
-    		description: { description: "Bet a certan amount in the slot machine.",
-    			usage: "<amount>" },
+    		description: "Bet a certan amount in the slot machine.",
+    		usage: "<amount>",
     		args: [
     			{
     				id: "amount",
@@ -28,25 +28,26 @@ export default class slotsCommand extends Command {
     public async exec(message: Message, { amount }: { amount: number }): Promise<void> {
 
     	if (amount < 2) {
-    		await message.channel.send(new MessageEmbed()
-    			.setDescription(`You need to bet more than 2 ${this._money.currencySymbol}`)
-    			.withErrorColor(message),
-    		);
+    		await message.channel.send({
+    			embeds: [new MessageEmbed()
+    				.setDescription(`You need to bet more than 2 ${this._money.currencySymbol}`)
+    				.withErrorColor(message)],
+    		});
     		return;
     	}
 
     	const success = await this._money.TryTake(message.author.id, amount);
 
     	if (!success) {
-    		await message.channel.send(new MessageEmbed()
-    			.setDescription(`You have less than ${amount} ${this._money.currencySymbol}`)
-    			.withErrorColor(message),
-    		);
+    		await message.channel.send({
+    			embeds: [new MessageEmbed()
+    				.setDescription(`You have less than ${amount} ${this._money.currencySymbol}`)
+    				.withErrorColor(message)],
+    		});
     		return;
     	}
 
     	const result = await playSlots();
-
 
     	// Check if all three indexes are the same before we check if there are 2 similar ones
     	if (result.numbers.every((val, i, arr) => val === arr[0])) {

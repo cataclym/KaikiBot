@@ -1,9 +1,9 @@
-import { APIMessage, CommandInteraction, GuildMemberRoleManager, Message, MessageEmbed } from "discord.js";
+import { CommandInteraction, GuildMemberRoleManager, Message, MessageEmbed } from "discord.js";
 import { getGuildDocument } from "../../struct/documentMethods";
 import { Exclude } from "../Embeds";
 import { Snowflake } from "discord-api-types/globals";
 
-export async function ExcludeSlashCommand(interaction: CommandInteraction): Promise<Message | APIMessage | any> {
+export async function ExcludeSlashCommand(interaction: CommandInteraction): Promise<void> {
 
 	if (!interaction.guild!.isDadBotEnabled()) {
 		return interaction.reply({
@@ -40,19 +40,21 @@ export async function ExcludeSlashCommand(interaction: CommandInteraction): Prom
 	if (interaction.member?.roles instanceof GuildMemberRoleManager && !interaction.member?.roles.cache.find((r) => r === excludedRole)
         && excludedRole) {
 		await interaction.member?.roles.add(excludedRole);
-		return created
-			? interaction.webhook.send(Exclude.addedRoleEmbed(roleName)
-				.withOkColor())
+		created
+			? interaction.webhook.send({ ephemeral: true, embeds: [Exclude.addedRoleEmbed(roleName)
+				.withOkColor()] })
 			: interaction.reply({ ephemeral: true, embeds: [Exclude.addedRoleEmbed(roleName)
 				.withOkColor()] });
+		return;
 	}
 
 	if (interaction.member?.roles instanceof GuildMemberRoleManager && interaction.member?.roles.cache.find((r) => r === excludedRole) && excludedRole) {
 		await interaction.member?.roles.remove(excludedRole);
-		return created
-			? interaction.webhook.send(Exclude.removedRoleEmbed(roleName)
-				.withOkColor())
+		created
+			? interaction.webhook.send({ ephemeral: true, embeds: [Exclude.removedRoleEmbed(roleName)
+				.withOkColor()] })
 			: interaction.reply({ ephemeral: true, embeds: [Exclude.removedRoleEmbed(roleName)
 				.withOkColor()] });
+		return;
 	}
 }

@@ -7,11 +7,11 @@ import querystring from "querystring";
 import { repository, version } from "../../../package.json";
 import { Post, responseE621 } from "../../interfaces/IDapi";
 
-const sites: string[] = ["danbooru", "yandere"];
+const sites = ["danbooru", "yandere"];
 
 export enum DapiSearchType {
-    E621,
-    Danbooru,
+	E621,
+	Danbooru,
 }
 
 const options = {
@@ -21,8 +21,7 @@ const options = {
 	},
 };
 
-export type types =
-"waifu" | "neko" | "trap" | "blowjob";
+export type types = "waifu" | "neko" | "trap" | "blowjob";
 
 export const typesArray: types[] = ["waifu", "neko", "trap", "blowjob"];
 
@@ -109,14 +108,16 @@ export async function postHentai(message: Message, messageArguments: string[] | 
 	const awaitResult = async () => (await grabHentaiPictureAsync(messageArguments));
 	const result: Image = await awaitResult();
 	if (result) {
-		return message.channel.send(result.sampleURL, new MessageEmbed({
-			author: { name: result.createdAt?.toLocaleString() },
-			title: "Score: " + result.score,
-			description: `[Source](${result.source} "${result.source}")`,
-			image: { url: <string | undefined> result.fileURL || result.sampleURL || result.previewURL },
-			footer: { text: result.tags.join(", ") },
-		})
-			.withOkColor(message));
+		return message.channel.send({
+			content: result.sampleURL, embeds: [new MessageEmbed({
+				author: { name: result.createdAt?.toLocaleString() },
+				title: "Score: " + result.score,
+				description: `[Source](${result.source} "${result.source}")`,
+				image: { url: <string | undefined>result.fileURL || result.sampleURL || result.previewURL },
+				footer: { text: result.tags.join(", ") },
+			})
+				.withOkColor(message)],
+		});
 	}
 	else {
 		return postHentai(message, messageArguments);

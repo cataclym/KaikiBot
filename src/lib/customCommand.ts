@@ -1,4 +1,4 @@
-// import { AkairoClient } from "@cataclym/discord-akairo";
+// import { AkairoClient } from "discord-akairo";
 // import { ColorResolvable, GuildMember, Message, MessageEmbed } from "discord.js";
 // import { customClient } from "../struct/client";
 

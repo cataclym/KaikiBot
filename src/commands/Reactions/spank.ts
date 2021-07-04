@@ -1,13 +1,13 @@
-import { Command } from "@cataclym/discord-akairo";
 import { GuildMember, Message, MessageEmbed } from "discord.js";
 import sendNekosPics from "../../lib/nekos.life";
+import { KaikiCommand } from "../../lib/KaikiClass";
 
-export default class spank extends Command {
+export default class spank extends KaikiCommand {
 	constructor() {
 		super("spank", {
 			aliases: ["spank"],
-			description: { description: "OwO Being naughty are we?",
-				usage: ["", "@dreb"] },
+			description: "OwO Being naughty are we?",
+			usage: ["", "@dreb"],
 			typing: true,
 			args: [{
 				id: "mention",
@@ -16,17 +16,20 @@ export default class spank extends Command {
 			}],
 		});
 	}
+
 	public async exec(message: Message, { mention }: { mention: GuildMember | null }): Promise<Message> {
 		if (message.channel.type === "text" && message.channel.nsfw) {
-			return message.channel.send(await sendNekosPics(message, "spank", mention));
+			return message.channel.send({ embeds: [await sendNekosPics(message, "spank", mention)] });
 		}
 
 		else {
-			return message.channel.send(new MessageEmbed({
-				title: "Error",
-				description: "Channel is not NSFW.",
-			})
-				.withErrorColor(message));
+			return message.channel.send({
+				embeds: [new MessageEmbed({
+					title: "Error",
+					description: "Channel is not NSFW.",
+				})
+					.withErrorColor(message)],
+			});
 		}
 	}
 }

@@ -1,13 +1,14 @@
-import { Command } from "@cataclym/discord-akairo";
 import { GuildMember, Message, MessageEmbed, Role, UserFlagsString } from "discord.js";
 import { flags, getUserPresenceAsync } from "../../lib/Util";
+import { KaikiCommand } from "../../lib/KaikiClass";
 
-export default class UserInfoCommand extends Command {
+export default class UserInfoCommand extends KaikiCommand {
 	constructor() {
 		super("uinfo", {
 			cooldown: 5000,
 			aliases: ["user", "uinfo"],
-			description: { description: "Shows relevant member info", usage: "<member>" },
+			description: "Shows relevant member info",
+			usage: "<member>",
 			channel: "guild",
 			args: [{
 				id: "member",
@@ -18,6 +19,7 @@ export default class UserInfoCommand extends Command {
 
 		});
 	}
+
 	public async exec(message: Message, { member }: { member: GuildMember}): Promise<Message> {
 
 		const presence = await getUserPresenceAsync(member.user);
@@ -58,6 +60,6 @@ export default class UserInfoCommand extends Command {
 		presence.richPresence[0] ? embed.setImage(presence.richPresence[0]) : null;
 		presence.richPresence[1] ? embed.addField("Details", `${presence.richPresence.slice(1, 3).join("\n")}`) : null;
 
-		return message.channel.send(embed);
+		return message.channel.send({ embeds: [embed] });
 	}
 }

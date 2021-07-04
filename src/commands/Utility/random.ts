@@ -1,14 +1,16 @@
 import { MessageEmbed } from "discord.js";
-import { Command } from "@cataclym/discord-akairo";
 import { Message } from "discord.js";
+import { KaikiCommand } from "../../lib/KaikiClass";
 
-module.exports = class RandomNumberCommand extends Command {
+function getRndInteger(min: number, max: number) {
+	return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+export default class RandomNumberCommand extends KaikiCommand {
 	constructor() {
 		super("random", {
-			description:  {
-				usage: ["1 10", "25"],
-				description: "Sends a random number between your two inputs.",
-			},
+			usage: ["1 10", "25"],
+			description: "Sends a random number between your two inputs.",
 			args: [{
 				id: "int",
 				type: "integer",
@@ -22,25 +24,25 @@ module.exports = class RandomNumberCommand extends Command {
 			aliases: ["random", "rng"],
 		});
 	}
-	public async exec(message: Message, args: { int: number, int2: number }) {
-		const embed = new MessageEmbed({
-			title: "Result:",
-		})
-			.withOkColor(message);
 
-		function getRndInteger(min: number, max: number) {
-			return Math.floor(Math.random() * (max - min + 1)) + min;
-		}
+	public async exec(message: Message, args: { int: number, int2: number }): Promise<Message> {
+
 		const number1 = args.int,
-			number2 = args.int2;
-		embed.setFooter(`Random number between ${number1} and ${number2}`);
+			number2 = args.int2,
+			embed = new MessageEmbed()
+				.setTitle("Result:")
+				.setFooter(`Random number between ${number1} and ${number2}`)
+				.withOkColor(message);
+
 		if (number1 > number2) {
-			embed.setDescription(getRndInteger(number2, number1));
+			embed.setDescription(String(getRndInteger(number2, number1)));
 		}
+
 		else {
-			embed.setDescription(getRndInteger(number1, number2));
+			embed.setDescription(String(getRndInteger(number1, number2)));
 		}
-		return message.util?.send(embed);
+
+		return message.channel.send({ embeds: [embed] });
 
 	}
-};
+}

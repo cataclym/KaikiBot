@@ -1,9 +1,10 @@
-import { Argument, Command } from "@cataclym/discord-akairo";
+import { Argument } from "discord-akairo";
 import { Message } from "discord.js";
 import { IUser } from "../../interfaces/IDocuments";
 import { getUserDocument } from "../../struct/documentMethods";
+import { KaikiCommand } from "../../lib/KaikiClass";
 
-export default class todoRemoveCommand extends Command {
+export default class todoRemoveCommand extends KaikiCommand {
 	constructor() {
 		super("remove", {
 			args: [
@@ -11,11 +12,12 @@ export default class todoRemoveCommand extends Command {
 					id: "toRemove",
 					index: 0,
 					type: Argument.union("integer", ["first", "last", "all"]),
-					otherwise: "Please specify number to delete from list, or 'first'/'last'/'all'",
+					otherwise: "Please specify number to delete from list, or `first`/`last`/`all`",
 				},
 			],
 		});
 	}
+
 	public async exec(message: Message, { toRemove }: { toRemove: number | "first" | "last" | "all" }): Promise<IUser | Message> {
 
 		const { author } = message, userDB = await getUserDocument(author.id);

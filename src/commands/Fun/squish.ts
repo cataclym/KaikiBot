@@ -1,12 +1,13 @@
-import { Command } from "@cataclym/discord-akairo";
 import { GuildMember, Message, MessageEmbed, MessageAttachment } from "discord.js";
 import { createCanvas, loadImage } from "canvas";
+import { KaikiCommand } from "../../lib/KaikiClass";
 
-export default class SquishCommand extends Command {
+export default class SquishCommand extends KaikiCommand {
 	constructor() {
 		super("squish", {
 			aliases: ["squish"],
-			description: { description: "Squishes given member's avatar", usage: "@dreb" },
+			description: "Squishes given member's avatar",
+			usage: "@dreb",
 			args: [
 				{
 					id: "member",
@@ -17,6 +18,7 @@ export default class SquishCommand extends Command {
 		});
 	}
 	public async exec(message: Message, { member }: { member: GuildMember}): Promise<Message> {
+
 		const picture = createCanvas(64, 256);
 		const squishImage = picture.getContext("2d");
 		const avatar = await loadImage(member.user.displayAvatarURL({ dynamic: true, size: 256, format: "png" }));
@@ -28,7 +30,6 @@ export default class SquishCommand extends Command {
 			color: member.displayColor,
 		});
 
-
-		return message.channel.send({ files: [attachment], embed: embed });
+		return message.channel.send({ files: [attachment], embeds: [embed] });
 	}
 }

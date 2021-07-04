@@ -1,16 +1,16 @@
-import { Command } from "@cataclym/discord-akairo";
 import { Snowflake } from "discord-api-types";
 import { Message, MessageEmbed } from "discord.js";
 import { getGuildDocument } from "../../struct/documentMethods";
+import { KaikiCommand } from "../../lib/KaikiClass";
 
-export default class RemoveEmoteReactCommand extends Command {
+export default class RemoveEmoteReactCommand extends KaikiCommand {
 	constructor() {
 		super("removereact", {
 			aliases: ["removereact", "rer"],
 			userPermissions: "MANAGE_EMOJIS",
 			channel: "guild",
-			description: { description: "Remove emotereact triggers.",
-				usage: ["anime"] },
+			description: "Remove emotereact triggers.",
+			usage: ["anime"],
 			args: [
 				{
 					id: "trigger",
@@ -40,16 +40,17 @@ export default class RemoveEmoteReactCommand extends Command {
 
 			if (emoji) embed.setThumbnail(emoji.url);
 
-			return message.channel.send(embed);
+			return message.channel.send({ embeds: [embed] });
 		}
 
 		else {
 			await db.save();
-			return message.channel.send(new MessageEmbed()
-				.setTitle("Not found")
-				.setDescription("Trigger not found in the database")
-				.withErrorColor(message),
-			);
+			return message.channel.send({
+				embeds: [new MessageEmbed()
+					.setTitle("Not found")
+					.setDescription("Trigger not found in the database")
+					.withErrorColor(message)],
+			});
 		}
 	}
 }

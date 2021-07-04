@@ -1,13 +1,14 @@
-import { Command } from "@cataclym/discord-akairo";
 import { Message, MessageAttachment, MessageEmbed, Role } from "discord.js";
 import { imgFromColor, resolveColor } from "../../lib/Color";
 import { errorMessage } from "../../lib/Embeds";
+import { KaikiCommand } from "../../lib/KaikiClass";
 
-export default class RoleColorCommand extends Command {
+export default class RoleColorCommand extends KaikiCommand {
 	constructor() {
 		super("rolecolor", {
 			aliases: ["rolecolor", "roleclr", "rclr"],
-			description: { description: "Displays the color of a given role, or your highest role.", usage: "@Gamer ff00ff" },
+			description: "Displays the color of a given role, or your highest role.",
+			usage: "@Gamer ff00ff",
 			channel: "guild",
 			args: [
 				{
@@ -32,12 +33,12 @@ export default class RoleColorCommand extends Command {
 			const attachment = new MessageAttachment(await imgFromColor(role.hexColor), "color.png");
 			return message.channel.send({
 				files: [attachment],
-				embed: new MessageEmbed({
+				embeds: [new MessageEmbed({
 					title: `Role color of ${role.name}.`,
 					description: `${role.hexColor}`,
 					image: { url: "attachment://color.png" },
 					color: role.hexColor,
-				}),
+				})],
 			});
 		}
 
@@ -49,33 +50,33 @@ export default class RoleColorCommand extends Command {
 		if ((!member?.permissions.has("MANAGE_ROLES")
 			|| !(member.roles.highest.position > role.position))
 			&& message.guild!.ownerID !== member!.id) {
-			return message.channel.send(await errorMessage(message, "You do not have `MANAGE_ROLES` permission and/or trying to edit a role above you in the role hierarchy."));
+			return message.channel.send({ embeds: [await errorMessage(message, "You do not have `MANAGE_ROLES` permission and/or trying to edit a role above you in the role hierarchy.")] });
 		}
 
 		else if (!message.guild?.me?.permissions.has("MANAGE_ROLES")
 			|| !(message.guild?.me?.roles.highest.position > role.position)) {
-			return message.channel.send(await errorMessage(message, "I do not have `MANAGE_ROLES` permission and/or trying to edit a role above me in the role hierarchy."));
+			return message.channel.send({ embeds: [await errorMessage(message, "I do not have `MANAGE_ROLES` permission and/or trying to edit a role above me in the role hierarchy.")] });
 		}
 
 		else if (member?.guild.ownerID === message.member?.id) {
 			return role.edit({ color: newColor }).then(r => {
 				return message.channel.send({ files: [attachment],
-					embed: new MessageEmbed({
+					embeds: [new MessageEmbed({
 						title: `You have changed ${r.name}'s color from ${hexColor} to ${r.hexColor}!`,
 						thumbnail: { url: "attachment://color.png" },
 					})
-						.withOkColor(message),
+						.withOkColor(message)],
 				});
 			});
 		}
 
 		return role.edit({ color: newColor }).then(r => {
 			return message.channel.send({ files: [attachment],
-				embed: new MessageEmbed({
+				embeds: [new MessageEmbed({
 					title: `You have changed ${r.name}'s color from ${hexColor} to ${r.hexColor}!`,
 					thumbnail: { url: "attachment://color.png" },
 				})
-					.withOkColor(message),
+					.withOkColor(message)],
 			});
 		});
 	}

@@ -1,11 +1,11 @@
-import { Argument, Command } from "@cataclym/discord-akairo";
+import { Argument } from "discord-akairo";
 import { Guild, Message, MessageEmbed } from "discord.js";
 import { hexColorTable } from "../../lib/Color";
 import { noArgGeneric } from "../../lib/Embeds";
 import { customClient } from "../../struct/client";
-import logger from "loglevel";
+import { KaikiCommand } from "../../lib/KaikiClass";
 
-export default class ErrorColorConfigCommand extends Command {
+export default class ErrorColorConfigCommand extends KaikiCommand {
 	constructor() {
 		super("config-errorcolor", {
 			userPermissions: "ADMINISTRATOR",
@@ -26,11 +26,13 @@ export default class ErrorColorConfigCommand extends Command {
 
 		await (this.client as customClient).guildSettings.set(guildID, "errorColor", value);
 
-		return message.channel.send(new MessageEmbed({
-			title: "Success!",
-			description: `errorColor has been set to \`${value}\` !`,
-		})
-			.withOkColor(message));
+		return message.channel.send({
+			embeds: [new MessageEmbed({
+				title: "Success!",
+				description: `errorColor has been set to \`${value}\` !`,
+			})
+				.withOkColor(message)],
+		});
 	}
 
 }

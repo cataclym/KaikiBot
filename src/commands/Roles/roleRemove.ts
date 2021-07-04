@@ -1,11 +1,13 @@
-import { Command } from "@cataclym/discord-akairo";
+import { Command } from "discord-akairo";
 import { Message, MessageEmbed, Role, GuildMember } from "discord.js";
+import { KaikiCommand } from "../../lib/KaikiClass";
 
-export default class RoleRemoveCommand extends Command {
+export default class RoleRemoveCommand extends KaikiCommand {
 	constructor() {
 		super("roleremove", {
 			aliases: ["roleremove", "removerole", "rr"],
-			description: { description: "Takes away a user's role. The role you specify has to be lower in the role hierarchy than your highest role.", usage: "@Dreb Gamer" },
+			description: "Takes away a user's role. The role you specify has to be lower in the role hierarchy than your highest role.",
+			usage: "@Dreb Gamer",
 			clientPermissions: "MANAGE_ROLES",
 			userPermissions: "MANAGE_ROLES",
 			channel: "guild",
@@ -36,27 +38,32 @@ export default class RoleRemoveCommand extends Command {
 
 				await member.roles.remove(role);
 
-				return message.channel.send(new MessageEmbed({
+				return message.channel.send({ embeds: [new MessageEmbed({
 					title: "Success!",
 					description: `Removed ${role} from ${member.user}`,
 				})
-					.withOkColor(message));
+					.withOkColor(message)],
+				});
 			}
 
 			else {
-				return message.channel.send(new MessageEmbed({
-					title: "Error",
-					description: `${member} doesn't have ${role}`,
-				})
-					.withErrorColor(message));
+				return message.channel.send({
+					embeds: [new MessageEmbed({
+						title: "Error",
+						description: `${member} doesn't have ${role}`,
+					})
+						.withErrorColor(message)],
+				});
 			}
 		}
 
 		else {
-			return message.channel.send(new MessageEmbed({
-				title: "Insufficient permission(s).",
-			})
-				.withErrorColor(message));
+			return message.channel.send({
+				embeds: [new MessageEmbed({
+					title: "Insufficient permission(s).",
+				})
+					.withErrorColor(message)],
+			});
 		}
 	}
 }

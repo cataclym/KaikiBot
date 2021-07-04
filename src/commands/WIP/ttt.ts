@@ -1,4 +1,4 @@
-// import { Command } from "@cataclym/discord-akairo";
+// import { Command } from "discord-akairo";
 // import { Message, GuildMember } from "discord.js";
 // import { noArgGeneric } from "../../lib/Embeds";
 // import TicTacToe from "../../lib/games/TTT";

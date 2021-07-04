@@ -1,12 +1,14 @@
-import { Command, Listener } from "@cataclym/discord-akairo";
+import { Listener } from "discord-akairo";
 import { GuildMember, Message, MessageEmbed } from "discord.js";
 import { noArgGeneric } from "../../lib/Embeds";
+import { KaikiCommand } from "../../lib/KaikiClass";
 
-export default class EmitCommand extends Command {
+export default class EmitCommand extends KaikiCommand {
 	constructor() {
 		super("emit", {
 			aliases: ["emit"],
-			description: { description: "Emits a specified event. (WIP)", usage: "ratelimit <info about event>" },
+			description: "Emits a specified event. (WIP)",
+			usage: "ratelimit <info about event>",
 			ownerOnly: true,
 			args: [
 				{
@@ -38,9 +40,11 @@ export default class EmitCommand extends Command {
 			: this.handler.emit(event.id, member, eventArguments);
 
 		if (value) {
-			return message.channel.send(new MessageEmbed({
-				description: `Emitted ${event.id}.`,
-			}));
+			return message.channel.send({ embeds:
+					[new MessageEmbed({
+						description: `Emitted ${event.id}.`,
+					})],
+			});
 		}
 	}
 }

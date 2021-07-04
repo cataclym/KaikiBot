@@ -1,11 +1,12 @@
-import { Command } from "@cataclym/discord-akairo";
 import { GuildMember, Message, MessageEmbed, Role } from "discord.js";
+import { KaikiCommand } from "../../lib/KaikiClass";
 
-export default class RoleAssignCommand extends Command {
+export default class RoleAssignCommand extends KaikiCommand {
 	constructor() {
 		super("roleassign", {
 			aliases: ["roleassign", "setrole", "sr"],
-			description: { description: "Gives a role to a user. The role you specify has to be lower in the role hierarchy than your highest role.", usage: "@Dreb Gamer" },
+			description: "Gives a role to a user. The role you specify has to be lower in the role hierarchy than your highest role.",
+			usage: "@Dreb Gamer",
 			clientPermissions: "MANAGE_ROLES",
 			userPermissions: "MANAGE_ROLES",
 			channel: "guild",
@@ -37,25 +38,28 @@ export default class RoleAssignCommand extends Command {
 
 				await member.roles.add(role);
 
-				return message.channel.send(new MessageEmbed({
+				return message.channel.send({ embeds: [new MessageEmbed({
 					title: "Success!",
 					description: `Added ${role} to ${member.user}`,
 				})
-					.withOkColor(message));
+					.withOkColor(message)],
+				});
 			}
 			else {
-				return message.channel.send(new MessageEmbed({
+				return message.channel.send({ embeds: [new MessageEmbed({
 					title: "Error",
 					description: `${member} already has ${role}`,
 				})
-					.withErrorColor(message));
+					.withErrorColor(message)],
+				});
 			}
 		}
 		else {
-			return message.channel.send(new MessageEmbed({
+			return message.channel.send({ embeds: [new MessageEmbed({
 				title: "Insufficient permission(s).",
 			})
-				.withErrorColor(message));
+				.withErrorColor(message)],
+			});
 		}
 	}
 }

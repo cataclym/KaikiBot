@@ -1,14 +1,14 @@
-import { Command } from "@cataclym/discord-akairo";
 import { Message, MessageEmbed } from "discord.js";
 import { errorMessage } from "../../lib/Embeds";
 import { trim } from "../../lib/Util";
 import { DapiGrabber, DapiSearchType } from "./hentaiService";
+import { KaikiCommand } from "../../lib/KaikiClass";
 
-export default class E621Command extends Command {
+export default class E621Command extends KaikiCommand {
 	constructor() {
 		super("e621", {
 			aliases: ["e621"],
-			description: { description: "e621 :hahaa:" },
+			description: "e621 :hahaa:",
 			typing: true,
 			args: [{
 				id: "tags",
@@ -30,11 +30,11 @@ export default class E621Command extends Command {
 
 			if (post.tags.character.length) emb.addField("Character(s)", post.tags.character.join(", "), true);
 
-			return message.channel.send(emb);
+			return message.channel.send({ embeds: [emb] });
 		}
 
 		else {
-			return message.channel.send(await errorMessage(message, "No data received"));
+			return message.channel.send({ embeds: [await errorMessage(message, "No data received")] });
 		}
 	}
 }
