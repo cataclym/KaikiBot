@@ -39,7 +39,7 @@ export default class FetchUserCommand extends KaikiCommand {
 		const userFlags = userObject.flags ? userObject.flags.toArray() : [],
 			embed = new MessageEmbed()
 				.setDescription(userObject.username)
-				.setThumbnail(userObject?.displayAvatarURL({ dynamic: true }))
+				.setThumbnail(userObject?.displayAvatarURL({ dynamic: true, size: 4096 }))
 				.setTitle(userObject.tag)
 				.addFields([
 					{ name: "ID", value: userObject.id, inline: true },
