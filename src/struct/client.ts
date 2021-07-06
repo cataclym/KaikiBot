@@ -4,6 +4,7 @@ import { Intents } from "discord.js";
 import { join } from "path";
 import { getBotDocument } from "./documentMethods";
 import { botModel, guildsModel } from "./models";
+import logger from "loglevel";
 
 export const prefixCache: {[index: string]: string} = {};
 
@@ -29,8 +30,8 @@ export class customClient extends AkairoClient {
     	this.guildSettings = new MongooseProvider(guildsModel);
     	this.botSettings = new MongooseProvider(botModel);
 
-    	this.guildSettings.init();
-    	this.botSettings.init();
+    	this.guildSettings.init().then(r => logger.info("GuildSettings provider - READY"));
+    	this.botSettings.init().then(r => logger.info("BotSettings provider - READY"));
 
     	this.commandHandler = new CommandHandler(this, {
     		allowMention: true,
@@ -44,12 +45,7 @@ export class customClient extends AkairoClient {
     		handleEdits: true,
     		prefix: message => {
     			if (message.guild) {
-    				let guildPrefix = prefixCache[message.guild.id];
-    				if (guildPrefix) return guildPrefix;
-
-    				guildPrefix = this.guildSettings.get(message.guild.id, "prefix", process.env.PREFIX);
-    				prefixCache[message.guild.id] = guildPrefix;
-    				return guildPrefix;
+    				return this.guildSettings.get(message.guild.id, "prefix", process.env.PREFIX);
     			}
     			return process.env.PREFIX as string;
     		},
