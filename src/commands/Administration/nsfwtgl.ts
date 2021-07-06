@@ -17,11 +17,12 @@ export default class ChannelNsfwCommand extends KaikiCommand {
 
 		const channel = message.channel as TextChannel;
 
+		const result = `NSFW in \`#${channel.name}\` has been ${!channel.nsfw ? "enabled" : "disabled"}.`;
 		await channel.setNSFW(!channel.nsfw, `${message.author.tag} toggled NSFW.`);
 
 		return message.channel.send({
 			embeds: [new MessageEmbed({
-				description: `NSFW in ${channel.name} has been ${!channel.nsfw ? "enabled" : "disabled"}.`,
+				description: result,
 			})
 				.withOkColor(message)],
 		});
