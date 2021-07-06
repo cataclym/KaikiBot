@@ -29,11 +29,11 @@ import { Guild, GuildMember, Message, MessageEmbed } from "discord.js";
 
 GuildMember.prototype.hasExcludedRole = function(member?: GuildMember) {
 
-	const memb = member ?? this as GuildMember;
-	const rolename = (memb.guild.client as customClient).guildSettings.get(memb.guild.id, "excludeRole", "");
+	const member1 = member ?? this as GuildMember;
+	const roleName = (member1.guild.client as customClient).guildSettings.get(member1.guild.id, "excludeRole", "");
 
-	return !memb.roles.cache
-		.find(r => rolename === r.name);
+	return !member1.roles.cache
+		.find(r => roleName === r.name);
 };
 
 Guild.prototype.isDadBotEnabled = function(guild?: Guild) {
