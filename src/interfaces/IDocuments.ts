@@ -1,15 +1,7 @@
 import { ActivityType } from "discord-api-types";
 import { ColorResolvable } from "discord.js";
 import { Document } from "mongoose";
-
-export type TGreetMessage = {
-	enabled: boolean,
-	channel: string,
-	message: string,
-	image: false | string,
-	embed: boolean,
-	color: string | number,
-}
+import { IGreet } from "./IGreetLeave";
 
 export interface IGuild extends Document {
 	id: string,
@@ -27,8 +19,8 @@ export interface IGuild extends Document {
 		errorColor: ColorResolvable,
 		okColor: ColorResolvable,
         excludeRole: string,
-		welcome: TGreetMessage,
-		goodbye: TGreetMessage,
+		welcome: IGreet,
+		goodbye: IGreet,
 	},
 }
 

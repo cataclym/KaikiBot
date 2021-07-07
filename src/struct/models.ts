@@ -46,10 +46,7 @@ export const guildSchema = new Schema({
 			welcome: {
 				enabled: false,
 				channel: null,
-				message: null,
-				image: false,
-				embed: false,
-				color: okColor,
+				embed: null,
 			},
 			goodbye: {
 				enabled: false,
