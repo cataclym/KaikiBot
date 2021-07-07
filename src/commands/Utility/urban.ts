@@ -1,4 +1,4 @@
-import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
+import { sendPaginatedMessage } from "@cataclym/discord.js-pagination-ts-nsb";
 import { Message, MessageEmbed } from "discord.js";
 import fetch from "node-fetch";
 import querystring from "querystring";
@@ -48,6 +48,6 @@ export default class UrbanDictCommand extends KaikiCommand {
 				.withOkColor(message),
 			);
 		}
-		return editMessageWithPaginatedEmbeds(message, pages, {});
+		return sendPaginatedMessage(message, pages, {});
 	}
 }

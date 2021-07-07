@@ -1,4 +1,4 @@
-import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
+import { sendPaginatedMessage } from "@cataclym/discord.js-pagination-ts-nsb";
 import { GuildMember, Role, MessageEmbed, Message } from "discord.js";
 import { KaikiCommand } from "../../lib/KaikiClass";
 
@@ -48,11 +48,11 @@ export default class RoleInRoleCommand extends KaikiCommand {
 				}
 				pages.push(emb);
 			}
-			return editMessageWithPaginatedEmbeds(message, pages, {});
+			return sendPaginatedMessage(message, pages, {});
 
 		}
 		else {
-			return editMessageWithPaginatedEmbeds(message, [new MessageEmbed({
+			return sendPaginatedMessage(message, [new MessageEmbed({
 				title: `No users in ${role.name}`,
 			})
 				.withErrorColor(message)], {});

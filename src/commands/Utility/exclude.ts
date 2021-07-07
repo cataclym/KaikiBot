@@ -15,7 +15,7 @@ export default class ExcludeCommand extends KaikiCommand {
 
 	public async exec(message: Message): Promise<Message | void> {
 
-		if (message.guild!.isDadBotEnabled()) {
+		if (!message.guild!.isDadBotEnabled()) {
 			return message.channel.send({
 				embeds: [new MessageEmbed()
 					.setTitle("Dadbot is not enabled")
@@ -24,7 +24,7 @@ export default class ExcludeCommand extends KaikiCommand {
 		}
 
 		const db = await getGuildDocument((message.guild as Guild).id);
-
+		const embeds = [];
 		let excludedRole = message.guild?.roles.cache.find((r) => r.name === db.settings.excludeRole);
 
 		if (!message.guild?.roles.cache.some(r => r.name === excludedRole?.name)) {
@@ -33,26 +33,26 @@ export default class ExcludeCommand extends KaikiCommand {
 				reason: "Role didn't exist yet.",
 			});
 
-			await (message.channel.send({
-				embeds: [new MessageEmbed({
-					title: "Error!",
-					description: `A role with name \`${db.settings.excludeRole}\` was not found in guild. Creating... `,
-					footer: { text: "Beep boop..." },
-				})
-					.withErrorColor(message)],
-			}));
+			embeds.push(new MessageEmbed({
+				title: "Error!",
+				description: `A role with name \`${db.settings.excludeRole}\` was not found in guild. Creating... `,
+				footer: { text: "Beep boop..." },
+			})
+				.withErrorColor(message));
 		}
 
 		if (!message.member?.roles.cache.find((r) => r === excludedRole) && excludedRole) {
 			await message.member?.roles.add(excludedRole);
-			return message.channel.send({ embeds: [Exclude.addedRoleEmbed(db.settings.excludeRole)
-				.withOkColor(message)] });
+			embeds.push(Exclude.addedRoleEmbed(db.settings.excludeRole)
+				.withOkColor(message));
+			return message.channel.send({ embeds: embeds });
 		}
 
 		if (message.member?.roles.cache.find((r) => r === excludedRole) && excludedRole) {
 			await message.member?.roles.remove(excludedRole);
-			return message.channel.send({ embeds: [Exclude.removedRoleEmbed(db.settings.excludeRole)
-				.withOkColor(message)] });
+			embeds.push(Exclude.removedRoleEmbed(db.settings.excludeRole)
+				.withOkColor(message));
+			return message.channel.send({ embeds: embeds });
 		}
 	}
 }

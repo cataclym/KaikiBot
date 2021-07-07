@@ -33,16 +33,14 @@ export default class mcpingCommand extends KaikiCommand {
 			const embed = new MessageEmbed()
 				.setTitle("Ping! Server is online")
 				.setDescription(`${result.ip}:${result.port} ${result?.hostname?.length ? "/ " + result?.hostname : "" }`)
-				.addFields(
-					// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-					// @ts-ignore
-					{ name: "Version", value: result.version, inline: true },
-					{ name: "MOTD", value: result.motd.clean, inline: true },
+				.addFields([
+					{ name: "Version", value: String(result.version), inline: true },
+					{ name: "MOTD", value: result.motd.clean.join("\n"), inline: true },
 					{ name: "Players", value: `${result.players.online}/${result.players.max}`, inline: true },
 					{ name: "Plugins", value: result.plugins?.names.length ? trim(result.plugins?.names.join(", "), 1024) : "None", inline: true },
 					{ name: "Software", value: result?.software ?? "Unknown", inline: true },
 					{ name: "Mods", value: result.mods?.names.length ? trim(result.mods?.names.join(", "), 1024) : "None", inline: true },
-				)
+				])
 				.withOkColor(message);
 
 			if (attachment) {
@@ -60,7 +58,7 @@ export default class mcpingCommand extends KaikiCommand {
 
 		else {
 			return message.channel.send({ embeds: [new MessageEmbed()
-				.setTitle("No ping :< Server is offline")
+				.setTitle("No ping :< Server is offline, double-check if the address is correct.")
 				.withErrorColor(message)] });
 		}
 	}

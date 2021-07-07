@@ -1,5 +1,5 @@
 import { Command, PrefixSupplier } from "discord-akairo";
-import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
+import { sendPaginatedMessage } from "@cataclym/discord.js-pagination-ts-nsb";
 import { Snowflake } from "discord-api-types";
 import { Guild, Message, MessageEmbed } from "discord.js";
 import { getGuildDocument } from "../../struct/documentMethods";
@@ -41,7 +41,7 @@ export default class ListUserRoles extends KaikiCommand {
 					.withOkColor(message));
 			}
 
-			return editMessageWithPaginatedEmbeds(message, pages, {});
+			return sendPaginatedMessage(message, pages, {});
 		}
 
 		else {

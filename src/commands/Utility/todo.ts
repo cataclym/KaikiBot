@@ -1,5 +1,5 @@
 import { Argument, Flag, PrefixSupplier } from "discord-akairo";
-import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
+import { sendPaginatedMessage } from "@cataclym/discord.js-pagination-ts-nsb";
 import { Message, MessageEmbed } from "discord.js";
 import { trim } from "../../lib/Util";
 import { getUserDocument } from "../../struct/documentMethods";
@@ -48,6 +48,6 @@ module.exports = class TodoCommand extends KaikiCommand {
 			pages.push(embed);
 		}
 
-		await editMessageWithPaginatedEmbeds(message, pages, {});
+		await sendPaginatedMessage(message, pages, {});
 	}
 };

@@ -17,10 +17,15 @@ export default class AvatarCommand extends KaikiCommand {
 		});
 	}
 	public async exec(message: Message, { user }: { user: User }): Promise<Message> {
-		const av = user.displayAvatarURL({ size: 2048, dynamic: true });
+
+		const av = user.displayAvatarURL({ size: 4096, dynamic: true }),
+			jpeg = user.displayAvatarURL({ size: 4096, dynamic: false, format: "jpg" }),
+			png = user.displayAvatarURL({ size: 4096, dynamic: false, format: "png" }),
+			webp = user.displayAvatarURL({ size: 4096, dynamic: false, format: "webp" });
+
 		return message.channel.send({ embeds: [new MessageEmbed({
 			title: user.tag,
-			description: `[Link](${av})`,
+			fields: [{ name: "Links", value: `[gif](${av}) [jpg](${jpeg}) [png](${png}) [webp](${webp})`, inline: false }],
 			image: { url: av },
 			footer: { text: "ID: " + user.id },
 		})

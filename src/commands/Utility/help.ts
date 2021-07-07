@@ -26,11 +26,12 @@ export default class HelpCommand extends KaikiCommand {
 
 		if (command instanceof KaikiCommand) {
 
-			let { usage } = command;
+			let usage;
+			const cmdUsage = command.usage;
 
-			if (usage) {
-				usage = usage instanceof Array
-					? usage.map(u => `${prefix}${command.id} ${u}`).join("\n")
+			if (typeof command.description !== "string") {
+				usage = cmdUsage instanceof Array
+					? cmdUsage.map(u => `${prefix}${command.id} ${u}`).join("\n")
 					: `${prefix}${command.id} ${usage}`;
 			}
 
@@ -38,7 +39,7 @@ export default class HelpCommand extends KaikiCommand {
 				.setDescription(`**Aliases:** \`${command.aliases.join("`, `")}\``)
 				.setFooter(command.categoryID)
 				.addField("**Description:**", command.description || "?", false)
-				.addField("**Usage:**", usage?.length
+				.addField("**Usage:**", usage && usage.length
 					? usage
 					: `${prefix}${command.id}`, false);
 

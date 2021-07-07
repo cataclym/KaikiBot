@@ -1,4 +1,4 @@
-import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
+import { sendPaginatedMessage } from "@cataclym/discord.js-pagination-ts-nsb";
 import { Guild, Role, MessageEmbed, Message } from "discord.js";
 import { KaikiCommand } from "../../lib/KaikiClass";
 
@@ -38,6 +38,6 @@ export default class RoleListCommand extends KaikiCommand {
 				pages.push(dEmbed);
 			}
 		}
-		return editMessageWithPaginatedEmbeds(message, pages, {});
+		return sendPaginatedMessage(message, pages, {});
 	}
 }

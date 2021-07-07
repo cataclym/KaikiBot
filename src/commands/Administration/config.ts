@@ -1,9 +1,8 @@
 import { Argument, Flag, PrefixSupplier } from "discord-akairo";
-import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
+import { sendPaginatedMessage } from "@cataclym/discord.js-pagination-ts-nsb";
 import { ColorResolvable, Guild, Message, MessageEmbed } from "discord.js";
 import { getGuildDocument } from "../../struct/documentMethods";
 import { KaikiCommand } from "../../lib/KaikiClass";
-import { Color } from "sharp";
 
 export default class ConfigCommand extends KaikiCommand {
 	constructor() {
@@ -48,11 +47,11 @@ export default class ConfigCommand extends KaikiCommand {
 			welcomeEmbed = new MessageEmbed()
 				.setColor(welcome.color as ColorResolvable)
 				.setAuthor("Welcome embed preview")
-				.setDescription(welcome.message),
+				.setDescription(welcome.message || "?"),
 			goodbyeEmbed = new MessageEmbed()
 				.setColor(goodbye.color as ColorResolvable)
 				.setAuthor("Goodbye embed preview")
-				.setDescription(goodbye.message);
+				.setDescription(goodbye.message || "?");
 
 		if (welcome.image) {
 			welcomeEmbed.setImage(welcome.image);
@@ -106,6 +105,6 @@ export default class ConfigCommand extends KaikiCommand {
 				.addField("Disabled categories", categories.map(c => c[0]).join("\n"), false);
 		}
 
-		return editMessageWithPaginatedEmbeds(message, pages, {});
+		return sendPaginatedMessage(message, pages, {});
 	}
 }

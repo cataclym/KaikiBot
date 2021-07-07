@@ -20,7 +20,7 @@ export default class EvalCommand extends KaikiCommand {
 			],
 		});
 	}
-	public async exec(message: Message, { code }: { code: string }): Promise<Message | void> {
+	public async exec(message: Message, { code }: { code: string }): Promise<Message | Message[]> {
 		try {
 			let evaled = await eval("(async () => " + code + ")()");
 
