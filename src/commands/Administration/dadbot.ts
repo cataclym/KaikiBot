@@ -3,6 +3,7 @@ import { Guild, Message, MessageEmbed } from "discord.js";
 import { noArgGeneric } from "../../lib/Embeds";
 import { customClient } from "../../struct/client";
 import { KaikiCommand } from "../../lib/KaikiClass";
+import { getGuildDocument } from "../../struct/documentMethods";
 
 export default class DadBotConfigCommand extends KaikiCommand {
 	constructor() {
@@ -22,16 +23,36 @@ export default class DadBotConfigCommand extends KaikiCommand {
 	public async exec(message: Message, { value }: { value: "enable" | "true" | "disable" | "false" }): Promise<Message> {
 		const embed = new MessageEmbed().withOkColor(message),
 			guildID = (message.guild as Guild).id,
-			isEnabled = message.client.guildSettings.get(guildID, "dadBot", false);
+			db = await getGuildDocument(guildID);
+
+		let isEnabled = message.client.guildSettings.get(guildID, "dadBot", {
+			enabled: false,
+			excludedChannels: {},
+		}).enabled;
+
+		if (typeof db.settings["dadBot"] === "boolean") {
+			const bool = db.settings["dadBot"];
+			db.settings["dadBot"] = {
+				enabled: bool,
+				excludedChannels: {},
+			};
+			db.markModified("settings.dadBot");
+			isEnabled = db.settings.dadBot.enabled;
+		}
 
 		switch (value) {
 			case ("enable"):
 			case ("true"): {
 				if (!isEnabled) {
-					await (message.client as customClient).guildSettings.set(guildID, "dadBot", true);
-					embed.setDescription(`DadBot functionality has been enabled in ${message.guild?.name}!
-					\nIndividual users can still disable dadbot on themselves with ${(this.handler.prefix as PrefixSupplier)(message)}exclude.`);
-					return message.channel.send({ embeds: [embed] });
+					db.settings.dadBot.enabled = true;
+					db.markModified("settings.dadBot.enabled");
+					await message.client.guildSettings.set(guildID, "dadBot", db.settings.dadBot);
+					await db.save();
+
+					return message.channel.send({ embeds: [embed
+						.setTitle(`DadBot has been enabled in ${message.guild?.name}!`)
+						.setDescription(`Individual users can still disable dadbot on themselves with ${(this.handler.prefix as PrefixSupplier)(message)}exclude.`)],
+					});
 				}
 				else {
 					embed.setDescription("You have already enabled DadBot.");
@@ -41,9 +62,13 @@ export default class DadBotConfigCommand extends KaikiCommand {
 			case ("disable"):
 			case ("false"): {
 				if (isEnabled) {
-					await (message.client as customClient).guildSettings.set(guildID, "dadBot", false);
-					embed.setDescription(`DadBot functionality has been disabled in ${message.guild?.name}!`);
-					return message.channel.send({ embeds: [embed] });
+					db.settings.dadBot.enabled = false;
+					db.markModified("settings.dadBot.enabled");
+					await message.client.guildSettings.set(guildID, "dadBot", db.settings.dadBot);
+					await db.save();
+
+					return message.channel.send({ embeds: [embed
+						.setTitle(`DadBot has been disabled in ${message.guild?.name}!`)] });
 				}
 				else {
 					embed.setDescription("You have already disabled DadBot.");

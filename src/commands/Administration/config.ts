@@ -65,7 +65,7 @@ export default class ConfigCommand extends KaikiCommand {
 			new MessageEmbed()
 				.withOkColor(message)
 				.addField("DadBot",
-					dadBot
+					dadBot.enabled
 						? "Enabled"
 						: "Disabled", true)
 				.addField("Anniversary-Roles",
