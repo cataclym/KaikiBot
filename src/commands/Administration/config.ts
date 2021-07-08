@@ -65,7 +65,7 @@ export default class ConfigCommand extends KaikiCommand {
 			new MessageEmbed()
 				.withOkColor(message)
 				.addField("DadBot",
-					dadBot
+					dadBot.enabled
 						? "Enabled"
 						: "Disabled", true)
 				.addField("Anniversary-Roles",
@@ -75,7 +75,7 @@ export default class ConfigCommand extends KaikiCommand {
 				.addField("Guild prefix",
 					prefix === process.env.PREFIX
 						? `\`${process.env.PREFIX}\` (Default)`
-						: prefix, true)
+						: `\`${prefix}\``, true)
 				.addField("Embed error color",
 					errorColor.toString().startsWith("#")
 						? errorColor.toString()

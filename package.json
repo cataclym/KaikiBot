@@ -1,11 +1,11 @@
 {
   "name": "kaikideishubot",
-  "version": "3.5.20-Emerald",
+  "version": "3.5.21-Emerald",
   "main": "./dist/index.js",
   "scripts": {
     "start": "node -r dotenv/config ./dist/index.js",
     "build": "tsc -p src/tsconfig.json",
-    "version": "auto-changelog -p --template keepachangelog && git add CHANGELOG.md",
+    "version": "auto-changelog -u --template keepachangelog && git add CHANGELOG.md",
     "watch": "tsc -p src/tsconfig.json -w",
     "test": "mocha -r ts-node/register \"tests/**/*.spec.ts\""
   },

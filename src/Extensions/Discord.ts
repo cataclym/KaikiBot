@@ -7,7 +7,7 @@ export const extensionHook = (): void => {
 
 declare module "discord.js" {
     export interface Guild {
-        isDadBotEnabled(guild?: Guild): boolean;
+        isDadBotEnabled(message?: Message): boolean;
     }
 
     export interface GuildMember {
@@ -36,13 +36,19 @@ GuildMember.prototype.hasExcludedRole = function(member?: GuildMember) {
 		.find(r => roleName === r.name);
 };
 
-Guild.prototype.isDadBotEnabled = function(guild?: Guild) {
+Guild.prototype.isDadBotEnabled = function(message?: Message) {
 
-	const g = guild ?? this as Guild;
+	const g = message?.guild ?? this as Guild;
 
-	if (!g) return false;
-
-	return (g.client as customClient).guildSettings.get(g.id, "dadBot", false);
+	if (g && (g.client as customClient).guildSettings.get(g.id, "dadBot", false).enabled) {
+		return message
+			? !message.client.guildSettings.get(g.id, "dadBot", {
+				enabled: false,
+				excludedChannels: {},
+			}).excludedChannels[message.channel.id]
+			: true;
+	}
+	return false;
 };
 
 MessageEmbed.prototype.withErrorColor = function(m?: Message) {

@@ -1,4 +1,4 @@
-import { ActivityType } from "discord-api-types";
+import { ActivityType, Snowflake } from "discord-api-types";
 import { ColorResolvable } from "discord.js";
 import { Document } from "mongoose";
 import { IGreet } from "./IGreetLeave";
@@ -10,12 +10,14 @@ export interface IGuild extends Document {
 	userRoles: {[userID: string]: string},
 	emojiStats: {[emojiID: string]: number},
 	emojiReactions: {[keyWord: string]: string},
-    illegalWordChannel: { channel: string, word: string; };
     blockedCategories: {[categoryID: string]: boolean };
     settings: {
 		prefix: string,
 		anniversary: boolean,
-		dadBot: boolean,
+		dadBot: {
+			enabled: boolean,
+			excludedChannels: {[id: string]: true | undefined},
+		},
 		errorColor: ColorResolvable,
 		okColor: ColorResolvable,
         excludeRole: string,

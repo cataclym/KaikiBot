@@ -75,18 +75,18 @@ export const noArgGeneric = (message: Message): MessageEmbed => {
 
 	let usage;
 
-	if (typeof cmd?.description !== "string") {
-		if (Array.isArray(cmd?.description.usage)) {
-			usage = cmd?.description.usage.map((u: string) => `${prefix}${cmd?.id} ${u}`).join("\n");
+	if (cmd && typeof cmd.description !== "string") {
+		if (Array.isArray(cmd.description.usage)) {
+			usage = cmd.description.usage.map((u: string) => `${prefix}${cmd?.id} ${u}`).join("\n");
 		}
 		else {
-			usage = `${prefix}${cmd?.id} ${usage}`;
+			usage = `${prefix}${cmd.id} ${usage}`;
 		}
 	}
 
 	return new MessageEmbed({
 		description: "Please provide (valid) arguments.",
-		fields: [{ name: "Usage", value: (usage ? `${usage}` : "<any>") }],
+		fields: [{ name: "Usage", value: (usage ? String(usage) : "<any>") }],
 	})
 		.withErrorColor(message);
 };
@@ -99,14 +99,14 @@ export const errorMessage = async (message: Message, msg: string): Promise<Messa
 
 export const Exclude = {
 
-	addedRoleEmbed: (rolename: string): MessageEmbed => new MessageEmbed({
-		title: "Success!",
-		description: `Added role \`${rolename}\`.\nType the command again to remove.`,
+	addedRoleEmbed: (roleName: string): MessageEmbed => new MessageEmbed({
+		title: "Excluded",
+		description: `Added role \`${roleName}\`.\nType the command again to remove.`,
 	}),
 
-	removedRoleEmbed: (rolename: string): MessageEmbed => new MessageEmbed({
-		title: "Success!",
-		description: `Removed role \`${rolename}\`.\nType the command again to add it back.`,
+	removedRoleEmbed: (roleName: string): MessageEmbed => new MessageEmbed({
+		title: "Included",
+		description: `Removed role \`${roleName}\`.\nType the command again to add it back.`,
 	}),
 };
 

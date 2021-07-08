@@ -26,10 +26,6 @@ export const guildSchema = new Schema({
 		type: Object, default: {
 		},
 	},
-	illegalWordChannel: {
-		type: Object, default: {
-		},
-	},
 	blockedCategories: {
 		type: Object, default: {
 		},
@@ -39,7 +35,11 @@ export const guildSchema = new Schema({
 		type: Object, default: {
 			prefix: process.env.PREFIX,
 			anniversary: false,
-			dadBot: false,
+			dadBot: {
+				enabled: false,
+				excludedChannels: {
+				},
+			},
 			errorColor: errorColor,
 			okColor: okColor,
 			excludeRole: "Dadbot-excluded",
