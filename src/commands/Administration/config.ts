@@ -75,7 +75,7 @@ export default class ConfigCommand extends KaikiCommand {
 				.addField("Guild prefix",
 					prefix === process.env.PREFIX
 						? `\`${process.env.PREFIX}\` (Default)`
-						: prefix, true)
+						: `\`${prefix}\``, true)
 				.addField("Embed error color",
 					errorColor.toString().startsWith("#")
 						? errorColor.toString()

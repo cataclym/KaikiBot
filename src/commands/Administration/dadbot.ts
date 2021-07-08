@@ -1,7 +1,6 @@
 import { PrefixSupplier } from "discord-akairo";
 import { Guild, Message, MessageEmbed } from "discord.js";
 import { noArgGeneric } from "../../lib/Embeds";
-import { customClient } from "../../struct/client";
 import { KaikiCommand } from "../../lib/KaikiClass";
 import { getGuildDocument } from "../../struct/documentMethods";
 
@@ -51,12 +50,16 @@ export default class DadBotConfigCommand extends KaikiCommand {
 
 					return message.channel.send({ embeds: [embed
 						.setTitle(`DadBot has been enabled in ${message.guild?.name}!`)
-						.setDescription(`Individual users can still disable dadbot on themselves with ${(this.handler.prefix as PrefixSupplier)(message)}exclude.`)],
+						.setDescription(`Individual users can still disable dadbot on themselves with \`${(this.handler.prefix as PrefixSupplier)(message)}exclude\`.`)],
 					});
 				}
 				else {
-					embed.setDescription("You have already enabled DadBot.");
-					return message.channel.send({ embeds: [embed] });
+					return message.channel.send({
+						embeds: [embed
+							.setTitle("Already enabled")
+							.setDescription("You have already **enabled** DadBot in this server.")
+							.withErrorColor(message)],
+					});
 				}
 			}
 			case ("disable"):
@@ -71,8 +74,12 @@ export default class DadBotConfigCommand extends KaikiCommand {
 						.setTitle(`DadBot has been disabled in ${message.guild?.name}!`)] });
 				}
 				else {
-					embed.setDescription("You have already disabled DadBot.");
-					return message.channel.send({ embeds: [embed] });
+					return message.channel.send({
+						embeds: [embed
+							.setTitle("Already disabled")
+							.setDescription("You have already **disabled** DadBot in this server.")
+							.withErrorColor(message)],
+					});
 				}
 			}
 		}
