@@ -7,7 +7,7 @@ export default class ChannelNsfwCommand extends KaikiCommand {
 			aliases: ["nsfwtgl", "nsfw", "nsfwtoggle"],
 			clientPermissions: "MANAGE_CHANNELS",
 			userPermissions: "MANAGE_CHANNELS",
-			description: "Toggles if a channel is NSFW",
+			description: "Toggles NSFW in current channel",
 			usage: "",
 			channel: "guild",
 		});
@@ -17,7 +17,7 @@ export default class ChannelNsfwCommand extends KaikiCommand {
 
 		const channel = message.channel as TextChannel;
 
-		const result = `NSFW in \`#${channel.name}\` has been ${!channel.nsfw ? "enabled" : "disabled"}.`;
+		const result = `NSFW in ${channel} has been ${!channel.nsfw ? "enabled" : "disabled"}.`;
 		await channel.setNSFW(!channel.nsfw, `${message.author.tag} toggled NSFW.`);
 
 		return message.channel.send({
