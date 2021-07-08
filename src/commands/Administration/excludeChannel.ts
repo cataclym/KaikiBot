@@ -1,6 +1,16 @@
-import { Guild, GuildChannel, Message, MessageEmbed, Snowflake, TextChannel } from "discord.js";
+import {
+	Guild,
+	GuildChannel,
+	Message,
+	MessageEmbed,
+	NewsChannel,
+	Snowflake,
+	StoreChannel,
+	TextChannel,
+} from "discord.js";
 import { KaikiCommand } from "../../lib/KaikiClass";
 import { getGuildDocument } from "../../struct/documentMethods";
+import { Argument } from "discord-akairo";
 
 export default class ExcludeDadbotChannelCommand extends KaikiCommand {
 	constructor() {
@@ -8,18 +18,18 @@ export default class ExcludeDadbotChannelCommand extends KaikiCommand {
 			aliases: ["excludechannel", "excludechnl", "echnl"],
 			userPermissions: "MANAGE_CHANNELS",
 			channel: "guild",
-			description: "TODO",
-			usage: ["#channel"],
+			description: "Exclude or include a channel from dadbot. Provide no parameter to show a list of excluded channels. ",
+			usage: ["", "#channel"],
 			args: [
 				{
 					id: "channel",
-					type: "textChannel",
+					type: Argument.union("textChannel", "newsChannel", "storeChannel"),
 				},
 			],
 		});
 	}
 
-	public async exec(message: Message, { channel }: { channel: TextChannel}): Promise<Message> {
+	public async exec(message: Message, { channel }: { channel: TextChannel | NewsChannel | StoreChannel }): Promise<Message> {
 
 		const gId = (message.guild as Guild).id;
 		const guildDb = await getGuildDocument(gId);
