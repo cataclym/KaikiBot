@@ -1,50 +1,49 @@
+import {
+	ColorResolvable,
+	EmbedFieldData,
+	MessageEmbed, MessageEmbedAuthor,
+	MessageEmbedFooter,
+	MessageEmbedImage, MessageEmbedOptions,
+	MessageEmbedThumbnail,
+	MessageOptions,
+	MessagePayload,
+} from "discord.js";
+
 export interface EmbedJSON {
-	plainText?: string;
 	title?: string;
 	url?: string;
 	description?: string;
-	author?: Author;
+	author?: MessageEmbedAuthor;
 	color?: number;
-	footer?: Footer;
-	thumbnail?: string;
-	image?: string;
-	fields?: Field[];
-}
-
-export interface Author {
-	name: string;
-	icon_url: string;
-}
-
-export interface Field {
-	name: string;
-	value: string;
-	inline: boolean;
-}
-
-export interface Footer {
-	text: string;
-	icon_url: string;
+	footer?: MessageEmbedFooter;
+	thumbnail?: (Partial<MessageEmbedThumbnail> & { proxy_url?: string | undefined; });
+	image?: (Partial<MessageEmbedImage> & { proxy_url?: string | undefined; });
+	fields?: EmbedFieldData[];
 }
 
 export interface IGreet {
 	enabled: boolean,
 	channel: string,
-	embed: EmbedJSON,
+	embed: MessageEmbedOptions,
 }
 
-export class EmbedJSONClass {
+interface MessageEmbedOptionsJSON extends MessageEmbedOptions {
+	plainText?: string | undefined;
+}
+
+export class EmbedFromJson {
 	public plainText: string | undefined;
 	public title: string | undefined;
 	public url: string | undefined;
 	public description: string | undefined;
-	public author: Author | undefined;
-	public color: number | undefined;
-	public footer: Footer | undefined;
-	public thumbnail: string | undefined;
-	public image: string | undefined;
-	public fields: Field[] | undefined;
-	constructor(options: EmbedJSON) {
+	public author: MessageEmbedAuthor | undefined;
+	public color: ColorResolvable | undefined;
+	public footer: MessageEmbedFooter | undefined;
+	public thumbnail: (Partial<MessageEmbedThumbnail> & { proxy_url?: string | undefined; }) | undefined;
+	public image: (Partial<MessageEmbedImage> & { proxy_url?: string | undefined; }) | undefined;
+	public fields: EmbedFieldData[] | undefined;
+	public createEmbed: () => Promise<string | MessagePayload | MessageOptions>;
+	constructor(options: MessageEmbedOptionsJSON) {
 		this.plainText = options.plainText;
 		this.title = options.title;
 		this.url = options.url;
@@ -55,5 +54,8 @@ export class EmbedJSONClass {
 		this.thumbnail = options.thumbnail;
 		this.image = options.image;
 		this.fields = options.fields;
+		this.createEmbed = async () => {
+			return { content: this.plainText ?? null, embeds: [new MessageEmbed(this)] };
+		};
 	}
 }
