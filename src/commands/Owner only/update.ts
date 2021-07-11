@@ -17,12 +17,20 @@ export default class UpdateCommand extends KaikiCommand {
 
 		try {
 			await new Promise((resolve, reject) => {
-				exec("sh update.sh", async (e) => {
-					if (e) {
-						reject(e.message);
-						throw new Error(e.message);
+				exec("sh update.sh", async (err) => {
+					if (err) {
+						reject(err.message);
 					}
 					return resolve(null);
+				});
+			});
+
+			await new Promise((resolve, reject) => {
+				exec("git stash", async (err, s) => {
+					if (err) {
+						reject(err.message);
+					}
+					return resolve(s);
 				});
 			});
 
@@ -30,16 +38,15 @@ export default class UpdateCommand extends KaikiCommand {
 				exec("git pull", async (err, s) => {
 					if (err) {
 						reject(err.message);
-						throw new Error(err.message);
 					}
 					return resolve(s);
 				});
 			});
 
 			const obj: { msg: Message, content: string } = await new Promise((resolve, reject) => {
-				exec("git describe --tags", async (error, stdv) => {
-					if (error) {
-						throw new Error(error.message);
+				exec("git describe --tags", async (err, stdv) => {
+					if (err) {
+						throw new Error(err.message);
 					}
 					const content = `Log:\n${await codeblock(trim(std, 1000))}\nUpdated ${message.client.user?.tag} to ${stdv}`;
 					const msg = await message.channel.send(content + "\nRunning compiler...");
@@ -53,18 +60,17 @@ export default class UpdateCommand extends KaikiCommand {
 			const { msg, content } = obj;
 
 			await new Promise((resolve, reject) => {
-				exec("npm run build", async (_error, tscOutput) => {
-					if (_error) {
+				exec("npm run build", async (err, tscOutput) => {
+					if (err) {
 						fs.rename(path.join("dist_backup"), path.join("dist"), (_) => logger.info(_));
-						reject(_error.message);
-						throw new Error(_error.message);
+						reject(err.message);
 					}
 					return resolve(msg.edit(`${content}\n**Compile finished**\n${await codeblock(trim(tscOutput, 200))}`));
 				});
 			});
 		}
-		catch (e) {
-			throw new Error("An error occurred during update. Please update manually\n<GITLAB LINK TO GUIDE HERE.>\n" + await codeblock(e.message, "xl"));
+		catch (err) {
+			throw new Error("An error occurred during update. Please update manually\n```<GITLAB LINK TO GUIDE HERE.>```xl\n" + err.message || err);
 			// TODO: add link to update.md on gitlab
 		}
 	}
