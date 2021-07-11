@@ -1,12 +1,13 @@
 import { Command } from "discord-akairo";
 import { Message } from "discord.js";
+import { KaikiCommand } from "../../lib/KaikiClass";
 
-export default class wdwdwdw extends Command {
+export default class wdwdwdw extends KaikiCommand {
 	constructor() {
 		super("tt", {
 			aliases: ["tt"],
-			description: { description: "",
-				usage: "" },
+			description: "",
+			usage: "",
 		});
 	}
 

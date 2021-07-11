@@ -1,29 +1,23 @@
 import { Argument, Flag, PrefixSupplier } from "discord-akairo";
 import { sendPaginatedMessage } from "@cataclym/discord.js-pagination-ts-nsb";
-import { ColorResolvable, Guild, Message, MessageEmbed } from "discord.js";
+import { Guild, Message, MessageEmbed } from "discord.js";
 import { getGuildDocument } from "../../struct/documentMethods";
 import { KaikiCommand } from "../../lib/KaikiClass";
+import { EmbedFromJson } from "../../interfaces/IGreetLeave";
 
 export default class ConfigCommand extends KaikiCommand {
 	constructor() {
 		super("config", {
-			aliases: ["config", "configure"],
+			aliases: ["config", "configure", "conf"],
 			channel: "guild",
 			description: "Configure or display guild specific settings. Will always respond to default prefix.",
-			usage: ["", "dadbot enable", "anniversary enable", "prefix !", "okcolor <hex>", "errorcolor <hex>", "welcome/goodbye [channel] [-e] [-c yellow] [-i http://link.png] [message]"],
+			usage: ["", "dadbot enable", "anniversary enable", "prefix !", "okcolor <hex>", "errorcolor <hex>"],
 			prefix: (msg: Message) => {
-				const p = (this.handler.prefix as PrefixSupplier)(msg);
-				return [p as string, "-"];
+				return [(this.handler.prefix as PrefixSupplier)(msg) as string, "-"];
 			},
 		});
 	}
-	*args(): Generator<{
-		type: string[][];
-	}, (Flag & {
-		command: string;
-		ignore: boolean;
-		rest: string;
-	}) | undefined, unknown> {
+	*args(): unknown {
 		const method = yield {
 			type: [
 				["config-dadbot", "dadbot", "dad"],
@@ -31,8 +25,6 @@ export default class ConfigCommand extends KaikiCommand {
 				["config-prefix", "prefix"],
 				["config-okcolor", "okcolor"],
 				["config-errorcolor", "errorcolor"],
-				["config-welcome", "welcome", "greet"],
-				["config-goodbye", "goodbye", "bye"],
 			],
 		};
 		if (!Argument.isFailure(method)) {
@@ -44,22 +36,8 @@ export default class ConfigCommand extends KaikiCommand {
 
 		const db = await getGuildDocument((message.guild as Guild).id),
 			{ anniversary, dadBot, prefix, errorColor, okColor, welcome, goodbye } = db.settings,
-			welcomeEmbed = new MessageEmbed()
-				.setColor(welcome.color as ColorResolvable)
-				.setAuthor("Welcome embed preview")
-				.setDescription(welcome.message || "?"),
-			goodbyeEmbed = new MessageEmbed()
-				.setColor(goodbye.color as ColorResolvable)
-				.setAuthor("Goodbye embed preview")
-				.setDescription(goodbye.message || "?");
-
-		if (welcome.image) {
-			welcomeEmbed.setImage(welcome.image);
-		}
-
-		if (goodbye.image) {
-			goodbyeEmbed.setImage(goodbye.image);
-		}
+			welcomeEmbed = new MessageEmbed(new EmbedFromJson(db.settings.welcome.embed)),
+			goodbyeEmbed = new MessageEmbed(new EmbedFromJson(db.settings.goodbye.embed));
 
 		const pages = [
 			new MessageEmbed()

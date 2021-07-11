@@ -172,10 +172,10 @@ export async function sendDM(message: Message): Promise<Message | undefined> {
 
 }
 
-export async function parsePlaceHolders(input:string, guild: Guild, guildMember: GuildMember): Promise<string> {
+export async function parsePlaceHolders(input:string, guildMember: GuildMember): Promise<string> {
 
 	if (input.includes("%guild%")) {
-		input = input.replace(/%guild%/ig, guild.name);
+		input = input.replace(/%guild%/ig, guildMember.guild.name);
 	}
 	if (input.includes("%member%")) {
 		input = input.replace(/%member%/ig, guildMember.user.tag);

@@ -5,7 +5,7 @@ import { trim } from "../../lib/Util";
 import { getUserDocument } from "../../struct/documentMethods";
 import { KaikiCommand } from "../../lib/KaikiClass";
 
-module.exports = class TodoCommand extends KaikiCommand {
+export default class TodoCommand extends KaikiCommand {
 	constructor() {
 		super("todo", {
 			aliases: ["todo", "note"],
@@ -13,13 +13,7 @@ module.exports = class TodoCommand extends KaikiCommand {
 			usage: ["", "add make cake 07/07/2020", "remove 5", "remove last", "remove first", "remove all", "rm 1"],
 		});
 	}
-	*args(): Generator<{
-		type: string[][];
-	}, (Flag & {
-		command: string;
-		ignore: boolean;
-		rest: string;
-	}) | undefined, string> {
+	*args(): unknown {
 		const method = yield {
 			type: [
 				["add"],
@@ -31,7 +25,7 @@ module.exports = class TodoCommand extends KaikiCommand {
 		}
 	}
 
-	public async exec(message: Message) {
+	public async exec(message: Message): Promise<void> {
 		const userDB = await getUserDocument(message.author.id),
 			{ todo } = userDB, pages = [],
 			reminderArray = (todo.length

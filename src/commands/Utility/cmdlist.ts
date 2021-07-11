@@ -42,7 +42,9 @@ export default class commandsList extends KaikiCommand {
 				.setTitle(`Commands in ${category.id}`)
 				.setDescription(category
 					.filter(cmd => cmd.aliases.length > 0)
-					.map(cmd => `**${prefix}${cmd}** [\`${cmd.aliases.join("`, `")}\`]`)
+					.map(cmd => `**${prefix}${cmd}** [\`${cmd.aliases
+						.sort((a, b) => b.length - a.length
+							|| a.localeCompare(b)).join("`, `")}\`]`)
 					.join("\n") || "Empty")
 				.withOkColor(message)] });
 		}

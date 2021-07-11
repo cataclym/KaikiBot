@@ -8,5 +8,6 @@ export class KaikiCommand extends Command {
 		public usage?: string | string[];
 		constructor(id: string, options?: KaikiCommandOptions) {
 			super(id, options);
+			this.usage = options?.usage;
 		}
 }

@@ -26,22 +26,19 @@ export default class HelpCommand extends KaikiCommand {
 
 		if (command instanceof KaikiCommand) {
 
-			let usage;
 			const cmdUsage = command.usage;
 
-			if (typeof command.description !== "string") {
-				usage = cmdUsage instanceof Array
-					? cmdUsage.map(u => `${prefix}${command.id} ${u}`).join("\n")
-					: `${prefix}${command.id} ${usage}`;
-			}
-
 			embed.setTitle(`Command: ${command.id}`)
-				.setDescription(`**Aliases:** \`${command.aliases.join("`, `")}\``)
-				.setFooter(command.categoryID)
+				.setDescription(`**Aliases:** \`${command.aliases.sort((a, b) => b.length - a.length
+					|| a.localeCompare(b)).join("`, `")}\``)
 				.addField("**Description:**", command.description || "?", false)
-				.addField("**Usage:**", usage && usage.length
-					? usage
-					: `${prefix}${command.id}`, false);
+				.addField("**Usage:**", cmdUsage
+					? Array.isArray(cmdUsage)
+						? cmdUsage.sort((a, b) => b.length - a.length
+							|| a.localeCompare(b)).map(u => `${prefix}${command.id} ${u}`).join("\n")
+						: `${prefix}${command.id} ${cmdUsage}`
+					: `${prefix}${command.id}`, false)
+				.setFooter(command.categoryID);
 
 			if (command.userPermissions) embed.addField("Requires", command.userPermissions.toString(), false);
 
