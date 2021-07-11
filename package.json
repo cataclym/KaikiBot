@@ -1,6 +1,6 @@
 {
   "name": "kaikideishubot",
-  "version": "3.5.21-Emerald",
+  "version": "3.5.22-Emerald",
   "main": "./dist/index.js",
   "scripts": {
     "start": "node -r dotenv/config ./dist/index.js",
