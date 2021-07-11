@@ -29,14 +29,16 @@ export default class HelpCommand extends KaikiCommand {
 			const cmdUsage = command.usage;
 
 			embed.setTitle(`Command: ${command.id}`)
-				.setDescription(`**Aliases:** \`${command.aliases.join("`, `")}\``)
-				.setFooter(command.categoryID)
+				.setDescription(`**Aliases:** \`${command.aliases.sort((a, b) => b.length - a.length
+					|| a.localeCompare(b)).join("`, `")}\``)
 				.addField("**Description:**", command.description || "?", false)
 				.addField("**Usage:**", cmdUsage
 					? Array.isArray(cmdUsage)
-						? cmdUsage.map(u => `${prefix}${command.id} ${u}`).join("\n")
+						? cmdUsage.sort((a, b) => b.length - a.length
+							|| a.localeCompare(b)).map(u => `${prefix}${command.id} ${u}`).join("\n")
 						: `${prefix}${command.id} ${cmdUsage}`
-					: `${prefix}${command.id}`, false);
+					: `${prefix}${command.id}`, false)
+				.setFooter(command.categoryID);
 
 			if (command.userPermissions) embed.addField("Requires", command.userPermissions.toString(), false);
 
