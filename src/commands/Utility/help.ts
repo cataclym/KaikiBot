@@ -1,6 +1,6 @@
 import { Argument, PrefixSupplier } from "discord-akairo";
 import { execSync } from "child_process";
-import { Message, MessageEmbed } from "discord.js";
+import { BitField, Message, MessageEmbed, PermissionResolvable, Permissions } from "discord.js";
 import { name, repository, version } from "../../../package.json";
 import { KaikiCommand } from "../../lib/KaikiClass";
 
@@ -40,7 +40,9 @@ export default class HelpCommand extends KaikiCommand {
 					: `${prefix}${command.id}`, false)
 				.setFooter(command.categoryID);
 
-			if (command.userPermissions) embed.addField("Requires", command.userPermissions.toString(), false);
+			if (command.userPermissions) {
+				embed.addField("Requires", new Permissions(command.userPermissions as PermissionResolvable).toArray(false).join(), false);
+			}
 
 			return message.channel.send({ embeds: [embed] });
 		}
@@ -58,7 +60,7 @@ export default class HelpCommand extends KaikiCommand {
 			.displayAvatarURL({ dynamic: true });
 
 		embed.setTitle(`${message.client.user?.username} help page`)
-			.setDescription(`Prefix is currently set to \`${prefix}\``)
+			.setDescription(`Current prefix: \`${prefix}\``)
 			.addFields([
 				{ name: "📋 Command list", value: `\`${prefix}cmds\` returns a complete list of command categories.`, inline: true },
 				{ name: "🔍 Command Info", value: `\`${prefix}help [command]\` to get more help. Example: \`${prefix}help ping\``, inline: true },
