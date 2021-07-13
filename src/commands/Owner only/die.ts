@@ -55,6 +55,12 @@ export default class KillBotProcess extends KaikiCommand {
 		});
 
 		buttonListener.once("end", async () => {
+			await deleteMsg.delete();
+			await message.delete();
+		});
+
+		buttonListener.once("dispose", async () => {
+			await deleteMsg.delete();
 			await message.delete();
 		});
 	}
