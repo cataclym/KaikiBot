@@ -8,7 +8,7 @@ export default class RestoreUserRoles extends KaikiCommand {
 	constructor() {
 		super("restore", {
 			aliases: ["restore"],
-			userPermissions: ["ADMINISTRATOR", "MANAGE_ROLES"],
+			userPermissions: ["ADMINISTRATOR"],
 			clientPermissions: [Permissions.FLAGS.MANAGE_ROLES],
 			description: "Restores roles for a user who has previously left the server.",
 			usage: "@dreb",
