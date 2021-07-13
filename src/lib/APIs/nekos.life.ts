@@ -1,6 +1,6 @@
 import { ColorResolvable, GuildMember, Message, MessageEmbed } from "discord.js";
 import fetch from "node-fetch";
-import { hexColorTable } from "./Color";
+import { hexColorTable } from "../Color";
 
 type APIs = "spank";
 

@@ -1,12 +1,12 @@
 import { GuildMember, Message } from "discord.js";
-import sendWaifuPics from "../../lib/waifuPics";
+import sendWaifuPics from "../../lib/APIs/waifuPics";
 import { KaikiCommand } from "../../lib/KaikiClass";
 
 export default class Slap extends KaikiCommand {
 	constructor() {
 		super("slap", {
 			aliases: ["slap"],
-			description: "Slap your favorite",
+			description: "Slap someone who's being stupid",
 			usage: ["", "@dreb"],
 			typing: true,
 			args: [{

@@ -1,5 +1,5 @@
 import { Message } from "discord.js";
-import sendWaifuPics from "../../lib/waifuPics";
+import sendWaifuPics from "../../lib/APIs/waifuPics";
 import { KaikiCommand } from "../../lib/KaikiClass";
 
 export default class Neko extends KaikiCommand {
