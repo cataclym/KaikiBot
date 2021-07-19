@@ -1,9 +1,10 @@
-import { Argument, Flag, PrefixSupplier } from "discord-akairo";
 import { sendPaginatedMessage } from "@cataclym/discord.js-pagination-ts-nsb";
+import { Argument, Flag, PrefixSupplier } from "discord-akairo";
 import { Guild, Message, MessageEmbed } from "discord.js";
-import { getGuildDocument } from "../../struct/documentMethods";
-import { KaikiCommand } from "../../lib/KaikiClass";
 import { EmbedFromJson } from "../../interfaces/IGreetLeave";
+import { createAndParseWelcomeLeaveMessage } from "../../lib/GreetHandler";
+import { KaikiCommand } from "../../lib/KaikiClass";
+import { getGuildDocument } from "../../struct/documentMethods";
 
 export default class ConfigCommand extends KaikiCommand {
 	constructor() {
@@ -36,8 +37,8 @@ export default class ConfigCommand extends KaikiCommand {
 
 		const db = await getGuildDocument((message.guild as Guild).id),
 			{ anniversary, dadBot, prefix, errorColor, okColor, welcome, goodbye } = db.settings,
-			welcomeEmbed = new MessageEmbed(new EmbedFromJson(db.settings.welcome.embed)),
-			goodbyeEmbed = new MessageEmbed(new EmbedFromJson(db.settings.goodbye.embed));
+			welcomeEmbed = await new EmbedFromJson(await createAndParseWelcomeLeaveMessage(welcome, message.member!)).createEmbed(),
+			goodbyeEmbed = await new EmbedFromJson(await createAndParseWelcomeLeaveMessage(goodbye, message.member!)).createEmbed();
 
 		const pages = [
 			new MessageEmbed()
@@ -79,7 +80,7 @@ export default class ConfigCommand extends KaikiCommand {
 		const categories = Object.entries(db.blockedCategories).filter(e => e[1]);
 
 		if (categories.length) {
-			pages[0]
+			(pages[0] as MessageEmbed)
 				.addField("Disabled categories", categories.map(c => c[0]).join("\n"), false);
 		}
 

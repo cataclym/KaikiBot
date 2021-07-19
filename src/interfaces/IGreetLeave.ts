@@ -1,12 +1,10 @@
 import {
-	ColorResolvable,
-	EmbedFieldData,
-	MessageEmbed, MessageEmbedAuthor,
-	MessageEmbedFooter,
-	MessageEmbedImage, MessageEmbedOptions,
-	MessageEmbedThumbnail,
-	MessageOptions,
-	MessagePayload,
+    ColorResolvable,
+    EmbedFieldData, MessageEmbed, MessageEmbedAuthor,
+    MessageEmbedFooter,
+    MessageEmbedImage, MessageEmbedOptions,
+    MessageEmbedThumbnail,
+    MessageOptions
 } from "discord.js";
 
 export interface EmbedJSON {
@@ -25,13 +23,14 @@ export interface IGreet {
 	enabled: boolean,
 	channel: string,
 	embed: MessageEmbedOptions,
+	timeout: number | null,
 }
 
-interface MessageEmbedOptionsJSON extends MessageEmbedOptions {
+export interface MessageEmbedOptionsJSON extends MessageEmbedOptions {
 	plainText?: string | undefined;
 }
 
-export class EmbedFromJson {
+export class EmbedFromJson implements MessageEmbedOptionsJSON {
 	public plainText: string | undefined;
 	public title: string | undefined;
 	public url: string | undefined;
@@ -42,7 +41,7 @@ export class EmbedFromJson {
 	public thumbnail: (Partial<MessageEmbedThumbnail> & { proxy_url?: string | undefined; }) | undefined;
 	public image: (Partial<MessageEmbedImage> & { proxy_url?: string | undefined; }) | undefined;
 	public fields: EmbedFieldData[] | undefined;
-	public createEmbed: () => Promise<string | MessagePayload | MessageOptions>;
+	public createEmbed: () => Promise<MessageOptions>;
 	constructor(options: MessageEmbedOptionsJSON) {
 		this.plainText = options.plainText;
 		this.title = options.title;
@@ -55,7 +54,21 @@ export class EmbedFromJson {
 		this.image = options.image;
 		this.fields = options.fields;
 		this.createEmbed = async () => {
-			return { content: this.plainText ?? null, embeds: [new MessageEmbed(this)] };
+
+			const embed: MessageEmbed[] = [];
+
+			if (this.title
+                || this.author
+                || this.description
+                || this.fields
+                || this.footer
+                || this.image
+                || this.thumbnail) {
+				embed.push(new MessageEmbed(this));
+			}
+			// Please help me
+
+			return { content: this.plainText ?? null, embeds: embed };
 		};
 	}
 }
