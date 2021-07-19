@@ -1,8 +1,8 @@
-import { Guild, Message, MessageEmbed, Permissions } from "discord.js";
-import { getGuildDocument } from "../../struct/documentMethods";
-import { KaikiCommand } from "../../lib/KaikiClass";
-import { EmbedJSON, EmbedFromJson } from "../../interfaces/IGreetLeave";
 import { PrefixSupplier } from "discord-akairo";
+import { Guild, Message, MessageEmbed, Permissions } from "discord.js";
+import { EmbedFromJson, EmbedJSON } from "../../interfaces/IGreetLeave";
+import { KaikiCommand } from "../../lib/KaikiClass";
+import { getGuildDocument } from "../../struct/documentMethods";
 
 export default class ByeMessageCommand extends KaikiCommand {
 	constructor() {

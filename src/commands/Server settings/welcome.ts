@@ -1,6 +1,6 @@
-import { Guild, Message, MessageEmbed, TextChannel, Permissions } from "discord.js";
-import { getGuildDocument } from "../../struct/documentMethods";
+import { Guild, Message, MessageEmbed, Permissions, TextChannel } from "discord.js";
 import { KaikiCommand } from "../../lib/KaikiClass";
+import { getGuildDocument } from "../../struct/documentMethods";
 
 export default class WelcomeToggleCommand extends KaikiCommand {
 	constructor() {

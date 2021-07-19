@@ -1,7 +1,7 @@
 import { Message, Permissions } from "discord.js";
+import { sendWelcomeLeaveMessage } from "../../lib/GreetHandler";
 import { KaikiCommand } from "../../lib/KaikiClass";
 import { getGuildDocument } from "../../struct/documentMethods";
-import { sendWelcomeLeaveMessage } from "../../lib/GreetHandler";
 
 export default class GoodbyeTestTestCommand extends KaikiCommand {
 	constructor() {

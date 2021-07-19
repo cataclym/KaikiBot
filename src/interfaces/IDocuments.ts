@@ -1,4 +1,4 @@
-import { ActivityType, Snowflake } from "discord-api-types";
+import { ActivityType } from "discord-api-types";
 import { ColorResolvable } from "discord.js";
 import { Document } from "mongoose";
 import { IGreet } from "./IGreetLeave";

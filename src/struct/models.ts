@@ -58,6 +58,7 @@ export const guildSchema = new Schema({
 					"image": null,
 					"fields": null,
 				},
+				timeout: null,
 			},
 			goodbye: {
 				enabled: false,
@@ -74,6 +75,7 @@ export const guildSchema = new Schema({
 					"image": null,
 					"fields": null,
 				},
+				timeout: null,
 			},
 		},
 	},
@@ -158,10 +160,10 @@ export const moneySchema = new Schema({
 	},
 });
 
-export const guildsModel = model<IGuild>("Guild", guildSchema);
-export const commandStatsModel = model<ICommandStats>("CommandStats", commandStatsSchema);
-export const tinderDataModel = model<ITinder>("Tinder", tinderDataSchema);
-export const usersModel = model<IUser>("Member", usersSchema);
 export const blacklistModel = model<IBlacklist>("Blacklist", blacklistSchema);
 export const botModel = model<IBot>("BotDB", botSchema);
+export const commandStatsModel = model<ICommandStats>("CommandStats", commandStatsSchema);
+export const guildsModel = model<IGuild>("Guild", guildSchema);
 export const moneyModel = model<IMoney>("Money", moneySchema);
+export const tinderDataModel = model<ITinder>("Tinder", tinderDataSchema);
+export const usersModel = model<IUser>("Member", usersSchema);
