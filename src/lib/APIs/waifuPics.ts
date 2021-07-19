@@ -1,6 +1,6 @@
 import { ColorResolvable, GuildMember, Message, MessageEmbed } from "discord.js";
 import fetch from "node-fetch";
-import { hexColorTable } from "./Color";
+import { hexColorTable } from "../Color";
 
 type APIs = "bonk"
 	| "cry"
@@ -92,9 +92,7 @@ export default async function sendWaifuPics(message: Message, API: APIs, mention
 
 	const data = WaifuData[API];
 	const { action, color, append } = data;
-
 	const result = (await (await fetch(`https://api.waifu.pics/sfw/${API}`)).json())["url"];
-
 	const embed = new MessageEmbed({
 		color: color as ColorResolvable,
 		image: { url: result },

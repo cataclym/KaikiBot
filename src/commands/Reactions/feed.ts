@@ -1,13 +1,13 @@
 import { GuildMember, Message } from "discord.js";
-import sendWaifuPics from "../../lib/APIs/waifuPics";
 import { KaikiCommand } from "../../lib/KaikiClass";
+import getPurrBotResponseEmbed from "../../lib/APIs/PurrBot";
 
-export default class Pat extends KaikiCommand {
+export default class Feed extends KaikiCommand {
 	constructor() {
-		super("pat", {
-			aliases: ["pat"],
-			description: "Pat a cat!\nOr a guildmember...",
-			usage: ["", "@dreb"],
+		super("feed", {
+			aliases: ["feed"],
+			description: "When you need to feed someone...?",
+			usage: [""],
 			typing: true,
 			args: [{
 				id: "mention",
@@ -18,6 +18,7 @@ export default class Pat extends KaikiCommand {
 	}
 
 	public async exec(message: Message, { mention }: { mention: GuildMember | null }): Promise<Message> {
-		return message.channel.send({ embeds: [await sendWaifuPics(message, "pat", mention)] });
+		return message.channel.send({ embeds: [await getPurrBotResponseEmbed(message, "feed", mention)],
+		});
 	}
 }

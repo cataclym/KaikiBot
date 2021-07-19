@@ -71,7 +71,7 @@ export default class commandsList extends KaikiCommand {
 			for (const _category of this.handler.categories.values()) {
 				if (["default", "Etc"].includes(_category.id)) continue;
 
-				embed.addField(_category.id, `Commands: **${_category.size}**`, true);
+				embed.addField(_category.id, `Commands: **${_category.filter(c => !!c.aliases.length).size}**`, true);
 			}
 			return message.channel.send({ embeds: [embed] });
 		}

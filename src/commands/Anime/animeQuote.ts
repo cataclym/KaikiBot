@@ -2,7 +2,7 @@ import { Message } from "discord.js";
 import logger from "loglevel";
 import fetch from "node-fetch";
 import { animeQuoteCache, respType } from "../../cache/cache";
-import { sendQuote } from "../../lib/APIs";
+import { sendQuote } from "../../lib/APIs/animeQuote";
 import { KaikiCommand } from "../../lib/KaikiClass";
 
 export default class AnimeQuoteCommand extends KaikiCommand {
