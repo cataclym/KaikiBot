@@ -1,10 +1,7 @@
-import sharp from "sharp";
-import fs from "fs";
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-import gifsicle from "gifsicle";
-import util from "util";
 import { GuildEmoji, Message } from "discord.js";
+import fs from "fs";
+import sharp from "sharp";
+import util from "util";
 import cp = require("child_process")
 const execFile = util.promisify(cp.execFile);
 
