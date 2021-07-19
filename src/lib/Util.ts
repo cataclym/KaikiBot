@@ -138,3 +138,25 @@ ${message.channel.type !== "dm"
 User: ${message.author.username} [${message.author.id}]
 Executed ${command?.id} | "${message.content.substring(0, 100)}"\n${extra}`);
 }
+
+// Credit to https://futurestud.io/tutorials/split-an-array-into-smaller-array-chunks-in-javascript-and-node-js
+/**
+ * Split the `items` array into multiple, smaller arrays of the given `size`.
+ *
+ * @param {Array} items
+ * @param {Number} size
+ *
+ * @returns {Array[]}
+ */
+export async function chunk(items: any[], size: number): Promise<any[]> {
+	const chunks = [];
+	items = [].concat(...items);
+
+	while (items.length) {
+		chunks.push(
+			items.splice(0, size),
+		);
+	}
+
+	return chunks;
+}

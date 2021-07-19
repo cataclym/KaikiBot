@@ -156,8 +156,8 @@ export const colorTable: {
 	"yellowgreen": "rgba(154,205,50,1)",
 };
 
-export async function imgFromColor(color: ColorResolvable): Promise<Buffer> {
-	const canv = createCanvas(128, 128), ctx = canv.getContext("2d");
+export async function imgFromColor(color: ColorResolvable, size = 128): Promise<Buffer> {
+	const canv = createCanvas(size, size), ctx = canv.getContext("2d");
 	ctx.fillStyle = color.toString();
 	ctx.fillRect(0, 0, canv.width, canv.height);
 

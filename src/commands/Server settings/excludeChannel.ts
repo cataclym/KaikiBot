@@ -1,16 +1,16 @@
+import { Argument } from "discord-akairo";
 import {
-	Guild,
-	GuildChannel,
-	Message,
-	MessageEmbed,
-	NewsChannel,
-	Snowflake,
-	StoreChannel,
-	TextChannel,
+    Guild,
+    GuildChannel,
+    Message,
+    MessageEmbed,
+    NewsChannel,
+    Snowflake,
+    StoreChannel,
+    TextChannel
 } from "discord.js";
 import { KaikiCommand } from "../../lib/KaikiClass";
 import { getGuildDocument } from "../../struct/documentMethods";
-import { Argument } from "discord-akairo";
 
 export default class ExcludeDadbotChannelCommand extends KaikiCommand {
 	constructor() {
