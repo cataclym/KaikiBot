@@ -3,7 +3,7 @@
 import { Message, MessageEmbed } from "discord.js";
 import { respType } from "../../cache/cache";
 
-export async function sendQuote(resp: respType, message: Message) {
+export async function sendQuote(resp: respType, message: Message): Promise<Message> {
 
 	return message.channel.send({ embeds: [new MessageEmbed()
 		.setDescription(`"${resp.quote}"`)

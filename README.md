@@ -4,45 +4,13 @@
 
 Invite the public bot here: TODO: Add link
 
-***
-## Requirements
-* Nodejs https://nodejs.org/en/ (14.16.0 for best compatibility) 
-* TypeScript `sudo npm install -g typescript` https://www.npmjs.com/package/typescript
-* node-canvas: This is only necessary if your npm install tries to compile node-canvas from source. 
-    * (Windows) See the <a href="https://github.com/Automattic/node-canvas/wiki/Installation:-Windows">wiki</a> 
-    * (Linux)
-        * Debian/Ubuntu: `sudo apt-get install build-essential libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev` 
-        * RPM/Fedora: `sudo yum install gcc-c++ cairo-devel libjpeg-turbo-devel pango-devel giflib-devel`
-        * Solus: `sudo eopkg it libjpeg-turbo6 libjpeg-turbo-devel`
-        * Other: See the <a href="https://github.com/Automattic/node-canvas/wiki">wiki</a>
-    * (MacOS)
-        * Homebrew: `brew install pkg-config cairo pango libpng jpeg giflib librsvg`
+# Guide
 
-## Instructions
-
-  1. Clone repo: `git clone https://gitlab.com/cataclym/KaikiDeishuBot.git`
-  1. `cd KaikiDeishuBot`
-  1. Create .env file: `cp .env.example .env`.
-  1. Edit .env to add your token and owner id. Using nano or your editor of choice: `nano .env`
-  1. `npm i`
-  1. `npm start`
-  1. ?
-  1. Profit
-
-Having issues? Come join us on discord                                                                                  
-
-<a href="https://discord.gg/msNtTYV">
-<img src="https://discordapp.com/api/guilds/414099963841216512/embed.png?style=banner2" title="Discord Server">
-</a>
-
-***
-                                                         
-You can use the following link to invite your bot: Replace `YOUR_BOT_ID_HERE` with your bot id/client id.
-https://discord.com/oauth2/authorize?client_id=YOUR_BOT_ID_HERE&scope=bot
-
-Feel like contributing? Please help me! :D I have not written any guides, but I'll review all MRs.
+[Setup Kaiki Deishu Bot]("./GUIDE.md")
 
 # Contributing
+
+Consider contributing. I appreciate all the help I can get!
   1. Fork the bot!
   1. Create your feature branch: `git checkout -b cool-new-branch`
   1. Commit your changes: `git commit -am "Added x feature!"`
