@@ -17,7 +17,7 @@
 1. Clone repo: `git clone https://gitlab.com/cataclym/KaikiDeishuBot.git`
 1. `cd KaikiDeishuBot`
 1. Create .env file: `cp .env.example .env`.
-1. Edit .env to add your token and owner id. Using nano or your editor of choice: `nano .env` [Full instructions]("./APIs.md")
+1. Edit .env to add your token and owner id. Using nano or your editor of choice: `nano .env` [Full instructions](./APIs.md)
 1. `npm i`
 1. `npm start`
 1. ?

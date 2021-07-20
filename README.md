@@ -6,7 +6,7 @@ Invite the public bot here: TODO: Add link
 
 # Guide
 
-[Setup Kaiki Deishu Bot]("./GUIDE.md")
+[Guide to setup bot](./GUIDE.md).
 
 # Contributing
 
