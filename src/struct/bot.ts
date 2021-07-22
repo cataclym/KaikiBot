@@ -1,6 +1,6 @@
 import { inject, injectable } from "inversify";
 import { customClient } from "./client";
-import mongodb from "./db";
+import MongoDb from "./mongoDb";
 import { TYPES } from "./types";
 
 @injectable()
@@ -27,7 +27,7 @@ export class Bot {
     		throw new Error("Missing owner-ID! Please double-check the guide and set an owner in .env");
     	}
 
-    	new mongodb().init();
+    	new MongoDb().init();
     	this.client.init();
 
     	return this.client.login(this.token);
