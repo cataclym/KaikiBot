@@ -1,30 +1,33 @@
-import { ColorResolvable, GuildMember, Message, MessageEmbed } from "discord.js";
-import fetch from "node-fetch";
+import { GuildMember, Message, MessageEmbed } from "discord.js";
 import { hexColorTable } from "../Color";
+import { processAPIRequest } from "./APIProcessor";
+import { endpointData } from "../../interfaces/IAPIData";
 
 type endPointSignatures = "run"
     | "peek"
     | "pout";
 
-
 const token = process.env.KAWAIIKEY;
 
 const endPoints: {
-	[str in endPointSignatures]: { action: string | boolean, color: ColorResolvable | string, append?: string }
+	[str in endPointSignatures]: endpointData
 } = {
 	"run": {
 		action: "is running away!!",
 		color: hexColorTable["chartreuse"],
+		appendable: true,
 	},
 	"peek": {
 		action: "peeks",
 		color: hexColorTable["papayawhip"],
 		append: "👀",
+		appendable: true,
 	},
 	"pout": {
 		action: "pouts",
 		color: hexColorTable["darkseagreen"],
 		append: "😒",
+		appendable: true,
 	},
 };
 
@@ -34,22 +37,5 @@ export default async function getKawaiiResponseEmbed(message: Message, endpoint:
 		return;
 	}
 
-	const data = endPoints[endpoint];
-	const { action, color, append } = data;
-	const result = (await (await fetch(`https://kawaii.red/api/gif/${endpoint}/token=${token}`)).json())["response"];
-	const embed = new MessageEmbed({
-		color: color as ColorResolvable,
-		image: { url: result },
-		footer: { icon_url: (mention?.user || message.author).displayAvatarURL({ dynamic: true }) },
-	});
-
-	if (mention && action) {
-		embed.setDescription(`${message.author.username} ${action} ${mention.user.username} ${append ?? ""}`);
-	}
-
-	else if (action) {
-		embed.setDescription(`${message.author.username} ${action} ${append ?? ""}`);
-	}
-
-	return embed;
+	return processAPIRequest(message, `https://kawaii.red/api/gif/${endpoint}/token=${token}`, endPoints[endpoint], "response", mention);
 }

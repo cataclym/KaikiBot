@@ -1,6 +1,7 @@
 import { ColorResolvable, GuildMember, Message, MessageEmbed } from "discord.js";
-import fetch from "node-fetch";
 import { hexColorTable } from "../Color";
+import { processAPIRequest } from "./APIProcessor";
+import { endpointData } from "../../interfaces/IAPIData";
 
 type APIs = "bonk"
 	| "cry"
@@ -19,7 +20,7 @@ type APIs = "bonk"
 	| "slap";
 
 const WaifuData: {
-        [str in APIs]: { action: string | boolean, color: ColorResolvable | String, append?: string }
+        [str in APIs]: endpointData
 	} = {
 		"waifu": {
 			action: false,
@@ -40,9 +41,10 @@ const WaifuData: {
 		"cry": {
 			action: false,
 			color: hexColorTable["dodgerblue"],
+			appendable: true,
 		},
 		"bully": {
-			action: "bullies",
+			action: "bullied",
 			color: hexColorTable["darkorchid"],
 		},
 		"cuddle": {
@@ -90,19 +92,7 @@ const WaifuData: {
 
 export default async function sendWaifuPics(message: Message, API: APIs, mention?: GuildMember | null): Promise<MessageEmbed> {
 
-	const data = WaifuData[API];
-	const { action, color, append } = data;
-	const result = (await (await fetch(`https://api.waifu.pics/sfw/${API}`)).json())["url"];
-	const embed = new MessageEmbed({
-		color: color as ColorResolvable,
-		image: { url: result },
-		footer: { icon_url: (mention?.user || message.author).displayAvatarURL({ dynamic: true }) },
-	});
+	return processAPIRequest(message, `${`https://api.waifu.pics/sfw/${API}`}`, WaifuData[API], "url", mention);
 
-	if (mention && action) {
-		embed.setDescription(`${message.author.username} ${action} ${mention.user.username} ${append ?? ""}`);
-	}
-
-	return embed;
 }
 

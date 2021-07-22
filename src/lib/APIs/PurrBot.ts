@@ -1,13 +1,14 @@
-import { ColorResolvable, GuildMember, Message, MessageEmbed } from "discord.js";
-import fetch from "node-fetch";
+import { GuildMember, Message, MessageEmbed } from "discord.js";
 import { hexColorTable } from "../Color";
+import { processAPIRequest } from "./APIProcessor";
+import { endpointData } from "../../interfaces/IAPIData";
 
 type endPointSignatures = "bite"
 	| "blush"
 	| "feed";
 
 const endPoints: {
-	[str in endPointSignatures]: { action: string | boolean, color: ColorResolvable | string, append?: string }
+	[str in endPointSignatures]: endpointData
 } = {
 	"bite": {
 		action: "just bit",
@@ -17,6 +18,8 @@ const endPoints: {
 	"blush": {
 		action: "blushed",
 		color: hexColorTable["mediumorchid"],
+		appendable: true,
+
 	},
 	"feed": {
 		action: "fed",
@@ -26,24 +29,6 @@ const endPoints: {
 };
 
 export default async function getPurrBotResponseEmbed(message: Message, endpoint: endPointSignatures, mention?: GuildMember | null): Promise<MessageEmbed> {
-
-	const data = endPoints[endpoint];
-	const { action, color, append } = data;
-	const result = (await (await fetch(`https://purrbot.site/api/img/sfw/${endpoint}/gif`)).json())["link"];
-	const embed = new MessageEmbed({
-		color: color as ColorResolvable,
-		image: { url: result },
-		footer: { icon_url: (mention?.user || message.author).displayAvatarURL({ dynamic: true }) },
-	});
-
-	if (mention && action) {
-		embed.setDescription(`${message.author.username} ${action} ${mention.user.username} ${append ?? ""}`);
-	}
-
-	else if (action) {
-		embed.setDescription(`${message.author.username} ${action} ${append ?? ""}`);
-	}
-
-	return embed;
+	return processAPIRequest(message, `${`https://purrbot.site/api/img/sfw/${endpoint}/gif`}`, endPoints[endpoint], "link", mention);
 }
 

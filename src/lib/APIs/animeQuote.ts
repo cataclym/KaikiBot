@@ -1,5 +1,3 @@
-// Anime quotes
-
 import { Message, MessageEmbed } from "discord.js";
 import { respType } from "../../cache/cache";
 
@@ -13,5 +11,3 @@ export async function sendQuote(resp: respType, message: Message): Promise<Messa
 		])
 		.withOkColor(message)] });
 }
-
-// // // // // // // // // // // // // // // // // // // // // // // // // // //
