@@ -42,6 +42,6 @@ export default class TodoCommand extends KaikiCommand {
 			pages.push(embed);
 		}
 
-		await sendPaginatedMessage(message, pages, {});
+		await sendPaginatedMessage(message, pages, { owner: message.author });
 	}
-};
+}
