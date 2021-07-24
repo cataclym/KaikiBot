@@ -41,7 +41,7 @@ export default class RedditCommand extends KaikiCommand {
 			}
 
 			// We don´t want nsfw in normal channels, do we?
-			if (data.over_18 && (!(message.channel as TextChannel)?.nsfw ||	message.channel.type !== "dm")) {
+			if (data.over_18 && (!(message.channel as TextChannel)?.nsfw ||	message.channel.type !== "DM")) {
 				return message.channel.send({ embeds: [new MessageEmbed({
 					title: "This post is NSFW",
 					description: "Cannot show NSFW in DMs or non-NSFW channels",

@@ -1,16 +1,18 @@
-import { Collection, GuildEmoji, Message, MessageEmbed } from "discord.js";
+import { Collection, GuildEmoji, Message, MessageEmbed, Permissions } from "discord.js";
 import { noArgGeneric } from "../../lib/Embeds";
 import { trim } from "../../lib/Util";
 import { KaikiCommand } from "../../lib/KaikiClass";
+
 const timer = (ms: number) => new Promise(res => setTimeout(res, ms));
+
 export default class DeleteEmoteCommand extends KaikiCommand {
 	constructor() {
 		super("deleteemote", {
 			aliases: ["deleteemote", "de"],
 			description: "Deletes one or multiple emotes/emoji. Multiple emotes take longer, to avoid ratelimits. Keep a space between all emotes you wish to delete.",
 			usage: "<:NadekoSip:>",
-			clientPermissions: "MANAGE_EMOJIS",
-			userPermissions: "MANAGE_EMOJIS",
+			clientPermissions: Permissions.FLAGS.MANAGE_EMOJIS_AND_STICKERS,
+			userPermissions: Permissions.FLAGS.MANAGE_EMOJIS_AND_STICKERS,
 			channel: "guild",
 			typing: true,
 			args: [{

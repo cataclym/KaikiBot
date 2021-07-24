@@ -1,5 +1,5 @@
 import { GuildMember, Message, MessageEmbed, Role, UserFlagsString } from "discord.js";
-import { flags, getUserPresenceAsync } from "../../lib/Util";
+import { flags } from "../../lib/Util";
 import { KaikiCommand } from "../../lib/KaikiClass";
 
 export default class UserInfoCommand extends KaikiCommand {
@@ -22,7 +22,7 @@ export default class UserInfoCommand extends KaikiCommand {
 
 	public async exec(message: Message, { member }: { member: GuildMember}): Promise<Message> {
 
-		const presence = await getUserPresenceAsync(member.user);
+		// const presence = await getUserPresenceAsync(member.user);
 
 		const userFlags = member.user.flags ? member.user.flags.toArray() : [], color = member.displayColor,
 			embed = new MessageEmbed()
@@ -51,14 +51,16 @@ export default class UserInfoCommand extends KaikiCommand {
 					}],
 				);
 
-		member.lastMessage ? embed.addField("Last (seen) message", member.lastMessage?.createdAt.toLocaleString(), true) : null;
+		// Deprecated
+		// member.lastMessage ? embed.addField("Last (seen) message", member.lastMessage?.createdAt.toLocaleString(), true) : null;
 		member?.premiumSince ? embed.addField("Boosting", "Since " + member.premiumSince.toDateString() + " ✅", true) : null;
 		member.user.bot ? embed.addField("Bot", "✅", true) : null;
 
-		embed.addField("Presence", presence.main || "❌", false);
-
-		presence.richPresence[0] ? embed.setImage(presence.richPresence[0]) : null;
-		presence.richPresence[1] ? embed.addField("Details", `${presence.richPresence.slice(1, 3).join("\n")}`) : null;
+		// Deprecated
+		// embed.addField("Presence", presence.main || "❌", false);
+		//
+		// presence.richPresence[0] ? embed.setImage(presence.richPresence[0]) : null;
+		// presence.richPresence[1] ? embed.addField("Details", `${presence.richPresence.slice(1, 3).join("\n")}`) : null;
 
 		return message.channel.send({ embeds: [embed] });
 	}

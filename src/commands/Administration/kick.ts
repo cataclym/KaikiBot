@@ -33,7 +33,7 @@ export default class KickCommand extends KaikiCommand {
 		const guild = message.guild as Guild;
 		const guildClientMember = guild.me as GuildMember;
 
-		if (message.author.id !== message.guild?.ownerID &&
+		if (message.author.id !== message.guild?.ownerId &&
 			(message.member as GuildMember).roles.highest.position <= member.roles.highest.position) {
 
 			return message.channel.send({

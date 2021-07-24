@@ -1,5 +1,5 @@
 import { Argument } from "discord-akairo";
-import { Message, MessageAttachment } from "discord.js";
+import { Message, MessageAttachment, Permissions } from "discord.js";
 import sizeOf from "image-size";
 import { noArgGeneric } from "../../lib/Embeds";
 import { deleteImage, getFileOut, getFilesizeInBytes, resizeImage, saveEmoji, saveFile } from "../../lib/Emote";
@@ -12,9 +12,9 @@ export default class AddEmoteCommand extends KaikiCommand {
 		super("addemote", {
 			aliases: ["addemote", "ae"],
 			description: "Adds an emote from an image link or attached image, with an optional name.",
-			usage: "<image link> Emotename",
-			clientPermissions: "MANAGE_EMOJIS",
-			userPermissions: "MANAGE_EMOJIS",
+			usage: "image-link Emotename",
+			clientPermissions: Permissions.FLAGS.MANAGE_EMOJIS_AND_STICKERS,
+			userPermissions: Permissions.FLAGS.MANAGE_EMOJIS_AND_STICKERS,
 			typing: true,
 			channel: "guild",
 			args: [

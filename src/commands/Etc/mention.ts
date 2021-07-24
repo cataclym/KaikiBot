@@ -24,6 +24,6 @@ export default class MentionCommand extends KaikiCommand {
 				.withOkColor(msg)],
 		});
 
-		return this.client.setTimeout(async () => (await embed).delete(), 10000);
+		return setTimeout(async () => (await embed).delete(), 10000).unref();
 	}
 }

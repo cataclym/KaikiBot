@@ -1,5 +1,5 @@
 import { Command, PrefixSupplier } from "discord-akairo";
-import { Message, MessageEmbed, User } from "discord.js";
+import { Guild, Message, MessageEmbed, User } from "discord.js";
 import { getTinderDocument } from "../struct/documentMethods";
 import { poems } from "./Poems";
 
@@ -91,7 +91,7 @@ export const noArgGeneric = (message: Message): MessageEmbed => {
 		.withErrorColor(message);
 };
 
-export const errorMessage = async (message: Message, msg: string): Promise<MessageEmbed> => new MessageEmbed({
+export const errorMessage = async (message: Message | Guild, msg: string): Promise<MessageEmbed> => new MessageEmbed({
 	title: "Error",
 	description: msg,
 })

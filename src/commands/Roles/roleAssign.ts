@@ -33,7 +33,7 @@ export default class RoleAssignCommand extends KaikiCommand {
 	}
 	public async exec(message: Message, { member, role }: { member: GuildMember, role: Role }): Promise<Message> {
 
-		if ((role.position < (message.member as GuildMember).roles.highest.position) && !role.managed || message.guild?.ownerID === message.member?.id) {
+		if ((role.position < (message.member as GuildMember).roles.highest.position) && !role.managed || message.guild?.ownerId === message.member?.id) {
 			if (!member.roles.cache.has(role.id)) {
 
 				await member.roles.add(role);

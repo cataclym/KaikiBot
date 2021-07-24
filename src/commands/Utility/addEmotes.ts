@@ -1,5 +1,5 @@
 import { Argument } from "discord-akairo";
-import { Message } from "discord.js";
+import { Message, Permissions } from "discord.js";
 import sizeOf from "image-size";
 import { noArgGeneric } from "../../lib/Embeds";
 import { deleteImage, getFileOut, resizeImage, saveEmoji, saveFile } from "../../lib/Emote";
@@ -11,9 +11,9 @@ export default class AddEmotesCommand extends KaikiCommand {
 		super("addemotes", {
 			aliases: ["addemotes", "aes"],
 			description: "Adds multiple emotes. Cannot specify names.",
-			usage: "<img link1> <img link2> <img link3>",
-			clientPermissions: "MANAGE_EMOJIS",
-			userPermissions: "MANAGE_EMOJIS",
+			usage: "img-link1 img-link2 img-link3",
+			clientPermissions: Permissions.FLAGS.MANAGE_EMOJIS_AND_STICKERS,
+			userPermissions: Permissions.FLAGS.MANAGE_EMOJIS_AND_STICKERS,
 			channel: "guild",
 			args: [
 				{

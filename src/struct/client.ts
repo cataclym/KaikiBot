@@ -1,6 +1,6 @@
 import { AkairoClient, CommandHandler, InhibitorHandler, ListenerHandler, MongooseProvider } from "discord-akairo";
 import { Snowflake } from "discord-api-types";
-import { Intents } from "discord.js";
+import { Intents, IntentsString } from "discord.js";
 import { join } from "path";
 import { getBotDocument } from "./documentMethods";
 import { botModel, guildsModel } from "./models";
@@ -19,7 +19,21 @@ export class customClient extends AkairoClient {
     	super({
     		ownerID: process.env.OWNER as Snowflake,
     		allowedMentions: { parse: ["users"], repliedUser: true },
-    		intents: [Intents.ALL],
+    		intents: [Intents.FLAGS.DIRECT_MESSAGE_REACTIONS,
+    			Intents.FLAGS.DIRECT_MESSAGE_TYPING,
+    			Intents.FLAGS.DIRECT_MESSAGES,
+    			Intents.FLAGS.GUILD_BANS,
+    			Intents.FLAGS.GUILDS,
+    			Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS,
+    			Intents.FLAGS.GUILD_INTEGRATIONS,
+    			Intents.FLAGS.GUILD_INVITES,
+    			Intents.FLAGS.GUILD_MEMBERS,
+    			Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
+    			// Intents.FLAGS.GUILD_MESSAGE_TYPING,
+    			Intents.FLAGS.GUILD_MESSAGES,
+    			Intents.FLAGS.GUILD_PRESENCES,
+    			// Intents.FLAGS.GUILD_VOICE_STATES,
+    			Intents.FLAGS.GUILD_WEBHOOKS],
     		partials: ["REACTION", "CHANNEL"],
     		shards: "auto",
     		// Uncomment to have mobile status on bot.

@@ -5,16 +5,18 @@ import { Snowflake } from "discord-api-types/globals";
 
 export async function ExcludeSlashCommand(interaction: CommandInteraction): Promise<void> {
 
+	if (!interaction.channel?.isText() || !interaction.guild) return interaction.defer({ ephemeral:true });
+
 	if (!interaction.guild!.isDadBotEnabled()) {
 		return interaction.reply({
 			ephemeral: true,
 			embeds: [new MessageEmbed()
 				.setTitle("Dadbot is not enabled")
-				.withErrorColor()],
+				.withErrorColor(interaction.guild)],
 		});
 	}
 
-	const db = await getGuildDocument(interaction.guildID as Snowflake);
+	const db = await getGuildDocument(interaction.guildId as Snowflake);
 	const roleName = db.settings.excludeRole;
 
 	let excludedRole = interaction.guild?.roles.cache.find((r) => r.name === roleName);
@@ -33,7 +35,7 @@ export async function ExcludeSlashCommand(interaction: CommandInteraction): Prom
 				description: `A role with name \`${roleName}\` was not found in guild. Creating... `,
 				footer: { text: "Beep boop..." },
 			})
-				.withErrorColor()] });
+				.withErrorColor(interaction.guild)] });
 		created = true;
 	}
 
@@ -41,20 +43,28 @@ export async function ExcludeSlashCommand(interaction: CommandInteraction): Prom
         && excludedRole) {
 		await interaction.member?.roles.add(excludedRole);
 		created
-			? interaction.webhook.send({ ephemeral: true, embeds: [Exclude.addedRoleEmbed(roleName)
-				.withOkColor()] })
-			: interaction.reply({ ephemeral: true, embeds: [Exclude.addedRoleEmbed(roleName)
-				.withOkColor()] });
+			? await interaction.webhook.send({
+				ephemeral: true, embeds: [Exclude.addedRoleEmbed(roleName)
+					.withOkColor(interaction.guild)],
+			})
+			: await interaction.reply({
+				ephemeral: true, embeds: [Exclude.addedRoleEmbed(roleName)
+					.withOkColor(interaction.guild)],
+			});
 		return;
 	}
 
 	if (interaction.member?.roles instanceof GuildMemberRoleManager && interaction.member?.roles.cache.find((r) => r === excludedRole) && excludedRole) {
 		await interaction.member?.roles.remove(excludedRole);
 		created
-			? interaction.webhook.send({ ephemeral: true, embeds: [Exclude.removedRoleEmbed(roleName)
-				.withOkColor()] })
-			: interaction.reply({ ephemeral: true, embeds: [Exclude.removedRoleEmbed(roleName)
-				.withOkColor()] });
+			? await interaction.webhook.send({
+				ephemeral: true, embeds: [Exclude.removedRoleEmbed(roleName)
+					.withOkColor(interaction.guild)],
+			})
+			: await interaction.reply({
+				ephemeral: true, embeds: [Exclude.removedRoleEmbed(roleName)
+					.withOkColor(interaction.guild)],
+			});
 		return;
 	}
 }

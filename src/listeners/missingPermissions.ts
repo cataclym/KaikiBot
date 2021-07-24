@@ -1,5 +1,5 @@
 import { Command, Listener } from "discord-akairo";
-import { Message, MessageEmbed } from "discord.js";
+import { Client, Message, MessageEmbed } from "discord.js";
 import logger from "loglevel";
 import { cmdStatsCache } from "../cache/cache";
 import { listenerLog } from "../lib/Util";
@@ -23,7 +23,7 @@ export default class missingPermissionsListener extends Listener {
 			? cmdStatsCache[command.id]++
 			: cmdStatsCache[command.id] = 1;
 
-		if (message.channel.type !== "dm") {
+		if (message.channel.type !== "DM") {
 			const msg = await message.channel.send({ embeds:
 				[new MessageEmbed({
 					title: "Missing permissions",
@@ -33,8 +33,8 @@ export default class missingPermissionsListener extends Listener {
 					.withErrorColor(message)],
 			});
 
-			return this.client.setTimeout(() => msg.delete()
-				.catch(logger.error), 10000);
+			return setTimeout(() => msg.delete()
+				.catch(logger.error), 10000).unref();
 
 		}
 	}

@@ -58,7 +58,7 @@ export default class BanCommand extends KaikiCommand {
 		}
 
 		// Check if member is bannable
-		if (message.author.id !== message.guild?.ownerID &&
+		if (message.author.id !== message.guild?.ownerId &&
 			(message.member as GuildMember).roles.highest.position <= guildMember.roles.highest.position) {
 
 			return message.channel.send({ embeds: [new MessageEmbed({

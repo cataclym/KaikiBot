@@ -24,14 +24,14 @@ export default class ServerInfoCommand extends KaikiCommand {
 			author: { name: "Server info" },
 			fields: [
 				{ name: "ID", value: guild?.id, inline: true },
-				{ name: "Owner", value: message.client.users.cache.get(guild.ownerID)?.tag ?? guild.ownerID, inline: true },
+				{ name: "Owner", value: message.client.users.cache.get(guild.ownerId)?.tag ?? guild.ownerId, inline: true },
 				{ name: "Members", value: String(guild?.memberCount), inline: true },
 				{ name:
-                    "Channels", value: "Text: **" + guild?.channels.cache.filter((channel) => channel.type === "text").size +
-                    "**\nVoice: **" + guild?.channels.cache.filter((channel) => channel.type === "voice").size +
-                    "**\nCategories: **" + guild?.channels.cache.filter((channel) => channel.type === "category").size +
-                    "**\nNews: **" + guild?.channels.cache.filter((channel) => channel.type === "news").size +
-                    "**\nStore: **" + guild?.channels.cache.filter((channel) => channel.type === "store").size + "**", inline: true },
+                    "Channels", value: "Text: **" + guild?.channels.cache.filter((channel) => channel.type === "GUILD_TEXT").size +
+                    "**\nVoice: **" + guild?.channels.cache.filter((channel) => channel.type === "GUILD_VOICE").size +
+                    "**\nCategories: **" + guild?.channels.cache.filter((channel) => channel.type === "GUILD_CATEGORY").size +
+                    "**\nNews: **" + guild?.channels.cache.filter((channel) => channel.type === "GUILD_NEWS").size +
+                    "**\nStore: **" + guild?.channels.cache.filter((channel) => channel.type === "GUILD_STORE").size + "**", inline: true },
 				{ name: "Created At", value: guild?.createdAt.toDateString(), inline: true },
 				{ name: "Roles", value: String(guild?.roles.cache.size), inline: true },
 				{ name: "Features", value: guild?.features.length ? guild?.features.join("\n") : "NONE", inline: true },

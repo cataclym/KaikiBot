@@ -21,7 +21,7 @@ export default class KillBotProcess extends KaikiCommand {
 			components: [new MessageActionRow({
 				components:
 					[new MessageButton()
-						.setCustomID("1")
+						.setCustomId("1")
 						.setLabel("Kill me")
 						.setStyle("DANGER")],
 			})],
