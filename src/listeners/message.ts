@@ -12,7 +12,7 @@ export default class MessageListener extends Listener {
 
 	public async exec(message: Message): Promise<void> {
 
-		if (message.webhookID || message.author.bot || !message.guild) return;
+		if (message.webhookId || message.author.bot || !message.guild) return;
 
 		countEmotes(message);
 

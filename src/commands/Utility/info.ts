@@ -48,7 +48,7 @@ export default class InfoCommand extends KaikiCommand {
 					.addField("Created at", obj.createdAt.toString(), true)
 					.addField("Bitrate", obj.bitrate / 1000 + "kbps", true);
 
-				if (obj.parent) emb.addField("Parent", `${obj.parent.name} [${obj.parentID}]`, true);
+				if (obj.parent) emb.addField("Parent", `${obj.parent.name} [${obj.parentId}]`, true);
 			}
 
 			else if (obj instanceof TextChannel || obj instanceof NewsChannel || obj instanceof StoreChannel) {
@@ -57,7 +57,7 @@ export default class InfoCommand extends KaikiCommand {
 					.addField("NSFW", obj.nsfw ? "Enabled" : "Disabled")
 					.addField("Created at", obj.createdAt.toString());
 
-				if (obj.parent) emb.addField("Parent", `${obj.parent.name} [${obj.parentID}]`, true);
+				if (obj.parent) emb.addField("Parent", `${obj.parent.name} [${obj.parentId}]`, true);
 			}
 
 			else if (obj instanceof CategoryChannel) {
@@ -66,7 +66,7 @@ export default class InfoCommand extends KaikiCommand {
 					.addField("Children", String(obj.children.size))
 					.addField("Created at", obj.createdAt.toString());
 
-				if (obj.parent) emb.addField("Parent", `${obj.parent.name} [${obj.parentID}]`, true);
+				if (obj.parent) emb.addField("Parent", `${obj.parent.name} [${obj.parentId}]`, true);
 			}
 		}
 

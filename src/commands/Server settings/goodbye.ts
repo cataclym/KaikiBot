@@ -5,7 +5,7 @@ import { getGuildDocument } from "../../struct/documentMethods";
 export default class GoodbyeConfigCommand extends KaikiCommand {
 	constructor() {
 		super("goodbye", {
-			aliases: ["goodbyetoggle", "goodbye", "byetoggle"],
+			aliases: ["goodbyetoggle", "goodbye", "byetoggle", "bye"],
 			userPermissions: Permissions.FLAGS.MANAGE_GUILD,
 			channel: "guild",
 			description: "Toggles leave messages. Bot defaults to current channel if no channel is provided.",

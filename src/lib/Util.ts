@@ -15,29 +15,31 @@ export type presenceType = {
 	richPresence: string[],
 }
 
+// Broken in Discord.js-dev v13
+// TODO: Redo this, and add it to info, replacing uinfo.
 // This section is awful
-export async function getUserPresenceAsync(user: User): Promise<presenceType> {
-
-	const presence: presenceType = { main: "", richPresence: [] };
-
-	if (user instanceof ClientUser) {
-		return Promise.resolve(presence);
-	}
-
-	presence.main = (user.presence?.activities?.length
-		? `${user.presence?.activities.join(", ")}\n`
-		: "") + (user.presence?.activities.map((e) => e.state).length
-		? `**State**\n${user?.presence?.activities.map((a) => a.state).join("\n")}\n`
-		: "") + (user.presence.status !== "offline"
-		? Object.entries(user.presence.clientStatus as {[s: string]:unknown} | ArrayLike<unknown>).join(", ")
-		: "Offline");
-
-	const uPActivities = user?.presence?.activities;
-
-	presence.richPresence = [uPActivities.map((e) => e.assets?.largeImageURL({ size: 128 }))[0] ?? "", uPActivities.map((e) => e.details)[0] ?? "", uPActivities.map((e) => e.assets?.largeText)[0] ?? "", uPActivities.map((e) => e.assets?.smallText)[0] ?? ""] ?? [""];
-
-	return presence;
-}
+// export async function getUserPresenceAsync(user: User): Promise<presenceType> {
+//
+// 	const presence: presenceType = { main: "", richPresence: [] };
+//
+// 	if (user instanceof ClientUser) {
+// 		return Promise.resolve(presence);
+// 	}
+//
+// 	presence.main = (user.presence?.activities?.length
+// 		? `${user.presence?.activities.join(", ")}\n`
+// 		: "") + (user.presence?.activities.map((e) => e.state).length
+// 		? `**State**\n${user?.presence?.activities.map((a) => a.state).join("\n")}\n`
+// 		: "") + (user.presence.status !== "offline"
+// 		? Object.entries(user.presence.clientStatus as {[s: string]:unknown} | ArrayLike<unknown>).join(", ")
+// 		: "Offline");
+//
+// 	const uPActivities = user?.presence?.activities;
+//
+// 	presence.richPresence = [uPActivities.map((e) => e.assets?.largeImageURL({ size: 128 }))[0] ?? "", uPActivities.map((e) => e.details)[0] ?? "", uPActivities.map((e) => e.assets?.largeText)[0] ?? "", uPActivities.map((e) => e.assets?.smallText)[0] ?? ""] ?? [""];
+//
+// 	return presence;
+// }
 
 export const flags: {[index in UserFlagsString]: string} = {
 	DISCORD_EMPLOYEE: "Discord Employee 👨‍💼",
@@ -132,7 +134,7 @@ export async function listenerLog(message: Message, listener: Listener,
 	const date = new Date().toLocaleString("en-GB", { hour: "2-digit", minute: "2-digit", second: "2-digit", weekday: "short", year: "numeric", month: "numeric", day: "numeric" });
 
 	logger(`${date} ${listener.id} | ${Date.now() - message.createdTimestamp}ms
-${message.channel.type !== "dm"
+${message.channel.type !== "DM"
 		? `Guild: ${message.guild?.name} [${message.guild?.id}]\nChannel: #${message.channel.name} [${message.channel.id}]`
 		: `DMChannel: [${message.author.dmChannel?.id}]`}
 User: ${message.author.username} [${message.author.id}]

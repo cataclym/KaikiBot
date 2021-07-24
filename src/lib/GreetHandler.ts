@@ -45,7 +45,8 @@ export async function sendWelcomeLeaveMessage(data: IGreet, guildMember: GuildMe
 	const channel = guildMember.guild.channels.cache.get(data.channel as Snowflake)
 			?? await guildMember.guild.client.channels.fetch(data.channel as Snowflake, { cache: true });
 
-	if (channel && channel?.type !== "text" && channel?.type !== "news") return;
+	if (channel && channel?.type !== "GUILD_TEXT" && channel?.type !== "GUILD_NEWS") return;
+
 	if (data.embed) {
 
 		const objectIndex = await createAndParseWelcomeLeaveMessage(data, guildMember);

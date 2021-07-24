@@ -23,7 +23,7 @@ module.exports = class ShardStatisticsCommand extends Command {
 
 		const { ws } = message.client;
 
-		return message.channel.send({ content: await codeblock(`This guild is managed by shard: [${message.guild!.shardID}]`, "xl") +
+		return message.channel.send({ content: await codeblock(`This guild is managed by shard: [${message.guild!.shardId}]`, "xl") +
 			await codeblock(Array.from(ws.shards.entries())
 				.map(([_, w]) => `ID: [${w.id}] | Ping: ${w.ping}ms | Status: ${shardStats[w.status]}`)
 				.join("\n"), "xl"),

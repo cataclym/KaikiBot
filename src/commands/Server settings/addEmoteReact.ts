@@ -1,4 +1,4 @@
-import { Guild, GuildEmoji, Message, MessageEmbed } from "discord.js";
+import { Guild, GuildEmoji, Message, MessageEmbed, Permissions } from "discord.js";
 import { noArgGeneric } from "../../lib/Embeds";
 import { KaikiCommand } from "../../lib/KaikiClass";
 import { getGuildDocument } from "../../struct/documentMethods";
@@ -7,8 +7,8 @@ export default class EmoteReactCommand extends KaikiCommand {
 	constructor() {
 		super("addemotereact", {
 			aliases: ["addemotereact", "emotereact", "aer"],
-			userPermissions: "MANAGE_EMOJIS",
-			clientPermissions: "ADD_REACTIONS",
+			userPermissions: Permissions.FLAGS.MANAGE_EMOJIS_AND_STICKERS,
+			clientPermissions:  Permissions.FLAGS.ADD_REACTIONS,
 			channel: "guild",
 			description: "Add triggers for the bot to react with emojis/emotes to. Use quotes for triggers with spaces.",
 			usage: ["red :red:", "anime :weeaboosgetout:"],

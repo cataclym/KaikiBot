@@ -18,7 +18,7 @@ export default class spank extends KaikiCommand {
 	}
 
 	public async exec(message: Message, { mention }: { mention: GuildMember | null }): Promise<Message> {
-		if (message.channel.type === "text" && message.channel.nsfw) {
+		if (message.channel.type === "GUILD_TEXT" && message.channel.nsfw) {
 			return message.channel.send({ embeds: [await sendNekosPics(message, "spank", mention)] });
 		}
 

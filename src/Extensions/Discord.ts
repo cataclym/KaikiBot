@@ -20,8 +20,8 @@ declare module "discord.js" {
     }
 
     export interface MessageEmbed {
-        withOkColor(m?: Message): this;
-        withErrorColor(m?: Message): this;
+        withOkColor(m?: Message | Guild): this;
+        withErrorColor(m?: Message | Guild): this;
     }
 }
 
@@ -51,19 +51,25 @@ Guild.prototype.isDadBotEnabled = function(message?: Message) {
 	return false;
 };
 
-MessageEmbed.prototype.withErrorColor = function(m?: Message) {
+MessageEmbed.prototype.withErrorColor = function(m?: Message | Guild) {
 
-	if (m?.guild) {
-		return this.setColor(m.client.guildSettings.get(m.guild.id, "errorColor", okColor));
+	if (m) {
+		if (m instanceof Message) {
+			return this.setColor((m.client as customClient).guildSettings.get(m.guild!.id, "errorColor", okColor));
+		}
+		return this.setColor((m.client as customClient).guildSettings.get(m.id, "errorColor", okColor));
 	}
 
 	return this.setColor(errorColor);
 };
 
-MessageEmbed.prototype.withOkColor = function(m?: Message) {
+MessageEmbed.prototype.withOkColor = function(m?: Message | Guild) {
 
-	if (m?.guild) {
-		return this.setColor(m.client.guildSettings.get(m.guild.id, "okColor", okColor));
+	if (m) {
+		if (m instanceof Message) {
+			return this.setColor((m.client as customClient).guildSettings.get(m.guild!.id, "okColor", okColor));
+		}
+		return this.setColor((m.client as customClient).guildSettings.get(m.id, "okColor", okColor));
 	}
 
 	return this.setColor(okColor);

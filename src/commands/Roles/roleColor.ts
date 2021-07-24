@@ -49,7 +49,7 @@ export default class RoleColorCommand extends KaikiCommand {
 
 		if ((!member?.permissions.has("MANAGE_ROLES")
 			|| !(member.roles.highest.position > role.position))
-			&& message.guild!.ownerID !== member!.id) {
+			&& message.guild!.ownerId !== member!.id) {
 			return message.channel.send({ embeds: [await errorMessage(message, "You do not have `MANAGE_ROLES` permission and/or trying to edit a role above you in the role hierarchy.")] });
 		}
 
@@ -58,7 +58,7 @@ export default class RoleColorCommand extends KaikiCommand {
 			return message.channel.send({ embeds: [await errorMessage(message, "I do not have `MANAGE_ROLES` permission and/or trying to edit a role above me in the role hierarchy.")] });
 		}
 
-		else if (member?.guild.ownerID === message.member?.id) {
+		else if (member?.guild.ownerId === message.member?.id) {
 			return role.edit({ color: newColor }).then(r => {
 				return message.channel.send({ files: [attachment],
 					embeds: [new MessageEmbed({

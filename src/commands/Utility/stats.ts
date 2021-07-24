@@ -43,9 +43,9 @@ module.exports = class StatsCommand extends KaikiCommand {
 				{ name: "Users", value: String(message.client.users.cache.size), inline: true },
 				{ name: "Presence", value: `Guilds: **${guildCache.size}**\nText channels: **${guildCache
 					.map(g => g.channels.cache
-						.filter(channel => (channel.type !== "voice") && channel.type !== "category").size)
+						.filter(channel => (channel.type !== "GUILD_VOICE") && channel.type !== "GUILD_CATEGORY").size)
 					.reduce((a, b) => a + b, 0)}**\nVoice channels: **${guildCache
-					.map(g => g.channels.cache.filter(channel => channel.type === "voice").size)
+					.map(g => g.channels.cache.filter(channel => channel.type === "GUILD_VOICE").size)
 					.reduce((a, b) => a + b, 0)}**`, inline: true }])
 			.withOkColor(message)];
 

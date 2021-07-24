@@ -24,7 +24,7 @@ export default class FetchUserCommand extends KaikiCommand {
 							return;
 						}
 					}),
-					otherwise: (m ) => new MessageEmbed()
+					otherwise: (m) => new MessageEmbed()
 						.setDescription("No user found")
 						.withErrorColor(m),
 				},
@@ -49,9 +49,11 @@ export default class FetchUserCommand extends KaikiCommand {
 					{ name: "Account date", value: userObject?.createdAt?.toDateString(), inline: true }])
 				.withOkColor(message);
 
-		if (userObject.lastMessage) {
-			embed.addField("Last (seen) message", userObject.lastMessage?.createdAt.toLocaleString(), true);
-		}
+		// Deprecated
+		// if (userObject.lastMessage) {
+		// embed.addField("Last (seen) message", userObject.lastMessage?.createdAt.toLocaleString(), true);
+		// }
+
 		if (userFlags.length) {
 			embed.addField("Flags", userFlags.map((flag) => flags[flag]).join("\n"), true);
 		}
