@@ -68,5 +68,9 @@
   "repository": {
     "type": "git",
     "url": "https://gitlab.com/cataclym/KaikiDeishuBot.git"
+  },
+  "engines": {
+    "node": ">=14.0.0",
+    "npm": ">=7.0.0"
   }
 }
