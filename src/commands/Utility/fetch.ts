@@ -2,7 +2,8 @@ import { Argument } from "discord-akairo";
 import { Snowflake } from "discord-api-types";
 import { Message, MessageEmbed, User } from "discord.js";
 import { flags } from "../../lib/Util";
-import { KaikiCommand } from "../../lib/KaikiClass";
+import { KaikiCommand } from "kaiki";
+
 
 
 export default class FetchUserCommand extends KaikiCommand {

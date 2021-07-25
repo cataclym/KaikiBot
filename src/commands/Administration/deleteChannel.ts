@@ -1,7 +1,6 @@
-import { Command } from "discord-akairo";
 import { Channel, Collection, GuildChannel, Message, MessageEmbed, Permissions } from "discord.js";
 import { noArgGeneric } from "../../lib/Embeds";
-import { KaikiCommand } from "../../lib/KaikiClass";
+import { KaikiCommand } from "kaiki";
 
 export default class DeleteChannelCommand extends KaikiCommand {
 	constructor() {

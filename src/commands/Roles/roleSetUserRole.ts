@@ -3,7 +3,8 @@ import { Snowflake } from "discord-api-types";
 import { Guild, GuildMember, Message, MessageEmbed, Role } from "discord.js";
 import { IGuild } from "../../interfaces/IDocuments";
 import { getGuildDocument } from "../../struct/documentMethods";
-import { KaikiCommand } from "../../lib/KaikiClass";
+import { KaikiCommand } from "kaiki";
+
 
 // Rewrite of Miyano's setuserrole command
 // https://github.com/PlatinumFT/Miyano-v2

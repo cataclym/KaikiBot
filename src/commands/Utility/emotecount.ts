@@ -3,7 +3,8 @@ import { Snowflake } from "discord-api-types";
 import { Guild, Message, MessageEmbed } from "discord.js";
 import { trim } from "../../lib/Util";
 import { getGuildDocument } from "../../struct/documentMethods";
-import { KaikiCommand } from "../../lib/KaikiClass";
+import { KaikiCommand } from "kaiki";
+
 
 export default class EmoteCount extends KaikiCommand {
 	constructor() {

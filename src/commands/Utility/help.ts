@@ -2,7 +2,8 @@ import { Argument, PrefixSupplier } from "discord-akairo";
 import { execSync } from "child_process";
 import { Message, MessageEmbed, PermissionResolvable, Permissions } from "discord.js";
 import { name, repository, version } from "../../../package.json";
-import { KaikiCommand } from "../../lib/KaikiClass";
+import { KaikiCommand } from "kaiki";
+
 
 export default class HelpCommand extends KaikiCommand {
 	constructor() {

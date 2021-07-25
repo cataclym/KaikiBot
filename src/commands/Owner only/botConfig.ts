@@ -5,7 +5,8 @@ import { codeblock } from "../../lib/Util";
 import { customClient } from "../../struct/client";
 import { IMoneyService } from "../../lib/money/IMoneyService";
 import { MongoMoney } from "../../lib/money/MongoMoneyService";
-import { KaikiCommand } from "../../lib/KaikiClass";
+import { KaikiCommand } from "kaiki";
+
 
 const validTypes = ["currencyname", "currencysymbol"];
 

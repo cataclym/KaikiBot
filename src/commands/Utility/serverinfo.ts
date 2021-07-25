@@ -1,6 +1,7 @@
 import { PrefixSupplier } from "discord-akairo";
 import { Guild, Message, MessageEmbed } from "discord.js";
-import { KaikiCommand } from "../../lib/KaikiClass";
+import { KaikiCommand } from "kaiki";
+
 
 export default class ServerInfoCommand extends KaikiCommand {
 	constructor() {

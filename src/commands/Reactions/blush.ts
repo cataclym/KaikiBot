@@ -1,5 +1,6 @@
 import { Message } from "discord.js";
-import { KaikiCommand } from "../../lib/KaikiClass";
+import { KaikiCommand } from "kaiki";
+
 import getPurrBotResponseEmbed from "../../lib/APIs/PurrBot";
 
 export default class Blush extends KaikiCommand {

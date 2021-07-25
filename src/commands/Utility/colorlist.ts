@@ -7,7 +7,8 @@ import {
 	MessageOptions,
 } from "discord.js";
 import { colorTable, hexColorTable, imgFromColor } from "../../lib/Color";
-import { KaikiCommand } from "../../lib/KaikiClass";
+import { KaikiCommand } from "kaiki";
+
 
 export default class ColorListCommand extends KaikiCommand {
 	constructor() {

@@ -1,6 +1,7 @@
 import Canvas, { loadImage } from "canvas";
 import { GuildMember, Message, MessageAttachment } from "discord.js";
-import { KaikiCommand } from "../../lib/KaikiClass";
+import { KaikiCommand } from "kaiki";
+
 
 const background = async () => await loadImage("https://cdn.discordapp.com/attachments/717045059215687691/763459005137420328/simp.jpg");
 

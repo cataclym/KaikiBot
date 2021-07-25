@@ -2,7 +2,8 @@ import { Argument } from "discord-akairo";
 import { Message } from "discord.js";
 import { IUser } from "../../interfaces/IDocuments";
 import { getUserDocument } from "../../struct/documentMethods";
-import { KaikiCommand } from "../../lib/KaikiClass";
+import { KaikiCommand } from "kaiki";
+
 
 export default class todoRemoveCommand extends KaikiCommand {
 	constructor() {

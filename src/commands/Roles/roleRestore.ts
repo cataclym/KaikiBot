@@ -2,7 +2,8 @@ import { Snowflake } from "discord-api-types";
 import { Guild, GuildMember, Message, MessageEmbed, Permissions } from "discord.js";
 import { getGuildDocument } from "../../struct/documentMethods";
 import { trim } from "../../lib/Util";
-import { KaikiCommand } from "../../lib/KaikiClass";
+import { KaikiCommand } from "kaiki";
+
 
 export default class RestoreUserRoles extends KaikiCommand {
 	constructor() {

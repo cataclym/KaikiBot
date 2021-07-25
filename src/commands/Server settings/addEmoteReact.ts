@@ -1,6 +1,7 @@
 import { Guild, GuildEmoji, Message, MessageEmbed, Permissions } from "discord.js";
 import { noArgGeneric } from "../../lib/Embeds";
-import { KaikiCommand } from "../../lib/KaikiClass";
+import { KaikiCommand } from "kaiki";
+
 import { getGuildDocument } from "../../struct/documentMethods";
 
 export default class EmoteReactCommand extends KaikiCommand {

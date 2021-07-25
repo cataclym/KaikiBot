@@ -2,7 +2,8 @@ import { Guild } from "discord.js";
 import { GuildMember, Message, MessageEmbed, Role } from "discord.js";
 import { errorMessage, noArgGeneric } from "../../lib/Embeds";
 import { trim } from "../../lib/Util";
-import { KaikiCommand } from "../../lib/KaikiClass";
+import { KaikiCommand } from "kaiki";
+
 
 export default class RoleRenameCommand extends KaikiCommand {
 	constructor() {

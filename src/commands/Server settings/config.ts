@@ -3,7 +3,8 @@ import { Argument, Flag, PrefixSupplier } from "discord-akairo";
 import { Guild, Message, MessageEmbed } from "discord.js";
 import { EmbedFromJson } from "../../interfaces/IGreetLeave";
 import { createAndParseWelcomeLeaveMessage } from "../../lib/GreetHandler";
-import { KaikiCommand } from "../../lib/KaikiClass";
+import { KaikiCommand } from "kaiki";
+
 import { getGuildDocument } from "../../struct/documentMethods";
 
 export default class ConfigCommand extends KaikiCommand {

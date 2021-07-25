@@ -1,7 +1,8 @@
 import { Listener } from "discord-akairo";
 import { GuildMember, Message, MessageEmbed } from "discord.js";
 import { noArgGeneric } from "../../lib/Embeds";
-import { KaikiCommand } from "../../lib/KaikiClass";
+import { KaikiCommand } from "kaiki";
+
 
 export default class EmitCommand extends KaikiCommand {
 	constructor() {

@@ -3,7 +3,8 @@ import { Message, MessageAttachment } from "discord.js";
 import logger from "loglevel";
 import { noArgGeneric } from "../../lib/Embeds";
 import { calculateAspectRatioFit } from "../../lib/Util";
-import { KaikiCommand } from "../../lib/KaikiClass";
+import { KaikiCommand } from "kaiki";
+
 
 export default class SetAvatarCommand extends KaikiCommand {
 	constructor() {

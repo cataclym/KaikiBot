@@ -1,6 +1,7 @@
 import { Snowflake } from "discord-api-types";
 import { Message, MessageEmbed, Permissions } from "discord.js";
-import { KaikiCommand } from "../../lib/KaikiClass";
+import { KaikiCommand } from "kaiki";
+
 import { getGuildDocument } from "../../struct/documentMethods";
 
 export default class RemoveEmoteReactCommand extends KaikiCommand {

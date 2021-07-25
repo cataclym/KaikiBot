@@ -1,6 +1,7 @@
 import { Guild, Message, MessageEmbed, Permissions } from "discord.js";
 import { getGuildDocument } from "../../struct/documentMethods";
-import { KaikiCommand } from "../../lib/KaikiClass";
+import { KaikiCommand } from "kaiki";
+
 import { noArgGeneric } from "../../lib/Embeds";
 
 export default class WelcomeDeleteCommand extends KaikiCommand {

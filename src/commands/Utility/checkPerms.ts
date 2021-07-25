@@ -2,7 +2,8 @@ import { Argument } from "discord-akairo";
 import { sendPaginatedMessage } from "@cataclym/discord.js-pagination-ts-nsb";
 import { GuildMember, Message, MessageEmbed, Role, TextChannel } from "discord.js";
 import { codeblock } from "../../lib/Util";
-import { KaikiCommand } from "../../lib/KaikiClass";
+import { KaikiCommand } from "kaiki";
+
 
 export default class CheckPermissionsCommand extends KaikiCommand {
 	constructor() {

@@ -1,6 +1,7 @@
 import { Collection, Guild, GuildMember, Message, MessageEmbed, Role } from "discord.js";
 import { noArgRole } from "../../lib/Embeds";
-import { KaikiCommand } from "../../lib/KaikiClass";
+import { KaikiCommand } from "kaiki";
+
 
 export default class RoleDeleteCommand extends KaikiCommand {
 	constructor() {

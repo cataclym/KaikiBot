@@ -3,7 +3,8 @@ import { Snowflake } from "discord-api-types";
 import { Guild, Message, MessageEmbed } from "discord.js";
 import { getGuildDocument } from "../../struct/documentMethods";
 import { embedFail } from "../../lib/Embeds";
-import { KaikiCommand } from "../../lib/KaikiClass";
+import { KaikiCommand } from "kaiki";
+
 
 export default class MyRoleCommand extends KaikiCommand {
 	constructor() {

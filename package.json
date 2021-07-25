@@ -30,6 +30,7 @@
     "erlpack": "github:discord/erlpack",
     "image-size": "^1.0.0",
     "inversify": "^5.0.1",
+    "kaiki": "file:local_modules/Kaiki",
     "kaori": "^2.0.4",
     "loglevel": "^1.7.1",
     "mongoose": "^5.13.0",
@@ -67,5 +68,9 @@
   "repository": {
     "type": "git",
     "url": "https://gitlab.com/cataclym/KaikiDeishuBot.git"
+  },
+  "engines": {
+    "node": ">=14.0.0",
+    "npm": ">=7.0.0"
   }
 }

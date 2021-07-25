@@ -1,5 +1,6 @@
 import { ColorResolvable, Message, MessageEmbed } from "discord.js";
-import { KaikiCommand } from "../../lib/KaikiClass";
+import { KaikiCommand } from "kaiki";
+
 import { getMikuImage } from "../../lib/APIs/MikuAPI";
 import { hexColorTable } from "../../lib/Color";
 

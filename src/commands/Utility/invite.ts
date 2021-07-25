@@ -1,5 +1,6 @@
 import { Message, MessageEmbed } from "discord.js";
-import { KaikiCommand } from "../../lib/KaikiClass";
+import { KaikiCommand } from "kaiki";
+
 
 export default class InviteCommand extends KaikiCommand {
 	constructor() {

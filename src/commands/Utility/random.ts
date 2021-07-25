@@ -1,6 +1,7 @@
 import { MessageEmbed } from "discord.js";
 import { Message } from "discord.js";
-import { KaikiCommand } from "../../lib/KaikiClass";
+import { KaikiCommand } from "kaiki";
+
 
 function getRndInteger(min: number, max: number) {
 	return Math.floor(Math.random() * (max - min + 1)) + min;

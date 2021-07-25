@@ -1,6 +1,7 @@
 import { Message, MessageEmbed, Role } from "discord.js";
 import { noArgRole } from "../../lib/Embeds";
-import { KaikiCommand } from "../../lib/KaikiClass";
+import { KaikiCommand } from "kaiki";
+
 
 export default class RoleMentionableCommand extends KaikiCommand {
 	constructor() {

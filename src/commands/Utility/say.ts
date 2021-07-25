@@ -1,5 +1,6 @@
 import { Message, MessageEmbed, TextChannel } from "discord.js";
-import { KaikiCommand } from "../../lib/KaikiClass";
+import { KaikiCommand } from "kaiki";
+
 import { codeblock } from "../../lib/Util";
 
 type argumentMessage = {
