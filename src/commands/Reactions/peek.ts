@@ -1,6 +1,7 @@
 import { Message } from "discord.js";
 import getKawaiiResponseEmbed from "../../lib/APIs/KawaiiAPI";
-import { KaikiCommand } from "../../lib/KaikiClass";
+import { KaikiCommand } from "kaiki";
+
 
 export default class Peek extends KaikiCommand {
 	constructor() {

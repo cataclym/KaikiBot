@@ -1,6 +1,7 @@
 import { GuildMember, Message, MessageEmbed, MessageAttachment } from "discord.js";
 import canvas from "canvas";
-import { KaikiCommand } from "../../lib/KaikiClass";
+import { KaikiCommand } from "kaiki";
+
 
 export default class SquishCommand extends KaikiCommand {
 	constructor() {

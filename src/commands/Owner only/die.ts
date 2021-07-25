@@ -1,5 +1,6 @@
 import { Message, MessageButton, MessageActionRow, InteractionCollector, MessageEmbed } from "discord.js";
-import { KaikiCommand } from "../../lib/KaikiClass";
+import { KaikiCommand } from "kaiki";
+
 import logger from "loglevel";
 
 export default class KillBotProcess extends KaikiCommand {

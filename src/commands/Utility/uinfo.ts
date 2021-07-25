@@ -1,6 +1,7 @@
 import { GuildMember, Message, MessageEmbed, Role, UserFlagsString } from "discord.js";
 import { flags } from "../../lib/Util";
-import { KaikiCommand } from "../../lib/KaikiClass";
+import { KaikiCommand } from "kaiki";
+
 
 export default class UserInfoCommand extends KaikiCommand {
 	constructor() {

@@ -5,7 +5,8 @@ import { noArgGeneric } from "../../lib/Embeds";
 import { deleteImage, getFileOut, getFilesizeInBytes, resizeImage, saveEmoji, saveFile } from "../../lib/Emote";
 import { trim } from "../../lib/Util";
 import { EMOTE_REGEX, IMAGE_REGEX } from "../../struct/constants";
-import { KaikiCommand } from "../../lib/KaikiClass";
+import { KaikiCommand } from "kaiki";
+
 
 export default class AddEmoteCommand extends KaikiCommand {
 	constructor() {

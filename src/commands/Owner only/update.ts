@@ -4,7 +4,8 @@ import { codeblock, trim } from "../../lib/Util";
 import fs from "fs";
 import logger from "loglevel";
 import * as path from "path";
-import { KaikiCommand } from "../../lib/KaikiClass";
+import { KaikiCommand } from "kaiki";
+
 
 export default class UpdateCommand extends KaikiCommand {
 	constructor() {

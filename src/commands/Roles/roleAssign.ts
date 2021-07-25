@@ -1,5 +1,6 @@
 import { GuildMember, Message, MessageEmbed, Role } from "discord.js";
-import { KaikiCommand } from "../../lib/KaikiClass";
+import { KaikiCommand } from "kaiki";
+
 
 export default class RoleAssignCommand extends KaikiCommand {
 	constructor() {

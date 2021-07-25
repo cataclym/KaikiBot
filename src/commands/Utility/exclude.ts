@@ -1,7 +1,8 @@
 import { Guild, Message, MessageEmbed } from "discord.js";
 import { Exclude } from "../../lib/Embeds";
 import { getGuildDocument } from "../../struct/documentMethods";
-import { KaikiCommand } from "../../lib/KaikiClass";
+import { KaikiCommand } from "kaiki";
+
 
 export default class ExcludeCommand extends KaikiCommand {
 	constructor() {

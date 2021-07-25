@@ -3,7 +3,8 @@ import fetch from "node-fetch";
 import { ServerOffline, ServerOnline } from "../../interfaces/IMinecraftServerPing";
 import { noArgGeneric } from "../../lib/Embeds";
 import { trim } from "../../lib/Util";
-import { KaikiCommand } from "../../lib/KaikiClass";
+import { KaikiCommand } from "kaiki";
+
 
 
 export default class mcpingCommand extends KaikiCommand {

@@ -1,7 +1,8 @@
 import { PrefixSupplier } from "discord-akairo";
 import { Guild, Message, MessageEmbed, Permissions } from "discord.js";
 import { EmbedFromJson, EmbedJSON } from "../../interfaces/IGreetLeave";
-import { KaikiCommand } from "../../lib/KaikiClass";
+import { KaikiCommand } from "kaiki";
+
 import { getGuildDocument } from "../../struct/documentMethods";
 
 export default class WelcomeMessageCommand extends KaikiCommand {

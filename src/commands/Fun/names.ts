@@ -2,7 +2,8 @@ import { sendPaginatedMessage } from "@cataclym/discord.js-pagination-ts-nsb";
 import { Message, MessageEmbed, User } from "discord.js";
 import { IUser } from "../../interfaces/IDocuments";
 import { getUserDocument } from "../../struct/documentMethods";
-import { KaikiCommand } from "../../lib/KaikiClass";
+import { KaikiCommand } from "kaiki";
+
 
 async function add(Embed: MessageEmbed, array: MessageEmbed[]) {
 	array.push(Embed);

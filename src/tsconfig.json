@@ -1,6 +1,6 @@
 {
     "compilerOptions": {
-      "strictNullChecks": true, // enable strict null checks as a best practice
+      "strictNullChecks": true,
       "allowJs": true,
       "module": "commonJS",
       "esModuleInterop": true,
@@ -13,23 +13,19 @@
       "outDir": "../dist/",
       "baseUrl": "./",
       "paths": {
-        // "Kaiki": ["./lib/KaikiClass", "../dist/lib/KaikiClass"],
         "*": ["*", "../node_modules/*"]
       },
       "types": [
-        // add node as an option
         "node",
         "reflect-metadata"
       ],
       "declaration": false,
       "emitDecoratorMetadata": true,
       "experimentalDecorators": true,
-      "typeRoots": ["types.ts", "../node_modules/@types"],
+      "typeRoots": ["types.ts", "../node_modules/@types", "../local_modules"],
       "lib": ["es6", "dom"]
     },
-    "references": [      // this is how we declare a dependency from
-      { "path": "../" }  // this project to the one at the root dir`
-    ],
+    "references": [{ "path": "../" }],
     "include": ["./**/*", "jest.config.js",  "**/*.ts", "types.ts", "./Extensions/loglevel.d.ts"],
     "exclude": ["../node_modules/*", "../types/*"],
 }

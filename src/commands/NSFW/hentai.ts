@@ -1,6 +1,7 @@
 import { Message } from "discord.js";
 import { grabHentai, typesArray, postHentai } from "./hentaiService";
-import { KaikiCommand } from "../../lib/KaikiClass";
+import { KaikiCommand } from "kaiki";
+
 
 export default class HentaiCommand extends KaikiCommand {
 	constructor() {

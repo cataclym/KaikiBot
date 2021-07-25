@@ -1,6 +1,7 @@
 import { Message, MessageReaction } from "discord.js";
 import { noArgGeneric } from "../../lib/Embeds";
-import { KaikiCommand } from "../../lib/KaikiClass";
+import { KaikiCommand } from "kaiki";
+
 
 export default class SaveChatCommand extends KaikiCommand {
 	constructor() {

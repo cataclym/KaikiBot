@@ -1,6 +1,7 @@
 import { Command } from "discord-akairo";
 import { Message, MessageEmbed, Role, GuildMember } from "discord.js";
-import { KaikiCommand } from "../../lib/KaikiClass";
+import { KaikiCommand } from "kaiki";
+
 
 export default class RoleRemoveCommand extends KaikiCommand {
 	constructor() {

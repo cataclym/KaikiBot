@@ -1,7 +1,8 @@
 import { ChildProcess, exec } from "child_process";
 import { Message, MessageEmbed } from "discord.js";
 import { codeblock, trim } from "../../lib/Util";
-import { KaikiCommand } from "../../lib/KaikiClass";
+import { KaikiCommand } from "kaiki";
+
 
 export default class ExecCommand extends KaikiCommand {
 	constructor() {

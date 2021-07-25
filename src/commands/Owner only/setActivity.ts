@@ -3,7 +3,8 @@ import { ActivityType } from "discord-api-types";
 import { Message, MessageEmbed } from "discord.js";
 import { noArgGeneric } from "../../lib/Embeds";
 import { getBotDocument } from "../../struct/documentMethods";
-import { KaikiCommand } from "../../lib/KaikiClass";
+import { KaikiCommand } from "kaiki";
+
 const validTypes = ["PLAYING", "STREAMING", "LISTENING", "WATCHING", "COMPETING"];
 
 export default class SetActivityCommand extends KaikiCommand {

@@ -3,7 +3,8 @@ import logger from "loglevel";
 import fetch from "node-fetch";
 import { animeQuoteCache, respType } from "../../cache/cache";
 import { sendQuote } from "../../lib/APIs/animeQuote";
-import { KaikiCommand } from "../../lib/KaikiClass";
+import { KaikiCommand } from "kaiki";
+
 
 export default class AnimeQuoteCommand extends KaikiCommand {
 	constructor() {
