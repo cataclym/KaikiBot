@@ -21,9 +21,23 @@ export default class ExecCommand extends KaikiCommand {
 	}
 	public async exec(message: Message, { command }: { command: string }): Promise<ChildProcess> {
 
-		return exec(command, async (e, stdout) => message.channel.send({ embeds: [new MessageEmbed()
-			.setAuthor("Executed command", message.client.user?.displayAvatarURL({ dynamic: true }))
-			.setDescription(trim(await codeblock(stdout), 2000))
-			.withOkColor(message)] }));
+		return exec(command, async (e, stdout) => {
+
+			if (e) {
+				return message.channel.send({
+					embeds: [new MessageEmbed()
+						.setAuthor("Command errored", message.client.user?.displayAvatarURL({ dynamic: true }))
+						.setDescription(await codeblock(trim(String(e ?? "Unknown error"), 1997)))
+						.withErrorColor(message)],
+				});
+			}
+
+			return message.channel.send({
+				embeds: [new MessageEmbed()
+					.setAuthor("Executed command", message.client.user?.displayAvatarURL({ dynamic: true }))
+					.setDescription(await codeblock(trim(stdout ?? "Command executed", 1997)))
+					.withOkColor(message)],
+			});
+		});
 	}
 }
