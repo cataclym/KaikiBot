@@ -10,8 +10,8 @@ export default class AnimeCommand extends KaikiCommand {
 	constructor() {
 		super("anime", {
 			aliases: ["anime"],
-			description: "",
-			usage: "",
+			description: "Shows the first result of a query to Anilist",
+			usage: "Tsukimonogatari",
 			args: [{
 				id: "anime",
 				type: "string",
