@@ -1,54 +1,10 @@
-import { Message } from "discord.js";
+import { Message, MessageEmbed } from "discord.js";
+import fetch from "node-fetch";
 import { KaikiCommand } from "kaiki";
-
-// Here we define our query as a multi-line string
-// Storing it in a separate .graphql/.gql file is also possible
-const query = `
-query ($id: Int) { # Define which variables will be used in the query (id)
-  Media (id: $id, type: ANIME) { # Insert our variables into the query arguments (id) (type: ANIME is hard-coded in the query)
-    id
-    title {
-      romaji
-      english
-      native
-    }
-  }
-}
-`;
-
-// Define our query variables and values that will be used in the query request
-const variables = {
-	id: 15125,
-};
-
-// Define the config we'll need for our Api request
-const url = "https://graphql.anilist.co",
-	options = {
-		method: "POST",
-		headers: {
-			"Content-Type": "application/json",
-			"Accept": "application/json",
-		},
-		body: JSON.stringify({
-			query: query,
-			variables: variables,
-		}),
-	};
-
-function handleResponse(response: { json: () => Promise<any>; ok: any; }) {
-	return response.json().then(function(json) {
-		return response.ok ? json : Promise.reject(json);
-	});
-}
-
-function handleData(data: any) {
-	console.log(data);
-}
-
-function handleError(error: any) {
-	alert("Error, check console");
-	console.error(error);
-}
+import { handleError, handleResponse, query } from "../../lib/APIs/AnilistGraphQL";
+import { IAniListResponse } from "../../interfaces/IAniListResponse";
+import { stripHtml, trim } from "../../lib/Util";
+import { noArgGeneric } from "../../lib/Embeds";
 
 export default class AnimeCommand extends KaikiCommand {
 	constructor() {
@@ -56,14 +12,69 @@ export default class AnimeCommand extends KaikiCommand {
 			aliases: ["anime"],
 			description: "",
 			usage: "",
+			args: [{
+				id: "anime",
+				type: "string",
+				match: "content",
+				otherwise: (m) => noArgGeneric(m),
+			}],
 		});
 	}
 
-	public async exec(message: Message): Promise<void> {
-		return;
-		// Make the HTTP Api request
-		fetch(url, options).then(handleResponse)
-			.then(handleData)
+	public async exec(message: Message, { anime }: { anime: string}): Promise<Message | void> {
+
+		const url = "https://graphql.anilist.co",
+			options = {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					"Accept": "application/json",
+				},
+				body: JSON.stringify({
+					query: query,
+					variables: {
+						search: anime,
+						page: 1,
+						perPage: 1,
+						type: "ANIME",
+					},
+				}),
+			};
+
+		return await fetch(url, options).then(handleResponse)
+			.then((response: IAniListResponse) => {
+
+				const { coverImage, title, episodes, description, format, status, studios, startDate, genres, endDate, siteUrl } = response.data.Page.media[0];
+				const monthFormat = new Intl.DateTimeFormat("en-US", { month: "long" });
+				const started = `${monthFormat.format(startDate.month)} ${startDate.day}, ${startDate.year}`;
+				const ended = `${monthFormat.format(endDate.month)} ${endDate.day}, ${endDate.year}`
+				const aired = started === ended
+					? started
+					: `${started} to ${ended}`;
+
+				return message.channel.send({
+					embeds: [
+						new MessageEmbed()
+							.setImage(coverImage.large)
+							.setTitle(title.english && title.romaji
+								? `${title.english} / ${title.romaji}`
+								: title.english || title.romaji)
+							.setURL(siteUrl)
+							.setDescription(stripHtml(trim(description, 2000)))
+							.withOkColor(message),
+						new MessageEmbed()
+							.addFields([
+								{ name: "Format", value: format, inline: true },
+								{ name: "Episodes", value: String(episodes), inline: true },
+								{ name: "Aired", value: aired, inline: true },
+								{ name: "Status", value: status, inline: true },
+								{ name: "Genres", value: genres.join(", "), inline: true },
+								{ name: "Studio(s)", value: studios.nodes.map((n) => n.name).join(", "), inline: true },
+							])
+							.withOkColor(message),
+					],
+				});
+			})
 			.catch(handleError);
 	}
 }

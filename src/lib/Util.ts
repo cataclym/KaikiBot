@@ -162,3 +162,8 @@ export async function chunk(items: any[], size: number): Promise<any[]> {
 
 	return chunks;
 }
+
+// Credit to https://www.codegrepper.com/code-examples/javascript/nodejs+strip+html+from+string
+export function stripHtml(html: string) {
+	return html.replace(/(<([^>]+)>)/ig, "");
+}
