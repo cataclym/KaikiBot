@@ -1,7 +1,7 @@
-import { Message, MessageEmbed, TextChannel } from "discord.js";
+import { Message, MessageEmbed, Permissions, TextChannel } from "discord.js";
 import { KaikiCommand } from "kaiki";
-
-import { codeblock } from "../../lib/Util";
+import { errorMessage } from "../../lib/Embeds";
+import { EmbedFromJson } from "../../interfaces/IGreetLeave";
 
 type argumentMessage = {
 	[str: string]: string | any
@@ -11,13 +11,14 @@ export default class SayCommand extends KaikiCommand {
 	constructor() {
 		super("say", {
 			aliases: ["say"],
-			description: "Bot will send the message you typed in the specified channel. " +
-				"If you omit the channel name, it will send the message in the current channel. It also takes embeds",
-			usage: ["hey", "#general hello"],
+			description: "Bot will send the message you typed in the specified channel. It also takes embeds",
+			usage: ["#general hello"],
+			channel: "guild",
+			userPermissions: Permissions.FLAGS.MANAGE_MESSAGES,
 			args: [{
 				id: "channel",
 				type: "textChannel",
-				default: (m: Message) => m.channel,
+				otherwise: m => errorMessage(m, "Please provide a (valid) channel!"),
 			},
 			{
 				id: "argMessage",
@@ -38,17 +39,10 @@ export default class SayCommand extends KaikiCommand {
 
 	public async exec(_: Message, { channel, argMessage }: { channel: TextChannel, argMessage: argumentMessage }): Promise<Message> {
 
-		channel.send("Output\n" + await codeblock(JSON.stringify(argMessage, null, 4), "xl"));
-
-		return channel.send({
-			content: typeof argMessage !== "object"
-				? argMessage
-				: null,
-			embeds: typeof argMessage === "object"
-				? [new MessageEmbed(argMessage)]
-				: [],
-		});
+		return channel.send(typeof argMessage !== "object"
+			? 	{
+				content: argMessage,
+			}
+			: await new EmbedFromJson(argMessage).createEmbed());
 	}
 }
-
-// .replace(/.+?say/, "")
