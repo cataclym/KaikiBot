@@ -54,7 +54,7 @@ Guild.prototype.isDadBotEnabled = function(message?: Message) {
 MessageEmbed.prototype.withErrorColor = function(m?: Message | Guild) {
 
 	if (m) {
-		if (m instanceof Message) {
+		if (m instanceof Message && m.guild) {
 			return this.setColor((m.client as customClient).guildSettings.get(m.guild!.id, "errorColor", okColor));
 		}
 		return this.setColor((m.client as customClient).guildSettings.get(m.id, "errorColor", okColor));
@@ -66,7 +66,7 @@ MessageEmbed.prototype.withErrorColor = function(m?: Message | Guild) {
 MessageEmbed.prototype.withOkColor = function(m?: Message | Guild) {
 
 	if (m) {
-		if (m instanceof Message) {
+		if (m instanceof Message && m.guild) {
 			return this.setColor((m.client as customClient).guildSettings.get(m.guild!.id, "okColor", okColor));
 		}
 		return this.setColor((m.client as customClient).guildSettings.get(m.id, "okColor", okColor));
