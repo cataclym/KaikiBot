@@ -7,10 +7,9 @@ export const animeQuoteCache: {[character: string]: respType } = {};
 export let cmdStatsCache: {[index: string]: number} = {};
 
 setInterval(async () => {
-	const db = await getCommandStatsDocument();
-
 	if (!Object.entries(cmdStatsCache).length) return;
 
+	const db = await getCommandStatsDocument();
 	for await (const [id, number] of Object.entries(cmdStatsCache)) {
 		db.count[id]
 			? db.count[id] += number
