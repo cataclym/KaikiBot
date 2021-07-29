@@ -39,6 +39,11 @@ export default class SayCommand extends KaikiCommand {
 
 	public async exec(_: Message, { channel, argMessage }: { channel: TextChannel, argMessage: argumentMessage }): Promise<Message> {
 
+		if (_.member && !_.member.permissionsIn(channel).has(Permissions.FLAGS.MANAGE_MESSAGES)) {
+			return _.channel.send({ embeds: [await errorMessage(_, `You do not have \`MANAGE_MESSAGES\` in ${channel}`)],
+			});
+		}
+
 		return channel.send(typeof argMessage !== "object"
 			? 	{
 				content: argMessage,
