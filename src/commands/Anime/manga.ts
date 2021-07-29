@@ -1,20 +1,19 @@
 import { Message, MessageEmbed } from "discord.js";
 import fetch from "node-fetch";
 import { KaikiCommand } from "kaiki";
-import { handleError, handleResponse, aniQuery } from "../../lib/APIs/AnilistGraphQL";
-import { IAnimeRes } from "../../interfaces/IAnimeRes";
+import { handleError, handleResponse, mangaQuery } from "../../lib/APIs/AnilistGraphQL";
 import { stripHtml, trim } from "../../lib/Util";
 import { noArgGeneric } from "../../lib/Embeds";
-import { Node } from "../../interfaces/IAnimeRes";
+import { IMangaRes } from "../../interfaces/IMangaRes";
 
-export default class AnimeCommand extends KaikiCommand {
+export default class MangaCommand extends KaikiCommand {
 	constructor() {
-		super("anime", {
-			aliases: ["anime"],
+		super("manga", {
+			aliases: ["manga"],
 			description: "Shows the first result of a query to Anilist",
 			usage: "Tsukimonogatari",
 			args: [{
-				id: "anime",
+				id: "manga",
 				type: "string",
 				match: "content",
 				otherwise: (m) => noArgGeneric(m),
@@ -22,7 +21,7 @@ export default class AnimeCommand extends KaikiCommand {
 		});
 	}
 
-	public async exec(message: Message, { anime }: { anime: string}): Promise<Message | void> {
+	public async exec(message: Message, { manga }: { manga: string}): Promise<Message | void> {
 
 		const url = "https://graphql.anilist.co",
 			options = {
@@ -32,24 +31,24 @@ export default class AnimeCommand extends KaikiCommand {
 					"Accept": "application/json",
 				},
 				body: JSON.stringify({
-					query: aniQuery,
+					query: mangaQuery,
 					variables: {
-						search: anime,
+						search: manga,
 						page: 1,
 						perPage: 1,
-						type: "ANIME",
+						type: "MANGA",
 					},
 				}),
 			};
 
 		return await fetch(url, options).then(handleResponse)
-			.then((response: IAnimeRes) => {
+			.then((response: IMangaRes) => {
 
-				const { coverImage, title, episodes, description, format, status, studios, startDate, genres, endDate, siteUrl } = response.data.Page.media[0];
+				const { coverImage, title, chapters, description, format, status, startDate, genres, endDate, siteUrl } = response.data.Page.media[0];
 				const monthFormat = new Intl.DateTimeFormat("en-US", { month: "long" });
-				const started = `${monthFormat.format(startDate.month)} ${startDate.day}, ${startDate.year}`;
-				const ended = `${monthFormat.format(endDate.month)} ${endDate.day}, ${endDate.year}`;
-				const aired = started === ended
+				const started = startDate.month ? `${monthFormat.format(startDate.month)} ${startDate.day}, ${startDate.year}` : null;
+				const ended = endDate.month ? `${monthFormat.format(endDate.month)} ${endDate.day}, ${endDate.year}` : null;
+				const aired = started === ended && started !== null && ended !== null
 					? started
 					: `${started} to ${ended}`;
 
@@ -66,11 +65,10 @@ export default class AnimeCommand extends KaikiCommand {
 						new MessageEmbed()
 							.addFields([
 								{ name: "Format", value: format, inline: true },
-								{ name: "Episodes", value: String(episodes), inline: true },
+								{ name: "Episodes", value: String(chapters ?? "N/A"), inline: true },
 								{ name: "Aired", value: aired, inline: true },
 								{ name: "Status", value: status, inline: true },
 								{ name: "Genres", value: genres.join(", "), inline: true },
-								{ name: "Studio(s)", value: studios.nodes.map(n => n.name).join(", "), inline: true },
 							])
 							.withOkColor(message),
 					],

@@ -1,4 +1,4 @@
-export interface IAniListResponse {
+export interface IMangaRes {
 	data: Data;
 }
 
@@ -15,22 +15,21 @@ export interface Media {
 	title: Title;
 	coverImage: CoverImage;
 	description: string;
-	bannerImage: string;
+	bannerImage: null | string;
 	format: string;
 	status: string;
 	type: string;
 	meanScore: number;
 	startDate: EndDateClass;
 	endDate: EndDateClass;
-	duration: number;
+	duration: null;
 	source: string;
-	episodes: number;
-	chapters: null;
-	volumes: null;
-	studios: Studios;
+	episodes: null;
+	chapters: number | null;
+	volumes: number | null;
 	synonyms: string[];
 	genres: string[];
-	trailer: Trailer;
+	trailer: null;
 	externalLinks: ExternalLink[];
 	siteUrl: string;
 	isAdult: boolean;
@@ -39,13 +38,13 @@ export interface Media {
 
 export interface CoverImage {
 	large: string;
-	color: string;
+	color: null | string;
 }
 
 export interface EndDateClass {
-	year: number;
-	month: number;
-	day: number;
+	year: number | null;
+	month: number | null;
+	day: number | null;
 }
 
 export interface ExternalLink {
@@ -53,20 +52,7 @@ export interface ExternalLink {
 	url: string;
 }
 
-export interface Studios {
-	nodes: Node[];
-}
-
-export interface Node {
-	name: string;
-}
-
 export interface Title {
 	romaji: string;
-	english: string;
-}
-
-export interface Trailer {
-	id: string;
-	site: string;
+	english: null | string;
 }
