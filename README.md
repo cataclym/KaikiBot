@@ -1,8 +1,8 @@
 #  Welcome to Kaiki Deishu Bot
 
-### A simple bot Written in TypeScript with lots of unique commands and features.
+### KaikiBot
 
-Invite the public bot here: TODO: Add link
+[Add Kaiki to your server](https://discord.com/oauth2/authorize?client_id=714695773534814238&scope=bot)
 
 # Guide
 
