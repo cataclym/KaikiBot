@@ -1,4 +1,4 @@
-import { Channel, Collection, GuildChannel, Message, MessageEmbed, Permissions } from "discord.js";
+import { Channel, Collection, GuildChannel, Message, MessageEmbed, Permissions, ThreadChannel } from "discord.js";
 import { noArgGeneric } from "../../lib/Embeds";
 import { KaikiCommand } from "kaiki";
 
@@ -34,10 +34,12 @@ export default class DeleteChannelCommand extends KaikiCommand {
 			embeds: [new MessageEmbed()
 				.setTitle("Channels deleted")
 				.addField("Deleted:", (await Promise.all(deletedChannels
-					.map(async (c) => ["unknown", "group", "dm"].includes(c.type)
-						? c.id
-						: `#${(c as GuildChannel).name} [${c.id}]`,
-					))).join("\n"))
+					.map(async (c) => {
+						if (c instanceof GuildChannel || c instanceof ThreadChannel) {
+							return `${c.name} [${c.id}]`;
+						}
+						return `[${c.id}]`;
+					}))).join("\n"))
 				.withOkColor(m)],
 		});
 	}
