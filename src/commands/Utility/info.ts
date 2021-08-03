@@ -1,5 +1,19 @@
 import { Argument } from "discord-akairo";
-import { CategoryChannel, Channel, Emoji, GuildMember, Message, MessageEmbed, NewsChannel, Role, StageChannel, StoreChannel, TextChannel, VoiceChannel } from "discord.js";
+import {
+	CategoryChannel,
+	Channel,
+	Emoji,
+	GuildMember,
+	Message,
+	MessageEmbed,
+	NewsChannel,
+	Role,
+	StageChannel,
+	StoreChannel,
+	TextChannel,
+	ThreadChannel,
+	VoiceChannel,
+} from "discord.js";
 import * as emojis from "node-emoji";
 import { noArgGeneric } from "../../lib/Embeds";
 import { flags } from "../../lib/Util";
@@ -42,14 +56,14 @@ export default class InfoCommand extends KaikiCommand {
 
 			if (obj instanceof VoiceChannel || obj instanceof StageChannel) {
 				emb.setTitle(`Info about voice channel: ${obj.name}`)
-					.addField("ID", obj.id, true)
-					.addField("Userlimit", obj.userLimit === 0
+					.addField("ID", obj.id)
+					.addField("User limit", obj.userLimit === 0
 						? "No limit"
-						: obj.userLimit.toString(), true)
-					.addField("Created at", obj.createdAt.toString(), true)
-					.addField("Bitrate", obj.bitrate / 1000 + "kbps", true);
+						: obj.userLimit.toString())
+					.addField("Created at", obj.createdAt.toString())
+					.addField("Bitrate", obj.bitrate / 1000 + "kbps");
 
-				if (obj.parent) emb.addField("Parent", `${obj.parent.name} [${obj.parentId}]`, true);
+				if (obj.parent) emb.addField("Parent", `${obj.parent.name} [${obj.parentId}]`);
 			}
 
 			else if (obj instanceof TextChannel || obj instanceof NewsChannel || obj instanceof StoreChannel) {
@@ -58,7 +72,7 @@ export default class InfoCommand extends KaikiCommand {
 					.addField("NSFW", obj.nsfw ? "Enabled" : "Disabled")
 					.addField("Created at", obj.createdAt.toString());
 
-				if (obj.parent) emb.addField("Parent", `${obj.parent.name} [${obj.parentId}]`, true);
+				if (obj.parent) emb.addField("Parent", `${obj.parent.name} [${obj.parentId}]`);
 			}
 
 			else if (obj instanceof CategoryChannel) {
@@ -67,7 +81,16 @@ export default class InfoCommand extends KaikiCommand {
 					.addField("Children", String(obj.children.size))
 					.addField("Created at", obj.createdAt.toString());
 
-				if (obj.parent) emb.addField("Parent", `${obj.parent.name} [${obj.parentId}]`, true);
+				if (obj.parent) emb.addField("Parent", `${obj.parent.name} [${obj.parentId}]`);
+			}
+
+			else if (obj instanceof ThreadChannel) {
+				emb.setTitle(`Info about Thread: ${obj.name}`)
+					.addField("ID", obj.id)
+					.addField("Created at", obj.createdAt.toString())
+					.addField("Author", message.guild?.members.cache.get(obj.ownerId)?.user.username ?? obj.ownerId);
+
+				if (obj.parent) emb.addField("Parent", `${obj.parent.name} [${obj.parentId}]`);
 			}
 		}
 
