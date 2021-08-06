@@ -5,7 +5,7 @@ import { Snowflake } from "discord-api-types/globals";
 
 export async function ExcludeSlashCommand(interaction: CommandInteraction): Promise<void> {
 
-	if (!interaction.channel?.isText() || !interaction.guild) return interaction.defer({ ephemeral:true });
+	if (!interaction.channel?.isText() || !interaction.guild) return interaction.deferReply({ ephemeral:true });
 
 	if (!interaction.guild!.isDadBotEnabled()) {
 		return interaction.reply({

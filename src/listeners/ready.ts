@@ -3,8 +3,8 @@ import { MessageEmbed } from "discord.js";
 import logger from "loglevel";
 import { birthdayService } from "../lib/AnniversaryRoles";
 import { dailyResetTimer, emoteDataBaseService } from "../lib/functions";
-import { customClient } from "../struct/client";
 import { guildsModel } from "../struct/models";
+import { getBotDocument } from "../struct/documentMethods";
 
 export default class ReadyListener extends Listener {
 	constructor() {
@@ -17,13 +17,15 @@ export default class ReadyListener extends Listener {
 
 	public async exec(): Promise<void> {
 
-		this.client.guilds.cache.forEach(g => {
-			g.commands.create({
-				name: "exclude",
-				description: "Excludes you from being targeted by dadbot.",
-			})
-				.catch(() => logger.warn(`${g.name} [${g.id}] refused creating slash commands. This is sometimes expected.`));
-		});
+		(await guildsModel.find({ "settings.dadBot.enabled": true }))
+			.forEach(g => {
+				const guild = this.client.guilds.cache.get(g.id);
+				guild?.commands.create({
+					name: "exclude",
+					description: "Excludes you from being targeted by dad-bot. Do the command again to reverse this action.",
+				})
+					.catch(() => logger.warn(`${guild.name} [${g.id}] refused creating slash commands. This is sometimes expected.`));
+			});
 
 
 		logger.info(`Created slash commands in ${this.client.guilds.cache.size} guilds.`);
@@ -55,14 +57,12 @@ export default class ReadyListener extends Listener {
 				);
 		}
 
-		const botDocument = { activity: await (this.client as customClient).botSettings.get((this.client as customClient).botSettingID, "activity", ""),
-			activityType: await (this.client as customClient).botSettings.get((this.client as customClient).botSettingID, "activityType", "") };
-
-		if (botDocument.activity.length && botDocument.activityType.length) {
-			this.client.user?.setActivity({
-				name: botDocument.activity,
-				type: botDocument.activityType,
-			});
-		}
+		const botDb = await getBotDocument();
+		this.client.user?.setPresence({
+			activities: [{
+				name: botDb.settings.activity,
+				type: botDb.settings.activityType,
+			}],
+		});
 	}
 }

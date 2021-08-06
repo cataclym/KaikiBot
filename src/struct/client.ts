@@ -1,12 +1,10 @@
 import { AkairoClient, CommandHandler, InhibitorHandler, ListenerHandler, MongooseProvider } from "discord-akairo";
 import { Snowflake } from "discord-api-types";
-import { Intents } from "discord.js";
+import { Intents, PresenceData } from "discord.js";
 import { join } from "path";
 import { getBotDocument } from "./documentMethods";
 import { botModel, guildsModel } from "./models";
 import logger from "loglevel";
-
-export const prefixCache: {[index: string]: string} = {};
 
 export class customClient extends AkairoClient {
 	commandHandler: CommandHandler;
@@ -80,17 +78,19 @@ export class customClient extends AkairoClient {
     }
 
     async init(): Promise<void> {
-    	this.botSettingID = await getBotDocument()
-    			.then(async m => {
-    				if (m.id) {
-    					return m.id;
-    				}
-    				else {
-    					m.id = m._id;
-    					m.markModified("id");
-    					await m.save();
-    					return m.id;
-    				}
-    			});
+
+    	const db = await getBotDocument();
+
+    	this.botSettingID = await (async () => {
+    		if (db.id) {
+    			return db.id;
+    		}
+    		else {
+    			db.id = db._id;
+    			db.markModified("id");
+    			await db.save();
+    			return db.id;
+    		}
+    	})();
     }
 }

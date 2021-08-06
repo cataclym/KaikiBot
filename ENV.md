@@ -1,5 +1,7 @@
 # .env setup guide
 
+The .env file is important to the bot because it is where the process can access its login token. 
+
 ### CLIENT_TOKEN
 
 Create a bot application
@@ -31,9 +33,7 @@ Decide what prefix the bot should default to on new servers.
 Example
 
     PREFIX=;
-### HOLIDAYKEY
-
-**This is not in use at the moment**
+### HOLIDAYKEY (Currently not being used and can be ignored safely)
 
 Example
 
@@ -50,7 +50,7 @@ Example
 
 ## MORE TO COME
 
-### Example .env file
+### Example of finished .env file
 
     CLIENT_TOKEN=MND5MTA2MzY2MzgwNzU5Fjgw.O08nDN.Bl6rIwtlAg9Hxuz8CLPD0l23sun
 

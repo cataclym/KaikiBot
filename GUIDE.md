@@ -1,28 +1,18 @@
 
 ## Requirements
-* Nodejs https://nodejs.org/en/ (15.14.0 for best compatibility. 14.16.0 works but NPM can act up).
+* Node.js v16.6 https://nodejs.org/en/
 * TypeScript `sudo npm install -g typescript` https://www.npmjs.com/package/typescript
-* node-canvas: **This is only necessary if your npm install tries to compile node-canvas from source.**
-    * (Windows) See the <a href="https://github.com/Automattic/node-canvas/wiki/Installation:-Windows">wiki</a>
-    * (Linux)
-        * Debian/Ubuntu: `sudo apt-get install build-essential libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev`
-        * RPM/Fedora: `sudo yum install gcc-c++ cairo-devel libjpeg-turbo-devel pango-devel giflib-devel`
-        * Solus: `sudo eopkg it libjpeg-turbo6 libjpeg-turbo-devel`
-        * Other: See the <a href="https://github.com/Automattic/node-canvas/wiki">wiki</a>
-    * (MacOS)
-        * Homebrew: `brew install pkg-config cairo pango libpng jpeg giflib librsvg`
 
-## Instructions
+## Instructions (Linux)
 
-1. Clone repo: `git clone https://gitlab.com/cataclym/KaikiDeishuBot.git`
-1. `cd KaikiDeishuBot`
-1. Create .env file: `cp .env.example .env`.
-1. Edit .env to add your token and owner id. Using nano or your editor of choice: `nano .env` [Full instructions](./ENV.md)
-1. `npm i`
-1. `npm run build`
-1. `npm run start`
-1. ?
-1. Profit
+1. Clone repo: `git clone https://gitlab.com/cataclym/KaikiDeishuBot.git && cd KaikiDeishuBot`
+2. Create .env file: `cp .env.example .env`.
+3. Edit .env to add your token and owner id. Using nano or your editor of choice: `nano .env` then follow the [full instructions](./ENV.md)!
+4. Install dependencies: `npm i`
+5. Run the compiler: `npm run build`
+6. Run the program: `npm run start`
+7. ?
+8. Profit
 
 Having issues? Come join us on discord
 

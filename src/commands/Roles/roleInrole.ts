@@ -20,7 +20,7 @@ export default class RoleInRoleCommand extends KaikiCommand {
 
 	public async exec(message: Message, { role }: { role: Role }): Promise<Message> {
 
-		const data = role.members.array()
+		const data = [...role.members.values()]
 			.sort((a: GuildMember, b: GuildMember) => b.roles.highest.position - a.roles.highest.position
                 || (a.id as unknown as number) - (b.id as unknown as number))
 			.slice(0, 400);

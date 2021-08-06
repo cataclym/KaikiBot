@@ -15,7 +15,7 @@ export default class RoleListCommand extends KaikiCommand {
 
 	public async exec(message: Message): Promise<Message> {
 
-		const roleArray = (message.guild as Guild).roles.cache.array(),
+		const roleArray = [...(message.guild as Guild).roles.cache.values()],
 			data: Role[] = roleArray
 				.sort((a: Role, b: Role) => b.position - a.position || (b.id as unknown as number) - (a.id as unknown as number)),
 			pages: MessageEmbed[] = [];

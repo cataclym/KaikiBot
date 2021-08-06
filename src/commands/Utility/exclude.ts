@@ -7,7 +7,7 @@ import { KaikiCommand } from "kaiki";
 export default class ExcludeCommand extends KaikiCommand {
 	constructor() {
 		super("exclude", {
-			description: "Adds or removes excluded role from user. Excludes the user from being targeted by dadbot.",
+			description: "Adds or removes excluded role from user. Excludes the user from being targeted by dad-bot.",
 			aliases: ["exclude", "e", "excl"],
 			clientPermissions: "MANAGE_ROLES",
 			channel: "guild",

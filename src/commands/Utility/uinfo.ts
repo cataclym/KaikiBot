@@ -47,7 +47,11 @@ export default class UserInfoCommand extends KaikiCommand {
 					},
 					{
 						name: "Roles (" + member.roles.cache.size + ")",
-						value: member.roles.cache.array().sort((a: Role, b: Role) => b.position - a.position || (b.id as unknown as number) - (a.id as unknown as number)).slice(0, 10).join("\n"),
+						value: [...member.roles.cache.values()]
+							.sort((a, b) => b.position - a.position
+								|| (b.id as unknown as number) - (a.id as unknown as number))
+							.slice(0, 10)
+							.join("\n"),
 						inline: true,
 					}],
 				);

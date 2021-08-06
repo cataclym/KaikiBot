@@ -1,5 +1,6 @@
 import { Listener } from "discord-akairo";
 import logger from "loglevel";
+import { getBotDocument } from "../struct/documentMethods";
 
 
 export default class ShardResumeListener extends Listener {
@@ -15,5 +16,12 @@ export default class ShardResumeListener extends Listener {
 
 		logger.info(`shardResume | Shard: ${id} \nReplayed ${replayedEvents} events.`);
 
+		const botDb = await getBotDocument();
+		this.client.user?.setPresence({
+			activities: [{
+				name: botDb.settings.activity,
+				type: botDb.settings.activityType,
+			}],
+		});
 	}
 }

@@ -5,7 +5,7 @@ import { countEmotes } from "../lib/functions";
 export default class MessageListener extends Listener {
 	constructor() {
 		super("message", {
-			event: "message",
+			event: "messageCreate",
 			emitter: "client",
 		});
 	}

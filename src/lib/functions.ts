@@ -72,7 +72,7 @@ export function timeToMidnight(): number {
 async function emoteDB(guild: Guild) {
 	let i = 0;
 	const db = await getGuildDocument(guild.id);
-	for await (const emote of guild.emojis.cache.array()) {
+	for await (const emote of [...guild.emojis.cache.values()]) {
 		if (!(emote.id in db.emojiStats)) {
 			i++;
 			db.emojiStats[emote.id] = 0;

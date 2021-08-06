@@ -17,19 +17,19 @@ export default class InteractionListener extends Listener {
 		if (!interaction.isCommand()) return;
 
 		if (!interaction.guild || interaction.commandName !== "exclude" || !interaction.channel?.isText()) {
-			return interaction.defer({ ephemeral: true });
+			return interaction.deferReply({ ephemeral: true });
 		}
 
 		else if (interaction.guild.me?.permissions.has("MANAGE_ROLES")) {
 			return ExcludeSlashCommand(interaction)
-				.catch((er) => logger.trace(er));
+				.catch((er) => logger.error(er));
 		}
 
 		else {
 			return await interaction.reply({
 				ephemeral: true,
 				embeds: [await errorMessage(interaction.guild,
-					"I do not have `MANAGE_ROLES` permisssion.")],
+					"I do not have `MANAGE_ROLES` permission.")],
 			});
 		}
 	}

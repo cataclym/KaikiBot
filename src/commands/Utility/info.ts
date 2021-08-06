@@ -87,8 +87,11 @@ export default class InfoCommand extends KaikiCommand {
 			else if (obj instanceof ThreadChannel) {
 				emb.setTitle(`Info about Thread: ${obj.name}`)
 					.addField("ID", obj.id)
-					.addField("Created at", obj.createdAt.toString())
-					.addField("Author", message.guild?.members.cache.get(obj.ownerId)?.user.username ?? obj.ownerId);
+					.addField("Created at", obj.createdAt.toString());
+
+				if (obj.ownerId) {
+					emb.addField("Author", message.guild?.members.cache.get(obj.ownerId)?.user.username ?? obj.ownerId);
+				}
 
 				if (obj.parent) emb.addField("Parent", `${obj.parent.name} [${obj.parentId}]`);
 			}
