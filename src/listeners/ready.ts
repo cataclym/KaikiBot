@@ -5,6 +5,8 @@ import { birthdayService } from "../lib/AnniversaryRoles";
 import { dailyResetTimer, emoteDataBaseService } from "../lib/functions";
 import { guildsModel } from "../struct/models";
 import { getBotDocument } from "../struct/documentMethods";
+import { excludeData } from "../lib/slashCommands/data";
+import ExcludeCommand from "../commands/Utility/exclude";
 
 export default class ReadyListener extends Listener {
 	constructor() {
@@ -17,18 +19,27 @@ export default class ReadyListener extends Listener {
 
 	public async exec(): Promise<void> {
 
-		(await guildsModel.find({ "settings.dadBot.enabled": true }))
-			.forEach(g => {
-				const guild = this.client.guilds.cache.get(g.id);
-				guild?.commands.create({
-					name: "exclude",
-					description: "Excludes you from being targeted by dad-bot. Do the command again to reverse this action.",
-				})
-					.catch(() => logger.warn(`${guild.name} [${g.id}] refused creating slash commands. This is sometimes expected.`));
-			});
+		// Find all guilds that has dad-bot enabled
+		const enabled = await guildsModel.find({ "settings.dadBot.enabled": true }).exec();
+		const enabledIDs = enabled.map(a => a.id);
 
+		// Create slash commands in said guilds
+		enabledIDs.forEach(g => {
+			const guild = this.client.guilds.cache.get(g);
+			guild?.commands.create(excludeData)
+				.catch(() => logger.warn(`${guild.name} [${g}] refused creating slash commands. This is sometimes expected.`));
+		});
 
-		logger.info(`Created slash commands in ${this.client.guilds.cache.size} guilds.`);
+		// Delete slash commands in disabled guilds
+		for (const g1 of [...this.client.guilds.cache.values()]
+			.filter(g => !enabledIDs.includes(g.id))) {
+			await g1.commands.fetch();
+			const cmd = g1.commands.cache.find(c => c.name === "exclude");
+			if (!cmd) continue;
+			await g1.commands.delete(cmd.id);
+		}
+
+		logger.info(`Created slash commands in ${enabled.length} guilds.`);
 
 		dailyResetTimer(this.client)
 			.then(async () => {
@@ -46,15 +57,13 @@ export default class ReadyListener extends Listener {
 		logger.info(`dataBaseService | ${await guildsModel.countDocuments()} guilds registered in DB.\n`);
 
 		// Let bot owner know when bot goes online.
-		if (["Tsukihi Araragi", "Kaiki Deishū"].includes(this.client.user?.username as string)) {
-			await this.client.users.fetch("140788173885276160", { cache: true })
-				.then(async user => user
-					.send({ embeds:
-						[new MessageEmbed()
-							.setDescription("Bot is online.")
-							.withOkColor()],
-					}),
-				);
+		if (["Tsukihi Araragi#3589", "Kaiki Deishū#9185"].includes(this.client.user?.tag ?? "") && process.env.OWNER) {
+			(await this.client.users.cache.get(process.env.OWNER) ?? await this.client.users.fetch(process.env.OWNER, { cache: true }))
+				.send({ embeds:
+					[new MessageEmbed()
+						.setDescription("Bot is online.")
+						.withOkColor()],
+				});
 		}
 
 		const botDb = await getBotDocument();

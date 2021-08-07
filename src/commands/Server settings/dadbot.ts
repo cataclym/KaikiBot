@@ -4,6 +4,7 @@ import { noArgGeneric } from "../../lib/Embeds";
 import { KaikiCommand } from "kaiki";
 
 import { getGuildDocument } from "../../struct/documentMethods";
+import { excludeData } from "../../lib/slashCommands/data";
 
 export default class DadBotConfigCommand extends KaikiCommand {
 	constructor() {
@@ -49,16 +50,18 @@ export default class DadBotConfigCommand extends KaikiCommand {
 					await message.client.guildSettings.set(guildID, "dadBot", db.settings.dadBot);
 					await db.save();
 
+					message.guild?.commands.create(excludeData);
+
 					return message.channel.send({ embeds: [embed
-						.setTitle(`DadBot has been enabled in ${message.guild?.name}!`)
-						.setDescription(`Individual users can still disable dadbot on themselves with \`${(this.handler.prefix as PrefixSupplier)(message)}exclude\`.`)],
+						.setTitle(`dad-bot has been enabled in ${message.guild?.name}!`)
+						.setDescription(`Individual users can still disable dad-bot on themselves with \`${(this.handler.prefix as PrefixSupplier)(message)}exclude\`.`)],
 					});
 				}
 				else {
 					return message.channel.send({
 						embeds: [embed
 							.setTitle("Already enabled")
-							.setDescription("You have already **enabled** DadBot in this server.")
+							.setDescription("You have already **enabled** dad-bot in this server.")
 							.withErrorColor(message)],
 					});
 				}
@@ -71,14 +74,19 @@ export default class DadBotConfigCommand extends KaikiCommand {
 					await message.client.guildSettings.set(guildID, "dadBot", db.settings.dadBot);
 					await db.save();
 
+					const cmd = message.guild?.commands.cache.find(c => c.name === "exclude");
+					if (cmd) {
+						message.guild?.commands.delete(cmd.id);
+					}
+
 					return message.channel.send({ embeds: [embed
-						.setTitle(`DadBot has been disabled in ${message.guild?.name}!`)] });
+						.setTitle(`dad-bot has been disabled in ${message.guild?.name}!`)] });
 				}
 				else {
 					return message.channel.send({
 						embeds: [embed
 							.setTitle("Already disabled")
-							.setDescription("You have already **disabled** DadBot in this server.")
+							.setDescription("You have already **disabled** dad-bot in this server.")
 							.withErrorColor(message)],
 					});
 				}
