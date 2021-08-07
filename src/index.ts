@@ -3,9 +3,10 @@ import { extensionHook } from "./Extensions/Discord";
 import container from "./inversify.config";
 import { Bot } from "./struct/bot";
 import { TYPES } from "./struct/types";
+import { startLogger } from "./struct/logging";
 
-logger.setLevel("INFO");
 extensionHook();
+(async () => await startLogger())();
 
 process.on("unhandledRejection", (reason: Error, promise) => {
 	logger.warn("Unhandled Rejection at:", promise, "reason:", reason);

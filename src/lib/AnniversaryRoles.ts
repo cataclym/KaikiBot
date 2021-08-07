@@ -4,6 +4,7 @@ import logger from "loglevel";
 import { AnniversaryStrings } from "../struct/constants";
 import { getGuildDocument } from "../struct/documentMethods";
 import { guildsModel } from "../struct/models";
+import chalk from "chalk";
 
 async function DateObject() {
 	const d = new Date();
@@ -19,7 +20,7 @@ let listUsersCakeDay: string[] = [],
 async function birthdayService(client: Client): Promise<void> {
 
 	const enabledGuilds = await getEnabledGuilds(client);
-	logger.info(`birthdayService | Checking [${enabledGuilds.length}] guilds`);
+	logger.info(`birthdayService | Checking ${chalk.green(enabledGuilds.length)} guilds`);
 	await handleAnniversaryGuilds(enabledGuilds, await DateObject());
 	return resetArrays();
 }

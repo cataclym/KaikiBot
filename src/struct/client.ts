@@ -5,6 +5,7 @@ import { join } from "path";
 import { getBotDocument } from "./documentMethods";
 import { botModel, guildsModel } from "./models";
 import logger from "loglevel";
+import chalk from "chalk";
 
 export class customClient extends AkairoClient {
 	commandHandler: CommandHandler;
@@ -42,8 +43,8 @@ export class customClient extends AkairoClient {
     	this.guildSettings = new MongooseProvider(guildsModel);
     	this.botSettings = new MongooseProvider(botModel);
 
-    	this.guildSettings.init().then(r => logger.info("GuildSettings provider - READY"));
-    	this.botSettings.init().then(r => logger.info("BotSettings provider - READY"));
+    	this.guildSettings.init().then(r => logger.info(`GuildSettings provider - ${chalk.green("READY")}`));
+    	this.botSettings.init().then(r => logger.info(`BotSettings provider - ${chalk.green("READY")}`));
 
     	this.commandHandler = new CommandHandler(this, {
     		allowMention: true,

@@ -1,6 +1,6 @@
 {
   "name": "kaikideishubot",
-  "version": "3.5.3-Fuchsia",
+  "version": "3.5.31-Fuchsia",
   "main": "./dist/index.js",
   "scripts": {
     "start": "node -r dotenv/config ./dist/index.js",
@@ -22,6 +22,7 @@
     "@types/ws": "^7.4.4",
     "bufferutil": "^4.0.3",
     "canvas": "^2.8.0",
+    "chalk": "^4.1.2",
     "discord-akairo": "git+https://gitlab.com/cataclym/discord-akairo.git",
     "discord.js": "^13.0.0",
     "dotenv": "^9.0.2",
@@ -30,6 +31,7 @@
     "kaiki": "file:local_modules/Kaiki",
     "kaori": "^2.0.4",
     "loglevel": "^1.7.1",
+    "loglevel-plugin-prefix": "^0.8.4",
     "mongoose": "^5.13.0",
     "node-emoji": "^1.10.0",
     "node-fetch": "^2.6.1",

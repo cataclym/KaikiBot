@@ -1,5 +1,6 @@
 import { Listener } from "discord-akairo";
 import logger from "loglevel";
+import chalk from "chalk";
 
 
 export default class ShardReadyListener extends Listener {
@@ -12,7 +13,7 @@ export default class ShardReadyListener extends Listener {
 	// Emitted when a shard turns ready.
 
 	public async exec(id: number, unavailableGuilds?: Set<string>): Promise<void> {
-		const arr = [`shardReady | Shard: ${id}`];
+		const arr = [`shardReady | Shard: ${chalk.green(id)}`];
 		if (unavailableGuilds?.size) {
 			arr.push("Unavailable guilds:");
 			unavailableGuilds.forEach((v1, v2) => {
