@@ -70,8 +70,8 @@ export default class UpdateCommand extends KaikiCommand {
 				});
 			});
 		}
-		catch (err) {
-			throw new Error("An error occurred during update. Please update manually\n```<GITLAB LINK TO GUIDE HERE.>```xl\n" + err.message || err);
+		catch {
+			throw new Error("An error occurred during update. Please update manually\n```<GITLAB LINK TO GUIDE HERE.>```xl\n");
 			// TODO: add link to update.md on gitlab
 		}
 	}
