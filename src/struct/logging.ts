@@ -14,7 +14,7 @@ const colors: logColors = {
 	TRACE: chalk.magenta,
 	DEBUG: chalk.cyan,
 	INFO: chalk.blueBright,
-	WARN: chalk.yellow,
+	WARN: chalk.hex("#ffa500"),
 	ERROR: chalk.red,
 };
 
