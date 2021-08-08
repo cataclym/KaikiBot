@@ -3,7 +3,7 @@
   "version": "3.5.31-Fuchsia",
   "main": "./dist/index.js",
   "scripts": {
-    "start": "node -r dotenv/config ./dist/index.js",
+    "start": "node -r dotenv/config ./dist/index.js --color",
     "build": "tsc -p src/tsconfig.json",
     "version": "auto-changelog -u --template keepachangelog && git add CHANGELOG.md",
     "watch": "tsc -p src/tsconfig.json -w",

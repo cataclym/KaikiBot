@@ -13,7 +13,7 @@ type logColors = {
 const colors: logColors = {
 	TRACE: chalk.magenta,
 	DEBUG: chalk.cyan,
-	INFO: chalk.blue,
+	INFO: chalk.blueBright,
 	WARN: chalk.yellow,
 	ERROR: chalk.red,
 };
