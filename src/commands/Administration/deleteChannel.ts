@@ -32,7 +32,7 @@ export default class DeleteChannelCommand extends KaikiCommand {
 
 		return m.channel.send({
 			embeds: [new MessageEmbed()
-				.setTitle("Channels deleted")
+				.setTitle("Channel(s) deleted")
 				.addField("Deleted:", (await Promise.all(deletedChannels
 					.map(async (c) => {
 						if (c instanceof GuildChannel || c instanceof ThreadChannel) {

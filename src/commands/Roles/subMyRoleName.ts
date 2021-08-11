@@ -13,6 +13,7 @@ export default class MyRoleSubCommandName extends KaikiCommand {
 			channel: "guild",
 			args: [{
 				id: "name",
+				match: "rest",
 				otherwise: (m: Message) => new MessageEmbed()
 					.setTitle("Please provide a name")
 					.withErrorColor(m),
