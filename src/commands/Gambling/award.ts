@@ -11,8 +11,8 @@ export default class award extends KaikiCommand {
     	super("award", {
     		ownerOnly: true,
     		aliases: ["award"],
-    		description: "",
-    		usage: "award 50 @Cata",
+    		description: "For bot owner to award currency",
+    		usage: "50 @Cata",
     		args: [
     			{
     				id: "amount",

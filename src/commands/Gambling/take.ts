@@ -12,7 +12,7 @@ export default class take extends KaikiCommand {
     		ownerOnly: true,
     		aliases: ["take"],
     		description: "Takes money from the specified user",
-    		usage: "take 50 @Cata",
+    		usage: "50 @Cata",
     		args: [
     			{
     				id: "amount",

@@ -11,7 +11,7 @@ export default class cash extends KaikiCommand {
     	super("cash", {
     		aliases: ["cash", "currency", "cur", "$", "¥", "£", "€"],
     		description: "Shows specified user's current balance. If no user is specified, shows your balance",
-    		usage: "cash",
+    		usage: "",
     		args: [
     			{
     				id: "user",

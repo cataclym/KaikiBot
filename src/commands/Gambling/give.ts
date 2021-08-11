@@ -11,7 +11,7 @@ export default class give extends KaikiCommand {
     	super("give", {
     		aliases: ["give"],
     		description: "Gives money to another user",
-    		usage: "give 50 @Cata",
+    		usage: "50 @Cata",
     		args: [
     			{
     				id: "amount",
