@@ -20,3 +20,6 @@ setInterval(async () => {
 
 	cmdStatsCache = {};
 }, 900000);
+
+// Obvious names are obvious
+export const dailyClaimsCache: {[index: string]: boolean} = {};

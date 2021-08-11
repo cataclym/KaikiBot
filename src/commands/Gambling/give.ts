@@ -15,7 +15,7 @@ export default class give extends KaikiCommand {
     		args: [
     			{
     				id: "amount",
-    				type: "number",
+    				type: "integer",
     				otherwise: (m: Message) => new MessageEmbed({
     					title: "Invalid amount. It must be a number",
     				})

@@ -147,6 +147,8 @@ export const botSchema = new Schema({
 			activityType: "",
 			currencyName: "Yen",
 			currencySymbol: "💴",
+			dailyEnabled: false,
+			dailyAmount: 250,
 		},
 	},
 });

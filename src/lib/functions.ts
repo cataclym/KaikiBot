@@ -4,10 +4,11 @@ import { Client, Guild, GuildMember, Message, MessageEmbed, User } from "discord
 import logger from "loglevel";
 // import { clearRollCache } from "../../_wip/Tinder/tinder";
 import { badWords } from "../struct/constants";
-import { getGuildDocument } from "../struct/documentMethods";
+import { getBotDocument, getGuildDocument } from "../struct/documentMethods";
 import { tinderDataModel } from "../struct/models";
 import { birthdayService } from "./AnniversaryRoles";
 import { trim } from "./Util";
+import { dailyClaimsCache } from "../cache/cache";
 
 let botOwner: User | undefined;
 
@@ -47,7 +48,7 @@ export async function tiredKaikiCryReact(message: Message): Promise<void> {
 	}
 }
 
-export async function ResetRolls(): Promise<void> {
+export async function resetRolls(): Promise<void> {
 	// Tinder reset
 	// clearRollCache();
 	tinderDataModel.updateMany({ rolls: { $lt: 15 } }, { rolls: 15, temporary: [], likes: 3 }, null, () => {
@@ -55,11 +56,24 @@ export async function ResetRolls(): Promise<void> {
 	});
 }
 
+export async function resetDailyClaims(): Promise<void> {
+	const db = await getBotDocument();
+	if (!db.settings.dailyEnabled) return;
+	await Promise.all(Object.keys(dailyClaimsCache).map(async (k) => delete dailyClaimsCache[k]));
+	logger.info("resetDailyClaims | Daily claims have been reset!");
+}
+
 export async function dailyResetTimer(client: Client): Promise<void> {
 	setTimeout(async () => {
-		ResetRolls();
+		// Loop this
 		dailyResetTimer(client);
+		// Reset tinder rolls
+		// resetRolls();
+		// Reset daily currency claims
+		resetDailyClaims();
+		// Check for "birthdays"
 		birthdayService(client);
+		// Uh?
 		emoteDataBaseService(client as AkairoClient);
 	}, timeToMidnight());
 }

@@ -59,6 +59,8 @@ export interface IBot extends Document {
         activityType: ActivityType,
         currencyName: string,
         currencySymbol: string,
+		dailyEnabled: boolean,
+		dailyAmount: number,
     }
 }
 
