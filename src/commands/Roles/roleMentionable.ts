@@ -16,7 +16,7 @@ export default class RoleMentionableCommand extends KaikiCommand {
 				{
 					id: "role",
 					type: "role",
-					otherwise: noArgRole,
+					otherwise: (m) => ({ embeds: [noArgRole(m)] }),
 				},
 			],
 		});
@@ -24,16 +24,13 @@ export default class RoleMentionableCommand extends KaikiCommand {
 
 	public async exec(message: Message, { role }: { role: Role}): Promise<Message> {
 
-		if (role.mentionable) {
-			role.setMentionable(false);
-		}
-		else {
-			role.setMentionable(true);
-		}
+		const bool = !role.mentionable;
+
+		role.setMentionable(bool);
 
 		return message.channel.send({
 			embeds: [new MessageEmbed({
-				description: `Toggled ${role.name}'s mentionable status to ${!role.mentionable}.`,
+				description: `Toggled ${role.name}'s mentionable status to ${bool}.`,
 			})
 				.withOkColor(message)],
 		});

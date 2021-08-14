@@ -19,10 +19,11 @@ export default class BanCommand extends KaikiCommand {
 						const u = await this.client.users.fetch(phrase as Snowflake);
 						return u || null;
 					}),
-					otherwise: (m: Message) => new MessageEmbed({
-						description: "Can't find this user.",
-					})
-						.withErrorColor(m),
+					otherwise: (m: Message) => ({
+						embeds: [new MessageEmbed({
+							description: "Can't find this user.",
+						})
+							.withErrorColor(m)] }),
 				},
 				{
 					id: "reason",

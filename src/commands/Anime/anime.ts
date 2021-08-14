@@ -17,7 +17,7 @@ export default class AnimeCommand extends KaikiCommand {
 				id: "anime",
 				type: "string",
 				match: "content",
-				otherwise: (m) => noArgGeneric(m),
+				otherwise: (m) => ({ embeds: [noArgGeneric(m)] }),
 			}],
 		});
 	}

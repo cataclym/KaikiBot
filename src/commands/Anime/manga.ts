@@ -16,7 +16,7 @@ export default class MangaCommand extends KaikiCommand {
 				id: "manga",
 				type: "string",
 				match: "content",
-				otherwise: (m) => noArgGeneric(m),
+				otherwise: (m) => ({ embeds: [noArgGeneric(m)] }),
 			}],
 		});
 	}

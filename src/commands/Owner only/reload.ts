@@ -13,7 +13,7 @@ export default class ReloadCommand extends KaikiCommand {
 				{
 					id: "command",
 					type: "command",
-					otherwise: (msg: Message) => noArgGeneric(msg),
+					otherwise: (msg: Message) => ({ embeds: [noArgGeneric(msg)] }),
 				},
 			],
 		});

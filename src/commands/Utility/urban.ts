@@ -17,7 +17,7 @@ export default class UrbanDictCommand extends KaikiCommand {
 				{
 					id: "term",
 					match: "rest",
-					otherwise: (msg: Message) => noArgGeneric(msg),
+					otherwise: (msg: Message) => ({ embeds: [noArgGeneric(msg)] }),
 				},
 			],
 		});

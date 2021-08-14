@@ -14,9 +14,9 @@ export default class MyRoleSubCommandName extends KaikiCommand {
 			args: [{
 				id: "name",
 				match: "rest",
-				otherwise: (m: Message) => new MessageEmbed()
+				otherwise: (m: Message) => ({ embeds: [new MessageEmbed()
 					.setTitle("Please provide a name")
-					.withErrorColor(m),
+					.withErrorColor(m)] }),
 			}],
 		});
 	}

@@ -17,9 +17,9 @@
 //     			{
 //     				id: "amount",
 //     				type: "integer",
-//     				otherwise: (m: Message) => new MessageEmbed()
+//     				otherwise: (m: Message) => ({ embeds: [new MessageEmbed()
 //     					.setTitle("Invalid amount. It must be a number")
-//     					.withOkColor(m),
+//     					.withOkColor(m)] }),
 //     			},
 //     		],
 //     	});

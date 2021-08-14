@@ -16,7 +16,7 @@ export default class RoleHoistCommand extends KaikiCommand {
 				{
 					id: "role",
 					type: "role",
-					otherwise: (message: Message) => noArgRole(message),
+					otherwise: (message: Message) => ({ embeds: [noArgRole(message)] }),
 				},
 			],
 		});

@@ -15,7 +15,7 @@ export default class SaveChatCommand extends KaikiCommand {
 				{
 					id: "amount",
 					type: "integer",
-					otherwise: (msg: Message) => noArgGeneric(msg),
+					otherwise: (msg: Message) => ({ embeds: [noArgGeneric(msg)] }),
 				},
 			],
 		});

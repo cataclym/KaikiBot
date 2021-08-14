@@ -16,18 +16,18 @@ export default class RoleRemoveCommand extends KaikiCommand {
 				{
 					id: "member",
 					type: "member",
-					otherwise: (m: Message) => new MessageEmbed({
+					otherwise: (m: Message) => ({ embeds: [new MessageEmbed({
 						title: "Can't find this user. Try again.",
 					})
-						.withErrorColor(m),
+						.withErrorColor(m)] }),
 				},
 				{
 					id: "role",
 					type: "role",
-					otherwise: (m: Message) => new MessageEmbed({
+					otherwise: (m: Message) => ({ embeds: [new MessageEmbed({
 						title: "Can't find a matching role. Try again.",
 					})
-						.withErrorColor(m),
+						.withErrorColor(m)] }),
 				},
 			],
 		});

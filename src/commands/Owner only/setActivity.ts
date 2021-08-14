@@ -18,16 +18,16 @@ export default class SetActivityCommand extends KaikiCommand {
 				{
 					id: "type",
 					type: validTypes,
-					otherwise: (msg: Message, _: FailureData) => new MessageEmbed()
+					otherwise: (msg: Message, _: FailureData) => ({ embeds: [new MessageEmbed()
 						.setDescription(`\`${_.phrase}\` is not an status type`)
 						.addField("Valid types", validTypes.join("\n"))
-						.withErrorColor(msg),
+						.withErrorColor(msg)] }),
 				},
 				{
 					id: "name",
 					type: "string",
 					match: "restContent",
-					otherwise: (m: Message) => noArgGeneric(m),
+					otherwise: (m: Message) => ({ embeds: [noArgGeneric(m)] }),
 				},
 			],
 		});

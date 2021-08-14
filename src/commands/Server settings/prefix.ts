@@ -11,7 +11,7 @@ export default class PrefixConfigCommand extends KaikiCommand {
 				{
 					id: "value",
 					type: "string",
-					otherwise: (m: Message) => noArgGeneric(m),
+					otherwise: (m: Message) => ({ embeds: [noArgGeneric(m)] }),
 				},
 			],
 		});

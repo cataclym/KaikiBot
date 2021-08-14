@@ -17,18 +17,18 @@ export default class take extends KaikiCommand {
     			{
     				id: "amount",
     				type: "integer",
-    				otherwise: (m: Message) => new MessageEmbed({
+    				otherwise: (m: Message) => ({ embeds: [new MessageEmbed({
     					title: "Invalid amount. It must be a number",
     				})
-    					.withOkColor(m),
+    					.withOkColor(m)] }),
     			},
     			{
     				id: "user",
     				type: "user",
-    				otherwise: (m: Message) => new MessageEmbed({
+    				otherwise: (m: Message) => ({ embeds: [new MessageEmbed({
     					title: "Can't find this user. Try again.",
     				})
-    					.withOkColor(m),
+    					.withOkColor(m)] }),
     			},
     		],
     	});

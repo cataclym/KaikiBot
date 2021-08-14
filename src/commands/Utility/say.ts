@@ -18,7 +18,7 @@ export default class SayCommand extends KaikiCommand {
 			args: [{
 				id: "channel",
 				type: "textChannel",
-				otherwise: m => errorMessage(m, "Please provide a (valid) channel!"),
+				otherwise: async m => ({ embeds: [await errorMessage(m, "Please provide a (valid) channel!")] }),
 			},
 			{
 				id: "argMessage",
@@ -30,9 +30,9 @@ export default class SayCommand extends KaikiCommand {
 						return message.content.substring(message.content.indexOf(phrase));
 					}
 				},
-				otherwise: (m) => new MessageEmbed()
+				otherwise: (m) => ({ embeds: [new MessageEmbed()
 					.setDescription("Please provide arguments!")
-					.withErrorColor(m),
+					.withErrorColor(m)] }),
 			}],
 		});
 	}

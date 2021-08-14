@@ -20,7 +20,7 @@ export default class SetDailyCommand extends KaikiCommand {
 				{
 					id: "arg",
 					type: "integer",
-					otherwise: (msg: Message) => noArgGeneric(msg),
+					otherwise: (msg: Message) => ({ embeds: [noArgGeneric(msg)] }),
 				},
 			],
 		});

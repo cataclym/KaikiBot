@@ -14,7 +14,7 @@ export default class SetNameCommand extends KaikiCommand {
 				{
 					id: "name",
 					match: "separate",
-					otherwise: (msg: Message) => noArgGeneric(msg),
+					otherwise: (msg: Message) => ({ embeds: [noArgGeneric(msg)] }),
 				},
 			],
 		});

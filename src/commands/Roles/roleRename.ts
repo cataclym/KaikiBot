@@ -18,16 +18,16 @@ export default class RoleRenameCommand extends KaikiCommand {
 				{
 					id: "role",
 					type: "role",
-					otherwise: (m: Message) => new MessageEmbed({
+					otherwise: (m: Message) => ({ embeds: [new MessageEmbed({
 						title: "Can't find a matching role. Try again.",
 					})
-						.withErrorColor(m),
+						.withErrorColor(m)] }),
 				},
 				{
 					id: "name",
 					type: "string",
 					match: "rest",
-					otherwise: (msg: Message) => noArgGeneric(msg),
+					otherwise: (msg: Message) => ({ embeds: [noArgGeneric(msg)] }),
 				},
 			],
 		});

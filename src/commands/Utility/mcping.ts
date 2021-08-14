@@ -16,7 +16,7 @@ export default class mcpingCommand extends KaikiCommand {
 			args: [{
 				id: "term",
 				match: "rest",
-				otherwise: (msg: Message) => noArgGeneric(msg),
+				otherwise: (msg: Message) => ({ embeds: [noArgGeneric(msg)] }),
 			}],
 			typing: true,
 		});

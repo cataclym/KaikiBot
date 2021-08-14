@@ -17,7 +17,7 @@ export default class RoleDeleteCommand extends KaikiCommand {
 					id: "roles",
 					type: "roles",
 					match: "separate",
-					otherwise: noArgRole,
+					otherwise: (m) => ({ embeds: [noArgRole(m)] }),
 				},
 			],
 		});

@@ -15,7 +15,7 @@ export default class DadBotConfigCommand extends KaikiCommand {
 				{
 					id: "value",
 					type: ["enable", "true", "disable", "false"],
-					otherwise: (message: Message) => noArgGeneric(message),
+					otherwise: (message: Message) => ({ embeds: [noArgGeneric(message)] }),
 				},
 			],
 

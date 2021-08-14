@@ -15,7 +15,7 @@ export default class DeleteChannelCommand extends KaikiCommand {
 				id: "channels",
 				type: "channels",
 				match: "separate",
-				otherwise: (m: Message) => noArgGeneric(m),
+				otherwise: (m: Message) => ({ embeds: [noArgGeneric(m)] }),
 			}],
 		});
 	}

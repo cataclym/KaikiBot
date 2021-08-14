@@ -27,7 +27,7 @@ export default class commandsList extends KaikiCommand {
 						? ""
 						: undefined),
 					// Thanks js
-					otherwise: (msg: Message) => noArgGeneric(msg),
+					otherwise: (msg: Message) => ({ embeds: [noArgGeneric(msg)] }),
 
 				},
 			],

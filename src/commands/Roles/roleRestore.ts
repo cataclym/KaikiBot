@@ -18,9 +18,9 @@ export default class RestoreUserRoles extends KaikiCommand {
 				{
 					id: "member",
 					type: "member",
-					otherwise: (m) => new MessageEmbed()
+					otherwise: (m) => ({ embeds: [new MessageEmbed()
 						.setDescription("Please provide a valid member")
-						.withErrorColor(m),
+						.withErrorColor(m)] }),
 				},
 			],
 		});

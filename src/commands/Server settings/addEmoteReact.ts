@@ -17,12 +17,12 @@ export default class EmoteReactCommand extends KaikiCommand {
 				{
 					id: "trigger",
 					type: "string",
-					otherwise: (m: Message) => noArgGeneric(m),
+					otherwise: (m: Message) => ({ embeds: [noArgGeneric(m)] }),
 				},
 				{
 					id: "emoji",
 					type: "emoji",
-					otherwise: (m: Message) => noArgGeneric(m),
+					otherwise: (m: Message) => ({ embeds: [noArgGeneric(m)] }),
 				},
 			],
 		});

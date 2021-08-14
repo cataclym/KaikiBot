@@ -37,7 +37,7 @@ export default class InfoCommand extends KaikiCommand {
 						return emojis.find(content);
 					}, "guildMessage", EMOTE_REGEX),
 					match: "content",
-					otherwise: (m: Message) => noArgGeneric(m),
+					otherwise: (m: Message) => ({ embeds: [noArgGeneric(m)] }),
 				},
 			],
 		});

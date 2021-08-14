@@ -21,10 +21,10 @@ export default class WelcomeMessageCommand extends KaikiCommand {
 						return undefined;
 					}
 				},
-				otherwise: (m) => new MessageEmbed()
+				otherwise: (m) => ({ embeds: [new MessageEmbed()
 					.setTitle("Error")
 					.setDescription("Please provide valid json")
-					.withErrorColor(m),
+					.withErrorColor(m)] }),
 			}],
 		});
 	}

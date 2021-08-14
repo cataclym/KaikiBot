@@ -17,7 +17,7 @@ export default class RoleCreateCommand extends KaikiCommand {
 					id: "name",
 					type: "string",
 					match: "rest",
-					otherwise: (msg: Message) => noArgGeneric(msg),
+					otherwise: (msg: Message) => ({ embeds: [noArgGeneric(msg)] }),
 				},
 			],
 		});

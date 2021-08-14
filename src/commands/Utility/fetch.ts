@@ -25,9 +25,9 @@ export default class FetchUserCommand extends KaikiCommand {
 							return;
 						}
 					}),
-					otherwise: (m) => new MessageEmbed()
+					otherwise: (m) => ({ embeds: [new MessageEmbed()
 						.setDescription("No user found")
-						.withErrorColor(m),
+						.withErrorColor(m)] }),
 				},
 			],
 		});
