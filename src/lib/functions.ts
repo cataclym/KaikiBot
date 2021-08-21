@@ -196,34 +196,3 @@ export async function parsePlaceHolders(input:string, guildMember: GuildMember):
 	}
 	return input;
 }
-
-// /**
-//  * Get the sortest form of "I am something" in a message to fuck users over.
-//  * Twice as hard when they don't pay attention to what they're saying!
-//  * Utilizes a couple loops in order to grab the absolute shortest possible
-//  * occurrence of a user saying they are something.
-//  * Maximum dadbot!
-//  *
-//  * @param	{String} userinputisgay		The message the user sent.
-//  * @return	{String} The shortest form of the user saying they are something, or null.
-//  */
-// export function findshortest(userinputisgay: string): null | string {
-// 	let longest: string | string[] | null = null;
-// 	for (const split in dadbotArray) {
-// 		const results = userinputisgay.split(split);
-// 		logger.info(results);
-// 		if (results.length > 1) {
-// 			// split always returns 1 item if it didn't split
-// 			results.forEach(r => {
-// 				if (longest) {
-// 					logger.info(r);
-// 					if (r.length < longest.length) {
-// 						logger.info(r);
-// 						longest = r;
-// 					}
-// 				}
-// 			});
-// 		}
-// 	}
-// 	return longest;
-// }
