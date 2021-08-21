@@ -1,4 +1,4 @@
-import { ColorResolvable, GuildMember, Message, MessageEmbed } from "discord.js";
+import { GuildMember, Message, MessageEmbed } from "discord.js";
 import { hexColorTable } from "../Color";
 import { processAPIRequest } from "./APIProcessor";
 import { endpointData } from "../../interfaces/IAPIData";
@@ -8,7 +8,6 @@ type APIs = "bonk"
 	| "cuddle"
 	| "hug"
 	| "kiss"
-	| "lick"
 	| "pat"
 	| "waifu"
 	| "yeet"
@@ -55,10 +54,6 @@ const WaifuData: {
 			action: "hugged",
 			color: hexColorTable["plum"],
 		},
-		"lick": {
-			action: "licked",
-			color: hexColorTable["mediumpurple"],
-		},
 		"pat": {
 			action: "patted",
 			color: hexColorTable["mintcream"],
@@ -92,7 +87,7 @@ const WaifuData: {
 
 export default async function sendWaifuPics(message: Message, API: APIs, mention?: GuildMember | null): Promise<MessageEmbed> {
 
-	return processAPIRequest(message, `${`https://api.waifu.pics/sfw/${API}`}`, WaifuData[API], "url", mention);
+	return processAPIRequest(message, `https://api.waifu.pics/sfw/${API}`, WaifuData[API], "url", mention);
 
 }
 
