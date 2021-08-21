@@ -23,6 +23,7 @@ export interface IGuild extends Document {
         excludeRole: string,
 		welcome: IGreet,
 		goodbye: IGreet,
+		stickyRoles: boolean,
 	},
 }
 

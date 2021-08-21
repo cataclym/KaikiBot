@@ -77,6 +77,7 @@ export const guildSchema = new Schema({
 				},
 				timeout: null,
 			},
+			stickyRoles: false,
 		},
 	},
 });
