@@ -1,5 +1,5 @@
 import { Message, MessageEmbed, Role } from "discord.js";
-import { noArgRole } from "../../lib/Embeds";
+import { roleArgumentError } from "../../lib/Embeds";
 import { KaikiCommand } from "kaiki";
 
 
@@ -16,7 +16,7 @@ export default class RoleHoistCommand extends KaikiCommand {
 				{
 					id: "role",
 					type: "role",
-					otherwise: (message: Message) => ({ embeds: [noArgRole(message)] }),
+					otherwise: (message: Message) => ({ embeds: [roleArgumentError(message)] }),
 				},
 			],
 		});

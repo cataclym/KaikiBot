@@ -1,6 +1,8 @@
 import { sendPaginatedMessage } from "@cataclym/discord.js-pagination-ts-nsb";
-import { GuildMember, Role, MessageEmbed, Message } from "discord.js";
+import { GuildMember, Message, MessageEmbed, Role } from "discord.js";
 import { KaikiCommand } from "kaiki";
+import { Argument } from "discord-akairo";
+import { roleArgumentError } from "../../lib/Embeds";
 
 
 export default class RoleInRoleCommand extends KaikiCommand {
@@ -12,8 +14,11 @@ export default class RoleInRoleCommand extends KaikiCommand {
 			channel: "guild",
 			args: [{
 				id: "role",
-				type: "role",
-				default: (message: Message) => message.member?.roles.highest,
+				type: Argument.union("role", (m, p) => p?.length
+					? undefined
+					: m.member?.roles.highest),
+				match: "content",
+				otherwise: (m) => ({ embeds: [roleArgumentError(m)] }),
 			}],
 		});
 	}

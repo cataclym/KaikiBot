@@ -1,11 +1,12 @@
 import { GuildMember, Message, MessageEmbed, Role } from "discord.js";
 import { KaikiCommand } from "kaiki";
+import { roleArgumentError } from "../../lib/Embeds";
 
 
 export default class RoleAssignCommand extends KaikiCommand {
 	constructor() {
-		super("roleassign", {
-			aliases: ["roleassign", "setrole", "sr"],
+		super("setrole", {
+			aliases: ["setrole", "sr"],
 			description: "Gives a role to a user. The role you specify has to be lower in the role hierarchy than your highest role.",
 			usage: "@Dreb Gamer",
 			clientPermissions: "MANAGE_ROLES",
@@ -18,15 +19,12 @@ export default class RoleAssignCommand extends KaikiCommand {
 					otherwise: (m: Message) => ({ embeds: [new MessageEmbed({
 						title: "Can't find this user. Try again.",
 					})
-						.withOkColor(m)] }),
+						.withErrorColor(m)] }),
 				},
 				{
 					id: "role",
 					type: "role",
-					otherwise: (m: Message) => ({ embeds: [new MessageEmbed({
-						title: "Can't find a matching role. Try again.",
-					})
-						.withOkColor(m)] }),
+					otherwise: (m: Message) => ({ embeds: [roleArgumentError(m)] }),
 
 				},
 			],

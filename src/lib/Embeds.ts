@@ -64,8 +64,8 @@ export async function tinderRollEmbed(message: Message, randomUsr: User, RollsLi
 		.setImage(randomUsr.displayAvatarURL({ dynamic: true, size: 128 }));
 }
 
-export const noArgRole = (message: Message): MessageEmbed => new MessageEmbed({
-	description: "Can't find this role. Make sure you inputted it correctly.",
+export const roleArgumentError = (message: Message): MessageEmbed => new MessageEmbed({
+	description: "Can't find a matching role. Try again.",
 })
 	.withErrorColor(message);
 

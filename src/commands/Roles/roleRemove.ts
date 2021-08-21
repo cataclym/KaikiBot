@@ -1,6 +1,6 @@
-import { Command } from "discord-akairo";
-import { Message, MessageEmbed, Role, GuildMember } from "discord.js";
+import { GuildMember, Message, MessageEmbed, Role } from "discord.js";
 import { KaikiCommand } from "kaiki";
+import { roleArgumentError } from "../../lib/Embeds";
 
 
 export default class RoleRemoveCommand extends KaikiCommand {
@@ -17,17 +17,14 @@ export default class RoleRemoveCommand extends KaikiCommand {
 					id: "member",
 					type: "member",
 					otherwise: (m: Message) => ({ embeds: [new MessageEmbed({
-						title: "Can't find this user. Try again.",
+						description: "Can't find this user. Try again.",
 					})
 						.withErrorColor(m)] }),
 				},
 				{
 					id: "role",
 					type: "role",
-					otherwise: (m: Message) => ({ embeds: [new MessageEmbed({
-						title: "Can't find a matching role. Try again.",
-					})
-						.withErrorColor(m)] }),
+					otherwise: (m: Message) => ({ embeds: [roleArgumentError(m)] }),
 				},
 			],
 		});

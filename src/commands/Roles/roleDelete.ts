@@ -1,5 +1,5 @@
 import { Collection, Guild, GuildMember, Message, MessageEmbed, Role } from "discord.js";
-import { noArgRole } from "../../lib/Embeds";
+import { roleArgumentError } from "../../lib/Embeds";
 import { KaikiCommand } from "kaiki";
 
 
@@ -17,7 +17,7 @@ export default class RoleDeleteCommand extends KaikiCommand {
 					id: "roles",
 					type: "roles",
 					match: "separate",
-					otherwise: (m) => ({ embeds: [noArgRole(m)] }),
+					otherwise: (m) => ({ embeds: [roleArgumentError(m)] }),
 				},
 			],
 		});

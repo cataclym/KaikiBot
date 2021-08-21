@@ -1,6 +1,5 @@
-import { Guild } from "discord.js";
-import { GuildMember, Message, MessageEmbed, Role } from "discord.js";
-import { errorMessage, noArgGeneric } from "../../lib/Embeds";
+import { Guild, GuildMember, Message, MessageEmbed, Role } from "discord.js";
+import { errorMessage, noArgGeneric, roleArgumentError } from "../../lib/Embeds";
 import { trim } from "../../lib/Util";
 import { KaikiCommand } from "kaiki";
 
@@ -18,10 +17,7 @@ export default class RoleRenameCommand extends KaikiCommand {
 				{
 					id: "role",
 					type: "role",
-					otherwise: (m: Message) => ({ embeds: [new MessageEmbed({
-						title: "Can't find a matching role. Try again.",
-					})
-						.withErrorColor(m)] }),
+					otherwise: (m: Message) => ({ embeds: [roleArgumentError(m)] }),
 				},
 				{
 					id: "name",

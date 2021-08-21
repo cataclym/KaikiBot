@@ -1,6 +1,6 @@
 import { Message, MessageAttachment, MessageEmbed, Role } from "discord.js";
 import { imgFromColor, resolveColor } from "../../lib/Color";
-import { errorMessage } from "../../lib/Embeds";
+import { errorMessage, roleArgumentError } from "../../lib/Embeds";
 import { KaikiCommand } from "kaiki";
 
 
@@ -15,7 +15,6 @@ export default class RoleColorCommand extends KaikiCommand {
 				{
 					id: "role",
 					type: "role",
-					default: (m: Message) => m.member!.roles.highest,
 				},
 				{
 					id: "clr",
@@ -26,11 +25,14 @@ export default class RoleColorCommand extends KaikiCommand {
 			],
 		});
 	}
-	public async exec(message: Message, { role, clr }: { role: Role, clr: string | null }): Promise<Message> {
+	public async exec(message: Message, { role, clr }: { role: Role | undefined, clr: string | null }): Promise<Message> {
 
 		const { member } = message;
 
 		if (typeof clr !== "string") {
+
+			if (!role) role = message.member!.roles.highest;
+
 			const attachment = new MessageAttachment(await imgFromColor(role.hexColor), "color.png");
 			return message.channel.send({
 				files: [attachment],
@@ -42,6 +44,8 @@ export default class RoleColorCommand extends KaikiCommand {
 				})],
 			});
 		}
+
+		if (!role) return message.channel.send({ embeds: [roleArgumentError(message)] });
 
 		const { hexColor } = role,
 			newColor = await resolveColor(clr),
