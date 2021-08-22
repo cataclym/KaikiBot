@@ -1,5 +1,6 @@
 import { Listener } from "discord-akairo";
 import logger from "loglevel";
+import chalk from "chalk";
 
 
 export default class ShardErrorListener extends Listener {
@@ -13,7 +14,7 @@ export default class ShardErrorListener extends Listener {
 
 	public async exec(error: Error, id: number): Promise<void> {
 
-		logger.error(`shardError | Shard: ${id} \n${error.stack ? error.stack : error}`);
+		logger.error(`shardError | Shard: ${chalk.redBright(id)} \n${error.stack ? error.stack : error}`);
 
 	}
 }

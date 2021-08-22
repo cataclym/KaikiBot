@@ -1,5 +1,6 @@
 import { Listener } from "discord-akairo";
 import logger from "loglevel";
+import chalk from "chalk";
 
 
 export default class ShardDisconnectListener extends Listener {
@@ -13,6 +14,6 @@ export default class ShardDisconnectListener extends Listener {
 
 	public async exec(event: CloseEvent, id: number): Promise<void> {
 
-		logger.warn(`ShardDisconnect | Shard: ${id} Reason: ${event.reason}`);
+		logger.warn(`ShardDisconnect | Shard: ${chalk.redBright(id)} Reason: ${event.reason}`);
 	}
 }

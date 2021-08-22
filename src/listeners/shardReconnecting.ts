@@ -1,5 +1,6 @@
 import { Listener } from "discord-akairo";
 import logger from "loglevel";
+import chalk from "chalk";
 
 
 export default class ShardReconnectingListener extends Listener {
@@ -13,7 +14,7 @@ export default class ShardReconnectingListener extends Listener {
 
 	public async exec(id: number): Promise<void> {
 
-		logger.info(`shardReconnecting | Shard: ${id}`);
+		logger.info(`shardReconnecting | Shard: ${chalk.green(id)}`);
 
 	}
 }
