@@ -54,7 +54,7 @@ export default class BetRollCommand extends KaikiCommand {
 
 			return message.channel.send({
 				embeds: [new MessageEmbed()
-					.setDescription(`🎲 You rolled \`${roll}\`, and won ${winnings} ${this._money.currencySymbol} for rolling above 66`)
+					.setDescription(`🎲 You rolled \`${roll}\`, and won ${winnings} ${this._money.currencySymbol}, for rolling above 66`)
 					.withOkColor(message)],
 			});
 		}
@@ -67,7 +67,7 @@ export default class BetRollCommand extends KaikiCommand {
 
 			return message.channel.send({
 				embeds: [new MessageEmbed()
-					.setDescription(`🎲 You rolled \`${roll}\`, and won ${winnings} ${this._money.currencySymbol} for rolling above 90`)
+					.setDescription(`🎲 You rolled \`${roll}\`, and won ${winnings} ${this._money.currencySymbol}, for rolling above 90`)
 					.withOkColor(message)],
 			});
 		}
@@ -80,7 +80,7 @@ export default class BetRollCommand extends KaikiCommand {
 
 			return message.channel.send({
 				embeds: [new MessageEmbed()
-					.setDescription(`🎲 You rolled \`${roll}\`!!! You won ${winnings} ${this._money.currencySymbol} for rolling above 99`)
+					.setDescription(`🎲 You rolled \`${roll}\`!!! You won ${winnings} ${this._money.currencySymbol}, for rolling above 99`)
 					.withOkColor(message)],
 			});
 		}

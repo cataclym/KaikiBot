@@ -61,7 +61,7 @@ export default class BotConfigCommand extends KaikiCommand {
 				await client.botSettings.set(client.botSettingID, "currencyName", name);
 				break;
 			case validTypes[1]:
-				oldValue = await client.botSettings.get(client.botSettingID, "currencyName", "💴");
+				oldValue = await client.botSettings.get(client.botSettingID, "currencySymbol", "💴");
 				await client.botSettings.set(client.botSettingID, "currencySymbol", name);
 				break;
 		}
