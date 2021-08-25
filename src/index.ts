@@ -9,7 +9,7 @@ extensionHook();
 (async () => await startLogger())();
 
 process.on("unhandledRejection", (reason: Error, promise) => {
-	logger.warn("Unhandled Rejection at:", promise, "reason:", reason);
+	logger.warn("Unhandled Rejection at:", promise);
 });
 
 const bot = container.get<Bot>(TYPES.Bot);
