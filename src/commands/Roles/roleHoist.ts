@@ -1,6 +1,7 @@
 import { Message, MessageEmbed, Role } from "discord.js";
-import { roleArgumentError } from "../../lib/Embeds";
+import { errorMessage, roleArgumentError } from "../../lib/Embeds";
 import { KaikiCommand } from "kaiki";
+import { rolePermissionCheck } from "../../lib/roles";
 
 
 export default class RoleHoistCommand extends KaikiCommand {
@@ -24,19 +25,22 @@ export default class RoleHoistCommand extends KaikiCommand {
 
 	public async exec(message: Message, { role }: { role: Role}): Promise<Message> {
 
-		if (role.hoist) {
-			role.setHoist(false);
+		if (await rolePermissionCheck(message, role)) {
+
+			role.setHoist(!role.hoist);
+
+			return message.channel.send({
+				embeds: [new MessageEmbed({
+					description: `Toggled ${role.name}'s hoist status to ${!role.hoist}.`,
+				})
+					.withOkColor(message)],
+			});
 		}
 
 		else {
-			role.setHoist(true);
+			return message.channel.send({
+				embeds: [await errorMessage(message, "**Insufficient permissions**\nRole is above you or me in the role hierarchy.")],
+			});
 		}
-
-		return message.channel.send({
-			embeds: [new MessageEmbed({
-				description: `Toggled ${role.name}'s hoist status to ${!role.hoist}.`,
-			})
-				.withOkColor(message)],
-		});
 	}
 }

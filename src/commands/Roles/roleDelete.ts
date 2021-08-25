@@ -1,6 +1,7 @@
-import { Collection, Guild, GuildMember, Message, MessageEmbed, Role } from "discord.js";
+import { Collection, Message, MessageEmbed, Role } from "discord.js";
 import { roleArgumentError } from "../../lib/Embeds";
 import { KaikiCommand } from "kaiki";
+import { rolePermissionCheck } from "../../lib/roles";
 
 
 export default class RoleDeleteCommand extends KaikiCommand {
@@ -32,9 +33,7 @@ export default class RoleDeleteCommand extends KaikiCommand {
 
 			const r = collection.map(_r => _r)[0];
 
-			if ((r.position < (message.member as GuildMember).roles.highest.position)
-                && r.position < ((message.guild as Guild).me as GuildMember).roles.highest.position
-                && !r.managed) {
+			if (await rolePermissionCheck(message, r)) {
 
 				r.delete().catch(() => otherRoles.push(r.name));
 				deletedRoles.push(r.name);

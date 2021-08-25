@@ -1,6 +1,7 @@
 import { GuildMember, Message, MessageEmbed, Role } from "discord.js";
 import { KaikiCommand } from "kaiki";
-import { roleArgumentError } from "../../lib/Embeds";
+import { errorMessage, roleArgumentError } from "../../lib/Embeds";
+import { rolePermissionCheck } from "../../lib/roles";
 
 
 export default class RoleRemoveCommand extends KaikiCommand {
@@ -31,7 +32,7 @@ export default class RoleRemoveCommand extends KaikiCommand {
 	}
 	public async exec(message: Message, { member, role }: { member: GuildMember, role: Role }): Promise<Message> {
 
-		if ((role.position < (message.member as GuildMember).roles.highest.position) && !role.managed) {
+		if (await rolePermissionCheck(message, role)) {
 			if (member.roles.cache.has(role.id)) {
 
 				await member.roles.remove(role);
@@ -57,10 +58,7 @@ export default class RoleRemoveCommand extends KaikiCommand {
 
 		else {
 			return message.channel.send({
-				embeds: [new MessageEmbed({
-					title: "Insufficient permission(s).",
-				})
-					.withErrorColor(message)],
+				embeds: [await errorMessage(message, "**Insufficient permissions**\nRole is above you or me in the role hierarchy.")],
 			});
 		}
 	}

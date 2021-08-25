@@ -1,7 +1,7 @@
 import { Message, MessageEmbed, Role } from "discord.js";
-import { roleArgumentError } from "../../lib/Embeds";
+import { errorMessage, roleArgumentError } from "../../lib/Embeds";
 import { KaikiCommand } from "kaiki";
-
+import { rolePermissionCheck } from "../../lib/roles";
 
 export default class RoleMentionableCommand extends KaikiCommand {
 	constructor() {
@@ -24,15 +24,24 @@ export default class RoleMentionableCommand extends KaikiCommand {
 
 	public async exec(message: Message, { role }: { role: Role}): Promise<Message> {
 
-		const bool = !role.mentionable;
+		if (await rolePermissionCheck(message, role)) {
 
-		role.setMentionable(bool);
+			const bool = !role.mentionable;
 
-		return message.channel.send({
-			embeds: [new MessageEmbed({
-				description: `Toggled ${role.name}'s mentionable status to ${bool}.`,
-			})
-				.withOkColor(message)],
-		});
+			role.setMentionable(bool);
+
+			return message.channel.send({
+				embeds: [new MessageEmbed({
+					description: `Toggled ${role.name}'s mentionable status to ${bool}.`,
+				})
+					.withOkColor(message)],
+			});
+		}
+
+		else {
+			return message.channel.send({
+				embeds: [await errorMessage(message, "**Insufficient permissions**\nRole is above you or me in the role hierarchy.")],
+			});
+		}
 	}
 }
