@@ -26,7 +26,8 @@ export default class LeaderboardCommand extends KaikiCommand {
 					str: `${e.amount} ${currencySymbol}`,
 				})),
 			embed = new MessageEmbed()
-				.setTitle("Server currency leaderboard"),
+				.setTitle("Server currency leaderboard")
+				.withOkColor(message),
 			embeds: MessageEmbed[] = [];
 
 		for (let i = 9, p = 0; p < guildOnlyEntries.length; i += 9, p += 9) {
