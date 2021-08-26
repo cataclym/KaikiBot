@@ -3,7 +3,7 @@ import { Message, MessageEmbed } from "discord.js";
 import { name, repository, version } from "../../../package.json";
 import { noArgGeneric } from "../../lib/Embeds";
 import { KaikiCommand } from "kaiki";
-
+import images from "../../../data/images.json";
 
 export default class commandsList extends KaikiCommand {
 	constructor() {
@@ -60,7 +60,7 @@ export default class commandsList extends KaikiCommand {
 					icon_url: message.author.displayAvatarURL({ dynamic: true }),
 				},
 				thumbnail: {
-					url: "https://cdn.discordapp.com/attachments/717045690022363229/726600392107884646/3391ce4715f3c814d6067911438e5bf7.png",
+					url: images.utility.commands.notebook,
 				},
 				footer: {
 					icon_url: (message.client.users.cache.get("140788173885276160") || (await message.client.users.fetch("140788173885276160", { cache: true })))

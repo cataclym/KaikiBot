@@ -1,0 +1,15 @@
+{
+  "gambling": {
+    "coin": {
+      "heads_big": "https://gitlab.com/cataclym/kaikibot-assets/-/raw/main/images/gambling/KaikiHeads.png",
+      "heads": "https://gitlab.com/cataclym/kaikibot-assets/-/raw/main/images/gambling/KaikiHeads_smol.png",
+      "tails_big": "https://gitlab.com/cataclym/kaikibot-assets/-/raw/main/images/gambling/KaikiTails.png",
+      "tails": "https://gitlab.com/cataclym/kaikibot-assets/-/raw/main/images/gambling/KaikiTails_smol.png"
+    }
+  },
+  "utility": {
+    "commands": {
+      "notebook": "https://gitlab.com/cataclym/kaikibot-assets/-/raw/main/images/utility/notebook.png"
+    }
+  }
+}

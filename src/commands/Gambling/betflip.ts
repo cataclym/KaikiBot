@@ -2,6 +2,7 @@ import { Message, MessageEmbed } from "discord.js";
 import { KaikiCommand } from "kaiki";
 import { IMoneyService } from "../../lib/money/IMoneyService";
 import { MongoMoney } from "../../lib/money/MongoMoneyService";
+import images from "../../../data/images.json";
 
 type sides = "tails" | "heads";
 
@@ -57,13 +58,17 @@ export default class BetflipCommands extends KaikiCommand {
 			? "tails"
 			: "heads";
 
+		const emb = new MessageEmbed({
+			image: { url: images.gambling.coin[coinFlipped] },
+		})
+			.setTitle(`Flipped ${coinFlipped}!`);
+
 		if (coin === coinFlipped) {
 			const amountWon = Math.round(number * 1.95);
 			await this._money.Add(message.author.id, amountWon);
 
 			return message.channel.send({
-				embeds: [new MessageEmbed()
-					.setTitle(`Flipped ${coinFlipped}!`)
+				embeds: [emb
 					.setDescription(`You won ${amountWon} ${this._money.currencySymbol}!!`)
 					.withOkColor(message),
 				],
@@ -72,8 +77,7 @@ export default class BetflipCommands extends KaikiCommand {
 
 		else {
 			return message.channel.send({
-				embeds: [new MessageEmbed()
-					.setTitle(`Flipped ${coinFlipped}!`)
+				embeds: [emb
 					.setDescription("You lost, better luck next time")
 					.withOkColor(message),
 				],

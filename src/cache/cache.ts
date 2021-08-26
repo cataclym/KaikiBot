@@ -23,3 +23,4 @@ setInterval(async () => {
 
 // Obvious names are obvious
 export const dailyClaimsCache: {[index: string]: boolean} = {};
+// TODO: PLEASE OH GOD MOVE THIS TO DB

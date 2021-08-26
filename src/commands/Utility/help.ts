@@ -4,7 +4,6 @@ import { Message, MessageEmbed, PermissionResolvable, Permissions } from "discor
 import { name, repository, version } from "../../../package.json";
 import { KaikiCommand } from "kaiki";
 
-
 export default class HelpCommand extends KaikiCommand {
 	constructor() {
 		super("help", {
