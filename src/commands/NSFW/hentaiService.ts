@@ -21,7 +21,7 @@ const options = {
 	},
 };
 
-export type types = "waifu" | "neko" | "femboy" | "blowjob";
+export type types = "waifu" | "neko" | "femboy" | "trap" | "blowjob";
 
 export const typesArray: types[] = ["waifu", "neko", "femboy", "blowjob"];
 
