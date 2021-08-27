@@ -4,10 +4,11 @@ import { Client, Guild, GuildMember, Message, MessageEmbed, User } from "discord
 import logger from "loglevel";
 // import { clearRollCache } from "../../_wip/Tinder/tinder";
 import { badWords } from "../struct/constants";
-import { getGuildDocument } from "../struct/documentMethods";
+import { getBotDocument, getGuildDocument } from "../struct/documentMethods";
 import { tinderDataModel } from "../struct/models";
 import { birthdayService } from "./AnniversaryRoles";
 import { trim } from "./Util";
+import { dailyClaimsCache } from "../cache/cache";
 
 let botOwner: User | undefined;
 
@@ -47,7 +48,7 @@ export async function tiredKaikiCryReact(message: Message): Promise<void> {
 	}
 }
 
-export async function ResetRolls(): Promise<void> {
+export async function resetRolls(): Promise<void> {
 	// Tinder reset
 	// clearRollCache();
 	tinderDataModel.updateMany({ rolls: { $lt: 15 } }, { rolls: 15, temporary: [], likes: 3 }, null, () => {
@@ -55,11 +56,24 @@ export async function ResetRolls(): Promise<void> {
 	});
 }
 
+export async function resetDailyClaims(): Promise<void> {
+	const db = await getBotDocument();
+	if (!db.settings.dailyEnabled) return;
+	await Promise.all(Object.keys(dailyClaimsCache).map(async (k) => delete dailyClaimsCache[k]));
+	logger.info("resetDailyClaims | Daily claims have been reset!");
+}
+
 export async function dailyResetTimer(client: Client): Promise<void> {
 	setTimeout(async () => {
-		ResetRolls();
+		// Loop this
 		dailyResetTimer(client);
+		// Reset tinder rolls
+		// resetRolls();
+		// Reset daily currency claims
+		resetDailyClaims();
+		// Check for "birthdays"
 		birthdayService(client);
+		// Uh?
 		emoteDataBaseService(client as AkairoClient);
 	}, timeToMidnight());
 }
@@ -72,7 +86,7 @@ export function timeToMidnight(): number {
 async function emoteDB(guild: Guild) {
 	let i = 0;
 	const db = await getGuildDocument(guild.id);
-	for await (const emote of guild.emojis.cache.array()) {
+	for await (const emote of [...guild.emojis.cache.values()]) {
 		if (!(emote.id in db.emojiStats)) {
 			i++;
 			db.emojiStats[emote.id] = 0;
@@ -182,34 +196,3 @@ export async function parsePlaceHolders(input:string, guildMember: GuildMember):
 	}
 	return input;
 }
-
-// /**
-//  * Get the sortest form of "I am something" in a message to fuck users over.
-//  * Twice as hard when they don't pay attention to what they're saying!
-//  * Utilizes a couple loops in order to grab the absolute shortest possible
-//  * occurrence of a user saying they are something.
-//  * Maximum dadbot!
-//  *
-//  * @param	{String} userinputisgay		The message the user sent.
-//  * @return	{String} The shortest form of the user saying they are something, or null.
-//  */
-// export function findshortest(userinputisgay: string): null | string {
-// 	let longest: string | string[] | null = null;
-// 	for (const split in dadbotArray) {
-// 		const results = userinputisgay.split(split);
-// 		logger.info(results);
-// 		if (results.length > 1) {
-// 			// split always returns 1 item if it didn't split
-// 			results.forEach(r => {
-// 				if (longest) {
-// 					logger.info(r);
-// 					if (r.length < longest.length) {
-// 						logger.info(r);
-// 						longest = r;
-// 					}
-// 				}
-// 			});
-// 		}
-// 	}
-// 	return longest;
-// }

@@ -6,6 +6,7 @@
       "composite": true  // required on the dependency project for references to work
     },
     "files": [         // by whitelisting the files to include, TS won't automatically
-      "package.json"   // include all source below root, which is the default.
-    ]
+      "package.json",   // include all source below root, which is the default.
+      "data/images.json"
+    ],
   }

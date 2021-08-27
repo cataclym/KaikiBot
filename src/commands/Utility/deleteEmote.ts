@@ -20,7 +20,7 @@ export default class DeleteEmoteCommand extends KaikiCommand {
 				id: "emotes",
 				match: "separate",
 				type: "emojis",
-				otherwise: (msg: Message) => noArgGeneric(msg),
+				otherwise: (msg: Message) => ({ embeds: [noArgGeneric(msg)] }),
 			}],
 		});
 	}

@@ -23,6 +23,7 @@ export interface IGuild extends Document {
         excludeRole: string,
 		welcome: IGreet,
 		goodbye: IGreet,
+		stickyRoles: boolean,
 	},
 }
 
@@ -59,6 +60,8 @@ export interface IBot extends Document {
         activityType: ActivityType,
         currencyName: string,
         currencySymbol: string,
+		dailyEnabled: boolean,
+		dailyAmount: number,
     }
 }
 

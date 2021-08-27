@@ -1,7 +1,6 @@
 import { GuildMember, Message } from "discord.js";
-import sendWaifuPics from "../../lib/APIs/waifuPics";
 import { KaikiCommand } from "kaiki";
-
+import getKawaiiResponseEmbed from "../../lib/APIs/KawaiiAPI";
 
 export default class Lick extends KaikiCommand {
 	constructor() {
@@ -18,7 +17,10 @@ export default class Lick extends KaikiCommand {
 		});
 	}
 
-	public async exec(message: Message, { mention }: { mention: GuildMember | null }): Promise<Message> {
-		return message.channel.send({ embeds: [await sendWaifuPics(message, "lick", mention)] });
+	public async exec(message: Message, { mention }: { mention: GuildMember | null }): Promise<void | Message> {
+
+		const embed = await getKawaiiResponseEmbed(message, "lick", mention);
+
+		if (embed) return message.channel.send({ embeds: [embed] });
 	}
 }

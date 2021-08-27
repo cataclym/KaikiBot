@@ -23,23 +23,18 @@ export default class KillBotProcess extends KaikiCommand {
 				components:
 					[new MessageButton()
 						.setCustomId("1")
-						.setLabel("Kill me")
+						.setLabel("Click to kill")
 						.setStyle("DANGER")],
 			})],
 		});
 
 		const buttonListener = new InteractionCollector(message.client, {
 			message: deleteMsg,
-			dispose: true,
 			time: 20000,
-			idle: 20000,
 			filter: (m) => m.user.id === message.author.id,
 		});
 
 		buttonListener.once("collect", async (mci) => {
-
-			buttonListener.stop();
-			await deleteMsg.delete();
 
 			if (mci.isButton()) {
 				await mci.reply({
@@ -50,17 +45,14 @@ export default class KillBotProcess extends KaikiCommand {
 				});
 			}
 
+			await deleteMsg.delete();
+
 			logger.warn("Shutting down");
 			process.exit();
 			// SIGINT shutdown
 		});
 
 		buttonListener.once("end", async () => {
-			await deleteMsg.delete();
-			await message.delete();
-		});
-
-		buttonListener.once("dispose", async () => {
 			await deleteMsg.delete();
 			await message.delete();
 		});

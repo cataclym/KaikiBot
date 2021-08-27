@@ -1,4 +1,4 @@
-import { Channel, TextChannel } from "discord.js";
+import { Channel, TextBasedChannels, TextChannel } from "discord.js";
 import { KaikiCommand } from "kaiki";
 
 
@@ -20,7 +20,7 @@ export default class ClearCommand extends KaikiCommand {
 			],
 		});
 	}
-	public async exec({ channel }: { channel: Channel }, { int }: { int: number }): Promise<void> {
+	public async exec({ channel }: { channel: TextBasedChannels }, { int }: { int: number }): Promise<void> {
 
 		int > 99 ? int = 99 : null;
 

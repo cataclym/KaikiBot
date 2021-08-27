@@ -77,6 +77,7 @@ export const guildSchema = new Schema({
 				},
 				timeout: null,
 			},
+			stickyRoles: false,
 		},
 	},
 });
@@ -147,6 +148,8 @@ export const botSchema = new Schema({
 			activityType: "",
 			currencyName: "Yen",
 			currencySymbol: "💴",
+			dailyEnabled: false,
+			dailyAmount: 250,
 		},
 	},
 });

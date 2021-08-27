@@ -16,10 +16,10 @@ export default class UnbanCommand extends Command {
 						const u = await this.client.users.fetch(phrase as Snowflake);
 						return u || null;
 					}),
-					otherwise: (m: Message) => new MessageEmbed({
+					otherwise: (m: Message) => ({ embeds: [new MessageEmbed({
 						description: "Can't find this user.",
 					})
-						.withErrorColor(m),
+						.withErrorColor(m)] }),
 				},
 			],
 		});

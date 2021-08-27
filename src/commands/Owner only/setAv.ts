@@ -17,7 +17,7 @@ export default class SetAvatarCommand extends KaikiCommand {
 				{
 					id: "url",
 					type: "url",
-					otherwise: (msg: Message) => noArgGeneric(msg),
+					otherwise: (msg: Message) => ({ embeds: [noArgGeneric(msg)] }),
 				},
 			],
 		});

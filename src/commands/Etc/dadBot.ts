@@ -1,4 +1,4 @@
-import { Message, Util } from "discord.js";
+import { Message } from "discord.js";
 import { dadbotArray } from "../../struct/constants";
 import { getUserDocument } from "../../struct/documentMethods";
 import { KaikiCommand } from "kaiki";
@@ -15,26 +15,27 @@ export default class dadBot extends KaikiCommand {
 			channel: "guild",
 			editable: false,
 			condition: (message: Message) => {
-				if (!message.guild || !message.member || message.author.bot) return false;
-				if (message.guild.isDadBotEnabled(message) && message.member.hasExcludedRole() && !message.content.includes("||")) {
+				if (message.guild && message.member && !message.author.bot) {
+					if (message.guild.isDadBotEnabled(message) && message.member.hasExcludedRole() && !message.content.includes("||")) {
 
-					for (const item of dadbotArray) {
+						for (const item of dadbotArray) {
 
-						const r = new RegExp(`(^|\\s|$)(?<statement>(?<prefix>${item})\\s*(?<nickname>.*)$)`, "mi");
-						if (r.test(message.content)) {
+							const r = new RegExp(`(^|\\s|$)(?<statement>(?<prefix>${item})\\s*(?<nickname>.*)$)`, "mi");
+							if (r.test(message.content)) {
 
-							let match = message.content.match(r)?.groups?.nickname;
-							if (!match) continue;
+								let match = message.content.match(r)?.groups?.nickname;
+								if (!match) continue;
 
-							const splits = match.split(new RegExp(`${item}`, "mig"));
-							if (splits.length > 1) match = splits.reduce((a, b) => a.length <= b.length ? a : b);
+								const splits = match.split(new RegExp(`${item}`, "mig"));
+								if (splits.length > 1) match = splits.reduce((a, b) => a.length <= b.length && a.length > 0 ? a : b);
 
-							if (match.length <= 256) {
-								if (!nickname[message.member.id] || nickname[message.member.id]?.length > match.length) nickname[message.member.id] = match;
+								if (match.length <= (process.env.DADBOT_MAX_LENGTH || 256)) {
+									if (!nickname[message.member.id] || nickname[message.member.id]?.length > match.length) nickname[message.member.id] = match;
+								}
 							}
 						}
+						return !!(nickname[message.member.id]);
 					}
-					return !!(nickname[message.member.id]);
 				}
 				return false;
 			},
@@ -45,9 +46,12 @@ export default class dadBot extends KaikiCommand {
 
 		const nick = nickname[message.member!.id];
 
-		message.channel.send(`Hi, ${Util.removeMentions(nick)}`);
+		message.channel.send({
+			content: `Hi, ${nick}`,
+			allowedMentions: { parse: ["users"] },
+		});
 
-		if (nick.length <= 32) {
+		if (nick.length <= (process.env.DADBOT_NICKNAME_LENGTH || 32)) {
 			const user = message.author,
 				db = await getUserDocument(user.id);
 

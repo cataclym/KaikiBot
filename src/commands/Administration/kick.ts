@@ -15,10 +15,10 @@ export default class KickCommand extends KaikiCommand {
 				{
 					id: "member",
 					type: "member",
-					otherwise: (m: Message) => new MessageEmbed({
+					otherwise: (m: Message) => ({ embeds: [new MessageEmbed({
 						description: "Can't find this user.",
 					})
-						.withErrorColor(m),
+						.withErrorColor(m)] }),
 				},
 				{
 					id: "reason",

@@ -1,6 +1,7 @@
 import { Command, Listener } from "discord-akairo";
 import { ClientUser, ColorResolvable, Message, User, UserFlagsString } from "discord.js";
 import { hexColorTable } from "./Color";
+import chalk from "chalk";
 
 export async function getMemberColorAsync(message: Message): Promise<ColorResolvable> {
 	return <ColorResolvable> message?.member?.displayColor || "#f47fff";
@@ -131,14 +132,12 @@ export async function codeblock(
 export async function listenerLog(message: Message, listener: Listener,
 	logger: (...msg: any[]) => void, command?: Command, extra = ""): Promise<void> {
 
-	const date = new Date().toLocaleString("en-GB", { hour: "2-digit", minute: "2-digit", second: "2-digit", weekday: "short", year: "numeric", month: "numeric", day: "numeric" });
-
-	logger(`${date} ${listener.id} | ${Date.now() - message.createdTimestamp}ms
+	logger(`${chalk.blueBright(listener.id)} | ${chalk.blueBright(Date.now() - message.createdTimestamp)}ms
 ${message.channel.type !== "DM"
-		? `Guild: ${message.guild?.name} [${message.guild?.id}]\nChannel: #${message.channel.name} [${message.channel.id}]`
-		: `DMChannel: [${message.author.dmChannel?.id}]`}
-User: ${message.author.username} [${message.author.id}]
-Executed ${command?.id} | "${message.content.substring(0, 100)}"\n${extra}`);
+		? `Guild: ${chalk.blueBright(message.guild?.name ?? "N/A")} [${chalk.blueBright(message.guild?.id ?? "N/A")}]\nChannel: #${chalk.blueBright(message.channel.name)} [${chalk.blueBright(message.channel.id)}]`
+		: `DMChannel: [${chalk.blueBright(message.author.dmChannel?.id)}]`}
+User: ${chalk.blueBright(message.author.username)} [${chalk.blueBright(message.author.id)}]
+Executed ${chalk.blueBright(command?.id ?? "N/A")} | "${chalk.yellow(message.content.substring(0, 100))}"\n${extra}`);
 }
 
 // Credit to https://futurestud.io/tutorials/split-an-array-into-smaller-array-chunks-in-javascript-and-node-js

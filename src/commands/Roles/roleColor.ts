@@ -1,7 +1,8 @@
 import { Message, MessageAttachment, MessageEmbed, Role } from "discord.js";
 import { imgFromColor, resolveColor } from "../../lib/Color";
-import { errorMessage } from "../../lib/Embeds";
+import { errorMessage, roleArgumentError } from "../../lib/Embeds";
 import { KaikiCommand } from "kaiki";
+import { rolePermissionCheck } from "../../lib/roles";
 
 
 export default class RoleColorCommand extends KaikiCommand {
@@ -15,7 +16,6 @@ export default class RoleColorCommand extends KaikiCommand {
 				{
 					id: "role",
 					type: "role",
-					default: (m: Message) => m.member!.roles.highest,
 				},
 				{
 					id: "clr",
@@ -26,11 +26,14 @@ export default class RoleColorCommand extends KaikiCommand {
 			],
 		});
 	}
-	public async exec(message: Message, { role, clr }: { role: Role, clr: string | null }): Promise<Message> {
+	public async exec(message: Message, { role, clr }: { role: Role | undefined, clr: string | null }): Promise<Message> {
 
 		const { member } = message;
 
 		if (typeof clr !== "string") {
+
+			if (!role) role = message.member!.roles.highest;
+
 			const attachment = new MessageAttachment(await imgFromColor(role.hexColor), "color.png");
 			return message.channel.send({
 				files: [attachment],
@@ -43,25 +46,30 @@ export default class RoleColorCommand extends KaikiCommand {
 			});
 		}
 
+		if (!role) return message.channel.send({ embeds: [roleArgumentError(message)] });
+
 		const { hexColor } = role,
 			newColor = await resolveColor(clr),
 			attachment = new MessageAttachment(await imgFromColor(newColor), "color.png");
 
+		if (await rolePermissionCheck(message, role)) {
 
-		if ((!member?.permissions.has("MANAGE_ROLES")
-			|| !(member.roles.highest.position > role.position))
-			&& message.guild!.ownerId !== member!.id) {
-			return message.channel.send({ embeds: [await errorMessage(message, "You do not have `MANAGE_ROLES` permission and/or trying to edit a role above you in the role hierarchy.")] });
-		}
 
-		else if (!message.guild?.me?.permissions.has("MANAGE_ROLES")
-			|| !(message.guild?.me?.roles.highest.position > role.position)) {
-			return message.channel.send({ embeds: [await errorMessage(message, "I do not have `MANAGE_ROLES` permission and/or trying to edit a role above me in the role hierarchy.")] });
-		}
+			if (!member?.permissions.has("MANAGE_ROLES")) {
+				return message.channel.send({
+					embeds: [await errorMessage(message, "You do not have `MANAGE_ROLES` permission.")],
+				});
+			}
 
-		else if (member?.guild.ownerId === message.member?.id) {
+			else if (!message.guild?.me?.permissions.has("MANAGE_ROLES")) {
+				return message.channel.send({
+					embeds: [await errorMessage(message, "I do not have `MANAGE_ROLES` permission.")],
+				});
+			}
+
 			return role.edit({ color: newColor }).then(r => {
-				return message.channel.send({ files: [attachment],
+				return message.channel.send({
+					files: [attachment],
 					embeds: [new MessageEmbed({
 						title: `You have changed ${r.name}'s color from ${hexColor} to ${r.hexColor}!`,
 						thumbnail: { url: "attachment://color.png" },
@@ -71,14 +79,10 @@ export default class RoleColorCommand extends KaikiCommand {
 			});
 		}
 
-		return role.edit({ color: newColor }).then(r => {
-			return message.channel.send({ files: [attachment],
-				embeds: [new MessageEmbed({
-					title: `You have changed ${r.name}'s color from ${hexColor} to ${r.hexColor}!`,
-					thumbnail: { url: "attachment://color.png" },
-				})
-					.withOkColor(message)],
+		else {
+			return message.channel.send({
+				embeds: [await errorMessage(message, "**Insufficient permissions**\nRole is above you or me in the role hierarchy.")],
 			});
-		});
+		}
 	}
 }

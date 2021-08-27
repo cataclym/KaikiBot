@@ -2,8 +2,6 @@ import { Guild, Message, MessageEmbed } from "discord.js";
 import { noArgGeneric } from "../../lib/Embeds";
 import { KaikiCommand } from "kaiki";
 
-import { prefixCache } from "../../struct/client";
-
 export default class PrefixConfigCommand extends KaikiCommand {
 	constructor() {
 		super("config-prefix", {
@@ -13,7 +11,7 @@ export default class PrefixConfigCommand extends KaikiCommand {
 				{
 					id: "value",
 					type: "string",
-					otherwise: (m: Message) => noArgGeneric(m),
+					otherwise: (m: Message) => ({ embeds: [noArgGeneric(m)] }),
 				},
 			],
 		});
@@ -25,11 +23,9 @@ export default class PrefixConfigCommand extends KaikiCommand {
 
 		await message.client.guildSettings.set(guildID, "prefix", value);
 
-		prefixCache[guildID] = value;
-
 		return message.channel.send({
 			embeds:	[new MessageEmbed({
-				title: "Success!",
+				title: "Prefix changed!",
 				description: `Prefix has been set to \`${value}\` !`,
 				footer: { text: `Old prefix: \`${oldPrefix}\`` },
 			})

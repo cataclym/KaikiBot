@@ -21,7 +21,7 @@ export default class AddEmotesCommand extends KaikiCommand {
 					id: "urls",
 					type: Argument.union(imgRegex),
 					match: "separate",
-					otherwise: (msg: Message) => noArgGeneric(msg),
+					otherwise: (msg: Message) => ({ embeds: [noArgGeneric(msg)] }),
 				},
 			],
 		});

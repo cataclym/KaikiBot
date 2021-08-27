@@ -5,7 +5,8 @@ import { endpointData } from "../../interfaces/IAPIData";
 
 type endPointSignatures = "run"
     | "peek"
-    | "pout";
+    | "pout"
+	| "lick";
 
 const token = process.env.KAWAIIKEY;
 
@@ -27,6 +28,12 @@ const endPoints: {
 		action: "pouts",
 		color: hexColorTable["darkseagreen"],
 		append: "😒",
+		appendable: true,
+	},
+	"lick": {
+		action: "licked",
+		color: hexColorTable["mediumpurple"],
+		append: "😛",
 		appendable: true,
 	},
 };

@@ -12,7 +12,7 @@ export default class todoAddCommand extends KaikiCommand {
 					id: "toAdd",
 					type: "string",
 					match: "rest",
-					otherwise: (msg: Message) => noArgGeneric(msg),
+					otherwise: (msg: Message) => ({ embeds: [noArgGeneric(msg)] }),
 				},
 			],
 		});

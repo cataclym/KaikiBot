@@ -1,22 +1,23 @@
 import { Message, MessageEmbed } from "discord.js";
 import fetch from "node-fetch";
 import { KaikiCommand } from "kaiki";
-import { handleError, handleResponse, query } from "../../lib/APIs/AnilistGraphQL";
-import { IAniListResponse } from "../../interfaces/IAniListResponse";
+import { handleError, handleResponse, aniQuery } from "../../lib/APIs/AnilistGraphQL";
+import { IAnimeRes } from "../../interfaces/IAnimeRes";
 import { stripHtml, trim } from "../../lib/Util";
 import { noArgGeneric } from "../../lib/Embeds";
+import { Node } from "../../interfaces/IAnimeRes";
 
 export default class AnimeCommand extends KaikiCommand {
 	constructor() {
 		super("anime", {
 			aliases: ["anime"],
-			description: "",
-			usage: "",
+			description: "Shows the first result of a query to Anilist",
+			usage: "Tsukimonogatari",
 			args: [{
 				id: "anime",
 				type: "string",
 				match: "content",
-				otherwise: (m) => noArgGeneric(m),
+				otherwise: (m) => ({ embeds: [noArgGeneric(m)] }),
 			}],
 		});
 	}
@@ -31,7 +32,7 @@ export default class AnimeCommand extends KaikiCommand {
 					"Accept": "application/json",
 				},
 				body: JSON.stringify({
-					query: query,
+					query: aniQuery,
 					variables: {
 						search: anime,
 						page: 1,
@@ -42,12 +43,12 @@ export default class AnimeCommand extends KaikiCommand {
 			};
 
 		return await fetch(url, options).then(handleResponse)
-			.then((response: IAniListResponse) => {
+			.then((response: IAnimeRes) => {
 
 				const { coverImage, title, episodes, description, format, status, studios, startDate, genres, endDate, siteUrl } = response.data.Page.media[0];
 				const monthFormat = new Intl.DateTimeFormat("en-US", { month: "long" });
 				const started = `${monthFormat.format(startDate.month)} ${startDate.day}, ${startDate.year}`;
-				const ended = `${monthFormat.format(endDate.month)} ${endDate.day}, ${endDate.year}`
+				const ended = `${monthFormat.format(endDate.month)} ${endDate.day}, ${endDate.year}`;
 				const aired = started === ended
 					? started
 					: `${started} to ${ended}`;
@@ -69,7 +70,7 @@ export default class AnimeCommand extends KaikiCommand {
 								{ name: "Aired", value: aired, inline: true },
 								{ name: "Status", value: status, inline: true },
 								{ name: "Genres", value: genres.join(", "), inline: true },
-								{ name: "Studio(s)", value: studios.nodes.map((n) => n.name).join(", "), inline: true },
+								{ name: "Studio(s)", value: studios.nodes.map(n => n.name).join(", "), inline: true },
 							])
 							.withOkColor(message),
 					],

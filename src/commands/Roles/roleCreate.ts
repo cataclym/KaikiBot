@@ -17,7 +17,7 @@ export default class RoleCreateCommand extends KaikiCommand {
 					id: "name",
 					type: "string",
 					match: "rest",
-					otherwise: (msg: Message) => noArgGeneric(msg),
+					otherwise: (msg: Message) => ({ embeds: [noArgGeneric(msg)] }),
 				},
 			],
 		});
@@ -28,7 +28,7 @@ export default class RoleCreateCommand extends KaikiCommand {
 		const createdRole = await message.guild?.roles.create({ name:  name });
 
 		if (!createdRole) {
-			throw ("Role creation failed.");
+			throw new Error("Role creation failed.");
 		}
 
 		return message.channel.send({ embeds: [new MessageEmbed({

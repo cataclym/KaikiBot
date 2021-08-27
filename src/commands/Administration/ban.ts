@@ -10,7 +10,7 @@ export default class BanCommand extends KaikiCommand {
 			userPermissions: ["BAN_MEMBERS"],
 			clientPermissions: "BAN_MEMBERS",
 			description: "Bans a user by ID or name with an optional message.",
-			usage: "<@Not_Dreb> Your behaviour is harmful.",
+			usage: "@notdreb Your behaviour is harmful.",
 			channel: "guild",
 			args: [
 				{
@@ -19,10 +19,11 @@ export default class BanCommand extends KaikiCommand {
 						const u = await this.client.users.fetch(phrase as Snowflake);
 						return u || null;
 					}),
-					otherwise: (m: Message) => new MessageEmbed({
-						description: "Can't find this user.",
-					})
-						.withErrorColor(m),
+					otherwise: (m: Message) => ({
+						embeds: [new MessageEmbed({
+							description: "Can't find this user.",
+						})
+							.withErrorColor(m)] }),
 				},
 				{
 					id: "reason",

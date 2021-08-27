@@ -11,24 +11,24 @@ export default class award extends KaikiCommand {
     	super("award", {
     		ownerOnly: true,
     		aliases: ["award"],
-    		description: "",
-    		usage: "award 50 @Cata",
+    		description: "For bot owner to award currency",
+    		usage: "50 @Cata",
     		args: [
     			{
     				id: "amount",
-    				type: "number",
-    				otherwise: (m: Message) => new MessageEmbed({
+    				type: "integer",
+    				otherwise: (m: Message) => ({ embeds: [new MessageEmbed({
     					title: "Invalid amount. It must be a number",
     				})
-    					.withErrorColor(m),
+    					.withErrorColor(m)] }),
     			},
     			{
     				id: "user",
     				type: "user",
-    				otherwise: (m: Message) => new MessageEmbed({
+    				otherwise: (m: Message) => ({ embeds: [new MessageEmbed({
     					title: "Can't find this user. Try again.",
     				})
-    					.withErrorColor(m),
+    					.withErrorColor(m)] }),
     			},
     		],
     	});

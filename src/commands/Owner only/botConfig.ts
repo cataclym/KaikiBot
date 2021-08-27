@@ -25,17 +25,17 @@ export default class BotConfigCommand extends KaikiCommand {
 					type: validTypes,
 					otherwise: async (msg: Message, _: FailureData) => {
 						if (_.phrase.length) {
-							return new MessageEmbed()
+							return ({ embeds: [new MessageEmbed()
 								.setDescription(`\`${_.phrase}\` is not a valid setting`)
 								.addField("Valid settings", validTypes.join("\n"))
-								.withErrorColor(msg);
+								.withErrorColor(msg)] });
 						}
 						else {
-							return new MessageEmbed()
+							return ({ embeds: [new MessageEmbed()
 								.addField("Bot config", await codeblock(JSON
 									.stringify((await msg.client.botSettings
 										.getDocument(msg.client.botSettingID)).settings, null, 4), "xl"))
-								.withOkColor(msg);
+								.withOkColor(msg)] });
 						}
 					},
 				},
@@ -43,7 +43,7 @@ export default class BotConfigCommand extends KaikiCommand {
 					id: "name",
 					type: "string",
 					match: "restContent",
-					otherwise: (m: Message) => noArgGeneric(m),
+					otherwise: (m: Message) => ({ embeds: [noArgGeneric(m)] }),
 				},
 			],
 		});
@@ -61,7 +61,7 @@ export default class BotConfigCommand extends KaikiCommand {
 				await client.botSettings.set(client.botSettingID, "currencyName", name);
 				break;
 			case validTypes[1]:
-				oldValue = await client.botSettings.get(client.botSettingID, "currencyName", "💴");
+				oldValue = await client.botSettings.get(client.botSettingID, "currencySymbol", "💴");
 				await client.botSettings.set(client.botSettingID, "currencySymbol", name);
 				break;
 		}

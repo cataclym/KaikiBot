@@ -15,7 +15,7 @@ export default class GoodbyeDeleteCommand extends KaikiCommand {
 			args: [{
 				id: "time",
 				type: "number",
-				otherwise: (m) => noArgGeneric(m),
+				otherwise: (m) => ({ embeds: [noArgGeneric(m)] }),
 			}],
 		});
 	}

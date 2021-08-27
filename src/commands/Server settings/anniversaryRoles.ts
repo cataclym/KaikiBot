@@ -18,7 +18,7 @@ export default class AnniversaryRolesConfigCommand extends KaikiCommand {
 				{
 					id: "value",
 					type: values,
-					otherwise: (message: Message) => noArgGeneric(message),
+					otherwise: (message: Message) => ({ embeds: [noArgGeneric(message)] }),
 				},
 			],
 		});

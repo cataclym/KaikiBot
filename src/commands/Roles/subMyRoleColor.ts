@@ -15,9 +15,9 @@ export default class MyRoleSubCommandColor extends KaikiCommand {
 			args: [{
 				id: "color",
 				type: Argument.union((_, phrase) => hexColorTable[phrase.toLowerCase()], "color"),
-				otherwise: (m: Message) => new MessageEmbed()
-					.setTitle("Please provide a valid hexcolor or color name")
-					.withErrorColor(m),
+				otherwise: (m: Message) => ({ embeds: [new MessageEmbed()
+					.setTitle("Please provide a valid hex-color or color name")
+					.withErrorColor(m)] }),
 			}],
 		});
 	}

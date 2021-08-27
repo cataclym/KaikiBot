@@ -12,23 +12,23 @@ export default class take extends KaikiCommand {
     		ownerOnly: true,
     		aliases: ["take"],
     		description: "Takes money from the specified user",
-    		usage: "take 50 @Cata",
+    		usage: "50 @Cata",
     		args: [
     			{
     				id: "amount",
-    				type: "number",
-    				otherwise: (m: Message) => new MessageEmbed({
+    				type: "integer",
+    				otherwise: (m: Message) => ({ embeds: [new MessageEmbed({
     					title: "Invalid amount. It must be a number",
     				})
-    					.withOkColor(m),
+    					.withOkColor(m)] }),
     			},
     			{
     				id: "user",
     				type: "user",
-    				otherwise: (m: Message) => new MessageEmbed({
+    				otherwise: (m: Message) => ({ embeds: [new MessageEmbed({
     					title: "Can't find this user. Try again.",
     				})
-    					.withOkColor(m),
+    					.withOkColor(m)] }),
     			},
     		],
     	});

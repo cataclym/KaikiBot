@@ -16,7 +16,7 @@ export default class EmitCommand extends KaikiCommand {
 					index: 0,
 					id: "event",
 					type: "listener",
-					otherwise: (msg: Message) => noArgGeneric(msg),
+					otherwise: (msg: Message) => ({ embeds: [noArgGeneric(msg)] }),
 
 				},
 				{

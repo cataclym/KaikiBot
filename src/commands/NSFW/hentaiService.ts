@@ -21,9 +21,9 @@ const options = {
 	},
 };
 
-export type types = "waifu" | "neko" | "trap" | "blowjob";
+export type types = "waifu" | "neko" | "femboy" | "trap" | "blowjob";
 
-export const typesArray: types[] = ["waifu", "neko", "trap", "blowjob"];
+export const typesArray: types[] = ["waifu", "neko", "femboy", "blowjob"];
 
 export async function grabHentaiPictureAsync(usertags: string[] = []): Promise<Image> {
 	usertags.push("rating:explicit");
@@ -34,6 +34,8 @@ export async function grabHentaiPictureAsync(usertags: string[] = []): Promise<I
 export async function grabHentai(type: types, format: "single"): Promise<string>
 export async function grabHentai(type: types, format: "bomb"): Promise<string[]>
 export async function grabHentai(type: types, format: "single" | "bomb"): Promise<string | string[]> {
+
+	if ( type === "femboy") type = "trap";
 
 	if (format === "bomb") {
 		const rawResponse = await fetch(`https://api.waifu.pics/many/nsfw/${type}`, {

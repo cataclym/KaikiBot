@@ -11,23 +11,23 @@ export default class give extends KaikiCommand {
     	super("give", {
     		aliases: ["give"],
     		description: "Gives money to another user",
-    		usage: "give 50 @Cata",
+    		usage: "50 @Cata",
     		args: [
     			{
     				id: "amount",
-    				type: "number",
-    				otherwise: (m: Message) => new MessageEmbed({
+    				type: "integer",
+    				otherwise: (m: Message) => ({ embeds: [new MessageEmbed({
     					title: "Invalid amount. It must be a number",
     				})
-    					.withOkColor(m),
+    					.withOkColor(m)] }),
     			},
     			{
     				id: "user",
     				type: "user",
-    				otherwise: (m: Message) => new MessageEmbed({
+    				otherwise: (m: Message) => ({ embeds: [new MessageEmbed({
     					title: "Can't find this user. Try again.",
     				})
-    					.withOkColor(m),
+    					.withOkColor(m)] }),
     			},
     		],
     	});

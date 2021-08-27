@@ -4,8 +4,8 @@ import { Guild, Message, MessageEmbed } from "discord.js";
 import { EmbedFromJson } from "../../interfaces/IGreetLeave";
 import { createAndParseWelcomeLeaveMessage } from "../../lib/GreetHandler";
 import { KaikiCommand } from "kaiki";
-
 import { getGuildDocument } from "../../struct/documentMethods";
+import { customClient } from "../../struct/client";
 
 export default class ConfigCommand extends KaikiCommand {
 	constructor() {
@@ -41,17 +41,19 @@ export default class ConfigCommand extends KaikiCommand {
 			welcomeEmbed = await new EmbedFromJson(await createAndParseWelcomeLeaveMessage(welcome, message.member!)).createEmbed(),
 			goodbyeEmbed = await new EmbedFromJson(await createAndParseWelcomeLeaveMessage(goodbye, message.member!)).createEmbed();
 
+		function toggledTernary(value: boolean) {
+			return value
+				? "Enabled"
+				: "Disabled";
+		}
+
 		const pages = [
 			new MessageEmbed()
 				.withOkColor(message)
-				.addField("DadBot",
-					dadBot.enabled
-						? "Enabled"
-						: "Disabled", true)
+				.addField("Dad-bot",
+					toggledTernary(dadBot.enabled), true)
 				.addField("Anniversary-Roles",
-					anniversary
-						? "Enabled"
-						: "Disabled", true)
+					toggledTernary(anniversary), true)
 				.addField("Guild prefix",
 					prefix === process.env.PREFIX
 						? `\`${process.env.PREFIX}\` (Default)`
@@ -66,14 +68,12 @@ export default class ConfigCommand extends KaikiCommand {
 						: "#" + okColor.toString(16), true)
 				.addField("\u200B", "\u200B", true)
 				.addField("Welcome message",
-					welcome.enabled
-						? "Enabled"
-						: "Disabled", true)
+					toggledTernary(welcome.enabled), true)
 				.addField("Goodbye message",
-					goodbye.enabled
-						? "Enabled"
-						: "Disabled", true)
-				.addField("\u200B", "\u200B", true),
+					toggledTernary(goodbye.enabled), true)
+				.addField("\u200B", "\u200B", true)
+				.addField("Sticky roles",
+					toggledTernary(await (this.client as customClient).guildSettings.get(message.guild!.id, "stickyRoles", false)), false),
 			welcomeEmbed,
 			goodbyeEmbed,
 		];

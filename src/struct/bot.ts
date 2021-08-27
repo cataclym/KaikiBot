@@ -29,9 +29,7 @@ export class Bot {
     	}
 
     	if (!process.env.KAWAIIKEY || process.env.KAWAIIKEY === "[YOUR_OPTIONAL_KAWAII_KEY]") {
-    		this.client.commandHandler.deregister(this.client.commandHandler.findCommand("run"));
-    		this.client.commandHandler.deregister(this.client.commandHandler.findCommand("peek"));
-    		this.client.commandHandler.deregister(this.client.commandHandler.findCommand("pout"));
+    		["run", "peek", "pout"].forEach(c => this.client.commandHandler.deregister(this.client.commandHandler.findCommand(c)));
     		logger.warn("Kawaii API dependant commands have been disabled. Provide a token in .env to re-enable.");
     	}
 

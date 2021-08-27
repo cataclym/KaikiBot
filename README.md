@@ -1,8 +1,8 @@
 #  Welcome to Kaiki Deishu Bot
 
-### A simple bot Written in TypeScript with lots of unique commands and features.
+### KaikiBot
 
-Invite the public bot here: TODO: Add link
+[Add Kaiki to your server](https://discord.com/oauth2/authorize?client_id=714695773534814238&scope=bot)
 
 # Guide
 
@@ -25,6 +25,4 @@ Consider contributing. I appreciate all the help I can get!
 
 # About
 ### A bit about this project
-This bot was my first entry into javascript, nodejs, discordjs and programming/coding overall. It has been very fun and also frustrating. If you do find unoptimized code and or flaws or other inherently bad code - I would be very happy to merge changes and try to learn from my own mistakes. Commenting the code helps! I will try to do so as well.
-
-Update: Learning TypeScript has been a very good experience.
+This bot was my first entry into javascript, nodejs, discordjs, typeScript and programming/coding overall. It has been very fun and also frustrating. If you do find unoptimized code and or flaws or other inherently bad code - I would be very happy to merge changes and try to learn from my own mistakes. Commenting the code helps! I will try to do so as well.

@@ -26,7 +26,7 @@ export default class ToggleCategoryCommand extends KaikiCommand {
 								.startsWith(k.slice(0, Math.max(phrase.length - 1, 1)));
 						});
 					},
-					otherwise: (msg: Message) => noArgGeneric(msg),
+					otherwise: (msg: Message) => ({ embeds: [noArgGeneric(msg)] }),
 				},
 			],
 		});

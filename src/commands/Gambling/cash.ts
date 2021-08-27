@@ -11,7 +11,7 @@ export default class cash extends KaikiCommand {
     	super("cash", {
     		aliases: ["cash", "currency", "cur", "$", "¥", "£", "€"],
     		description: "Shows specified user's current balance. If no user is specified, shows your balance",
-    		usage: "cash",
+    		usage: "",
     		args: [
     			{
     				id: "user",
@@ -25,7 +25,7 @@ export default class cash extends KaikiCommand {
     }
 
     public async exec(msg: Message, { user }: { user: User }): Promise<void> {
-    	const moneh = await this._money.Get(user.id);
+    	const moneh = Math.round(await this._money.Get(user.id));
     	await msg.channel.send({ embeds: [new MessageEmbed()
     		.setDescription(`${user.username} has ${moneh} ${this._money.currencyName} ${this._money.currencySymbol}`)
     		.withOkColor(msg)],

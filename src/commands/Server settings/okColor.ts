@@ -15,7 +15,7 @@ export default class OkColorConfigCommand extends KaikiCommand {
 				{
 					id: "value",
 					type: Argument.union("color", (m: Message, content: string) => hexColorTable[content]),
-					otherwise: (m: Message) => noArgGeneric(m),
+					otherwise: (m: Message) => ({ embeds: [noArgGeneric(m)] }),
 				},
 			],
 		});

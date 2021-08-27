@@ -13,7 +13,7 @@
 // 				{
 // 					id: "player2",
 // 					type: "member",
-// 					otherwise: (m: Message) => noArgGeneric(m),
+// 					otherwise: (m: Message) => ({ embeds: [noArgGeneric(m)] }),
 // 				},
 // 			],
 // 		});

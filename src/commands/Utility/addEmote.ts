@@ -26,7 +26,7 @@ export default class AddEmoteCommand extends KaikiCommand {
 							return m.attachments.first();
 						}
 					}),
-					otherwise: (m: Message) => noArgGeneric(m),
+					otherwise: (m: Message) => ({ embeds: [noArgGeneric(m)] }),
 				},
 				{
 					id: "name",

@@ -1,6 +1,7 @@
-import { Command } from "discord-akairo";
-import { Message, MessageEmbed, Role, GuildMember } from "discord.js";
+import { GuildMember, Message, MessageEmbed, Role } from "discord.js";
 import { KaikiCommand } from "kaiki";
+import { errorMessage, roleArgumentError } from "../../lib/Embeds";
+import { rolePermissionCheck } from "../../lib/roles";
 
 
 export default class RoleRemoveCommand extends KaikiCommand {
@@ -16,25 +17,22 @@ export default class RoleRemoveCommand extends KaikiCommand {
 				{
 					id: "member",
 					type: "member",
-					otherwise: (m: Message) => new MessageEmbed({
-						title: "Can't find this user. Try again.",
+					otherwise: (m: Message) => ({ embeds: [new MessageEmbed({
+						description: "Can't find this user. Try again.",
 					})
-						.withErrorColor(m),
+						.withErrorColor(m)] }),
 				},
 				{
 					id: "role",
 					type: "role",
-					otherwise: (m: Message) => new MessageEmbed({
-						title: "Can't find a matching role. Try again.",
-					})
-						.withErrorColor(m),
+					otherwise: (m: Message) => ({ embeds: [roleArgumentError(m)] }),
 				},
 			],
 		});
 	}
 	public async exec(message: Message, { member, role }: { member: GuildMember, role: Role }): Promise<Message> {
 
-		if ((role.position < (message.member as GuildMember).roles.highest.position) && !role.managed) {
+		if (await rolePermissionCheck(message, role)) {
 			if (member.roles.cache.has(role.id)) {
 
 				await member.roles.remove(role);
@@ -60,10 +58,7 @@ export default class RoleRemoveCommand extends KaikiCommand {
 
 		else {
 			return message.channel.send({
-				embeds: [new MessageEmbed({
-					title: "Insufficient permission(s).",
-				})
-					.withErrorColor(message)],
+				embeds: [await errorMessage(message, "**Insufficient permissions**\nRole is above you or me in the role hierarchy.")],
 			});
 		}
 	}
