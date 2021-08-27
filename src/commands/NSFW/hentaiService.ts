@@ -23,7 +23,7 @@ const options = {
 
 export type types = "waifu" | "neko" | "trap" | "blowjob";
 
-export const typesArray: types[] = ["waifu", "neko", "trap", "blowjob"];
+export const typesArray: types[] = ["waifu", "neko", "femboy", "blowjob"];
 
 export async function grabHentaiPictureAsync(usertags: string[] = []): Promise<Image> {
 	usertags.push("rating:explicit");
