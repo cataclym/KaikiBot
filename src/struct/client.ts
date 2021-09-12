@@ -1,11 +1,12 @@
 import { AkairoClient, CommandHandler, InhibitorHandler, ListenerHandler, MongooseProvider } from "discord-akairo";
 import { Snowflake } from "discord-api-types";
-import { Intents, PresenceData } from "discord.js";
+import { Intents } from "discord.js";
 import { join } from "path";
 import { getBotDocument } from "./documentMethods";
 import { botModel, guildsModel } from "./models";
 import logger from "loglevel";
 import chalk from "chalk";
+import { Migrations } from "../migrations/migrations";
 
 export class customClient extends AkairoClient {
 	commandHandler: CommandHandler;
@@ -79,19 +80,14 @@ export class customClient extends AkairoClient {
     }
 
     async init(): Promise<void> {
-
-    	const db = await getBotDocument();
-
     	this.botSettingID = await (async () => {
-    		if (db.id) {
-    			return db.id;
-    		}
-    		else {
-    			db.id = db._id;
-    			db.markModified("id");
-    			await db.save();
-    			return db.id;
-    		}
+    			return (await getBotDocument()).id;
     	})();
+
+    	new Migrations()
+    		.runAllMigrations()
+    		.then((r) => {
+    			if (r) logger.info("migrationService | Migrations have been checked and executed");
+    		});
     }
 }

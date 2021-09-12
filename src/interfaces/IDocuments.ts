@@ -54,7 +54,6 @@ export interface IBlacklist extends Document {
 }
 
 export interface IBot extends Document {
-    id: string,
 	settings: {
         activity: string,
         activityType: ActivityType,
@@ -68,4 +67,9 @@ export interface IBot extends Document {
 export interface IMoney extends Document {
     id: string,
     amount: number,
+}
+
+export interface IMigration extends Document {
+	migrationId: string,
+	versionString: string,
 }
