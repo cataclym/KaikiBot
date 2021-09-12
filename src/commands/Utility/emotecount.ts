@@ -50,7 +50,7 @@ export default class EmoteCount extends KaikiCommand {
 
 		if (!flag) {
 
-			for (let i = 25, p = 0; p < data.length; i = i + 25, p = p + 25) {
+			for (let i = 25, p = 0; p < data.length; i += 25, p += 25) {
 
 				pages.push(new MessageEmbed(baseEmbed)
 					.setDescription(trim(data.slice(p, i).join("\n"), 2048)),
@@ -60,7 +60,7 @@ export default class EmoteCount extends KaikiCommand {
 
 		else {
 
-			for (let i = 50, p = 0; p < data.length; i = i + 50, p = p + 50) {
+			for (let i = 50, p = 0; p < data.length; i += 50, p += 50) {
 
 				pages.push(new MessageEmbed(baseEmbed)
 					.setDescription(trim(data.slice(p, i).join(""), 2048)),

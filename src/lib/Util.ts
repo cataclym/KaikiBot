@@ -1,5 +1,5 @@
 import { Command, Listener } from "discord-akairo";
-import { ClientUser, ColorResolvable, Message, User, UserFlagsString } from "discord.js";
+import { ColorResolvable, Message, UserFlagsString } from "discord.js";
 import { hexColorTable } from "./Color";
 import chalk from "chalk";
 
@@ -165,4 +165,10 @@ export async function chunk(items: any[], size: number): Promise<any[]> {
 // Credit to https://www.codegrepper.com/code-examples/javascript/nodejs+strip+html+from+string
 export function stripHtml(html: string) {
 	return html.replace(/(<([^>]+)>)/ig, "");
+}
+
+// Credits: parktomatomi
+// https://stackoverflow.com/a/64093016
+export function partition(array: any[], predicate: (...args: any) => boolean) {
+	return array.reduce((acc, item) => (acc[+!predicate(item)].push(item), acc), [[], []]);
 }

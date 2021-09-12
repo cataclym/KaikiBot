@@ -7,21 +7,59 @@ import { badWords } from "../struct/constants";
 import { getBotDocument, getGuildDocument } from "../struct/documentMethods";
 import { tinderDataModel } from "../struct/models";
 import { birthdayService } from "./AnniversaryRoles";
-import { trim } from "./Util";
-import { dailyClaimsCache } from "../cache/cache";
+import { partition, trim } from "./Util";
+import { dailyClaimsCache, emoteReactCache, separatedEmoteReactTypes } from "../cache/cache";
 
 let botOwner: User | undefined;
+
+export async function populateERCache(message: Message) {
+
+	const emoteReacts = Object.entries((await getGuildDocument((message.guild as Guild).id)).emojiReactions);
+	if (!emoteReacts.length) {
+		emoteReactCache[message.guild!.id] = {
+			has_space: {},
+			no_space: {},
+		};
+		return;
+	}
+
+	const [array_has_space, array_no_space] = partition(emoteReacts, ([k, v]) => k.includes(" "));
+
+	emoteReactCache[message.guild!.id] = {
+		has_space: Object.fromEntries(array_has_space),
+		no_space: Object.fromEntries(array_no_space),
+	};
+}
+
 
 // Reacts with emote to specified words
 export async function emoteReact(message: Message): Promise<void> {
 
-	const wordObj = (await getGuildDocument((message.guild as Guild).id)).emojiReactions;
-	const regexFromArray = new RegExp(Object.keys(wordObj).join("|"), "gi");
-	const matches = message.content.toLowerCase().match(regexFromArray) || [];
+	const gId = message.guild!.id,
+		messageContent = message.content.toLowerCase();
 
-	for (let i = 0; i < matches.length; i++) {
-		if (!message.guild?.emojis.cache.has(wordObj[matches[i]] as Snowflake)) return;
-		message.react(wordObj[matches[i]]);
+	if (!emoteReactCache[gId]) await populateERCache(message);
+
+	const emotes = emoteReactCache[message.guild!.id],
+		matches = Object.keys(emotes.has_space)
+			.filter(k => messageContent.match(new RegExp(k.toLowerCase(), "g")));
+
+	for (const word of messageContent.split(" ")) {
+		if (emotes.no_space[word]) {
+			matches.push(word);
+		}
+	}
+
+	if (!matches.length) return;
+
+	return emoteReactLoop(message, matches, emotes);
+}
+
+async function emoteReactLoop(message: Message, matches: RegExpMatchArray, wordObj: separatedEmoteReactTypes) {
+	for (const word of matches) {
+		const emote = wordObj.no_space[word] || wordObj.has_space[word];
+		if (!message.guild?.emojis.cache.has(emote as Snowflake)) continue;
+		message.react(emote);
 	}
 }
 

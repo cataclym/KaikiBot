@@ -1,10 +1,13 @@
 import {
-    ColorResolvable,
-    EmbedFieldData, MessageEmbed, MessageEmbedAuthor,
-    MessageEmbedFooter,
-    MessageEmbedImage, MessageEmbedOptions,
-    MessageEmbedThumbnail,
-    MessageOptions
+	ColorResolvable,
+	EmbedFieldData,
+	MessageEmbed,
+	MessageEmbedAuthor,
+	MessageEmbedFooter,
+	MessageEmbedImage,
+	MessageEmbedOptions,
+	MessageEmbedThumbnail,
+	MessageOptions,
 } from "discord.js";
 
 export interface EmbedJSON {
@@ -19,15 +22,15 @@ export interface EmbedJSON {
 	fields?: EmbedFieldData[];
 }
 
+export interface MessageEmbedOptionsJSON extends MessageEmbedOptions {
+	plainText?: string | undefined;
+}
+
 export interface IGreet {
 	enabled: boolean,
 	channel: string,
-	embed: MessageEmbedOptions,
+	embed: MessageEmbedOptionsJSON,
 	timeout: number | null,
-}
-
-export interface MessageEmbedOptionsJSON extends MessageEmbedOptions {
-	plainText?: string | undefined;
 }
 
 export class EmbedFromJson implements MessageEmbedOptionsJSON {

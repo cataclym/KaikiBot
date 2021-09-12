@@ -1,4 +1,5 @@
 import { getCommandStatsDocument } from "../struct/documentMethods";
+import { Snowflake } from "discord-api-types";
 
 // Anime quotes
 export type respType = { anime: string, character: string, quote: string };
@@ -24,3 +25,11 @@ setInterval(async () => {
 // Obvious names are obvious
 export const dailyClaimsCache: {[index: string]: boolean} = {};
 // TODO: PLEASE OH GOD MOVE THIS TO DB
+
+export type emoteReactObjectType = {[keyWord: string]: Snowflake};
+export type separatedEmoteReactTypes = {
+	has_space: emoteReactObjectType,
+	no_space: emoteReactObjectType
+};
+
+export const emoteReactCache: {[guild: string]: separatedEmoteReactTypes} = {};

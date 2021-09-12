@@ -2,6 +2,7 @@ import { ActivityType } from "discord-api-types";
 import { ColorResolvable } from "discord.js";
 import { Document } from "mongoose";
 import { IGreet } from "./IGreetLeave";
+import { emoteReactObjectType } from "../cache/cache";
 
 export interface IGuild extends Document {
 	id: string,
@@ -9,7 +10,7 @@ export interface IGuild extends Document {
 	leaveRoles: {[userID: string]: string[]},
 	userRoles: {[userID: string]: string},
 	emojiStats: {[emojiID: string]: number},
-	emojiReactions: {[keyWord: string]: string},
+	emojiReactions: emoteReactObjectType,
     blockedCategories: {[categoryID: string]: boolean };
     settings: {
 		prefix: string,

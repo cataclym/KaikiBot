@@ -3,6 +3,8 @@ import { noArgGeneric } from "../../lib/Embeds";
 import { KaikiCommand } from "kaiki";
 
 import { getGuildDocument } from "../../struct/documentMethods";
+import { emoteReactCache } from "../../cache/cache";
+import { populateERCache } from "../../lib/functions";
 
 export default class EmoteReactCommand extends KaikiCommand {
 	constructor() {
@@ -33,9 +35,20 @@ export default class EmoteReactCommand extends KaikiCommand {
 		trigger = trigger.toLowerCase();
 		const gid = (message.guild as Guild).id,
 			db = await getGuildDocument(gid);
+
 		db.emojiReactions[trigger] = emoji.id;
 		db.markModified(`emojiReactions.${trigger}`);
 		db.save();
+
+		if (!emoteReactCache[gid]) await populateERCache(message);
+
+		if (trigger.includes(" ")) {
+			emoteReactCache[message.guild!.id].has_space[trigger] = emoji.id;
+		}
+
+		else {
+			emoteReactCache[message.guild!.id].no_space[trigger] = emoji.id;
+		}
 
 		return message.channel.send({ embeds:
 			[new MessageEmbed()

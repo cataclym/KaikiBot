@@ -3,6 +3,7 @@ import { Message, MessageEmbed, Permissions } from "discord.js";
 import { KaikiCommand } from "kaiki";
 
 import { getGuildDocument } from "../../struct/documentMethods";
+import { emoteReactCache } from "../../cache/cache";
 
 export default class RemoveEmoteReactCommand extends KaikiCommand {
 	constructor() {
@@ -16,6 +17,7 @@ export default class RemoveEmoteReactCommand extends KaikiCommand {
 				{
 					id: "trigger",
 					type: "string",
+					match: "rest",
 				},
 			],
 		});
@@ -23,12 +25,19 @@ export default class RemoveEmoteReactCommand extends KaikiCommand {
 
 	public async exec(message: Message, { trigger }: { trigger: string }): Promise<Message> {
 
-		const gid = message.guild!.id,
-			db = await getGuildDocument(gid),
-			emojiID = db.emojiReactions[trigger],
-			emoji = message.guild?.emojis.cache.get(emojiID as Snowflake);
+		const db = await getGuildDocument(message.guild!.id),
+			emoji = message.guild?.emojis.cache
+				.get(db.emojiReactions[trigger] as Snowflake);
 
 		if (db.emojiReactions[trigger]) {
+
+			if (trigger.includes(" ")) {
+				delete emoteReactCache[message.guild!.id].has_space[trigger];
+			}
+
+			else {
+				delete emoteReactCache[message.guild!.id].no_space[trigger];
+			}
 
 			delete db.emojiReactions[trigger];
 			db.markModified("emojiReactions");

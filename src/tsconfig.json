@@ -4,7 +4,7 @@
       "allowJs": true,
       "module": "commonJS",
       "esModuleInterop": true,
-      "target": "ES6",
+      "target": "ES2019",
       "noImplicitAny": true,
       "moduleResolution": "node",
       "sourceMap": true,
@@ -23,7 +23,7 @@
       "emitDecoratorMetadata": true,
       "experimentalDecorators": true,
       "typeRoots": ["types.ts", "../node_modules/@types", "../local_modules"],
-      "lib": ["es6", "dom"]
+      "lib": ["es2019", "dom"]
     },
     "references": [{ "path": "../" }],
     "include": ["./**/*", "jest.config.js",  "**/*.ts", "types.ts", "./Extensions/loglevel.d.ts"],
