@@ -15,7 +15,7 @@ import {
 	VoiceChannel,
 } from "discord.js";
 import * as emojis from "node-emoji";
-import { noArgGeneric } from "../../lib/Embeds";
+import { errorMessage, noArgGeneric } from "../../lib/Embeds";
 import { flags } from "../../lib/Util";
 import { EMOTE_REGEX } from "../../struct/constants";
 import { KaikiCommand } from "kaiki";
@@ -37,7 +37,9 @@ export default class InfoCommand extends KaikiCommand {
 						return emojis.find(content);
 					}, "guildMessage", EMOTE_REGEX),
 					match: "content",
-					otherwise: (m: Message) => ({ embeds: [noArgGeneric(m)] }),
+					otherwise: async (m: Message) => ({
+						embeds: [await errorMessage(m, "A channel, user, role, emoji or message was not found. Make sure to provide a valid argument!")],
+					}),
 				},
 			],
 		});
@@ -59,8 +61,8 @@ export default class InfoCommand extends KaikiCommand {
 					.addField("ID", obj.id)
 					.addField("User limit", obj.userLimit === 0
 						? "No limit"
-						: obj.userLimit.toString())
-					.addField("Created at", obj.createdAt.toString())
+						: String(obj.userLimit))
+					.addField("Created at", String(obj.createdAt))
 					.addField("Bitrate", obj.bitrate / 1000 + "kbps");
 
 				if (obj.parent) emb.addField("Parent", `${obj.parent.name} [${obj.parentId}]`);
@@ -70,7 +72,7 @@ export default class InfoCommand extends KaikiCommand {
 				emb.setTitle(`Info about text channel: ${obj.name}`)
 					.addField("ID", obj.id)
 					.addField("NSFW", obj.nsfw ? "Enabled" : "Disabled")
-					.addField("Created at", obj.createdAt.toString());
+					.addField("Created at", String(obj.createdAt));
 
 				if (obj.parent) emb.addField("Parent", `${obj.parent.name} [${obj.parentId}]`);
 			}
@@ -79,7 +81,7 @@ export default class InfoCommand extends KaikiCommand {
 				emb.setTitle(`Info about category channel: ${obj.name}`)
 					.addField("ID", obj.id)
 					.addField("Children", String(obj.children.size))
-					.addField("Created at", obj.createdAt.toString());
+					.addField("Created at", String(obj.createdAt));
 
 				if (obj.parent) emb.addField("Parent", `${obj.parent.name} [${obj.parentId}]`);
 			}
@@ -87,7 +89,7 @@ export default class InfoCommand extends KaikiCommand {
 			else if (obj instanceof ThreadChannel) {
 				emb.setTitle(`Info about Thread: ${obj.name}`)
 					.addField("ID", obj.id)
-					.addField("Created at", obj.createdAt.toString());
+					.addField("Created at", String(obj.createdAt));
 
 				if (obj.ownerId) {
 					emb.addField("Author", message.guild?.members.cache.get(obj.ownerId)?.user.username ?? obj.ownerId);
@@ -103,10 +105,10 @@ export default class InfoCommand extends KaikiCommand {
 				.setDescription(obj.displayName)
 				.setThumbnail(obj.user.displayAvatarURL({ dynamic: true }))
 				.addField("ID", obj.id, true)
-				.addField("Joined Server", obj.joinedAt?.toString() ?? "Dunno", true)
-				.addField("Joined Discord", obj.user.createdAt.toString(), true)
+				.addField("Joined Server", String(obj.joinedAt ?? "Dunno"), true)
+				.addField("Joined Discord", String(obj.user.createdAt), true)
 				.addField("Roles", String(obj.roles.cache.size), true)
-				.addField("Highest role", obj.roles.highest.toString(), true);
+				.addField("Highest role", String(obj.roles.highest), true);
 
 			const uFlags = obj.user.flags?.toArray();
 
@@ -120,7 +122,7 @@ export default class InfoCommand extends KaikiCommand {
 		else if (obj instanceof Role) {
 			emb.setTitle(`Info about role: ${obj.name}`)
 				.addField("ID", obj.id, true)
-				.addField("Created at", obj.createdAt.toString(), true)
+				.addField("Created at", String(obj.createdAt), true)
 				.addField("Color", obj.hexColor, true)
 				.addField("Members", String(obj.members.size), true)
 				.addField("Mentionable", String(obj.mentionable), true)
@@ -132,7 +134,7 @@ export default class InfoCommand extends KaikiCommand {
 			emb.setTitle(`Info about Emoji: ${obj.name} ${obj}`)
 				.addField("Name", obj.name ?? "Null", true)
 				.addField("ID", obj.id ?? "Null", true)
-				.addField("Created at", obj.createdAt?.toString() ?? "Null", true)
+				.addField("Created at", String(obj.createdAt ?? "Null"), true)
 				.addField("Animated", obj.animated ? "Yes" : "No", true);
 
 			if (obj.url) {
@@ -144,7 +146,7 @@ export default class InfoCommand extends KaikiCommand {
 		else if (obj instanceof Message) {
 			emb.setTitle(`Info about message in channel: ${(obj.channel as TextChannel).name}`)
 				.addField("ID", obj.id, true)
-				.addField("Created at", obj.createdAt.toString(), true)
+				.addField("Created at", String(obj.createdAt), true)
 				.addField("Author", obj.author.tag, true)
 				.addField("Link", obj.url, true);
 		}
@@ -163,7 +165,7 @@ export default class InfoCommand extends KaikiCommand {
 				.addField("Name", emoji[1], true)
 				.addField("ID", id, true)
 				// eslint-disable-next-line no-irregular-whitespace
-				.addField("Raw", `\`${emoji[0]}​:${emoji[1]}:${emoji[2]}\``, true)
+				.addField("Raw", `\`${emoji[0]}:${emoji[1]}:${emoji[2]}\``, true)
 				.addField("Link", link, true);
 		}
 

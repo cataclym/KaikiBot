@@ -6,7 +6,6 @@ import { trim } from "../../lib/Util";
 import { KaikiCommand } from "kaiki";
 
 
-
 export default class mcpingCommand extends KaikiCommand {
 	constructor() {
 		super("mcping", {
@@ -59,7 +58,7 @@ export default class mcpingCommand extends KaikiCommand {
 
 		else {
 			return message.channel.send({ embeds: [new MessageEmbed()
-				.setTitle("No ping :< Server is offline, double-check if the address is correct.")
+				.setTitle("No ping :< Server is offline or address is incorrect.")
 				.withErrorColor(message)] });
 		}
 	}
