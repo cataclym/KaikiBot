@@ -1,5 +1,5 @@
 import { Command, Listener } from "discord-akairo";
-import { Client, Message, MessageEmbed } from "discord.js";
+import { Message, MessageEmbed } from "discord.js";
 import logger from "loglevel";
 import { cmdStatsCache } from "../cache/cache";
 import { listenerLog } from "../lib/Util";
@@ -15,7 +15,7 @@ export default class missingPermissionsListener extends Listener {
 
 	// Emitted when a permissions check is failed.
 
-	public async exec(message: Message, command: Command, type: string, missing: any): Promise<NodeJS.Timeout | void> {
+	public async exec(message: Message, command: Command, type: string, missing: any): Promise<void> {
 
 		listenerLog(message, this, logger.info, command);
 
@@ -33,9 +33,8 @@ export default class missingPermissionsListener extends Listener {
 					.withErrorColor(message)],
 			});
 
-			return setTimeout(() => msg.delete()
-				.catch(logger.error), 10000).unref();
-
+			// return setTimeout(() => msg.delete()
+			// 	.catch(logger.error), 10000).unref();
 		}
 	}
 }

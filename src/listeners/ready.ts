@@ -21,13 +21,12 @@ export default class ReadyListener extends Listener {
 
 		// Find all guilds that have dad-bot enabled
 		const enabled = await guildsModel.find({ "settings.dadBot.enabled": true }).exec();
-		const enabledIDs = enabled.map(a => a.id);
 
 		// Create slash commands in those guilds
-		enabledIDs.forEach(g => {
-			const guild = this.client.guilds.cache.get(g);
+		enabled.forEach(g => {
+			const guild = this.client.guilds.cache.get(g.id);
 			guild?.commands.create(excludeData)
-				.catch(() => logger.warn(`${guild.name} [${chalk.red(g)}] refused creating slash commands. This is sometimes expected.`));
+				.catch(() => logger.warn(`${guild.name} [${chalk.red(g.id)}] refused creating slash commands. This is sometimes expected.`));
 		});
 
 		// // Delete slash commands in disabled guilds

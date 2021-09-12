@@ -15,7 +15,7 @@ export default class ShardResumeListener extends Listener {
 
 	public async exec(id: number, replayedEvents: number): Promise<void> {
 
-		logger.info(`shardResume | Shard: ${chalk.green(id)} \nReplayed ${replayedEvents} events.`);
+		logger.info(`shardResume | Shard: ${chalk.green(id)} \nReplayed ${chalk.green(replayedEvents)} events.`);
 
 		const botDb = await getBotDocument();
 		this.client.user?.setPresence({
