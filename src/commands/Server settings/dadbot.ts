@@ -26,20 +26,10 @@ export default class DadBotConfigCommand extends KaikiCommand {
 			guildID = (message.guild as Guild).id,
 			db = await getGuildDocument(guildID);
 
-		let isEnabled = message.client.guildSettings.get(guildID, "dadBot", {
+		const isEnabled = message.client.guildSettings.get(guildID, "dadBot", {
 			enabled: false,
 			excludedChannels: {},
 		}).enabled;
-
-		if (typeof db.settings["dadBot"] === "boolean") {
-			const bool = db.settings["dadBot"];
-			db.settings["dadBot"] = {
-				enabled: bool,
-				excludedChannels: {},
-			};
-			db.markModified("settings.dadBot");
-			isEnabled = db.settings.dadBot.enabled;
-		}
 
 		switch (value) {
 			case ("enable"):
