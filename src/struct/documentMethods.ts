@@ -76,7 +76,7 @@ export async function getBotDocument(): Promise<IBot> {
 		return bot;
 	}
 	else {
-		bot = new botModel;
+		bot = new botModel();
 
 		await bot.save().catch(err => logger.error(err));
 		return bot;
