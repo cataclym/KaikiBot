@@ -11,10 +11,15 @@ export async function handleStickyRoles(member: GuildMember) {
 
 	const result = await restoreUserRoles(member);
 	if (!result) {
-		logger.warn(`stickyRoles | Bot cannot add roles due to role-hierarchy!! ${chalk.blueBright(member.guild.name)} [${chalk.blueBright(member.guild.id)}]`);
+		return;
 	}
+
 	else if (result.success) {
 		logger.info(`stickyRoles | Re-added roles to ${chalk.blueBright(member.user.tag)} [${chalk.blueBright(member.id)}]`);
+	}
+
+	else {
+		logger.warn(`stickyRoles | Bot cannot add roles due to role-hierarchy!! ${chalk.blueBright(member.guild.name)} [${chalk.blueBright(member.guild.id)}]`);
 	}
 }
 
