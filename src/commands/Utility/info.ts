@@ -19,9 +19,8 @@ import { errorMessage, noArgGeneric } from "../../lib/Embeds";
 import { flags } from "../../lib/Util";
 import { EMOTE_REGEX } from "../../struct/constants";
 import { KaikiCommand } from "kaiki";
-
-
-type regexpType = { match: RegExpMatchArray };
+import { regexpType } from "../../struct/types";
+import { isRegex } from "../../lib/functions";
 
 export default class InfoCommand extends KaikiCommand {
 	constructor() {
@@ -49,10 +48,6 @@ export default class InfoCommand extends KaikiCommand {
 
 		const emb = new MessageEmbed()
 			.withOkColor(message);
-
-		function isRegex(value: { match: RegExpMatchArray } | emojis.Emoji): value is regexpType {
-			return (value as regexpType).match !== undefined;
-		}
 
 		if (obj instanceof Channel) {
 

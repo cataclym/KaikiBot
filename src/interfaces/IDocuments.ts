@@ -1,8 +1,8 @@
-import { ActivityType } from "discord-api-types";
-import { ColorResolvable } from "discord.js";
+import { ActivityType, ColorResolvable } from "discord.js";
 import { Document } from "mongoose";
 import { IGreet } from "./IGreetLeave";
 import { emoteReactObjectType } from "../cache/cache";
+import { ActivityTypes } from "discord.js/typings/enums";
 
 export interface IGuild extends Document {
 	id: string,
@@ -57,7 +57,7 @@ export interface IBlacklist extends Document {
 export interface IBot extends Document {
 	settings: {
         activity: string,
-        activityType: ActivityType,
+        activityType: Exclude<ActivityType, "CUSTOM"> | Exclude<ActivityTypes, ActivityTypes.CUSTOM>,
         currencyName: string,
         currencySymbol: string,
 		dailyEnabled: boolean,

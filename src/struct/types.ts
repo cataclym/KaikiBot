@@ -3,3 +3,5 @@ export const TYPES = {
 	Client: Symbol("Client"),
 	Token: Symbol("Token"),
 };
+
+export type regexpType = { match: RegExpMatchArray };

@@ -24,7 +24,7 @@
     "canvas": "^2.8.0",
     "chalk": "^4.1.2",
     "discord-akairo": "git+https://github.com/discord-akairo/discord-akairo.git",
-    "discord.js": "^13.0.0",
+    "discord.js": "^13.2.0",
     "dotenv": "^9.0.2",
     "image-size": "^1.0.0",
     "inversify": "^5.0.1",

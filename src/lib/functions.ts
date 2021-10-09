@@ -9,6 +9,7 @@ import { tinderDataModel } from "../struct/models";
 import { birthdayService } from "./AnniversaryRoles";
 import { partition, trim } from "./Util";
 import { dailyClaimsCache, emoteReactCache, separatedEmoteReactTypes } from "../cache/cache";
+import { regexpType } from "../struct/types";
 
 let botOwner: User | undefined;
 
@@ -233,4 +234,8 @@ export async function parsePlaceHolders(input:string, guildMember: GuildMember):
 		input = input.replace(/%member%/ig, guildMember.user.tag);
 	}
 	return input;
+}
+
+export function isRegex(value: any): value is regexpType {
+	return (value as regexpType).match !== undefined;
 }

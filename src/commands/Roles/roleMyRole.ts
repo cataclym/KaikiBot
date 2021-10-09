@@ -13,11 +13,13 @@ export default class MyRoleCommand extends KaikiCommand {
 			clientPermissions: ["MANAGE_ROLES"],
 			channel: "guild",
 			prefix: (msg: Message) => {
-				const p = (this.handler.prefix as PrefixSupplier)(msg);
-				return [p as string, ";"];
+				const mentions = [`<@${this.client.user?.id}>`, `<@!${this.client.user?.id}>`];
+				const prefixes = [(this.handler.prefix as PrefixSupplier)(msg) as string, ";"];
+				if (this.client.user) {return [...prefixes, ...mentions];}
+				return prefixes;
 			},
-			description: "Checks your assigned user role. Add a hexcode to change the colour.",
-			usage: ["color FF0000", "name Dreb"],
+			description: "Checks your assigned user role. Can set role color, name and icon.",
+			usage: ["color FF0000", "name Dreb", "icon 📘", "icon reset"],
 		});
 	}
 
@@ -26,6 +28,7 @@ export default class MyRoleCommand extends KaikiCommand {
 			type: [
 				["myrolename", "name"],
 				["myrolecolor", "color", "colour", "clr"],
+				["myroleicon", "icon", "image"],
 			],
 		};
 		if (!Argument.isFailure(method)) {

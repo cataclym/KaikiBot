@@ -1,9 +1,9 @@
 import { FailureData } from "discord-akairo";
-import { ActivityType } from "discord-api-types";
-import { Message, MessageEmbed } from "discord.js";
+import { ActivityType, Message, MessageEmbed } from "discord.js";
 import { noArgGeneric } from "../../lib/Embeds";
 import { getBotDocument } from "../../struct/documentMethods";
 import { KaikiCommand } from "kaiki";
+import { ActivityTypes } from "discord.js/typings/enums";
 
 const validTypes = ["PLAYING", "STREAMING", "LISTENING", "WATCHING", "COMPETING"];
 
@@ -32,9 +32,9 @@ export default class SetActivityCommand extends KaikiCommand {
 			],
 		});
 	}
-	public async exec(message: Message, { type, name }: { type: ActivityType, name: string}): Promise<Message> {
+	public async exec(message: Message, { type, name }: { type: Exclude<ActivityType, "CUSTOM"> | Exclude<ActivityTypes, ActivityTypes.CUSTOM>, name: string}): Promise<Message> {
 
-		message.client.user?.setActivity({ type, name });
+		message.client.user?.setActivity({ type: type, name: name });
 
 		const botDocument = await getBotDocument();
 		botDocument.settings.activity = name;

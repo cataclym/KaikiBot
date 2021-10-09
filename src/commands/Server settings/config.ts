@@ -15,7 +15,10 @@ export default class ConfigCommand extends KaikiCommand {
 			description: "Configure or display guild specific settings. Will always respond to default prefix.",
 			usage: ["", "dadbot enable", "anniversary enable", "prefix !", "okcolor <hex>", "errorcolor <hex>"],
 			prefix: (msg: Message) => {
-				return [(this.handler.prefix as PrefixSupplier)(msg) as string, "-"];
+				const mentions = [`<@${this.client.user?.id}>`, `<@!${this.client.user?.id}>`];
+				const prefixes = [(this.handler.prefix as PrefixSupplier)(msg) as string, "-"];
+				if (this.client.user) {return [...prefixes, ...mentions];}
+				return prefixes;
 			},
 		});
 	}

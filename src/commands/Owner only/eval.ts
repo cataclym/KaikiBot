@@ -27,11 +27,11 @@ export default class EvalCommand extends KaikiCommand {
 
 			evaled = (await import("util")).inspect(evaled);
 			return message.channel.send({
-				content: await codeblock(clean(evaled), "xl"),
+				content: await codeblock(clean(evaled.toString()), "xl"),
 			});
 		}
 		catch (err) {
-			return message.channel.send(`\`ERROR\` \`\`\`xl\n${clean(err)}\n\`\`\``);
+			return message.channel.send(`\`ERROR\` ${await codeblock(clean(err.toString()), "xl")}`);
 		}
 	}
 }
