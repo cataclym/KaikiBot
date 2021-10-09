@@ -1,6 +1,6 @@
 {
   "name": "kaikideishubot",
-  "version": "3.5.36-Fuchsia",
+  "version": "3.5.37-Fuchsia",
   "main": "./dist/index.js",
   "scripts": {
     "start": "node -r dotenv/config ./dist/index.js --color",
