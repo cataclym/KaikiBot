@@ -5,6 +5,7 @@ import querystring from "querystring";
 import { noArgGeneric } from "../../lib/Embeds";
 import { trim } from "../../lib/Util";
 import { KaikiCommand } from "kaiki";
+import { List } from "../../interfaces/IUrbanResponse";
 
 
 export default class UrbanDictCommand extends KaikiCommand {
@@ -26,7 +27,7 @@ export default class UrbanDictCommand extends KaikiCommand {
 
 		const query = querystring.stringify({ term: term });
 
-		const { list } = await fetch(`https://api.urbandictionary.com/v0/define?${query}`).then(response => response.json());
+		const { list }: { list: List[] } = await fetch(`https://api.urbandictionary.com/v0/define?${query}`).then(response => response.json());
 
 		if (!list.length) {
 			return message.channel.send({
@@ -36,19 +37,22 @@ export default class UrbanDictCommand extends KaikiCommand {
 					.withErrorColor(message)],
 			});
 		}
+
 		const pages: MessageEmbed[] = [];
+
 		for (const result of list) {
 			pages.push(new MessageEmbed()
 				.setTitle(result.word)
 				.setURL(result.permalink)
 				.addFields(
 					{ name: "Definition", value: trim(result.definition, 1024) },
-					{ name: "Example", value: trim(result.example, 1024) },
+					{ name: "Example", value: trim(result.example || "N/A", 1024) },
 					{ name: "Rating", value: `${result.thumbs_up} thumbs up. ${result.thumbs_down} thumbs down.` },
 				)
 				.withOkColor(message),
 			);
 		}
+
 		return sendPaginatedMessage(message, pages, {});
 	}
 }
