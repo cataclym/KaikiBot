@@ -3,11 +3,6 @@ import { dadbotArray } from "../../struct/constants";
 import { getUserDocument } from "../../struct/documentMethods";
 import { KaikiCommand } from "kaiki";
 
-
-const nickname: {
-	[id: string]: string
-} = {};
-
 // dad bot
 export default class dadBot extends KaikiCommand {
 	constructor() {
@@ -30,11 +25,11 @@ export default class dadBot extends KaikiCommand {
 								if (splits.length > 1) match = splits.reduce((a, b) => a.length <= b.length && a.length > 0 ? a : b);
 
 								if (match.length <= (process.env.DADBOT_MAX_LENGTH || 256)) {
-									if (!nickname[message.member.id] || nickname[message.member.id]?.length > match.length) nickname[message.member.id] = match;
+									if (!this.nickname[message.member.id] || this.nickname[message.member.id]?.length > match.length) this.nickname[message.member.id] = match;
 								}
 							}
 						}
-						return !!(nickname[message.member.id]);
+						return !!(this.nickname[message.member.id]);
 					}
 				}
 				return false;
@@ -42,9 +37,13 @@ export default class dadBot extends KaikiCommand {
 		});
 	}
 
+	nickname: {
+		[id: string]: string
+	} = {};
+
 	public async exec(message: Message): Promise<boolean> {
 
-		const nick = nickname[message.member!.id];
+		const nick = this.nickname[message.member!.id];
 
 		message.channel.send({
 			content: `Hi, ${nick}`,
@@ -64,6 +63,6 @@ export default class dadBot extends KaikiCommand {
 			db.markModified("userNicknames");
 			db.save();
 		}
-		return delete nickname[message.member!.id];
+		return delete this.nickname[message.member!.id];
 	}
 }

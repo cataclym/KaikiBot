@@ -1,4 +1,5 @@
 const slotDict: {[num: number]: string} = {
+	0: "🥑",
 	1: "🍏",
 	2: "🍎",
 	3: "🍐",
@@ -18,11 +19,9 @@ const slotDict: {[num: number]: string} = {
 	17: "🥝",
 	18: "🍅",
 	19: "🍆",
-	20: "🥑",
-
 };
 
-const randomEmoji = () => slotDict[Math.floor(Math.random() * 19) + 1];
+const randomEmoji = () => slotDict[Math.floor(Math.random() * 19)];
 
 export async function playSlots(): Promise<{
 string: string;
