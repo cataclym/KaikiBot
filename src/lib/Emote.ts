@@ -2,7 +2,9 @@ import { GuildEmoji, Message } from "discord.js";
 import fs from "fs";
 import sharp from "sharp";
 import util from "util";
-import cp = require("child_process")
+import gifsicle from "gifsicle";
+import cp = require("child_process");
+
 const execFile = util.promisify(cp.execFile);
 
 export async function deleteImage(file: fs.PathLike): Promise<void> {
@@ -56,7 +58,7 @@ export async function saveEmoji(message: Message, file: string | Buffer, name: s
 			return Promise.resolve();
 		})
 		.catch((e: GuildEmoji) => {
-			message.channel.send(`Unable to create emoji for reason: ${e}`);
+			message.channel.send(`Unable to create emoji: ${e}`);
 			return Promise.resolve();
 		});
 }

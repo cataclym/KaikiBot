@@ -26,6 +26,7 @@
     "discord-akairo": "git+https://github.com/discord-akairo/discord-akairo.git",
     "discord.js": "^13.2.0",
     "dotenv": "^9.0.2",
+    "gifsicle": "^5.2.1",
     "image-size": "^1.0.0",
     "inversify": "^5.0.1",
     "kaiki": "file:local_modules/Kaiki",
@@ -43,6 +44,7 @@
   },
   "devDependencies": {
     "@types/chai": "^4.2.19",
+    "@types/gifsicle": "^5.2.0",
     "@types/mocha": "^5.2.6",
     "@types/mongodb": "^3.6.19",
     "@types/node-emoji": "^1.8.1",
