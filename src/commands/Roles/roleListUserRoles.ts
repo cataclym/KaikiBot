@@ -1,5 +1,5 @@
-import { Command, PrefixSupplier } from "discord-akairo";
-import { sendPaginatedMessage } from "@cataclym/discord.js-pagination-ts-nsb";
+import { PrefixSupplier } from "discord-akairo";
+import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
 import { Snowflake } from "discord-api-types";
 import { Guild, Message, MessageEmbed } from "discord.js";
 import { getGuildDocument } from "../../struct/documentMethods";

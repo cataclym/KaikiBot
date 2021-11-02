@@ -1,5 +1,5 @@
 import { Argument, Flag, PrefixSupplier } from "discord-akairo";
-import { sendPaginatedMessage } from "@cataclym/discord.js-pagination-ts-nsb";
+import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
 import { Message, MessageEmbed } from "discord.js";
 import { trim } from "../../lib/Util";
 import { getUserDocument } from "../../struct/documentMethods";

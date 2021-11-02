@@ -1,13 +1,11 @@
 /* eslint-disable no-useless-escape */
-import { Command } from "discord-akairo";
-import { sendPaginatedMessage } from "@cataclym/discord.js-pagination-ts-nsb";
+import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
 import { exec } from "child_process";
 import { Message, MessageEmbed } from "discord.js";
 import logger from "loglevel";
 import { distros } from "../../lib/distros.json";
 import { codeblock } from "../../lib/Util";
 import { KaikiCommand } from "kaiki";
-
 
 
 export default class NeofetchCommand extends KaikiCommand {

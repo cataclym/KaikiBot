@@ -1,4 +1,4 @@
-import { sendPaginatedMessage } from "@cataclym/discord.js-pagination-ts-nsb";
+import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
 import { Message, MessageEmbed, User } from "discord.js";
 import { IUser } from "../../interfaces/IDocuments";
 import { getUserDocument } from "../../struct/documentMethods";

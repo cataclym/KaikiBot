@@ -1,11 +1,5 @@
-import { sendPaginatedMessage } from "@cataclym/discord.js-pagination-ts-nsb";
-import {
-	ColorResolvable,
-	Message,
-	MessageAttachment,
-	MessageEmbed,
-	MessageOptions,
-} from "discord.js";
+import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
+import { ColorResolvable, Message, MessageAttachment, MessageEmbed, MessageOptions } from "discord.js";
 import { colorTable, hexColorTable, imgFromColor } from "../../lib/Color";
 import { KaikiCommand } from "kaiki";
 

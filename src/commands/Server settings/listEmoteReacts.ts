@@ -1,4 +1,4 @@
-import { sendPaginatedMessage } from "@cataclym/discord.js-pagination-ts-nsb";
+import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
 import { PrefixSupplier } from "discord-akairo";
 import { Snowflake } from "discord-api-types";
 import { Message, MessageEmbed } from "discord.js";

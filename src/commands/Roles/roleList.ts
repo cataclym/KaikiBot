@@ -1,5 +1,5 @@
-import { sendPaginatedMessage } from "@cataclym/discord.js-pagination-ts-nsb";
-import { Guild, Role, MessageEmbed, Message } from "discord.js";
+import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
+import { Guild, Message, MessageEmbed, Role } from "discord.js";
 import { KaikiCommand } from "kaiki";
 
 

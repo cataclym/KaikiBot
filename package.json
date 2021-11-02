@@ -17,7 +17,7 @@
   "author": "Cataclym <ole.kh@hotmail.com>",
   "license": "MIT",
   "dependencies": {
-    "@cataclym/discord.js-pagination-ts-nsb": "git+https://gitlab.com/cataclym/discord-js-pagination.git",
+    "discord-js-button-pagination-ts": "^3.0.1",
     "@types/node": "^15.3.0",
     "@types/ws": "^7.4.4",
     "bufferutil": "^4.0.3",

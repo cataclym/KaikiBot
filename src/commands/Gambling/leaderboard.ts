@@ -3,7 +3,7 @@ import { KaikiCommand } from "kaiki";
 import { moneyModel } from "../../struct/models";
 import { MongoMoney } from "../../lib/money/MongoMoneyService";
 import { IMoneyService } from "../../lib/money/IMoneyService";
-import { sendPaginatedMessage } from "@cataclym/discord.js-pagination-ts-nsb";
+import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
 
 export default class LeaderboardCommand extends KaikiCommand {
 	private readonly _money: IMoneyService;

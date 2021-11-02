@@ -1,5 +1,5 @@
-import Akairo, { Command } from "discord-akairo";
-import { sendPaginatedMessage } from "@cataclym/discord.js-pagination-ts-nsb";
+import Akairo from "discord-akairo";
+import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
 import { execSync } from "child_process";
 import { Message, MessageEmbed, version } from "discord.js";
 import * as packageJson from "../../../package.json";
