@@ -12,6 +12,7 @@ export default class LeaderboardCommand extends KaikiCommand {
 			aliases: ["leaderboard", "lb"],
 			description: "",
 			usage: "",
+			channel: "guild",
 		});
 		this._money = MongoMoney;
 	}
