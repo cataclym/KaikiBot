@@ -41,7 +41,7 @@ export default class ColorListCommand extends KaikiCommand {
 				i = 0;
 				continue;
 			}
-			i += 1;
+			i++;
 		}
 
 		sendPaginatedMessage(message, messageOptions as MessageOptions[], {});
