@@ -1,6 +1,6 @@
 {
   "name": "kaikideishubot",
-  "version": "3.5.38-Fuchsia",
+  "version": "3.5.38_1-Fuchsia",
   "main": "./dist/index.js",
   "scripts": {
     "start": "node -r dotenv/config ./dist/index.js --color",
@@ -23,14 +23,13 @@
     "canvas": "^2.8.0",
     "chalk": "^4.1.2",
     "discord-akairo": "git+https://github.com/discord-akairo/discord-akairo.git",
-    "discord-js-button-pagination-ts": "^3.0.1",
+    "discord-js-button-pagination-ts": "^3.0.12",
     "discord.js": "^13.2.0",
     "dotenv": "^9.0.2",
     "gifsicle": "^5.2.1",
     "image-size": "^1.0.0",
     "inversify": "^5.0.1",
     "kaiki": "file:local_modules/Kaiki",
-    "kaori": "^2.0.4",
     "loglevel": "^1.7.1",
     "loglevel-plugin-prefix": "^0.8.4",
     "mongoose": "^5.13.0",
@@ -39,7 +38,7 @@
     "node-html-parser": "^5.1.0",
     "reflect-metadata": "^0.1.13",
     "sharp": "^0.28.3",
-    "typescript": "^4.3.5",
+    "typescript": "^4.4.4",
     "utf-8-validate": "^5.0.5",
     "zlib-sync": "^0.1.7"
   },

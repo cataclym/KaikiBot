@@ -1,6 +1,3 @@
-import { Message, MessageEmbed } from "discord.js";
-import { search } from "kaori";
-import { Image } from "kaori/typings/Image";
 import logger from "loglevel";
 import fetch from "node-fetch";
 import querystring from "querystring";
@@ -25,17 +22,11 @@ export type types = "waifu" | "neko" | "femboy" | "trap" | "blowjob";
 
 export const typesArray: types[] = ["waifu", "neko", "femboy", "blowjob"];
 
-export async function grabHentaiPictureAsync(usertags: string[] = []): Promise<Image> {
-	usertags.push("rating:explicit");
-	const images = await search(sites[Math.floor(Math.random() * sites.length)], { tags: usertags, exclude: ["loli", "shota"], random: true });
-	return images[0];
-}
-
 export async function grabHentai(type: types, format: "single"): Promise<string>
 export async function grabHentai(type: types, format: "bomb"): Promise<string[]>
 export async function grabHentai(type: types, format: "single" | "bomb"): Promise<string | string[]> {
 
-	if ( type === "femboy") type = "trap";
+	if (type === "femboy") type = "trap";
 
 	if (format === "bomb") {
 		const rawResponse = await fetch(`https://api.waifu.pics/many/nsfw/${type}`, {
@@ -103,26 +94,6 @@ export async function DapiGrabber(tags: string[] | null, type: DapiSearchType): 
 	if (type === DapiSearchType.Danbooru) {
 		const r = await fetch(url);
 		return JSON.parse(r.body.toString()).posts;
-	}
-}
-
-export async function postHentai(message: Message, messageArguments: string[] | undefined): Promise<Message> {
-	const awaitResult = async () => (await grabHentaiPictureAsync(messageArguments));
-	const result: Image = await awaitResult();
-	if (result) {
-		return message.channel.send({
-			content: result.sampleURL, embeds: [new MessageEmbed({
-				author: { name: result.createdAt?.toLocaleString() },
-				title: "Score: " + result.score,
-				description: `[Source](${result.source} "${result.source}")`,
-				image: { url: <string | undefined>result.fileURL || result.sampleURL || result.previewURL },
-				footer: { text: result.tags.join(", ") },
-			})
-				.withOkColor(message)],
-		});
-	}
-	else {
-		return postHentai(message, messageArguments);
 	}
 }
 

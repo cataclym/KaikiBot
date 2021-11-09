@@ -1,4 +1,5 @@
-#  Welcome to Kaiki Deishu Bot
+#  Welcome to Kaiki Deishu Bot 
+https://kaikibot.xyz
 
 ### KaikiBot
 

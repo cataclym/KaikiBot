@@ -33,11 +33,7 @@ Decide what prefix the bot should default to on new servers.
 Example
 
     PREFIX=;
-### HOLIDAYKEY (Currently not being used and can be ignored safely)
 
-Example
-
-    HOLIDAYKEY=JHSU238293DJIWJID2738273.djuiwhDUWHDWdhjiuw283283u
 ### KAWAIIKEY
 
 * Login to https://kawaii.red/dashboard/ with your Discord account
@@ -47,6 +43,16 @@ Example
 Example
 
     KAWAIIKEY=142788173885276162.DspDpD0isjuXAKD73vWs
+
+### The rest of the file
+
+Please leave this as is, unless you know what you're doing
+
+    DADBOT_MAX_LENGTH=256
+
+    DADBOT_NICKNAME_LENGTH=32
+
+    NODE_ENV=production
 
 ## MORE TO COME
 
@@ -58,6 +64,11 @@ Example
 
     PREFIX=;
 
-    HOLIDAYKEY=JHSU238293DJIWJID2738273.djuiwhDUWHDWdhjiuw283283u
-
     KAWAIIKEY=142788173885276162.DspDpD0isjuXAKD73vWs
+
+    DADBOT_MAX_LENGTH=256
+
+    DADBOT_NICKNAME_LENGTH=32
+
+    NODE_ENV=production
+
