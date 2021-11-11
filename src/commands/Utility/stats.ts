@@ -1,10 +1,10 @@
-import Akairo from "discord-akairo";
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
 import { execSync } from "child_process";
 import { Message, MessageEmbed, version } from "discord.js";
 import * as packageJson from "../../../package.json";
 import { getCommandStatsDocument } from "../../struct/documentMethods";
 import { KaikiCommand } from "kaiki";
+import Akairo from "discord-akairo";
 
 
 function format(seconds: number) {
@@ -34,11 +34,8 @@ module.exports = class StatsCommand extends KaikiCommand {
 
 		const pages = [new MessageEmbed()
 			.setAuthor(`${packageJson.name} v${packageJson.version}-${execSync("git rev-parse --short HEAD").toString()}`, message.client.user?.displayAvatarURL({ dynamic: true }), packageJson.repository.url)
-			.setDescription("**Built using**:")
+			.setDescription("Detailed statistics")
 			.addFields([
-				{ name: "Discord.js library", value: `[Discord.js](https://discord.js.org/#/ 'Discord.js website') v${version}`, inline: true },
-				{ name: "Discord-Akairo framework", value: `[Discord-Akairo](https://discord-akairo.github.io/#/ 'Discord-Akairo website') v${Akairo.version}`, inline: true },
-				{ name: "Running on Node.js", value: `[Node.js](https://nodejs.org/en/ 'Node.js website') ${process.version}`, inline: true },
 				{ name: "Memory Usage", value: `${Math.round(process.memoryUsage().heapUsed / 1024 / 1024)}MB`, inline: true },
 				{ name: "Uptime", value: String(format(process.uptime())), inline: true },
 				{ name: "Users", value: String(message.client.users.cache.size), inline: true },
@@ -48,7 +45,15 @@ module.exports = class StatsCommand extends KaikiCommand {
 					.reduce((a, b) => a + b, 0)}**\nVoice channels: **${guildCache
 					.map(g => g.channels.cache.filter(channel => channel.type === "GUILD_VOICE").size)
 					.reduce((a, b) => a + b, 0)}**`, inline: true }])
-			.withOkColor(message)];
+			.withOkColor(message),
+		new MessageEmbed(createEmbed())
+			.setDescription("**Built using**:")
+			.addFields([
+				{ name: "Discord.js library", value: `[Discord.js](https://discord.js.org/#/ 'Discord.js website') v${version}`, inline: true },
+				{ name: "Discord-Akairo framework", value: `[Discord-Akairo](https://discord-akairo.github.io/#/ 'Discord-Akairo website') v${Akairo.version}`, inline: true },
+				{ name: "Running on Node.js", value: `[Node.js](https://nodejs.org/en/ 'Node.js website') ${process.version}`, inline: true },
+				{ name: "Node Package Manager", value: `[npm](https://www.npmjs.com/ 'npm website') \`${process.env.npm_config_user_agent || "N/A"}\``, inline: true }]),
+		];
 
 		for (let i = 0, l = 25; i < stats.length; i += 25, l += 25) {
 			const emb = createEmbed()
