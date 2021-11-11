@@ -1,11 +1,12 @@
 import fetch from "node-fetch";
 import { ColorResolvable, GuildMember, Message, MessageEmbed } from "discord.js";
 import { endpointData } from "../../interfaces/IAPIData";
+import { KaikiUtil } from "kaiki";
 
 export async function processAPIRequest(message: Message, site: string, data: endpointData, jsonProperty: string, mention?: GuildMember | null) {
 
 	const { action, color, append, appendable } = data;
-	const result = (await (await fetch(site)).json())[jsonProperty];
+	const result = (await KaikiUtil.handleToJSON(await (await fetch(site)).json()))[jsonProperty];
 	const embed = new MessageEmbed({
 		color: color as ColorResolvable,
 		image: { url: result },

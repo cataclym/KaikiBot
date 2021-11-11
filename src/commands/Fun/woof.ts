@@ -1,7 +1,6 @@
 import { Message, MessageEmbed } from "discord.js";
 import fetch from "node-fetch";
-import { KaikiCommand } from "kaiki";
-
+import { KaikiCommand, KaikiUtil } from "kaiki";
 
 export default class WoofCommand extends KaikiCommand {
 	constructor() {
@@ -14,10 +13,10 @@ export default class WoofCommand extends KaikiCommand {
 
 	public async exec(message: Message): Promise<Message | void> {
 
-		return message.channel.send({ embeds: [new MessageEmbed()
-			.setImage((await fetch("https://dog.ceo/api/breeds/image/random")
-				.then(response => response.json())).message)
-			.withOkColor(message)],
+		return message.channel.send({
+			embeds: [new MessageEmbed()
+				.setImage((await KaikiUtil.handleToJSON(await (await fetch("https://dog.ceo/api/breeds/image/random")).json())).message)
+				.withOkColor(message)],
 		});
 	}
 }

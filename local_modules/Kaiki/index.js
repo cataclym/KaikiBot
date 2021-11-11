@@ -1,4 +1,4 @@
-const { Command, CommandOptions } = require("discord-akairo");
+const { Command } = require("discord-akairo");
 
 class KaikiCommand extends Command {
 	constructor(id, options) {
@@ -7,6 +7,14 @@ class KaikiCommand extends Command {
 	}
 }
 
+class KaikiUtil {
+	async handleToJSON(data) {
+		if (data) return data;
+		throw new Error("No data was found");
+	}
+}
+
 module.exports = {
 	KaikiCommand,
+	KaikiUtil: new KaikiUtil(),
 };

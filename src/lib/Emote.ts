@@ -3,7 +3,7 @@ import fs from "fs";
 import sharp from "sharp";
 import util from "util";
 import gifsicle from "gifsicle";
-import cp = require("child_process");
+import cp from "child_process";
 
 const execFile = util.promisify(cp.execFile);
 

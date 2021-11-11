@@ -1,6 +1,6 @@
 {
   "name": "kaikideishubot",
-  "version": "3.5.38_1-Fuchsia",
+  "version": "3.6.0-Fuchsia",
   "main": "./dist/index.js",
   "scripts": {
     "start": "node -r dotenv/config ./dist/index.js --color",
@@ -17,14 +17,18 @@
   "author": "Cataclym <ole.kh@hotmail.com>",
   "license": "MIT",
   "dependencies": {
-    "@types/node": "^15.3.0",
-    "@types/ws": "^7.4.4",
+    "@types/gifsicle": "^5.2.0",
+    "@types/mongodb": "^3.6.19",
+    "@types/node": "^16.6.0",
+    "@types/node-emoji": "^1.8.1",
+    "@types/sharp": "^0.28.3",
+    "@types/ws": "^7.4.7",
     "bufferutil": "^4.0.3",
     "canvas": "^2.8.0",
     "chalk": "^4.1.2",
     "discord-akairo": "git+https://github.com/discord-akairo/discord-akairo.git",
-    "discord-js-button-pagination-ts": "^3.0.12",
-    "discord.js": "^13.2.0",
+    "discord-js-button-pagination-ts": "^3.0.13",
+    "discord.js": "^13.3.1",
     "dotenv": "^9.0.2",
     "gifsicle": "^5.2.1",
     "image-size": "^1.0.0",
@@ -34,36 +38,27 @@
     "loglevel-plugin-prefix": "^0.8.4",
     "mongoose": "^5.13.0",
     "node-emoji": "^1.10.0",
-    "node-fetch": "^2.6.1",
+    "node-fetch": "^2.6.6",
     "node-html-parser": "^5.1.0",
     "reflect-metadata": "^0.1.13",
     "sharp": "^0.28.3",
+    "ts-node": "^10.4.0",
     "typescript": "^4.4.4",
     "utf-8-validate": "^5.0.5",
     "zlib-sync": "^0.1.7"
   },
   "devDependencies": {
     "@types/chai": "^4.2.19",
-    "@types/gifsicle": "^5.2.0",
     "@types/mocha": "^5.2.6",
-    "@types/mongodb": "^3.6.19",
-    "@types/node-emoji": "^1.8.1",
-    "@types/node-fetch": "^2.5.10",
-    "@types/sharp": "^0.28.3",
-    "@typescript-eslint/eslint-plugin": "^4.28.1",
-    "@typescript-eslint/parser": "^4.28.1",
+    "@typescript-eslint/eslint-plugin": "^5.3.1",
+    "@typescript-eslint/parser": "^5.3.1",
     "auto-changelog": "^2.3.0",
     "chai": "^4.2.0",
     "eslint": "^7.29.0",
     "eslint-import-resolver-typescript": "^2.4.0",
     "eslint-plugin-import": "^2.23.4",
     "mocha": "^9.0.2",
-    "ts-mockito": "^2.3.1",
-    "ts-node": "^9.1.1"
-  },
-  "peerDependencies": {
-    "@types/node": "^15.3.0",
-    "@types/ws": "^7.4.4"
+    "ts-mockito": "^2.3.1"
   },
   "description": "Discord bot built with Akairo and MongoDB",
   "repository": {
@@ -72,6 +67,6 @@
   },
   "engines": {
     "node": ">=16.6.0",
-    "npm": ">=7.0.0"
+    "npm": ">=8.0.0"
   }
 }

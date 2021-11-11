@@ -17,16 +17,13 @@ export default class AnimeQuoteCommand extends KaikiCommand {
 	}
 	public async exec(message: Message): Promise<Message | void> {
 
-		const resp: respType = await fetch("https://animechan.vercel.app/api/random")
+		const resp = <respType> await fetch("https://animechan.vercel.app/api/random")
 			.then(response => response.json())
 			.catch((reason) => {
 				logger.warn(`Animequote received no data: ${reason}\n`);
-
 				if (Object.entries(animeQuoteCache).length) {
 					return sendQuote(animeQuoteCache[Math.floor(Math.random() * Object.keys(animeQuoteCache).length)], message);
 				}
-
-				return;
 			});
 
 		if (!animeQuoteCache[resp.character]) animeQuoteCache[resp.character] = resp;

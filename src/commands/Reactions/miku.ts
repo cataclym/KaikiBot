@@ -16,7 +16,7 @@ export default class Miku extends KaikiCommand {
 
 	public async exec(message: Message): Promise<Message> {
 		return message.channel.send({ embeds: [new MessageEmbed()
-			.setImage(await getMikuImage())
+			.setImage(<string> await getMikuImage())
 			.setColor(hexColorTable["cyan"] as ColorResolvable)],
 		});
 	}

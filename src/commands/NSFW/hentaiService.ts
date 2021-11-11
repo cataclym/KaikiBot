@@ -3,6 +3,7 @@ import fetch from "node-fetch";
 import querystring from "querystring";
 import { repository, version } from "../../../package.json";
 import { Post, responseE621 } from "../../interfaces/IDapi";
+import { KaikiUtil } from "kaiki";
 
 const sites = ["danbooru", "yandere"];
 
@@ -37,11 +38,11 @@ export async function grabHentai(type: types, format: "single" | "bomb"): Promis
 			},
 			body: JSON.stringify({ a: 1, b: "Textual content" }),
 		});
-		const content: string[] = (await rawResponse.json())["files"];
+		const content: string[] = (await KaikiUtil.handleToJSON(await rawResponse.json()))["files"];
 
 		return content;
 	}
-	return (await (await fetch(`https://waifu.pics/api/nsfw/${type}`)).json())["url"];
+	return (await KaikiUtil.handleToJSON(await (await fetch(`https://waifu.pics/api/nsfw/${type}`)).json()))["url"];
 
 }
 
@@ -81,7 +82,7 @@ export async function DapiGrabber(tags: string[] | null, type: DapiSearchType): 
 			throw new Error(`Error: Fetch didnt return successful Status code\n${r.status} ${r.statusText}`);
 		}
 
-		const json: responseE621 = await r.json()
+		const json = <responseE621> await r.json()
 			.catch((err) => logger.error(err));
 
 		if (Array.isArray(json)) {
@@ -93,7 +94,7 @@ export async function DapiGrabber(tags: string[] | null, type: DapiSearchType): 
 
 	if (type === DapiSearchType.Danbooru) {
 		const r = await fetch(url);
-		return JSON.parse(r.body.toString()).posts;
+		return JSON.parse(r.body?.toString() as string).posts;
 	}
 }
 

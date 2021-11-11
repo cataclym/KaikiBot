@@ -5,7 +5,6 @@ import { noArgGeneric } from "../../lib/Embeds";
 import { trim } from "../../lib/Util";
 import { KaikiCommand } from "kaiki";
 
-
 export default class mcpingCommand extends KaikiCommand {
 	constructor() {
 		super("mcping", {
@@ -24,7 +23,7 @@ export default class mcpingCommand extends KaikiCommand {
 	public async exec(message: Message, { term }: { term: string }): Promise<Message> {
 
 		const result: ServerOffline | ServerOnline = await fetch(`https://api.mcsrvstat.us/2/${term}`)
-			.then(response => response.json());
+			.then(response => response.json() as Promise<ServerOffline | ServerOnline>);
 
 		if (result.online) {
 

@@ -4,7 +4,7 @@ import fetch from "node-fetch";
 import querystring from "querystring";
 import { noArgGeneric } from "../../lib/Embeds";
 import { trim } from "../../lib/Util";
-import { KaikiCommand } from "kaiki";
+import { KaikiCommand, KaikiUtil } from "kaiki";
 import { List } from "../../interfaces/IUrbanResponse";
 
 
@@ -27,7 +27,7 @@ export default class UrbanDictCommand extends KaikiCommand {
 
 		const query = querystring.stringify({ term: term });
 
-		const { list }: { list: List[] } = await fetch(`https://api.urbandictionary.com/v0/define?${query}`).then(response => response.json());
+		const { list }: { list: List[] } = (await KaikiUtil.handleToJSON(await (await fetch(`https://api.urbandictionary.com/v0/define?${query}`)).json()));
 
 		if (!list.length) {
 			return message.channel.send({

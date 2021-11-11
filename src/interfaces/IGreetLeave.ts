@@ -38,9 +38,9 @@ export class EmbedFromJson implements MessageEmbedOptionsJSON {
 	public title: string | undefined;
 	public url: string | undefined;
 	public description: string | undefined;
-	public author: MessageEmbedAuthor | undefined;
+	public author: (Partial<MessageEmbedAuthor> & { icon_url?: string; proxy_icon_url?: string }) | undefined;
 	public color: ColorResolvable | undefined;
-	public footer: MessageEmbedFooter | undefined;
+	public footer: (Partial<MessageEmbedFooter> & { icon_url?: string; proxy_icon_url?: string }) | undefined;
 	public thumbnail: (Partial<MessageEmbedThumbnail> & { proxy_url?: string | undefined; }) | undefined;
 	public image: (Partial<MessageEmbedImage> & { proxy_url?: string | undefined; }) | undefined;
 	public fields: EmbedFieldData[] | undefined;
