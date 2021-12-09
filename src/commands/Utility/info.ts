@@ -21,6 +21,7 @@ import { EMOTE_REGEX } from "../../struct/constants";
 import { KaikiCommand } from "kaiki";
 import { regexpType } from "../../struct/types";
 import { isRegex } from "../../lib/functions";
+import { time } from "@discordjs/builders";
 
 export default class InfoCommand extends KaikiCommand {
 	constructor() {
@@ -100,8 +101,8 @@ export default class InfoCommand extends KaikiCommand {
 				.setDescription(obj.displayName)
 				.setThumbnail(obj.user.displayAvatarURL({ dynamic: true }))
 				.addField("ID", obj.id, true)
-				.addField("Joined Server", String(obj.joinedAt ?? "Dunno"), true)
-				.addField("Joined Discord", String(obj.user.createdAt), true)
+				.addField("Joined Server", String(obj.joinedAt ? time(obj.joinedAt) : "N/A"), true)
+				.addField("Joined Discord", String(time(obj.user.createdAt)), true)
 				.addField("Roles", String(obj.roles.cache.size), true)
 				.addField("Highest role", String(obj.roles.highest), true);
 
@@ -109,6 +110,10 @@ export default class InfoCommand extends KaikiCommand {
 
 			if (uFlags?.length) {
 				emb.addField("Flags", uFlags.map(flag => flags[flag]).join("\n"), true);
+			}
+
+			if (obj.user.banner || (await obj.user.fetch(true)).banner) {
+				emb.setImage(obj.user.bannerURL({ dynamic: true, size: 4096 })!);
 			}
 
 			if (obj.user.bot) emb.addField("Bot", "✅", true);
@@ -159,7 +164,6 @@ export default class InfoCommand extends KaikiCommand {
 				.setImage(link)
 				.addField("Name", emoji[1], true)
 				.addField("ID", id, true)
-				// eslint-disable-next-line no-irregular-whitespace
 				.addField("Raw", `\`${emoji[0]}:${emoji[1]}:${emoji[2]}\``, true)
 				.addField("Link", link, true);
 		}
