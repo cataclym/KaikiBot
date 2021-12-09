@@ -13,13 +13,17 @@ export const EMOTE_REGEX = /<(a?)((!?\d+)|(:.+?:\d+))>/g;
 export const IMAGE_REGEX = /(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|gif|png|jpeg)/gi;
 // Credit to https://github.com/Snitt/emojibotten/blob/master/commands/management/emoji.js
 
-export const guildFeatures: {[index in GuildFeatures]: string} = {
+type theseDoNotYetExist = "MEMBER_PROFILES"
+	| "NEW_THREAD_PERMISSIONS"
+	| "THREADS_ENABLED";
+
+export const guildFeatures: {[index in GuildFeatures]: string} & {[index in theseDoNotYetExist]: string} = {
 	ANIMATED_ICON: "Animated icon",
 	BANNER: "Banner",
 	COMMERCE: "Commerce",
 	COMMUNITY: "Community",
-	DISCOVERABLE: "Disoverable",
-	FEATURABLE: "Featurable",
+	DISCOVERABLE: "Discoverable",
+	FEATURABLE: "Can be featured",
 	INVITE_SPLASH: "Invite splash",
 	MEMBER_VERIFICATION_GATE_ENABLED: "Member verification enabled",
 	MONETIZATION_ENABLED: "Monetization enabled",
@@ -36,4 +40,7 @@ export const guildFeatures: {[index in GuildFeatures]: string} = {
 	VERIFIED: "Verified",
 	VIP_REGIONS: "VIP Regions",
 	WELCOME_SCREEN_ENABLED: "Welcome screen enabled",
+	MEMBER_PROFILES: "Member profiles",
+	NEW_THREAD_PERMISSIONS: "New thread permissions",
+	THREADS_ENABLED: "Threads enabled",
 };
