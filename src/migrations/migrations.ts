@@ -66,12 +66,8 @@ export class Migrations {
 	}
 
 	private load(filePath: string) {
-		const mod = ((m: { default: Migration } | null) => {
-			if (!m) return null;
-			if (m.default instanceof Migration) return m;
-			return null;
-			// eslint-disable-next-line @typescript-eslint/no-var-requires
-		})(require(filePath));
+		// eslint-disable-next-line @typescript-eslint/no-var-requires
+		const mod = ((m: { default: Migration } | null) => m)(require(filePath));
 
 		if (!mod) {
 			return;
@@ -86,7 +82,7 @@ export class Migrations {
 	public async runAllMigrations() {
 		let count = 0;
 		await this.loadClasses();
-		const promise = new Promise<void>((resolve, reject) => this.migrationClasses.each(async (migration) => {
+		const promise = new Promise<void>((resolve) => this.migrationClasses.each(async (migration) => {
 			const bool = await this.runMigration(migration);
 			if (bool) {
 				count++;

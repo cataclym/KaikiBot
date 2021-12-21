@@ -12,7 +12,7 @@ export default class RateLimitListener extends Listener {
 	}
 	// Emitted when the client hits a rate limit while making a request
 
-	public async exec({ timeout, limit, method, path, route }: { timeout: number, limit: number, method: string, path: string, route: string }): Promise<void> {
+	public async exec({ timeout, _, method }: { timeout: number, _	: number, method: string }): Promise<void> {
 
 		// Shut uuuuup
 		logger.warn(chalk.magenta(`rateLimit | Timeout: ${chalk.green(timeout)} | Method: ${chalk.green(method)}`));

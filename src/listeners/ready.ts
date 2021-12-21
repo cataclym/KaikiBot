@@ -47,7 +47,7 @@ export default class ReadyListener extends Listener {
 			.then(async () => {
 				logger.info("dailyResetTimer | Reset timer initiated.");
 				// ????
-				birthdayService(this.client);
+				await birthdayService(this.client);
 				// ?????????????
 				setTimeout(async () => emoteDataBaseService(this.client)
 					.then(i => {
@@ -62,11 +62,12 @@ export default class ReadyListener extends Listener {
 
 		// Let bot owner know when bot goes online.
 		if (["Tsukihi Araragi#3589", "Kaiki Deishū#9185"].includes(this.client.user?.tag ?? "") && process.env.OWNER) {
-			(await this.client.users.cache.get(process.env.OWNER) ?? await this.client.users.fetch(process.env.OWNER, { cache: true }))
-				.send({ embeds:
-					[new MessageEmbed()
-						.setDescription("Bot is online.")
-						.withOkColor()],
+			await (this.client.users.cache.get(process.env.OWNER) ?? await this.client.users.fetch(process.env.OWNER, { cache: true }))
+				.send({
+					embeds:
+						[new MessageEmbed()
+							.setDescription("Bot is online.")
+							.withOkColor()],
 				});
 		}
 

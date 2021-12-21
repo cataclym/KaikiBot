@@ -35,7 +35,7 @@ export class Bot {
 
     	new MongoDb().init();
 
-    	this.client.init();
+    	void this.client.init();
 
     	return this.client.login(this.token);
     }

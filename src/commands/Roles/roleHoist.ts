@@ -27,7 +27,7 @@ export default class RoleHoistCommand extends KaikiCommand {
 
 		if (await rolePermissionCheck(message, role)) {
 
-			role.setHoist(!role.hoist);
+			await role.setHoist(!role.hoist);
 
 			return message.channel.send({
 				embeds: [new MessageEmbed({

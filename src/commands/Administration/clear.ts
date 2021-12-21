@@ -1,4 +1,4 @@
-import { Channel, TextBasedChannels, TextChannel } from "discord.js";
+import { TextBasedChannels, TextChannel } from "discord.js";
 import { KaikiCommand } from "kaiki";
 
 

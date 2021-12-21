@@ -4,7 +4,6 @@ import { MongoMoney } from "../../lib/money/MongoMoneyService";
 import { IMoneyService } from "../../lib/money/IMoneyService";
 import { dailyClaimsCache } from "../../cache/cache";
 import { getBotDocument } from "../../struct/documentMethods";
-import { botModel } from "../../struct/models";
 import { errorMessage } from "../../lib/Embeds";
 
 export default class ClaimDailyCommand extends KaikiCommand {

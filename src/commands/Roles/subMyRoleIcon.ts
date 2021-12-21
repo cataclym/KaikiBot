@@ -19,7 +19,7 @@ export default class MyRoleSubIcon extends KaikiCommand {
 			typing: true,
 			args: [{
 				id: "icon",
-				type: Argument.union((message, content) => {
+				type: Argument.union((message) => {
 					if (message.attachments.first()) {
 						return message.attachments.first();
 					}

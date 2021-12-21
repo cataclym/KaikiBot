@@ -1,5 +1,4 @@
-import { Command } from "discord-akairo";
-import { Message, MessageEmbed } from "discord.js";
+import { Message } from "discord.js";
 import { grabHentai, types, typesArray } from "./hentaiService";
 import { KaikiCommand } from "kaiki";
 

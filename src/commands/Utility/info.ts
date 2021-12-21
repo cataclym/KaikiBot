@@ -45,7 +45,7 @@ export default class InfoCommand extends KaikiCommand {
 		});
 	}
 
-	public async exec(message: Message, { obj }: { obj: Channel | GuildMember | Role | regexpType | emojis.Emoji | Message }): Promise<Message | void> {
+	public async exec(message: Message, { obj }: { obj: Channel | GuildMember | Role | regexpType | emojis.Emoji | Emoji | Message }): Promise<Message | void> {
 
 		const emb = new MessageEmbed()
 			.withOkColor(message);

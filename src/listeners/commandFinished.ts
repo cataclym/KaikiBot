@@ -15,7 +15,7 @@ export default class commandFinishedListener extends Listener {
 
 	public async exec(message: Message, command: Command): Promise<void> {
 
-        listenerLog(message, this, logger.info, command);
+        await listenerLog(message, this, logger.info, command);
 
 		cmdStatsCache[command.id]
 			? cmdStatsCache[command.id]++

@@ -40,7 +40,7 @@ async function checkBirthdayOnAdd(guild: Guild): Promise<void> {
 				await Promise.all(guild.members.cache.map(async (member) => {
 					if (!member.user.bot) {
 					// Don't assign special roles to bots.
-						MemberCheckAnniversary(member, AnniversaryRoleC, AnniversaryRoleJ, Day, Month);
+						await MemberCheckAnniversary(member, AnniversaryRoleC, AnniversaryRoleJ, Day, Month);
 					}
 				}));
 			}
@@ -73,7 +73,7 @@ async function checkAnniversaryMember(member: GuildMember): Promise<void> {
 				// Get roles from the result of checking if guild has the roles at all / after creating them.
 				if (!member.user.bot) {
 					// Don't assign special roles to bots.
-					MemberCheckAnniversary(member, AnniversaryRoleC, AnniversaryRoleJ, Day, Month);
+					await MemberCheckAnniversary(member, AnniversaryRoleC, AnniversaryRoleJ, Day, Month);
 				}
 			}
 		}
@@ -111,7 +111,7 @@ async function MemberCheckAnniversary(member: GuildMember, AnniversaryRoleC: Rol
 		if (member.user.createdAt.getDate() === Day) {
 			listUsersCakeDay.push(member.user.tag);
 			if (!member.roles.cache.has(AnniversaryRoleC.id)) {
-				member.roles.add(AnniversaryRoleC);
+				await member.roles.add(AnniversaryRoleC);
 			}
 		}
 	}
@@ -125,10 +125,10 @@ async function MemberCheckAnniversary(member: GuildMember, AnniversaryRoleC: Rol
 	}
 	if (!listUsersCakeDay.includes(member.user.tag)) {
 		if (member.roles.cache.has(AnniversaryRoleC.id)) {
-			member.roles.remove(AnniversaryRoleC.id, AnniversaryRoleJ.id);
+			await member.roles.remove(AnniversaryRoleC.id, AnniversaryRoleJ.id);
 		}
 		if (member.roles.cache.has(AnniversaryRoleJ.id)) {
-			member.roles.remove(AnniversaryRoleJ.id);
+			await member.roles.remove(AnniversaryRoleJ.id);
 		}
 	}
 }
@@ -150,7 +150,7 @@ async function handleAnniversaryGuilds(enabledGuilds: Guild[], { Day, Month }: {
 			await Promise.all(guild.members.cache.map(async (member) => {
 				if (!member.user.bot) {
 					// Don't assign special roles to bots.
-					MemberCheckAnniversary(member, AnniversaryRoleC, AnniversaryRoleJ, Day, Month);
+					await MemberCheckAnniversary(member, AnniversaryRoleC, AnniversaryRoleJ, Day, Month);
 				}
 			}));
 		}
@@ -158,7 +158,7 @@ async function handleAnniversaryGuilds(enabledGuilds: Guild[], { Day, Month }: {
 }
 
 async function resetArrays() {
-	listUserJoinedAt = [],
+	listUserJoinedAt = [];
 	listUsersCakeDay = [];
 }
 

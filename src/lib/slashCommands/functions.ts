@@ -1,4 +1,4 @@
-import { CommandInteraction, GuildMemberRoleManager, Message, MessageEmbed } from "discord.js";
+import { CommandInteraction, GuildMemberRoleManager, MessageEmbed } from "discord.js";
 import { getGuildDocument } from "../../struct/documentMethods";
 import { Exclude } from "../Embeds";
 import { Snowflake } from "discord-api-types/globals";

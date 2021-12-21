@@ -4,7 +4,6 @@ import { MongoMoney } from "../../lib/money/MongoMoneyService";
 import { KaikiCommand } from "kaiki";
 
 
-
 export default class cash extends KaikiCommand {
     private readonly _money: IMoneyService;
     constructor() {

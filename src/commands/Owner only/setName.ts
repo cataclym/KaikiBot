@@ -23,7 +23,7 @@ export default class SetNameCommand extends KaikiCommand {
 
 		const fullName = name.join(" ").substring(0, 32);
 
-		this.client.user?.setUsername(fullName);
+		await this.client.user?.setUsername(fullName);
 
 		return message.channel.send(`Name set to \`${fullName}\``);
 	}
