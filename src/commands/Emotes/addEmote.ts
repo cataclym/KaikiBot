@@ -87,6 +87,6 @@ export default class AddEmoteCommand extends KaikiCommand {
 			const img = await resizeImage(file, imgDimensions.type, 128, message);
 			await saveEmoji(message, img, name);
 		}
-		deleteImage(file);
+		await deleteImage(file);
 	}
 }

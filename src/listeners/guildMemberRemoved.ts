@@ -12,11 +12,11 @@ export default class GuildMemberRemovedListener extends Listener {
 	}
 	public async exec(member: GuildMember): Promise<void> {
 
-		handleGoodbyeMessage(member);
+		await handleGoodbyeMessage(member);
 
 		const db = await getGuildDocument(member.guild.id);
 		db.leaveRoles[member.id] = member.roles.cache.map(role => role.id);
 		db.markModified("leaveRoles");
-		db.save();
+		await db.save();
 	}
 }

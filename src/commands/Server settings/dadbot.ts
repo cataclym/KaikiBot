@@ -40,7 +40,7 @@ export default class DadBotConfigCommand extends KaikiCommand {
 					await message.client.guildSettings.set(guildID, "dadBot", db.settings.dadBot);
 					await db.save();
 
-					message.guild?.commands.create(excludeData);
+					await message.guild?.commands.create(excludeData);
 
 					return message.channel.send({ embeds: [embed
 						.setTitle(`dad-bot has been enabled in ${message.guild?.name}!`)
@@ -66,7 +66,7 @@ export default class DadBotConfigCommand extends KaikiCommand {
 
 					const cmd = message.guild?.commands.cache.find(c => c.name === "exclude");
 					if (cmd) {
-						message.guild?.commands.delete(cmd.id);
+						await message.guild?.commands.delete(cmd.id);
 					}
 
 					return message.channel.send({ embeds: [embed

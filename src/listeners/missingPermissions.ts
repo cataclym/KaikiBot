@@ -17,14 +17,14 @@ export default class missingPermissionsListener extends Listener {
 
 	public async exec(message: Message, command: Command, type: string, missing: any): Promise<void> {
 
-		listenerLog(message, this, logger.info, command);
+		await listenerLog(message, this, logger.info, command);
 
 		cmdStatsCache[command.id]
 			? cmdStatsCache[command.id]++
 			: cmdStatsCache[command.id] = 1;
 
 		if (message.channel.type !== "DM") {
-			const msg = await message.channel.send({ embeds:
+			await message.channel.send({ embeds:
 				[new MessageEmbed({
 					title: "Missing permissions",
 					description: `${type === "client" ? "Client" : "User"} can't execute \`${command.id}\` due to missing permissions.`,
@@ -32,9 +32,6 @@ export default class missingPermissionsListener extends Listener {
 				})
 					.withErrorColor(message)],
 			});
-
-			// return setTimeout(() => msg.delete()
-			// 	.catch(logger.error), 10000).unref();
 		}
 	}
 }

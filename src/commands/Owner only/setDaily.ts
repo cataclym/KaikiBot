@@ -1,10 +1,8 @@
-import { Message, MessageAttachment, MessageEmbed } from "discord.js";
+import { Message, MessageEmbed } from "discord.js";
 import { noArgGeneric } from "../../lib/Embeds";
 import { KaikiCommand } from "kaiki";
 import { IMoneyService } from "../../lib/money/IMoneyService";
 import { MongoMoney } from "../../lib/money/MongoMoneyService";
-import { customClient } from "../../struct/client";
-import { Argument } from "discord-akairo";
 import { getBotDocument } from "../../struct/documentMethods";
 
 

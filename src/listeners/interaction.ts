@@ -1,5 +1,5 @@
 import { Listener } from "discord-akairo";
-import { CommandInteraction, Interaction, Message } from "discord.js";
+import { CommandInteraction, Interaction } from "discord.js";
 import logger from "loglevel";
 import { errorMessage } from "../lib/Embeds";
 import { ExcludeSlashCommand } from "../lib/slashCommands/functions";

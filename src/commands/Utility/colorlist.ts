@@ -19,7 +19,6 @@ export default class ColorListCommand extends KaikiCommand {
 		let embeds: MessageEmbed[] = [];
 		let attachments: MessageAttachment[] = [];
 		const messageOptions: MessageOptions[] = [];
-		let i = 0;
 
 		for (const color in colorTable) {
 			const random = `${Math.random()}`;
@@ -38,12 +37,9 @@ export default class ColorListCommand extends KaikiCommand {
 				});
 				embeds = [];
 				attachments = [];
-				i = 0;
-				continue;
 			}
-			i++;
 		}
 
-		sendPaginatedMessage(message, messageOptions as MessageOptions[], {});
+		await sendPaginatedMessage(message, messageOptions as MessageOptions[], {});
 	}
 }

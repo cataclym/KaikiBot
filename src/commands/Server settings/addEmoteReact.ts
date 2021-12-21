@@ -38,7 +38,7 @@ export default class EmoteReactCommand extends KaikiCommand {
 
 		db.emojiReactions[trigger] = emoji.id;
 		db.markModified(`emojiReactions.${trigger}`);
-		db.save();
+		await db.save();
 
 		if (!emoteReactCache[gid]) await populateERCache(message);
 

@@ -40,7 +40,7 @@ export default class SetActivityCommand extends KaikiCommand {
 		botDocument.settings.activity = name;
 		botDocument.settings.activityType = type;
 		botDocument.markModified("settings");
-		botDocument.save();
+		await botDocument.save();
 
 		return message.channel.send({
 			embeds: [new MessageEmbed()

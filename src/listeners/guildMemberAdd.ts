@@ -13,9 +13,9 @@ export default class GuildMemberAddListener extends Listener {
 	}
 	public async exec(member: GuildMember): Promise<void> {
 
-		checkAnniversaryMember(member);
-		handleGreetMessage(member);
-		handleStickyRoles(member);
+		await checkAnniversaryMember(member);
+		await handleGreetMessage(member);
+		await handleStickyRoles(member);
 	}
 }
 

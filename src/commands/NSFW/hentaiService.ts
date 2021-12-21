@@ -5,7 +5,7 @@ import { repository, version } from "../../../package.json";
 import { Post, responseE621 } from "../../interfaces/IDapi";
 import { KaikiUtil } from "kaiki";
 
-const sites = ["danbooru", "yandere"];
+const imageCache: {[id: string]: Post} = {};
 
 export enum DapiSearchType {
 	E621,
@@ -38,9 +38,7 @@ export async function grabHentai(type: types, format: "single" | "bomb"): Promis
 			},
 			body: JSON.stringify({ a: 1, b: "Textual content" }),
 		});
-		const content: string[] = (await KaikiUtil.handleToJSON(await rawResponse.json()))["files"];
-
-		return content;
+		return (await KaikiUtil.handleToJSON(await rawResponse.json()))["files"];
 	}
 	return (await KaikiUtil.handleToJSON(await (await fetch(`https://waifu.pics/api/nsfw/${type}`)).json()))["url"];
 
@@ -58,7 +56,7 @@ export async function DapiGrabber(tags: string[] | null, type: DapiSearchType): 
 			break;
 		}
 		case DapiSearchType.Danbooru: {
-			url = `http://danbooru.donmai.us/posts.json?limit=100&tags=${tag}`;
+			url = `https://danbooru.donmai.us/posts.json?limit=100&tags=${tag}`;
 			break;
 		}
 	}
@@ -72,8 +70,6 @@ export async function DapiGrabber(tags: string[] | null, type: DapiSearchType): 
 
 		const r = (await fetch(url, options));
 
-		console.log(r.status, r.statusText);
-
 		if ([503, 429, 502].includes(r.status) && cache.length >= 50) {
 			return cache[Math.floor(Math.random() * cache.length)];
 		}
@@ -86,16 +82,14 @@ export async function DapiGrabber(tags: string[] | null, type: DapiSearchType): 
 			.catch((err) => logger.error(err));
 
 		if (Array.isArray(json)) {
-			json.posts.forEach(async (p) => imageCache[p.id] = p);
+			json.posts.forEach((p) => imageCache[p.id] = p);
+
+			return json.posts[Math.floor(Math.random() * json.posts.length)];
 		}
 
-		return json.posts[Math.floor(Math.random() * json.posts.length)];
-	}
-
-	if (type === DapiSearchType.Danbooru) {
-		const r = await fetch(url);
-		return JSON.parse(r.body?.toString() as string).posts;
+		else {
+			const res = await fetch(url);
+			return JSON.parse(res.body?.toString() as string).posts;
+		}
 	}
 }
-
-const imageCache: {[id: string]: Post} = {};

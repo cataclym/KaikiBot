@@ -35,7 +35,7 @@ export default class AnniversaryRolesConfigCommand extends KaikiCommand {
 			case ("true"): {
 				if (!boolean) {
 					db.settings.anniversary = true;
-					checkBirthdayOnAdd(message.guild as Guild);
+					await checkBirthdayOnAdd(message.guild as Guild);
 					message.channel.send({ embeds: [embed.setDescription(`Anniversary-roles functionality has been enabled in ${message.guild?.name}!`)] });
 				}
 				else {

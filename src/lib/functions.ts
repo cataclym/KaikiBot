@@ -24,7 +24,7 @@ export async function populateERCache(message: Message) {
 		return;
 	}
 
-	const [array_has_space, array_no_space] = partition(emoteReacts, ([k, v]) => k.includes(" "));
+	const [array_has_space, array_no_space] = partition(emoteReacts, ([k]) => k.includes(" "));
 
 	emoteReactCache[message.guild!.id] = {
 		has_space: Object.fromEntries(array_has_space),
@@ -60,7 +60,7 @@ async function emoteReactLoop(message: Message, matches: RegExpMatchArray, wordO
 	for (const word of matches) {
 		const emote = wordObj.no_space[word] || wordObj.has_space[word];
 		if (!message.guild?.emojis.cache.has(emote as Snowflake)) continue;
-		message.react(emote);
+		await message.react(emote);
 	}
 }
 
@@ -78,7 +78,7 @@ export async function tiredKaikiCryReact(message: Message): Promise<void> {
 		const index: number = Math.floor(Math.random() * 10);
 
 		if (index < 7) {
-			message.react("😢");
+			await message.react("😢");
 		}
 
 		else {
@@ -105,15 +105,15 @@ export async function resetDailyClaims(): Promise<void> {
 export async function dailyResetTimer(client: Client): Promise<void> {
 	setTimeout(async () => {
 		// Loop this
-		dailyResetTimer(client);
+		await dailyResetTimer(client);
 		// Reset tinder rolls
 		// resetRolls();
 		// Reset daily currency claims
-		resetDailyClaims();
+		await resetDailyClaims();
 		// Check for "birthdays"
-		birthdayService(client);
+		await birthdayService(client);
 		// Uh?
-		emoteDataBaseService(client as AkairoClient);
+		await emoteDataBaseService(client as AkairoClient);
 	}, timeToMidnight());
 }
 
@@ -132,7 +132,7 @@ async function emoteDB(guild: Guild) {
 		}
 	}
 	if (i > 0) db.markModified("emojiStats");
-	db.save();
+	await db.save();
 	return i;
 }
 
@@ -160,7 +160,7 @@ export async function countEmotes(message: Message): Promise<void> {
 		if (emotes) {
 			const db = await getGuildDocument(guild.id);
 			const ids = emotes.toString().match(/\d+/g);
-			ids?.forEach(async id => {
+			ids?.forEach(id => {
 				const emote = guild.emojis.cache.get(id as Snowflake);
 				if (emote) {
 					db.emojiStats[emote.id]

@@ -58,10 +58,10 @@ export default class dadBot extends KaikiCommand {
 
 			if (user.id !== message.guild?.ownerId) {
 				// Avoids setting nickname on Server owners
-				message.member?.setNickname(nick);
+				await message.member?.setNickname(nick);
 			}
 			db.markModified("userNicknames");
-			db.save();
+			await db.save();
 		}
 		return delete this.nickname[message.member!.id];
 	}

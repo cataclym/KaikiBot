@@ -80,7 +80,7 @@ export const noArgGeneric = (message: Message): MessageEmbed => {
 			usage = cmd.description.usage.map((u: string) => `${prefix}${cmd?.id} ${u}`).join("\n");
 		}
 		else {
-			usage = `${prefix}${cmd.id} ${usage}`;
+			usage = `${prefix}${cmd.id}`;
 		}
 	}
 

@@ -39,10 +39,12 @@ export default class ConfigCommand extends KaikiCommand {
 
 	public async exec(message: Message): Promise<Message> {
 
+		if (!message.member) return message;
+
 		const db = await getGuildDocument((message.guild as Guild).id),
 			{ anniversary, dadBot, prefix, errorColor, okColor, welcome, goodbye } = db.settings,
-			welcomeEmbed = await new EmbedFromJson(await createAndParseWelcomeLeaveMessage(welcome, message.member!)).createEmbed(),
-			goodbyeEmbed = await new EmbedFromJson(await createAndParseWelcomeLeaveMessage(goodbye, message.member!)).createEmbed();
+			welcomeEmbed = await new EmbedFromJson(await createAndParseWelcomeLeaveMessage(welcome, message.member)).createEmbed(),
+			goodbyeEmbed = await new EmbedFromJson(await createAndParseWelcomeLeaveMessage(goodbye, message.member)).createEmbed();
 
 		function toggledTernary(value: boolean) {
 			return value

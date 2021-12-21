@@ -44,7 +44,7 @@ export default class UpdateCommand extends KaikiCommand {
 				});
 			});
 
-			const obj: { msg: Message, content: string } = await new Promise((resolve, reject) => {
+			const obj: { msg: Message, content: string } = await new Promise((resolve) => {
 				exec("git describe --tags", async (err, stdv) => {
 					if (err) {
 						throw new Error(err.message);

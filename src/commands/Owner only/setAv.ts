@@ -38,7 +38,7 @@ export default class SetAvatarCommand extends KaikiCommand {
 		const buffer = canv.toBuffer();
 
 		try {
-			this.client.user?.setAvatar(buffer);
+			await this.client.user?.setAvatar(buffer);
 		}
 		catch (error) {
 			logger.error(error);

@@ -14,7 +14,7 @@ export default class MessageListener extends Listener {
 
 		if (message.webhookId || message.author.bot || !message.guild) return;
 
-		countEmotes(message);
+		await countEmotes(message);
 
 	}
 }

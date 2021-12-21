@@ -5,7 +5,6 @@ import { handleError, handleResponse, aniQuery } from "../../lib/APIs/AnilistGra
 import { IAnimeRes } from "../../interfaces/IAnimeRes";
 import { stripHtml, trim } from "../../lib/Util";
 import { noArgGeneric } from "../../lib/Embeds";
-import { Node } from "../../interfaces/IAnimeRes";
 
 export default class AnimeCommand extends KaikiCommand {
 	constructor() {

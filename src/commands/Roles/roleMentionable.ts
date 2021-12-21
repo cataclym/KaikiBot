@@ -28,7 +28,7 @@ export default class RoleMentionableCommand extends KaikiCommand {
 
 			const bool = !role.mentionable;
 
-			role.setMentionable(bool);
+			await role.setMentionable(bool);
 
 			return message.channel.send({
 				embeds: [new MessageEmbed({

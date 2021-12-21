@@ -57,7 +57,7 @@ export default class TicTacToe {
 	}
 
 	private start() {
-		this.awaitInput(this.p2);
+		void this.awaitInput(this.p2);
 	}
 
 	private async awaitInput(playerObject: playerType): Promise<number | void | Message> {
@@ -132,19 +132,13 @@ export default class TicTacToe {
 
 	private checkWin(value: string) {
 		return winningCombos.some(arr => {
-			if (arr.every(num => this.stateDict[num] === value)) {
-				return true;
-			}
-			return false;
+			return arr.every(num => this.stateDict[num] === value);
 		});
 	}
 
 	private checkTie(value: string, value2: string) {
 		return Object.values(this.stateDict).every(str => {
-			if (str === value || str === value2) {
-				return true;
-			}
-			return false;
+			return str === value || str === value2;
 		});
 	}
 
