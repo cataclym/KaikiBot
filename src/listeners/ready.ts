@@ -24,9 +24,9 @@ export default class ReadyListener extends Listener {
 
 		// Create slash commands in those guilds
 		enabled.forEach(g => {
-			const guild = this.client.guilds.cache.get(g.id);
-			guild?.commands.create(excludeData)
-				.catch(() => logger.warn(`${guild.name} [${chalk.red(g.id)}] refused creating slash commands. This is sometimes expected.`));
+			this.client.guilds.cache.get(g.id)?.commands.create(excludeData)
+				// Ignore the unhandled rejection
+				.catch(() => null);
 		});
 
 		// // Delete slash commands in disabled guilds
