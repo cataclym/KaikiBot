@@ -5,7 +5,7 @@ import { EmbedFromJson } from "../../interfaces/IGreetLeave";
 import { createAndParseWelcomeLeaveMessage } from "../../lib/GreetHandler";
 import { KaikiCommand } from "kaiki";
 import { getGuildDocument } from "../../struct/documentMethods";
-import { customClient } from "../../struct/client";
+import { KaikiClient } from "../../struct/client";
 
 export default class ConfigCommand extends KaikiCommand {
 	constructor() {
@@ -78,7 +78,7 @@ export default class ConfigCommand extends KaikiCommand {
 					toggledTernary(goodbye.enabled), true)
 				.addField("\u200B", "\u200B", true)
 				.addField("Sticky roles",
-					toggledTernary(await (this.client as customClient).guildSettings.get(message.guild!.id, "stickyRoles", false)), false),
+					toggledTernary(await (this.client as KaikiClient).guildSettings.get(message.guild!.id, "stickyRoles", false)), false),
 			welcomeEmbed,
 			goodbyeEmbed,
 		];

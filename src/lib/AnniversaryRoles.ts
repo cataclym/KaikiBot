@@ -3,7 +3,7 @@ import { Client, Guild, GuildMember, Permissions, Role } from "discord.js";
 import logger from "loglevel";
 import { AnniversaryStrings } from "../struct/constants";
 import { getGuildDocument } from "../struct/documentMethods";
-import { guildsModel } from "../struct/models";
+import { guildsModel } from "../struct/db/models";
 import chalk from "chalk";
 
 async function DateObject() {

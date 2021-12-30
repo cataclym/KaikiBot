@@ -4,7 +4,7 @@ import { hexColorTable } from "../../lib/Color";
 import { noArgGeneric } from "../../lib/Embeds";
 import { KaikiCommand } from "kaiki";
 
-import { customClient } from "../../struct/client";
+import { KaikiClient } from "../../struct/client";
 
 export default class ErrorColorConfigCommand extends KaikiCommand {
 	constructor() {
@@ -25,7 +25,7 @@ export default class ErrorColorConfigCommand extends KaikiCommand {
 
 		if (typeof value === "number") value = value.toString(16);
 
-		await (this.client as customClient).guildSettings.set(guildID, "errorColor", value);
+		await (this.client as KaikiClient).guildSettings.set(guildID, "errorColor", value);
 
 		return message.channel.send({
 			embeds: [new MessageEmbed({

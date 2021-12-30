@@ -5,7 +5,7 @@ import logger from "loglevel";
 // import { clearRollCache } from "../../_wip/Tinder/tinder";
 import { badWords } from "../struct/constants";
 import { getBotDocument, getGuildDocument } from "../struct/documentMethods";
-import { tinderDataModel } from "../struct/models";
+import { tinderDataModel } from "../struct/db/models";
 import { birthdayService } from "./AnniversaryRoles";
 import { partition, trim } from "./Util";
 import { dailyClaimsCache, emoteReactCache, separatedEmoteReactTypes } from "../cache/cache";

@@ -1,16 +1,15 @@
 import { inject, injectable } from "inversify";
-import { customClient } from "./client";
-import MongoDb from "./mongoDb";
+import { KaikiClient } from "./client";
+import MongoDb from "./db/mongoDb";
 import { TYPES } from "./types";
 import logger from "loglevel";
 
 @injectable()
 export class Bot {
-    public client: customClient;
+    public client: KaikiClient;
     private readonly token: string;
-
     constructor(
-        @inject(TYPES.Client) client: customClient,
+        @inject(TYPES.Client) client: KaikiClient,
         @inject(TYPES.Token) token: string,
     ) {
 
@@ -33,8 +32,7 @@ export class Bot {
     		logger.warn("Kawaii API dependant commands have been disabled. Provide a token in .env to re-enable.");
     	}
 
-    	new MongoDb().init();
-
+    	void new MongoDb().init();
     	void this.client.init();
 
     	return this.client.login(this.token);

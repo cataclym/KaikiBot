@@ -1,7 +1,7 @@
 import { Guild, Message, MessageEmbed } from "discord.js";
 import { KaikiCommand } from "kaiki";
 import { getGuildDocument } from "../../struct/documentMethods";
-import { customClient } from "../../struct/client";
+import { KaikiClient } from "../../struct/client";
 
 export default class ToggleStickyRolesCommand extends KaikiCommand {
 	constructor() {
@@ -19,7 +19,7 @@ export default class ToggleStickyRolesCommand extends KaikiCommand {
 			db = await getGuildDocument(guild.id),
 			bool = !db.settings.stickyRoles;
 
-		await (this.client as customClient).guildSettings.set(message.guild!.id, "stickyRoles", bool);
+		await (this.client as KaikiClient).guildSettings.set(message.guild!.id, "stickyRoles", bool);
 
 		db.settings.stickyRoles = bool;
 		db.markModified("settings.stickyRoles");

@@ -1,4 +1,4 @@
-import { customClient } from "../../struct/client";
+import { KaikiClient } from "../../struct/client";
 
 export interface IMoneyService {
     currencyName: string;
@@ -42,5 +42,5 @@ export interface IMoneyService {
      * @param client Bot client
      * @returns void
      */
-    UpdateCurrencyNameAndSymbol(client: customClient): Promise<void>
+    UpdateCurrencyNameAndSymbol(client: KaikiClient): Promise<void>
 }

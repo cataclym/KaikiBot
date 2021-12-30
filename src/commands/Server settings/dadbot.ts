@@ -21,6 +21,7 @@ export default class DadBotConfigCommand extends KaikiCommand {
 
 		});
 	}
+
 	public async exec(message: Message, { value }: { value: "enable" | "true" | "disable" | "false" }): Promise<Message> {
 		const embed = new MessageEmbed().withOkColor(message),
 			guildID = (message.guild as Guild).id,

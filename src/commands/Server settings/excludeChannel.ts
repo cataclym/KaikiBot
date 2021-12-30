@@ -1,17 +1,7 @@
-import { Argument } from "discord-akairo";
-import {
-    Guild,
-    GuildChannel,
-    Message,
-    MessageEmbed,
-    NewsChannel,
-    Snowflake,
-    StoreChannel,
-    TextChannel
-} from "discord.js";
+import { Channel, Guild, GuildChannel, Message, MessageEmbed, Snowflake, TextChannel } from "discord.js";
 import { KaikiCommand } from "kaiki";
-
 import { getGuildDocument } from "../../struct/documentMethods";
+import { Argument } from "discord-akairo";
 
 export default class ExcludeDadbotChannelCommand extends KaikiCommand {
 	constructor() {
@@ -23,66 +13,70 @@ export default class ExcludeDadbotChannelCommand extends KaikiCommand {
 			usage: ["", "#channel"],
 			args: [
 				{
-					id: "channel",
-					type: Argument.union("textChannel", "newsChannel", "storeChannel"),
+					id: "channels",
+					type: Argument.union("textChannels"),
 				},
 			],
 		});
 	}
 
-	public async exec(message: Message, { channel }: { channel: TextChannel | NewsChannel | StoreChannel }): Promise<Message> {
+	public async exec(message: Message, { channels }: { channels: Map<Snowflake, TextChannel> | undefined }): Promise<Message> {
 
 		const gId = (message.guild as Guild).id;
 		const guildDb = await getGuildDocument(gId);
+		const embed = new MessageEmbed()
+			.setTitle("Excluded channels")
+			.withOkColor(message);
 
-		if (!channel) {
+		if (!channels) {
 			return message.channel.send({
-				embeds: [new MessageEmbed()
-					.setTitle("Excluded channels")
+				embeds: [embed
 					.setDescription(Object.keys(guildDb.settings.dadBot.excludedChannels ?? {})
-				 		.map(k => message.guild!.channels.cache.get(k as Snowflake) ?? k)
+						.map(k => message.guild!.channels.cache.get(k as Snowflake) ?? k)
 						.sort((a, b) => {
 							return (a as GuildChannel).name < (b as GuildChannel).name
 								? -1
 								: 1;
 						})
-						.join("\n"))
+						.join("\n").trim() ?? "No channels excluded")
 					.withOkColor(message)],
 			});
 		}
 
-		const dadBot = guildDb.settings.dadBot;
-		if (dadBot.excludedChannels && dadBot.excludedChannels[channel.id]) {
-			delete guildDb.settings.dadBot.excludedChannels[channel.id];
-			guildDb.markModified("settings.dadBot.excludedChannels");
-			await message.client.guildSettings.set(gId, "dadBot", guildDb.settings.dadBot);
-			await guildDb.save();
+		const excludedChannels: Channel[] = [], enabledChannels: Channel[] = [];
 
-			return message.channel.send({ embeds:
-					[new MessageEmbed()
-						.setDescription(`Removed ${channel} from exclusion list`)
-						.withOkColor(message)],
-			});
+		for (const [id, channel] of channels) {
+
+			const dadBot = guildDb.settings.dadBot;
+			if (dadBot.excludedChannels[channel.id]) {
+				delete guildDb.settings.dadBot.excludedChannels[channel.id];
+				guildDb.markModified("settings.dadBot.excludedChannels");
+				await message.client.guildSettings.set(gId, "dadBot", guildDb.settings.dadBot);
+				await guildDb.save();
+
+				enabledChannels.push(channel);
+			}
+
+			else {
+				guildDb.settings.dadBot.excludedChannels[channel.id] = true;
+				guildDb.markModified("settings.dadBot.excludedChannels");
+				await message.client.guildSettings.set(gId, "dadBot", guildDb.settings.dadBot);
+				await guildDb.save();
+
+				excludedChannels.push(channel);
+			}
 		}
 
-		if (typeof guildDb.settings["dadBot"] === "boolean") {
-			const bool = guildDb.settings["dadBot"];
-			guildDb.settings["dadBot"] = {
-				enabled: bool,
-				excludedChannels: {},
-			};
-			guildDb.markModified("settings.dadBot");
+		if (excludedChannels.length) {
+			embed.addField("Excluded", excludedChannels.join("\n"));
 		}
 
-		guildDb.settings.dadBot.excludedChannels[channel.id] = true;
-		guildDb.markModified("settings.dadBot.excludedChannels");
-		await message.client.guildSettings.set(gId, "dadBot", guildDb.settings.dadBot);
-		await guildDb.save();
+		if (enabledChannels.length) {
+			embed.addField("Unexcluded", enabledChannels.join("\n"));
+		}
 
-		return message.channel.send({ embeds:
-				[new MessageEmbed()
-					.setDescription(`Added ${channel} to exclusion list`)
-					.withOkColor(message)],
+		return message.channel.send({
+			embeds: [embed],
 		});
 	}
 }

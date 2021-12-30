@@ -37,32 +37,36 @@ export default class dadBot extends KaikiCommand {
 		});
 	}
 
-	nickname: {
-		[id: string]: string
-	} = {};
+    nickname: {
+        [id: string]: string
+    } = {};
 
-	public async exec(message: Message): Promise<boolean> {
+    public async exec(message: Message): Promise<boolean> {
 
-		const nick = this.nickname[message.member!.id];
+    	const nick = this.nickname[message.member!.id];
 
-		message.channel.send({
-			content: `Hi, ${nick}`,
-			allowedMentions: { parse: ["users"] },
-		});
+    	message.channel.send({
+    		content: `Hi, ${nick}`,
+    		allowedMentions: { parse: ["users"] },
+    	});
 
-		if (nick.length <= (process.env.DADBOT_NICKNAME_LENGTH || 32)) {
-			const user = message.author,
-				db = await getUserDocument(user.id);
+    	if (nick.length <= (process.env.DADBOT_NICKNAME_LENGTH || 32)) {
+    		const user = message.author,
+    			db = await getUserDocument(user.id);
 
-			db.userNicknames.push(nick);
+    		db.userNicknames.push(nick);
 
-			if (user.id !== message.guild?.ownerId) {
-				// Avoids setting nickname on Server owners
-				await message.member?.setNickname(nick);
-			}
-			db.markModified("userNicknames");
-			await db.save();
-		}
-		return delete this.nickname[message.member!.id];
-	}
+    		// this.client.sequelize.query(`INSERT INTO UserNicknames (nickname) VALUES (${nick})`)
+    		// 	.then(logger.info)
+    		// 	.catch(logger.warn);
+
+    		if (user.id !== message.guild?.ownerId) {
+    			// Avoids setting nickname on Server owners
+    			await message.member?.setNickname(nick);
+    		}
+    		db.markModified("userNicknames");
+    		await db.save();
+    	}
+    	return delete this.nickname[message.member!.id];
+    }
 }

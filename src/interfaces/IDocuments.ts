@@ -11,8 +11,8 @@ export interface IGuild extends Document {
 	userRoles: {[userID: string]: string},
 	emojiStats: {[emojiID: string]: number},
 	emojiReactions: emoteReactObjectType,
-    blockedCategories: {[categoryID: string]: boolean };
-    settings: {
+	blockedCategories: {[categoryID: string]: boolean };
+	settings: {
 		prefix: string,
 		anniversary: boolean,
 		dadBot: {
@@ -21,7 +21,7 @@ export interface IGuild extends Document {
 		},
 		errorColor: ColorResolvable,
 		okColor: ColorResolvable,
-        excludeRole: string,
+		excludeRole: string,
 		welcome: IGreet,
 		goodbye: IGreet,
 		stickyRoles: boolean,

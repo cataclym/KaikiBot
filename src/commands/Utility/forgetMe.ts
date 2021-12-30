@@ -1,6 +1,6 @@
 import { InteractionCollector, Message, MessageActionRow, MessageButton, MessageEmbed } from "discord.js";
 import { KaikiCommand } from "kaiki";
-import { moneyModel, usersModel } from "../../struct/models";
+import { moneyModel, usersModel } from "../../struct/db/models";
 
 export default class ForgetMeCommand extends KaikiCommand {
 	constructor() {

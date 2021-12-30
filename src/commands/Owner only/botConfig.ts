@@ -2,7 +2,7 @@ import { FailureData } from "discord-akairo";
 import { Message, MessageEmbed } from "discord.js";
 import { noArgGeneric } from "../../lib/Embeds";
 import { codeblock } from "../../lib/Util";
-import { customClient } from "../../struct/client";
+import { KaikiClient } from "../../struct/client";
 import { IMoneyService } from "../../lib/money/IMoneyService";
 import { MongoMoney } from "../../lib/money/MongoMoneyService";
 import { KaikiCommand } from "kaiki";
@@ -52,7 +52,7 @@ export default class BotConfigCommand extends KaikiCommand {
 	}
 	public async exec(message: Message, { type, name }: { type: string, name: string}): Promise<Message> {
 
-		const client = this.client as customClient;
+		const client = this.client as KaikiClient;
 		let oldValue;
 
 		switch (type.toLowerCase()) {
@@ -66,7 +66,7 @@ export default class BotConfigCommand extends KaikiCommand {
 				break;
 		}
 
-		await this._money.UpdateCurrencyNameAndSymbol(this.client as customClient);
+		await this._money.UpdateCurrencyNameAndSymbol(this.client as KaikiClient);
 
 		return message.channel.send({
 			embeds: [new MessageEmbed()

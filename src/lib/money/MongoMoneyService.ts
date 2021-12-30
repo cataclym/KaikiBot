@@ -1,5 +1,5 @@
-import { customClient } from "../../struct/client";
-import { moneyModel } from "../../struct/models";
+import { KaikiClient } from "../../struct/client";
+import { moneyModel } from "../../struct/db/models";
 import { IMoneyService } from "./IMoneyService";
 import { getBotDocument } from "../../struct/documentMethods";
 
@@ -86,7 +86,7 @@ export class MongoMoneyService implements IMoneyService {
     //     return 0;
     // }
 
-    async UpdateCurrencyNameAndSymbol(client: customClient): Promise<void> {
+    async UpdateCurrencyNameAndSymbol(client: KaikiClient): Promise<void> {
     	this.currencyName = client.botSettings.get(client.botSettingID, "currencyName", "Yen");
     	this.currencySymbol = client.botSettings.get(client.botSettingID, "currencySymbol", "💴");
     }

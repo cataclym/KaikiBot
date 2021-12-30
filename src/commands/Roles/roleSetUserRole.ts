@@ -59,7 +59,7 @@ export default class SetUserRoleCommand extends KaikiCommand {
 		}
 
 		else if (message.author.id !== message.guild?.ownerId &&
-			(message.member as GuildMember).roles.highest.position <= member.roles.highest.position) {
+			(message.member as GuildMember).roles.highest.position < role.position) {
 
 			return message.channel.send({ embeds: [await embedFail("This role is higher than your highest, I cannot add this role!")] });
 		}

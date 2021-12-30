@@ -1,6 +1,6 @@
 import { Message, MessageEmbed } from "discord.js";
 import { KaikiCommand } from "kaiki";
-import { moneyModel } from "../../struct/models";
+import { moneyModel } from "../../struct/db/models";
 import { MongoMoney } from "../../lib/money/MongoMoneyService";
 import { IMoneyService } from "../../lib/money/IMoneyService";
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
