@@ -1,20 +1,17 @@
-import { IMigration } from "../interfaces/IDocuments";
-import { Model } from "mongoose";
 import logger from "loglevel";
 import * as Path from "path";
 import fs from "fs";
 import { Collection } from "discord.js";
 import chalk from "chalk";
 import { Connection } from "mysql2/promise";
+import { execSync } from "child_process";
 
 export class Migrations {
-  migrationModels: Model<IMigration, unknown, Record<any, any>>;
   private readonly currentFolder: string;
   public migrationClasses: Collection<string, Migration>;
-  private readonly db: Connection;
+  public db: Connection;
 
   constructor(db: Connection) {
-      // this.migrationModels = _MigrationsModel;
       this.currentFolder = Path.join(__dirname, ".");
       this.migrationClasses = new Collection();
       this.db = db;
@@ -31,21 +28,21 @@ export class Migrations {
   public async runMigration(migration: Migration) {
 
       // Checks if migration exists
-      const result = await this.db.execute(`SELECT migrationId FROM _Migrations WHERE migrationId = '${migration.migrationId}'`);
+      const result = await this.db.query("SELECT migrationId FROM _Migrations WHERE MigrationId = ?", [migration.migrationId])
+          .catch(e => logger.warn(e));
 
-      if (result.length) {
+      if (result && (result[0] as []).length) {
       // Return when it exists
           return false;
       }
 
       // Executes the migration script
-      logger.warn(`Migration running - "${migration.migrationId}" [${chalk.hex("#ffa500")(migration.version)}]`);
+      logger.warn(`Migration running - [${chalk.hex("#ffa500")(migration.migrationId)}]`);
       await this.db.execute("INSERT INTO _Migrations (migrationId, versionString) VALUES (?, ?)", [migration.migrationId, migration.version]);
-      await migration.migrate(this.db);
+      const migrated = await migration.migrate(this.db);
+      logger.info(`Migration finished - [${chalk.hex("#ffa500")(migration.migrationId)}]`);
 
-      logger.info(`Migration finished - "${migration.migrationId}" [${chalk.hex("#ffa500")(migration.version)}]`);
-
-      return true;
+      return migrated;
   }
 
   public getFilePaths(): string[] {
@@ -77,9 +74,9 @@ export class Migrations {
       let count = 0;
       await this.loadClasses();
       const promise = new Promise<void>((resolve) => this.migrationClasses.each(async (migration) => {
-          const bool = await this.runMigration(migration);
-          if (bool) {
-              count++;
+          const number = await this.runMigration(migration);
+          if (number) {
+              count += number;
               resolve();
           }
           return migration;
@@ -94,7 +91,7 @@ export class Migration {
   readonly name: string;
   readonly version: string;
   readonly hash?: string;
-  public migrate: (db: Connection) => any | Promise<any>;
+  public migrate: (db: Connection) => number | Promise<number>;
   public migrationId: string;
 
   constructor(data: {
@@ -111,6 +108,6 @@ export class Migration {
       this.name = data.name;
       this.version = data.version;
       this.migrate = data.migration;
-      this.migrationId = `${this.hash}_${this.name}`;
+      this.migrationId = `${this.hash || execSync("git rev-parse --short HEAD").toString().trim()}_${this.name}`;
   }
 }

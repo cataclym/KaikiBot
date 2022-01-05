@@ -1,4 +1,4 @@
-import { KaikiClient } from "../../struct/client";
+import { KaikiClient } from "kaiki";
 
 export interface IMoneyService {
     currencyName: string;

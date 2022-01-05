@@ -20,15 +20,15 @@
     "@types/mongodb": "^3.6.19",
     "@types/node": "^16.6.0",
     "@types/node-emoji": "^1.8.1",
-    "@types/validator": "^13.7.0",
     "@types/sharp": "^0.28.3",
+    "@types/validator": "^13.7.0",
     "@types/ws": "^7.4.7",
     "bufferutil": "^4.0.3",
     "canvas": "^2.8.0",
     "chalk": "^4.1.2",
     "discord-akairo": "git+https://github.com/discord-akairo/discord-akairo.git",
     "discord-js-button-pagination-ts": "^3.0.13",
-    "discord.js": "^13.3.1",
+    "discord.js": "^13.5.0",
     "dotenv": "^9.0.2",
     "gifsicle": "^5.2.1",
     "image-size": "^1.0.0",
@@ -43,8 +43,6 @@
     "node-html-parser": "^5.1.0",
     "reflect-metadata": "^0.1.13",
     "sharp": "^0.28.3",
-    "ts-node": "^10.4.0",
-    "tslib": "^2.3.1",
     "typescript": "^4.5.2",
     "utf-8-validate": "^5.0.5",
     "zlib-sync": "^0.1.7"
@@ -55,7 +53,9 @@
     "auto-changelog": "^2.3.0",
     "eslint": "^7.29.0",
     "eslint-import-resolver-typescript": "^2.4.0",
-    "eslint-plugin-import": "^2.23.4"
+    "eslint-plugin-import": "^2.23.4",
+    "ts-node": "^10.4.0",
+    "tslib": "^2.3.1"
   },
   "description": "Discord bot built with Discord-Akairo and MySQL2",
   "repository": {

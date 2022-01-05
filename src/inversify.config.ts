@@ -1,7 +1,7 @@
 import { Container } from "inversify";
 import "reflect-metadata";
 import { Bot } from "./struct/bot";
-import { KaikiClient } from "./struct/client";
+import { KaikiClient } from "./struct/kaikiClient";
 import { TYPES } from "./struct/types";
 
 const container = new Container();

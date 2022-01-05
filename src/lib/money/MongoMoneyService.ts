@@ -1,7 +1,7 @@
-import { KaikiClient } from "../../struct/client";
 import { moneyModel } from "../../struct/db/models";
 import { IMoneyService } from "./IMoneyService";
 import { getBotDocument } from "../../struct/documentMethods";
+import { KaikiClient } from "kaiki";
 
 export class MongoMoneyService implements IMoneyService {
     currencyName: string;

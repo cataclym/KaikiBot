@@ -1,13 +1,13 @@
 import {
-	ColorResolvable,
-	EmbedFieldData,
-	MessageEmbed,
-	MessageEmbedAuthor,
-	MessageEmbedFooter,
-	MessageEmbedImage,
-	MessageEmbedOptions,
-	MessageEmbedThumbnail,
-	MessageOptions,
+    ColorResolvable,
+    EmbedFieldData,
+    MessageEmbed,
+    MessageEmbedAuthor,
+    MessageEmbedFooter,
+    MessageEmbedImage,
+    MessageEmbedOptions,
+    MessageEmbedThumbnail,
+    MessageOptions,
 } from "discord.js";
 
 export interface EmbedJSON {
@@ -46,32 +46,32 @@ export class EmbedFromJson implements MessageEmbedOptionsJSON {
 	public fields: EmbedFieldData[] | undefined;
 	public createEmbed: () => Promise<MessageOptions>;
 	constructor(options: MessageEmbedOptionsJSON) {
-		this.plainText = options.plainText;
-		this.title = options.title;
-		this.url = options.url;
-		this.description = options.description;
-		this.author = options.author;
-		this.color = options.color;
-		this.footer = options.footer;
-		this.thumbnail = options.thumbnail;
-		this.image = options.image;
-		this.fields = options.fields;
-		this.createEmbed = async () => {
+	    this.plainText = options.plainText;
+	    this.title = options.title;
+	    this.url = options.url;
+	    this.description = options.description;
+	    this.author = options.author;
+	    this.color = options.color;
+	    this.footer = options.footer;
+	    this.thumbnail = options.thumbnail;
+	    this.image = options.image;
+	    this.fields = options.fields;
+	    this.createEmbed = async () => {
 
-			const embed: MessageEmbed[] = [];
+	        const embed: MessageEmbed[] = [];
 
-			if (this.title
+	        if (this.title
                 || this.author
                 || this.description
                 || this.fields
                 || this.footer
                 || this.image
                 || this.thumbnail) {
-				embed.push(new MessageEmbed(this));
-			}
-			// Please help me
+	            embed.push(new MessageEmbed(this));
+	        }
+	        // Please help me
 
-			return { content: this.plainText ?? null, embeds: embed };
-		};
+	        return { content: this.plainText ?? null, embeds: embed };
+	    };
 	}
 }

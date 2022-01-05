@@ -7,19 +7,19 @@ import { botModel, guildsModel } from "./db/models";
 import logger from "loglevel";
 import chalk from "chalk";
 import { Migrations } from "../migrations/migrations";
-import mySQL from "./db/MySQL";
+import { Database } from "./db/MySQL";
 import MySQLProvider from "./db/MySQLProvider";
 import { Connection } from "mysql2/promise";
 
 export class KaikiClient extends AkairoClient {
-	commandHandler: CommandHandler;
-	inhibitorHandler: InhibitorHandler;
-	listenerHandler: ListenerHandler;
-	guildSettings: MongooseProvider;
-	botSettings: MongooseProvider;
-	botSettingID: string;
-	botSettingsProvider: MySQLProvider;
-	db: Connection;
+	public commandHandler: CommandHandler;
+	public inhibitorHandler: InhibitorHandler;
+	public listenerHandler: ListenerHandler;
+	public guildSettings: MongooseProvider;
+	public botSettings: MongooseProvider;
+	public botSettingID: string;
+	private botSettingsProvider: MySQLProvider;
+	public connection: Connection;
 	constructor() {
     	super({
     		ownerID: process.env.OWNER as Snowflake,
@@ -45,16 +45,20 @@ export class KaikiClient extends AkairoClient {
     		// ws: { properties: { $browser: "Discord Android" } },
     	});
 
+	    new Database().init()
+	        .then(r => {
+	            this.connection = r;
+	            this.botSettingsProvider = new MySQLProvider(this.connection, "BotSettings");
+	            this.botSettingsProvider.init().then(() => logger.info(`SQL BotSettings provider - ${chalk.green("READY")}`));
+	        });
+
 	    // Mongoose Providers
 	    this.guildSettings = new MongooseProvider(guildsModel);
 	    this.botSettings = new MongooseProvider(botModel);
 
-	    this.botSettingsProvider = new MySQLProvider(mySQL.connection, "BotSettings");
-	    this.db = mySQL.connection;
 
 	    this.guildSettings.init().then(() => logger.info(`GuildSettings provider - ${chalk.green("READY")}`));
 	    this.botSettings.init().then(() => logger.info(`BotSettings provider - ${chalk.green("READY")}`));
-	    this.botSettingsProvider.init().then(() => logger.info(`SQL BotSettings provider - ${chalk.green("READY")}`));
 
 	    this.commandHandler = new CommandHandler(this, {
 	        allowMention: true,
@@ -92,10 +96,18 @@ export class KaikiClient extends AkairoClient {
     			return (await getBotDocument()).id;
     	})();
 
-    	new Migrations(this.db)
-    		.runAllMigrations()
-    		.then((r) => {
-    			if (r) logger.info("migrationService | Migrations have been checked and executed");
-    		});
+	    if (this.connection) {
+	        new Migrations(this.connection)
+	            .runAllMigrations()
+	            .then((r) => {
+	                if (r) {
+	                    logger.info("migrationService | Migrations have been checked and executed");
+	                    logger.info(`migrationService | Inserted ${r} records into kaikidb`);
+	                }
+	            });
+	    }
+	    else {
+	        await this.init();
+	    }
 	}
 }

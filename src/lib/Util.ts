@@ -4,7 +4,7 @@ import { hexColorTable } from "./Color";
 import chalk from "chalk";
 
 export async function getMemberColorAsync(message: Message): Promise<ColorResolvable> {
-	return <ColorResolvable> message?.member?.displayColor || "#f47fff";
+    return <ColorResolvable> message?.member?.displayColor || "#f47fff";
 }
 
 export const errorColor: ColorResolvable | string = hexColorTable["red"];
@@ -43,19 +43,20 @@ export type presenceType = {
 // }
 
 export const flags: {[index in UserFlagsString]: string} = {
-	DISCORD_EMPLOYEE: "Discord Employee 👨‍💼",
-	PARTNERED_SERVER_OWNER: "Discord Partner ❤️",
-	HYPESQUAD_EVENTS: "HypeSquad Events 🎊",
-	BUGHUNTER_LEVEL_1: "Bug Hunter (Level 1) 🐛",
-	BUGHUNTER_LEVEL_2: "Bug Hunter (Level 2) 🐛",
-	HOUSE_BRAVERY: "House of Bravery 🏠",
-	HOUSE_BRILLIANCE: "House of Brilliance 🏠",
-	HOUSE_BALANCE: "House of Balance 🏠",
-	EARLY_SUPPORTER: "Early Supporter 👍",
-	TEAM_USER: "Team User 🏁",
-	VERIFIED_BOT: "Verified Bot ☑️",
-	EARLY_VERIFIED_BOT_DEVELOPER: "Early Verified Developer ✅",
-	DISCORD_CERTIFIED_MODERATOR: "Certified Moderator",
+    DISCORD_EMPLOYEE: "Discord Employee 👨‍💼",
+    PARTNERED_SERVER_OWNER: "Discord Partner ❤️",
+    HYPESQUAD_EVENTS: "HypeSquad Events 🎊",
+    BUGHUNTER_LEVEL_1: "Bug Hunter (Level 1) 🐛",
+    BUGHUNTER_LEVEL_2: "Bug Hunter (Level 2) 🐛",
+    HOUSE_BRAVERY: "House of Bravery 🏠",
+    HOUSE_BRILLIANCE: "House of Brilliance 🏠",
+    HOUSE_BALANCE: "House of Balance 🏠",
+    EARLY_SUPPORTER: "Early Supporter 👍",
+    TEAM_USER: "Team User 🏁",
+    VERIFIED_BOT: "Verified Bot ☑️",
+    EARLY_VERIFIED_BOT_DEVELOPER: "Early Verified Developer ✅",
+    DISCORD_CERTIFIED_MODERATOR: "Certified Moderator",
+    BOT_HTTP_INTERACTIONS: "Bot interactions",
 };
 
 /**
@@ -70,13 +71,13 @@ export const flags: {[index in UserFlagsString]: string} = {
   */
 export function calculateAspectRatioFit(srcWidth: number, srcHeight: number, maxWidth: number, maxHeight: number): { width: number, height: number } {
 
-	const ratio = Math.min(maxWidth / srcWidth, maxHeight / srcHeight);
+    const ratio = Math.min(maxWidth / srcWidth, maxHeight / srcHeight);
 
-	return { width: srcWidth * ratio, height: srcHeight * ratio };
+    return { width: srcWidth * ratio, height: srcHeight * ratio };
 }
 
 export function trim(str: string, max: number): string {
-	return (str.length > max) ? `${str.slice(0, max - 3)}...` : str;
+    return (str.length > max) ? `${str.slice(0, max - 3)}...` : str;
 }
 /**
  * Create codeblocks ready to be sent to discord.
@@ -104,8 +105,8 @@ export function trim(str: string, max: number): string {
  string
  */
 export async function codeblock(
-	code: string,
-	language?:
+    code: string,
+    language?:
         | "asciidoc"
         | "autohotkey"
         | "bash"
@@ -126,16 +127,16 @@ export async function codeblock(
         | "xl"
         | "xml",
 ): Promise<string> {
-	return `\`\`\`${language ?? ""}\n${code}\`\`\``;
+    return `\`\`\`${language ?? ""}\n${code}\`\`\``;
 }
 
 export async function listenerLog(message: Message, listener: Listener,
-	logger: (...msg: any[]) => void, command?: Command, extra = ""): Promise<void> {
+    logger: (...msg: any[]) => void, command?: Command, extra = ""): Promise<void> {
 
-	logger(`${chalk.blueBright(listener.id)} | ${chalk.blueBright(Date.now() - message.createdTimestamp)}ms
+    logger(`${chalk.blueBright(listener.id)} | ${chalk.blueBright(Date.now() - message.createdTimestamp)}ms
 ${message.channel.type !== "DM"
-		? `Guild: ${chalk.blueBright(message.guild?.name ?? "N/A")} [${chalk.blueBright(message.guild?.id ?? "N/A")}]\nChannel: #${chalk.blueBright(message.channel.name)} [${chalk.blueBright(message.channel.id)}]`
-		: `DMChannel: [${chalk.blueBright(message.author.dmChannel?.id)}]`}
+        ? `Guild: ${chalk.blueBright(message.guild?.name ?? "N/A")} [${chalk.blueBright(message.guild?.id ?? "N/A")}]\nChannel: #${chalk.blueBright(message.channel.name)} [${chalk.blueBright(message.channel.id)}]`
+        : `DMChannel: [${chalk.blueBright(message.author.dmChannel?.id)}]`}
 User: ${chalk.blueBright(message.author.username)} [${chalk.blueBright(message.author.id)}]
 Executed ${chalk.blueBright(command?.id ?? "N/A")} | "${chalk.yellow(message.content.substring(0, 100))}"\n${extra}`);
 }
@@ -150,25 +151,25 @@ Executed ${chalk.blueBright(command?.id ?? "N/A")} | "${chalk.yellow(message.con
  * @returns {Array[]}
  */
 export async function chunk(items: any[], size: number): Promise<any[]> {
-	const chunks = [];
-	items = [].concat(...items);
+    const chunks = [];
+    items = [].concat(...items);
 
-	while (items.length) {
-		chunks.push(
-			items.splice(0, size),
-		);
-	}
+    while (items.length) {
+        chunks.push(
+            items.splice(0, size),
+        );
+    }
 
-	return chunks;
+    return chunks;
 }
 
 // Credit to https://www.codegrepper.com/code-examples/javascript/nodejs+strip+html+from+string
 export function stripHtml(html: string) {
-	return html.replace(/(<([^>]+)>)/ig, "");
+    return html.replace(/(<([^>]+)>)/ig, "");
 }
 
 // Credits: parktomatomi
 // https://stackoverflow.com/a/64093016
 export function partition(array: any[], predicate: (...args: any) => boolean) {
-	return array.reduce((acc, item) => (acc[+!predicate(item)].push(item), acc), [[], []]);
+    return array.reduce((acc, item) => (acc[+!predicate(item)].push(item), acc), [[], []]);
 }

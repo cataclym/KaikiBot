@@ -1,5 +1,5 @@
 import { Provider, ProviderOptions } from "discord-akairo";
-import { Connection, RowDataPacket } from "mysql2/promise";
+import { Connection } from "mysql2/promise";
 import { Collection } from "discord.js";
 
 class MySQLProvider extends Provider {
@@ -18,14 +18,14 @@ class MySQLProvider extends Provider {
   }
 
   async init(): Promise<void> {
-      const [rows] = <RowDataPacket[][]> await this.db.query({
-          sql: `SELECT * FROM ${this.tableName}`,
-          rowsAsArray: true,
-      });
-
-      for (const row of rows) {
-          this.items.set(row[this.idColumn], this.dataColumn ? JSON.parse(row[this.dataColumn]) : row);
-      }
+      // const [rows] = <RowDataPacket[][]> await this.db.query({
+      //     sql: `SELECT * FROM ${this.tableName}`,
+      //     rowsAsArray: true,
+      // });
+      //
+      // for (const row of rows) {
+      //     this.items.set(row[this.idColumn], this.dataColumn ? JSON.parse(row[this.dataColumn]) : row);
+      // }
   }
 
   async get(id: string, key: string, defaultValue: any) {

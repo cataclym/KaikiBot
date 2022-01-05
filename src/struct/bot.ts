@@ -1,5 +1,5 @@
 import { inject, injectable } from "inversify";
-import { KaikiClient } from "./client";
+import { KaikiClient } from "./kaikiClient";
 import MongoDb from "./db/mongoDb";
 import { TYPES } from "./types";
 import logger from "loglevel";

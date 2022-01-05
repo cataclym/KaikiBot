@@ -85,7 +85,7 @@
 //         await botModel.findOneAndUpdate({
 //             activity: { $exists: true },
 //             activityType: { $exists: true },
-//         }, {
+//          }, {
 //             $rename: {
 //                 "activity": "settings.activity",
 //                 "activityType": "settings.activityType",

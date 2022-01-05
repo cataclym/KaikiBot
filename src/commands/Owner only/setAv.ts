@@ -7,44 +7,44 @@ import { KaikiCommand } from "kaiki";
 
 
 export default class SetAvatarCommand extends KaikiCommand {
-	constructor() {
-		super("setavatar", {
-			aliases: ["setavatar", "setav"],
-			description: "Assigns the bot a new avatar.",
-			usage: "http://discord.com/media/1231231231231312321/1231231312323132.png",
-			ownerOnly: true,
-			args: [
-				{
-					id: "url",
-					type: "url",
-					otherwise: (msg: Message) => ({ embeds: [noArgGeneric(msg)] }),
-				},
-			],
-		});
-	}
-	public async exec(message: Message, { url }: { url: URL}): Promise<Message> {
+    constructor() {
+        super("setavatar", {
+            aliases: ["setavatar", "setav"],
+            description: "Assigns the bot a new avatar.",
+            usage: "http://discord.com/media/1231231231231312321/1231231312323132.png",
+            ownerOnly: true,
+            args: [
+                {
+                    id: "url",
+                    type: "url",
+                    otherwise: (msg: Message) => ({ embeds: [noArgGeneric(msg)] }),
+                },
+            ],
+        });
+    }
+    public async exec(message: Message, { url }: { url: URL}): Promise<Message> {
 
-		const img = await Canvas.loadImage(url.href);
-		const canv = Canvas.createCanvas(img.width, img.height);
-		const ctx = canv.getContext("2d");
+        const img = await Canvas.loadImage(url.href);
+        const canv = Canvas.createCanvas(img.width, img.height);
+        const ctx = canv.getContext("2d");
 
-		const { width, height } = calculateAspectRatioFit(img.width, img.height, img.width, img.height);
+        const { width, height } = calculateAspectRatioFit(img.width, img.height, img.width, img.height);
 
-		ctx.drawImage(img,
-			canv.width / 2 - width / 2,
-			canv.height / 2 - height / 2,
-			width, height);
+        ctx.drawImage(img,
+            canv.width / 2 - width / 2,
+            canv.height / 2 - height / 2,
+            width, height);
 
-		const buffer = canv.toBuffer();
+        const buffer = canv.toBuffer();
 
-		try {
-			await this.client.user?.setAvatar(buffer);
-		}
-		catch (error) {
-			logger.error(error);
-			return message.channel.send("Unsupported image type. Please use PNG, JPEG or GIF.");
-		}
+        try {
+            await this.client.user?.setAvatar(buffer);
+        }
+        catch (error) {
+            logger.error(error);
+            return message.channel.send("Unsupported image type. Please provide a PNG, JPEG or GIF link.");
+        }
 
-		return message.channel.send({ content: "Avatar set.", embeds: [new MessageAttachment(buffer)] });
-	}
+        return message.channel.send({ content: "Avatar set.", attachments: [new MessageAttachment(buffer)] });
+    }
 }

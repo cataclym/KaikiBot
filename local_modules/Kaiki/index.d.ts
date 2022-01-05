@@ -7,21 +7,22 @@ import {
 	ListenerHandler,
 	MongooseProvider
 } from "discord-akairo";
-// import { SequelizeDB } from "../../src/struct/db/sequelize";
+import MySQLProvider from "../../src/struct/db/MySQLProvider";
+import { Connection } from "mysql2/promise";
 
-export declare interface KaikiCommandOptions extends CommandOptions {
-	usage?: string | string[],
-}
-
-export declare type KaikiClient = {
+type KaikiClient = {
 	commandHandler: CommandHandler;
 	inhibitorHandler: InhibitorHandler;
 	listenerHandler: ListenerHandler;
 	guildSettings: MongooseProvider;
 	botSettings: MongooseProvider;
 	botSettingID: string;
-	// sequelize: SequelizeDB;
-} & AkairoClient
+	connection: Connection;
+} & AkairoClient;
+
+export declare interface KaikiCommandOptions extends CommandOptions {
+	usage?: string | string[],
+}
 
 export declare class KaikiCommand extends Command {
 	public usage?: string | string[];
