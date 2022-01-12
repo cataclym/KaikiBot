@@ -28,8 +28,8 @@ export async function playSlots(): Promise<{
   numbers: string[];
 }> {
 
-    const arr = await Promise.all(new Array(9)
-        .map(async () => randomEmoji()));
+	const arr = new Array(9)
+		.map(() => randomEmoji());
 
     return {
         string: `[ Kaiki Slots ]
