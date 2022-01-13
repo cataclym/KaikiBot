@@ -28,12 +28,12 @@ export async function playSlots(): Promise<{
   numbers: string[];
 }> {
 
-	const arr = new Array(9);
-	for (let i = 0; i < arr.length; i++) {
-		await (async () => {
-			arr[i] = randomEmoji();
-		})();
-	}
+    const arr = new Array(9);
+    for (let i = 0; i < arr.length; i++) {
+        await (async () => {
+            arr[i] = randomEmoji();
+        })();
+    }
 
     return {
         string: `[ Kaiki Slots ]

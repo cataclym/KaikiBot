@@ -3,8 +3,6 @@ import { IMoneyService } from "../../lib/money/IMoneyService";
 import { MongoMoney } from "../../lib/money/MongoMoneyService";
 import { KaikiCommand } from "kaiki";
 
-
-
 export default class take extends KaikiCommand {
     private readonly _money: IMoneyService;
     constructor() {

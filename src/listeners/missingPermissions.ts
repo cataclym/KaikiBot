@@ -6,33 +6,33 @@ import { listenerLog } from "../lib/Util";
 
 
 export default class missingPermissionsListener extends Listener {
-	constructor() {
-		super("missingPermissions", {
-			event: "missingPermissions",
-			emitter: "commandHandler",
-		});
-	}
+    constructor() {
+        super("missingPermissions", {
+            event: "missingPermissions",
+            emitter: "commandHandler",
+        });
+    }
 
-	// Emitted when a permissions check is failed.
+    // Emitted when a permissions check is failed.
 
-	public async exec(message: Message, command: Command, type: string, missing: any): Promise<void> {
+    public async exec(message: Message, command: Command, type: string, missing: any): Promise<void> {
 
-		await listenerLog(message, this, logger.info, command);
+        await listenerLog(message, this, logger.info, command);
 
-		cmdStatsCache[command.id]
-			? cmdStatsCache[command.id]++
-			: cmdStatsCache[command.id] = 1;
+        cmdStatsCache[command.id]
+            ? cmdStatsCache[command.id]++
+            : cmdStatsCache[command.id] = 1;
 
-		if (message.channel.type !== "DM") {
-			await message.channel.send({ embeds:
+        if (message.channel.type !== "DM") {
+            await message.channel.send({ embeds:
 				[new MessageEmbed({
-					title: "Missing permissions",
-					description: `${type === "client" ? "Client" : "User"} can't execute \`${command.id}\` due to missing permissions.`,
-					footer: { text: `Missing: ${missing}` },
+				    title: "Missing permissions",
+				    description: `${type === "client" ? "Client" : "User"} can't execute \`${command.id}\` due to missing permissions.`,
+				    footer: { text: `Missing: ${missing}` },
 				})
-					.withErrorColor(message)],
-			});
-		}
-	}
+				    .withErrorColor(message)],
+            });
+        }
+    }
 }
 

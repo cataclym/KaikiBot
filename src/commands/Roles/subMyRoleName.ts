@@ -7,50 +7,50 @@ import { KaikiCommand } from "kaiki";
 
 
 export default class MyRoleSubCommandName extends KaikiCommand {
-	constructor() {
-		super("myrolename", {
-			clientPermissions: ["MANAGE_ROLES"],
-			channel: "guild",
-			args: [{
-				id: "name",
-				match: "rest",
-				otherwise: (m: Message) => ({ embeds: [new MessageEmbed()
-					.setTitle("Please provide a name")
-					.withErrorColor(m)] }),
-			}],
-		});
-	}
+    constructor() {
+        super("myrolename", {
+            clientPermissions: ["MANAGE_ROLES"],
+            channel: "guild",
+            args: [{
+                id: "name",
+                match: "rest",
+                otherwise: (m: Message) => ({ embeds: [new MessageEmbed()
+                    .setTitle("Please provide a name")
+                    .withErrorColor(m)] }),
+            }],
+        });
+    }
 
-	async exec(message: Message, { name }: { name: string }): Promise<Message> {
+    async exec(message: Message, { name }: { name: string }): Promise<Message> {
 
-		const guild = (message.guild as Guild);
+        const guild = (message.guild as Guild);
 
-		const db = await getGuildDocument(guild.id),
-			roleID = db.userRoles[message.author.id];
+        const db = await getGuildDocument(guild.id),
+            roleID = db.userRoles[message.author.id];
 
-		if (!roleID) return message.channel.send({ embeds: [await embedFail(message)] });
+        if (!roleID) return message.channel.send({ embeds: [await embedFail(message)] });
 
-		const myRole = guild.roles.cache.get(roleID as Snowflake);
+        const myRole = guild.roles.cache.get(roleID as Snowflake);
 
-		if (!myRole) {
-			delete db.userRoles[message.author.id];
-			db.markModified("userRoles");
-			await db.save();
-			return message.channel.send({ embeds: [await embedFail(message)] });
-		}
+        if (!myRole) {
+            delete db.userRoles[message.author.id];
+            db.markModified("userRoles");
+            await db.save();
+            return message.channel.send({ embeds: [await embedFail(message)] });
+        }
 
-		const botRole = message.guild?.me?.roles.highest,
-			isPosition = botRole?.comparePositionTo(myRole);
+        const botRole = message.guild?.me?.roles.highest,
+            isPosition = botRole?.comparePositionTo(myRole);
 
-		if (isPosition && isPosition <= 0) {
-			return message.channel.send({ embeds: [await embedFail(message, "This role is higher than me, I cannot edit this role!")] });
-		}
+        if (isPosition && isPosition <= 0) {
+            return message.channel.send({ embeds: [await embedFail(message, "This role is higher than me, I cannot edit this role!")] });
+        }
 
-		const oldName = myRole.name;
-		await myRole.setName(trim(name, 32));
-		return message.channel.send({ embeds: [new MessageEmbed()
-			.setDescription(`You have changed \`${oldName}\`'s name to \`${name}\`!`)
-			.setColor(myRole.color)],
-		});
-	}
+        const oldName = myRole.name;
+        await myRole.setName(trim(name, 32));
+        return message.channel.send({ embeds: [new MessageEmbed()
+            .setDescription(`You have changed \`${oldName}\`'s name to \`${name}\`!`)
+            .setColor(myRole.color)],
+        });
+    }
 }

@@ -7,51 +7,51 @@ import { KaikiCommand } from "kaiki";
 
 
 export default class ListUserRoles extends KaikiCommand {
-	constructor() {
-		super("listuserroles", {
-			aliases: ["listuserroles", "lur"],
-			description: "List all custom assigned roles.",
-			usage: "",
-			prefix: (msg: Message) => {
-				const p = (this.handler.prefix as PrefixSupplier)(msg);
-				return [p as string, ";"];
-			},
-			channel: "guild",
-		});
-	}
-	public async exec(message: Message): Promise<Message> {
+    constructor() {
+        super("listuserroles", {
+            aliases: ["listuserroles", "lur"],
+            description: "List all custom assigned roles.",
+            usage: "",
+            prefix: (msg: Message) => {
+                const p = (this.handler.prefix as PrefixSupplier)(msg);
+                return [p as string, ";"];
+            },
+            channel: "guild",
+        });
+    }
+    public async exec(message: Message): Promise<Message> {
 
-		const guildID = (message.guild as Guild).id,
-			db = await getGuildDocument(guildID);
-		const roles = Object.entries(db.userRoles);
+        const guildID = (message.guild as Guild).id,
+            db = await getGuildDocument(guildID);
+        const roles = Object.entries(db.userRoles);
 
-		if (roles.length) {
+        if (roles.length) {
 
-			const mapped = roles
-					.map(([u, r]) => `${message.guild?.members.cache.get(u as Snowflake) || u}: ${message.guild?.roles.cache.get(r as Snowflake) || r}`)
-					.sort(),
-				pages: MessageEmbed[] = [];
+            const mapped = roles
+                    .map(([u, r]) => `${message.guild?.members.cache.get(u as Snowflake) || u}: ${message.guild?.roles.cache.get(r as Snowflake) || r}`)
+                    .sort(),
+                pages: MessageEmbed[] = [];
 
-			for (let items = 20, from = 0; mapped.length > from; items += 20, from += 20) {
+            for (let items = 20, from = 0; mapped.length > from; items += 20, from += 20) {
 
-				const pageRoles = mapped.slice(from, items);
+                const pageRoles = mapped.slice(from, items);
 
-				pages.push(new MessageEmbed()
-					.setTitle("Custom Userroles")
-					.setDescription(pageRoles.join("\n"))
-					.withOkColor(message));
-			}
+                pages.push(new MessageEmbed()
+                    .setTitle("Custom Userroles")
+                    .setDescription(pageRoles.join("\n"))
+                    .withOkColor(message));
+            }
 
-			return sendPaginatedMessage(message, pages, {});
-		}
+            return sendPaginatedMessage(message, pages, {});
+        }
 
-		else {
-			return message.channel.send({
-				embeds: [new MessageEmbed()
-					.withErrorColor(message)
-					.setTitle("No user roles")
-					.setDescription("This guild has not used this feature yet.")],
-			});
-		}
-	}
+        else {
+            return message.channel.send({
+                embeds: [new MessageEmbed()
+                    .withErrorColor(message)
+                    .setTitle("No user roles")
+                    .setDescription("This guild has not used this feature yet.")],
+            });
+        }
+    }
 }

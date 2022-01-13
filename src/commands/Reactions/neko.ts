@@ -4,16 +4,16 @@ import { KaikiCommand } from "kaiki";
 
 
 export default class Neko extends KaikiCommand {
-	constructor() {
-		super("neko", {
-			aliases: ["neko"],
-			description: "Spawn a neko picture",
-			usage: [""],
-			typing: true,
-		});
-	}
+    constructor() {
+        super("neko", {
+            aliases: ["neko"],
+            description: "Spawn a neko picture",
+            usage: [""],
+            typing: true,
+        });
+    }
 
-	public async exec(message: Message): Promise<Message> {
-		return message.channel.send({ embeds: [await sendWaifuPics(message, "neko")] });
-	}
+    public async exec(message: Message): Promise<Message> {
+        return message.channel.send({ embeds: [await sendWaifuPics(message, "neko")] });
+    }
 }

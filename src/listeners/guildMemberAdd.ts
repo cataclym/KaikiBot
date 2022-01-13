@@ -5,17 +5,17 @@ import { checkAnniversaryMember } from "../lib/AnniversaryRoles";
 import { handleStickyRoles } from "../lib/roles";
 
 export default class GuildMemberAddListener extends Listener {
-	constructor() {
-		super("guildMemberAdd", {
-			event: "guildMemberAdd",
-			emitter: "client",
-		});
-	}
-	public async exec(member: GuildMember): Promise<void> {
+    constructor() {
+        super("guildMemberAdd", {
+            event: "guildMemberAdd",
+            emitter: "client",
+        });
+    }
+    public async exec(member: GuildMember): Promise<void> {
 
-		await checkAnniversaryMember(member);
-		await handleGreetMessage(member);
-		await handleStickyRoles(member);
-	}
+        await checkAnniversaryMember(member);
+        await handleGreetMessage(member);
+        await handleStickyRoles(member);
+    }
 }
 

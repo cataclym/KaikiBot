@@ -1,31 +1,31 @@
 {
     "compilerOptions": {
-      "strictNullChecks": true,
-      "allowJs": true,
-      "module": "commonJS",
-      "esModuleInterop": true,
-      "target": "ES2020",
-      "noImplicitAny": true,
-      "moduleResolution": "node",
-      "sourceMap": true,
-      "resolveJsonModule": true,
-      "rootDir": "./",
-      "outDir": "../dist/",
-      "baseUrl": "./",
-      "paths": {
-        "*": ["*", "../node_modules/*"]
-      },
-      "types": [
-        "node",
-        "reflect-metadata"
-      ],
-      "declaration": false,
-      "emitDecoratorMetadata": true,
-      "experimentalDecorators": true,
-      "typeRoots": ["types.ts", "../node_modules/@types", "../local_modules"],
-      "lib": ["es2019", "dom"]
+        "strictNullChecks": true,
+        "allowJs": true,
+        "module": "commonJS",
+        "esModuleInterop": true,
+        "target": "ES2020",
+        "noImplicitAny": true,
+        "moduleResolution": "node",
+        "sourceMap": true,
+        "resolveJsonModule": true,
+        "rootDir": "./",
+        "outDir": "../dist/",
+        "baseUrl": "./",
+        "paths": {
+            "*": ["*", "../node_modules/*"],
+        },
+        "types": [
+            "node",
+            "reflect-metadata",
+        ],
+        "declaration": false,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "typeRoots": ["types.ts", "../node_modules/@types", "../local_modules"],
+        "lib": ["es2019", "dom"],
     },
     "references": [{ "path": "../" }],
-    "include": ["./**/*", "jest.config.js",  "**/*.ts", "types.ts", "./Extensions/loglevel.d.ts"],
+    "include": ["./**/*", "jest.config.js", "**/*.ts", "types.ts", "./extensions/loglevel.d.ts"],
     "exclude": ["../node_modules/*", "../types/*"],
 }

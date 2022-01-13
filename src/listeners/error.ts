@@ -7,22 +7,22 @@ import { codeblock, listenerLog } from "../lib/Util";
 
 
 export default class errorListener extends Listener {
-	constructor() {
-		super("error", {
-			event: "error",
-			emitter: "commandHandler",
-		});
-	}
+    constructor() {
+        super("error", {
+            event: "error",
+            emitter: "commandHandler",
+        });
+    }
 
-	public async exec(error: Error, message: Message, command?: Command): Promise<void> {
+    public async exec(error: Error, message: Message, command?: Command): Promise<void> {
 
-		await listenerLog(message, this, logger.warn, command, `${error.stack}\n`);
-		message.channel.send({ embeds: [await errorMessage(message, await codeblock(error.message, "xl"))] });
+        await listenerLog(message, this, logger.warn, command, `${error.stack}\n`);
+        message.channel.send({ embeds: [await errorMessage(message, await codeblock(error.message, "xl"))] });
 
-		if (!command) return;
+        if (!command) return;
 
-		cmdStatsCache[command.id]
-			? cmdStatsCache[command.id]++
-			: cmdStatsCache[command.id] = 1;
-	}
+        cmdStatsCache[command.id]
+            ? cmdStatsCache[command.id]++
+            : cmdStatsCache[command.id] = 1;
+    }
 }

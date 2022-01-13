@@ -5,25 +5,25 @@ import { KaikiCommand } from "kaiki";
 
 
 export default class todoAddCommand extends KaikiCommand {
-	constructor() {
-		super("add", {
-			args: [
-				{
-					id: "toAdd",
-					type: "string",
-					match: "rest",
-					otherwise: (msg: Message) => ({ embeds: [noArgGeneric(msg)] }),
-				},
-			],
-		});
-	}
+    constructor() {
+        super("add", {
+            args: [
+                {
+                    id: "toAdd",
+                    type: "string",
+                    match: "rest",
+                    otherwise: (msg: Message) => ({ embeds: [noArgGeneric(msg)] }),
+                },
+            ],
+        });
+    }
 
-	public async exec(message: Message, { toAdd }: { toAdd: string}): Promise<MessageReaction> {
-		await getUserDocument(message.author.id).then(db => {
-			db.todo.push(toAdd);
-			db.markModified("todo");
-			db.save();
-		});
-		return message.react("✅");
-	}
+    public async exec(message: Message, { toAdd }: { toAdd: string}): Promise<MessageReaction> {
+        await getUserDocument(message.author.id).then(db => {
+            db.todo.push(toAdd);
+            db.markModified("todo");
+            db.save();
+        });
+        return message.react("✅");
+    }
 }

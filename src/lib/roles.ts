@@ -1,13 +1,12 @@
 import { GuildMember, Message, Role } from "discord.js";
 import logger from "loglevel";
 import chalk from "chalk";
-import { KaikiClient } from "../struct/kaikiClient";
 import { getGuildDocument } from "../struct/documentMethods";
 import { Snowflake } from "discord-api-types";
 
 export async function handleStickyRoles(member: GuildMember) {
 
-    if (!await (member.client as KaikiClient).guildSettings.get(member.guild.id, "stickyRoles", false)) return;
+    if (!await member.client.guildProvider.get(member.guild.id, "StickyRoles", 0)) return;
 
     const result = await restoreUserRoles(member);
     if (!result) {

@@ -4,19 +4,19 @@ import { KaikiCommand } from "kaiki";
 
 
 export default class Pout extends KaikiCommand {
-	constructor() {
-		super("pout", {
-			aliases: ["pout"],
-			description: "I am not angry, b-baka",
-			usage: [""],
-			typing: true,
-		});
-	}
+    constructor() {
+        super("pout", {
+            aliases: ["pout"],
+            description: "I am not angry, b-baka",
+            usage: [""],
+            typing: true,
+        });
+    }
 
-	public async exec(message: Message): Promise<Message | void> {
+    public async exec(message: Message): Promise<Message | void> {
 
-		const embed = await getKawaiiResponseEmbed(message, "pout");
+        const embed = await getKawaiiResponseEmbed(message, "pout");
 
-		if (embed) return message.channel.send({ embeds: [embed] });
-	}
+        if (embed) return message.channel.send({ embeds: [embed] });
+    }
 }

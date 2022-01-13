@@ -1,9 +1,9 @@
 
 ## Requirements
-* Node.js v16.6 https://nodejs.org/en/
-* TypeScript `sudo npm install -g typescript` https://www.npmjs.com/package/typescript
-
-## Instructions (Linux)
+* Linux (Can work on other OS, but not supported)
+* Node.js v16.6 (or newer) https://nodejs.org/en/
+* MySQL
+## Instructions
 
 1. Clone repo: `git clone https://gitlab.com/cataclym/KaikiDeishuBot.git && cd KaikiDeishuBot`
 2. Create .env file: `cp .env.example .env`.

@@ -16,6 +16,7 @@ Create a bot application
 Example
 
     CLIENT_TOKEN=MND5MTA2MzY2MzgwNzU5Fjgw.O08nDN.Bl6rIwtlAg9Hxuz8CLPD0l23sun
+
 ### OWNER
 
 * Enable developer mode in Discord
@@ -26,6 +27,7 @@ Example
 Example
 
     OWNER=142788173885276162
+
 ### PREFIX
 
 Decide what prefix the bot should default to on new servers.
@@ -44,6 +46,17 @@ Example
 
     KAWAIIKEY=142788173885276162.DspDpD0isjuXAKD73vWs
 
+## MySQL
+
+Replace `root` with your MySQL user and password credentials
+
+Example
+
+
+    MYSQL_USER=mysql_user
+
+    MYSQL_PASS=password123
+
 ### The rest of the file
 
 Please leave this as is, unless you know what you're doing
@@ -53,8 +66,6 @@ Please leave this as is, unless you know what you're doing
     DADBOT_NICKNAME_LENGTH=32
 
     NODE_ENV=production
-
-## MORE TO COME
 
 ### Example of finished .env file
 
@@ -66,9 +77,12 @@ Please leave this as is, unless you know what you're doing
 
     KAWAIIKEY=142788173885276162.DspDpD0isjuXAKD73vWs
 
+    MYSQL_USER=root
+
+    MYSQL_PASS=root
+
     DADBOT_MAX_LENGTH=256
 
     DADBOT_NICKNAME_LENGTH=32
 
     NODE_ENV=production
-

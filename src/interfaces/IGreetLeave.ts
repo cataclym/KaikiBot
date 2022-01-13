@@ -34,18 +34,18 @@ export interface IGreet {
 }
 
 export class EmbedFromJson implements MessageEmbedOptionsJSON {
-	public plainText: string | undefined;
-	public title: string | undefined;
-	public url: string | undefined;
-	public description: string | undefined;
-	public author: (Partial<MessageEmbedAuthor> & { icon_url?: string; proxy_icon_url?: string }) | undefined;
-	public color: ColorResolvable | undefined;
-	public footer: (Partial<MessageEmbedFooter> & { icon_url?: string; proxy_icon_url?: string }) | undefined;
-	public thumbnail: (Partial<MessageEmbedThumbnail> & { proxy_url?: string | undefined; }) | undefined;
-	public image: (Partial<MessageEmbedImage> & { proxy_url?: string | undefined; }) | undefined;
-	public fields: EmbedFieldData[] | undefined;
-	public createEmbed: () => Promise<MessageOptions>;
-	constructor(options: MessageEmbedOptionsJSON) {
+    public plainText: string | undefined;
+    public title: string | undefined;
+    public url: string | undefined;
+    public description: string | undefined;
+    public author: (Partial<MessageEmbedAuthor> & { icon_url?: string; proxy_icon_url?: string }) | undefined;
+    public color: ColorResolvable | undefined;
+    public footer: (Partial<MessageEmbedFooter> & { icon_url?: string; proxy_icon_url?: string }) | undefined;
+    public thumbnail: (Partial<MessageEmbedThumbnail> & { proxy_url?: string | undefined; }) | undefined;
+    public image: (Partial<MessageEmbedImage> & { proxy_url?: string | undefined; }) | undefined;
+    public fields: EmbedFieldData[] | undefined;
+    public createEmbed: () => Promise<MessageOptions>;
+    constructor(options: MessageEmbedOptionsJSON) {
 	    this.plainText = options.plainText;
 	    this.title = options.title;
 	    this.url = options.url;
@@ -73,5 +73,5 @@ export class EmbedFromJson implements MessageEmbedOptionsJSON {
 
 	        return { content: this.plainText ?? null, embeds: embed };
 	    };
-	}
+    }
 }

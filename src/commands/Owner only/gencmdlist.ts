@@ -30,14 +30,14 @@ export default class GenCmdListCommand extends KaikiCommand {
 }
 
 class generatedCommand {
-	id: string;
-	aliases: string[];
-	channel?: string | undefined;
-	ownerOnly?: boolean;
-	usage?: string | string[] | undefined;
-	userPermissions?: string;
-	description?: string;
-	constructor(command: KaikiCommand) {
+    id: string;
+    aliases: string[];
+    channel?: string | undefined;
+    ownerOnly?: boolean;
+    usage?: string | string[] | undefined;
+    userPermissions?: string;
+    description?: string;
+    constructor(command: KaikiCommand) {
 	    this.id = command.id;
 	    this.aliases = command.aliases;
 	    this.channel = command.channel;
@@ -45,5 +45,5 @@ class generatedCommand {
 	    this.usage = command.usage;
 	    this.userPermissions = new Permissions(command.userPermissions as PermissionResolvable).toArray().join();
 	    this.description = command.description;
-	}
+    }
 }

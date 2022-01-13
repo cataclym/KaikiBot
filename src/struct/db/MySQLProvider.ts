@@ -1,87 +1,89 @@
 import { Provider, ProviderOptions } from "discord-akairo";
-import { Connection } from "mysql2/promise";
+import { Connection, RowDataPacket } from "mysql2/promise";
 import { Collection } from "discord.js";
 
 class MySQLProvider extends Provider {
-  private db: Connection;
-  private readonly tableName: string;
-  private readonly idColumn: string;
-  private readonly dataColumn?: string;
+    private db: Connection;
+    private readonly tableName: string;
+    private readonly idColumn: string;
+    private readonly dataColumn?: string;
 
-  constructor(db: Connection, tableName: string, options?: ProviderOptions) {
-      super();
-      this.items = new Collection();
-      this.db = db;
-      this.tableName = tableName;
-      this.idColumn = options?.idColumn ?? "id";
-      this.dataColumn = options?.dataColumn;
-  }
+    constructor(db: Connection, tableName: string, options?: ProviderOptions) {
+        super();
+        this.items = new Collection();
+        this.db = db;
+        this.tableName = tableName;
+        this.idColumn = options?.idColumn ?? "Id";
+        this.dataColumn = options?.dataColumn;
+    }
 
-  async init(): Promise<void> {
-      // const [rows] = <RowDataPacket[][]> await this.db.query({
-      //     sql: `SELECT * FROM ${this.tableName}`,
-      //     rowsAsArray: true,
-      // });
-      //
-      // for (const row of rows) {
-      //     this.items.set(row[this.idColumn], this.dataColumn ? JSON.parse(row[this.dataColumn]) : row);
-      // }
-  }
+    async init(): Promise<void> {
+        const [rows] = <RowDataPacket[][]> await this.db.query({
+            sql: `SELECT * FROM ${this.tableName}`,
+            rowsAsArray: true,
+        });
 
-  async get(id: string, key: string, defaultValue: any) {
-      if (this.items.has(id)) {
-          const value = this.items.get(id)[key];
-          return value == null ? defaultValue : value;
-      }
+        for (const row of rows) {
+            this.items.set(row[this.idColumn], this.dataColumn
+                ? JSON.parse(row[this.dataColumn])
+                : row);
+        }
+    }
 
-      return defaultValue;
-  }
+    get(id: string, key: string, defaultValue: any) {
+        if (this.items.has(id)) {
+            const value = this.items.get(id)[key];
+            return value == null ? defaultValue : value;
+        }
 
-  async set(id: string, key: string, value: any) {
-      const data = this.items.get(id) || {};
-      const exists = this.items.has(id);
+        return defaultValue;
+    }
 
-      data[key] = value;
-      this.items.set(id, data);
+    set(id: string, key: string, value: any) {
+        const data = this.items.get(id) || {};
+        const exists = this.items.has(id);
 
-      if (this.dataColumn) {
-          return this.db.execute(exists
-              ? `UPDATE ${this.tableName} SET ${this.dataColumn} = $value WHERE ${this.idColumn} = $id`
-              : `INSERT INTO ${this.tableName} (${this.idColumn}, ${this.dataColumn}) VALUES ($id, $value)`, {
-              $id: id,
-              $value: JSON.stringify(data),
-          });
-      }
+        data[key] = value;
+        this.items.set(id, data);
 
-      return this.db.execute(exists
-          ? `UPDATE ${this.tableName} SET ${key} = $value WHERE ${this.idColumn} = $id`
-          : `INSERT INTO ${this.tableName} (${this.idColumn}, ${key}) VALUES ($id, $value)`, {
-          $id: id,
-          $value: value,
-      });
-  }
+        if (this.dataColumn) {
+            return this.db.execute(exists
+                ? `UPDATE ${this.tableName} SET ${this.dataColumn} = $value WHERE ${this.idColumn} = $id`
+                : `INSERT INTO ${this.tableName} (${this.idColumn}, ${this.dataColumn}) VALUES ($id, $value)`, {
+                $id: id,
+                $value: JSON.stringify(data),
+            });
+        }
 
-  async delete(id: string, key: string) {
-      const data = this.items.get(id) || {};
-      delete data[key];
+        return this.db.execute(exists
+            ? `UPDATE ${this.tableName} SET ${key} = $value WHERE ${this.idColumn} = $id`
+            : `INSERT INTO ${this.tableName} (${this.idColumn}, ${key}) VALUES ($id, $value)`, {
+            $id: id,
+            $value: value,
+        });
+    }
 
-      if (this.dataColumn) {
-          return this.db.execute(`UPDATE ${this.tableName} SET ${this.dataColumn} = $value WHERE ${this.idColumn} = $id`, {
-              $id: id,
-              $value: JSON.stringify(data),
-          });
-      }
+    delete(id: string, key: string) {
+        const data = this.items.get(id) || {};
+        delete data[key];
 
-      return this.db.execute(`UPDATE ${this.tableName} SET ${key} = $value WHERE ${this.idColumn} = $id`, {
-          $id: id,
-          $value: null,
-      });
-  }
+        if (this.dataColumn) {
+            return this.db.execute(`UPDATE ${this.tableName} SET ${this.dataColumn} = $value WHERE ${this.idColumn} = $id`, {
+                $id: id,
+                $value: JSON.stringify(data),
+            });
+        }
 
-  async clear(id: string) {
-      this.items.delete(id);
-      return this.db.execute(`DELETE FROM ${this.tableName} WHERE ${this.idColumn} = $id`, { $id: id });
-  }
+        return this.db.execute(`UPDATE ${this.tableName} SET ${key} = $value WHERE ${this.idColumn} = $id`, {
+            $id: id,
+            $value: null,
+        });
+    }
+
+    clear(id: string) {
+        this.items.delete(id);
+        return this.db.execute(`DELETE FROM ${this.tableName} WHERE ${this.idColumn} = $id`, { $id: id });
+    }
 }
 
 export default MySQLProvider;

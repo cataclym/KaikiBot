@@ -3,19 +3,19 @@ import logger from "loglevel";
 
 
 export default class InvalidatedListener extends Listener {
-	constructor() {
-		super("invalidated", {
-			event: "invalidated",
-			emitter: "client",
-		});
-	}
-	// Emitted when the client's session becomes invalidated.
+    constructor() {
+        super("invalidated", {
+            event: "invalidated",
+            emitter: "client",
+        });
+    }
+    // Emitted when the client's session becomes invalidated.
 
-	public async exec(): Promise<never> {
+    public async exec(): Promise<never> {
 
-		logger.error("invalidated | Session has become invalidated. Shutting down client.");
+        logger.error("invalidated | Session has become invalidated. Shutting down client.");
 
-		return process.exit(1);
+        return process.exit(1);
 
-	}
+    }
 }

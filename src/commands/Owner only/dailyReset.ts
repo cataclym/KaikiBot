@@ -3,22 +3,22 @@ import { Message, MessageEmbed } from "discord.js";
 import { KaikiCommand } from "kaiki";
 
 export default class DailyResetCommand extends KaikiCommand {
-	constructor() {
-		super("dailyreset", {
-			aliases: ["dailyreset", "resetdaily"],
-			description: "Resets daily claims that have been made",
-			usage: "",
-			ownerOnly: true,
-		});
-	}
+    constructor() {
+        super("dailyreset", {
+            aliases: ["dailyreset", "resetdaily"],
+            description: "Resets daily claims that have been made",
+            usage: "",
+            ownerOnly: true,
+        });
+    }
 
-	public async exec(message: Message): Promise<Message> {
-		await resetDailyClaims();
-		return message.channel.send({
-			embeds: [new MessageEmbed()
-				.setDescription("Daily claims have been reset!")
-				.withOkColor(message),
-			],
-		});
-	}
+    public async exec(message: Message): Promise<Message> {
+        await resetDailyClaims();
+        return message.channel.send({
+            embeds: [new MessageEmbed()
+                .setDescription("Daily claims have been reset!")
+                .withOkColor(message),
+            ],
+        });
+    }
 }

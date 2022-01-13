@@ -9,9 +9,9 @@ import { BotConfig } from "../../struct/db/MySQL";
 const validTypes = ["currencyname", "currencysymbol"];
 
 export default class BotConfigCommand extends KaikiCommand {
-	private readonly _money: MongoMoneyService;
+    private readonly _money: MongoMoneyService;
 
-	constructor() {
+    constructor() {
 	    super("botconfig", {
 	        aliases: ["botconfig", "bc"],
 	        description: "Change various bot configurations. Run without arguments to see current settings.",
@@ -48,8 +48,8 @@ export default class BotConfigCommand extends KaikiCommand {
 	    });
 
 	    this._money = MongoMoney;
-	}
-	public async exec(message: Message, { type, name }: { type: string, name: string}): Promise<Message> {
+    }
+    public async exec(message: Message, { type, name }: { type: string, name: string}): Promise<Message> {
 
 	    const client = this.client;
 	    let oldValue;
@@ -74,5 +74,5 @@ export default class BotConfigCommand extends KaikiCommand {
 	            .addField("New value", name)
 	            .withOkColor(message)],
 	    });
-	}
+    }
 }

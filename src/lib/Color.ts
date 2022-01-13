@@ -173,7 +173,7 @@ export async function resolveColor(color: string): Promise<ColorResolvable> {
         : colors.find(c => c.name === color || c.hex === color)?.hex;
 
     if (clrStr) {
-        return (clrStr.startsWith("#")
+        return (String(clrStr).startsWith("#")
             ? clrStr
             : `#${clrStr}`) as ColorResolvable;
     }
@@ -187,7 +187,7 @@ export async function resolveColor(color: string): Promise<ColorResolvable> {
 }
 
 export const hexColorTable: {
-  [i: string]: string
+  [i: string]: ColorResolvable
 } = {
     "aqua": "#00ffff",
     "aquamarine": "#7fffd4",

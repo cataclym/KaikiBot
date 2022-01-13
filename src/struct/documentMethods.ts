@@ -4,81 +4,81 @@ import { IBlacklist, IBot, ICommandStats, IGuild, ITinder, IUser } from "../inte
 import { blacklistModel, botModel, commandStatsModel, guildsModel, tinderDataModel, usersModel } from "./db/models";
 
 export async function getUserDocument(userID: string): Promise<IUser> {
-	let userDB = await usersModel.findOne({ id: userID });
-	if (userDB) {
-		return userDB;
-	}
-	else {
-		userDB = new usersModel({
-			id: userID,
-		});
-		await userDB.save().catch(err => logger.error(err));
-		return userDB;
-	}
+    let userDB = await usersModel.findOne({ id: userID });
+    if (userDB) {
+        return userDB;
+    }
+    else {
+        userDB = new usersModel({
+            id: userID,
+        });
+        await userDB.save().catch(err => logger.error(err));
+        return userDB;
+    }
 }
 
 export async function getGuildDocument(guildID: string): Promise<IGuild> {
 
-	let guildDB = await guildsModel.findOne({ id: guildID });
+    let guildDB = await guildsModel.findOne({ id: guildID });
 
-	if (!guildDB) {
-		guildDB = new guildsModel({ id: guildID });
-	}
+    if (!guildDB) {
+        guildDB = new guildsModel({ id: guildID });
+    }
 
-	return await guildDB.save();
+    return await guildDB.save();
 }
 
 export async function getTinderDocument(userID: string): Promise<ITinder> {
-	let tinderDB = await tinderDataModel.findOne({ id: userID });
+    let tinderDB = await tinderDataModel.findOne({ id: userID });
 
-	if (tinderDB) {
-		return tinderDB;
-	}
-	else {
-		tinderDB = new tinderDataModel({ id: userID });
-		await tinderDB.save().catch(err => logger.error(err));
-		return tinderDB;
-	}
+    if (tinderDB) {
+        return tinderDB;
+    }
+    else {
+        tinderDB = new tinderDataModel({ id: userID });
+        await tinderDB.save().catch(err => logger.error(err));
+        return tinderDB;
+    }
 }
 
 export async function getCommandStatsDocument(): Promise<ICommandStats> {
-	let cmdStatsDB = await commandStatsModel.findOne();
+    let cmdStatsDB = await commandStatsModel.findOne();
 
-	if (cmdStatsDB) {
-		return cmdStatsDB;
-	}
-	else {
-		cmdStatsDB = new commandStatsModel();
+    if (cmdStatsDB) {
+        return cmdStatsDB;
+    }
+    else {
+        cmdStatsDB = new commandStatsModel();
 
-		await cmdStatsDB.save().catch(err => logger.error(err));
-		return cmdStatsDB;
-	}
+        await cmdStatsDB.save().catch(err => logger.error(err));
+        return cmdStatsDB;
+    }
 }
 
 export async function getBlacklistDocument(): Promise<IBlacklist> {
-	let blacklist = await blacklistModel.findOne();
+    let blacklist = await blacklistModel.findOne();
 
-	if (blacklist) {
-		return blacklist;
-	}
-	else {
-		blacklist = new blacklistModel();
+    if (blacklist) {
+        return blacklist;
+    }
+    else {
+        blacklist = new blacklistModel();
 
-		await blacklist.save().catch(err => logger.error(err));
-		return blacklist;
-	}
+        await blacklist.save().catch(err => logger.error(err));
+        return blacklist;
+    }
 }
 
 export async function getBotDocument(): Promise<IBot> {
-	let bot = await botModel.findOne();
+    let bot = await botModel.findOne();
 
-	if (bot) {
-		return bot;
-	}
-	else {
-		bot = new botModel();
+    if (bot) {
+        return bot;
+    }
+    else {
+        bot = new botModel();
 
-		await bot.save().catch(err => logger.error(err));
-		return bot;
-	}
+        await bot.save().catch(err => logger.error(err));
+        return bot;
+    }
 }
