@@ -8,16 +8,19 @@ import {
 	MongooseProvider
 } from "discord-akairo";
 import MySQLProvider from "../../src/struct/db/MySQLProvider";
-import { Connection } from "mysql2/promise";
+import { Connection as MySQLConnection } from "mysql2/promise";
+import { IDatabaseDriver, MikroORM, Connection } from "@mikro-orm/core";
+import { MoneyService } from "../../src/lib/money/MoneyService";
 
 type KaikiClient = {
 	commandHandler: CommandHandler;
 	inhibitorHandler: InhibitorHandler;
 	listenerHandler: ListenerHandler;
-	guildSettings: MongooseProvider;
-	botSettings: MongooseProvider;
-	botSettingID: string;
-	connection: Connection;
+	botSettingsProvider: MySQLProvider;
+	guildProvider: MySQLProvider;
+	connection: MySQLConnection;
+	orm: MikroORM<IDatabaseDriver<Connection>>
+	money: MoneyService;
 } & AkairoClient;
 
 export declare interface KaikiCommandOptions extends CommandOptions {

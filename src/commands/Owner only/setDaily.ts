@@ -1,13 +1,9 @@
 import { Message, MessageEmbed } from "discord.js";
 import { noArgGeneric } from "../../lib/Embeds";
 import { KaikiCommand } from "kaiki";
-import { IMoneyService } from "../../lib/money/IMoneyService";
-import { MongoMoney } from "../../lib/money/MongoMoneyService";
 import { getBotDocument } from "../../struct/documentMethods";
 
-
 export default class SetDailyCommand extends KaikiCommand {
-    private readonly _money: IMoneyService;
     constructor() {
         super("setdaily", {
             aliases: ["setdaily", "dailyset"],
@@ -22,7 +18,6 @@ export default class SetDailyCommand extends KaikiCommand {
                 },
             ],
         });
-        this._money = MongoMoney;
     }
 
     public async exec(message: Message, { arg }: { arg: number }): Promise<Message> {
@@ -42,7 +37,7 @@ export default class SetDailyCommand extends KaikiCommand {
 
             return message.channel.send({
                 embeds: [new MessageEmbed()
-                    .setDescription(`Users will be able to claim ${arg} ${this._money.currencyName} ${this._money.currencySymbol} every day`)
+                    .setDescription(`Users will be able to claim ${arg} ${this.client.money.currencyName} ${this.client.money.currencySymbol} every day`)
                     .withOkColor(message),
                 ],
             });

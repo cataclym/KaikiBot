@@ -1,19 +1,19 @@
-import { Entity, PrimaryKey, Property, Unique } from "@mikro-orm/core";
+import { Column, Entity, PrimaryGeneratedColumn, Unique } from "typeorm";
 
-@Entity({ collection: "DiscordUsers" })
+@Entity({ name: "DiscordUsers" })
 export class DiscordUsers {
 
-  @PrimaryKey({ columnType: "bigint", fieldName: "Id" })
-      Id!: string;
+  @PrimaryGeneratedColumn({ type: "bigint" })
+      Id: bigint;
 
-  @Unique({ name: "UserId" })
-  @Property({ columnType: "bigint", fieldName: "UserId" })
-      UserId!: string;
+  @Unique("UserId", ["UserId"])
+  @Column({ type: "bigint" })
+      UserId: bigint;
 
-  @Property({ columnType: "bigint", fieldName: "Amount", nullable: true, defaultRaw: "0" })
-      Amount?: string;
+  @Column({ type: "bigint", name: "Amount", nullable: true, default: "0" })
+      Amount: bigint;
 
-  @Property({ columnType: "timestamp", fieldName: "CreatedAt", defaultRaw: "current_timestamp()" })
-      CreatedAt!: Date;
+  @Column({ type: "timestamp", name: "CreatedAt", default: "current_timestamp()" })
+      CreatedAt: Date;
 
 }

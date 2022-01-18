@@ -1,4 +1,5 @@
 import { Entity, PrimaryKey, Property } from "@mikro-orm/core";
+import { NativeBigIntType } from "../db/NativeBigIntType";
 
 @Entity({ collection: "BotSettings" })
 export class BotSettings {
@@ -13,15 +14,15 @@ export class BotSettings {
       ActivityType?: string;
 
   @Property({ fieldName: "CurrencyName", length: 255, nullable: true, default: "Yen" })
-      CurrencyName?: string;
+      CurrencyName!: string;
 
-  @Property({ columnType: "bigint", fieldName: "CurrencySymbol", nullable: true, defaultRaw: "128180" })
-      CurrencySymbol?: string;
+  @Property({ columnType: "int", fieldName: "CurrencySymbol", nullable: true, defaultRaw: "128180" })
+      CurrencySymbol!: number;
 
   @Property({ fieldName: "DailyEnabled", nullable: true })
       DailyEnabled?: boolean = false;
 
-  @Property({ columnType: "bigint", fieldName: "DailyAmount", nullable: true, defaultRaw: "250" })
-      DailyAmount?: string;
+  @Property({ type: NativeBigIntType, columnType: "bigint", fieldName: "DailyAmount", nullable: true, defaultRaw: "250" })
+      DailyAmount?: bigint;
 
 }

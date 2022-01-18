@@ -2,15 +2,35 @@ import { FailureData } from "discord-akairo";
 import { Message, MessageEmbed } from "discord.js";
 import { noArgGeneric } from "../../lib/Embeds";
 import { codeblock } from "../../lib/Util";
-import { MongoMoney, MongoMoneyService } from "../../lib/money/MongoMoneyService";
 import { KaikiCommand } from "kaiki";
 import { BotConfig } from "../../struct/db/MySQL";
+import Gambling from "../../lib/gambling/gambling";
 
-const validTypes = ["currencyname", "currencysymbol"];
+enum validEnum {
+	ACTIVITY = "activity",
+	ACTIVITYTYPE = "activityType",
+	CURRENCYNAME = "currencyname",
+	CURRENCYSYMBOL = "currencysymbol",
+	DAILYENABLED = "dailyEnabled",
+	DAILYAMOUNT = "dailyAmount"
+}
+type validTypes = "activity"
+	| "activityType"
+	|	"currencyname"
+	|	"currencysymbol"
+	| "dailyEnabled"
+	| "dailyAmount";
+
+const validTypes: validTypes[] = [
+    "activity",
+    "activityType",
+    "currencyname",
+    "currencysymbol",
+    "dailyEnabled",
+    "dailyAmount",
+];
 
 export default class BotConfigCommand extends KaikiCommand {
-    private readonly _money: MongoMoneyService;
-
     constructor() {
 	    super("botconfig", {
 	        aliases: ["botconfig", "bc"],
@@ -46,26 +66,34 @@ export default class BotConfigCommand extends KaikiCommand {
 	            },
 	        ],
 	    });
-
-	    this._money = MongoMoney;
     }
-    public async exec(message: Message, { type, name }: { type: string, name: string}): Promise<Message> {
+    public async exec(message: Message, { type, name }: { type: validTypes, name: string}): Promise<Message> {
 
 	    const client = this.client;
 	    let oldValue;
 
-	    switch (type.toLowerCase()) {
-	        case validTypes[0]:
-	            oldValue = await client.botSettings.get(client.botSettingID, "currencyName", "Yen");
-	            await client.botSettings.set(client.botSettingID, "currencyName", name);
-	            break;
-	        case validTypes[1]:
-	            oldValue = await client.botSettings.get(client.botSettingID, "currencySymbol", "💴");
-	            await client.botSettings.set(client.botSettingID, "currencySymbol", name);
-	            break;
-	    }
+	    switch (type) {
+            case validEnum.ACTIVITY:
+                break;
+            case validEnum.ACTIVITYTYPE:
+                break;
+            case validEnum.CURRENCYNAME:
+                oldValue = await client.botSettingsProvider.get("1", "CurrencyName", "Yen");
+                await client.botSettingsProvider.set("1", "CurrencyName", name);
+                break;
+            case validEnum.CURRENCYSYMBOL:
+                oldValue = await client.botSettingsProvider.get("1", "CurrencySymbol", "💴");
+                await client.botSettingsProvider.set("1", "CurrencySymbol", name);
+                break;
+            case validEnum.DAILYAMOUNT:
+                break;
+            case validEnum.DAILYENABLED:
+                break;
+            default:
+                throw new Error("Invalid botconfig provided!");
+        }
 
-	    await this._money.UpdateCurrencyNameAndSymbol(client);
+	    await Gambling.UpdateCurrencyNameAndSymbol(client);
 
 	    return message.channel.send({
 	        embeds: [new MessageEmbed()

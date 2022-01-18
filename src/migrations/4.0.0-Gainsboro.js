@@ -14,6 +14,8 @@ export default new Migration({
     version: "4.0.0-Gainsboro",
     migration: async (db) => {
 
+        // This migration moves most data from MongoDB to MySQL
+
         let changes = 0;
 
         const migration = await _MigrationsModel.find({}).exec();
@@ -28,7 +30,7 @@ export default new Migration({
         const { activity, activityType, currencyName, currencySymbol, dailyAmount, dailyEnabled } = (await botModel.findOne({}).exec()).settings;
         changes++;
         await db.query("INSERT INTO BotSettings (Id, Activity, ActivityType, CurrencyName, CurrencySymbol, DailyAmount, DailyEnabled) VALUES (?, ?, ?, ?, ?, ?, ?)",
-            [1, activity, activityType, currencyName, Number(currencySymbol.codePointAt(0)), dailyAmount, dailyEnabled],
+            [1, activity || null, activityType || null, currencyName, Number(currencySymbol.codePointAt(0)), dailyAmount, dailyEnabled],
         );
 
         const guilds = await guildsModel.find({}).exec();

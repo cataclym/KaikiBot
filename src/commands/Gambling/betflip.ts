@@ -1,23 +1,11 @@
 import { Message, MessageEmbed } from "discord.js";
 import { KaikiCommand } from "kaiki";
-import { IMoneyService } from "../../lib/money/IMoneyService";
-import { MongoMoney } from "../../lib/money/MongoMoneyService";
 import images from "../../../data/images.json";
 
 type sides = "tails" | "heads";
 
-const coinArgs: {[index: string]: sides } = {
-    "heads": "heads",
-    "head": "heads",
-    "h": "heads",
-    "tails": "tails",
-    "tail": "tails",
-    "t": "tails",
-};
-
 export default class BetflipCommands extends KaikiCommand {
-    private readonly _money: IMoneyService;
-
+    private readonly coinArgs: {[index: string]: sides };
     constructor() {
         super("betflip", {
             aliases: ["betflip", "bf"],
@@ -34,22 +22,29 @@ export default class BetflipCommands extends KaikiCommand {
             },
             {
                 id: "coin",
-                type: (_m, p) => coinArgs[p.toLowerCase()],
+                type: (_m, p) => this.coinArgs[p.toLowerCase()],
                 otherwise: (m) => ({ embeds: [new MessageEmbed()
                     .setDescription("Please select heads or tails!")
                     .withErrorColor(m)] }),
             }],
         });
-        this._money = MongoMoney;
+        this.coinArgs = {
+            "heads": "heads",
+            "head": "heads",
+            "h": "heads",
+            "tails": "tails",
+            "tail": "tails",
+            "t": "tails",
+        };
     }
 
     public async exec(message: Message, { number, coin }: { number: number, coin: sides }): Promise<Message> {
-        const success = await this._money.TryTake(message.author.id, number);
+        const success = await this.client.money.TryTake(message.author.id, number);
 
         if (!success) {
             return await message.channel.send({
                 embeds: [new MessageEmbed()
-                    .setDescription(`You don't have enough ${this._money.currencySymbol}`)
+                    .setDescription(`You don't have enough ${this.client.money.currencySymbol}`)
                     .withErrorColor(message)],
             });
         }
@@ -65,11 +60,11 @@ export default class BetflipCommands extends KaikiCommand {
 
         if (coin === coinFlipped) {
             const amountWon = Math.round(number * 1.95);
-            await this._money.Add(message.author.id, amountWon);
+            await this.client.money.Add(message.author.id, amountWon);
 
             return message.channel.send({
                 embeds: [emb
-                    .setDescription(`You won ${amountWon} ${this._money.currencySymbol}!!`)
+                    .setDescription(`You won ${amountWon} ${this.client.money.currencySymbol}!!`)
                     .withOkColor(message),
                 ],
             });

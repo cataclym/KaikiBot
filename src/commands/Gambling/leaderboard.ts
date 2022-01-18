@@ -1,12 +1,9 @@
 import { Message, MessageEmbed } from "discord.js";
 import { KaikiCommand } from "kaiki";
 import { moneyModel } from "../../struct/db/models";
-import { MongoMoney } from "../../lib/money/MongoMoneyService";
-import { IMoneyService } from "../../lib/money/IMoneyService";
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
 
 export default class LeaderboardCommand extends KaikiCommand {
-    private readonly _money: IMoneyService;
     constructor() {
         super("leaderboard", {
             aliases: ["leaderboard", "lb"],
@@ -14,11 +11,10 @@ export default class LeaderboardCommand extends KaikiCommand {
             usage: "",
             channel: "guild",
         });
-        this._money = MongoMoney;
     }
 
     public async exec(message: Message): Promise<Message> {
-        const { currencySymbol } = this._money,
+        const { currencySymbol } = this.client.money,
             guildOnlyEntries = (await moneyModel.find({}))
                 .filter(e => message.guild?.members.cache.get(e.id))
                 .sort((e, o) => o.amount - e.amount)

@@ -1,23 +1,25 @@
-import { Connection, createConnection } from "mysql2/promise";
+import { createConnection } from "mysql2/promise";
 import { ActivityType } from "discord.js";
+import { MikroORM } from "@mikro-orm/core";
+import config from "../../mikro-orm.config";
 
 export class Database {
-    public connection: Connection;
     async init() {
-        await createConnection({
+        const connection = await createConnection({
             user: process.env.MYSQL_USER || "root",
             password: process.env.MYSQL_PASS || "root",
             host: "127.0.0.1",
             port: 3306,
             database: "kaikidb",
         })
-            .then(c => {
-                this.connection = c;
-            })
             .catch((err) => {
                 throw err;
             });
-        return this.connection;
+
+        return {
+            connection: connection,
+            orm: await MikroORM.init(config),
+        };
     }
 }
 

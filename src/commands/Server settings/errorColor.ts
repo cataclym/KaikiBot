@@ -23,7 +23,7 @@ export default class ErrorColorConfigCommand extends KaikiCommand {
 
         if (typeof value === "number") value = value.toString(16);
 
-        await this.client.guildSettings.set(guildID, "errorColor", value);
+        await this.client.guildProvider.set(guildID, "ErrorColor", value);
 
         return message.channel.send({
             embeds: [new MessageEmbed({

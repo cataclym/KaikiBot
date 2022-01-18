@@ -82,7 +82,8 @@ export function trim(str: string, max: number): string {
 /**
  * Create codeblocks ready to be sent to discord.
  * @param language
- 		| "asciidoc"
+        | "ansi"
+        | "asciidoc"
         | "autohotkey"
         | "bash"
         | "coffeescript"
@@ -100,13 +101,14 @@ export function trim(str: string, max: number): string {
         | "py"
         | "tex"
         | "xl"
-		| "xml"
+		    | "xml"
  * @param code
  string
  */
 export async function codeblock(
     code: string,
     language?:
+        | "ansi"
         | "asciidoc"
         | "autohotkey"
         | "bash"

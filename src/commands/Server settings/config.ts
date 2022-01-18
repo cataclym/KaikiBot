@@ -77,7 +77,7 @@ export default class ConfigCommand extends KaikiCommand {
                     toggledTernary(goodbye.enabled), true)
                 .addField("\u200B", "\u200B", true)
                 .addField("Sticky roles",
-                    toggledTernary(await this.client.guildSettings.get(message.guild!.id, "stickyRoles", false)), false),
+                    toggledTernary(await this.client.guildProvider.get(message.guild!.id, "StickyRoles", false)), false),
             welcomeEmbed,
             goodbyeEmbed,
         ];

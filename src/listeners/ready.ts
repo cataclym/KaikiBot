@@ -19,6 +19,7 @@ export default class ReadyListener extends Listener {
 
     public async exec(): Promise<void> {
 
+        // TODO: Change method
         // Find all guilds that have dad-bot enabled
         const enabled = await guildsModel.find({ "settings.dadBot.enabled": true }).exec();
 
@@ -52,22 +53,21 @@ export default class ReadyListener extends Listener {
                 setTimeout(async () => emoteDataBaseService(this.client)
                     .then(i => {
                         if (i > 0) {
-                            logger.info(`dataBaseService | ${chalk.green(i)} new emote(s) added!\n`);
+                            logger.info(`dataBaseService | ${chalk.green(i)} new emote(s) added!`);
                         }
                     }), 2000);
                 logger.info("birthdayService | Service initiated");
             });
 
-        logger.info(`dataBaseService | ${chalk.green(await guildsModel.countDocuments())} guilds registered in DB.\n`);
+        logger.info(`dataBaseService | ${chalk.green(await guildsModel.countDocuments())} guilds registered in DB.`);
 
         // Let bot owner know when bot goes online.
-        if (["Tsukihi Araragi#3589", "Kaiki Deishū#9185"].includes(this.client.user?.tag ?? "") && process.env.OWNER) {
+        if (this.client.user && ["Tsukihi Araragi#3589", "Kaiki Deishū#9185"].includes(this.client.user.tag) && process.env.OWNER) {
             await (this.client.users.cache.get(process.env.OWNER) ?? await this.client.users.fetch(process.env.OWNER, { cache: true }))
-                .send({
-                    embeds:
-            [new MessageEmbed()
-                .setDescription("Bot is online.")
-                .withOkColor()],
+                .send({ embeds:
+                    [new MessageEmbed()
+                        .setDescription("Bot is online.")
+                        .withOkColor()],
                 });
         }
 

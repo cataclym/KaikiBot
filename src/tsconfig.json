@@ -13,17 +13,20 @@
         "outDir": "../dist/",
         "baseUrl": "./",
         "paths": {
-            "*": ["*", "../node_modules/*"],
+            "*": ["*", "../node_modules/*"]
         },
         "types": [
             "node",
-            "reflect-metadata",
+            "reflect-metadata"
         ],
         "declaration": false,
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
         "typeRoots": ["types.ts", "../node_modules/@types", "../local_modules"],
-        "lib": ["es2019", "dom"],
+        "lib": ["es2019",
+          "dom",
+          "es2020.bigint"
+        ]
     },
     "references": [{ "path": "../" }],
     "include": ["./**/*", "jest.config.js", "**/*.ts", "types.ts", "./extensions/loglevel.d.ts"],

@@ -1,9 +1,9 @@
-import { Entity, Property } from "@mikro-orm/core";
+import { Entity, PrimaryKey, Property } from "@mikro-orm/core";
 
 @Entity({ collection: "CurrencyTransactions" })
 export class CurrencyTransactions {
 
-  @Property({ columnType: "bigint", fieldName: "Id", nullable: true, defaultRaw: "NULL" })
+  @PrimaryKey({ columnType: "bigint", fieldName: "Id", nullable: true, defaultRaw: "NULL" })
       Id?: string;
 
   @Property({ columnType: "bigint", fieldName: "Amount", nullable: true, defaultRaw: "NULL" })

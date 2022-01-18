@@ -1,5 +1,3 @@
-import { KaikiClient } from "kaiki";
-
 export interface IMoneyService {
     currencyName: string;
     currencySymbol: string;
@@ -9,7 +7,7 @@ export interface IMoneyService {
      * @param id Id of the user
      * @returns Current balance
      */
-    Get(id: string): Promise<number>;
+    Get(id: string): Promise<bigint>;
 
     /**
      * Add money to the specified user
@@ -17,7 +15,7 @@ export interface IMoneyService {
      * @param amount Amount to add
      * @returns User's updated balance
      */
-    Add(id: string, amount: number): Promise<number>;
+    Add(id: string, amount: number): Promise<bigint>;
 
     /**
      * Try to reduce user's balance by the given amount
@@ -36,11 +34,4 @@ export interface IMoneyService {
     //  * @returns User's updated balance
     //  */
     // Reduce(id: string, amount: number): Promise<bool>;
-
-    /**
-     * Updates the bot's currency symbol and names, from the database.
-     * @param client Bot client
-     * @returns void
-     */
-    UpdateCurrencyNameAndSymbol(client: KaikiClient): Promise<void>
 }

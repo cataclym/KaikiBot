@@ -1,19 +1,24 @@
-import { Entity, ManyToOne, PrimaryKey, Property } from "@mikro-orm/core";
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Guilds } from "./Guilds";
 
-@Entity({ collection: "EmojiReactions" })
+@Entity()
 export class EmojiReactions {
 
-  @PrimaryKey({ columnType: "bigint", fieldName: "Id" })
-      Id!: string;
+    @PrimaryGeneratedColumn({ type: "bigint" })
+        Id: bigint;
 
-  @Property({ columnType: "bigint", fieldName: "EmojiId" })
-      EmojiId!: string;
+    @Column({ type: "bigint" })
+        EmojiId: bigint;
 
-  @Property({ fieldName: "TriggerString", length: 255 })
-      TriggerString!: string;
+    @Column("varchar", { length: 255 })
+        TriggerString: string;
 
-  @ManyToOne({ entity: () => Guilds, fieldName: "GuildId", onUpdateIntegrity: "cascade", onDelete: "cascade", index: "GuildId" })
-      GuildId!: Guilds;
+    // @ManyToOne({ entity: () => Guilds, fieldName: "GuildId", onUpdateIntegrity: "cascade", onDelete: "cascade", index: "GuildId" })
+    @ManyToOne(type => EmojiReactions, emojiReactions => emojiReactions.children)
+    // GuildId!: Guilds;
+        parent: Guilds;
 
+    @OneToMany(type => EmojiReactions, emojiReactions => emojiReactions.parent)
+        children: EmojiReactions[];
 }
+

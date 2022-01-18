@@ -1,11 +1,7 @@
 import { Message, MessageEmbed } from "discord.js";
 import { KaikiCommand } from "kaiki";
-import { IMoneyService } from "../../lib/money/IMoneyService";
-import { MongoMoney } from "../../lib/money/MongoMoneyService";
 
 export default class BetRollCommand extends KaikiCommand {
-    private readonly _money: IMoneyService;
-
     constructor() {
         super("betroll", {
             aliases: ["betroll", "br"],
@@ -21,16 +17,15 @@ export default class BetRollCommand extends KaikiCommand {
                 }),
             }],
         });
-        this._money = MongoMoney;
     }
 
     public async exec(message: Message, { number }: { number: number }): Promise<Message> {
-        const success = await this._money.TryTake(message.author.id, number);
+        const success = await this.client.money.TryTake(message.author.id, number);
 
         if (!success) {
             return await message.channel.send({
                 embeds: [new MessageEmbed()
-                    .setDescription(`You don't have enough ${this._money.currencySymbol}`)
+                    .setDescription(`You don't have enough ${this.client.money.currencySymbol}`)
                     .withErrorColor(message)],
             });
         }
@@ -50,11 +45,11 @@ export default class BetRollCommand extends KaikiCommand {
 
             const winnings = Math.round(number * 2);
 
-            await this._money.Add(message.author.id, winnings);
+            await this.client.money.Add(message.author.id, winnings);
 
             return message.channel.send({
                 embeds: [new MessageEmbed()
-                    .setDescription(`🎲 You rolled \`${roll}\`, and won ${winnings} ${this._money.currencySymbol}, for rolling above 66`)
+                    .setDescription(`🎲 You rolled \`${roll}\`, and won ${winnings} ${this.client.money.currencySymbol}, for rolling above 66`)
                     .withOkColor(message)],
             });
         }
@@ -63,11 +58,11 @@ export default class BetRollCommand extends KaikiCommand {
 
             const winnings = Math.round(number * 4);
 
-            await this._money.Add(message.author.id, winnings);
+            await this.client.money.Add(message.author.id, winnings);
 
             return message.channel.send({
                 embeds: [new MessageEmbed()
-                    .setDescription(`🎲 You rolled \`${roll}\`, and won ${winnings} ${this._money.currencySymbol}, for rolling above 90`)
+                    .setDescription(`🎲 You rolled \`${roll}\`, and won ${winnings} ${this.client.money.currencySymbol}, for rolling above 90`)
                     .withOkColor(message)],
             });
         }
@@ -76,11 +71,11 @@ export default class BetRollCommand extends KaikiCommand {
 
             const winnings = Math.round(number * 10);
 
-            await this._money.Add(message.author.id, winnings);
+            await this.client.money.Add(message.author.id, winnings);
 
             return message.channel.send({
                 embeds: [new MessageEmbed()
-                    .setDescription(`🎲 You rolled \`${roll}\`!!! You won ${winnings} ${this._money.currencySymbol}, for rolling above 99`)
+                    .setDescription(`🎲 You rolled \`${roll}\`!!! You won ${winnings} ${this.client.money.currencySymbol}, for rolling above 99`)
                     .withOkColor(message)],
             });
         }

@@ -18,7 +18,7 @@ export default class ToggleStickyRolesCommand extends KaikiCommand {
             db = await getGuildDocument(guild.id),
             bool = !db.settings.stickyRoles;
 
-        await this.client.guildSettings.set(message.guild!.id, "stickyRoles", bool);
+        await this.client.guildProvider.set(message.guild!.id, "StickyRoles", bool);
 
         db.settings.stickyRoles = bool;
         db.markModified("settings.stickyRoles");

@@ -1,11 +1,7 @@
 import { Message, MessageEmbed, User } from "discord.js";
-import { IMoneyService } from "../../lib/money/IMoneyService";
-import { MongoMoney } from "../../lib/money/MongoMoneyService";
 import { KaikiCommand } from "kaiki";
 
-
 export default class cash extends KaikiCommand {
-    private readonly _money: IMoneyService;
     constructor() {
     	super("cash", {
     		aliases: ["cash", "currency", "cur", "$", "¥", "£", "€"],
@@ -19,14 +15,12 @@ export default class cash extends KaikiCommand {
     			},
     		],
     	});
-
-    	this._money = MongoMoney;
     }
 
     public async exec(msg: Message, { user }: { user: User }): Promise<void> {
-    	const moneh = Math.round(await this._money.Get(user.id));
+    	const moneh = await this.client.money.Get(user.id);
     	await msg.channel.send({ embeds: [new MessageEmbed()
-    		.setDescription(`${user.username} has ${moneh} ${this._money.currencyName} ${this._money.currencySymbol}`)
+    		.setDescription(`${user.username} has ${moneh} ${this.client.money.currencyName} ${this.client.money.currencySymbol}`)
     		.withOkColor(msg)],
     	});
     }
