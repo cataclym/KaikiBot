@@ -1,10 +1,10 @@
-import { inject, injectable } from "inversify";
-import { KaikiClient } from "./kaikiClient";
-import MongoDb from "./db/mongoDb";
-import { TYPES } from "./types";
-import logger from "loglevel";
 import chalk from "chalk";
 import { execSync } from "child_process";
+import { inject, injectable } from "inversify";
+import logger from "loglevel";
+import MongoDb from "./db/mongoDb";
+import { KaikiClient } from "./kaikiClient";
+import { TYPES } from "./types";
 
 @injectable()
 export class Bot {

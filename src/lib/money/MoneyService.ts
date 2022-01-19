@@ -1,19 +1,16 @@
+import { Connection } from "mongoose";
 import { moneyModel } from "../../struct/db/models";
-import { IMoneyService } from "./IMoneyService";
+import MySQLProvider from "../../struct/db/MySQLProvider";
 import { BotSettings } from "../../struct/entities/BotSettings";
 import { DiscordUsers } from "../../struct/entities/DiscordUsers";
-import { MikroORM } from "@mikro-orm/core";
-import { MySqlDriver } from "@mikro-orm/mysql";
-import MySQLProvider from "../../struct/db/MySQLProvider";
+import { IMoneyService } from "./IMoneyService";
 
 export class MoneyService implements IMoneyService {
     currencyName: string;
     currencySymbol: string;
     private dailyProvider: MySQLProvider;
-    private _orm: MikroORM<MySqlDriver>;
 
-    constructor(orm: MikroORM<MySqlDriver>) {
-        this._orm = orm;
+    constructor(connection: Connection) {
         (async () => {
             const repo = await this._orm.em.findOne(BotSettings, { Id: "1" });
             this.currencyName = repo!.CurrencyName;

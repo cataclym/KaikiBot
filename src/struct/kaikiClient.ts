@@ -1,17 +1,15 @@
+import chalk from "chalk";
 import { AkairoClient, CommandHandler, InhibitorHandler, ListenerHandler } from "discord-akairo";
 import { Snowflake } from "discord-api-types";
 import { Intents } from "discord.js";
-import { join } from "path";
+import { KaikiClient as ExternalKaikiClient } from "kaiki";
 import logger from "loglevel";
-import chalk from "chalk";
+import { Connection as MySQLConnection } from "mysql2/promise";
+import { join } from "path";
+import { MoneyService } from "../lib/money/MoneyService";
+import { Migrations } from "../migrations/migrations";
 import { Database } from "./db/MySQL";
 import MySQLProvider from "./db/MySQLProvider";
-import { Connection as MySQLConnection } from "mysql2/promise";
-import { Migrations } from "../migrations/migrations";
-import { MikroORM } from "@mikro-orm/core";
-import { KaikiClient as ExternalKaikiClient } from "kaiki";
-import { MoneyService } from "../lib/money/MoneyService";
-import { MySqlDriver } from "@mikro-orm/mysql";
 
 export class KaikiClient extends AkairoClient implements ExternalKaikiClient {
     public commandHandler: CommandHandler;
@@ -19,8 +17,7 @@ export class KaikiClient extends AkairoClient implements ExternalKaikiClient {
     public listenerHandler: ListenerHandler;
     public botSettingsProvider: MySQLProvider;
     public guildProvider: MySQLProvider;
-    public connection: MySQLConnection;
-    public orm: MikroORM<MySqlDriver>;
+    public mySQLConnection: MySQLConnection;
     public money: MoneyService;
 
     constructor() {
@@ -50,23 +47,22 @@ export class KaikiClient extends AkairoClient implements ExternalKaikiClient {
 
         new Database().init()
             .then(r => {
-                this.connection = r.connection;
-                this.botSettingsProvider = new MySQLProvider(this.connection, "BotSettings", { idColumn: "Id" });
-                this.guildProvider = new MySQLProvider(this.connection, "Guilds", { idColumn: "Id" });
+                this.mySQLConnection = r.connection;
+                this.botSettingsProvider = new MySQLProvider(this.mySQLConnection, "BotSettings", { idColumn: "Id" });
+                this.guildProvider = new MySQLProvider(this.mySQLConnection, "Guilds", { idColumn: "Id" });
 
                 this.botSettingsProvider.init().then(() => logger.info(`SQL BotSettings provider - ${chalk.green("READY")}`));
                 this.guildProvider.init().then(() => logger.info(`SQL Guild provider - ${chalk.green("READY")}`));
 
-                this.orm = r.orm;
-                this.money = new MoneyService(this.orm);
+                this.money = new MoneyService();
 
-                new Migrations(this.connection)
+                new Migrations(this.mySQLConnection)
                     .runAllMigrations()
                     .then((res) => {
                         if (res) {
                             logger.info(`
 ${(chalk.greenBright)("|----------------------------------------------------------|")}
-migrationService | Migrations have been checked and executed
+migrationService | Migrations have successfully finished
 migrationService | Inserted ${(chalk.green)(res)} records into kaikidb
 ${(chalk.greenBright)("|----------------------------------------------------------|")}`);
                         }
