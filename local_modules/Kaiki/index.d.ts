@@ -9,8 +9,8 @@ import {
 } from "discord-akairo";
 import MySQLProvider from "../../src/struct/db/MySQLProvider";
 import { Connection as MySQLConnection } from "mysql2/promise";
-import { IDatabaseDriver, MikroORM, Connection } from "@mikro-orm/core";
 import { MoneyService } from "../../src/lib/money/MoneyService";
+import { PrismaClient } from "@prisma/client";
 
 type KaikiClient = {
 	commandHandler: CommandHandler;
@@ -19,7 +19,7 @@ type KaikiClient = {
 	botSettingsProvider: MySQLProvider;
 	guildProvider: MySQLProvider;
 	connection: MySQLConnection;
-	orm: MikroORM<IDatabaseDriver<Connection>>
+	orm: PrismaClient;
 	money: MoneyService;
 } & AkairoClient;
 

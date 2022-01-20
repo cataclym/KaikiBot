@@ -3,7 +3,7 @@ import { execSync } from "child_process";
 import { inject, injectable } from "inversify";
 import logger from "loglevel";
 import MongoDb from "./db/mongoDb";
-import { KaikiClient } from "./kaikiClient";
+import { KaikiClient } from "./KaikiClient";
 import { TYPES } from "./types";
 
 @injectable()

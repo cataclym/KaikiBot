@@ -3,7 +3,7 @@ import { Message, MessageEmbed } from "discord.js";
 import { noArgGeneric } from "../../lib/Embeds";
 import { codeblock } from "../../lib/Util";
 import { KaikiCommand } from "kaiki";
-import { BotConfig } from "../../struct/db/MySQL";
+import { BotConfig } from "../../struct/db/Database";
 import Gambling from "../../lib/gambling/gambling";
 
 enum validEnum {
@@ -14,6 +14,7 @@ enum validEnum {
 	DAILYENABLED = "dailyEnabled",
 	DAILYAMOUNT = "dailyAmount"
 }
+
 type validTypes = "activity"
 	| "activityType"
 	|	"currencyname"

@@ -8,7 +8,7 @@ datasource db {
 }
 
 model BlockedCategories {
-  Id             Int    @id @default(autoincrement())
+  Id             Int @id @default(autoincrement())
   GuildId        BigInt
   CategoryTarget BigInt
   Guilds         Guilds @relation(fields: [GuildId], references: [Id], onDelete: Cascade, map: "BlockedCategories_ibfk_1")
@@ -17,7 +17,7 @@ model BlockedCategories {
 }
 
 model BotSettings {
-  Id             Int                       @unique
+  Id             SmallInt                  @db.SmallInt(1)
   Activity       String?                   @db.VarChar(255)
   ActivityType   BotSettings_ActivityType?
   CurrencyName   String                    @default("Yen") @db.VarChar(255)
@@ -94,8 +94,8 @@ model Guilds {
   Prefix            String              @db.VarChar(255)
   Anniversary       Boolean             @default(false)
   DadBot            Boolean             @default(true)
-  ErrorColor        BigInt              @default(16711680)
-  OkColor           BigInt              @default(65280)
+  ErrorColor        BigInt
+  OkColor           BigInt
   ExcludeRole       BigInt?
   WelcomeChannel    BigInt?
   ByeChannel        BigInt?

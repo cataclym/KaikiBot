@@ -1,5 +1,6 @@
 import { ActivityType } from "discord.js";
 import * as mysql2 from "mysql2/promise";
+import { PrismaClient } from "@prisma/client";
 
 export class Database {
     private static _config: mysql2.ConnectionOptions = {
@@ -8,14 +9,26 @@ export class Database {
         host: "127.0.0.1",
         port: 3306,
         database: "kaikidb",
+    };
+    public orm: PrismaClient;
+    public connection: mysql2.Connection;
+
+    constructor() {
+        Database.init()
+            .then((r) => {
+                this.orm = r.orm;
+                this.connection = r.connection;
+            });
     }
-    async init() {
+
+    private static async init() {
         const connection = await mysql2.createConnection(Database._config)
             .catch((err) => {
                 throw err;
             });
 
         return {
+            orm: new PrismaClient(),
             connection: connection,
         };
     }
