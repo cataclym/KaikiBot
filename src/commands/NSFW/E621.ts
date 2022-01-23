@@ -1,9 +1,8 @@
 import { Message, MessageEmbed } from "discord.js";
-import { errorMessage } from "../../lib/Embeds";
-import { trim } from "../../lib/Util";
 import { DapiGrabber, DapiSearchType } from "./hentaiService";
 import { KaikiCommand } from "kaiki";
-
+import KaikiEmbeds from "../../lib/KaikiEmbeds";
+import Utility from "../../lib/Util";
 
 export default class E621Command extends KaikiCommand {
     constructor() {
@@ -24,8 +23,8 @@ export default class E621Command extends KaikiCommand {
         if (post) {
 
             const emb = new MessageEmbed()
-                .setAuthor(post.tags.artist.join(", "))
-                .setDescription(trim(`**Tags**: ${post.tags.general.join(",")}`, 2048))
+                .setAuthor({ name: post.tags.artist.join(", ") })
+                .setDescription(Utility.trim(`**Tags**: ${post.tags.general.join(",")}`, 2048))
                 .setImage(post.file.url || post.preview.url || post.sample.url || post.sources[0])
                 .withOkColor(message);
 
@@ -35,7 +34,7 @@ export default class E621Command extends KaikiCommand {
         }
 
         else {
-            return message.channel.send({ embeds: [await errorMessage(message, "No data received")] });
+            return message.channel.send({ embeds: [await KaikiEmbeds.errorMessage(message, "No data received")] });
         }
     }
 }

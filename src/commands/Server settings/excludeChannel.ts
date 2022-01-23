@@ -45,8 +45,7 @@ export default class ExcludeDadbotChannelCommand extends KaikiCommand {
 
         const excludedChannels: Channel[] = [], enabledChannels: Channel[] = [];
 
-        for (const [id, channel] of channels) {
-
+        for (const [, channel] of channels) {
             const dadBot = guildDb.settings.dadBot;
             if (dadBot.excludedChannels[channel.id]) {
                 delete guildDb.settings.dadBot.excludedChannels[channel.id];

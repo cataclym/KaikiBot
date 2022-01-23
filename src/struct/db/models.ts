@@ -1,5 +1,5 @@
 import { model, Schema } from "mongoose";
-import { errorColor, okColor } from "../../lib/Util";
+import Utility from "../../lib/Util";
 import {
     IBlacklist,
     IBot,
@@ -43,8 +43,8 @@ export const guildSchema = new Schema({
                 enabled: false,
                 excludedChannels: {},
             },
-            errorColor: errorColor,
-            okColor: okColor,
+            errorColor: Utility.errorColor,
+            okColor: Utility.okColor,
             excludeRole: "Dadbot-excluded",
             welcome: {
                 enabled: false,

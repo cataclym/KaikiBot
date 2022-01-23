@@ -1,6 +1,6 @@
 import { Channel, Collection, GuildChannel, Message, MessageEmbed, Permissions, ThreadChannel } from "discord.js";
-import { noArgGeneric } from "../../lib/Embeds";
 import { KaikiCommand } from "kaiki";
+import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
 export default class DeleteChannelCommand extends KaikiCommand {
     constructor() {
@@ -15,7 +15,7 @@ export default class DeleteChannelCommand extends KaikiCommand {
                 id: "channels",
                 type: "channels",
                 match: "separate",
-                otherwise: (m: Message) => ({ embeds: [noArgGeneric(m)] }),
+                otherwise: (m: Message) => ({ embeds: [KaikiEmbeds.genericArgumentError(m)] }),
             }],
         });
     }

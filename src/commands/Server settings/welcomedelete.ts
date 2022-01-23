@@ -1,8 +1,7 @@
 import { Guild, Message, MessageEmbed, Permissions } from "discord.js";
 import { getGuildDocument } from "../../struct/documentMethods";
 import { KaikiCommand } from "kaiki";
-
-import { noArgGeneric } from "../../lib/Embeds";
+import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
 export default class WelcomeDeleteCommand extends KaikiCommand {
     constructor() {
@@ -15,7 +14,7 @@ export default class WelcomeDeleteCommand extends KaikiCommand {
             args: [{
                 id: "time",
                 type: "number",
-                otherwise: (m) => ({ embeds: [noArgGeneric(m)] }),
+                otherwise: (m) => ({ embeds: [KaikiEmbeds.genericArgumentError(m)] }),
             }],
         });
     }

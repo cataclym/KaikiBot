@@ -2,7 +2,7 @@ import { Message, MessageEmbed } from "discord.js";
 import { KaikiCommand } from "kaiki";
 import { dailyClaimsCache } from "../../cache/cache";
 import { getBotDocument } from "../../struct/documentMethods";
-import { errorMessage } from "../../lib/Embeds";
+import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
 export default class ClaimDailyCommand extends KaikiCommand {
     constructor() {
@@ -18,7 +18,7 @@ export default class ClaimDailyCommand extends KaikiCommand {
         const doc = await getBotDocument();
         const isEnabled = doc.settings.dailyEnabled;
 
-        if (!isEnabled) return message.channel.send({ embeds: [await errorMessage(message, "A daily amount has not been set by the bot owner!")] });
+        if (!isEnabled) return message.channel.send({ embeds: [await KaikiEmbeds.errorMessage(message, "A daily amount has not been set by the bot owner!")] });
 
         const amount = doc.settings.dailyAmount;
 

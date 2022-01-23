@@ -27,7 +27,7 @@ export default class SimpCommand extends KaikiCommand {
             // Declare a base size of the font
             let fontSize = 60;
             do {
-                // Assign the font to the context and decrement it so it can be measured again
+                // Assign the font to the context and decrement it. Then it can be measured again
                 ctx.font = `${fontSize -= 2}px Latin Modern Sans`;
                 // Compare pixel width of the text to the canvas minus the approximate avatar size
             } while (ctx.measureText(text).width > canvas.width / 2);

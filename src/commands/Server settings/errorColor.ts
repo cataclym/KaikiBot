@@ -1,8 +1,8 @@
 import { Argument } from "discord-akairo";
 import { Guild, Message, MessageEmbed } from "discord.js";
 import { hexColorTable } from "../../lib/Color";
-import { noArgGeneric } from "../../lib/Embeds";
 import { KaikiCommand } from "kaiki";
+import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
 export default class ErrorColorConfigCommand extends KaikiCommand {
     constructor() {
@@ -13,7 +13,7 @@ export default class ErrorColorConfigCommand extends KaikiCommand {
                 {
                     id: "value",
                     type: Argument.union("color", (m: Message, content: string) => hexColorTable[content]),
-                    otherwise: (m: Message) => ({ embeds: [noArgGeneric(m)] }),
+                    otherwise: (m: Message) => ({ embeds: [KaikiEmbeds.genericArgumentError(m)] }),
                 },
             ],
         });

@@ -1,8 +1,7 @@
 import { Guild, Message, MessageEmbed } from "discord.js";
-import { Exclude } from "../../lib/Embeds";
 import { getGuildDocument } from "../../struct/documentMethods";
 import { KaikiCommand } from "kaiki";
-
+import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
 export default class ExcludeCommand extends KaikiCommand {
     constructor() {
@@ -44,14 +43,14 @@ export default class ExcludeCommand extends KaikiCommand {
 
         if (!message.member?.roles.cache.find((r) => r === excludedRole) && excludedRole) {
             await message.member?.roles.add(excludedRole);
-            embeds.push(Exclude.addedRoleEmbed(db.settings.excludeRole)
+            embeds.push(KaikiEmbeds.addedRoleEmbed(db.settings.excludeRole)
                 .withOkColor(message));
             return message.channel.send({ embeds: embeds });
         }
 
         if (message.member?.roles.cache.find((r) => r === excludedRole) && excludedRole) {
             await message.member?.roles.remove(excludedRole);
-            embeds.push(Exclude.removedRoleEmbed(db.settings.excludeRole)
+            embeds.push(KaikiEmbeds.removedRoleEmbed(db.settings.excludeRole)
                 .withOkColor(message));
             return message.channel.send({ embeds: embeds });
         }

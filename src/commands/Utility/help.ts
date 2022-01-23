@@ -59,21 +59,25 @@ export default class HelpCommand extends KaikiCommand {
 
         embed.setTitle(`${message.client.user?.username} help page`)
             .setDescription(`Current prefix: \`${prefix}\``)
-            .addFields([
-                {
-                    name: "📋 Command list",
-                    value: `\`${prefix}cmds\` returns a complete list of command categories.`,
-                    inline: true,
-                },
-                {
-                    name: "🔍 Command Info",
-                    value: `\`${prefix}help [command]\` to get more help. Example: \`${prefix}help ping\``,
-                    inline: true,
-                },
-            ])
-            .setAuthor(`${name} v${version}-${execSync("git rev-parse --short HEAD").toString()}`,
-                message.author.displayAvatarURL({ dynamic: true }), repository.url)
-            .setFooter("Made by Cata <3", AvUrl);
+            .addFields([{
+                name: "📋 Command list",
+                value: `\`${prefix}cmds\` returns a complete list of command categories.`,
+                inline: true,
+            },
+            {
+                name: "🔍 Command Info",
+                value: `\`${prefix}help [command]\` to get more help. Example: \`${prefix}help ping\``,
+                inline: true,
+            }])
+            .setAuthor({
+                name: `${name} v${version}-${execSync("git rev-parse --short HEAD").toString()}`,
+                iconURL: message.author.displayAvatarURL({ dynamic: true }),
+                url: repository.url,
+            })
+            .setFooter({
+                text: "Made by Cata <3",
+                iconURL: AvUrl,
+            });
 
         return message.channel.send({ embeds: [embed] });
     }

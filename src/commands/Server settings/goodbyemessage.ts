@@ -1,9 +1,7 @@
 import { PrefixSupplier } from "discord-akairo";
 import { Guild, Message, MessageEmbed, Permissions } from "discord.js";
-import { EmbedFromJson, EmbedJSON } from "../../interfaces/IGreetLeave";
 import { KaikiCommand } from "kaiki";
-
-import { getGuildDocument } from "../../struct/documentMethods";
+import GreetHandler, { JSONToMessageOptions } from "../../lib/GreetHandler";
 
 export default class ByeMessageCommand extends KaikiCommand {
     constructor() {
@@ -21,35 +19,29 @@ export default class ByeMessageCommand extends KaikiCommand {
                         return undefined;
                     }
                 },
-                otherwise: (m) => ({ embeds: [new MessageEmbed()
-                    .setTitle("Error")
-                    .setDescription("Please provide valid json")
-                    .withErrorColor(m)] }),
+                otherwise: (m) => GreetHandler.JSONErrorMessage(m),
             }],
         });
     }
 
-    public async exec(message: Message, { msg }: { msg: EmbedJSON }): Promise<Message> {
+    public async exec(message: Message, { msg }: { msg: unknown | JSONToMessageOptions }): Promise<Message> {
 
-        const guildID = (message.guild as Guild).id,
-            db = await getGuildDocument(guildID);
+        const json = new JSONToMessageOptions(msg);
+        if (!json) return message.channel.send(GreetHandler.JSONErrorMessage(message));
 
-        db.settings.goodbye.embed = new EmbedFromJson(msg);
-        db.markModified("settings.goodbye.embed");
+        const guildID = (message.guild as Guild).id;
 
-        if (!db.settings.goodbye.channel) {
-            db.settings.goodbye.channel = message.channel.id;
-            db.markModified("settings.goodbye.channel");
-        }
-
-        await db.save();
+        const db = await this.client.orm.guilds.update({
+            where: { Id: BigInt(guildID) },
+            data: { ByeMessage: String(json) },
+        });
 
         const prefix = (this.handler.prefix as PrefixSupplier)(message);
         const embed = [new MessageEmbed()
             .setDescription(`New bye message has been set!\n\nTest what the message looks like by typing \`${prefix}byetest\``)
             .withOkColor(message)];
 
-        if (!db.settings.welcome.enabled) {
+        if (!db.ByeChannel) {
             embed.push(new MessageEmbed()
                 .setDescription(`Enable \`goodbye\` messages by typing \`${prefix}goodbye\`.`)
                 .withOkColor(message),

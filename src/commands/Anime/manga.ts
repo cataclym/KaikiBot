@@ -2,9 +2,9 @@ import { Message, MessageEmbed } from "discord.js";
 import fetch from "node-fetch";
 import { KaikiCommand } from "kaiki";
 import { handleError, handleResponse, mangaQuery } from "../../lib/APIs/AnilistGraphQL";
-import { stripHtml, trim } from "../../lib/Util";
-import { noArgGeneric } from "../../lib/Embeds";
 import { IMangaRes } from "../../interfaces/IMangaRes";
+import KaikiEmbeds from "../../lib/KaikiEmbeds";
+import Utility from "../../lib/Util";
 
 export default class MangaCommand extends KaikiCommand {
     constructor() {
@@ -16,7 +16,7 @@ export default class MangaCommand extends KaikiCommand {
                 id: "manga",
                 type: "string",
                 match: "content",
-                otherwise: (m) => ({ embeds: [noArgGeneric(m)] }),
+                otherwise: (m) => ({ embeds: [KaikiEmbeds.genericArgumentError(m)] }),
             }],
         });
     }
@@ -44,34 +44,34 @@ export default class MangaCommand extends KaikiCommand {
         return await fetch(url, options).then(handleResponse)
             .then((response: IMangaRes) => {
 
-                const { coverImage, title, chapters, description, format, status, startDate, genres, endDate, siteUrl } = response.data.Page.media[0];
+                const { coverImage, title, chapters, description, status, startDate, genres, endDate, siteUrl } = response.data.Page.media[0];
                 const monthFormat = new Intl.DateTimeFormat("en-US", { month: "long" });
                 const started = startDate.month ? `${monthFormat.format(startDate.month)} ${startDate.day}, ${startDate.year}` : null;
                 const ended = endDate.month ? `${monthFormat.format(endDate.month)} ${endDate.day}, ${endDate.year}` : null;
-                const aired = started === ended && started !== null && ended !== null
-                    ? started
-                    : `${started} to ${ended}`;
+                const aired =
+                  started && ended
+                      ? started === ended
+                          ? started
+                          : `${started} to ${ended}`
+                      : started || "N/A";
 
                 return message.channel.send({
-                    embeds: [
-                        new MessageEmbed()
-                            .setImage(coverImage.large)
-                            .setTitle(title.english && title.romaji
-                                ? `${title.english} / ${title.romaji}`
-                                : title.english || title.romaji)
-                            .setURL(siteUrl)
-                            .setDescription(stripHtml(trim(description, 2000)))
-                            .withOkColor(message),
-                        new MessageEmbed()
-                            .addFields([
-                                { name: "Format", value: format, inline: true },
-                                { name: "Episodes", value: String(chapters ?? "N/A"), inline: true },
-                                { name: "Aired", value: aired, inline: true },
-                                { name: "Status", value: status, inline: true },
-                                { name: "Genres", value: genres.join(", "), inline: true },
-                            ])
-                            .withOkColor(message),
-                    ],
+                    embeds: [new MessageEmbed()
+                        .setImage(coverImage.large)
+                        .setTitle(title.english && title.romaji
+                            ? `${title.english} / ${title.romaji}`
+                            : title.english || title.romaji)
+                        .setURL(siteUrl)
+                        .setDescription(Utility.stripHtml(Utility.trim(description, 2000)))
+                        .withOkColor(message),
+                    new MessageEmbed()
+                        .addFields([
+                            { name: "Chapters", value: String(chapters ?? "N/A"), inline: true },
+                            { name: "Release period", value: aired, inline: true },
+                            { name: "Status", value: status, inline: true },
+                            { name: "Genres", value: genres.join(", "), inline: false },
+                        ])
+                        .withOkColor(message)],
                 });
             })
             .catch(handleError);

@@ -1,9 +1,9 @@
 import { Argument, Category, Command, PrefixSupplier } from "discord-akairo";
 import { Message, MessageEmbed } from "discord.js";
 import { name, repository, version } from "../../../package.json";
-import { noArgGeneric } from "../../lib/Embeds";
 import { KaikiCommand } from "kaiki";
 import images from "../../../data/images.json";
+import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
 export default class commandsList extends KaikiCommand {
     constructor() {
@@ -27,7 +27,7 @@ export default class commandsList extends KaikiCommand {
                         ? ""
                         : undefined),
                     // Thanks js
-                    otherwise: (msg: Message) => ({ embeds: [noArgGeneric(msg)] }),
+                    otherwise: (msg: Message) => ({ embeds: [KaikiEmbeds.genericArgumentError(msg)] }),
 
                 },
             ],

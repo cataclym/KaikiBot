@@ -1,7 +1,7 @@
 import { Message, MessageEmbed, Role } from "discord.js";
-import { errorMessage, roleArgumentError } from "../../lib/Embeds";
 import { KaikiCommand } from "kaiki";
 import { rolePermissionCheck } from "../../lib/roles";
+import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
 export default class RoleMentionableCommand extends KaikiCommand {
     constructor() {
@@ -16,7 +16,7 @@ export default class RoleMentionableCommand extends KaikiCommand {
                 {
                     id: "role",
                     type: "role",
-                    otherwise: (m) => ({ embeds: [roleArgumentError(m)] }),
+                    otherwise: (m) => ({ embeds: [KaikiEmbeds.roleArgumentError(m)] }),
                 },
             ],
         });
@@ -40,7 +40,7 @@ export default class RoleMentionableCommand extends KaikiCommand {
 
         else {
             return message.channel.send({
-                embeds: [await errorMessage(message, "**Insufficient permissions**\nRole is above you or me in the role hierarchy.")],
+                embeds: [await KaikiEmbeds.errorMessage(message, "**Insufficient permissions**\nRole is above you or me in the role hierarchy.")],
             });
         }
     }

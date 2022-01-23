@@ -1,7 +1,7 @@
 import { GuildMember, Message, MessageActionRow, MessageButton, MessageEmbed } from "discord.js";
-import { errorMessage, noArgGeneric } from "../../lib/Embeds";
 import { KaikiCommand } from "kaiki";
 import TicTacToe from "../../lib/games/TTT";
+import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
 export default class TicTacToeCommand extends KaikiCommand {
     constructor() {
@@ -13,7 +13,7 @@ export default class TicTacToeCommand extends KaikiCommand {
             args: [{
                 id: "player2",
                 type: "member",
-                otherwise: (m: Message) => ({ embeds: [noArgGeneric(m)] }),
+                otherwise: (m: Message) => ({ embeds: [KaikiEmbeds.genericArgumentError(m)] }),
             }],
         });
     }
@@ -21,13 +21,13 @@ export default class TicTacToeCommand extends KaikiCommand {
     public async exec(message: Message, { player2 } : { player2: GuildMember }): Promise<any> {
 
         if (player2.id === message.member!.id || player2.user.bot) {
-            return message.channel.send({ embeds: [await errorMessage(message, "You can't play against yourself or a bot!")] });
+            return message.channel.send({ embeds: [await KaikiEmbeds.errorMessage(message, "You can't play against yourself or a bot!")] });
         }
 
         const acceptMessage = await message.channel.send({
             embeds: [new MessageEmbed()
                 .setDescription(`Do you wanna participate in a game of Tic-Tac-Toe against ${message.author.tag}?`)
-                .setFooter("Timeout in 20 seconds")
+                .setFooter({ text: "Timeout in 20 seconds" })
                 .withOkColor(message)],
             isInteraction: true,
             components: [new MessageActionRow({
@@ -65,7 +65,7 @@ export default class TicTacToeCommand extends KaikiCommand {
                 const emb = acceptMessage.embeds[0];
                 acceptMessage.edit({ embeds: [new MessageEmbed(emb)
                     .setDescription(`~~${emb.description}~~`)
-                    .setFooter("Timed out!")
+                    .setFooter({ text: "Timed out!" })
                     .withErrorColor(message)],
                 components: [],
                 });

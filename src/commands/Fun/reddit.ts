@@ -1,10 +1,9 @@
 import { Message, MessageEmbed, TextChannel } from "discord.js";
 import fetch from "node-fetch";
 import { PurpleData, RedditData } from "../../interfaces/IRedditAPI";
-import { reddit } from "../../lib/Embeds";
-import { trim } from "../../lib/Util";
+import Utility from "../../lib/Util";
 import { KaikiCommand } from "kaiki";
-
+import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
 export default class RedditCommand extends KaikiCommand {
     constructor() {
@@ -27,7 +26,7 @@ export default class RedditCommand extends KaikiCommand {
 
         const promise = await fetch(`https://www.reddit.com/r/${sub}/random/.json`);
 
-        if (!promise.ok) return message.channel.send({ embeds: [await reddit.noDataReceived(message)] });
+        if (!promise.ok) return message.channel.send({ embeds: [await KaikiEmbeds.noDataReceived(message)] });
 
         return promise.json()
             .then((json: RedditData | RedditData[]) => Array.isArray(json)
@@ -38,7 +37,7 @@ export default class RedditCommand extends KaikiCommand {
         async function postRandomTitle(data: PurpleData) {
 
             if (!data) {
-                return message.channel.send({ embeds: [await reddit.noDataReceived(message)] });
+                return message.channel.send({ embeds: [await KaikiEmbeds.noDataReceived(message)] });
             }
 
             // We don´t want nsfw in normal channels, do we?
@@ -64,8 +63,8 @@ export default class RedditCommand extends KaikiCommand {
             })
                 .withOkColor(message);
 
-            if (data.title?.length) embed.setTitle(trim(data.title, 256));
-            if (data.selftext?.length) embed.setDescription(trim(data.selftext, 2048));
+            if (data.title?.length) embed.setTitle(Utility.trim(data.title, 256));
+            if (data.selftext?.length) embed.setDescription(Utility.trim(data.selftext, 2048));
             !data.is_video && data.url?.length
                 ? embed.setImage(data.url)
                 : message.channel.send(data.url ?? data.permalink);

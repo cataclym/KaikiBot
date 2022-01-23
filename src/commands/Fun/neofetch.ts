@@ -4,7 +4,7 @@ import { exec } from "child_process";
 import { Message, MessageEmbed } from "discord.js";
 import logger from "loglevel";
 import { distros } from "../../lib/distros.json";
-import { codeblock } from "../../lib/Util";
+import Utility from "../../lib/Util";
 import { KaikiCommand } from "kaiki";
 
 export default class NeofetchCommand extends KaikiCommand {
@@ -47,7 +47,7 @@ export default class NeofetchCommand extends KaikiCommand {
                 pages.push(new MessageEmbed()
                     .setTitle("ascii_distro list")
                     .setThumbnail(message.author.displayAvatarURL({ dynamic: true }))
-                    .setDescription(await codeblock(distros.slice(p, i).join(", "), "json"))
+                    .setDescription(await Utility.codeblock(distros.slice(p, i).join(", "), "json"))
                     .withOkColor(message));
             }
             return sendPaginatedMessage(message, pages, {});
@@ -63,7 +63,7 @@ export default class NeofetchCommand extends KaikiCommand {
                 if (error || stderr) {
                     return logger.error(error);
                 }
-                return message.channel.send(await codeblock(stdout.replace(/```/g, "\u0300`\u0300`\u0300`\u0300")));
+                return message.channel.send(await Utility.codeblock(stdout.replace(/```/g, "\u0300`\u0300`\u0300`\u0300")));
 
                 // return message.channel.send(
                 //     await codeblock(`[0;${randomColor}m` + stdout

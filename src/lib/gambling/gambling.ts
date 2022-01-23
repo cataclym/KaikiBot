@@ -1,5 +1,3 @@
-import { KaikiClient } from "kaiki";
-
 export default class Gambling {
     static slotDict: { [num: number]: string } = {
         0: "🥑",
@@ -47,15 +45,5 @@ ${arr[6]} - ${arr[7]} - ${arr[8]}
 
             numbers: [arr[3], arr[4], arr[5]],
         };
-    }
-
-    /**
-     * Updates the bot's currency symbol and names, from the database.
-     * @param client KaikiClient
-     * @returns void
-     */
-    static async UpdateCurrencyNameAndSymbol(client: KaikiClient): Promise<void> {
-        client.money.currencyName = client.botSettingsProvider.get("1", "CurrencyName", "Yen");
-        client.money.currencySymbol = client.botSettingsProvider.get("1", "CurrencySymbol", "💴");
     }
 }

@@ -1,7 +1,7 @@
 import { Message, MessageEmbed } from "discord.js";
-import { noArgGeneric } from "../../lib/Embeds";
 import { KaikiCommand } from "kaiki";
 import { getBotDocument } from "../../struct/documentMethods";
+import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
 export default class SetDailyCommand extends KaikiCommand {
     constructor() {
@@ -14,7 +14,7 @@ export default class SetDailyCommand extends KaikiCommand {
                 {
                     id: "arg",
                     type: "integer",
-                    otherwise: (msg: Message) => ({ embeds: [noArgGeneric(msg)] }),
+                    otherwise: (msg: Message) => ({ embeds: [KaikiEmbeds.genericArgumentError(msg)] }),
                 },
             ],
         });

@@ -2,9 +2,8 @@ import { Argument, Flag, PrefixSupplier } from "discord-akairo";
 import { Snowflake } from "discord-api-types";
 import { Guild, Message, MessageEmbed } from "discord.js";
 import { getGuildDocument } from "../../struct/documentMethods";
-import { embedFail } from "../../lib/Embeds";
 import { KaikiCommand } from "kaiki";
-
+import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
 export default class MyRoleCommand extends KaikiCommand {
     constructor() {
@@ -15,11 +14,13 @@ export default class MyRoleCommand extends KaikiCommand {
             prefix: (msg: Message) => {
                 const mentions = [`<@${this.client.user?.id}>`, `<@!${this.client.user?.id}>`];
                 const prefixes = [(this.handler.prefix as PrefixSupplier)(msg) as string, ";"];
-                if (this.client.user) {return [...prefixes, ...mentions];}
+                if (this.client.user) {
+                    return [...prefixes, ...mentions];
+                }
                 return prefixes;
             },
             description: "Checks your assigned user role. Can set role color, name and icon.",
-            usage: ["color FF0000", "name Dreb", "icon 📘", "icon reset"],
+            usage: ["color FF0000", "name Dreb", "icon :someEmoji:", "icon reset"],
         });
     }
 
@@ -43,7 +44,7 @@ export default class MyRoleCommand extends KaikiCommand {
         const db = await getGuildDocument(guild.id),
             roleID = db.userRoles[message.author.id];
 
-        if (!roleID) return message.channel.send({ embeds: [await embedFail(message)] });
+        if (!roleID) return message.channel.send({ embeds: [await KaikiEmbeds.embedFail(message)] });
 
         const myRole = guild.roles.cache.get(roleID as Snowflake);
 
@@ -51,14 +52,16 @@ export default class MyRoleCommand extends KaikiCommand {
             delete db.userRoles[message.author.id];
             db.markModified("userRoles");
             await db.save();
-            return message.channel.send({ embeds: [await embedFail(message)] });
+            return message.channel.send({ embeds: [await KaikiEmbeds.embedFail(message)] });
         }
 
         return message.channel.send({
             embeds: [new MessageEmbed()
-                .setAuthor(`Current role assigned to ${message.author.username}`,
-                    guild.iconURL({ size: 2048, dynamic: true })
-					|| message.author.displayAvatarURL({ size: 2048, dynamic: true }))
+                .setAuthor({
+                    name: `Current role assigned to ${message.author.username}`,
+                    iconURL: guild.iconURL({ size: 2048, dynamic: true })
+                      || message.author.displayAvatarURL({ size: 2048, dynamic: true }),
+                })
                 .setColor(myRole.hexColor)
                 .addField("Name", myRole.name, true)
                 .addField("Colour", myRole.hexColor, true)],

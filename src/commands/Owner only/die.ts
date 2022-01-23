@@ -1,4 +1,4 @@
-import { Message, MessageButton, MessageActionRow, InteractionCollector, MessageEmbed } from "discord.js";
+import { InteractionCollector, Message, MessageActionRow, MessageButton, MessageEmbed } from "discord.js";
 import { KaikiCommand } from "kaiki";
 
 import logger from "loglevel";
@@ -39,7 +39,7 @@ export default class KillBotProcess extends KaikiCommand {
             if (mci.isButton()) {
                 await mci.reply({
                     ephemeral: true, embeds: [new MessageEmbed()
-                        .setAuthor("Dying", message.client.user?.displayAvatarURL({ dynamic: true }))
+                        .setAuthor({ name: "Dying", iconURL: message.client.user?.displayAvatarURL({ dynamic: true }) })
                         .addField("Shutting down", "See you later", false)
                         .withOkColor(message)],
                 });

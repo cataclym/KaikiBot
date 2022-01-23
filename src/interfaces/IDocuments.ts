@@ -1,8 +1,14 @@
 import { ActivityType, ColorResolvable } from "discord.js";
 import { Document } from "mongoose";
-import { IGreet } from "./IGreetLeave";
 import { emoteReactObjectType } from "../cache/cache";
 import { ActivityTypes } from "discord.js/typings/enums";
+
+type IGreet = {
+	embed: string,
+	enabled: boolean,
+	channel: string,
+	timeout: number | null
+}
 
 export interface IGuild extends Document {
 	id: string,

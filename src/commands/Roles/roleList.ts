@@ -25,7 +25,7 @@ export default class RoleListCommand extends KaikiCommand {
 
                 const dEmbed = new MessageEmbed()
                     .setTitle(`Role list (${roleArray.length})`)
-                    .setAuthor(message.guild?.name ?? "Null")
+                    .setAuthor({ name: message.guild!.name })
                     .addField("\u200B", data
                         .slice(p, i - 25)
                         .join("\n"), true)

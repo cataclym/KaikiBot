@@ -1,5 +1,5 @@
 import { GuildMember, Message, MessageEmbed, Permissions } from "discord.js";
-import { trim } from "../../lib/Util";
+import Utility from "../../lib/Util";
 import { KaikiCommand } from "kaiki";
 import { restoreUserRoles } from "../../lib/roles";
 
@@ -36,7 +36,7 @@ export default class RestoreUserRoles extends KaikiCommand {
             return message.channel.send({
                 embeds: [new MessageEmbed()
                     .setDescription(`Restored roles of \`${member.user.tag}\` [${member.id}]`)
-                    .addField("Roles added", trim(result.roles.join("\n"), 1024))
+                    .addField("Roles added", Utility.trim(result.roles.join("\n"), 1024))
                     .withOkColor(message)],
             });
         }

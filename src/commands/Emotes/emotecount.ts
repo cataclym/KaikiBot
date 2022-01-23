@@ -1,7 +1,7 @@
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
 import { Snowflake } from "discord-api-types";
 import { Guild, Message, MessageEmbed } from "discord.js";
-import { trim } from "../../lib/Util";
+import Utility from "../../lib/Util";
 import { getGuildDocument } from "../../struct/documentMethods";
 import { KaikiCommand } from "kaiki";
 
@@ -31,7 +31,7 @@ export default class EmoteCount extends KaikiCommand {
 
             baseEmbed = new MessageEmbed()
                 .setTitle("Emote count")
-                .setAuthor((message.guild as Guild).name)
+                .setAuthor({ name: (message.guild as Guild).name })
                 .withOkColor(message),
 
             emoteDataPair = Object
@@ -49,21 +49,19 @@ export default class EmoteCount extends KaikiCommand {
         }
 
         if (!flag) {
-
             for (let i = 25, p = 0; p < data.length; i += 25, p += 25) {
 
                 pages.push(new MessageEmbed(baseEmbed)
-                    .setDescription(trim(data.slice(p, i).join("\n"), 2048)),
+                    .setDescription(Utility.trim(data.slice(p, i).join("\n"), 2048)),
                 );
             }
         }
 
         else {
-
             for (let i = 50, p = 0; p < data.length; i += 50, p += 50) {
 
                 pages.push(new MessageEmbed(baseEmbed)
-                    .setDescription(trim(data.slice(p, i).join(""), 2048)),
+                    .setDescription(Utility.trim(data.slice(p, i).join(""), 2048)),
                 );
             }
         }

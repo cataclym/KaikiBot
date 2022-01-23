@@ -1,6 +1,5 @@
 import { Message, MessageEmbed } from "discord.js";
 import { KaikiCommand } from "kaiki";
-import { moneyModel } from "../../struct/db/models";
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
 
 export default class LeaderboardCommand extends KaikiCommand {
@@ -15,12 +14,12 @@ export default class LeaderboardCommand extends KaikiCommand {
 
     public async exec(message: Message): Promise<Message> {
         const { currencySymbol } = this.client.money,
-            guildOnlyEntries = (await moneyModel.find({}))
-                .filter(e => message.guild?.members.cache.get(e.id))
-                .sort((e, o) => o.amount - e.amount)
+            guildOnlyEntries = (await this.client.orm.discordUsers.findMany({}))
+                .filter(e => message.guild?.members.cache.get(String(e.UserId)))
+                .sort((e, o) => Number(o.Amount) - Number(e.Amount))
                 .map(e => ({
-                    user: e.id,
-                    str: `${e.amount} ${currencySymbol}`,
+                    user: String(e.UserId),
+                    str: `${e.Amount} ${currencySymbol}`,
                 })),
             embed = new MessageEmbed()
                 .setTitle("Server currency leaderboard")

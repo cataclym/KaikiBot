@@ -1,6 +1,6 @@
-import { errorColor, okColor } from "../lib/Util";
-import { KaikiClient } from "../struct/kaikiClient";
+import { KaikiClient } from "../struct/KaikiClient";
 import { Guild, GuildMember, Message, MessageEmbed } from "discord.js";
+import Utility from "../lib/Util";
 
 export const extensionHook = (): void => {
     return;
@@ -55,22 +55,22 @@ MessageEmbed.prototype.withErrorColor = function(m?: Message | Guild) {
 
     if (m) {
         if (m instanceof Message && m.guild) {
-            return this.setColor((m.client as KaikiClient).guildProvider.get(m.guild!.id, "errorColor", okColor));
+            return this.setColor((m.client as KaikiClient).guildProvider.get(m.guild!.id, "errorColor", Utility.okColor));
         }
-        return this.setColor((m.client as KaikiClient).guildProvider.get(m.id, "errorColor", okColor));
+        return this.setColor((m.client as KaikiClient).guildProvider.get(m.id, "errorColor", Utility.okColor));
     }
 
-    return this.setColor(errorColor);
+    return this.setColor(Utility.errorColor);
 };
 
 MessageEmbed.prototype.withOkColor = function(m?: Message | Guild) {
 
     if (m) {
         if (m instanceof Message && m.guild) {
-            return this.setColor((m.client as KaikiClient).guildProvider.get(m.guild!.id, "okColor", okColor));
+            return this.setColor((m.client as KaikiClient).guildProvider.get(m.guild!.id, "okColor", Utility.okColor));
         }
-        return this.setColor((m.client as KaikiClient).guildProvider.get(m.id, "okColor", okColor));
+        return this.setColor((m.client as KaikiClient).guildProvider.get(m.id, "okColor", Utility.okColor));
     }
 
-    return this.setColor(okColor);
+    return this.setColor(Utility.okColor);
 };

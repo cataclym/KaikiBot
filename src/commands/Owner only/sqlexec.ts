@@ -1,8 +1,8 @@
 import { Message } from "discord.js";
-import { noArgGeneric } from "../../lib/Embeds";
 import { KaikiCommand } from "kaiki";
 import { OkPacket } from "mysql2/promise";
-import { codeblock, trim } from "../../lib/Util";
+import Utility from "../../lib/Util";
+import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
 export default class SetNameCommand extends KaikiCommand {
     constructor() {
@@ -15,7 +15,7 @@ export default class SetNameCommand extends KaikiCommand {
                 {
                     id: "str",
                     match: "rest",
-                    otherwise: (msg: Message) => ({ embeds: [noArgGeneric(msg)] }),
+                    otherwise: (msg: Message) => ({ embeds: [KaikiEmbeds.genericArgumentError(msg)] }),
                 },
             ],
         });
@@ -24,6 +24,6 @@ export default class SetNameCommand extends KaikiCommand {
 
         const res = await this.client.connection.query<OkPacket>(str);
 
-        return message.channel.send(await codeblock(trim(JSON.stringify(res[0], null, 4), 1960), "json"));
+        return message.channel.send(await Utility.codeblock(Utility.trim(JSON.stringify(res[0], null, 4), 1960), "json"));
     }
 }

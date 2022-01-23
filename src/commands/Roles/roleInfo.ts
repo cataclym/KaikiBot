@@ -1,7 +1,7 @@
 import { Message, MessageEmbed, Role } from "discord.js";
 import { KaikiCommand } from "kaiki";
-import { roleArgumentError } from "../../lib/Embeds";
 import { Argument } from "discord-akairo";
+import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
 
 export default class RoleInfoCommand extends KaikiCommand {
@@ -18,7 +18,7 @@ export default class RoleInfoCommand extends KaikiCommand {
                         ? undefined
                         : m.member?.roles.highest),
                     match: "content",
-                    otherwise: (m) => ({ embeds: [roleArgumentError(m)] }),
+                    otherwise: (m) => ({ embeds: [KaikiEmbeds.roleArgumentError(m)] }),
                 },
             ],
         });

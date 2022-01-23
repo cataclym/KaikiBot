@@ -1,6 +1,6 @@
 import { Message } from "discord.js";
-import { noArgGeneric } from "../../lib/Embeds";
 import { KaikiCommand } from "kaiki";
+import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
 
 export default class SetNameCommand extends KaikiCommand {
@@ -14,7 +14,7 @@ export default class SetNameCommand extends KaikiCommand {
                 {
                     id: "name",
                     match: "separate",
-                    otherwise: (msg: Message) => ({ embeds: [noArgGeneric(msg)] }),
+                    otherwise: (msg: Message) => ({ embeds: [KaikiEmbeds.genericArgumentError(msg)] }),
                 },
             ],
         });

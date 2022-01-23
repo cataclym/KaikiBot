@@ -1,7 +1,6 @@
 import { Message, MessageEmbed } from "discord.js";
-import { noArgGeneric } from "../../lib/Embeds";
 import { KaikiCommand } from "kaiki";
-
+import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
 export default class RoleCreateCommand extends KaikiCommand {
     constructor() {
@@ -12,14 +11,12 @@ export default class RoleCreateCommand extends KaikiCommand {
             clientPermissions: "MANAGE_ROLES",
             userPermissions: "MANAGE_ROLES",
             channel: "guild",
-            args: [
-                {
-                    id: "name",
-                    type: "string",
-                    match: "rest",
-                    otherwise: (msg: Message) => ({ embeds: [noArgGeneric(msg)] }),
-                },
-            ],
+            args: [{
+                id: "name",
+                type: "string",
+                match: "rest",
+                otherwise: (msg: Message) => ({ embeds: [KaikiEmbeds.genericArgumentError(msg)] }),
+            }],
         });
     }
 

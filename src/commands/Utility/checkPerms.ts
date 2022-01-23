@@ -1,9 +1,8 @@
 import { Argument } from "discord-akairo";
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
 import { GuildMember, Message, MessageEmbed, Role, TextChannel } from "discord.js";
-import { codeblock } from "../../lib/Util";
 import { KaikiCommand } from "kaiki";
-
+import Utility from "../../lib/Util";
 
 export default class CheckPermissionsCommand extends KaikiCommand {
     constructor() {
@@ -37,7 +36,7 @@ export default class CheckPermissionsCommand extends KaikiCommand {
             pages.push(new MessageEmbed()
                 .withOkColor(message)
                 .setTitle(`Permissions for ${inputName} in #${channel.name}`)
-                .setDescription(await codeblock(permissionsIn
+                .setDescription(await Utility.codeblock(permissionsIn
                     .toArray()
                     .sort()
                     .join("\n"))),
@@ -52,7 +51,7 @@ export default class CheckPermissionsCommand extends KaikiCommand {
             pages.push(new MessageEmbed()
                 .withOkColor(message)
                 .setTitle(`Permissions for ${inputName} in #${channel.name}`)
-                .setDescription(await codeblock(permissionsIn
+                .setDescription(await Utility.codeblock(permissionsIn
                     .toArray()
                     .sort()
                     .join("\n"))),
@@ -63,7 +62,7 @@ export default class CheckPermissionsCommand extends KaikiCommand {
             pages.push(new MessageEmbed()
                 .withOkColor(message)
                 .setTitle(`General permissions for ${inputName}`)
-                .setDescription(await codeblock(permissions
+                .setDescription(await Utility.codeblock(permissions
                     .toArray()
                     .sort()
                     .join("\n"))),

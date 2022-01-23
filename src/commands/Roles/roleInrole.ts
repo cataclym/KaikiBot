@@ -2,7 +2,7 @@ import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
 import { GuildMember, Message, MessageEmbed, Role } from "discord.js";
 import { KaikiCommand } from "kaiki";
 import { Argument } from "discord-akairo";
-import { roleArgumentError } from "../../lib/Embeds";
+import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
 
 export default class RoleInRoleCommand extends KaikiCommand {
@@ -18,7 +18,7 @@ export default class RoleInRoleCommand extends KaikiCommand {
                     ? undefined
                     : m.member?.roles.highest),
                 match: "content",
-                otherwise: (m) => ({ embeds: [roleArgumentError(m)] }),
+                otherwise: (m) => ({ embeds: [KaikiEmbeds.roleArgumentError(m)] }),
             }],
         });
     }
@@ -39,7 +39,7 @@ export default class RoleInRoleCommand extends KaikiCommand {
                 const currentPageUsers = data.slice(p, i),
                     emb = new MessageEmbed()
                         .setTitle(`Users in ${role.name} (${data.length})`)
-                        .setAuthor(message.guild?.name ?? "Null")
+                        .setAuthor({ name: message.guild!.name })
                         .addField("•", currentPageUsers
                             .slice(0, 20)
                             .map(u => `${u.user} - ${u.user.username}`)

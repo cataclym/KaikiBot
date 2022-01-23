@@ -1,9 +1,8 @@
 import { Message, MessageEmbed, Role } from "discord.js";
-import { errorMessage, noArgGeneric, roleArgumentError } from "../../lib/Embeds";
-import { trim } from "../../lib/Util";
+import Utility from "../../lib/Util";
 import { KaikiCommand } from "kaiki";
 import { rolePermissionCheck } from "../../lib/roles";
-
+import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
 export default class RoleRenameCommand extends KaikiCommand {
     constructor() {
@@ -18,13 +17,13 @@ export default class RoleRenameCommand extends KaikiCommand {
                 {
                     id: "role",
                     type: "role",
-                    otherwise: (m: Message) => ({ embeds: [roleArgumentError(m)] }),
+                    otherwise: (m: Message) => ({ embeds: [KaikiEmbeds.roleArgumentError(m)] }),
                 },
                 {
                     id: "name",
                     type: "string",
                     match: "rest",
-                    otherwise: (msg: Message) => ({ embeds: [noArgGeneric(msg)] }),
+                    otherwise: (msg: Message) => ({ embeds: [KaikiEmbeds.genericArgumentError(msg)] }),
                 },
             ],
         });
@@ -35,7 +34,7 @@ export default class RoleRenameCommand extends KaikiCommand {
 
             const oldName = role.name;
 
-            role.edit({ name: trim(name.toString(), 32) })
+            role.edit({ name: Utility.trim(name.toString(), 32) })
                 .catch((e) => {
                     throw new Error("Error: Failed to edit role.\n" + e);
                 });
@@ -49,7 +48,7 @@ export default class RoleRenameCommand extends KaikiCommand {
 
         else {
             return message.channel.send({
-                embeds: [await errorMessage(message, "**Insufficient permissions**\nRole is above you or me in the role hierarchy.")],
+                embeds: [await KaikiEmbeds.errorMessage(message, "**Insufficient permissions**\nRole is above you or me in the role hierarchy.")],
             });
         }
     }

@@ -1,7 +1,7 @@
 import { CommandInteraction, GuildMemberRoleManager, MessageEmbed } from "discord.js";
 import { getGuildDocument } from "../../struct/documentMethods";
-import { Exclude } from "../Embeds";
 import { Snowflake } from "discord-api-types/globals";
+import KaikiEmbeds from "../KaikiEmbeds";
 
 export async function ExcludeSlashCommand(interaction: CommandInteraction): Promise<void> {
 
@@ -44,11 +44,11 @@ export async function ExcludeSlashCommand(interaction: CommandInteraction): Prom
         await interaction.member?.roles.add(excludedRole);
         created
             ? await interaction.webhook.send({
-                ephemeral: true, embeds: [Exclude.addedRoleEmbed(roleName)
+                ephemeral: true, embeds: [KaikiEmbeds.addedRoleEmbed(roleName)
                     .withOkColor(interaction.guild)],
             })
             : await interaction.reply({
-                ephemeral: true, embeds: [Exclude.addedRoleEmbed(roleName)
+                ephemeral: true, embeds: [KaikiEmbeds.addedRoleEmbed(roleName)
                     .withOkColor(interaction.guild)],
             });
         return;
@@ -58,11 +58,11 @@ export async function ExcludeSlashCommand(interaction: CommandInteraction): Prom
         await interaction.member?.roles.remove(excludedRole);
         created
             ? await interaction.webhook.send({
-                ephemeral: true, embeds: [Exclude.removedRoleEmbed(roleName)
+                ephemeral: true, embeds: [KaikiEmbeds.removedRoleEmbed(roleName)
                     .withOkColor(interaction.guild)],
             })
             : await interaction.reply({
-                ephemeral: true, embeds: [Exclude.removedRoleEmbed(roleName)
+                ephemeral: true, embeds: [KaikiEmbeds.removedRoleEmbed(roleName)
                     .withOkColor(interaction.guild)],
             });
         return;

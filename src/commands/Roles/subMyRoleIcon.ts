@@ -1,13 +1,13 @@
 import { Guild, GuildEmoji, Message, MessageAttachment, MessageEmbed, ReactionEmoji, Role } from "discord.js";
 import { Argument } from "discord-akairo";
-import { embedFail, errorMessage, noArgGeneric } from "../../lib/Embeds";
 import { getGuildDocument } from "../../struct/documentMethods";
 import { Snowflake } from "discord-api-types";
 import { KaikiCommand } from "kaiki";
 import { EMOTE_REGEX, IMAGE_REGEX } from "../../struct/constants";
 import { isRegex } from "../../lib/functions";
-import { codeblock } from "../../lib/Util";
 import { rolePermissionCheck } from "../../lib/roles";
+import KaikiEmbeds from "../../lib/KaikiEmbeds";
+import Utility from "../../lib/Util";
 
 const resetWords = ["clear", "reset"];
 
@@ -36,7 +36,7 @@ export default class MyRoleSubIcon extends KaikiCommand {
             roleID = db.userRoles[message.author.id];
 
         if (!roleID) {
-            message.channel.send({ embeds: [await embedFail(message)] });
+            message.channel.send({ embeds: [await KaikiEmbeds.embedFail(message)] });
             return false;
         }
 
@@ -46,7 +46,7 @@ export default class MyRoleSubIcon extends KaikiCommand {
             delete db.userRoles[message.author.id];
             db.markModified("userRoles");
             await db.save();
-            message.channel.send({ embeds: [await embedFail(message)] });
+            message.channel.send({ embeds: [await KaikiEmbeds.embedFail(message)] });
             return false;
         }
 
@@ -81,7 +81,7 @@ export default class MyRoleSubIcon extends KaikiCommand {
             if (EMOTE_REGEX.exec(icon.match[0])) {
                 const emoji = icon.match[0].toString().split(":");
 
-                if (emoji.length < 3) return message.channel.send({ embeds: [noArgGeneric(message)] });
+                if (emoji.length < 3) return message.channel.send({ embeds: [KaikiEmbeds.genericArgumentError(message)] });
 
                 const id = emoji[2].replace(">", "");
                 roleIconSrc = `https://cdn.discordapp.com/emojis/${id}.${emoji[0] === "<a" ? "gif" : "png"}`;
@@ -101,7 +101,7 @@ export default class MyRoleSubIcon extends KaikiCommand {
         if (["TIER_1", "NONE"].includes(guild.premiumTier)) {
             return message.channel.send({
                 embeds: [
-                    await errorMessage(message.guild || message, "This server does not have enough boosts for role-icons!"),
+                    await KaikiEmbeds.errorMessage(message.guild || message, "This server does not have enough boosts for role-icons!"),
                 ],
             });
         }
@@ -114,7 +114,7 @@ export default class MyRoleSubIcon extends KaikiCommand {
                 isPosition = botRole?.comparePositionTo(myRole);
 
             if (isPosition && isPosition <= 0) {
-                return message.channel.send({ embeds: [await embedFail(message, "This role is higher than me, I cannot edit this role!")] });
+                return message.channel.send({ embeds: [await KaikiEmbeds.embedFail(message, "This role is higher than me, I cannot edit this role!")] });
             }
 
             try {
@@ -122,8 +122,8 @@ export default class MyRoleSubIcon extends KaikiCommand {
             }
             catch (err) {
                 return message.channel.send({
-                    embeds: [(await errorMessage(message.guild || message, "Unsupported image format"))
-                        .addField("Message", await codeblock(err, "xl"))],
+                    embeds: [(await KaikiEmbeds.errorMessage(message.guild || message, "Unsupported image format"))
+                        .addField("Message", await Utility.codeblock(err, "xl"))],
                 });
             }
 

@@ -1,9 +1,7 @@
 import { PrefixSupplier } from "discord-akairo";
 import { Guild, Message, MessageEmbed, Permissions } from "discord.js";
-import { EmbedFromJson, EmbedJSON } from "../../interfaces/IGreetLeave";
 import { KaikiCommand } from "kaiki";
-
-import { getGuildDocument } from "../../struct/documentMethods";
+import GreetHandler, { JSONToMessageOptions } from "../../lib/GreetHandler";
 
 export default class WelcomeMessageCommand extends KaikiCommand {
     constructor() {
@@ -29,27 +27,24 @@ export default class WelcomeMessageCommand extends KaikiCommand {
         });
     }
 
-    public async exec(message: Message, { msg }: { msg: EmbedJSON }): Promise<Message> {
+    public async exec(message: Message, { msg }: { msg: unknown | JSONToMessageOptions }): Promise<Message> {
 
-        const guildID = (message.guild as Guild).id,
-            db = await getGuildDocument(guildID);
+        const json = new JSONToMessageOptions(msg);
+        if (!json) return message.channel.send(GreetHandler.JSONErrorMessage(message));
 
-        db.settings.welcome.embed = new EmbedFromJson(msg);
-        db.markModified("settings.welcome.embed");
+        const guildID = (message.guild as Guild).id;
 
-        if (!db.settings.welcome.channel) {
-            db.settings.welcome.channel = message.channel.id;
-            db.markModified("settings.welcome.channel");
-        }
-
-        await db.save();
+        const db = await this.client.orm.guilds.update({
+            where: { Id: BigInt(guildID) },
+            data: { WelcomeMessage: String(json) },
+        });
 
         const prefix = (this.handler.prefix as PrefixSupplier)(message);
         const embeds = [new MessageEmbed()
             .setDescription(`New welcome message has been set!\n\nTest what the message looks like by typing \`${prefix}welcometest\``)
             .withOkColor(message)];
 
-        if (!db.settings.welcome.enabled) {
+        if (!db.WelcomeChannel) {
             embeds.push(new MessageEmbed()
                 .setDescription(`Enable \`welcome\` messages by typing \`${prefix}welcome\`.`)
                 .withOkColor(message),

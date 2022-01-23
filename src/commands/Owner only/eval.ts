@@ -1,7 +1,6 @@
 import { Message } from "discord.js";
 import { KaikiCommand } from "kaiki";
-
-import { codeblock } from "../../lib/Util";
+import Utility from "../../lib/Util";
 
 const clean = (text: string) => {
     return text.replace(/`/g, "`" + String.fromCharCode(8203)).replace(/@/g, "@" + String.fromCharCode(8203));
@@ -27,11 +26,11 @@ export default class EvalCommand extends KaikiCommand {
 
             evaled = (await import("util")).inspect(evaled);
             return message.channel.send({
-                content: await codeblock(clean(evaled.toString()), "xl"),
+                content: await Utility.codeblock(clean(evaled.toString()), "xl"),
             });
         }
         catch (err) {
-            return message.channel.send(`\`ERROR\` ${await codeblock(clean(err.toString()), "xl")}`);
+            return message.channel.send(`\`ERROR\` ${await Utility.codeblock(clean(err.toString()), "xl")}`);
         }
     }
 }

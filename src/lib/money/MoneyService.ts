@@ -1,11 +1,11 @@
-import MySQLProvider from "../../struct/db/MySQLProvider";
-import { IMoneyService } from "./IMoneyService";
+import { IMoneyService } from "../../interfaces/IMoneyService";
 import { PrismaClient } from "@prisma/client";
 
+// TODO: CurrencyTransactions need to be added!
 export class MoneyService implements IMoneyService {
     currencyName: string;
     currencySymbol: string;
-    private dailyProvider: MySQLProvider;
+    // private dailyProvider: MySQLProvider;
     private _orm: PrismaClient;
 
     constructor(connection: PrismaClient) {

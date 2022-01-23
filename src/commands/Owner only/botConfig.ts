@@ -1,10 +1,11 @@
 import { FailureData } from "discord-akairo";
-import { Message, MessageEmbed } from "discord.js";
-import { noArgGeneric } from "../../lib/Embeds";
-import { codeblock } from "../../lib/Util";
+import { ExcludeEnum, Message, MessageEmbed } from "discord.js";
 import { KaikiCommand } from "kaiki";
 import { BotConfig } from "../../struct/db/Database";
-import Gambling from "../../lib/gambling/gambling";
+import SetActivityCommand from "./setActivity";
+import { ActivityTypes } from "discord.js/typings/enums";
+import KaikiEmbeds from "../../lib/KaikiEmbeds";
+import Utility from "../../lib/Util";
 
 enum validEnum {
 	ACTIVITY = "activity",
@@ -22,16 +23,15 @@ type validTypes = "activity"
 	| "dailyEnabled"
 	| "dailyAmount";
 
-const validTypes: validTypes[] = [
-    "activity",
-    "activityType",
-    "currencyname",
-    "currencysymbol",
-    "dailyEnabled",
-    "dailyAmount",
-];
-
 export default class BotConfigCommand extends KaikiCommand {
+    private static _validTypes: validTypes[] = [
+        "activity",
+        "activityType",
+        "currencyname",
+        "currencysymbol",
+        "dailyEnabled",
+        "dailyAmount",
+    ];
     constructor() {
 	    super("botconfig", {
 	        aliases: ["botconfig", "bc"],
@@ -41,18 +41,18 @@ export default class BotConfigCommand extends KaikiCommand {
 	        args: [
 	            {
 	                id: "type",
-	                type: validTypes,
+	                type: BotConfigCommand._validTypes,
 	                otherwise: async (msg: Message, _: FailureData) => {
 	                    if (_.phrase.length) {
 	                        return ({ embeds: [new MessageEmbed()
 	                            .setDescription(`\`${_.phrase}\` is not a valid setting`)
-	                            .addField("Valid settings", validTypes.join("\n"))
+	                            .addField("Valid settings", BotConfigCommand._validTypes.join("\n"))
 	                            .withErrorColor(msg)],
 	                        });
 	                    }
 	                    else {
 	                        return ({ embeds: [new MessageEmbed()
-	                            .addField("Bot config", await codeblock(JSON
+	                            .addField("Bot config", await Utility.codeblock(JSON
 	                                .stringify(new BotConfig(await this.client.connection.query("SELECT * FROM BotSettings")), null, 4), "xl"))
 	                            .withOkColor(msg)],
 	                        });
@@ -60,47 +60,65 @@ export default class BotConfigCommand extends KaikiCommand {
 	                },
 	            },
 	            {
-	                id: "name",
+	                id: "value",
 	                type: "string",
 	                match: "restContent",
-	                otherwise: (m: Message) => ({ embeds: [noArgGeneric(m)] }),
+	                otherwise: (m: Message) => ({ embeds: [KaikiEmbeds.genericArgumentError(m)] }),
 	            },
 	        ],
 	    });
     }
-    public async exec(message: Message, { type, name }: { type: validTypes, name: string}): Promise<Message> {
+    public async exec(message: Message, { type, value }: { type: validTypes, value: string}): Promise<Message> {
 
 	    const client = this.client;
 	    let oldValue;
 
 	    switch (type) {
             case validEnum.ACTIVITY:
+                oldValue = await client.botSettingsProvider.get("1", "Activity", null);
+                await client.botSettingsProvider.set("1", "Activity", value);
+                this.client.user?.presence.set({ activities: [{ name: String(value) }] });
                 break;
             case validEnum.ACTIVITYTYPE:
+                if (SetActivityCommand.validTypes.includes(value.toUpperCase())) {
+                    this.client.user?.presence.set({ activities: [{ type: value as ExcludeEnum<typeof ActivityTypes, "CUSTOM"> }] });
+                    oldValue = await client.botSettingsProvider.get("1", "ActivityType", null);
+                    await client.botSettingsProvider.set("1", "ActivityType", value);
+                }
+                else {
+                    return message.channel.send(SetActivityCommand.typeErrorEmbed(message, {
+                        phrase: value,
+                        failure: undefined,
+                    }));
+                }
                 break;
             case validEnum.CURRENCYNAME:
                 oldValue = await client.botSettingsProvider.get("1", "CurrencyName", "Yen");
-                await client.botSettingsProvider.set("1", "CurrencyName", name);
+                await client.botSettingsProvider.set("1", "CurrencyName", String(value));
+                client.money.currencyName = value;
                 break;
             case validEnum.CURRENCYSYMBOL:
-                oldValue = await client.botSettingsProvider.get("1", "CurrencySymbol", "💴");
-                await client.botSettingsProvider.set("1", "CurrencySymbol", name);
+                oldValue = await client.botSettingsProvider.get("1", "CurrencySymbol", 128180);
+                await client.botSettingsProvider.set("1", "CurrencySymbol", value.codePointAt(0));
+                client.money.currencySymbol = value;
                 break;
             case validEnum.DAILYAMOUNT:
+                oldValue = await client.botSettingsProvider.get("1", "DailyAmount", 250);
+                await client.botSettingsProvider.set("1", "DailyAmount", value);
                 break;
             case validEnum.DAILYENABLED:
+                oldValue = await client.botSettingsProvider.get("1", "DailyEnabled", false);
+                await client.botSettingsProvider.set("1", "DailyEnabled", value);
                 break;
             default:
-                throw new Error("Invalid botconfig provided!");
+                throw new Error("Invalid bot-configuration provided!");
         }
-
-	    await Gambling.UpdateCurrencyNameAndSymbol(client);
 
 	    return message.channel.send({
 	        embeds: [new MessageEmbed()
 	            .setTitle("Changed bot configuration")
 	            .addField("Old Value", oldValue)
-	            .addField("New value", name)
+	            .addField("New value", value)
 	            .withOkColor(message)],
 	    });
     }

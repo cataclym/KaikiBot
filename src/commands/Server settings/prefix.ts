@@ -1,19 +1,17 @@
 import { Guild, Message, MessageEmbed } from "discord.js";
-import { noArgGeneric } from "../../lib/Embeds";
 import { KaikiCommand } from "kaiki";
+import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
 export default class PrefixConfigCommand extends KaikiCommand {
     constructor() {
         super("config-prefix", {
             userPermissions: ["ADMINISTRATOR"],
             channel: "guild",
-            args: [
-                {
-                    id: "value",
-                    type: "string",
-                    otherwise: (m: Message) => ({ embeds: [noArgGeneric(m)] }),
-                },
-            ],
+            args: [{
+                id: "value",
+                type: "string",
+                otherwise: (m: Message) => ({ embeds: [KaikiEmbeds.genericArgumentError(m)] }),
+            }],
         });
     }
     public async exec(message: Message, { value }: { value: string }): Promise<Message | void> {

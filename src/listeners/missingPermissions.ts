@@ -2,8 +2,7 @@ import { Command, Listener } from "discord-akairo";
 import { Message, MessageEmbed } from "discord.js";
 import logger from "loglevel";
 import { cmdStatsCache } from "../cache/cache";
-import { listenerLog } from "../lib/Util";
-
+import Utility from "../lib/Util";
 
 export default class missingPermissionsListener extends Listener {
     constructor() {
@@ -17,7 +16,7 @@ export default class missingPermissionsListener extends Listener {
 
     public async exec(message: Message, command: Command, type: string, missing: any): Promise<void> {
 
-        await listenerLog(message, this, logger.info, command);
+        await Utility.listenerLog(message, this, logger.info, command);
 
         cmdStatsCache[command.id]
             ? cmdStatsCache[command.id]++

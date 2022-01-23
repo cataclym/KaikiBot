@@ -1,13 +1,16 @@
 import { FailureData } from "discord-akairo";
 import { ActivityType, Message, MessageEmbed } from "discord.js";
-import { noArgGeneric } from "../../lib/Embeds";
 import { getBotDocument } from "../../struct/documentMethods";
 import { KaikiCommand } from "kaiki";
 import { ActivityTypes } from "discord.js/typings/enums";
-
-const validTypes = ["PLAYING", "STREAMING", "LISTENING", "WATCHING", "COMPETING"];
+import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
 export default class SetActivityCommand extends KaikiCommand {
+    static validTypes = ["PLAYING", "STREAMING", "LISTENING", "WATCHING", "COMPETING"];
+    static typeErrorEmbed = (msg: Message, _: FailureData) => ({ embeds: [new MessageEmbed()
+        .setDescription(`\`${_.phrase}\` is not an status type`)
+        .addField("Valid types", SetActivityCommand.validTypes.join("\n"))
+        .withErrorColor(msg)] });
     constructor() {
         super("setactivity", {
             aliases: ["setactivity", "setac"],
@@ -17,17 +20,14 @@ export default class SetActivityCommand extends KaikiCommand {
             args: [
                 {
                     id: "type",
-                    type: validTypes,
-                    otherwise: (msg: Message, _: FailureData) => ({ embeds: [new MessageEmbed()
-                        .setDescription(`\`${_.phrase}\` is not an status type`)
-                        .addField("Valid types", validTypes.join("\n"))
-                        .withErrorColor(msg)] }),
+                    type: SetActivityCommand.validTypes,
+                    otherwise: (msg: Message, _: FailureData) => SetActivityCommand.typeErrorEmbed(msg, _),
                 },
                 {
                     id: "name",
                     type: "string",
                     match: "restContent",
-                    otherwise: (m: Message) => ({ embeds: [noArgGeneric(m)] }),
+                    otherwise: (m: Message) => ({ embeds: [KaikiEmbeds.genericArgumentError(m)] }),
                 },
             ],
         });

@@ -1,7 +1,7 @@
 import { Collection, GuildEmoji, Message, MessageEmbed, Permissions } from "discord.js";
-import { noArgGeneric } from "../../lib/Embeds";
-import { trim } from "../../lib/Util";
 import { KaikiCommand } from "kaiki";
+import KaikiEmbeds from "../../lib/KaikiEmbeds";
+import Utility from "../../lib/Util";
 
 
 const timer = (ms: number) => new Promise(res => setTimeout(res, ms));
@@ -20,7 +20,7 @@ export default class DeleteEmoteCommand extends KaikiCommand {
                 id: "emotes",
                 match: "separate",
                 type: "emojis",
-                otherwise: (msg: Message) => ({ embeds: [noArgGeneric(msg)] }),
+                otherwise: (msg: Message) => ({ embeds: [KaikiEmbeds.genericArgumentError(msg)] }),
             }],
         });
     }
@@ -61,7 +61,7 @@ export default class DeleteEmoteCommand extends KaikiCommand {
 
             return message.channel.send({ embeds: [new MessageEmbed()
                 .setTitle("Success!")
-                .setDescription(`Deleted:\n${trim(emotes.map((es) => es.map((e) => e)).join("\n"), 2048)}`)
+                .setDescription(`Deleted:\n${Utility.trim(emotes.map((es) => es.map((e) => e)).join("\n"), 2048)}`)
                 .withOkColor(message)],
             });
         })();

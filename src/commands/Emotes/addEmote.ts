@@ -1,12 +1,11 @@
 import { Argument } from "discord-akairo";
 import { Message, MessageAttachment, Permissions } from "discord.js";
 import sizeOf from "image-size";
-import { noArgGeneric } from "../../lib/Embeds";
 import { deleteImage, getFileOut, getFilesizeInBytes, resizeImage, saveEmoji, saveFile } from "../../lib/Emote";
-import { trim } from "../../lib/Util";
+import Utility from "../../lib/Util";
 import { EMOTE_REGEX, IMAGE_REGEX } from "../../struct/constants";
 import { KaikiCommand } from "kaiki";
-
+import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
 export default class AddEmoteCommand extends KaikiCommand {
     constructor() {
@@ -26,7 +25,7 @@ export default class AddEmoteCommand extends KaikiCommand {
                             return m.attachments.first();
                         }
                     }),
-                    otherwise: (m: Message) => ({ embeds: [noArgGeneric(m)] }),
+                    otherwise: (m: Message) => ({ embeds: [KaikiEmbeds.genericArgumentError(m)] }),
                 },
                 {
                     id: "name",
@@ -71,7 +70,7 @@ export default class AddEmoteCommand extends KaikiCommand {
         const msNow = Date.now().toString();
         const file = getFileOut(msNow);
 
-        name = trim(name || msNow, 32).replace(/ /g, "_");
+        name = Utility.trim(name || msNow, 32).replace(/ /g, "_");
         await saveFile(emote, file);
 
         // Example output: { width: 240, height: 240, type: 'gif' }

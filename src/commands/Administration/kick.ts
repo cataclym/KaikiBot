@@ -67,7 +67,7 @@ export default class KickCommand extends KaikiCommand {
                 description: `You have been kicked from ${message.guild?.name}.\nReason: ${reason}`,
             })
                 .withErrorColor(message)] })
-                .catch(() => embed.setFooter("DM'ing user failed."));
+                .catch(() => embed.setFooter({ text: "DM'ing user failed." }));
         })
             .catch((err) => console.log(err));
 

@@ -27,7 +27,7 @@ export interface IMoneyService {
 
     // /**
     //  * Forcefully reduce the specified amount from user's balance
-    //  * If the user user's balance is insufficient, it will take as much as it can
+    //  * If the user's balance is insufficient, it will take as much as it can
     //  * and leave user's balance at 0
     //  * @param id Id of the user
     //  * @param amount Maximum amount to take

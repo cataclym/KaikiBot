@@ -3,7 +3,7 @@ import fetch from "node-fetch";
 import querystring from "querystring";
 import { Message, MessageEmbed } from "discord.js";
 import { parse } from "node-html-parser";
-import { errorMessage, noArgGeneric } from "../../lib/Embeds";
+import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
 type parsedResult = {
 	title: string | undefined,
@@ -20,7 +20,7 @@ export default class GoogleSearchCommand extends KaikiCommand {
             args: [{
                 id: "search",
                 match: "rest",
-                otherwise: (m) => ({ embeds: [noArgGeneric(m)] }),
+                otherwise: (m) => ({ embeds: [KaikiEmbeds.genericArgumentError(m)] }),
             }],
         });
     }
@@ -51,7 +51,7 @@ export default class GoogleSearchCommand extends KaikiCommand {
         }
 
         if (!parsedResults.length) {
-            return message.channel.send({ embeds: [await errorMessage(message, `**${message.author.tag}** No results found`)] });
+            return message.channel.send({ embeds: [await KaikiEmbeds.errorMessage(message, `**${message.author.tag}** No results found`)] });
         }
 
         return message.channel.send({

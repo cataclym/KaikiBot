@@ -1,9 +1,9 @@
 import Canvas from "canvas";
 import { Message, MessageAttachment } from "discord.js";
 import logger from "loglevel";
-import { noArgGeneric } from "../../lib/Embeds";
-import { calculateAspectRatioFit } from "../../lib/Util";
+import Utility from "../../lib/Util";
 import { KaikiCommand } from "kaiki";
+import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
 
 export default class SetAvatarCommand extends KaikiCommand {
@@ -11,13 +11,13 @@ export default class SetAvatarCommand extends KaikiCommand {
         super("setavatar", {
             aliases: ["setavatar", "setav"],
             description: "Assigns the bot a new avatar.",
-            usage: "http://discord.com/media/1231231231231312321/1231231312323132.png",
+            usage: "https://discord.com/media/1231231231231312321/1231231312323132.png",
             ownerOnly: true,
             args: [
                 {
                     id: "url",
                     type: "url",
-                    otherwise: (msg: Message) => ({ embeds: [noArgGeneric(msg)] }),
+                    otherwise: (msg: Message) => ({ embeds: [KaikiEmbeds.genericArgumentError(msg)] }),
                 },
             ],
         });
@@ -28,7 +28,7 @@ export default class SetAvatarCommand extends KaikiCommand {
         const canv = Canvas.createCanvas(img.width, img.height);
         const ctx = canv.getContext("2d");
 
-        const { width, height } = calculateAspectRatioFit(img.width, img.height, img.width, img.height);
+        const { width, height } = Utility.calculateAspectRatioFit(img.width, img.height, img.width, img.height);
 
         ctx.drawImage(img,
             canv.width / 2 - width / 2,

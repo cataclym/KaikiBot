@@ -1,9 +1,8 @@
 import { Message, MessageAttachment, MessageEmbed, Role } from "discord.js";
 import { imgFromColor, resolveColor } from "../../lib/Color";
-import { errorMessage, roleArgumentError } from "../../lib/Embeds";
 import { KaikiCommand } from "kaiki";
 import { rolePermissionCheck } from "../../lib/roles";
-
+import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
 export default class RoleColorCommand extends KaikiCommand {
     constructor() {
@@ -46,7 +45,7 @@ export default class RoleColorCommand extends KaikiCommand {
             });
         }
 
-        if (!role) return message.channel.send({ embeds: [roleArgumentError(message)] });
+        if (!role) return message.channel.send({ embeds: [KaikiEmbeds.genericArgumentError(message)] });
 
         const { hexColor } = role,
             newColor = await resolveColor(clr),
@@ -57,13 +56,13 @@ export default class RoleColorCommand extends KaikiCommand {
 
             if (!member?.permissions.has("MANAGE_ROLES")) {
                 return message.channel.send({
-                    embeds: [await errorMessage(message, "You do not have `MANAGE_ROLES` permission.")],
+                    embeds: [await KaikiEmbeds.errorMessage(message, "You do not have `MANAGE_ROLES` permission.")],
                 });
             }
 
             else if (!message.guild?.me?.permissions.has("MANAGE_ROLES")) {
                 return message.channel.send({
-                    embeds: [await errorMessage(message, "I do not have `MANAGE_ROLES` permission.")],
+                    embeds: [await KaikiEmbeds.errorMessage(message, "I do not have `MANAGE_ROLES` permission.")],
                 });
             }
 
@@ -81,7 +80,7 @@ export default class RoleColorCommand extends KaikiCommand {
 
         else {
             return message.channel.send({
-                embeds: [await errorMessage(message, "**Insufficient permissions**\nRole is above you or me in the role hierarchy.")],
+                embeds: [await KaikiEmbeds.errorMessage(message, "**Insufficient permissions**\nRole is above you or me in the role hierarchy.")],
             });
         }
     }

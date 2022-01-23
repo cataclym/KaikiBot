@@ -1,7 +1,7 @@
 import { Message, MessageEmbed, Permissions, TextChannel } from "discord.js";
 import { KaikiCommand } from "kaiki";
-import { errorMessage } from "../../lib/Embeds";
-import { EmbedFromJson } from "../../interfaces/IGreetLeave";
+import KaikiEmbeds from "../../lib/KaikiEmbeds";
+import { JSONToMessageOptions } from "../../lib/GreetHandler";
 
 type argumentMessage = {
 	[str: string]: string | any
@@ -18,7 +18,7 @@ export default class SayCommand extends KaikiCommand {
             args: [{
                 id: "channel",
                 type: "textChannel",
-                otherwise: async m => ({ embeds: [await errorMessage(m, "Please provide a (valid) channel!")] }),
+                otherwise: async m => ({ embeds: [await KaikiEmbeds.errorMessage(m, "Please provide a (valid) channel!")] }),
             },
             {
                 id: "argMessage",
@@ -40,11 +40,11 @@ export default class SayCommand extends KaikiCommand {
     public async exec(_: Message, { channel, argMessage }: { channel: TextChannel, argMessage: argumentMessage }): Promise<Message> {
 
         if (_.member && !_.member.permissionsIn(channel).has(Permissions.FLAGS.MANAGE_MESSAGES)) {
-            return _.channel.send({ embeds: [await errorMessage(_, `You do not have \`MANAGE_MESSAGES\` in ${channel}`)] });
+            return _.channel.send({ embeds: [await KaikiEmbeds.errorMessage(_, `You do not have \`MANAGE_MESSAGES\` in ${channel}`)] });
         }
 
         return channel.send(typeof argMessage !== "object"
             ? { content: argMessage }
-            : await new EmbedFromJson(argMessage).createEmbed());
+            : new JSONToMessageOptions(argMessage));
     }
 }

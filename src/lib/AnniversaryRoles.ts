@@ -14,8 +14,6 @@ async function DateObject() {
 }
 let listUsersCakeDay: string[] = [],
     listUserJoinedAt: string[] = [];
-// Fuck this-
-// 5/8/2020 DDMMYYYY
 
 async function birthdayService(client: Client): Promise<void> {
 
@@ -161,17 +159,6 @@ async function resetArrays() {
     listUserJoinedAt = [];
     listUsersCakeDay = [];
 }
-
-// Checks all roles
-// Add role when date is right
-// Removes role when date isn't right
-// Its a cluster fuck
-// Fixed ? I think so 19/08/2020
-// OFC NOT.
-// REWRITE AS OF 15/09/2020
-//
-// 17/05/2021
-// It doesnt filter out enabled vs disabled guilds in the Database
 
 export { birthdayService, checkBirthdayOnAdd, checkAnniversaryMember };
 

@@ -1,10 +1,10 @@
 import { Message, MessageEmbed } from "discord.js";
 import fetch from "node-fetch";
 import { KaikiCommand } from "kaiki";
-import { handleError, handleResponse, aniQuery } from "../../lib/APIs/AnilistGraphQL";
+import { aniQuery, handleError, handleResponse } from "../../lib/APIs/AnilistGraphQL";
 import { IAnimeRes } from "../../interfaces/IAnimeRes";
-import { stripHtml, trim } from "../../lib/Util";
-import { noArgGeneric } from "../../lib/Embeds";
+import KaikiEmbeds from "../../lib/KaikiEmbeds";
+import Utility from "../../lib/Util";
 
 export default class AnimeCommand extends KaikiCommand {
     constructor() {
@@ -16,7 +16,7 @@ export default class AnimeCommand extends KaikiCommand {
                 id: "anime",
                 type: "string",
                 match: "content",
-                otherwise: (m) => ({ embeds: [noArgGeneric(m)] }),
+                otherwise: (m) => ({ embeds: [KaikiEmbeds.genericArgumentError(m)] }),
             }],
         });
     }
@@ -60,7 +60,7 @@ export default class AnimeCommand extends KaikiCommand {
                                 ? `${title.english} / ${title.romaji}`
                                 : title.english || title.romaji)
                             .setURL(siteUrl)
-                            .setDescription(stripHtml(trim(description, 2000)))
+                            .setDescription(Utility.stripHtml(Utility.trim(description, 2000)))
                             .withOkColor(message),
                         new MessageEmbed()
                             .addFields([

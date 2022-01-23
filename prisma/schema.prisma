@@ -10,7 +10,7 @@ datasource db {
 model BlockedCategories {
   Id             Int    @id @default(autoincrement())
   GuildId        BigInt
-  CategoryTarget BigInt
+  CategoryTarget Int
   Guilds         Guilds @relation(fields: [GuildId], references: [Id], onDelete: Cascade, map: "BlockedCategories_ibfk_1")
 
   @@index([GuildId], map: "GuildId")
@@ -101,6 +101,8 @@ model Guilds {
   ByeChannel        BigInt?
   WelcomeMessage    String?             @db.MediumText
   ByeMessage        String?             @db.MediumText
+  WelcomeTimeout    Int?
+  ByeTimeout        Int?
   StickyRoles       Boolean             @default(false)
   CreatedAt         DateTime            @db.DateTime(0)
   BlockedCategories BlockedCategories[]

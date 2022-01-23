@@ -1,10 +1,10 @@
 import { Guild, Message, MessageEmbed } from "discord.js";
 import { IGuild } from "../../interfaces/IDocuments";
 import { checkBirthdayOnAdd } from "../../lib/AnniversaryRoles";
-import { noArgGeneric } from "../../lib/Embeds";
 import { KaikiCommand } from "kaiki";
 
 import { getGuildDocument } from "../../struct/documentMethods";
+import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
 type values = "enable" | "true" | "disable" | "false";
 const values: values[] = ["enable", "true", "disable", "false"];
@@ -18,7 +18,7 @@ export default class AnniversaryRolesConfigCommand extends KaikiCommand {
                 {
                     id: "value",
                     type: values,
-                    otherwise: (message: Message) => ({ embeds: [noArgGeneric(message)] }),
+                    otherwise: (message: Message) => ({ embeds: [KaikiEmbeds.genericArgumentError(message)] }),
                 },
             ],
         });

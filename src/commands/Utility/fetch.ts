@@ -1,7 +1,7 @@
 import { Argument } from "discord-akairo";
 import { Snowflake } from "discord-api-types";
 import { Message, MessageEmbed, User } from "discord.js";
-import { flags } from "../../lib/Util";
+import Utility from "../../lib/Util";
 import { KaikiCommand } from "kaiki";
 
 
@@ -12,23 +12,21 @@ export default class FetchUserCommand extends KaikiCommand {
             aliases: ["fu", "fetch"],
             description: "Fetches a discord user, shows relevant information. 30sec cooldown.",
             usage: "<id>",
-            args: [
-                {
-                    id: "userObject",
-                    type: Argument.union("user", async (message: Message, phrase: string) => {
-                        try {
-                            const u = await message.client.users.fetch(phrase as Snowflake);
-                            if (u) return u;
-                        }
-                        catch {
-                            return;
-                        }
-                    }),
-                    otherwise: (m) => ({ embeds: [new MessageEmbed()
-                        .setDescription("No user found")
-                        .withErrorColor(m)] }),
-                },
-            ],
+            args: [{
+                id: "userObject",
+                type: Argument.union("user", async (message: Message, phrase: string) => {
+                    try {
+                        const u = await message.client.users.fetch(phrase as Snowflake);
+                        if (u) return u;
+                    }
+                    catch {
+                        return;
+                    }
+                }),
+                otherwise: (m) => ({ embeds: [new MessageEmbed()
+                    .setDescription("No user found")
+                    .withErrorColor(m)] }),
+            }],
         });
     }
     public async exec(message: Message, { userObject }: { userObject: User }): Promise<Message | void> {
@@ -49,13 +47,8 @@ export default class FetchUserCommand extends KaikiCommand {
                     { name: "Account date", value: userObject?.createdAt?.toDateString(), inline: true }])
                 .withOkColor(message);
 
-        // Deprecated
-        // if (userObject.lastMessage) {
-        // embed.addField("Last (seen) message", userObject.lastMessage?.createdAt.toLocaleString(), true);
-        // }
-
         if (userFlags.length) {
-            embed.addField("Flags", userFlags.map((flag) => flags[flag]).join("\n"), true);
+            embed.addField("Flags", userFlags.map((flag) => Utility.flags[flag]).join("\n"), true);
         }
         if (userObject.bot) {
             embed.addField("Bot", "✅", true);

@@ -25,13 +25,21 @@ export default class StatsCommand extends KaikiCommand {
 
         const guildCache = this.client.guilds.cache,
             createEmbed = () => new MessageEmbed()
-                .setAuthor("© 2021 @Cata#2702", message.client.user?.displayAvatarURL({ dynamic: true }), packageJson.repository.url)
+                .setAuthor({
+                    name: "© 2021 @Cata#2702",
+                    iconURL: message.client.user?.displayAvatarURL({ dynamic: true }),
+                    url: packageJson.repository.url,
+                })
                 .withOkColor(message),
             db = await getCommandStatsDocument(),
             stats = Object.entries(db.count).sort((a, b) => b[1] - a[1]);
 
         const pages = [new MessageEmbed()
-            .setAuthor(`${packageJson.name} v${packageJson.version}-${execSync("git rev-parse --short HEAD").toString()}`, message.client.user?.displayAvatarURL({ dynamic: true }), packageJson.repository.url)
+            .setAuthor({
+                name: `${packageJson.name} v${packageJson.version}-${execSync("git rev-parse --short HEAD").toString()}`,
+                iconURL: message.client.user?.displayAvatarURL({ dynamic: true }),
+                url: packageJson.repository.url,
+            })
             .setDescription("Detailed statistics")
             .addFields([
                 { name: "Memory Usage", value: `${Math.round(process.memoryUsage().heapUsed / 1024 / 1024)}MB`, inline: true },

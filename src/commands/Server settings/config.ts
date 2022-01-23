@@ -1,10 +1,11 @@
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
 import { Argument, Flag, PrefixSupplier } from "discord-akairo";
-import { Guild, Message, MessageEmbed } from "discord.js";
-import { EmbedFromJson } from "../../interfaces/IGreetLeave";
-import { createAndParseWelcomeLeaveMessage } from "../../lib/GreetHandler";
+import { Message, MessageEmbed, MessageOptions } from "discord.js";
 import { KaikiCommand } from "kaiki";
-import { getGuildDocument } from "../../struct/documentMethods";
+import GreetHandler from "../../lib/GreetHandler";
+import { blockedCategories } from "../../struct/constants";
+import Utility from "../../lib/Util";
+import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
 export default class ConfigCommand extends KaikiCommand {
     constructor() {
@@ -16,7 +17,9 @@ export default class ConfigCommand extends KaikiCommand {
             prefix: (msg: Message) => {
                 const mentions = [`<@${this.client.user?.id}>`, `<@!${this.client.user?.id}>`];
                 const prefixes = [(this.handler.prefix as PrefixSupplier)(msg) as string, "-"];
-                if (this.client.user) {return [...prefixes, ...mentions];}
+                if (this.client.user) {
+                    return [...prefixes, ...mentions];
+                }
                 return prefixes;
             },
         });
@@ -40,53 +43,48 @@ export default class ConfigCommand extends KaikiCommand {
 
         if (!message.member) return message;
 
-        const db = await getGuildDocument((message.guild as Guild).id),
-            { anniversary, dadBot, prefix, errorColor, okColor, welcome, goodbye } = db.settings,
-            welcomeEmbed = await new EmbedFromJson(await createAndParseWelcomeLeaveMessage(welcome, message.member)).createEmbed(),
-            goodbyeEmbed = await new EmbedFromJson(await createAndParseWelcomeLeaveMessage(goodbye, message.member)).createEmbed();
+        const db = await this.client.orm.guilds.findUnique({ where: { Id: BigInt(message.guild!.id) }, include: { BlockedCategories: true } });
+        if (!db) return await message.channel.send({ embeds: [await KaikiEmbeds.errorMessage(message, "No data for this guild was stored in the database!")] });
 
-        function toggledTernary(value: boolean) {
-            return value
-                ? "Enabled"
-                : "Disabled";
-        }
+        const { Anniversary, DadBot, Prefix, ErrorColor, OkColor, WelcomeChannel, ByeChannel } = db;
 
-        const pages = [
+        const pages: (MessageEmbed | MessageOptions)[] = [
             new MessageEmbed()
                 .withOkColor(message)
                 .addField("Dad-bot",
-                    toggledTernary(dadBot.enabled), true)
+                    Utility.toggledTernary(DadBot), true)
                 .addField("Anniversary-Roles",
-                    toggledTernary(anniversary), true)
+                    Utility.toggledTernary(Anniversary), true)
                 .addField("Guild prefix",
-                    prefix === process.env.PREFIX
+                    Prefix === process.env.PREFIX
                         ? `\`${process.env.PREFIX}\` (Default)`
-                        : `\`${prefix}\``, true)
-                .addField("Embed error color",
-                    errorColor.toString().startsWith("#")
-                        ? errorColor.toString()
-                        : "#" + errorColor.toString(16), true)
+                        : `\`${Prefix}\``, true)
                 .addField("Embed ok color",
-                    okColor.toString().startsWith("#")
-                        ? okColor.toString()
-                        : "#" + okColor.toString(16), true)
+                    OkColor.toString(16), true)
+                .addField("Embed error color",
+                    ErrorColor.toString(16), true)
                 .addField("\u200B", "\u200B", true)
                 .addField("Welcome message",
-                    toggledTernary(welcome.enabled), true)
+                    Utility.toggledTernary(!!WelcomeChannel), true)
                 .addField("Goodbye message",
-                    toggledTernary(goodbye.enabled), true)
+                    Utility.toggledTernary(!!ByeChannel), true)
                 .addField("\u200B", "\u200B", true)
                 .addField("Sticky roles",
-                    toggledTernary(await this.client.guildProvider.get(message.guild!.id, "StickyRoles", false)), false),
-            welcomeEmbed,
-            goodbyeEmbed,
+                    Utility.toggledTernary(await this.client.guildProvider.get(message.guild!.id, "StickyRoles", false)), false),
         ];
 
-        const categories = Object.entries(db.blockedCategories).filter(e => e[1]);
+        if (db.WelcomeMessage) {
+            pages.push(await GreetHandler.createAndParseWelcomeLeaveMessage(JSON.parse(db.WelcomeMessage), message.member));
+        }
+        if (db.ByeMessage) {
+            pages.push(await GreetHandler.createAndParseWelcomeLeaveMessage(JSON.parse(db.ByeMessage), message.member));
+        }
+
+        const categories = db.BlockedCategories.filter(e => blockedCategories[e.CategoryTarget]);
 
         if (categories.length) {
             (pages[0] as MessageEmbed)
-                .addField("Disabled categories", categories.map(c => c[0]).join("\n"), false);
+                .addField("Disabled categories", categories.join("\n"), false);
         }
 
         return sendPaginatedMessage(message, pages, {});

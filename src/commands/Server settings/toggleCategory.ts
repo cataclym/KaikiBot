@@ -1,9 +1,9 @@
 import { Category, Command } from "discord-akairo";
 import { Guild, Message, MessageEmbed } from "discord.js";
-import { noArgGeneric } from "../../lib/Embeds";
 import { KaikiCommand } from "kaiki";
 
 import { getGuildDocument } from "../../struct/documentMethods";
+import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
 export default class ToggleCategoryCommand extends KaikiCommand {
     constructor() {
@@ -13,22 +13,18 @@ export default class ToggleCategoryCommand extends KaikiCommand {
             channel: "guild",
             description: "Toggles a category",
             usage: "Anime",
-            args: [
-                {
-                    id: "category",
-                    type: (_, phrase) => {
-                        return this.handler.categories.find((__, k) => {
-
-                            k = k.toLowerCase();
-
-                            return phrase
-                                .toLowerCase()
-                                .startsWith(k.slice(0, Math.max(phrase.length - 1, 1)));
-                        });
-                    },
-                    otherwise: (msg: Message) => ({ embeds: [noArgGeneric(msg)] }),
+            args: [{
+                id: "category",
+                type: (_, phrase) => {
+                    return this.handler.categories.find((__, k) => {
+                        k = k.toLowerCase();
+                        return phrase
+                            .toLowerCase()
+                            .startsWith(k.slice(0, Math.max(phrase.length - 1, 1)));
+                    });
                 },
-            ],
+                otherwise: (msg: Message) => ({ embeds: [KaikiEmbeds.genericArgumentError(msg)] }),
+            }],
         });
     }
     public async exec(message: Message, { category }: { category: Category<string, Command> }): Promise<Message> {

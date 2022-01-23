@@ -1,11 +1,10 @@
 import { exec } from "child_process";
 import { Message } from "discord.js";
-import { codeblock, trim } from "../../lib/Util";
+import Utility from "../../lib/Util";
 import fs from "fs";
 import logger from "loglevel";
 import * as path from "path";
 import { KaikiCommand } from "kaiki";
-
 
 export default class UpdateCommand extends KaikiCommand {
     constructor() {
@@ -49,7 +48,7 @@ export default class UpdateCommand extends KaikiCommand {
                     if (err) {
                         throw new Error(err.message);
                     }
-                    const content = `Log:\n${await codeblock(trim(std, 1000))}\nUpdated ${message.client.user?.tag} to ${stdv}`;
+                    const content = `Log:\n${await Utility.codeblock(Utility.trim(std, 1000))}\nUpdated ${message.client.user?.tag} to ${stdv}`;
                     const msg = await message.channel.send(content + "\nRunning compiler...");
 
                     fs.rename(path.join("dist"), path.join("dist_backup"), (_) => logger.info(_));
@@ -66,7 +65,7 @@ export default class UpdateCommand extends KaikiCommand {
                         fs.rename(path.join("dist_backup"), path.join("dist"), (_) => logger.info(_));
                         reject(err.message);
                     }
-                    return resolve(msg.edit(`${content}\n**Compile finished**\n${await codeblock(trim(tscOutput, 200))}`));
+                    return resolve(msg.edit(`${content}\n**Compile finished**\n${await Utility.codeblock(Utility.trim(tscOutput, 200))}`));
                 });
             });
         }

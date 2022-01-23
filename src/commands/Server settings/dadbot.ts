@@ -1,10 +1,9 @@
 import { PrefixSupplier } from "discord-akairo";
 import { Guild, Message, MessageEmbed } from "discord.js";
-import { noArgGeneric } from "../../lib/Embeds";
 import { KaikiCommand } from "kaiki";
-
 import { getGuildDocument } from "../../struct/documentMethods";
 import { excludeData } from "../../lib/slashCommands/data";
+import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
 export default class DadBotConfigCommand extends KaikiCommand {
     constructor() {
@@ -15,10 +14,9 @@ export default class DadBotConfigCommand extends KaikiCommand {
                 {
                     id: "value",
                     type: ["enable", "true", "disable", "false"],
-                    otherwise: (message: Message) => ({ embeds: [noArgGeneric(message)] }),
+                    otherwise: (message: Message) => ({ embeds: [KaikiEmbeds.genericArgumentError(message)] }),
                 },
             ],
-
         });
     }
 

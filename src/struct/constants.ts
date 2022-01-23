@@ -10,7 +10,7 @@ export const AnniversaryStrings = {
 };
 
 export const EMOTE_REGEX = /<(a?)((!?\d+)|(:.+?:\d+))>/g;
-export const IMAGE_REGEX = /(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|gif|png|jpeg)/gi;
+export const IMAGE_REGEX = /(http(s?):)([/|.\w\s-])*\.(?:jpg|gif|png|jpeg)/gi;
 // Credit to https://github.com/Snitt/emojibotten/blob/master/commands/management/emoji.js
 
 type theseDoNotYetExist = "MEMBER_PROFILES"

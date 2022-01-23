@@ -1,8 +1,8 @@
 import { Listener } from "discord-akairo";
 import { CommandInteraction, Interaction } from "discord.js";
 import logger from "loglevel";
-import { errorMessage } from "../lib/Embeds";
 import { ExcludeSlashCommand } from "../lib/slashCommands/functions";
+import KaikiEmbeds from "../lib/KaikiEmbeds";
 
 export default class InteractionListener extends Listener {
     constructor() {
@@ -28,7 +28,7 @@ export default class InteractionListener extends Listener {
         else {
             return await interaction.reply({
                 ephemeral: true,
-                embeds: [await errorMessage(interaction.guild,
+                embeds: [await KaikiEmbeds.errorMessage(interaction.guild,
                     "I do not have `MANAGE_ROLES` permission.")],
             });
         }

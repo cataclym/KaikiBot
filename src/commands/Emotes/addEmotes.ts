@@ -1,11 +1,11 @@
 import { Argument } from "discord-akairo";
 import { Message, Permissions } from "discord.js";
 import sizeOf from "image-size";
-import { noArgGeneric } from "../../lib/Embeds";
 import { deleteImage, getFileOut, resizeImage, saveEmoji, saveFile } from "../../lib/Emote";
 import { KaikiCommand } from "kaiki";
+import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
-const imgRegex = /(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|gif|png|jpeg)/gi;
+const imgRegex = /(http(s?):)([/|.\w\s-])*\.(?:jpg|gif|png|jpeg)/gi;
 // Credit to https://github.com/Snitt/emojibotten/blob/master/commands/management/emoji.js
 export default class AddEmotesCommand extends KaikiCommand {
     constructor() {
@@ -21,7 +21,7 @@ export default class AddEmotesCommand extends KaikiCommand {
                     id: "urls",
                     type: Argument.union(imgRegex),
                     match: "separate",
-                    otherwise: (msg: Message) => ({ embeds: [noArgGeneric(msg)] }),
+                    otherwise: (msg: Message) => ({ embeds: [KaikiEmbeds.genericArgumentError(msg)] }),
                 },
             ],
         });

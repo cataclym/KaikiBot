@@ -1,11 +1,10 @@
 import {
-	AkairoClient,
-	Command,
-	CommandHandler,
-	CommandOptions,
-	InhibitorHandler,
-	ListenerHandler,
-	MongooseProvider
+    AkairoClient,
+    Command,
+    CommandHandler,
+    CommandOptions,
+    InhibitorHandler,
+    ListenerHandler,
 } from "discord-akairo";
 import MySQLProvider from "../../src/struct/db/MySQLProvider";
 import { Connection as MySQLConnection } from "mysql2/promise";
@@ -28,14 +27,14 @@ export declare interface KaikiCommandOptions extends CommandOptions {
 }
 
 export declare class KaikiCommand extends Command {
-	public usage?: string | string[];
-	public client: KaikiClient;
+    public usage?: string | string[];
+    public client: KaikiClient;
 
-	public constructor(id: string, options: KaikiCommandOptions);
+    public constructor(id: string, options: KaikiCommandOptions);
 }
 
 declare class ClassKaikiUtil {
-	public handleToJSON: (data: unknown) => Promise<any>
+    public handleToJSON: (data: unknown) => Promise<any>;
 }
 
 export declare const KaikiUtil: ClassKaikiUtil;

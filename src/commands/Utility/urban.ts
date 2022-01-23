@@ -2,10 +2,10 @@ import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
 import { Message, MessageEmbed } from "discord.js";
 import fetch from "node-fetch";
 import querystring from "querystring";
-import { noArgGeneric } from "../../lib/Embeds";
-import { trim } from "../../lib/Util";
 import { KaikiCommand, KaikiUtil } from "kaiki";
 import { List } from "../../interfaces/IUrbanResponse";
+import KaikiEmbeds from "../../lib/KaikiEmbeds";
+import Utility from "../../lib/Util";
 
 
 export default class UrbanDictCommand extends KaikiCommand {
@@ -18,7 +18,7 @@ export default class UrbanDictCommand extends KaikiCommand {
                 {
                     id: "term",
                     match: "rest",
-                    otherwise: (msg: Message) => ({ embeds: [noArgGeneric(msg)] }),
+                    otherwise: (msg: Message) => ({ embeds: [KaikiEmbeds.genericArgumentError(msg)] }),
                 },
             ],
         });
@@ -45,8 +45,8 @@ export default class UrbanDictCommand extends KaikiCommand {
                 .setTitle(result.word)
                 .setURL(result.permalink)
                 .addFields(
-                    { name: "Definition", value: trim(result.definition, 1024) },
-                    { name: "Example", value: trim(result.example || "N/A", 1024) },
+                    { name: "Definition", value: Utility.trim(result.definition, 1024) },
+                    { name: "Example", value: Utility.trim(result.example || "N/A", 1024) },
                     { name: "Rating", value: `${result.thumbs_up} thumbs up. ${result.thumbs_down} thumbs down.` },
                 )
                 .withOkColor(message),

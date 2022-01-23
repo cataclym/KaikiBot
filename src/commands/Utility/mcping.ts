@@ -1,9 +1,9 @@
 import { Message, MessageAttachment, MessageEmbed } from "discord.js";
 import fetch from "node-fetch";
 import { ServerOffline, ServerOnline } from "../../interfaces/IMinecraftServerPing";
-import { noArgGeneric } from "../../lib/Embeds";
-import { trim } from "../../lib/Util";
 import { KaikiCommand } from "kaiki";
+import KaikiEmbeds from "../../lib/KaikiEmbeds";
+import Utility from "../../lib/Util";
 
 export default class mcpingCommand extends KaikiCommand {
     constructor() {
@@ -14,7 +14,7 @@ export default class mcpingCommand extends KaikiCommand {
             args: [{
                 id: "term",
                 match: "rest",
-                otherwise: (msg: Message) => ({ embeds: [noArgGeneric(msg)] }),
+                otherwise: (msg: Message) => ({ embeds: [KaikiEmbeds.genericArgumentError(msg)] }),
             }],
             typing: true,
         });
@@ -36,9 +36,9 @@ export default class mcpingCommand extends KaikiCommand {
                     { name: "Version", value: String(result.version), inline: true },
                     { name: "MOTD", value: result.motd.clean.join("\n"), inline: true },
                     { name: "Players", value: `${result.players.online}/${result.players.max}`, inline: true },
-                    { name: "Plugins", value: result.plugins?.names.length ? trim(result.plugins?.names.join(", "), 1024) : "None", inline: true },
+                    { name: "Plugins", value: result.plugins?.names.length ? Utility.trim(result.plugins?.names.join(", "), 1024) : "None", inline: true },
                     { name: "Software", value: result?.software ?? "Unknown", inline: true },
-                    { name: "Mods", value: result.mods?.names.length ? trim(result.mods?.names.join(", "), 1024) : "None", inline: true },
+                    { name: "Mods", value: result.mods?.names.length ? Utility.trim(result.mods?.names.join(", "), 1024) : "None", inline: true },
                 ])
                 .withOkColor(message);
 

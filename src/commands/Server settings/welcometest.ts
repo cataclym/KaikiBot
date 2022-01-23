@@ -1,8 +1,6 @@
 import { Message, Permissions } from "discord.js";
-import { sendWelcomeLeaveMessage } from "../../lib/GreetHandler";
+import GreetHandler from "../../lib/GreetHandler";
 import { KaikiCommand } from "kaiki";
-
-import { getGuildDocument } from "../../struct/documentMethods";
 
 export default class WelcomeTestCommand extends KaikiCommand {
     constructor() {
@@ -16,6 +14,19 @@ export default class WelcomeTestCommand extends KaikiCommand {
     }
 
     public async exec(message: Message): Promise<void> {
-        await sendWelcomeLeaveMessage((await getGuildDocument(message.guild!.id)).settings.welcome, message.member!);
+        const db = await this.client.orm.guilds.findUnique({
+            where: { Id: BigInt(message.guildId!) },
+            select: { WelcomeChannel: true, WelcomeMessage: true, WelcomeTimeout: true },
+        });
+
+        if (!db) return;
+
+        const welcomeData = {
+            channel: db.WelcomeChannel || BigInt(message.channelId),
+            embed: db.WelcomeMessage,
+            timeout: db.WelcomeTimeout || undefined,
+        };
+
+        await GreetHandler.sendWelcomeLeaveMessage(welcomeData, message.member!);
     }
 }

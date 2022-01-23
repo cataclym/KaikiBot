@@ -7,7 +7,7 @@ import { badWords } from "../struct/constants";
 import { getBotDocument, getGuildDocument } from "../struct/documentMethods";
 import { tinderDataModel } from "../struct/db/models";
 import { birthdayService } from "./AnniversaryRoles";
-import { partition, trim } from "./Util";
+import Utility from "./Util";
 import { dailyClaimsCache, emoteReactCache, separatedEmoteReactTypes } from "../cache/cache";
 import { regexpType } from "../struct/types";
 
@@ -24,7 +24,7 @@ export async function populateERCache(message: Message) {
         return;
     }
 
-    const [array_has_space, array_no_space] = partition(emoteReacts, ([k]) => k.includes(" "));
+    const [array_has_space, array_no_space] = Utility.partition(emoteReacts, ([k]) => k.includes(" "));
 
     emoteReactCache[message.guild!.id] = {
         has_space: Object.fromEntries(array_has_space),
@@ -189,7 +189,7 @@ export function msToTime(duration: number): string {
 
 export async function sendDM(message: Message): Promise<Message | undefined> {
     if (message.author.id === process.env.OWNER) return;
-    // I don't wanna see my own msgs, thank u
+    // I don't want see my own messages, thank u
 
     if (!botOwner) botOwner = message.client.users.cache.get(process.env.OWNER as Snowflake);
 
@@ -198,7 +198,7 @@ export async function sendDM(message: Message): Promise<Message | undefined> {
 
     const embed = new MessageEmbed({
         author: { name: `${message.author.tag} [${message.author.id}]` },
-        description: trim(message.content, 2048),
+        description: Utility.trim(message.content, 2048),
     })
         .withOkColor();
 
@@ -218,19 +218,21 @@ export async function sendDM(message: Message): Promise<Message | undefined> {
         embed
             .setImage(firstAttachment)
             .setTitle(firstAttachment)
-            .setFooter(urls.join("\n"));
+            .setFooter({ text: urls.join("\n") });
     }
 
     return botOwner?.send({ content: attachmentLinks ?? null, embeds: [embed] });
 
 }
 
-export async function parsePlaceHolders(input:string, guildMember: GuildMember): Promise<string> {
+export async function parsePlaceHolders(input: string, guildMember: GuildMember): Promise<string> {
 
-    if (input.includes("%guild%")) {
+    const lowercase = input.toLowerCase();
+
+    if (lowercase.includes("%guild%")) {
         input = input.replace(/%guild%/ig, guildMember.guild.name);
     }
-    if (input.includes("%member%")) {
+    if (lowercase.includes("%member%")) {
         input = input.replace(/%member%/ig, guildMember.user.tag);
     }
     return input;

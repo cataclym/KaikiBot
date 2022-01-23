@@ -9,19 +9,18 @@ import {
     NewsChannel,
     Role,
     StageChannel,
-    StoreChannel,
     TextChannel,
     ThreadChannel,
     VoiceChannel,
 } from "discord.js";
 import * as emojis from "node-emoji";
-import { errorMessage, noArgGeneric } from "../../lib/Embeds";
-import { flags } from "../../lib/Util";
 import { EMOTE_REGEX } from "../../struct/constants";
 import { KaikiCommand } from "kaiki";
 import { regexpType } from "../../struct/types";
 import { isRegex } from "../../lib/functions";
 import { time } from "@discordjs/builders";
+import KaikiEmbeds from "../../lib/KaikiEmbeds";
+import Utility from "../../lib/Util";
 
 export default class InfoCommand extends KaikiCommand {
     constructor() {
@@ -38,7 +37,7 @@ export default class InfoCommand extends KaikiCommand {
                     }, "guildMessage", EMOTE_REGEX),
                     match: "content",
                     otherwise: async (m: Message) => ({
-                        embeds: [await errorMessage(m, "A channel, user, role, emoji or message was not found. Make sure to provide a valid argument!")],
+                        embeds: [await KaikiEmbeds.errorMessage(m, "A channel, user, role, emoji or message was not found. Make sure to provide a valid argument!")],
                     }),
                 },
             ],
@@ -64,7 +63,7 @@ export default class InfoCommand extends KaikiCommand {
                 if (obj.parent) emb.addField("Parent", `${obj.parent.name} [${obj.parentId}]`);
             }
 
-            else if (obj instanceof TextChannel || obj instanceof NewsChannel || obj instanceof StoreChannel) {
+            else if (obj instanceof TextChannel || obj instanceof NewsChannel) {
                 emb.setTitle(`Info about text channel: ${obj.name}`)
                     .addField("ID", obj.id)
                     .addField("NSFW", obj.nsfw ? "Enabled" : "Disabled")
@@ -109,7 +108,7 @@ export default class InfoCommand extends KaikiCommand {
             const uFlags = obj.user.flags?.toArray();
 
             if (uFlags?.length) {
-                emb.addField("Flags", uFlags.map(flag => flags[flag]).join("\n"), true);
+                emb.addField("Flags", uFlags.map(flag => Utility.flags[flag]).join("\n"), true);
             }
 
             if (obj.user.banner || (await obj.user.fetch(true)).banner) {
@@ -155,7 +154,7 @@ export default class InfoCommand extends KaikiCommand {
 
             const emoji = obj.match[0].toString().split(":");
 
-            if (emoji.length < 3) return message.channel.send({ embeds: [noArgGeneric(message)] });
+            if (emoji.length < 3) return message.channel.send({ embeds: [KaikiEmbeds.genericArgumentError(message)] });
 
             const id = emoji[2].replace(">", "");
             const link = `https://cdn.discordapp.com/emojis/${id}.${emoji[0] === "<a" ? "gif" : "png"}`;

@@ -1,10 +1,9 @@
 import { Guild, GuildEmoji, Message, MessageEmbed, Permissions } from "discord.js";
-import { noArgGeneric } from "../../lib/Embeds";
 import { KaikiCommand } from "kaiki";
-
 import { getGuildDocument } from "../../struct/documentMethods";
 import { emoteReactCache } from "../../cache/cache";
 import { populateERCache } from "../../lib/functions";
+import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
 export default class EmoteReactCommand extends KaikiCommand {
     constructor() {
@@ -19,12 +18,12 @@ export default class EmoteReactCommand extends KaikiCommand {
                 {
                     id: "trigger",
                     type: "string",
-                    otherwise: (m: Message) => ({ embeds: [noArgGeneric(m)] }),
+                    otherwise: (m: Message) => ({ embeds: [KaikiEmbeds.genericArgumentError(m)] }),
                 },
                 {
                     id: "emoji",
                     type: "emoji",
-                    otherwise: (m: Message) => ({ embeds: [noArgGeneric(m)] }),
+                    otherwise: (m: Message) => ({ embeds: [KaikiEmbeds.genericArgumentError(m)] }),
                 },
             ],
         });

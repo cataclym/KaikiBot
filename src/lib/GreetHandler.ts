@@ -1,57 +1,77 @@
-import { Snowflake } from "discord-api-types";
-import { GuildMember, Message, TextChannel } from "discord.js";
+import {
+    GuildMember,
+    Message,
+    MessageEmbed,
+    MessageEmbedOptions,
+    MessageOptions,
+    StickerResolvable,
+    TextChannel,
+} from "discord.js";
 import { parsePlaceHolders } from "./functions";
-import { getGuildDocument } from "../struct/documentMethods";
-import { EmbedFromJson, IGreet, MessageEmbedOptionsJSON } from "../interfaces/IGreetLeave";
 
-export async function handleGreetMessage(guildMember: GuildMember): Promise<Message | void> {
+type Diff<T, U> = T extends U ? never : T;
+type NotNull<T> = Diff<T, null | undefined>
 
-    const db = await getGuildDocument(guildMember.guild.id);
-
-    if (db.settings.welcome.enabled) {
-        return sendWelcomeLeaveMessage(db.settings.welcome, guildMember);
-    }
-    return;
+interface sendMessageData {
+    channel: bigint | null,
+    embed: string | null,
+    timeout?: number,
 }
 
-export async function handleGoodbyeMessage(guildMember: GuildMember): Promise<Message | void> {
-
-    const db = await getGuildDocument(guildMember.guild.id);
-
-    if (db.settings.goodbye.enabled) {
-        return sendWelcomeLeaveMessage(db.settings.goodbye, guildMember);
-    }
-    return;
+interface hasMessageData {
+    channel: NotNull<bigint>,
+    embed: NotNull<string>,
+    timeout?: number,
 }
 
-export async function createAndParseWelcomeLeaveMessage(data: IGreet, guildMember: GuildMember): Promise<MessageEmbedOptionsJSON> {
 
-    const objectIndex: { [index: string]: any } = {};
+export default class GreetHandler {
+    static JSONErrorMessage = (m: Message) => ({ embeds: [new MessageEmbed()
+        .setTitle("Error")
+        .setDescription("Please provide valid json")
+        .withErrorColor(m)] });
+    static async handleGreetMessage(guildMember: GuildMember): Promise<Message | void> {
 
-    for (const [embedKey, embedValue] of Object.entries(data.embed)) {
-        if (typeof embedValue === "string") {
-            objectIndex[embedKey] = await parsePlaceHolders(embedValue, guildMember);
+        const db = await guildMember.client.orm.guilds.findFirst({ where: { Id: BigInt(guildMember.guild.id) } });
+
+        if (db && db.WelcomeChannel) {
+            return GreetHandler.sendWelcomeLeaveMessage({
+                channel: db.WelcomeChannel,
+                embed: db.WelcomeMessage,
+                timeout: db.WelcomeTimeout || undefined,
+            }, guildMember);
         }
-        else if (embedValue) {
-            objectIndex[embedKey] = embedValue;
-        }
     }
-    return objectIndex;
-}
 
-export async function sendWelcomeLeaveMessage(data: IGreet, guildMember: GuildMember): Promise<Message | void> {
-    if (!data.channel) return;
+    static async handleGoodbyeMessage(guildMember: GuildMember): Promise<Message | void> {
 
-    const channel = guildMember.guild.channels.cache.get(data.channel as Snowflake)
-			?? await guildMember.guild.client.channels.fetch(data.channel as Snowflake, { cache: true });
+        const db = await guildMember.client.orm.guilds.findFirst({ where: { Id: BigInt(guildMember.guild.id) } });
 
-    if (channel && channel?.type !== "GUILD_TEXT" && channel?.type !== "GUILD_NEWS") return;
+        if (db && db.ByeChannel) {
+            return GreetHandler.sendWelcomeLeaveMessage(<hasMessageData>{
+                channel: db.ByeChannel,
+                embed: db.ByeMessage,
+                timeout: db.ByeTimeout || undefined,
+            }, guildMember);
+        }
+        return;
+    }
 
-    if (data.embed) {
+    static async createAndParseWelcomeLeaveMessage(data: hasMessageData, guildMember: GuildMember): Promise<MessageOptions> {
+        return JSON.parse(await parsePlaceHolders(data.embed, guildMember));
+    }
 
-        const objectIndex = await createAndParseWelcomeLeaveMessage(data, guildMember);
+    static async sendWelcomeLeaveMessage(data: sendMessageData, guildMember: GuildMember): Promise<Message | void> {
+        if (!data.channel || !data.embed) return;
 
-        return (channel as TextChannel).send(await new EmbedFromJson(objectIndex).createEmbed())
+        const channel = guildMember.guild.channels.cache.get(String(data.channel))
+          ?? await guildMember.guild.client.channels.fetch(String(data.channel), { cache: true });
+
+        if (channel && channel.type !== "GUILD_TEXT" && channel.type !== "GUILD_NEWS") return;
+
+        const parsedMessageOptions = await GreetHandler.createAndParseWelcomeLeaveMessage(<hasMessageData>data, guildMember);
+
+        return (channel as TextChannel).send(parsedMessageOptions)
             .then((m) => {
                 if (data.timeout) {
                     setTimeout(() => m.delete(), data.timeout * 1000);
@@ -60,5 +80,16 @@ export async function sendWelcomeLeaveMessage(data: IGreet, guildMember: GuildMe
                 return m;
             });
     }
+}
+
+export class JSONToMessageOptions implements MessageOptions {
+    constructor(any: any) {
+        this.embeds = any.embeds;
+        this.content = any.content;
+        this.stickers = any.stickers;
+    }
+    embeds: (MessageEmbed | MessageEmbedOptions)[];
+    content?: string | null | undefined;
+    stickers?: StickerResolvable[] | undefined;
 }
 

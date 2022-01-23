@@ -1,7 +1,7 @@
 import { Message, MessageReaction } from "discord.js";
-import { noArgGeneric } from "../../lib/Embeds";
 import { getUserDocument } from "../../struct/documentMethods";
 import { KaikiCommand } from "kaiki";
+import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
 
 export default class todoAddCommand extends KaikiCommand {
@@ -12,7 +12,7 @@ export default class todoAddCommand extends KaikiCommand {
                     id: "toAdd",
                     type: "string",
                     match: "rest",
-                    otherwise: (msg: Message) => ({ embeds: [noArgGeneric(msg)] }),
+                    otherwise: (msg: Message) => ({ embeds: [KaikiEmbeds.genericArgumentError(msg)] }),
                 },
             ],
         });
