@@ -1,6 +1,11 @@
+### Paths
+- [Readme](../README.md)
+- Docs
+  - [Guide](GUIDE.md)
+
 # .env setup guide
 
-The .env file is important to the bot because it is where the process can access its login token. 
+The .env file is important for the bot to run at all. Read below how to populate its fields.
 
 ### CLIENT_TOKEN
 

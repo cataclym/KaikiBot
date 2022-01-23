@@ -1,3 +1,8 @@
+### Paths
+- Docs
+    - [Guide](docs/GUIDE.md)
+    - [ENV](docs/ENV.md)
+
 #  Welcome to Kaiki Deishu Bot 
 https://kaikibot.xyz
 
@@ -7,7 +12,7 @@ https://kaikibot.xyz
 
 # Guide
 
-[Guide to setup bot](./GUIDE.md).
+[Guide to setup bot](docs/GUIDE.md).
 
 # Contributing
 
