@@ -16,7 +16,7 @@
             "group": "build",
             "problemMatcher": [],
             "label": "tsc",
-            "detail": "tsc -p src/tsconfig.json",
+            "detail": "tsc -p src/tsconfig.json"
         }
     ]
 }
