@@ -1,4 +1,4 @@
-import { Message, MessageEmbed, TextChannel } from "discord.js";
+import { Message, MessageEmbed, Permissions, TextChannel } from "discord.js";
 import { KaikiCommand } from "kaiki";
 
 
@@ -6,8 +6,8 @@ export default class ChannelNsfwCommand extends KaikiCommand {
     constructor() {
         super("nsfwtgl", {
             aliases: ["nsfwtgl", "nsfw", "nsfwtoggle"],
-            clientPermissions: "MANAGE_CHANNELS",
-            userPermissions: "MANAGE_CHANNELS",
+            clientPermissions: Permissions.FLAGS.MANAGE_CHANNELS,
+            userPermissions: Permissions.FLAGS.MANAGE_CHANNELS,
             description: "Toggles NSFW in current channel",
             usage: "",
             channel: "guild",

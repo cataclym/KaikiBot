@@ -1,13 +1,13 @@
 import { Argument, Command } from "discord-akairo";
 import { Snowflake } from "discord-api-types/globals";
-import { Message, MessageEmbed, User } from "discord.js";
+import { Message, MessageEmbed, Permissions, User } from "discord.js";
 
 export default class UnbanCommand extends Command {
     constructor() {
         super("unban", {
             aliases: ["unban", "ub"],
-            userPermissions: "BAN_MEMBERS",
-            clientPermissions: "BAN_MEMBERS",
+            userPermissions: Permissions.FLAGS.BAN_MEMBERS,
+            clientPermissions: Permissions.FLAGS.BAN_MEMBERS,
             channel: "guild",
             args: [
                 {
@@ -28,14 +28,15 @@ export default class UnbanCommand extends Command {
 
         const bans = (message.guild?.bans.cache.size
             ? message.guild?.bans.cache
-            : await message.guild?.bans.fetch());
+            : await message.guild?.bans.fetch({ cache: true }));
 
         if (bans?.find((u) => u.user.id === user.id)) {
             await message.guild?.members.unban(user);
-            return message.channel.send({ embeds: [new MessageEmbed({
-                description: `Unbanned ${user.tag}.`,
-            })
-                .withOkColor(message)],
+            return message.channel.send({
+                embeds: [new MessageEmbed({
+                    description: `Unbanned ${user.tag}.`,
+                })
+                    .withOkColor(message)],
             });
         }
 

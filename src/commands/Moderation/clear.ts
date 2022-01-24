@@ -21,7 +21,9 @@ export default class ClearCommand extends KaikiCommand {
     }
     public async exec({ channel }: { channel: TextBasedChannel }, { int }: { int: number }): Promise<void> {
 
-        int > 99 ? int = 99 : null;
+        if (int > 99) {
+            int = 99;
+        }
 
         (channel as TextChannel).bulkDelete(int + 1)
             .catch((r) => console.error(r));

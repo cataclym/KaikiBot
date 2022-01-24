@@ -1,37 +1,35 @@
 import { Argument } from "discord-akairo";
 import { KaikiCommand } from "kaiki";
 import { Snowflake } from "discord-api-types";
-import { Guild, GuildMember, Message, MessageEmbed, User } from "discord.js";
+import { Guild, GuildMember, Message, MessageEmbed, Permissions, User } from "discord.js";
 
 export default class BanCommand extends KaikiCommand {
     constructor() {
         super("ban", {
             aliases: ["ban", "bean", "b"],
-            userPermissions: ["BAN_MEMBERS"],
-            clientPermissions: "BAN_MEMBERS",
+            userPermissions: Permissions.FLAGS.BAN_MEMBERS,
+            clientPermissions: Permissions.FLAGS.BAN_MEMBERS,
             description: "Bans a user by ID or name with an optional message.",
-            usage: "@notdreb Your behaviour is harmful.",
+            usage: "@notdreb Your behaviour is harmful",
             channel: "guild",
-            args: [
-                {
-                    id: "user",
-                    type: Argument.union("member", "user", async (_, phrase) => {
-                        const u = await this.client.users.fetch(phrase as Snowflake);
-                        return u || null;
-                    }),
-                    otherwise: (m: Message) => ({
-                        embeds: [new MessageEmbed({
-                            description: "Can't find this user.",
-                        })
-                            .withErrorColor(m)] }),
-                },
-                {
-                    id: "reason",
-                    type: "string",
-                    match: "restContent",
-                    default: "banned",
-                },
-            ],
+            args: [{
+                id: "user",
+                type: Argument.union("member", "user", async (_, phrase) => {
+                    const u = await this.client.users.fetch(phrase as Snowflake);
+                    return u || null;
+                }),
+                otherwise: (m: Message) => ({
+                    embeds: [new MessageEmbed({
+                        description: "Can't find this user.",
+                    })
+                        .withErrorColor(m)] }),
+            },
+            {
+                id: "reason",
+                type: "string",
+                match: "restContent",
+                default: "No reason specified",
+            }],
         });
     }
     public async exec(message: Message, { user, reason }: { user: GuildMember | User, reason: string}): Promise<Message> {
