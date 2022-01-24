@@ -12,14 +12,14 @@ import { MoneyService } from "../../src/lib/money/MoneyService";
 import { PrismaClient } from "@prisma/client";
 
 type KaikiClient = {
+	botSettingsProvider: MySQLProvider;
 	commandHandler: CommandHandler;
+	connection: MySQLConnection;
+	guildProvider: MySQLProvider;
 	inhibitorHandler: InhibitorHandler;
 	listenerHandler: ListenerHandler;
-	botSettingsProvider: MySQLProvider;
-	guildProvider: MySQLProvider;
-	connection: MySQLConnection;
-	orm: PrismaClient;
 	money: MoneyService;
+	orm: PrismaClient;
 } & AkairoClient;
 
 export declare interface KaikiCommandOptions extends CommandOptions {

@@ -15,20 +15,17 @@ export default new Migration({
     migration: async (db) => {
 
         // This migration moves most data from MongoDB to MySQL
-
-        let changes = 0;
-
         const migration = await _MigrationsModel.find({}).exec();
 
         for (const { migrationId, versionString } of migration) {
-            changes++;
+            this.changes++;
             await db.query("INSERT INTO _Migrations (migrationId, versionString) VALUES (?, ?)",
                 [migrationId, versionString],
             );
         }
 
         const { activity, activityType, currencyName, currencySymbol, dailyAmount, dailyEnabled } = (await botModel.findOne({}).exec()).settings;
-        changes++;
+        this.changes++;
         await db.query("INSERT INTO BotSettings (Id, Activity, ActivityType, CurrencyName, CurrencySymbol, DailyAmount, DailyEnabled) VALUES (?, ?, ?, ?, ?, ?, ?)",
             [1, activity || null, activityType || null, currencyName, Number(currencySymbol.codePointAt(0)), dailyAmount, dailyEnabled],
         );
@@ -36,7 +33,7 @@ export default new Migration({
         const guilds = await guildsModel.find({}).exec();
 
         for (const guild of guilds) {
-            changes++;
+            this.changes++;
             const { id, settings, blockedCategories, registeredAt, leaveRoles, userRoles } = guild;
             const {
                 prefix,
@@ -62,7 +59,7 @@ export default new Migration({
 
             if (Object.keys(blockedCategories).length) {
                 for (const key in blockedCategories) {
-                    changes++;
+                    this.changes++;
                     await db.query("INSERT INTO BlockedCategories (GuildId, CategoryTarget) VALUES (?, ?)",
                         [Number(id), blckCats[key]]);
                 }
@@ -73,7 +70,7 @@ export default new Migration({
             if (Object.keys(userRoles).length) {
                 const userRolesKeyValues = Object.entries(userRoles);
                 for (let i = 0; i < Object.keys(userRoles).length; i++) {
-                    changes++;
+                    this.changes++;
 
                     const { insertId } = await db.query("INSERT INTO GuildUsers (userId, userRole, guildId) VALUES (?, ?, ?)",
                         [Number(userRolesKeyValues[i][0]), Number(userRolesKeyValues[i][1]), Number(guild.id)]);
@@ -88,7 +85,7 @@ export default new Migration({
                         insertId = insertedUsers[key];
                     }
                     else {
-                        changes++;
+                        this.changes++;
                         await db.query("INSERT INTO GuildUsers (userId, userRole, guildId) VALUES (?, ?, ?)",
                             [Number(key), userRoles[key] ?? null, Number(guild.id)])
                             .then((res) => {
@@ -96,7 +93,7 @@ export default new Migration({
                             });
                     }
                     for (const role of leaveRoles[key]) {
-                        changes++;
+                        this.changes++;
                         await db.query("INSERT INTO LeaveRoles (roleId, guildUserId) VALUES (?, ?)",
                             [Number(role), insertId],
                         );
@@ -108,14 +105,14 @@ export default new Migration({
         const users = await usersModel.find({}).exec();
 
         for (const user of users) {
-            changes++;
+            this.changes++;
             const money = await moneyModel.findOne({ id: user.id }).exec();
             const [res] = await db.query("INSERT INTO DiscordUsers (userId, amount, createdAt) VALUES (?, ?, ?)",
                 [Number(user.id), money?.amount ?? 0, new Date(user.registeredAt)],
             );
 
             for (let i = 0; i < user.todo.length; i++) {
-                changes++;
+                this.changes++;
                 await db.query("INSERT INTO Todos (userId, string) VALUES (?, ?)",
                     [res.insertId, user.todo[i]],
                 );
@@ -130,12 +127,12 @@ export default new Migration({
         const { count } = await commandStatsModel.findOne({}).exec();
 
         for (const key in count) {
-            changes++;
+            this.changes++;
             await db.query("INSERT INTO CommandStats (commandAlias, count) VALUES (?, ?)",
                 [key, count[key]],
             );
         }
 
-        return changes;
+        return this.changes;
     },
 });

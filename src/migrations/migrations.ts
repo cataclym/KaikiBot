@@ -17,7 +17,7 @@ export class Migrations {
         this.db = db;
     }
 
-    public async loadClasses() {
+    private async loadClasses() {
         const filePaths = this.getFilePaths();
         for await (const filePath of filePaths) {
             this.load(filePath);
@@ -25,7 +25,7 @@ export class Migrations {
     }
 
     // Runs the actual DB migration
-    public async runMigration(migration: Migration) {
+    private async runMigration(migration: Migration) {
 
         // Checks if migration exists
         const result = await this.db.query("SELECT migrationId FROM _Migrations WHERE MigrationId = ?", [migration.migrationId])
@@ -45,7 +45,7 @@ export class Migrations {
         return migrated;
     }
 
-    public getFilePaths(): string[] {
+    private getFilePaths(): string[] {
         const result = [];
         const files = fs.readdirSync(this.currentFolder);
 
@@ -93,6 +93,7 @@ export class Migration {
     readonly hash?: string;
     public migrate: (db: Connection) => number | Promise<number>;
     public migrationId: string;
+    public changes: number;
 
     constructor(data: {
     /**
@@ -104,6 +105,7 @@ export class Migration {
     version: string,
     migration: (db: Connection) => any,
   }) {
+        this.changes = 0;
         this.hash = data.hash;
         this.name = data.name;
         this.version = data.version;
