@@ -13,34 +13,36 @@ import MySQLProvider from "./db/MySQLProvider";
 import { PrismaClient } from "@prisma/client";
 
 export class KaikiClient extends AkairoClient implements ExternalKaikiClient {
+    public botSettingsProvider: MySQLProvider;
     public commandHandler: CommandHandler;
+    public connection: MySQLConnection;
+    public guildProvider: MySQLProvider;
     public inhibitorHandler: InhibitorHandler;
     public listenerHandler: ListenerHandler;
-    public botSettingsProvider: MySQLProvider;
-    public guildProvider: MySQLProvider;
     public money: MoneyService;
     public orm: PrismaClient;
-    public connection: MySQLConnection;
 
     constructor() {
         super({
             ownerID: process.env.OWNER as Snowflake,
             allowedMentions: { parse: ["users"], repliedUser: true },
-            intents: [Intents.FLAGS.DIRECT_MESSAGE_REACTIONS,
-                Intents.FLAGS.DIRECT_MESSAGE_TYPING,
+            intents: [
                 Intents.FLAGS.DIRECT_MESSAGES,
-                Intents.FLAGS.GUILD_BANS,
+                Intents.FLAGS.DIRECT_MESSAGE_REACTIONS,
+                Intents.FLAGS.DIRECT_MESSAGE_TYPING,
                 Intents.FLAGS.GUILDS,
+                Intents.FLAGS.GUILD_BANS,
                 Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS,
                 Intents.FLAGS.GUILD_INTEGRATIONS,
                 Intents.FLAGS.GUILD_INVITES,
                 Intents.FLAGS.GUILD_MEMBERS,
+                Intents.FLAGS.GUILD_MESSAGES,
                 Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
                 // Intents.FLAGS.GUILD_MESSAGE_TYPING,
-                Intents.FLAGS.GUILD_MESSAGES,
                 Intents.FLAGS.GUILD_PRESENCES,
                 // Intents.FLAGS.GUILD_VOICE_STATES,
-                Intents.FLAGS.GUILD_WEBHOOKS],
+                Intents.FLAGS.GUILD_WEBHOOKS,
+            ],
             partials: ["REACTION", "CHANNEL"],
             shards: "auto",
             // Uncomment to have mobile status on bot.
@@ -49,29 +51,33 @@ export class KaikiClient extends AkairoClient implements ExternalKaikiClient {
 
         const db = new Database();
 
-        this.orm = db.orm;
-        this.connection = db.connection;
-        this.botSettingsProvider = new MySQLProvider(this.connection, "BotSettings", { idColumn: "Id" });
-        this.guildProvider = new MySQLProvider(this.connection, "Guilds", { idColumn: "Id" });
+        db.init()
+            .then((obj) => {
+                this.orm = obj.orm;
+                this.connection = obj.connection;
 
-        this.botSettingsProvider.init().then(() => logger.info(`SQL BotSettings provider - ${chalk.green("READY")}`));
-        this.guildProvider.init().then(() => logger.info(`SQL Guild provider - ${chalk.green("READY")}`));
+                this.botSettingsProvider = new MySQLProvider(this.connection, "BotSettings", { idColumn: "Id" });
+                this.guildProvider = new MySQLProvider(this.connection, "Guilds", { idColumn: "Id" });
 
-        this.money = new MoneyService(db.orm);
+                this.botSettingsProvider.init().then(() => logger.info(`SQL BotSettings provider - ${chalk.green("READY")}`));
+                this.guildProvider.init().then(() => logger.info(`SQL Guild provider - ${chalk.green("READY")}`));
 
-        new Migrations(this.connection)
-            .runAllMigrations()
-            .then((res) => {
-                if (res) {
-                    logger.info(`
+                this.money = new MoneyService(this.orm);
+
+                new Migrations(this.connection)
+                    .runAllMigrations()
+                    .then((res) => {
+                        if (res) {
+                            logger.info(`
 ${(chalk.greenBright)("|----------------------------------------------------------|")}
 migrationService | Migrations have successfully finished
 migrationService | Inserted ${(chalk.green)(res)} records into kaikidb
 ${(chalk.greenBright)("|----------------------------------------------------------|")}`);
-                }
-            })
-            .catch(e => {
-                throw e;
+                        }
+                    })
+                    .catch(e => {
+                        throw e;
+                    });
             });
 
         this.commandHandler = new CommandHandler(this, {

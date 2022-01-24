@@ -3,26 +3,17 @@ import * as mysql2 from "mysql2/promise";
 import { PrismaClient } from "@prisma/client";
 
 export class Database {
-    private static _config: mysql2.ConnectionOptions = {
-        user: process.env.MYSQL_USER || "root",
-        password: process.env.MYSQL_PASS || "root",
-        host: "127.0.0.1",
-        port: 3306,
-        database: "kaikidb",
-    };
+    private _config: mysql2.ConnectionOptions;
     public orm: PrismaClient;
     public connection: mysql2.Connection;
 
     constructor() {
-        Database.init()
-            .then((r) => {
-                this.orm = r.orm;
-                this.connection = r.connection;
-            });
+        this._config = {
+            uri: process.env.DATABASE_URL,
+        };
     }
-
-    private static async init() {
-        const connection = await mysql2.createConnection(Database._config)
+    public async init() {
+        const connection = await mysql2.createConnection(this._config)
             .catch((err) => {
                 throw err;
             });
