@@ -1,18 +1,14 @@
 ### Paths
 - Docs
     - [Guide](docs/GUIDE.md)
-    - [ENV](docs/ENV.md)
+    - [.env setup](docs/ENV.md)
 
-#  Welcome to Kaiki Deishu Bot 
-https://kaikibot.xyz
-
-### KaikiBot
+#  Welcome to Kaiki Deishu Bot
 
 [Add Kaiki to your server](https://discord.com/oauth2/authorize?client_id=714695773534814238&scope=bot)
 
 # Guide
-
-[Guide to setup bot](docs/GUIDE.md).
+[Selfhosting guide](docs/GUIDE.md)
 
 # Contributing
 
