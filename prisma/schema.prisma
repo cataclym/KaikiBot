@@ -48,10 +48,18 @@ model DadBotChannels {
   @@index([GuildId], map: "GuildId")
 }
 
+model ExcludedStickyRoles {
+  RoleId  BigInt @id
+  GuildId BigInt
+  Guilds  Guilds @relation(fields: [GuildId], references: [Id], onDelete: Cascade, map: "ExcludedStickyRoles_ibfk_1")
+
+  @@index([GuildId], map: "GuildId")
+}
+
 model DiscordUsers {
   Id        BigInt   @id @default(autoincrement())
   UserId    BigInt   @unique(map: "UserId")
-  Amount    BigInt  @default(0)
+  Amount    BigInt   @default(0)
   CreatedAt DateTime @default(now()) @db.Timestamp(0)
   Todos     Todos[]
 }
@@ -90,51 +98,52 @@ model GuildUsers {
 }
 
 model Guilds {
-  Id                BigInt              @id @unique(map: "Id")
-  Prefix            String              @db.VarChar(255)
-  Anniversary       Boolean             @default(false)
-  DadBot            Boolean             @default(true)
-  ErrorColor        BigInt              @default(16711680)
-  OkColor           BigInt              @default(65280)
-  ExcludeRole       BigInt?
-  WelcomeChannel    BigInt?
-  ByeChannel        BigInt?
-  WelcomeMessage    String?             @db.MediumText
-  ByeMessage        String?             @db.MediumText
-  WelcomeTimeout    Int?
-  ByeTimeout        Int?
-  StickyRoles       Boolean             @default(false)
-  CreatedAt         DateTime            @db.DateTime(0)
-  BlockedCategories BlockedCategories[]
-  DadBotChannels    DadBotChannels[]
-  EmojiReactions    EmojiReactions[]
-  EmojiStats        EmojiStats[]
-  GuildUsers        GuildUsers[]
+  Id                  BigInt                @id @unique(map: "Id")
+  Prefix              String                @db.VarChar(255)
+  Anniversary         Boolean               @default(false)
+  DadBot              Boolean               @default(true)
+  ErrorColor          BigInt                @default(16711680)
+  OkColor             BigInt                @default(65280)
+  ExcludeRole         BigInt?
+  WelcomeChannel      BigInt?
+  ByeChannel          BigInt?
+  WelcomeMessage      String?               @db.MediumText
+  ByeMessage          String?               @db.MediumText
+  WelcomeTimeout      Int?
+  ByeTimeout          Int?
+  StickyRoles         Boolean               @default(false)
+  CreatedAt           DateTime              @db.DateTime(0)
+  BlockedCategories   BlockedCategories[]
+  ExcludedStickyRoles ExcludedStickyRoles[]
+  DadBotChannels      DadBotChannels[]
+  EmojiReactions      EmojiReactions[]
+  EmojiStats          EmojiStats[]
+  GuildUsers          GuildUsers[]
 }
 
 model LeaveRoles {
-  Id          BigInt      @id @default(autoincrement())
+  Id          BigInt     @id @default(autoincrement())
   RoleId      BigInt
   GuildUserId BigInt
-  GuildUsers  GuildUsers  @relation(fields: [GuildUserId], references: [Id], onDelete: Cascade, map: "LeaveRoles_ibfk_1")
+  GuildUsers  GuildUsers @relation(fields: [GuildUserId], references: [Id], onDelete: Cascade, map: "LeaveRoles_ibfk_1")
 
   @@index([GuildUserId], map: "GuildUserId")
 }
 
 model Todos {
-  Id           BigInt        @id @default(autoincrement())
+  Id           BigInt       @id @default(autoincrement())
   UserId       BigInt
-  String       String        @db.VarChar(255)
-  DiscordUsers DiscordUsers  @relation(fields: [UserId], references: [Id], onDelete: Cascade, map: "Todos_ibfk_1")
+  String       String       @db.VarChar(255)
+  DiscordUsers DiscordUsers @relation(fields: [UserId], references: [Id], onDelete: Cascade, map: "Todos_ibfk_1")
 
   @@index([UserId], map: "UserId")
 }
 
 model UserNicknames {
-  Id          BigInt      @id @default(autoincrement())
-  Nickname    String      @db.VarChar(255)
+  Id          BigInt     @id @default(autoincrement())
+  Nickname    String     @db.VarChar(255)
   GuildUserId BigInt
-  GuildUsers  GuildUsers  @relation(fields: [GuildUserId], references: [Id], onDelete: Cascade, map: "UserNicknames_ibfk_1")
+  GuildUsers  GuildUsers @relation(fields: [GuildUserId], references: [Id], onDelete: Cascade, map: "UserNicknames_ibfk_1")
 
   @@index([GuildUserId], map: "GuildUserId")
 }
