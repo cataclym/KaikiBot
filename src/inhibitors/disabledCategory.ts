@@ -1,7 +1,9 @@
-import { Command, Inhibitor } from "discord-akairo";
+import { Command } from "discord-akairo";
 import { Message } from "discord.js";
-import { getGuildDocument } from "../struct/documentMethods";
-export default class BlockModulesInhibitor extends Inhibitor {
+import { KaikiInhibitor } from "kaiki";
+import { blockedCategories } from "../struct/constants";
+
+export default class BlockModulesInhibitor extends KaikiInhibitor {
     constructor() {
         super("blockmodules", {
             reason: "blocked module",
@@ -14,7 +16,11 @@ export default class BlockModulesInhibitor extends Inhibitor {
 
             if (command.id === "togglecategory") return false;
 
-            return (await getGuildDocument(message.guild.id)).blockedCategories[command.category.id];
+            const _blockedCategories = await this.client.orm.blockedCategories.findFirst({ where: { Guilds: { Id: BigInt(message.guildId!) } } });
+            if (_blockedCategories) {
+                return !!blockedCategories[_blockedCategories.CategoryTarget];
+            }
+            return false;
         }
         return false;
     }

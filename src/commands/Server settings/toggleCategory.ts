@@ -1,9 +1,8 @@
 import { Category, Command } from "discord-akairo";
 import { Guild, Message, MessageEmbed } from "discord.js";
 import { KaikiCommand } from "kaiki";
-
-import { getGuildDocument } from "../../struct/documentMethods";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
+import { blockedCategories } from "../../struct/constants";
 
 export default class ToggleCategoryCommand extends KaikiCommand {
     constructor() {
@@ -29,17 +28,46 @@ export default class ToggleCategoryCommand extends KaikiCommand {
     }
     public async exec(message: Message, { category }: { category: Category<string, Command> }): Promise<Message> {
 
-        const guild = (message.guild as Guild),
-            db = await getGuildDocument(guild.id),
-            bool = !db.blockedCategories[category.id];
+        const guild = (message.guild as Guild);
+        const index = blockedCategories[category.id as keyof typeof blockedCategories];
 
-        db.blockedCategories[category.id] = bool;
-        db.markModified(`blockedCategories.${category.id}`);
-        await db.save();
+        const guildDb = await this.client.orm.guilds.findFirst({
+            where: {
+                Id: BigInt(guild.id),
+            },
+            select: {
+                BlockedCategories: true,
+            },
+        });
+
+        if (!guildDb) {
+            return message.channel.send({
+                embeds: [await KaikiEmbeds.errorMessage(message, "Guild is not registered in DB! Contact bot owner as soon as possible.")],
+            });
+        }
+
+        const exists = guildDb.BlockedCategories.find(cat => cat.CategoryTarget === index);
+
+        if (exists) {
+            await this.client.orm.blockedCategories.delete({
+                where: {
+                    Id: exists.Id,
+                },
+            });
+        }
+
+        else {
+            await this.client.orm.blockedCategories.create({
+                data: {
+                    GuildId: BigInt(guild.id),
+                    CategoryTarget: index,
+                },
+            });
+        }
 
         return message.channel.send({
             embeds: [new MessageEmbed()
-                .setDescription(`${category.id} has been ${bool ? "disabled" : "enabled"}.`)
+                .setDescription(`${category.id} has been ${exists ? "enabled" : "disabled"}.`)
                 .withOkColor(message)],
         });
     }

@@ -1,25 +1,35 @@
 import { ActivityType } from "discord.js";
 import * as mysql2 from "mysql2/promise";
+import { Connection } from "mysql2/promise";
 import { PrismaClient } from "@prisma/client";
+
+type initReturn = {
+    orm: PrismaClient,
+    connection: Connection
+}
 
 export class Database {
     private _config: mysql2.ConnectionOptions;
-    public orm: PrismaClient;
-    public connection: mysql2.Connection;
 
     constructor() {
         this._config = {
             uri: process.env.DATABASE_URL,
         };
     }
-    public async init() {
+    public async init(): Promise<initReturn> {
         const connection = await mysql2.createConnection(this._config)
-            .catch((err) => {
-                throw err;
+            .catch(async () => {
+                await mysql2.createConnection({ uri: process.env.DATABASE_URL, database: "mysql" })
+                    .then(c => c.execute("CREATE DATABASE IF NOT EXISTS kaikidb")
+                        .then(() => c.end()));
+
+                return (await this.init()).connection;
             });
 
+        const prismaClient = new PrismaClient();
+
         return {
-            orm: new PrismaClient(),
+            orm: prismaClient,
             connection: connection,
         };
     }

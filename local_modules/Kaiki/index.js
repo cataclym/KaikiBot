@@ -1,20 +1,27 @@
-const { Command } = require("discord-akairo");
+const { Command, Inhibitor } = require("discord-akairo");
 
 class KaikiCommand extends Command {
-	constructor(id, options) {
-		super(id, options);
-		this.usage = options?.usage;
-	}
+    constructor(id, options) {
+        super(id, options);
+        this.usage = options?.usage;
+    }
 }
 
 class KaikiUtil {
-	async handleToJSON(data) {
-		if (data) return data;
-		throw new Error("No data was found");
-	}
+    async handleToJSON(data) {
+        if (data) return data;
+        throw new Error("No data was found");
+    }
+}
+
+class KaikiInhibitor extends Inhibitor {
+    constructor(data) {
+        super(data);
+    }
 }
 
 module.exports = {
-	KaikiCommand,
-	KaikiUtil: new KaikiUtil(),
+    KaikiCommand,
+    KaikiInhibitor,
+    KaikiUtil: new KaikiUtil(),
 };

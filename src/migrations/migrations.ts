@@ -5,16 +5,21 @@ import { Collection } from "discord.js";
 import chalk from "chalk";
 import { Connection } from "mysql2/promise";
 import { execSync } from "child_process";
+import { KaikiClient } from "kaiki";
 
 export class Migrations {
     private readonly currentFolder: string;
     public migrationClasses: Collection<string, Migration>;
     public db: Connection;
+    private readonly _client: KaikiClient;
+    private _count: number;
 
-    constructor(db: Connection) {
+    constructor(db: Connection, client: KaikiClient) {
         this.currentFolder = Path.join(__dirname, ".");
         this.migrationClasses = new Collection();
         this.db = db;
+        this._client = client;
+        this._count = 0;
     }
 
     private async loadClasses() {
@@ -39,7 +44,7 @@ export class Migrations {
         // Executes the migration script
         logger.warn(`Migration running - [${chalk.hex("#ffa500")(migration.migrationId)}]`);
         await this.db.execute("INSERT INTO _Migrations (migrationId, versionString) VALUES (?, ?)", [migration.migrationId, migration.version]);
-        const migrated = await migration.migrate(this.db);
+        const migrated = await migration.migrate(this._client);
         logger.info(`Migration finished - [${chalk.hex("#ffa500")(migration.migrationId)}]`);
 
         return migrated;
@@ -57,7 +62,7 @@ export class Migrations {
     }
 
     private load(filePath: string) {
-        // eslint-disable-next-line @typescript-eslint/no-var-requires
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
         const mod = ((m: { default: Migration } | null) => m)(require(filePath));
 
         if (!mod?.default) {
@@ -71,18 +76,17 @@ export class Migrations {
     }
 
     public async runAllMigrations() {
-        let count = 0;
         await this.loadClasses();
         const promise = new Promise<void>((resolve) => this.migrationClasses.each(async (migration) => {
             const number = await this.runMigration(migration);
             if (number) {
-                count += number;
+                this._count += number;
                 resolve();
             }
             return migration;
         }));
         return promise.then(() => {
-            return count;
+            return this._count;
         });
     }
 }
@@ -91,10 +95,8 @@ export class Migration {
     readonly name: string;
     readonly version: string;
     readonly hash?: string;
-    public migrate: (db: Connection) => number | Promise<number>;
+    public migrate: (client: KaikiClient) => number | Promise<number>;
     public migrationId: string;
-    public changes: number;
-
     constructor(data: {
     /**
      *  Git commit hash, short version
@@ -103,9 +105,8 @@ export class Migration {
     hash?: string;
     name: string,
     version: string,
-    migration: (db: Connection) => any,
+    migration: (client: KaikiClient) => number | Promise<number>,
   }) {
-        this.changes = 0;
         this.hash = data.hash;
         this.name = data.name;
         this.version = data.version;

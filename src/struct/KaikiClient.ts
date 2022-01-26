@@ -64,7 +64,7 @@ export class KaikiClient extends AkairoClient implements ExternalKaikiClient {
 
                 this.money = new MoneyService(this.orm);
 
-                new Migrations(this.connection)
+                new Migrations(this.connection, this)
                     .runAllMigrations()
                     .then((res) => {
                         if (res) {

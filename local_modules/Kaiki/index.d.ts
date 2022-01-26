@@ -3,7 +3,9 @@ import {
     Command,
     CommandHandler,
     CommandOptions,
+    Inhibitor,
     InhibitorHandler,
+    InhibitorOptions,
     ListenerHandler,
 } from "discord-akairo";
 import MySQLProvider from "../../src/struct/db/MySQLProvider";
@@ -38,3 +40,9 @@ declare class ClassKaikiUtil {
 }
 
 export declare const KaikiUtil: ClassKaikiUtil;
+
+export declare class KaikiInhibitor extends Inhibitor {
+    public client: KaikiClient;
+
+    public constructor(id: string, options: InhibitorOptions)
+}

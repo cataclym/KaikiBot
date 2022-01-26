@@ -101,7 +101,7 @@ model Guilds {
   Id                  BigInt                @id @unique(map: "Id")
   Prefix              String                @db.VarChar(255)
   Anniversary         Boolean               @default(false)
-  DadBot              Boolean               @default(true)
+  DadBot              Boolean               @default(false)
   ErrorColor          BigInt                @default(16711680)
   OkColor             BigInt                @default(65280)
   ExcludeRole         BigInt?
