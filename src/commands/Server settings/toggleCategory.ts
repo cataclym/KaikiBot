@@ -57,18 +57,27 @@ export default class ToggleCategoryCommand extends KaikiCommand {
         }
 
         else {
-            await this.client.orm.blockedCategories.create({
+            await this.client.orm.guilds.update({
+                where: {
+                    Id: BigInt(guild.id),
+                },
                 data: {
-                    GuildId: BigInt(guild.id),
-                    CategoryTarget: index,
+                    BlockedCategories: {
+                        create: {
+                            CategoryTarget: index,
+                        },
+                    },
                 },
             });
         }
 
+        const embed = new MessageEmbed()
+            .setDescription(`${category.id} has been ${exists ? "enabled" : "disabled"}.`);
+
         return message.channel.send({
-            embeds: [new MessageEmbed()
-                .setDescription(`${category.id} has been ${exists ? "enabled" : "disabled"}.`)
-                .withOkColor(message)],
+            embeds: [exists
+                ? embed.withOkColor(message)
+                : embed.withErrorColor(message)],
         });
     }
 }

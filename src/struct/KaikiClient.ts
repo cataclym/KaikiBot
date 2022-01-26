@@ -16,6 +16,7 @@ export class KaikiClient extends AkairoClient implements ExternalKaikiClient {
     public botSettingsProvider: MySQLProvider;
     public commandHandler: CommandHandler;
     public connection: MySQLConnection;
+    public dadBotChannelsProvider: MySQLProvider;
     public guildProvider: MySQLProvider;
     public inhibitorHandler: InhibitorHandler;
     public listenerHandler: ListenerHandler;
@@ -57,9 +58,12 @@ export class KaikiClient extends AkairoClient implements ExternalKaikiClient {
                 this.connection = obj.connection;
 
                 this.botSettingsProvider = new MySQLProvider(this.connection, "BotSettings", { idColumn: "Id" });
-                this.guildProvider = new MySQLProvider(this.connection, "Guilds", { idColumn: "Id" });
-
                 this.botSettingsProvider.init().then(() => logger.info(`SQL BotSettings provider - ${chalk.green("READY")}`));
+
+                this.dadBotChannelsProvider = new MySQLProvider(this.connection, "DadBotChannels", { idColumn: "ChannelId", dataColumn: "GuildId" });
+                this.dadBotChannelsProvider.init().then(() => logger.info(`SQL DadBotChannels provider - ${chalk.green("READY")}`));
+
+                this.guildProvider = new MySQLProvider(this.connection, "Guilds", { idColumn: "Id" });
                 this.guildProvider.init().then(() => logger.info(`SQL Guild provider - ${chalk.green("READY")}`));
 
                 this.money = new MoneyService(this.orm);
@@ -69,10 +73,10 @@ export class KaikiClient extends AkairoClient implements ExternalKaikiClient {
                     .then((res) => {
                         if (res) {
                             logger.info(`
-${(chalk.greenBright)("|----------------------------------------------------------|")}
-migrationService | Migrations have successfully finished
-migrationService | Inserted ${(chalk.green)(res)} records into kaikidb
-${(chalk.greenBright)("|----------------------------------------------------------|")}`);
+    ${(chalk.greenBright)("|----------------------------------------------------------|")}
+    migrationService | Migrations have successfully finished
+    migrationService | Inserted ${(chalk.green)(res)} records into kaikidb
+    ${(chalk.greenBright)("|----------------------------------------------------------|")}`);
                         }
                     })
                     .catch(e => {

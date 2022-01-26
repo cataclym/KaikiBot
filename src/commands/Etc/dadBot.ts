@@ -1,6 +1,5 @@
 import { Message } from "discord.js";
 import { dadbotArray } from "../../struct/constants";
-import { getUserDocument } from "../../struct/documentMethods";
 import { KaikiCommand } from "kaiki";
 
 // dad bot
@@ -11,7 +10,7 @@ export default class dadBot extends KaikiCommand {
             editable: false,
             condition: (message: Message) => {
                 if (message.guild && message.member && !message.author.bot) {
-                    if (message.guild.isDadBotEnabled(message) && message.member.hasExcludedRole() && !message.content.includes("||")) {
+                    if (message.guild.determineIsDadBotEnabled(message) && message.member.hasExcludedRole() && !message.content.includes("||")) {
 
                         for (const item of dadbotArray) {
 
@@ -38,35 +37,57 @@ export default class dadBot extends KaikiCommand {
     }
 
     nickname: {
-        [id: string]: string
-    } = {};
+                [id: string]: string
+            } = {};
 
     public async exec(message: Message): Promise<boolean> {
 
-    	const nick = this.nickname[message.member!.id];
+        const nick = this.nickname[message.member!.id];
 
-    	message.channel.send({
-    		content: `Hi, ${nick}`,
-    		allowedMentions: { parse: ["users"] },
-    	});
+        message.channel.send({
+            content: `Hi, ${nick}`,
+            allowedMentions: { parse: ["users"] },
+        });
 
-    	if (nick.length <= (process.env.DADBOT_NICKNAME_LENGTH || 32)) {
-    		const user = message.author,
-    			db = await getUserDocument(user.id);
+        if (nick.length <= (process.env.DADBOT_NICKNAME_LENGTH || 32)) {
+            const user = message.author;
 
-    		db.userNicknames.push(nick);
+            if (user.id !== message.guild?.ownerId) {
+                // Avoids setting nickname on Server owners
+                await message.member?.setNickname(nick);
+            }
+        }
 
-    		// this.client.sequelize.query(`INSERT INTO UserNicknames (nickname) VALUES (${nick})`)
-    		// 	.then(logger.info)
-    		// 	.catch(logger.warn);
+        await this.client.orm.guildUsers.upsert({
+            where: {
+                Id_UserId: {
+                    // TODO: Check how to fix...
+                    Id: 0,
+                    UserId: BigInt(message.member!.id),
+                },
+            },
+            update: {
+                UserNicknames: {
+                    create: {
+                        Nickname: nick,
+                    },
+                },
+            },
+            create: {
+                UserId: BigInt(message.member!.id),
+                Guilds: {
+                    connect: {
+                        Id: BigInt(message.guildId!),
+                    },
+                },
+                UserNicknames: {
+                    create: {
+                        Nickname: nick,
+                    },
+                },
+            },
+        });
 
-    		if (user.id !== message.guild?.ownerId) {
-    			// Avoids setting nickname on Server owners
-    			await message.member?.setNickname(nick);
-    		}
-    		db.markModified("userNicknames");
-    		await db.save();
-    	}
-    	return delete this.nickname[message.member!.id];
+        return delete this.nickname[message.member!.id];
     }
 }

@@ -7,7 +7,7 @@ export async function ExcludeSlashCommand(interaction: CommandInteraction): Prom
 
     if (!interaction.channel?.isText() || !interaction.guild) return interaction.deferReply({ ephemeral:true });
 
-    if (!interaction.guild!.isDadBotEnabled()) {
+    if (!interaction.guild!.determineIsDadBotEnabled()) {
         return interaction.reply({
             ephemeral: true,
             embeds: [new MessageEmbed()

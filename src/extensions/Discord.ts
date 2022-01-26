@@ -8,7 +8,7 @@ export const extensionHook = (): void => {
 
 declare module "discord.js" {
     export interface Guild {
-        isDadBotEnabled(message?: Message): boolean;
+        determineIsDadBotEnabled(message?: Message): boolean;
     }
 
     export interface GuildMember {
@@ -30,22 +30,18 @@ declare module "discord.js" {
 GuildMember.prototype.hasExcludedRole = function(member?: GuildMember) {
 
     const member1 = member ?? this as GuildMember;
-    const roleName = (member1.guild.client as KaikiClient).guildProvider.get(member1.guild.id, "excludeRole", "");
+    const roleId = (member1.guild.client as KaikiClient).guildProvider.get(member1.guild.id, "ExcludeRole", "");
 
-    return !member1.roles.cache
-        .find(r => roleName === r.name);
+    return !member1.roles.cache.get(roleId);
 };
 
-Guild.prototype.isDadBotEnabled = function(message?: Message) {
+Guild.prototype.determineIsDadBotEnabled = function(message?: Message) {
 
     const g = message?.guild ?? this as Guild;
 
-    if (g && (g.client as KaikiClient).guildProvider.get(g.id, "dadBot", false).enabled) {
+    if (g && (g.client as KaikiClient).guildProvider.get(g.id, "DadBot", false)) {
         return message
-            ? !message.client.guildProvider.get(g.id, "dadBot", {
-                enabled: false,
-                excludedChannels: {},
-            }).excludedChannels[message.channel.id]
+            ? !!message.client.dadBotChannelsProvider.get(message.channelId, "ChannelId", false)
             : true;
     }
     return false;
@@ -55,9 +51,9 @@ MessageEmbed.prototype.withErrorColor = function(m?: Message | Guild) {
 
     if (m) {
         if (m instanceof Message && m.guild) {
-            return this.setColor((m.client as KaikiClient).guildProvider.get(m.guild!.id, "errorColor", Utility.okColor));
+            return this.setColor((m.client as KaikiClient).guildProvider.get(m.guildId!, "ErrorColor", Utility.errorColor));
         }
-        return this.setColor((m.client as KaikiClient).guildProvider.get(m.id, "errorColor", Utility.okColor));
+        return this.setColor((m.client as KaikiClient).guildProvider.get(m.id, "ErrorColor", Utility.errorColor));
     }
 
     return this.setColor(Utility.errorColor);
@@ -67,9 +63,9 @@ MessageEmbed.prototype.withOkColor = function(m?: Message | Guild) {
 
     if (m) {
         if (m instanceof Message && m.guild) {
-            return this.setColor((m.client as KaikiClient).guildProvider.get(m.guild!.id, "okColor", Utility.okColor));
+            return this.setColor((m.client as KaikiClient).guildProvider.get(m.guildId!, "OkColor", Utility.okColor));
         }
-        return this.setColor((m.client as KaikiClient).guildProvider.get(m.id, "okColor", Utility.okColor));
+        return this.setColor((m.client as KaikiClient).guildProvider.get(m.id, "OkColor", Utility.okColor));
     }
 
     return this.setColor(Utility.okColor);

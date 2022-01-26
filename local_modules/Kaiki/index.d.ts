@@ -17,6 +17,7 @@ type KaikiClient = {
 	botSettingsProvider: MySQLProvider;
 	commandHandler: CommandHandler;
 	connection: MySQLConnection;
+  dadBotChannelsProvider: MySQLProvider;
 	guildProvider: MySQLProvider;
 	inhibitorHandler: InhibitorHandler;
 	listenerHandler: ListenerHandler;

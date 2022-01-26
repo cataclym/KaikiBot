@@ -15,7 +15,7 @@ export default class ExcludeCommand extends KaikiCommand {
 
     public async exec(message: Message): Promise<Message | void> {
 
-        if (!message.guild!.isDadBotEnabled()) {
+        if (!message.guild!.determineIsDadBotEnabled()) {
             return message.channel.send({
                 embeds: [new MessageEmbed()
                     .setTitle("Dadbot is not enabled")
