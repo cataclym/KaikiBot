@@ -1,5 +1,4 @@
 import { model, Schema } from "mongoose";
-import Utility from "../../lib/Util";
 import {
     IBlacklist,
     IBot,
@@ -10,6 +9,7 @@ import {
     ITinder,
     IUser,
 } from "../../interfaces/IDocuments";
+import Utility from "../../lib/Utility";
 
 export const guildSchema = new Schema({
     // ID of the guild

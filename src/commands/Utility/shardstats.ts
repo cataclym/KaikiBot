@@ -1,6 +1,6 @@
 import { Command } from "discord-akairo";
 import { Message } from "discord.js";
-import Utility from "../../lib/Util";
+import Utility from "../../lib/Utility";
 
 enum shardStats {
     "READY",

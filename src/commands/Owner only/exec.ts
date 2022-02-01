@@ -1,7 +1,7 @@
 import { ChildProcess, exec } from "child_process";
 import { Message, MessageEmbed } from "discord.js";
-import Utility from "../../lib/Util";
 import { KaikiCommand } from "kaiki";
+import Utility from "../../lib/Utility";
 
 
 export default class ExecCommand extends KaikiCommand {

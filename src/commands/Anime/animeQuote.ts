@@ -1,10 +1,9 @@
 import { Message } from "discord.js";
 import logger from "loglevel";
 import fetch from "node-fetch";
-import { animeQuoteCache, respType } from "../../cache/cache";
+import { respType } from "../../cache/cache";
 import { sendQuote } from "../../lib/APIs/animeQuote";
 import { KaikiCommand } from "kaiki";
-
 
 export default class AnimeQuoteCommand extends KaikiCommand {
     constructor() {
@@ -16,6 +15,8 @@ export default class AnimeQuoteCommand extends KaikiCommand {
         });
     }
     public async exec(message: Message): Promise<Message | void> {
+
+        const { animeQuoteCache } = this.client.cache;
 
         const resp = <respType> await fetch("https://animechan.vercel.app/api/random")
             .then(response => response.json())

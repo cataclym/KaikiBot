@@ -5,7 +5,7 @@ import querystring from "querystring";
 import { KaikiCommand, KaikiUtil } from "kaiki";
 import { List } from "../../interfaces/IUrbanResponse";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
-import Utility from "../../lib/Util";
+import Utility from "../../lib/Utility";
 
 
 export default class UrbanDictCommand extends KaikiCommand {

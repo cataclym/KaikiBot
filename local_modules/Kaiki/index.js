@@ -1,4 +1,4 @@
-const { Command, Inhibitor } = require("discord-akairo");
+const { Command, Inhibitor, Listener } = require("discord-akairo");
 
 class KaikiCommand extends Command {
     constructor(id, options) {
@@ -20,8 +20,15 @@ class KaikiInhibitor extends Inhibitor {
     }
 }
 
+class KaikiListener extends Listener {
+    constructor(data) {
+        super(data);
+    }
+}
+
 module.exports = {
     KaikiCommand,
     KaikiInhibitor,
+    KaikiListener,
     KaikiUtil: new KaikiUtil(),
 };

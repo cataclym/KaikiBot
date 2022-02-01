@@ -2,7 +2,7 @@ import { Command, Listener } from "discord-akairo";
 import { Message, MessageEmbed } from "discord.js";
 import logger from "loglevel";
 import { cmdStatsCache } from "../cache/cache";
-import Utility from "../lib/Util";
+import Utility from "../lib/Utility";
 
 export default class missingPermissionsListener extends Listener {
     constructor() {

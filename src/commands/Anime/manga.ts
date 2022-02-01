@@ -4,7 +4,7 @@ import { KaikiCommand } from "kaiki";
 import { handleError, handleResponse, mangaQuery } from "../../lib/APIs/AnilistGraphQL";
 import { IMangaRes } from "../../interfaces/IMangaRes";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
-import Utility from "../../lib/Util";
+import Utility from "../../lib/Utility";
 
 export default class MangaCommand extends KaikiCommand {
     constructor() {

@@ -7,7 +7,7 @@ import { EMOTE_REGEX, IMAGE_REGEX } from "../../struct/constants";
 import { isRegex } from "../../lib/functions";
 import { rolePermissionCheck } from "../../lib/roles";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
-import Utility from "../../lib/Util";
+import Utility from "../../lib/Utility";
 
 const resetWords = ["clear", "reset"];
 

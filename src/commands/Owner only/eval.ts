@@ -1,6 +1,6 @@
 import { Message } from "discord.js";
 import { KaikiCommand } from "kaiki";
-import Utility from "../../lib/Util";
+import Utility from "../../lib/Utility";
 
 const clean = (text: string) => {
     return text.replace(/`/g, "`" + String.fromCharCode(8203)).replace(/@/g, "@" + String.fromCharCode(8203));

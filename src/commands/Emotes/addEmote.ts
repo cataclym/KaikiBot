@@ -2,10 +2,10 @@ import { Argument } from "discord-akairo";
 import { Message, MessageAttachment, Permissions } from "discord.js";
 import sizeOf from "image-size";
 import { deleteImage, getFileOut, getFilesizeInBytes, resizeImage, saveEmoji, saveFile } from "../../lib/Emote";
-import Utility from "../../lib/Util";
 import { EMOTE_REGEX, IMAGE_REGEX } from "../../struct/constants";
 import { KaikiCommand } from "kaiki";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
+import Utility from "../../lib/Utility";
 
 export default class AddEmoteCommand extends KaikiCommand {
     constructor() {

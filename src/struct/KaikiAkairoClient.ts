@@ -1,4 +1,3 @@
-import chalk from "chalk";
 import { AkairoClient, CommandHandler, InhibitorHandler, ListenerHandler } from "discord-akairo";
 import { Snowflake } from "discord-api-types";
 import { Intents } from "discord.js";
@@ -7,16 +6,22 @@ import logger from "loglevel";
 import { Connection as MySQLConnection } from "mysql2/promise";
 import { join } from "path";
 import { MoneyService } from "../lib/money/MoneyService";
-import { Migrations } from "../migrations/migrations";
-import { Database } from "./db/Database";
 import MySQLProvider from "./db/MySQLProvider";
 import { PrismaClient } from "@prisma/client";
+import Cache from "../cache/cache";
+import Utility from "../lib/Utility";
+import { resetDailyClaims } from "../lib/functions";
+import AnniversaryRolesService from "../lib/AnniversaryRolesService";
+import { Database } from "./db/Database";
+import chalk from "chalk/index";
+import { Migrations } from "../migrations/migrations";
 
-export class KaikiClient extends AkairoClient implements ExternalKaikiClient {
+export default class KaikiAkairoClient extends AkairoClient implements ExternalKaikiClient {
+    public anniversaryService: AnniversaryRolesService;
     public botSettingsProvider: MySQLProvider;
+    public cache: Cache;
     public commandHandler: CommandHandler;
     public connection: MySQLConnection;
-    public dadBotChannelsProvider: MySQLProvider;
     public guildProvider: MySQLProvider;
     public inhibitorHandler: InhibitorHandler;
     public listenerHandler: ListenerHandler;
@@ -50,39 +55,7 @@ export class KaikiClient extends AkairoClient implements ExternalKaikiClient {
             // ws: { properties: { $browser: "Discord Android" } },
         });
 
-        const db = new Database();
-
-        db.init()
-            .then((obj) => {
-                this.orm = obj.orm;
-                this.connection = obj.connection;
-
-                this.botSettingsProvider = new MySQLProvider(this.connection, "BotSettings", { idColumn: "Id" });
-                this.botSettingsProvider.init().then(() => logger.info(`SQL BotSettings provider - ${chalk.green("READY")}`));
-
-                this.dadBotChannelsProvider = new MySQLProvider(this.connection, "DadBotChannels", { idColumn: "ChannelId", dataColumn: "GuildId" });
-                this.dadBotChannelsProvider.init().then(() => logger.info(`SQL DadBotChannels provider - ${chalk.green("READY")}`));
-
-                this.guildProvider = new MySQLProvider(this.connection, "Guilds", { idColumn: "Id" });
-                this.guildProvider.init().then(() => logger.info(`SQL Guild provider - ${chalk.green("READY")}`));
-
-                this.money = new MoneyService(this.orm);
-
-                new Migrations(this.connection, this)
-                    .runAllMigrations()
-                    .then((res) => {
-                        if (res) {
-                            logger.info(`
-    ${(chalk.greenBright)("|----------------------------------------------------------|")}
-    migrationService | Migrations have successfully finished
-    migrationService | Inserted ${(chalk.green)(res)} records into kaikidb
-    ${(chalk.greenBright)("|----------------------------------------------------------|")}`);
-                        }
-                    })
-                    .catch(e => {
-                        throw e;
-                    });
-            });
+        this.initializeDatabase();
 
         this.commandHandler = new CommandHandler(this, {
             allowMention: true,
@@ -113,5 +86,73 @@ export class KaikiClient extends AkairoClient implements ExternalKaikiClient {
         this.inhibitorHandler.loadAll();
         this.listenerHandler.loadAll();
         this.commandHandler.loadAll();
+    }
+
+    private async dailyResetTimer(client: KaikiClient): Promise<void> {
+        setTimeout(async () => {
+
+            // Loop this
+            await this.dailyResetTimer(client);
+
+            // Reset tinder rolls
+            // resetRolls();
+
+            // Reset daily currency claims
+            await resetDailyClaims(client.orm);
+
+            // Check for "birthdays"
+            await this.anniversaryService.birthdayService();
+
+        }, Utility.timeToMidnight());
+    }
+
+    public async initializeServices(client?: KaikiClient) {
+
+        if (!client) client = this;
+
+        this.anniversaryService = new AnniversaryRolesService(client);
+
+        // This will execute at midnight
+        await this.dailyResetTimer(client);
+
+        await this.anniversaryService.birthdayService();
+        logger.info("birthdayService | Service initiated");
+    }
+
+    private initializeDatabase() {
+        const db = new Database();
+
+        db.init()
+            .then((obj) => {
+                this.orm = obj.orm;
+                this.connection = obj.connection;
+
+                this.botSettingsProvider = new MySQLProvider(this.connection, "BotSettings", { idColumn: "Id" });
+                this.botSettingsProvider.init().then(() => logger.info(`SQL BotSettings provider - ${chalk.green("READY")}`));
+
+                this.guildProvider = new MySQLProvider(this.connection, "Guilds", { idColumn: "Id" });
+                this.guildProvider.init().then(() => logger.info(`SQL Guild provider - ${chalk.green("READY")}`));
+
+                this.cache = new Cache(this.orm, this.connection);
+                void this.cache.init();
+                this.money = new MoneyService(this.orm);
+
+                void this.initializeServices;
+
+                new Migrations(this.connection, this)
+                    .runAllMigrations()
+                    .then((res) => {
+                        if (res) {
+                            logger.info(`
+    ${(chalk.greenBright)("|----------------------------------------------------------|")}
+    migrationService | Migrations have successfully finished
+    migrationService | Inserted ${(chalk.green)(res)} records into kaikidb
+    ${(chalk.greenBright)("|----------------------------------------------------------|")}`);
+                        }
+                    })
+                    .catch(e => {
+                        throw e;
+                    });
+            });
     }
 }

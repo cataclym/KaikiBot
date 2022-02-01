@@ -1,7 +1,12 @@
-import { Command, Listener } from "discord-akairo";
 import { ColorResolvable, Message, UserFlagsString } from "discord.js";
 import { hexColorTable } from "./Color";
-import chalk from "chalk";
+import { Command, Listener } from "discord-akairo";
+import chalk from "chalk/index";
+
+export type presenceType = {
+    main: string,
+    richPresence: string[],
+}
 
 export default class Utility {
     static toggledTernary(value: boolean) {
@@ -10,8 +15,13 @@ export default class Utility {
             : "Disabled";
     }
 
-    async getMemberColorAsync(message: Message): Promise<ColorResolvable> {
+    static async getMemberColorAsync(message: Message): Promise<ColorResolvable> {
         return <ColorResolvable>message?.member?.displayColor || "#f47fff";
+    }
+
+    static timeToMidnight(): number {
+        const d = new Date();
+        return (-d + d.setHours(24, 0, 0, 0));
     }
 
     static errorColor: ColorResolvable = hexColorTable["red"];
@@ -62,15 +72,15 @@ export default class Utility {
     };
 
     /**
-     * Conserve aspect ratio of the original region. Useful when shrinking/enlarging
-     * images to fit into a certain area.
-     *
-     * @param {Number} srcWidth width of source image
-     * @param {Number} srcHeight height of source image
-     * @param {Number} maxWidth maximum available width
-     * @param {Number} maxHeight maximum available height
-     * @return {Object} { width, height }
-     */
+   * Conserve aspect ratio of the original region. Useful when shrinking/enlarging
+   * images to fit into a certain area.
+   *
+   * @param {Number} srcWidth width of source image
+   * @param {Number} srcHeight height of source image
+   * @param {Number} maxWidth maximum available width
+   * @param {Number} maxHeight maximum available height
+   * @return {Object} { width, height }
+   */
     static calculateAspectRatioFit(srcWidth: number, srcHeight: number, maxWidth: number, maxHeight: number): { width: number, height: number } {
 
         const ratio = Math.min(maxWidth / srcWidth, maxHeight / srcHeight);
@@ -83,55 +93,55 @@ export default class Utility {
     }
 
     /**
-     * Create codeblocks ready to be sent to discord.
-     * @param language
-     | "ansi"
-     | "asciidoc"
-     | "autohotkey"
-     | "bash"
-     | "coffeescript"
-     | "cpp"
-     | "cs"
-     | "css"
-     | "diff"
-     | "fix"
-     | "glsl"
-     | "ini"
-     | "json"
-     | "md"
-     | "ml"
-     | "prolog"
-     | "py"
-     | "tex"
-     | "xl"
-     | "xml"
-     * @param code
-     string
-     */
+   * Create codeblocks ready to be sent to discord.
+   * @param language
+   | "ansi"
+   | "asciidoc"
+   | "autohotkey"
+   | "bash"
+   | "coffeescript"
+   | "cpp"
+   | "cs"
+   | "css"
+   | "diff"
+   | "fix"
+   | "glsl"
+   | "ini"
+   | "json"
+   | "md"
+   | "ml"
+   | "prolog"
+   | "py"
+   | "tex"
+   | "xl"
+   | "xml"
+   * @param code
+   string
+   */
     static async codeblock(
         code: string,
         language?:
-        | "ansi"
-        | "asciidoc"
-        | "autohotkey"
-        | "bash"
-        | "coffeescript"
-        | "cpp"
-        | "cs"
-        | "css"
-        | "diff"
-        | "fix"
-        | "glsl"
-        | "ini"
-        | "json"
-        | "md"
-        | "ml"
-        | "prolog"
-        | "py"
-        | "sql"
-        | "tex"
-        | "xl"
-        | "xml",
+      | "ansi"
+      | "asciidoc"
+      | "autohotkey"
+      | "bash"
+      | "coffeescript"
+      | "cpp"
+      | "cs"
+      | "css"
+      | "diff"
+      | "fix"
+      | "glsl"
+      | "ini"
+      | "json"
+      | "md"
+      | "ml"
+      | "prolog"
+      | "py"
+      | "sql"
+      | "tex"
+      | "xl"
+      | "xml",
     ): Promise<string> {
         return `\`\`\`${language ?? ""}\n${code}\`\`\``;
     }
@@ -149,13 +159,13 @@ Executed ${chalk.blueBright(command?.id ?? "N/A")} | "${chalk.yellow(message.con
 
     // Credit to https://futurestud.io/tutorials/split-an-array-into-smaller-array-chunks-in-javascript-and-node-js
     /**
-     * Split the `items` array into multiple, smaller arrays of the given `size`.
-     *
-     * @param {Array} items
-     * @param {Number} size
-     *
-     * @returns {Array[]}
-     */
+   * Split the `items` array into multiple, smaller arrays of the given `size`.
+   *
+   * @param {Array} items
+   * @param {Number} size
+   *
+   * @returns {Array[]}
+   */
     static async chunk(items: any[], size: number): Promise<any[]> {
         const chunks = [];
         items = [].concat(...items);
@@ -179,9 +189,4 @@ Executed ${chalk.blueBright(command?.id ?? "N/A")} | "${chalk.yellow(message.con
     static partition(array: any[], predicate: (...args: any) => boolean) {
         return array.reduce((acc, item) => (acc[+!predicate(item)].push(item), acc), [[], []]);
     }
-}
-
-export type presenceType = {
-    main: string,
-    richPresence: string[],
 }

@@ -1,10 +1,7 @@
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
-import { Snowflake } from "discord-api-types";
 import { Guild, Message, MessageEmbed } from "discord.js";
-import Utility from "../../lib/Util";
-import { getGuildDocument } from "../../struct/documentMethods";
 import { KaikiCommand } from "kaiki";
-
+import Utility from "../../lib/Utility";
 
 export default class EmoteCount extends KaikiCommand {
     constructor() {
@@ -26,26 +23,31 @@ export default class EmoteCount extends KaikiCommand {
 
         const data: string[] = [],
             pages: MessageEmbed[] = [],
-            guildDB = await getGuildDocument((message.guild as Guild).id),
-            GuildEmoteCount = guildDB.emojiStats,
+            guildDB = await this.client.orm.guilds.findUnique({
+                where: {
+                    Id: BigInt(message.guildId!),
+                },
+                select: {
+                    EmojiStats: true,
+                },
+            });
 
-            baseEmbed = new MessageEmbed()
+        const baseEmbed = new MessageEmbed()
                 .setTitle("Emote count")
                 .setAuthor({ name: (message.guild as Guild).name })
                 .withOkColor(message),
 
-            emoteDataPair = Object
-                .entries(GuildEmoteCount)
-                .sort((a, b) => b[1] - a[1]);
+            emoteDataPair = guildDB!.EmojiStats
+                .sort((a, b) => Number(b.Count) - Number(a.Count));
 
-        for (const [key, value] of emoteDataPair) {
+        for (const { EmojiId, Count } of emoteDataPair) {
 
-            const Emote = (message.guild as Guild).emojis.cache.get(key as Snowflake);
+            const Emote = (message.guild as Guild).emojis.cache.get(String(EmojiId));
 
             if (!Emote) continue;
 
-            if (!flag) data.push(`\`${value}\` ${Emote} | ${Emote.name}`);
-            else data.push(`${Emote} \`${value}\` `);
+            if (!flag) data.push(`\`${Count}\` ${Emote} | ${Emote.name}`);
+            else data.push(`${Emote} \`${Count}\` `);
         }
 
         if (!flag) {

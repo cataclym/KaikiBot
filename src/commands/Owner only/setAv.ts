@@ -1,9 +1,9 @@
 import Canvas from "canvas";
 import { Message, MessageAttachment } from "discord.js";
 import logger from "loglevel";
-import Utility from "../../lib/Util";
 import { KaikiCommand } from "kaiki";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
+import Utility from "../../lib/Utility";
 
 
 export default class SetAvatarCommand extends KaikiCommand {

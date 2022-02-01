@@ -3,7 +3,7 @@ import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
 import { Message, MessageEmbed } from "discord.js";
 import { getUserDocument } from "../../struct/documentMethods";
 import { KaikiCommand } from "kaiki";
-import Utility from "../../lib/Util";
+import Utility from "../../lib/Utility";
 
 export default class TodoCommand extends KaikiCommand {
     constructor() {

@@ -1,9 +1,8 @@
-import { Listener } from "discord-akairo";
 import { GuildMember } from "discord.js";
 import GreetHandler from "../lib/GreetHandler";
-import { getGuildDocument } from "../struct/documentMethods";
+import { KaikiListener } from "kaiki";
 
-export default class GuildMemberRemovedListener extends Listener {
+export default class GuildMemberRemovedListener extends KaikiListener {
     constructor() {
         super("guildMemberRemove", {
             event: "guildMemberRemove",
@@ -14,9 +13,21 @@ export default class GuildMemberRemovedListener extends Listener {
 
         await GreetHandler.handleGoodbyeMessage(member);
 
-        const db = await getGuildDocument(member.guild.id);
-        db.leaveRoles[member.id] = member.roles.cache.map(role => role.id);
-        db.markModified("leaveRoles");
-        await db.save();
+        const leaveRoles = member.roles.cache.map(role => ({
+            RoleId: BigInt(role.id),
+            UserId: {
+                G,
+            },
+        }));
+
+        await this.client.orm.leaveRoles.createMany({
+            skipDuplicates: true,
+            data: [{
+                RoleId: BigInt(1232),
+                UserId: {
+
+                },
+            }],
+        });
     }
 }

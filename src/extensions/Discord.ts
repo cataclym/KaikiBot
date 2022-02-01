@@ -1,6 +1,6 @@
-import { KaikiClient } from "../struct/KaikiClient";
 import { Guild, GuildMember, Message, MessageEmbed } from "discord.js";
-import Utility from "../lib/Util";
+import Utility from "../lib/Utility";
+import { KaikiClient } from "kaiki";
 
 export const extensionHook = (): void => {
     return;
@@ -9,6 +9,7 @@ export const extensionHook = (): void => {
 declare module "discord.js" {
     export interface Guild {
         determineIsDadBotEnabled(message?: Message): boolean;
+        client: KaikiClient;
     }
 
     export interface GuildMember {

@@ -1,10 +1,10 @@
 import { exec } from "child_process";
 import { Message } from "discord.js";
-import Utility from "../../lib/Util";
 import fs from "fs";
 import logger from "loglevel";
 import * as path from "path";
 import { KaikiCommand } from "kaiki";
+import Utility from "../../lib/Utility";
 
 export default class UpdateCommand extends KaikiCommand {
     constructor() {

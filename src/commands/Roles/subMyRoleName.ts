@@ -3,7 +3,7 @@ import { getGuildDocument } from "../../struct/documentMethods";
 import { Snowflake } from "discord-api-types";
 import { KaikiCommand } from "kaiki";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
-import Utility from "../../lib/Util";
+import Utility from "../../lib/Utility";
 
 export default class MyRoleSubCommandName extends KaikiCommand {
     constructor() {

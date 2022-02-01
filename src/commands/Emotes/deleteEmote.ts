@@ -1,7 +1,7 @@
 import { Collection, GuildEmoji, Message, MessageEmbed, Permissions } from "discord.js";
 import { KaikiCommand } from "kaiki";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
-import Utility from "../../lib/Util";
+import Utility from "../../lib/Utility";
 
 
 const timer = (ms: number) => new Promise(res => setTimeout(res, ms));

@@ -1,35 +1,54 @@
-import { getCommandStatsDocument } from "../struct/documentMethods";
 import { Snowflake } from "discord-api-types";
+import { PrismaClient } from "@prisma/client";
+import MySQLProvider from "../struct/db/MySQLProvider";
+import { Connection } from "mysql2/promise";
 
 // Anime quotes
 export type respType = { anime: string, character: string, quote: string };
-export const animeQuoteCache: {[character: string]: respType } = {};
-
-export let cmdStatsCache: {[index: string]: number} = {};
-
-setInterval(async () => {
-    if (!Object.entries(cmdStatsCache).length) return;
-
-    const db = await getCommandStatsDocument();
-    for await (const [id, number] of Object.entries(cmdStatsCache)) {
-        db.count[id]
-            ? db.count[id] += number
-            : db.count[id] = number;
-    }
-    db.markModified("count");
-    await db.save();
-
-    cmdStatsCache = {};
-}, 900000);
-
-// Obvious names are obvious
-export const dailyClaimsCache: {[index: string]: boolean} = {};
-// TODO: PLEASE OH GOD MOVE THIS TO DB
-
 export type emoteReactObjectType = {[keyWord: string]: Snowflake};
 export type separatedEmoteReactTypes = {
-	has_space: emoteReactObjectType,
-	no_space: emoteReactObjectType
-};
+        has_space: emoteReactObjectType,
+        no_space: emoteReactObjectType
+    };
 
-export const emoteReactCache: {[guild: string]: separatedEmoteReactTypes} = {};
+export default class Cache {
+    private _orm: PrismaClient;
+    private _connection: Connection;
+    private dailyClaimsCache: MySQLProvider;
+
+    constructor(orm: PrismaClient, connection: Connection) {
+        this._orm = orm;
+        this._connection = connection;
+        this.dailyClaimsCache = new MySQLProvider(this._connection, "DailyClaims", { idColumn: "UserId" });
+    }
+
+    public animeQuoteCache: {[character: string]: respType } = {};
+    public cmdStatsCache: {[index: string]: number } = {};
+
+    public init = async () => setInterval(async () => {
+        if (!Object.entries(this.cmdStatsCache).length) return;
+
+        const requests = Object.entries(this.cmdStatsCache)
+            .map(([command, amount]) => this._orm.commandStats
+                .upsert({
+                    where: {
+                        CommandAlias: command,
+                    },
+                    create: {
+                        CommandAlias: command,
+                        Count: amount,
+                    },
+                    update: {
+                        Count: {
+                            increment: amount,
+                        },
+                    },
+                }));
+
+        await this._orm.$transaction(requests);
+
+        this.cmdStatsCache = {};
+    }, 900000);
+
+    public emoteReactCache: {[guild: string]: separatedEmoteReactTypes} = {};
+}

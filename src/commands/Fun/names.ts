@@ -1,20 +1,13 @@
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
 import { Message, MessageEmbed, User } from "discord.js";
-import { IUser } from "../../interfaces/IDocuments";
-import { getUserDocument } from "../../struct/documentMethods";
 import { KaikiCommand } from "kaiki";
-
-
-async function add(Embed: MessageEmbed, array: MessageEmbed[]) {
-    array.push(Embed);
-}
 
 export default class NamesCommand extends KaikiCommand {
     constructor() {
         super("names", {
             aliases: ["name", "names"],
-            description: "Returns all your daddy nicknames",
-            usage: "@dreb",
+            description: "Returns yours or mentioned user's daddy nicknames. Delete your nicknames with 'delete' argument.",
+            usage: ["@dreb", "delete"],
         });
     }
     *args(): unknown {
@@ -32,37 +25,89 @@ export default class NamesCommand extends KaikiCommand {
         return { unionUser, method };
     }
 
-    public async exec(message: Message, { method, unionUser }: { method: boolean, unionUser: User }): Promise<IUser | Message | void> {
+    private static baseEmbed = (message: Message, unionUser: User) => new MessageEmbed()
+        .setTitle(`${unionUser.username}'s past names`)
+        .setThumbnail(unionUser.displayAvatarURL({ dynamic: true }))
+        .withOkColor(message);
+
+    public async exec(message: Message, { method, unionUser }: { method: boolean, unionUser: User }): Promise<Message | void> {
 
         if (method) {
-            const db = await getUserDocument(message.author.id);
-            db.userNicknames = [];
-            message.channel.send({
+            let deleted;
+            if (message.inGuild()) {
+                deleted = await this.client.orm.userNicknames.deleteMany({
+                    where: {
+                        GuildUsers: {
+                            Guilds: {
+                                Id: BigInt(message.guildId),
+                            },
+                        },
+                    },
+                });
+            }
+            else {
+                deleted = await this.client.orm.userNicknames.deleteMany({
+                    where: {
+                        GuildUsers: {
+                            UserId: BigInt(message.author.id),
+                        },
+                    },
+                });
+            }
+            return message.channel.send({
                 embeds: [new MessageEmbed()
-                    .setDescription(`Deleted all of <@${message.author.id}>'s nicknames.\nWell done, you made daddy forget.`)
+                    .setDescription(`Deleted all of <@${message.author.id}>'s nicknames${message.inGuild() ? " from this server" : ""}!.\nWell done, you made daddy forget.`)
+                    .setFooter({
+                        text: `Deleted ${deleted.count} entries.`,
+                    })
                     .withOkColor(message)],
             });
-            db.markModified("userNicknames");
-            return db.save();
         }
 
         if (!unionUser) {
             unionUser = message.author;
         }
 
-        const db = await getUserDocument(unionUser.id),
-            nicknameString = (db.userNicknames.length ? db.userNicknames : ["Empty"]).join(", "),
-            pages: MessageEmbed[] = [];
+        let nicknames;
+        const pages: MessageEmbed[] = [];
+        if (message.inGuild()) {
+            const db = await this.client.orm.userNicknames.findMany({
+                where: {
+                    GuildUsers: {
+                        UserId: BigInt(unionUser.id),
+                        GuildId: BigInt(message.guildId),
+                    },
+                },
+            });
 
-        for (let i = 2048, p = 0; p < nicknameString.length; i += 2048, p += 2048) {
-            await add(new MessageEmbed()
-                .setTitle(`${unionUser.username}'s past names`)
-                .setThumbnail(unionUser.displayAvatarURL({ dynamic: true }))
-                .setDescription(nicknameString.slice(p, i))
-                .withOkColor(message),
-            pages);
+            if (db.length) {
+                nicknames = db.map(name => name.Nickname);
+            }
+            else {
+                nicknames = ["Empty"];
+            }
+        }
+        else {
+            const db = await this.client.orm.userNicknames.findMany({
+                where: {
+                    GuildUsers: {
+                        UserId: BigInt(message.author.id),
+                    },
+                },
+            });
+            if (db.length) {
+                nicknames = db.map(name => name.Nickname);
+            }
+            else {
+                nicknames = ["Empty"];
+            }
         }
 
-        return sendPaginatedMessage(message, pages, {});
+        for (let i = 60, p = 0; p < nicknames.length; i += 60, p += 60) {
+            pages.push(NamesCommand.baseEmbed(message, unionUser)
+                .setDescription(nicknames.slice(p, i).join(", ")));
+        }
+
+        return sendPaginatedMessage(message, pages, { owner: message.author });
     }
 }

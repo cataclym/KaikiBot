@@ -4,8 +4,8 @@ import { Message, MessageEmbed, MessageOptions } from "discord.js";
 import { KaikiCommand } from "kaiki";
 import GreetHandler from "../../lib/GreetHandler";
 import { blockedCategories } from "../../struct/constants";
-import Utility from "../../lib/Util";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
+import Utility from "../../lib/Utility";
 
 export default class ConfigCommand extends KaikiCommand {
     constructor() {

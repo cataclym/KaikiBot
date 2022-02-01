@@ -2,8 +2,8 @@ import { Command, Listener } from "discord-akairo";
 import { Message } from "discord.js";
 import logger from "loglevel";
 import { cmdStatsCache } from "../cache/cache";
-import Utility from "../lib/Util";
 import KaikiEmbeds from "../lib/KaikiEmbeds";
+import Utility from "../lib/Utility";
 
 export default class errorListener extends Listener {
     constructor() {

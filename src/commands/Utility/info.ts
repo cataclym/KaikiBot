@@ -20,7 +20,7 @@ import { regexpType } from "../../struct/types";
 import { isRegex } from "../../lib/functions";
 import { time } from "@discordjs/builders";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
-import Utility from "../../lib/Util";
+import Utility from "../../lib/Utility";
 
 export default class InfoCommand extends KaikiCommand {
     constructor() {

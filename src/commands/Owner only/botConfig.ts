@@ -5,7 +5,7 @@ import { BotConfig } from "../../struct/db/Database";
 import SetActivityCommand from "./setActivity";
 import { ActivityTypes } from "discord.js/typings/enums";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
-import Utility from "../../lib/Util";
+import Utility from "../../lib/Utility";
 
 enum validEnum {
 	ACTIVITY = "activity",

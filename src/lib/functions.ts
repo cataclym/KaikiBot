@@ -1,15 +1,12 @@
-import { AkairoClient } from "discord-akairo";
 import { Snowflake } from "discord-api-types";
-import { Client, Guild, GuildMember, Message, MessageEmbed, User } from "discord.js";
+import { Guild, GuildMember, Message, MessageEmbed, User } from "discord.js";
 import logger from "loglevel";
-// import { clearRollCache } from "../../_wip/Tinder/tinder";
 import { badWords } from "../struct/constants";
-import { getBotDocument, getGuildDocument } from "../struct/documentMethods";
-import { tinderDataModel } from "../struct/db/models";
-import { birthdayService } from "./AnniversaryRoles";
-import Utility from "./Util";
-import { dailyClaimsCache, emoteReactCache, separatedEmoteReactTypes } from "../cache/cache";
+import type { separatedEmoteReactTypes } from "../cache/cache";
 import { regexpType } from "../struct/types";
+import Utility from "./Utility";
+import { PrismaClient } from "@prisma/client";
+import chalk from "chalk";
 
 let botOwner: User | undefined;
 
@@ -87,70 +84,24 @@ export async function tiredKaikiCryReact(message: Message): Promise<void> {
     }
 }
 
-export async function resetRolls(): Promise<void> {
-    // Tinder reset
-    // clearRollCache();
-    tinderDataModel.updateMany({ rolls: { $lt: 15 } }, { rolls: 15, temporary: [], likes: 3 }, null, () => {
-        logger.info(`mongooseDB | Reset tinder rolls/likes at ${Date()}`);
+// export async function resetRolls(): Promise<void> {
+//     // Tinder reset
+//     // clearRollCache();
+//     tinderDataModel.updateMany({ rolls: { $lt: 15 } }, { rolls: 15, temporary: [], likes: 3 }, null, () => {
+//         logger.info(`mongooseDB | Reset tinder rolls/likes at ${Date()}`);
+//     });
+// }
+
+export async function resetDailyClaims(orm: PrismaClient): Promise<void> {
+    const updated = await orm.discordUsers.updateMany({
+        where: {
+            ClaimedDaily: true,
+        },
+        data: {
+            ClaimedDaily: false,
+        },
     });
-}
-
-export async function resetDailyClaims(): Promise<void> {
-    const db = await getBotDocument();
-    if (!db.settings.dailyEnabled) return;
-    await Promise.all(Object.keys(dailyClaimsCache).map(async (k) => delete dailyClaimsCache[k]));
-    logger.info("resetDailyClaims | Daily claims have been reset!");
-}
-
-export async function dailyResetTimer(client: Client): Promise<void> {
-    setTimeout(async () => {
-        // Loop this
-        await dailyResetTimer(client);
-        // Reset tinder rolls
-        // resetRolls();
-        // Reset daily currency claims
-        await resetDailyClaims();
-        // Check for "birthdays"
-        await birthdayService(client);
-        // Uh?
-        await emoteDataBaseService(client as AkairoClient);
-    }, timeToMidnight());
-}
-
-export function timeToMidnight(): number {
-    const d = new Date();
-    return (-d + d.setHours(24, 0, 0, 0));
-}
-
-async function emoteDB(guild: Guild) {
-    let i = 0;
-    const db = await getGuildDocument(guild.id);
-    for await (const emote of [...guild.emojis.cache.values()]) {
-        if (!(emote.id in db.emojiStats)) {
-            i++;
-            db.emojiStats[emote.id] = 0;
-        }
-    }
-    if (i > 0) db.markModified("emojiStats");
-    await db.save();
-    return i;
-}
-
-export async function emoteDataBaseService(input: AkairoClient | Guild): Promise<number> {
-    // eslint-disable-next-line no-var
-    var changes = 0;
-
-    if (input instanceof AkairoClient) {
-        await input.guilds.cache.reduce(async (promise, guild) => {
-            await promise;
-            changes += await emoteDB(guild);
-        }, Promise.resolve());
-        return changes;
-    }
-
-    else {
-        return await emoteDB(input);
-    }
+    logger.info(`resetDailyClaims | Daily claims have been reset! Updated ${chalk.green(updated.count)} entries!`);
 }
 
 export async function countEmotes(message: Message): Promise<void> {
@@ -158,18 +109,31 @@ export async function countEmotes(message: Message): Promise<void> {
         const { guild } = message,
             emotes = message.content.match(/<?(a)?:.+?:\d+>/g);
         if (emotes) {
-            const db = await getGuildDocument(guild.id);
             const ids = emotes.toString().match(/\d+/g);
-            ids?.forEach(id => {
-                const emote = guild.emojis.cache.get(id as Snowflake);
-                if (emote) {
-                    db.emojiStats[emote.id]
-                        ? db.emojiStats[emote.id]++
-                        : db.emojiStats[emote.id] = 1;
-                    db.markModified(`emojiStats.${emote.id}`);
-                }
-            });
-            await db.save();
+            if (ids) {
+                const request = ids.map(item => {
+                    const emote = guild.emojis.cache.get(item as Snowflake);
+                    if (emote) {
+                        return message.client.orm.emojiStats.upsert({
+                            where: {
+                                EmojiId: BigInt(emote.id),
+                            },
+                            create: {
+                                EmojiId: BigInt(emote.id),
+                                Count: BigInt(1),
+                                GuildId: BigInt(guild.id),
+                            },
+                            update: {
+                                Count: {
+                                    increment: 1n,
+                                },
+                            },
+                        });
+                    }
+                    // Heck you
+                }).filter((item): item is any => !!item);
+                await message.client.orm.$transaction(request);
+            }
         }
     }
 }
@@ -184,7 +148,7 @@ export function msToTime(duration: number): string {
     minutes = (minutes < 10) ? "0" + minutes : minutes;
     seconds = (seconds < 10) ? "0" + seconds : seconds;
 
-    return "**" + hours + "** hours **" + minutes + "** minutes **" + seconds + "." + milliseconds + "** seconds";
+    return `**${hours}** hours **${minutes}** minutes **${seconds}.${milliseconds}** seconds`;
 }
 
 export async function sendDM(message: Message): Promise<Message | undefined> {

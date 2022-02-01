@@ -1,8 +1,8 @@
 import { Message } from "discord.js";
 import { KaikiCommand } from "kaiki";
 import { RowDataPacket } from "mysql2/promise";
-import Utility from "../../lib/Util";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
+import Utility from "../../lib/Utility";
 
 export default class SetNameCommand extends KaikiCommand {
     constructor() {

@@ -1,8 +1,8 @@
 import { Message, MessageEmbed, Role } from "discord.js";
-import Utility from "../../lib/Util";
 import { KaikiCommand } from "kaiki";
 import { rolePermissionCheck } from "../../lib/roles";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
+import Utility from "../../lib/Utility";
 
 export default class RoleRenameCommand extends KaikiCommand {
     constructor() {
