@@ -134,3 +134,6 @@ credentials.json
 obj/
 
 bin/
+
+# VSC
+/.vscode
