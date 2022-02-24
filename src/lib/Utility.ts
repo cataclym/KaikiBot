@@ -28,32 +28,6 @@ export default class Utility {
 
     static okColor: ColorResolvable = "#00ff00";
 
-    // Broken in Discord.js-dev v13
-    // TODO: Redo this, and add it to info, replacing uinfo.
-    // This section is awful
-    // export async function getUserPresenceAsync(user: User): Promise<presenceType> {
-    //
-    // 	const presence: presenceType = { main: "", richPresence: [] };
-    //
-    // 	if (user instanceof ClientUser) {
-    // 		return Promise.resolve(presence);
-    // 	}
-    //
-    // 	presence.main = (user.presence?.activities?.length
-    // 		? `${user.presence?.activities.join(", ")}\n`
-    // 		: "") + (user.presence?.activities.map((e) => e.state).length
-    // 		? `**State**\n${user?.presence?.activities.map((a) => a.state).join("\n")}\n`
-    // 		: "") + (user.presence.status !== "offline"
-    // 		? Object.entries(user.presence.clientStatus as {[s: string]:unknown} | ArrayLike<unknown>).join(", ")
-    // 		: "Offline");
-    //
-    // 	const uPActivities = user?.presence?.activities;
-    //
-    // 	presence.richPresence = [uPActivities.map((e) => e.assets?.largeImageURL({ size: 128 }))[0] ?? "", uPActivities.map((e) => e.details)[0] ?? "", uPActivities.map((e) => e.assets?.largeText)[0] ?? "", uPActivities.map((e) => e.assets?.smallText)[0] ?? ""] ?? [""];
-    //
-    // 	return presence;
-    // }
-
     static flags: { [index in UserFlagsString]: string } = {
         DISCORD_EMPLOYEE: "Discord Employee 👨‍💼",
         PARTNERED_SERVER_OWNER: "Discord Partner ❤️",

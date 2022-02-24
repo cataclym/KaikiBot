@@ -1,8 +1,8 @@
 import { Message, MessageEmbed } from "discord.js";
 import fetch from "node-fetch";
-import { KaikiCommand } from "kaiki";
+import KaikiCommand from "Kaiki/KaikiCommand";
 import { aniQuery, handleError, handleResponse } from "../../lib/APIs/AnilistGraphQL";
-import { IAnimeRes } from "../../interfaces/IAnimeRes";
+import { IAnimeRes } from "../../lib/Interfaces/IAnimeRes";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 import Utility from "../../lib/Utility";
 

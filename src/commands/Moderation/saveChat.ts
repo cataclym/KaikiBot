@@ -1,5 +1,5 @@
 import { Message, MessageReaction } from "discord.js";
-import { KaikiCommand } from "kaiki";
+import KaikiCommand from "Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 import fs from "fs";
 

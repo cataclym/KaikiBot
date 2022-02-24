@@ -1,6 +1,6 @@
 import { Message, MessageEmbed } from "discord.js";
-import { KaikiCommand } from "kaiki";
-import images from "../../../data/images.json";
+import images from "../../data/images.json";
+import KaikiCommand from "Kaiki/KaikiCommand";
 
 type sides = "tails" | "heads";
 
@@ -39,7 +39,7 @@ export default class BetflipCommands extends KaikiCommand {
     }
 
     public async exec(message: Message, { number, coin }: { number: number, coin: sides }): Promise<Message> {
-        const success = await this.client.money.TryTake(message.author.id, number);
+        const success = await this.client.money.TryTake(message.author.id, number, "Betflip gamble");
 
         if (!success) {
             return await message.channel.send({
@@ -60,7 +60,7 @@ export default class BetflipCommands extends KaikiCommand {
 
         if (coin === coinFlipped) {
             const amountWon = Math.round(number * 1.95);
-            await this.client.money.Add(message.author.id, amountWon);
+            await this.client.money.Add(message.author.id, amountWon, "Betflip won x1.95");
 
             return message.channel.send({
                 embeds: [emb

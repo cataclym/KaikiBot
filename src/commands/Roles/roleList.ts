@@ -1,6 +1,6 @@
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
 import { Guild, Message, MessageEmbed, Role } from "discord.js";
-import { KaikiCommand } from "kaiki";
+import KaikiCommand from "Kaiki/KaikiCommand";
 
 
 export default class RoleListCommand extends KaikiCommand {

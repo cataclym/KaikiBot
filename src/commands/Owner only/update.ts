@@ -3,7 +3,7 @@ import { Message } from "discord.js";
 import fs from "fs";
 import logger from "loglevel";
 import * as path from "path";
-import { KaikiCommand } from "kaiki";
+import KaikiCommand from "Kaiki/KaikiCommand";
 import Utility from "../../lib/Utility";
 
 export default class UpdateCommand extends KaikiCommand {

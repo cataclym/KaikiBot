@@ -1,9 +1,5 @@
-import { Snowflake } from "discord-api-types";
 import { Message, MessageEmbed, Permissions } from "discord.js";
-import { KaikiCommand } from "kaiki";
-
-import { getGuildDocument } from "../../struct/documentMethods";
-import { emoteReactCache } from "../../cache/cache";
+import KaikiCommand from "Kaiki/KaikiCommand";
 
 export default class RemoveEmoteReactCommand extends KaikiCommand {
     constructor() {
@@ -23,25 +19,38 @@ export default class RemoveEmoteReactCommand extends KaikiCommand {
         });
     }
 
-    public async exec(message: Message, { trigger }: { trigger: string }): Promise<Message> {
+    public async exec(message: Message<true>, { trigger }: { trigger: string }): Promise<Message> {
 
-        const db = await getGuildDocument(message.guild!.id),
-            emoji = message.guild?.emojis.cache
-                .get(db.emojiReactions[trigger] as Snowflake);
+        const db = await this.client.orm.emojiReactions.findFirst({
+            where: {
+                GuildId: BigInt(message.guildId),
+                // TODO: Check if this needs lowercase/string formatting
+                TriggerString: trigger,
+            },
+            select: {
+                Id: true,
+                EmojiId: true,
+            },
+        });
 
-        if (db.emojiReactions[trigger]) {
+        const emoji = message.guild?.emojis.cache
+            .get(String(db?.EmojiId));
+
+        if (db && emoji) {
+
+            await this.client.orm.emojiReactions.delete({
+                where: {
+                    Id: db.Id,
+                },
+            });
 
             if (trigger.includes(" ")) {
-                delete emoteReactCache[message.guild!.id].has_space[trigger];
+                this.client.cache.emoteReactCache.get(message.guildId)?.get("has_space")?.delete(trigger);
             }
 
             else {
-                delete emoteReactCache[message.guild!.id].no_space[trigger];
+                this.client.cache.emoteReactCache.get(message.guildId)?.get("no_space")?.delete(trigger);
             }
-
-            delete db.emojiReactions[trigger];
-            db.markModified("emojiReactions");
-            await db.save();
 
             const embed = new MessageEmbed()
                 .setTitle("Removed emoji trigger")
@@ -54,7 +63,6 @@ export default class RemoveEmoteReactCommand extends KaikiCommand {
         }
 
         else {
-            await db.save();
             return message.channel.send({
                 embeds: [new MessageEmbed()
                     .setTitle("Not found")

@@ -1,7 +1,6 @@
 import { Listener } from "discord-akairo";
 import logger from "loglevel";
 
-
 export default class InvalidatedListener extends Listener {
     constructor() {
         super("invalidated", {

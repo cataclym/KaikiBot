@@ -1,5 +1,5 @@
 import { GuildMember, Message, MessageActionRow, MessageButton, MessageEmbed } from "discord.js";
-import { KaikiCommand } from "kaiki";
+import KaikiCommand from "Kaiki/KaikiCommand";
 import TicTacToe from "../../lib/games/TTT";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 

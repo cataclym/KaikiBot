@@ -2,11 +2,11 @@ import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
 import { Message, MessageEmbed } from "discord.js";
 import fetch from "node-fetch";
 import querystring from "querystring";
-import { KaikiCommand, KaikiUtil } from "kaiki";
-import { List } from "../../interfaces/IUrbanResponse";
+import { List } from "Interfaces/IUrbanResponse";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 import Utility from "../../lib/Utility";
-
+import KaikiCommand from "Kaiki/KaikiCommand";
+import KaikiUtil from "Kaiki/KaikiUtil";
 
 export default class UrbanDictCommand extends KaikiCommand {
     constructor() {

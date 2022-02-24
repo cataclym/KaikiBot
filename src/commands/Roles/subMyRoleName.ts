@@ -1,7 +1,7 @@
 import { Guild, Message, MessageEmbed } from "discord.js";
 import { getGuildDocument } from "../../struct/documentMethods";
 import { Snowflake } from "discord-api-types";
-import { KaikiCommand } from "kaiki";
+import KaikiCommand from "Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 import Utility from "../../lib/Utility";
 

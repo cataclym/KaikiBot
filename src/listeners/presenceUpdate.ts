@@ -1,8 +1,7 @@
-import { Listener } from "discord-akairo";
-import { ActivityType, Presence } from "discord.js";
-import { getBotDocument } from "../struct/documentMethods";
+import { Presence } from "discord.js";
+import KaikiListener from "Kaiki/KaikiListener";
 
-export default class PresenceUpdateListener extends Listener {
+export default class PresenceUpdateListener extends KaikiListener {
     constructor() {
         super("presenceupdate", {
             event: "presenceUpdate",
@@ -12,12 +11,14 @@ export default class PresenceUpdateListener extends Listener {
 
     public async exec(oldPresence: Presence | null, newPresence: Presence): Promise<void> {
         if (newPresence.user?.id === this.client.user?.id) {
-            const db = await getBotDocument();
-            if (newPresence.activities[0].type === db.settings.activityType as unknown as ActivityType && newPresence.activities[0].name === db.settings.activity) {
+            const db = await this.client.orm.botSettings.findFirst({});
+            if (!db || !db.Activity) return;
+
+            if (newPresence.activities[0].type !== db.ActivityType || newPresence.activities[0].name !== db.Activity) {
                 this.client.user?.setPresence({
                     activities: [{
-                        name: db.settings.activity,
-                        type: db.settings.activityType,
+                        name: db.Activity || undefined,
+                        type: db.ActivityType || undefined,
                     }],
                 });
             }

@@ -1,7 +1,7 @@
 import { Argument } from "discord-akairo";
 import { Guild, Message, MessageEmbed } from "discord.js";
 import { hexColorTable } from "../../lib/Color";
-import { KaikiCommand } from "kaiki";
+import KaikiCommand from "Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
 export default class ErrorColorConfigCommand extends KaikiCommand {

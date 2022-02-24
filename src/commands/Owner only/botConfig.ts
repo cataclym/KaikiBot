@@ -1,6 +1,6 @@
 import { FailureData } from "discord-akairo";
 import { ExcludeEnum, Message, MessageEmbed } from "discord.js";
-import { KaikiCommand } from "kaiki";
+import KaikiCommand from "Kaiki/KaikiCommand";
 import { BotConfig } from "../../struct/db/Database";
 import SetActivityCommand from "./setActivity";
 import { ActivityTypes } from "discord.js/typings/enums";

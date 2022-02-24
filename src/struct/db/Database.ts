@@ -8,8 +8,9 @@ type initReturn = {
     connection: Connection
 }
 
-export class Database {
+export default class Database {
     private _config: mysql2.ConnectionOptions;
+    private orm: PrismaClient;
 
     constructor() {
         this._config = {
@@ -26,12 +27,53 @@ export class Database {
                 return (await this.init()).connection;
             });
 
-        const prismaClient = new PrismaClient();
+        this.orm = new PrismaClient();
 
         return {
-            orm: prismaClient,
+            orm: this.orm,
             connection: connection,
         };
+    }
+
+    public async getOrCreateGuild(id: string | bigint) {
+        const guild = await this.orm.guilds.findUnique({
+            where: {
+                Id: BigInt(id),
+            },
+        });
+
+        if (!guild) {
+            return await this.orm.guilds.create({
+                data: {
+                    Prefix: process.env.PREFIX!,
+                    Id: BigInt(id),
+                },
+            });
+        }
+        return guild;
+    }
+
+    public async getOrCreateGuildUser(userId: string | bigint, guildId: string | bigint) {
+        const guildUser = await this.orm.guildUsers.findFirst({
+            where: {
+                UserId: BigInt(userId),
+                GuildId: BigInt(guildId),
+            },
+        });
+
+        if (!guildUser) {
+            return await this.orm.guildUsers.create({
+                data: {
+                    UserId: BigInt(userId),
+                    Guilds: {
+                        connect: {
+                            Id: BigInt(guildId),
+                        },
+                    },
+                },
+            });
+        }
+        return guildUser;
     }
 }
 

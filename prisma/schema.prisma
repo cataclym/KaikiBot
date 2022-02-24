@@ -100,7 +100,7 @@ model GuildUsers {
 
 model Guilds {
   Id                  BigInt                @id @unique(map: "Id")
-  Prefix              String                @db.VarChar(255)
+  Prefix              String                @db.VarChar(50)
   Anniversary         Boolean               @default(false)
   DadBot              Boolean               @default(false)
   ErrorColor          BigInt                @default(16711680)
@@ -113,7 +113,7 @@ model Guilds {
   WelcomeTimeout      Int?
   ByeTimeout          Int?
   StickyRoles         Boolean               @default(false)
-  CreatedAt           DateTime              @db.DateTime(0)
+  CreatedAt           DateTime              @default(now()) @db.Timestamp(0)
   BlockedCategories   BlockedCategories[]
   ExcludedStickyRoles ExcludedStickyRoles[]
   DadBotChannels      DadBotChannels[]
@@ -123,12 +123,12 @@ model Guilds {
 }
 
 model LeaveRoles {
-  Id         BigInt     @id @default(autoincrement())
-  RoleId     BigInt
-  UserId     BigInt
-  GuildUsers GuildUsers @relation(fields: [UserId], references: [Id], onDelete: Cascade, map: "LeaveRoles_ibfk_1")
+  Id          BigInt     @id @default(autoincrement())
+  RoleId      BigInt
+  GuildUserId BigInt
+  GuildUsers  GuildUsers @relation(fields: [GuildUserId], references: [Id], onDelete: Cascade, map: "LeaveRoles_ibfk_1")
 
-  @@index([UserId], map: "UserId")
+  @@index([GuildUserId], map: "GuildUserId")
 }
 
 model Todos {

@@ -1,5 +1,5 @@
 import { GuildMember, Message } from "discord.js";
-import { KaikiCommand } from "kaiki";
+import KaikiCommand from "Kaiki/KaikiCommand";
 
 import getPurrBotResponseEmbed from "../../lib/APIs/PurrBot";
 

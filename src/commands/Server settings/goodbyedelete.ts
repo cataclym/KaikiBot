@@ -1,5 +1,5 @@
 import { Guild, Message, MessageEmbed, Permissions } from "discord.js";
-import { KaikiCommand } from "kaiki";
+import KaikiCommand from "Kaiki/KaikiCommand";
 import { getGuildDocument } from "../../struct/documentMethods";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 

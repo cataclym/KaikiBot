@@ -3,15 +3,15 @@ import logger from "loglevel";
 import chalk from "chalk/index";
 import { Guild, GuildMember, Permissions, Role } from "discord.js";
 import { AnniversaryStrings } from "../struct/constants";
-import { KaikiClient } from "kaiki";
+import KaikiAkairoClient from "Kaiki/KaikiAkairoClient";
 
 export default class AnniversaryRolesService {
-    private readonly client: KaikiClient;
-    private orm: PrismaClient;
-    private listUsersCakeDay: string[] = [];
-    private listUserJoinedAt: string[] = [];
+    readonly client: KaikiAkairoClient;
+    readonly orm: PrismaClient;
+    listUsersCakeDay: string[] = [];
+    listUserJoinedAt: string[] = [];
 
-    constructor(client: KaikiClient) {
+    constructor(client: KaikiAkairoClient) {
         this.client = client;
         this.orm = client.orm;
 
@@ -151,6 +151,7 @@ export default class AnniversaryRolesService {
                 await member.roles.remove(AnniversaryRoleJ.id);
             }
         }
+        return member;
     }
 
     private async getEnabledGuilds() {

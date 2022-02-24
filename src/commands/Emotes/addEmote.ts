@@ -3,7 +3,7 @@ import { Message, MessageAttachment, Permissions } from "discord.js";
 import sizeOf from "image-size";
 import { deleteImage, getFileOut, getFilesizeInBytes, resizeImage, saveEmoji, saveFile } from "../../lib/Emote";
 import { EMOTE_REGEX, IMAGE_REGEX } from "../../struct/constants";
-import { KaikiCommand } from "kaiki";
+import KaikiCommand from "Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 import Utility from "../../lib/Utility";
 

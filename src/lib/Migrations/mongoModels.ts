@@ -1,15 +1,6 @@
 import { model, Schema } from "mongoose";
-import {
-    IBlacklist,
-    IBot,
-    ICommandStats,
-    IGuild,
-    IMigration,
-    IMoney,
-    ITinder,
-    IUser,
-} from "../../interfaces/IDocuments";
-import Utility from "../../lib/Utility";
+import { IBlacklist, IBot, ICommandStats, IGuild, IMigration, IMoney, ITinder, IUser } from "./IMongoModels";
+import KaikiUtil from "Kaiki/KaikiUtil";
 
 export const guildSchema = new Schema({
     // ID of the guild
@@ -43,8 +34,8 @@ export const guildSchema = new Schema({
                 enabled: false,
                 excludedChannels: {},
             },
-            errorColor: Utility.errorColor,
-            okColor: Utility.okColor,
+            errorColor: KaikiUtil.errorColor,
+            okColor: KaikiUtil.okColor,
             excludeRole: "Dadbot-excluded",
             welcome: {
                 enabled: false,

@@ -1,8 +1,9 @@
 import { Argument } from "discord-akairo";
 import { Snowflake } from "discord-api-types";
 import { Message, MessageEmbed, User } from "discord.js";
-import { KaikiCommand } from "kaiki";
+import KaikiCommand from "Kaiki/KaikiCommand";
 import Utility from "../../lib/Utility";
+import { time } from "@discordjs/builders";
 
 
 export default class FetchUserCommand extends KaikiCommand {
@@ -40,11 +41,11 @@ export default class FetchUserCommand extends KaikiCommand {
         const userFlags = userObject.flags ? userObject.flags.toArray() : [],
             embed = new MessageEmbed()
                 .setDescription(userObject.username)
-                .setThumbnail(userObject?.displayAvatarURL({ dynamic: true, size: 4096 }))
+                .setThumbnail(userObject.displayAvatarURL({ dynamic: true, size: 4096 }))
                 .setTitle(userObject.tag)
                 .addFields([
                     { name: "ID", value: userObject.id, inline: true },
-                    { name: "Account date", value: userObject?.createdAt?.toDateString(), inline: true }])
+                    { name: "Account date", value: time(userObject.createdAt), inline: true }])
                 .withOkColor(message);
 
         if (userFlags.length) {

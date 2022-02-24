@@ -1,6 +1,6 @@
 import { PrefixSupplier } from "discord-akairo";
 import { Message, MessageEmbed, User } from "discord.js";
-import { KaikiCommand } from "kaiki";
+import KaikiCommand from "Kaiki/KaikiCommand";
 
 
 export default class MentionCommand extends KaikiCommand {

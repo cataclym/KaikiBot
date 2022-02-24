@@ -1,7 +1,7 @@
 import { Message, MessageAttachment, MessageEmbed } from "discord.js";
 import fetch from "node-fetch";
-import { ServerOffline, ServerOnline } from "../../interfaces/IMinecraftServerPing";
-import { KaikiCommand } from "kaiki";
+import { ServerOffline, ServerOnline } from "../../lib/Interfaces/IMinecraftServerPing";
+import KaikiCommand from "Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 import Utility from "../../lib/Utility";
 

@@ -1,8 +1,7 @@
-import { Argument } from "discord-akairo";
 import { Message, Permissions } from "discord.js";
 import sizeOf from "image-size";
 import { deleteImage, getFileOut, resizeImage, saveEmoji, saveFile } from "../../lib/Emote";
-import { KaikiCommand } from "kaiki";
+import KaikiCommand from "Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
 const imgRegex = /(http(s?):)([/|.\w\s-])*\.(?:jpg|gif|png|jpeg)/gi;
@@ -19,14 +18,14 @@ export default class AddEmotesCommand extends KaikiCommand {
             args: [
                 {
                     id: "urls",
-                    type: Argument.union(imgRegex),
+                    type: imgRegex,
                     match: "separate",
                     otherwise: (msg: Message) => ({ embeds: [KaikiEmbeds.genericArgumentError(msg)] }),
                 },
             ],
         });
     }
-    public async exec(message: Message, { urls }: { urls: { match: string[], matches: [][] }[] }): Promise<Message | void> {
+    public async exec(message: Message, { urls, names }: { urls: RegExpMatchArray, names: string[]}): Promise<Message | void> {
 
         for (const url of urls) {
             const msNow = Date.now().toString();

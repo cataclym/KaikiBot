@@ -1,7 +1,7 @@
 import { Message, MessageEmbed, TextChannel } from "discord.js";
 import fetch from "node-fetch";
-import { PurpleData, RedditData } from "../../interfaces/IRedditAPI";
-import { KaikiCommand } from "kaiki";
+import { PurpleData, RedditData } from "../../lib/Interfaces/IRedditAPI";
+import KaikiCommand from "Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 import Utility from "../../lib/Utility";
 

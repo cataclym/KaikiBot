@@ -1,6 +1,6 @@
 import { PrefixSupplier } from "discord-akairo";
 import { Guild, Message, MessageEmbed, Permissions } from "discord.js";
-import { KaikiCommand } from "kaiki";
+import KaikiCommand from "Kaiki/KaikiCommand";
 import GreetHandler, { JSONToMessageOptions } from "../../lib/GreetHandler";
 
 export default class ByeMessageCommand extends KaikiCommand {

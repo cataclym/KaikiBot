@@ -1,7 +1,7 @@
 import { Command } from "discord-akairo";
 import { Message, MessageEmbed } from "discord.js";
 import fetch from "node-fetch";
-import { PurpleData, RedditData } from "../../interfaces/IRedditAPI";
+import { PurpleData, RedditData } from "../../lib/Interfaces/IRedditAPI";
 import Utility from "../../lib/Utility";
 
 export default class DadJokeCommand extends Command {

@@ -19,14 +19,15 @@ export default class ShardStatisticsCommand extends Command {
             channel: "guild",
         });
     }
-    public async exec(message: Message) {
+    public async exec(message: Message<true>) {
 
         const { ws } = message.client;
 
-        return message.channel.send({ content: await Utility.codeblock(`This guild is managed by shard: [${message.guild!.shardId}]`, "xl") +
-			await Utility.codeblock(Array.from(ws.shards.entries())
-			    .map(([, w]) => `ID: [${w.id}] | Ping: ${w.ping}ms | Status: ${shardStats[w.status]}`)
-			    .join("\n"), "xl"),
+        return message.channel.send({
+            content: `${await Utility.codeblock(`This guild is managed by shard: [${message.guild.shardId}]`, "xl")}
+    ${await Utility.codeblock(Array.from(ws.shards.entries())
+        .map(([, w]) => `ID: [${w.id}] | Ping: ${w.ping}ms | Status: ${shardStats[w.status]}`)
+        .join("\n"), "xl")}`,
         });
     }
 }

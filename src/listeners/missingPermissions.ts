@@ -1,10 +1,10 @@
-import { Command, Listener } from "discord-akairo";
+import { Command } from "discord-akairo";
 import { Message, MessageEmbed } from "discord.js";
 import logger from "loglevel";
-import { cmdStatsCache } from "../cache/cache";
 import Utility from "../lib/Utility";
+import KaikiListener from "Kaiki/KaikiListener";
 
-export default class missingPermissionsListener extends Listener {
+export default class missingPermissionsListener extends KaikiListener {
     constructor() {
         super("missingPermissions", {
             event: "missingPermissions",
@@ -18,9 +18,11 @@ export default class missingPermissionsListener extends Listener {
 
         await Utility.listenerLog(message, this, logger.info, command);
 
-        cmdStatsCache[command.id]
-            ? cmdStatsCache[command.id]++
-            : cmdStatsCache[command.id] = 1;
+        let cmd = this.client.cache.cmdStatsCache.get(command.id);
+
+        cmd
+            ? this.client.cache.cmdStatsCache.set(command.id, cmd++)
+            : this.client.cache.cmdStatsCache.set(command.id, 1);
 
         if (message.channel.type !== "DM") {
             await message.channel.send({ embeds:

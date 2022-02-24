@@ -1,8 +1,9 @@
 import { GuildMember, Message, Role } from "discord.js";
 import logger from "loglevel";
 import chalk from "chalk";
-import { getGuildDocument } from "../struct/documentMethods";
-import { Snowflake } from "discord-api-types";
+import KaikiAkairoClient from "Kaiki/KaikiAkairoClient";
+
+type genericArrayFilter = <T>(x: T | undefined) => x is T;
 
 export async function handleStickyRoles(member: GuildMember) {
 
@@ -22,10 +23,24 @@ export async function handleStickyRoles(member: GuildMember) {
     }
 }
 
-export async function restoreUserRoles(member: GuildMember) {
-    const { guild } = member,
-        db = await getGuildDocument(guild.id),
-        leaveRoles = db.leaveRoles[member.id];
+export async function restoreUserRoles(member: GuildMember): Promise<{ success: boolean, roles: Role[]} | false> {
+    const { guild } = member;
+    const leaveRoles = await (member.client as KaikiAkairoClient).orm.leaveRoles.findMany({
+        where: {
+            GuildUsers: {
+                UserId: BigInt(member.id),
+                GuildId: BigInt(guild.id),
+            },
+        },
+    });
+
+    const excludedRoleIds = (await member.client.orm.excludedStickyRoles.findMany({
+        where: {
+            Guilds: {
+                Id: BigInt(member.guild.id),
+            },
+        },
+    })).map(t => t.RoleId);
 
     if (leaveRoles && leaveRoles.length) {
 
@@ -33,14 +48,14 @@ export async function restoreUserRoles(member: GuildMember) {
         // Filter everyone role
         // Then filter out undefined.
         const roleIDArray = leaveRoles
-            .map(roleString => guild.roles.cache.get(roleString as Snowflake))
-            .filter(r => r?.position !== 0)
-            .filter(Boolean);
+            .map(roleTable => guild.roles.cache.get(String(roleTable.RoleId)))
+            .filter(Boolean as unknown as genericArrayFilter)
+            .filter(r => r.position !== 0);
 
         // Making sure bot doesn't add roles the user already have,
         // and don't add roles above bot in role hierarchy
-        const rolesToAdd = roleIDArray.filter(r => !member.roles.cache.has(r!.id)
-			&& r!.position < guild.me!.roles.highest.position);
+        const rolesToAdd = roleIDArray.filter(r => !member.roles.cache.has(r.id)
+                && r.position < guild.me!.roles.highest.position);
 
         if (!rolesToAdd.length) {
             return {
@@ -49,29 +64,33 @@ export async function restoreUserRoles(member: GuildMember) {
             };
         }
 
-        // if (rolesToAdd.every(r => r!.position > guild.me!.roles.highest.position)) throw new Error("One or more roles are above me in the hierarchy");
+        if (excludedRoleIds.length && rolesToAdd.some(r => excludedRoleIds.includes(BigInt(r.id)))) {
+            // Return false when it finds an excluded role among the leave roles.
+            return false;
+        }
 
         // Add all roles
         // Map roles to ID, because D.js didn't like it otherwise
-        await member.roles.add(rolesToAdd.map(r => r!.id));
+        await member.roles.add(rolesToAdd.map(r => r.id));
 
         return {
             success: true,
             roles: rolesToAdd,
         };
     }
+    return false;
 }
 
-export async function rolePermissionCheck(message: Message, role: Role) {
-    if ((role.position < (message.member as GuildMember).roles.highest.position
-			|| message.guild?.ownerId === message.member?.id)
-		&& !role.managed) {
+export async function rolePermissionCheck(message: Message<true>, role: Role) {
+    if ((role.position < (message.member?.roles.highest.position || 0)
+            || message.guild.ownerId === message.member?.id)
+        && !role.managed) {
         return botRolePermissionCheck(message, role);
     }
     return false;
 }
 
-export async function botRolePermissionCheck(message: Message, role: Role) {
-    return role.position < message.guild!.me!.roles.highest.position;
+export async function botRolePermissionCheck(message: Message<true>, role: Role) {
+    return role.position < (message.guild.me?.roles.highest.position || 0);
 }
 

@@ -1,5 +1,5 @@
 import { Message, MessageEmbed } from "discord.js";
-import { respType } from "../../cache/cache";
+import { respType } from "Types/TCustom";
 
 export async function sendQuote(resp: respType, message: Message): Promise<Message> {
 

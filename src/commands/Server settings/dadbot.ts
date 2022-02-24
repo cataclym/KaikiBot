@@ -1,6 +1,6 @@
 import { PrefixSupplier } from "discord-akairo";
 import { Guild, Message, MessageEmbed } from "discord.js";
-import { KaikiCommand } from "kaiki";
+import KaikiCommand from "Kaiki/KaikiCommand";
 import { getGuildDocument } from "../../struct/documentMethods";
 import { excludeData } from "../../lib/slashCommands/data";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";

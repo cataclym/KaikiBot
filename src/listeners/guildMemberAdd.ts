@@ -1,7 +1,7 @@
 import { GuildMember } from "discord.js";
 import { handleStickyRoles } from "../lib/roles";
 import GreetHandler from "../lib/GreetHandler";
-import { KaikiListener } from "kaiki";
+import KaikiListener from "Kaiki/KaikiListener";
 
 export default class GuildMemberAddListener extends KaikiListener {
     constructor() {

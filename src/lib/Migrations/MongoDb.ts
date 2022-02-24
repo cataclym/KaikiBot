@@ -2,6 +2,9 @@ import logger from "loglevel";
 import { connect, connection } from "mongoose";
 
 export default class MongoDb {
+    constructor() {
+        void this.init();
+    }
     async init(): Promise<void> {
         connect("mongodb://localhost:27017?authSource=admin'", {
             // user: process.env.DB_USER,

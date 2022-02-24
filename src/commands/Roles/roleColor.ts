@@ -1,6 +1,6 @@
 import { Message, MessageAttachment, MessageEmbed, Role } from "discord.js";
 import { imgFromColor, resolveColor } from "../../lib/Color";
-import { KaikiCommand } from "kaiki";
+import KaikiCommand from "Kaiki/KaikiCommand";
 import { rolePermissionCheck } from "../../lib/roles";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 

@@ -1,8 +1,7 @@
 import { Argument, PrefixSupplier } from "discord-akairo";
 import { execSync } from "child_process";
 import { Message, MessageEmbed, PermissionResolvable, Permissions } from "discord.js";
-import { name, repository, version } from "../../../package.json";
-import { KaikiCommand } from "kaiki";
+import KaikiCommand from "Kaiki/KaikiCommand";
 
 export default class HelpCommand extends KaikiCommand {
     constructor() {
@@ -19,6 +18,8 @@ export default class HelpCommand extends KaikiCommand {
 
     public async exec(message: Message, args: { command: KaikiCommand | string } | undefined): Promise<Message> {
 
+        const { name, repository, version } = this.client.package;
+
         const prefix = (this.handler.prefix as PrefixSupplier)(message),
             command = args?.command,
             embed = new MessageEmbed()
@@ -26,17 +27,17 @@ export default class HelpCommand extends KaikiCommand {
 
         if (command instanceof KaikiCommand) {
 
-            const cmdUsage = command.usage;
+            const usage = command.usage;
 
             embed.setTitle(`Command: ${command.id}`)
                 .setDescription(`**Aliases:** \`${command.aliases.sort((a, b) => b.length - a.length || a.localeCompare(b)).join("`, `")}\``)
                 .addField("**Description:**", command.description || "?", false)
-                .addField("**Usage:**", cmdUsage
-                    ? Array.isArray(cmdUsage)
-                        ? cmdUsage.sort((a, b) => b.length - a.length || a.localeCompare(b)).map(u => `${prefix}${command.id} ${u}`).join("\n")
-                        : `${prefix}${command.id} ${cmdUsage}`
+                .addField("**Usage:**", usage
+                    ? Array.isArray(usage)
+                        ? usage.sort((a, b) => b.length - a.length || a.localeCompare(b)).map(u => `${prefix}${command.id} ${u}`).join("\n")
+                        : `${prefix}${command.id} ${usage}`
                     : `${prefix}${command.id}`, false)
-                .setFooter(command.categoryID);
+                .setFooter({ text: command.categoryID });
 
             if (command.userPermissions) {
                 embed.addField("Requires", new Permissions(command.userPermissions as PermissionResolvable).toArray().join(), false);
@@ -54,20 +55,25 @@ export default class HelpCommand extends KaikiCommand {
             });
         }
 
-        const AvUrl = (message.client.users.cache.get("140788173885276160") || (await message.client.users.fetch("140788173885276160", { cache: true })))
+        const avatarURL = (message.client.users.cache.get("140788173885276160") || (await message.client.users.fetch("140788173885276160", { cache: true })))
             .displayAvatarURL({ dynamic: true });
 
         embed.setTitle(`${message.client.user?.username} help page`)
             .setDescription(`Current prefix: \`${prefix}\``)
             .addFields([{
-                name: "📋 Command list",
+                name: "📋 Category list",
                 value: `\`${prefix}cmds\` returns a complete list of command categories.`,
-                inline: true,
+                inline: false,
+            },
+            {
+                name: "🗒️ Command list",
+                value: `\`${prefix}cmds <category>\` returns a complete list of commands in the given category.`,
+                inline: false,
             },
             {
                 name: "🔍 Command Info",
                 value: `\`${prefix}help [command]\` to get more help. Example: \`${prefix}help ping\``,
-                inline: true,
+                inline: false,
             }])
             .setAuthor({
                 name: `${name} v${version}-${execSync("git rev-parse --short HEAD").toString()}`,
@@ -76,7 +82,7 @@ export default class HelpCommand extends KaikiCommand {
             })
             .setFooter({
                 text: "Made by Cata <3",
-                iconURL: AvUrl,
+                iconURL: avatarURL,
             });
 
         return message.channel.send({ embeds: [embed] });

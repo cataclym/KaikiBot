@@ -1,5 +1,5 @@
 import { InteractionCollector, Message, MessageActionRow, MessageButton, MessageEmbed } from "discord.js";
-import { KaikiCommand } from "kaiki";
+import KaikiCommand from "Kaiki/KaikiCommand";
 
 import logger from "loglevel";
 

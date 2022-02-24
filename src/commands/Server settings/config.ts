@@ -1,7 +1,7 @@
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
 import { Argument, Flag, PrefixSupplier } from "discord-akairo";
 import { Message, MessageEmbed, MessageOptions } from "discord.js";
-import { KaikiCommand } from "kaiki";
+import KaikiCommand from "Kaiki/KaikiCommand";
 import GreetHandler from "../../lib/GreetHandler";
 import { blockedCategories } from "../../struct/constants";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";

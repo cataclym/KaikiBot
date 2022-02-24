@@ -1,5 +1,5 @@
 import type { TextBasedChannel, TextChannel } from "discord.js";
-import { KaikiCommand } from "kaiki";
+import KaikiCommand from "Kaiki/KaikiCommand";
 
 export default class ClearCommand extends KaikiCommand {
     constructor() {

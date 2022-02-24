@@ -1,5 +1,5 @@
 import { Channel, Collection, GuildChannel, Message, MessageEmbed, Permissions, ThreadChannel } from "discord.js";
-import { KaikiCommand } from "kaiki";
+import KaikiCommand from "Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
 export default class DeleteChannelCommand extends KaikiCommand {

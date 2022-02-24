@@ -1,6 +1,6 @@
 import { Message } from "discord.js";
 import { dadbotArray } from "../../struct/constants";
-import { KaikiCommand } from "kaiki";
+import KaikiCommand from "Kaiki/KaikiCommand";
 
 // dad bot
 export default class dadBot extends KaikiCommand {

@@ -1,9 +1,7 @@
 import logger from "loglevel";
 import fetch from "node-fetch";
-import querystring from "querystring";
-import { repository, version } from "../../../package.json";
-import { Post, responseE621 } from "../../interfaces/IDapi";
-import { KaikiUtil } from "kaiki";
+import { Post, responseE621 } from "Interfaces/IDapi";
+import KaikiUtil from "Kaiki/KaikiUtil";
 
 const imageCache: {[id: string]: Post} = {};
 
@@ -15,7 +13,7 @@ export enum DapiSearchType {
 const options = {
     method: "GET",
     headers: {
-        "User-Agent": `KaikiDeishuBot a Discord bot, v${version} (${repository.url})`,
+        "User-Agent": "KaikiDeishuBot is a Discord bot (https://gitlab.com/cataclym/KaikiDeishuBot/)",
     },
 };
 
@@ -46,12 +44,14 @@ export async function grabHentai(type: types, format: "single" | "bomb"): Promis
 
 export async function DapiGrabber(tags: string[] | null, type: DapiSearchType): Promise<Post | void> {
 
-    const tag = tags?.join("+").replace(" ", "_").toLowerCase();
+    const tag = tags?.join("+").replace(" ", "_").toLowerCase() || "";
     let url = "";
 
     switch (type) {
         case DapiSearchType.E621: {
-            const query = querystring.stringify({ tags: tag, limit: 50 });
+            const query = new URLSearchParams();
+            query.append("tags", tag);
+            query.append("limit", String(50));
             url = `https://e621.net/posts.json?${query}`;
             break;
         }

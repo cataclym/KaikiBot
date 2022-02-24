@@ -1,6 +1,6 @@
 import { Message, MessageEmbed } from "discord.js";
 import Gambling from "../../lib/gambling/gambling";
-import { KaikiCommand } from "kaiki";
+import KaikiCommand from "Kaiki/KaikiCommand";
 
 export default class slotsCommand extends KaikiCommand {
     constructor() {
@@ -33,7 +33,7 @@ export default class slotsCommand extends KaikiCommand {
             return;
         }
 
-        const success = await this.client.money.TryTake(message.author.id, amount);
+        const success = await this.client.money.TryTake(message.author.id, amount, "Slots gamble");
 
         if (!success) {
             await message.channel.send({
@@ -49,7 +49,7 @@ export default class slotsCommand extends KaikiCommand {
         // Check if all three indexes are the same before we check if there are 2 similar ones
         if (result.numbers.every((val, i, arr) => val === arr[0])) {
             const winAmount = amount * 30;
-            await this.client.money.Add(message.author.id, winAmount);
+            await this.client.money.Add(message.author.id, winAmount, "Slots won x30");
             result.string += `\n\nYou won ${winAmount} ${this.client.money.currencySymbol}!`;
         }
 
@@ -59,7 +59,7 @@ export default class slotsCommand extends KaikiCommand {
             if (arr.includes(r)) return true;
         })) {
             const winAmount = amount * 10;
-            await this.client.money.Add(message.author.id, winAmount);
+            await this.client.money.Add(message.author.id, winAmount, "Slots won x10");
             result.string += `\n\nYou won ${winAmount} ${this.client.money.currencySymbol}!`;
         }
 

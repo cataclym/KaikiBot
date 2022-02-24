@@ -1,5 +1,5 @@
 import { Guild, GuildChannel, Message, MessageEmbed, Snowflake, TextChannel } from "discord.js";
-import { KaikiCommand } from "kaiki";
+import KaikiCommand from "Kaiki/KaikiCommand";
 import { Argument } from "discord-akairo";
 
 export default class ExcludeDadbotChannelCommand extends KaikiCommand {
@@ -51,8 +51,8 @@ export default class ExcludeDadbotChannelCommand extends KaikiCommand {
             });
         }
 
-        const enabledChannels: bigint[] = [];
-        const excludedChannels: {ChannelId: bigint}[] = [];
+        const GuildId = BigInt(message.guildId!), enabledChannels: bigint[] = [],
+            excludedChannels: {GuildId: bigint, ChannelId: bigint}[] = [];
 
         for (const [, channel] of channels) {
 
@@ -62,24 +62,16 @@ export default class ExcludeDadbotChannelCommand extends KaikiCommand {
 
             else {
                 excludedChannels.push({
+                    GuildId,
                     ChannelId: BigInt(channel.id),
                 });
             }
         }
 
         if (excludedChannels.length) {
-            await this.client.orm.guilds.update({
-                where: {
-                    Id: bigIntGuildId,
-                },
-                data: {
-                    DadBotChannels: {
-                        createMany: {
-                            data: excludedChannels,
-                            skipDuplicates: true,
-                        },
-                    },
-                },
+            await this.client.orm.dadBotChannels.createMany({
+                data: excludedChannels,
+                skipDuplicates: true,
             });
             embed.addField("Excluded", excludedChannels
                 .map(k => message.guild!.channels.cache.get(String(k.ChannelId)) ?? String(k.ChannelId))
@@ -100,7 +92,7 @@ export default class ExcludeDadbotChannelCommand extends KaikiCommand {
                 .join("\n"));
         }
 
-        void this.client.dadBotChannelsProvider.init();
+        // void this.client.dadBotChannelsProvider.init();
 
         return message.channel.send({
             embeds: [embed],

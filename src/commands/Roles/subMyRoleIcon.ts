@@ -2,7 +2,7 @@ import { Guild, GuildEmoji, Message, MessageAttachment, MessageEmbed, ReactionEm
 import { Argument } from "discord-akairo";
 import { getGuildDocument } from "../../struct/documentMethods";
 import { Snowflake } from "discord-api-types";
-import { KaikiCommand } from "kaiki";
+import KaikiCommand from "Kaiki/KaikiCommand";
 import { EMOTE_REGEX, IMAGE_REGEX } from "../../struct/constants";
 import { isRegex } from "../../lib/functions";
 import { rolePermissionCheck } from "../../lib/roles";

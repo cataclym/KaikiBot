@@ -1,9 +1,6 @@
 import { Argument } from "discord-akairo";
-import { Message } from "discord.js";
-import { IUser } from "../../interfaces/IDocuments";
-import { getUserDocument } from "../../struct/documentMethods";
-import { KaikiCommand } from "kaiki";
-
+import { Message, MessageEmbed } from "discord.js";
+import KaikiCommand from "Kaiki/KaikiCommand";
 
 export default class todoRemoveCommand extends KaikiCommand {
     constructor() {
@@ -19,11 +16,17 @@ export default class todoRemoveCommand extends KaikiCommand {
         });
     }
 
-    public async exec(message: Message, { toRemove }: { toRemove: number | "first" | "last" | "all" }): Promise<IUser | Message> {
+    public async exec(message: Message, { toRemove }: { toRemove: number | "first" | "last" | "all" }): Promise<Message> {
 
-        const { author } = message, userDB = await getUserDocument(author.id);
+        const { author } = message, todos = await message.client.orm.todos.findMany({
+            where: {
+                DiscordUsers: {
+                    UserId: BigInt(author.id),
+                },
+            },
+        });
 
-        if (!userDB.todo.length) {
+        if (!todos) {
             return message.channel.send("Nothing to delete.");
         }
 
@@ -31,43 +34,71 @@ export default class todoRemoveCommand extends KaikiCommand {
 
         if (typeof toRemove === "number") {
             // Matches given number to array item
-            removedItem = userDB.todo.splice(toRemove - 1, 1).toString();
+            removedItem = todos.splice(toRemove - 1, 1).toString();
         }
 
         else {
             switch (toRemove) {
                 case "all": {
-                    userDB.todo = [];
+                    await message.client.orm.todos.deleteMany({
+                        where: {
+                            DiscordUsers: {
+                                UserId: BigInt(author.id),
+                            },
+                        },
+                    });
                     break;
                 }
                 case "last": {
-                    removedItem = userDB.todo.pop();
+                    const toRemoveTodoId = Math.max(...todos.map(t => Number(t.Id)));
+                    removedItem = (await message.client.orm.todos.delete({
+                        select: {
+                            String: true,
+                        },
+                        where: {
+                            Id: BigInt(toRemoveTodoId),
+                        },
+                    }))
+                        .String;
                     break;
                 }
                 case "first": {
-                    removedItem = userDB.todo.shift();
+                    const toRemoveTodoId = Math.min(...todos.map(t => Number(t.Id)));
+                    removedItem = (await message.client.orm.todos.delete({
+                        select: {
+                            String: true,
+                        },
+                        where: {
+                            Id: BigInt(toRemoveTodoId),
+                        },
+                    }))
+                        .String;
                     break;
                 }
             }
         }
 
-        userDB.markModified("todo");
-
         if (!removedItem) {
-            message.channel.send("List deleted.")
+            return message.channel.send("List deleted.")
                 .then(SentMsg => {
                     SentMsg.react("✅");
+                    return SentMsg;
                 });
         }
 
         else {
-            removedItem = removedItem?.substring(0, 46);
-            message.reply(`Removed \`${removedItem}\` from list.`)
+            return message.reply({
+                content: "Removed an item from list.",
+                embeds: [new MessageEmbed()
+                    .setAuthor({ name: "Deleted:" })
+                    .setDescription(`\`${removedItem}\``)
+                    .withOkColor(message),
+                ],
+            })
                 .then(SentMsg => {
                     SentMsg.react("✅");
+                    return SentMsg;
                 });
         }
-
-        return userDB.save();
     }
 }

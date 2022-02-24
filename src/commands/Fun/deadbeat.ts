@@ -1,6 +1,6 @@
 import Canvas, { loadImage } from "canvas";
 import Discord, { Message } from "discord.js";
-import { KaikiCommand } from "kaiki";
+import KaikiCommand from "Kaiki/KaikiCommand";
 
 const background = async () => await loadImage("https://cdn.discordapp.com/attachments/717045059215687691/763459004352954368/deadbeats.jpg");
 

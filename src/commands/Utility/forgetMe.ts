@@ -1,6 +1,5 @@
 import { InteractionCollector, Message, MessageActionRow, MessageButton, MessageEmbed } from "discord.js";
-import { KaikiCommand } from "kaiki";
-import { moneyModel, usersModel } from "../../struct/db/models";
+import KaikiCommand from "Kaiki/KaikiCommand";
 
 export default class ForgetMeCommand extends KaikiCommand {
     constructor() {
@@ -23,10 +22,12 @@ export default class ForgetMeCommand extends KaikiCommand {
 					[new MessageButton()
 					    .setCustomId("1")
 					    .setLabel("Yes")
+					    .setEmoji("⚠️")
 					    .setStyle("DANGER"),
 					new MessageButton()
 					    .setCustomId("2")
 					    .setLabel("No")
+					    .setEmoji("❌")
 					    .setStyle("SECONDARY")],
             })],
         });
@@ -41,19 +42,32 @@ export default class ForgetMeCommand extends KaikiCommand {
 
             if (i.isButton()) {
                 if (i.customId === "1") {
-                    const userData = await usersModel.findOneAndDelete({ id: message.author.id });
-                    const moneyData = await moneyModel.findOneAndDelete({ id: message.author.id });
-                    // const tinderData = await tinderDataModel.findOneAndDelete({ id: message.author.id });
+                    const userData = await this.client.orm.discordUsers.delete({
+                        select: {
+                            Amount: true,
+                            CreatedAt: true,
+                            Todos: true,
+                        },
+                        where: {
+                            UserId: BigInt(message.author.id),
+                        },
+                    });
+
+                    const guildData = await this.client.orm.guildUsers.deleteMany({
+                        where: {
+                            UserId: BigInt(message.author.id),
+                        },
+                    });
 
                     message.channel.send({
                         embeds: [new MessageEmbed()
                             .setTitle("Deleted data")
                             .setDescription("All data stored about you has been deleted!")
-                            .addField("Cleared user-data", userData
-                                ? `${userData.todo.length + userData.userNicknames.length} entrie(s) deleted`
+                            .addField("Cleared user-data", userData.Todos.length
+                                ? `${userData.Todos.length + guildData.count} entrie(s) deleted`
                                 : "N/A")
-                            .addField("Cleared money-data", moneyData
-                                ? `${moneyData.amount} currency deleted`
+                            .addField("Cleared money-data", userData.Amount
+                                ? `${userData.Amount} currency deleted`
                                 : "N/A")
                             .withOkColor(message),
                         ],

@@ -1,7 +1,7 @@
 import { GuildMember, Message, MessageEmbed } from "discord.js";
 import { hexColorTable } from "../Color";
 import { processAPIRequest } from "./APIProcessor";
-import { endpointData } from "../../interfaces/IAPIData";
+import { endpointData } from "../Interfaces/IAPIData";
 
 type endPointSignatures = "bite"
 	| "blush"

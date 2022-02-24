@@ -1,5 +1,5 @@
 import { Message, MessageEmbed } from "discord.js";
-import { KaikiCommand } from "kaiki";
+import KaikiCommand from "Kaiki/KaikiCommand";
 
 export default class BetRollCommand extends KaikiCommand {
     constructor() {
@@ -20,7 +20,7 @@ export default class BetRollCommand extends KaikiCommand {
     }
 
     public async exec(message: Message, { number }: { number: number }): Promise<Message> {
-        const success = await this.client.money.TryTake(message.author.id, number);
+        const success = await this.client.money.TryTake(message.author.id, number, "Betroll gamble");
 
         if (!success) {
             return await message.channel.send({
@@ -45,7 +45,7 @@ export default class BetRollCommand extends KaikiCommand {
 
             const winnings = Math.round(number * 2);
 
-            await this.client.money.Add(message.author.id, winnings);
+            await this.client.money.Add(message.author.id, winnings, "Betroll won x2");
 
             return message.channel.send({
                 embeds: [new MessageEmbed()
@@ -58,7 +58,7 @@ export default class BetRollCommand extends KaikiCommand {
 
             const winnings = Math.round(number * 4);
 
-            await this.client.money.Add(message.author.id, winnings);
+            await this.client.money.Add(message.author.id, winnings, "Betroll won x4");
 
             return message.channel.send({
                 embeds: [new MessageEmbed()
@@ -71,7 +71,7 @@ export default class BetRollCommand extends KaikiCommand {
 
             const winnings = Math.round(number * 10);
 
-            await this.client.money.Add(message.author.id, winnings);
+            await this.client.money.Add(message.author.id, winnings, "Betroll won x10");
 
             return message.channel.send({
                 embeds: [new MessageEmbed()

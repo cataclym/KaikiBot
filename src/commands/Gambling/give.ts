@@ -1,5 +1,5 @@
 import { Message, MessageEmbed, User } from "discord.js";
-import { KaikiCommand } from "kaiki";
+import KaikiCommand from "Kaiki/KaikiCommand";
 
 
 export default class give extends KaikiCommand {
@@ -39,7 +39,7 @@ export default class give extends KaikiCommand {
             return;
         }
 
-        const success = await this.client.money.TryTake(msg.author.id, amount);
+        const success = await this.client.money.TryTake(msg.author.id, amount, `Given money to ${user.tag} [${user.id}]`);
         if (!success) {
             await msg.channel.send({
                 embeds: [new MessageEmbed()
@@ -49,7 +49,7 @@ export default class give extends KaikiCommand {
             return;
         }
 
-        await this.client.money.Add(user.id, amount);
+        await this.client.money.Add(user.id, amount, `Gift from ${msg.author.tag} [${msg.author.id}]`);
         await msg.channel.send({
             embeds: [new MessageEmbed()
                 .setDescription(`You've given ${amount} ${this.client.money.currencySymbol} to ${user.username}`)

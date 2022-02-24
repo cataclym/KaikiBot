@@ -1,3 +1,4 @@
-import log from "loglevel";
-export as namespace log;
-export = log;
+import logger from "loglevel";
+
+export as namespace logger;
+export = logger;

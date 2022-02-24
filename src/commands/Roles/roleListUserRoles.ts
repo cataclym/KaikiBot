@@ -3,7 +3,7 @@ import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
 import { Snowflake } from "discord-api-types";
 import { Guild, Message, MessageEmbed } from "discord.js";
 import { getGuildDocument } from "../../struct/documentMethods";
-import { KaikiCommand } from "kaiki";
+import KaikiCommand from "Kaiki/KaikiCommand";
 
 
 export default class ListUserRoles extends KaikiCommand {

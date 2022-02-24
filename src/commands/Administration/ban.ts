@@ -1,5 +1,5 @@
 import { Argument } from "discord-akairo";
-import { KaikiCommand } from "kaiki";
+import KaikiCommand from "Kaiki/KaikiCommand";
 import { Snowflake } from "discord-api-types";
 import { Guild, GuildMember, Message, MessageEmbed, Permissions, User } from "discord.js";
 

@@ -1,5 +1,5 @@
 import { Message } from "discord.js";
-import { KaikiCommand } from "kaiki";
+import KaikiCommand from "Kaiki/KaikiCommand";
 import Utility from "../../lib/Utility";
 
 const clean = (text: string) => {

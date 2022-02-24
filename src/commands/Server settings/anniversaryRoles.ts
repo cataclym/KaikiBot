@@ -1,7 +1,7 @@
 import { Guild, Message, MessageEmbed } from "discord.js";
-import { IGuild } from "../../interfaces/IDocuments";
+import { IGuild } from "../../lib/Migrations/src/IDocuments";
 import { checkBirthdayOnAdd } from "../../lib/AnniversaryRoles";
-import { KaikiCommand } from "kaiki";
+import KaikiCommand from "Kaiki/KaikiCommand";
 
 import { getGuildDocument } from "../../struct/documentMethods";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";

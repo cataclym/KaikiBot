@@ -1,5 +1,5 @@
 import { Message, MessageEmbed } from "discord.js";
-import { KaikiCommand } from "kaiki";
+import KaikiCommand from "Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
 export default class ClaimDailyCommand extends KaikiCommand {
@@ -19,16 +19,17 @@ export default class ClaimDailyCommand extends KaikiCommand {
                 DailyEnabled: true,
             },
         });
+
         const isEnabled = data!.DailyEnabled;
 
         if (!isEnabled) return message.channel.send({ embeds: [await KaikiEmbeds.errorMessage(message, "A daily amount has not been set by the bot owner!")] });
 
-        const amount = doc.settings.dailyAmount;
+        const amount = data!.DailyAmount;
 
-        if (!this.client.cache.dailyClaimsCache.get({ })) {
+        if (!this.client.cache.dailyProvider.get(message.author.id, false)) {
 
-            dailyClaimsCache[message.author.id] = true;
-            await this.client.money.Add(message.author.id, amount);
+            this.client.cache.dailyProvider.set(message.author.id, true);
+            await this.client.money.Add(message.author.id, Number(amount), "Claimed daily");
 
             return message.channel.send({
                 embeds: [new MessageEmbed()

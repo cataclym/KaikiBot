@@ -1,5 +1,5 @@
 import { Guild, GuildEmoji, Message, MessageEmbed, Permissions } from "discord.js";
-import { KaikiCommand } from "kaiki";
+import KaikiCommand from "Kaiki/KaikiCommand";
 import { getGuildDocument } from "../../struct/documentMethods";
 import { emoteReactCache } from "../../cache/cache";
 import { populateERCache } from "../../lib/functions";

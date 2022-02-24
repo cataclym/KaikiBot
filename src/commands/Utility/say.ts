@@ -1,5 +1,5 @@
 import { Message, MessageEmbed, Permissions, TextChannel } from "discord.js";
-import { KaikiCommand } from "kaiki";
+import KaikiCommand from "Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 import { JSONToMessageOptions } from "../../lib/GreetHandler";
 

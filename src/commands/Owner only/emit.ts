@@ -1,6 +1,6 @@
 import { Listener } from "discord-akairo";
 import { GuildMember, Message, MessageEmbed } from "discord.js";
-import { KaikiCommand } from "kaiki";
+import KaikiCommand from "Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
 

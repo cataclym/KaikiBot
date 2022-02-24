@@ -2,7 +2,7 @@ import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
 import { PrefixSupplier } from "discord-akairo";
 import { Snowflake } from "discord-api-types";
 import { Message, MessageEmbed } from "discord.js";
-import { KaikiCommand } from "kaiki";
+import KaikiCommand from "Kaiki/KaikiCommand";
 
 import { getGuildDocument } from "../../struct/documentMethods";
 

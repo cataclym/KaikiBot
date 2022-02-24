@@ -1,21 +1,21 @@
 import logger from "loglevel";
 import * as Path from "path";
-import fs from "fs";
+import * as fs from "fs";
 import { Collection } from "discord.js";
-import chalk from "chalk";
+import * as chalk from "chalk";
 import { Connection } from "mysql2/promise";
 import { execSync } from "child_process";
-import { KaikiClient } from "kaiki";
+import KaikiAkairoClient from "../Kaiki/KaikiAkairoClient";
 
 export class Migrations {
     private readonly currentFolder: string;
     public migrationClasses: Collection<string, Migration>;
     public db: Connection;
-    private readonly _client: KaikiClient;
+    private readonly _client: KaikiAkairoClient;
     private _count: number;
 
-    constructor(db: Connection, client: KaikiClient) {
-        this.currentFolder = Path.join(__dirname, ".");
+    constructor(db: Connection, client: KaikiAkairoClient) {
+        this.currentFolder = Path.join(__dirname, "./scripts/");
         this.migrationClasses = new Collection();
         this.db = db;
         this._client = client;
@@ -44,7 +44,7 @@ export class Migrations {
         // Executes the migration script
         logger.warn(`Migration running - [${chalk.hex("#ffa500")(migration.migrationId)}]`);
         await this.db.execute("INSERT INTO _Migrations (migrationId, versionString) VALUES (?, ?)", [migration.migrationId, migration.version]);
-        const migrated = await migration.migrate(this._client);
+        const migrated = await new Migration(migration).migration(this._client);
         logger.info(`Migration finished - [${chalk.hex("#ffa500")(migration.migrationId)}]`);
 
         return migrated;
@@ -62,7 +62,7 @@ export class Migrations {
     }
 
     private load(filePath: string) {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+        // eslint-disable-next-line @typescript-eslint/no-var-requires
         const mod = ((m: { default: Migration } | null) => m)(require(filePath));
 
         if (!mod?.default) {
@@ -92,25 +92,25 @@ export class Migrations {
 }
 
 export class Migration {
-    readonly name: string;
-    readonly version: string;
-    readonly hash?: string;
-    public migrate: (client: KaikiClient) => number | Promise<number>;
+    public name: string;
+    public version: string;
+    public hash?: string;
     public migrationId: string;
+    public migration: (client: KaikiAkairoClient) => Promise<number> | number;
     constructor(data: {
-    /**
-     *  Git commit hash, short version
-     * @param {string} hash git rev-parse --short HEAD
-     */
-    hash?: string;
-    name: string,
-    version: string,
-    migration: (client: KaikiClient) => number | Promise<number>,
-  }) {
+            /**
+             *  Git commit hash, short version
+             * @param {string} hash git rev-parse --short HEAD
+             */
+            hash?: string;
+            name: string,
+            version: string,
+            migration: (client: KaikiAkairoClient) => Promise<number> | number;
+        }) {
+        this.migration = data.migration;
         this.hash = data.hash;
         this.name = data.name;
         this.version = data.version;
-        this.migrate = data.migration;
         this.migrationId = `${this.hash || execSync("git rev-parse --short HEAD").toString().trim()}_${this.name}`;
     }
 }

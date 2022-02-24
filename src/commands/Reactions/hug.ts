@@ -1,6 +1,6 @@
 import { GuildMember, Message } from "discord.js";
 import sendWaifuPics from "../../lib/APIs/waifuPics";
-import { KaikiCommand } from "kaiki";
+import KaikiCommand from "Kaiki/KaikiCommand";
 
 
 export default class Hug extends KaikiCommand {

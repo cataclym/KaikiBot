@@ -1,7 +1,7 @@
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
 import { ColorResolvable, Message, MessageAttachment, MessageEmbed } from "discord.js";
 import { hexColorTable, imgFromColor, resolveColor } from "../../lib/Color";
-import { KaikiCommand } from "kaiki";
+import KaikiCommand from "Kaiki/KaikiCommand";
 import { Argument, PrefixSupplier } from "discord-akairo";
 
 

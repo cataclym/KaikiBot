@@ -1,7 +1,7 @@
 import { FailureData } from "discord-akairo";
 import { ActivityType, Message, MessageEmbed } from "discord.js";
 import { getBotDocument } from "../../struct/documentMethods";
-import { KaikiCommand } from "kaiki";
+import KaikiCommand from "Kaiki/KaikiCommand";
 import { ActivityTypes } from "discord.js/typings/enums";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 

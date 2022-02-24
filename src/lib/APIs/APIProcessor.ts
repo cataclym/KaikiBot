@@ -1,7 +1,7 @@
 import fetch from "node-fetch";
 import { ColorResolvable, GuildMember, Message, MessageEmbed } from "discord.js";
-import { endpointData } from "../../interfaces/IAPIData";
-import { KaikiUtil } from "kaiki";
+import { endpointData } from "Interfaces/IAPIData";
+import KaikiUtil from "Kaiki/KaikiUtil";
 
 export async function processAPIRequest(message: Message, site: string, data: endpointData, jsonProperty: string, mention?: GuildMember | null) {
 

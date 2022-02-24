@@ -1,6 +1,5 @@
-import { Guild, Message, MessageEmbed } from "discord.js";
-import { KaikiCommand } from "kaiki";
-import { getGuildDocument } from "../../struct/documentMethods";
+import { Message, MessageEmbed } from "discord.js";
+import KaikiCommand from "Kaiki/KaikiCommand";
 
 export default class ToggleStickyRolesCommand extends KaikiCommand {
     constructor() {
@@ -12,21 +11,22 @@ export default class ToggleStickyRolesCommand extends KaikiCommand {
             usage: "",
         });
     }
-    public async exec(message: Message): Promise<Message> {
+    public async exec(message: Message<true>): Promise<Message> {
 
-        const guild = (message.guild as Guild),
-            db = await getGuildDocument(guild.id),
-            bool = !db.settings.stickyRoles;
+        const db = await this.client.orm.guilds.findUnique({
+            where: {
+                Id: BigInt(message.guildId),
+            },
+            select: {
+                StickyRoles: true,
+            },
+        });
 
-        await this.client.guildProvider.set(message.guild!.id, "StickyRoles", bool);
-
-        db.settings.stickyRoles = bool;
-        db.markModified("settings.stickyRoles");
-        await db.save();
+        await this.client.guildProvider.set(message.guild!.id, "StickyRoles", !!db?.StickyRoles);
 
         return message.channel.send({
             embeds: [new MessageEmbed()
-                .setDescription(`Sticky roles have been ${bool ? "enabled" : "disabled"}.`)
+                .setDescription(`Sticky roles have been ${db?.StickyRoles ? "enabled" : "disabled"}.`)
                 .withOkColor(message)],
         });
     }

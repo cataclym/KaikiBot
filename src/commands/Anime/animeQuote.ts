@@ -1,9 +1,9 @@
 import { Message } from "discord.js";
 import logger from "loglevel";
 import fetch from "node-fetch";
-import { respType } from "../../cache/cache";
+import type { respType } from "Types/TCustom";
 import { sendQuote } from "../../lib/APIs/animeQuote";
-import { KaikiCommand } from "kaiki";
+import KaikiCommand from "Kaiki/KaikiCommand";
 
 export default class AnimeQuoteCommand extends KaikiCommand {
     constructor() {
@@ -23,11 +23,11 @@ export default class AnimeQuoteCommand extends KaikiCommand {
             .catch((reason) => {
                 logger.warn(`Animequote received no data: ${reason}\n`);
                 if (Object.entries(animeQuoteCache).length) {
-                    return sendQuote(animeQuoteCache[Math.floor(Math.random() * Object.keys(animeQuoteCache).length)], message);
+                    return sendQuote(animeQuoteCache.random(), message);
                 }
             });
 
-        if (!animeQuoteCache[resp.character]) animeQuoteCache[resp.character] = resp;
+        if (!animeQuoteCache.has(resp.character)) animeQuoteCache.set(resp.character, resp);
 
         return sendQuote(resp, message);
     }

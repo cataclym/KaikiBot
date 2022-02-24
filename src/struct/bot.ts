@@ -1,22 +1,24 @@
 import chalk from "chalk";
 import { execSync } from "child_process";
 import logger from "loglevel";
-import MongoDb from "./db/mongoDb";
-import { KaikiClient } from "kaiki";
+import KaikiAkairoClient from "../lib/Kaiki/KaikiAkairoClient";
+import fs from "fs/promises";
 
 export class Bot {
-    public client: KaikiClient;
-    constructor(client: KaikiClient) {
+    private readonly client: KaikiAkairoClient;
+    constructor(client: KaikiAkairoClient) {
     	this.client = client;
+
+        if (!process.env) {
+            throw new Error("Missing .env file. Please double-check the guide! (https://gitlab.com/cataclym/KaikiDeishuBot/-/blob/master/GUIDE.md)");
+        }
 
         if (!process.env.PREFIX || process.env.PREFIX === "[YOUR_PREFIX]") {
             throw new Error("Missing prefix! Set a prefix in .env");
         }
 
-        void this.verifyOwnerId();
-
         if (!process.env.KAWAIIKEY || process.env.KAWAIIKEY === "[YOUR_OPTIONAL_KAWAII_KEY]") {
-            ["run", "peek", "pout", "lick"].forEach(c => this.client.commandHandler.deregister(this.client.commandHandler.findCommand(c)));
+            ["run", "peek", "pout", "lick"].forEach(c => this.client.commandHandler.remove(this.client.commandHandler.findCommand(c).id));
             logger.warn("Kawaii API dependant commands have been disabled. Provide a token in .env to re-enable.");
         }
 
@@ -24,12 +26,12 @@ export class Bot {
             execSync("hash neofetch");
         }
         catch {
-            this.client.commandHandler.deregister(this.client.commandHandler.findCommand("neofetch"));
+            this.client.commandHandler.remove(this.client.commandHandler.findCommand("neofetch").id);
             logger.warn("Neofetch wasn't detected! Neofetch command will be disabled.");
         }
 
-        // TODO: Remove this!
-        void new MongoDb().init();
+        this.loadPackageJSON()
+            .then(() => logger.info("Package loaded!"));
 
         this.client.login(process.env.CLIENT_TOKEN)
             .then(() => {
@@ -38,10 +40,8 @@ export class Bot {
                 }
             });
     }
-
-    private async verifyOwnerId() {
-        if (!process.env.OWNER || process.env.OWNER === "[YOUR_OWNER_ID]" || !(await this.client.users.fetch(process.env.OWNER, { cache: true }))) {
-            throw new Error("Missing owner-ID! Please double-check the guide and set an owner in .env");
-        }
+    private async loadPackageJSON() {
+        this.client.package = await fs.readFile(process.env.npm_package_json!)
+            .then(file => JSON.parse(file.toString()));
     }
 }

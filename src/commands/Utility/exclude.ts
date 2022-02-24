@@ -1,6 +1,5 @@
-import { Guild, Message, MessageEmbed } from "discord.js";
-import { getGuildDocument } from "../../struct/documentMethods";
-import { KaikiCommand } from "kaiki";
+import { Message, MessageEmbed, Permissions } from "discord.js";
+import KaikiCommand from "Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
 export default class ExcludeCommand extends KaikiCommand {
@@ -8,7 +7,7 @@ export default class ExcludeCommand extends KaikiCommand {
         super("exclude", {
             description: "Adds or removes excluded role from user. Excludes the user from being targeted by dad-bot.",
             aliases: ["exclude", "e", "excl"],
-            clientPermissions: "MANAGE_ROLES",
+            clientPermissions: Permissions.FLAGS.MANAGE_ROLES,
             channel: "guild",
         });
     }
@@ -23,34 +22,35 @@ export default class ExcludeCommand extends KaikiCommand {
             });
         }
 
-        const db = await getGuildDocument((message.guild as Guild).id);
-        const embeds = [];
-        let excludedRole = message.guild?.roles.cache.find((r) => r.name === db.settings.excludeRole);
+        const db = await this.client.db.getOrCreateGuild(message.guildId!);
 
-        if (!message.guild?.roles.cache.some(r => r.name === excludedRole?.name)) {
+        const embeds = [];
+        let excludedRole = message.guild?.roles.cache.get(String(db.ExcludeRole));
+
+        if (!excludedRole) {
             excludedRole = await message.guild?.roles.create({
-                name: db.settings.excludeRole,
-                reason: "Role didn't exist yet.",
+                name: process.env.DADBOT_DEFAULT_ROLENAME,
+                reason: "Initiate default dad-bot exclusion role.",
             });
 
             embeds.push(new MessageEmbed({
-                title: "Error!",
-                description: `A role with name \`${db.settings.excludeRole}\` was not found in guild. Creating... `,
+                title: "Creating dad-bot role!",
+                description: "There doesn't seem to be a default dad-bot role in this server. Creating one...",
                 footer: { text: "Beep boop..." },
             })
                 .withErrorColor(message));
         }
 
-        if (!message.member?.roles.cache.find((r) => r === excludedRole) && excludedRole) {
-            await message.member?.roles.add(excludedRole);
-            embeds.push(KaikiEmbeds.addedRoleEmbed(db.settings.excludeRole)
+        if (!message.member?.hasExcludedRole()) {
+            await message.member?.roles.add(excludedRole!);
+            embeds.push(KaikiEmbeds.addedRoleEmbed(excludedRole!.name)
                 .withOkColor(message));
             return message.channel.send({ embeds: embeds });
         }
 
-        if (message.member?.roles.cache.find((r) => r === excludedRole) && excludedRole) {
-            await message.member?.roles.remove(excludedRole);
-            embeds.push(KaikiEmbeds.removedRoleEmbed(db.settings.excludeRole)
+        else {
+            await message.member?.roles.remove(excludedRole!);
+            embeds.push(KaikiEmbeds.removedRoleEmbed(excludedRole!.name)
                 .withOkColor(message));
             return message.channel.send({ embeds: embeds });
         }

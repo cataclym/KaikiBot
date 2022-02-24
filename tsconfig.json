@@ -1,12 +1,38 @@
 {
-    "compilerOptions": {
-      "rootDir": ".",
-      "outDir": ".",  // if out path for a file is same as its src path, nothing will be emitted
-      "resolveJsonModule": true,
-      "composite": true  // required on the dependency project for references to work
-    },
-    "files": [         // by whitelisting the files to include, TS won't automatically
-      "package.json",   // include all source below root, which is the default.
-      "data/images.json"
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "noImplicitAny": true,
+    "resolveJsonModule": true,
+    "sourceMap": true,
+    "strictNullChecks": true,
+    "target": "ES2021",
+    "types": [
+      "node"
     ],
-  }
+    "declaration": false,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "lib": ["ES2020", "ES2019", "ES2018", "es2017", "es2016", "es2015", "dom", "es2020.bigint", "ES2021"],
+    "paths": {
+      "Kaiki/*": ["./src/lib/Kaiki/*"],
+      "Interfaces/*": ["./src/lib/Interfaces/*"],
+      "Migrations/*": ["./src/lib/Migrations/*"],
+      "Types/*": ["./src/lib/Types/*"]
+    }
+  },
+  "files": ["./package.json"],
+  "include": [
+      "src/**/*", 
+      "src/extensions/loglevel.d.ts",
+      "src/extensions/Discord.ts"
+  ],
+  "exclude": [
+      "node_modules/*",
+      "**/node_modules/*"
+  ]
+}

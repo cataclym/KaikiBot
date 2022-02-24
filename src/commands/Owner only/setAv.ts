@@ -1,7 +1,7 @@
 import Canvas from "canvas";
 import { Message, MessageAttachment } from "discord.js";
 import logger from "loglevel";
-import { KaikiCommand } from "kaiki";
+import KaikiCommand from "Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 import Utility from "../../lib/Utility";
 

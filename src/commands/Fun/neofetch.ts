@@ -4,7 +4,7 @@ import { exec } from "child_process";
 import { Message, MessageEmbed } from "discord.js";
 import logger from "loglevel";
 import { distros } from "../../lib/distros.json";
-import { KaikiCommand } from "kaiki";
+import KaikiCommand from "Kaiki/KaikiCommand";
 import Utility from "../../lib/Utility";
 
 export default class NeofetchCommand extends KaikiCommand {

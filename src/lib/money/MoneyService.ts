@@ -1,8 +1,7 @@
-import { IMoneyService } from "../../interfaces/IMoneyService";
 import { PrismaClient } from "@prisma/client";
 
 // TODO: CurrencyTransactions need to be added!
-export class MoneyService implements IMoneyService {
+export class MoneyService {
     currencyName: string;
     currencySymbol: string;
     // private dailyProvider: MySQLProvider;
@@ -27,44 +26,66 @@ export class MoneyService implements IMoneyService {
         return 0n;
     }
 
-    async Add(id: string, amount: number): Promise<bigint> {
+    async Add(id: string, amount: number, reason: string): Promise<bigint> {
         if (amount <= 0) {
             throw new Error("Amount must be greater than 0");
         }
+
+        const bIntId = BigInt(id),
+            bIntAmount = BigInt(amount);
+
+        this.lazyCreateCurtrs(bIntId, bIntAmount, reason);
         const query = await this._orm.discordUsers.upsert({
-            where: { Id: BigInt(id) },
-            update: { Amount: { increment: BigInt(amount) } },
-            create: { UserId: BigInt(id) } });
+            where: { UserId: bIntId },
+            update: { Amount: { increment: bIntAmount } },
+            create: { UserId: bIntId } });
         return query.Amount;
     }
 
-    async TryTake(id: string, amount: number): Promise<boolean> {
+    async TryTake(id: string, amount: number, reason: string): Promise<boolean> {
         if (amount <= 0) {
             throw new Error("Amount must be greater than 0");
         }
 
+        const bIntId = BigInt(id),
+            bIntAmount = BigInt(amount);
+
         const currentAmount = await this._orm.discordUsers.findFirst({
             select: { Amount: true },
-            where: { UserId: BigInt(id) },
+            where: { UserId: bIntId },
         });
 
-        if (currentAmount && currentAmount.Amount >= BigInt(amount)) {
+        if (currentAmount && currentAmount.Amount >= bIntAmount) {
+            this.lazyCreateCurtrs(bIntId, bIntAmount, reason);
             await this._orm.discordUsers.update({
                 where: {
-                    UserId: BigInt(id),
+                    UserId: bIntId,
                 },
                 data: {
-                    Amount: { decrement: BigInt(amount) },
+                    Amount: { decrement: bIntAmount },
                 },
             });
             return true;
         }
         else if (!currentAmount) {
+            this.lazyCreateCurtrs(bIntId, bIntAmount, reason);
             await this._orm.discordUsers.create({
-                data: { UserId: BigInt(id) },
+                data: { UserId: bIntId },
             });
         }
         return false;
+    }
+
+    lazyCreateCurtrs(id: bigint, amount: bigint, reason: string) {
+        return setTimeout(async () => {
+            await this._orm.currencyTransactions.create({
+                data: {
+                    UserId: id,
+                    Amount: amount,
+                    Reason: reason,
+                },
+            });
+        }, 0);
     }
 
     // async Reduce(id: string, amount: number): Promise<bool> {

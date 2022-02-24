@@ -1,24 +1,26 @@
-/* eslint-disable indent */
-import { Command, Listener } from "discord-akairo";
+import { Command } from "discord-akairo";
 import { Message } from "discord.js";
 import logger from "loglevel";
-import { cmdStatsCache } from "../cache/cache";
 import Utility from "../lib/Utility";
+import KaikiListener from "Kaiki/KaikiListener";
 
-export default class commandFinishedListener extends Listener {
-	constructor() {
-		super("commandFinished", {
-			event: "commandFinished",
-			emitter: "commandHandler",
-		});
-	}
+export default class commandFinishedListener extends KaikiListener {
+    constructor() {
+        super("commandFinished", {
+            event: "commandFinished",
+            emitter: "commandHandler",
+        });
+    }
 
-	public async exec(message: Message, command: Command): Promise<void> {
+    public async exec(message: Message, command: Command): Promise<void> {
 
-		await Utility.listenerLog(message, this, logger.info, command);
+        await Utility.listenerLog(message, this, logger.info, command);
 
-		cmdStatsCache[command.id]
-			? cmdStatsCache[command.id]++
-			: cmdStatsCache[command.id] = 1;
-	}
+        let cmd = this.client.cache.cmdStatsCache.get(command.id);
+
+        cmd
+            ? this.client.cache.cmdStatsCache.set(command.id, cmd++)
+            : this.client.cache.cmdStatsCache.set(command.id, 1);
+
+    }
 }

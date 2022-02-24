@@ -1,4 +1,4 @@
-import { KaikiCommand } from "kaiki";
+import KaikiCommand from "Kaiki/KaikiCommand";
 import fetch from "node-fetch";
 import querystring from "querystring";
 import { Message, MessageEmbed } from "discord.js";
@@ -27,8 +27,7 @@ export default class GoogleSearchCommand extends KaikiCommand {
 
     private options = {
         headers: {
-            "User-Agent":
-				"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.157 Safari/537.36",
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.157 Safari/537.36",
         },
     };
 
@@ -59,7 +58,7 @@ export default class GoogleSearchCommand extends KaikiCommand {
                 .map(r => new MessageEmbed({
                     url: r.url,
                 })
-                    .setTitle(r.title!)
+                    .setTitle(r.title || "🔍")
                     .setDescription(querystring.unescape(r.description))
                     .withOkColor(message)),
         });

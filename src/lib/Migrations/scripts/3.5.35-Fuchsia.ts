@@ -1,10 +1,17 @@
-import { Migration } from "./migrations";
+import { Migration } from "../Migrations";
+import KaikiAkairoClient from "Kaiki/KaikiAkairoClient";
 
-export default new Migration({
-    name: "Initial",
-    version: "3.5.35-Fuchsia",
-    hash: "457ed66",
-    migration: async () => null,
+export default class Fuchsia extends Migration {
+    constructor(data: { hash?: string; name: string; version: string; migration: (client: KaikiAkairoClient) => (Promise<number> | number) }) {
+        super(data);
+        this.name = "Initial";
+        this.version = "3.5.35-Fuchsia";
+        this.hash = "457ed66";
+    }
+
+    migration = async () => {
+        return 0;
+    };
     //
     //     // Guild related migrations
     //     await guildsModel.find()
@@ -91,4 +98,4 @@ export default new Migration({
     //         },
     //     }, { strict: false }).exec();
     // },
-});
+}

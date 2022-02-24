@@ -45,18 +45,3 @@ export const guildFeatures: { [index in GuildFeatures]: string } & { [index in t
     VIP_REGIONS: "VIP Regions",
     WELCOME_SCREEN_ENABLED: "Welcome screen enabled",
 };
-
-export enum blockedCategories {
-    Administration,
-    Anime,
-    Emotes,
-    Fun,
-    Gambling,
-    Moderation,
-    NSFW,
-    "Owner only",
-    Reactions,
-    Roles,
-    "Server settings",
-    Utility,
-}

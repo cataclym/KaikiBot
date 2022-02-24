@@ -1,8 +1,8 @@
 import { Category, Command } from "discord-akairo";
 import { Guild, Message, MessageEmbed } from "discord.js";
-import { KaikiCommand } from "kaiki";
+import KaikiCommand from "Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
-import { blockedCategories } from "../../struct/constants";
+import { blockedCategories } from "../../lib/enums/blockedCategories";
 
 export default class ToggleCategoryCommand extends KaikiCommand {
     constructor() {

@@ -21,6 +21,5 @@ export default class ShardReadyListener extends Listener {
             });
         }
         logger.info(arr.join("\n"));
-
     }
 }

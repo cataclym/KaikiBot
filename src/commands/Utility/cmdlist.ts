@@ -1,8 +1,7 @@
 import { Argument, Category, Command, PrefixSupplier } from "discord-akairo";
 import { Message, MessageEmbed } from "discord.js";
-import { name, repository, version } from "../../../package.json";
-import { KaikiCommand } from "kaiki";
-import images from "../../../data/images.json";
+import KaikiCommand from "Kaiki/KaikiCommand";
+import images from "../../data/images.json";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
 export default class commandsList extends KaikiCommand {
@@ -35,6 +34,8 @@ export default class commandsList extends KaikiCommand {
     }
 
     public async exec(message: Message, { category }: { category: Category<string, Command>}): Promise<Message | undefined> {
+
+        const { name, repository, version } = this.client.package;
 
         const prefix = (this.handler.prefix as PrefixSupplier)(message);
 

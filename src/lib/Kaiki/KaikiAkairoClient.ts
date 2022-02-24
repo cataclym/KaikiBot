@@ -1,32 +1,36 @@
 import { AkairoClient, CommandHandler, InhibitorHandler, ListenerHandler } from "discord-akairo";
 import { Snowflake } from "discord-api-types";
-import { Intents } from "discord.js";
-import { KaikiClient as ExternalKaikiClient } from "kaiki";
+import { Intents, User } from "discord.js";
 import logger from "loglevel";
-import { Connection as MySQLConnection } from "mysql2/promise";
 import { join } from "path";
-import { MoneyService } from "../lib/money/MoneyService";
-import MySQLProvider from "./db/MySQLProvider";
+import { MoneyService } from "../money/MoneyService";
+import MySQLProvider from "../../struct/db/MySQLProvider";
 import { PrismaClient } from "@prisma/client";
-import Cache from "../cache/cache";
-import Utility from "../lib/Utility";
-import { resetDailyClaims } from "../lib/functions";
-import AnniversaryRolesService from "../lib/AnniversaryRolesService";
-import { Database } from "./db/Database";
+import Cache from "../../cache/cache";
+import Utility from "../Utility";
+import { resetDailyClaims } from "../functions";
+import AnniversaryRolesService from "../AnniversaryRolesService";
+import Database from "../../struct/db/Database";
 import chalk from "chalk/index";
-import { Migrations } from "../migrations/migrations";
+import { Migrations } from "Migrations/Migrations";
+import { Connection } from "mysql2/promise";
+import IPackageJSON from "Interfaces/IPackageJSON";
 
-export default class KaikiAkairoClient extends AkairoClient implements ExternalKaikiClient {
+export default class KaikiAkairoClient extends AkairoClient {
     public anniversaryService: AnniversaryRolesService;
     public botSettingsProvider: MySQLProvider;
     public cache: Cache;
     public commandHandler: CommandHandler;
-    public connection: MySQLConnection;
+    public connection: Connection;
+    public dadBotChannelsProvider: MySQLProvider;
     public guildProvider: MySQLProvider;
     public inhibitorHandler: InhibitorHandler;
     public listenerHandler: ListenerHandler;
     public money: MoneyService;
     public orm: PrismaClient;
+    public db: Database;
+    public owner: User;
+    public package: IPackageJSON;
 
     constructor() {
         super({
@@ -88,14 +92,11 @@ export default class KaikiAkairoClient extends AkairoClient implements ExternalK
         this.commandHandler.loadAll();
     }
 
-    private async dailyResetTimer(client: KaikiClient): Promise<void> {
+    private async dailyResetTimer(client: KaikiAkairoClient): Promise<void> {
         setTimeout(async () => {
 
             // Loop this
             await this.dailyResetTimer(client);
-
-            // Reset tinder rolls
-            // resetRolls();
 
             // Reset daily currency claims
             await resetDailyClaims(client.orm);
@@ -106,9 +107,21 @@ export default class KaikiAkairoClient extends AkairoClient implements ExternalK
         }, Utility.timeToMidnight());
     }
 
-    public async initializeServices(client?: KaikiClient) {
+    public async initializeServices(client?: KaikiAkairoClient) {
 
         if (!client) client = this;
+
+        const ownerId = Array.isArray(client.ownerID)
+            ? client.ownerID[0]
+            : client.ownerID;
+
+        this.owner = Array.isArray(client.application?.owner)
+            ? client.application?.owner[0]
+            : client.application?.owner;
+
+        if (!this.owner) {
+            this.owner = (client.users.cache.get(ownerId) || await client.users.fetch(ownerId, { cache: true }));
+        }
 
         this.anniversaryService = new AnniversaryRolesService(client);
 
@@ -120,9 +133,9 @@ export default class KaikiAkairoClient extends AkairoClient implements ExternalK
     }
 
     private initializeDatabase() {
-        const db = new Database();
+        this.db = new Database();
 
-        db.init()
+        this.db.init()
             .then((obj) => {
                 this.orm = obj.orm;
                 this.connection = obj.connection;
@@ -141,7 +154,7 @@ export default class KaikiAkairoClient extends AkairoClient implements ExternalK
 
                 new Migrations(this.connection, this)
                     .runAllMigrations()
-                    .then((res) => {
+                    .then((res: number) => {
                         if (res) {
                             logger.info(`
     ${(chalk.greenBright)("|----------------------------------------------------------|")}

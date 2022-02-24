@@ -1,6 +1,5 @@
-import { Guild, Message, MessageEmbed, Permissions } from "discord.js";
-import { getGuildDocument } from "../../struct/documentMethods";
-import { KaikiCommand } from "kaiki";
+import { Message, MessageEmbed, Permissions } from "discord.js";
+import KaikiCommand from "Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
 export default class WelcomeDeleteCommand extends KaikiCommand {
@@ -19,14 +18,16 @@ export default class WelcomeDeleteCommand extends KaikiCommand {
         });
     }
 
-    public async exec(message: Message, { time }: { time: number | null }): Promise<Message> {
+    public async exec(message: Message<true>, { time }: { time: number | null }): Promise<Message> {
 
-        const guildID = (message.guild as Guild).id;
-        const db = await getGuildDocument(guildID);
-
-        db.settings.welcome.timeout = time;
-        db.markModified("settings.welcome.timeout");
-        await db.save();
+        await this.client.orm.guilds.update({
+            where: {
+                Id: BigInt(message.guildId),
+            },
+            data: {
+                WelcomeTimeout: time,
+            },
+        });
 
         return message.channel.send({
             embeds: [new MessageEmbed()

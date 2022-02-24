@@ -1,10 +1,8 @@
-import { Listener } from "discord-akairo";
 import logger from "loglevel";
-import { getBotDocument } from "../struct/documentMethods";
 import chalk from "chalk";
+import KaikiListener from "../lib/Kaiki/KaikiListener";
 
-
-export default class ShardResumeListener extends Listener {
+export default class ShardResumeListener extends KaikiListener {
     constructor() {
         super("shardResume", {
             event: "shardResume",
@@ -17,11 +15,14 @@ export default class ShardResumeListener extends Listener {
 
         logger.info(`shardResume | Shard: ${chalk.green(id)} \nReplayed ${chalk.green(replayedEvents)} events.`);
 
-        const botDb = await getBotDocument();
+        const botDb = await this.client.orm.botSettings.findFirst({});
+
+        if (!botDb) return;
+
         this.client.user?.setPresence({
             activities: [{
-                name: botDb.settings.activity,
-                type: botDb.settings.activityType,
+                name: botDb.Activity || undefined,
+                type: botDb.ActivityType || undefined,
             }],
         });
     }

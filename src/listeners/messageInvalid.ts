@@ -14,7 +14,7 @@ export default class messageInvalidListener extends Listener {
 
     public async exec(message: Message): Promise<void> {
 
-        if (message.guild) {
+        if (message.inGuild()) {
             await emoteReact(message);
             await tiredKaikiCryReact(message);
         }

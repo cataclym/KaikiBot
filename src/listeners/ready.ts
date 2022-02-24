@@ -2,7 +2,7 @@ import { MessageEmbed } from "discord.js";
 import logger from "loglevel";
 import { excludeData } from "../lib/slashCommands/data";
 import chalk from "chalk";
-import { KaikiListener } from "kaiki";
+import KaikiListener from "../lib/Kaiki/KaikiListener";
 
 export default class ReadyListener extends KaikiListener {
     constructor() {
@@ -38,13 +38,16 @@ export default class ReadyListener extends KaikiListener {
             .then(() => logger.info("Daily reset timer initiated!"));
 
         // Let bot owner know when bot goes online.
-        if (this.client.user && ["Tsukihi Araragi#3589", "Kaiki Deishū#9185"].includes(this.client.user.tag) && process.env.OWNER) {
-            await (this.client.users.cache.get(process.env.OWNER) ?? await this.client.users.fetch(process.env.OWNER, { cache: true }))
-                .send({ embeds:
+        if (this.client.user && ["Tsukihi Araragi#3589", "Kaiki Deishū#9185"].includes(this.client.user.tag)) {
+            // Inconspicuous emotes haha
+            const emoji = ["✨", "♥️", "✅", "🇹🇼"][Math.floor(Math.random() * 4)];
+            await this.client.owner.send({ embeds:
                     [new MessageEmbed()
-                        .setDescription("Bot is online.")
-                        .withOkColor()],
-                });
+                        .setDescription("Bot is online!")
+                        .setAuthor({ name: emoji })
+                        .withOkColor(),
+                    ],
+            });
         }
 
         const botDb = await this.client.orm.botSettings.findFirst();

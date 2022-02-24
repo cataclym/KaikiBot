@@ -1,11 +1,11 @@
-import { Command, Listener } from "discord-akairo";
+import { Command } from "discord-akairo";
 import { Message } from "discord.js";
 import logger from "loglevel";
-import { cmdStatsCache } from "../cache/cache";
 import KaikiEmbeds from "../lib/KaikiEmbeds";
 import Utility from "../lib/Utility";
+import KaikiListener from "Kaiki/KaikiListener";
 
-export default class errorListener extends Listener {
+export default class errorListener extends KaikiListener {
     constructor() {
         super("error", {
             event: "error",
@@ -20,8 +20,11 @@ export default class errorListener extends Listener {
 
         if (!command) return;
 
-        cmdStatsCache[command.id]
-            ? cmdStatsCache[command.id]++
-            : cmdStatsCache[command.id] = 1;
+        let cmd = this.client.cache.cmdStatsCache.get(command.id);
+
+        cmd
+            ? this.client.cache.cmdStatsCache.set(command.id, cmd++)
+            : this.client.cache.cmdStatsCache.set(command.id, 1);
+
     }
 }

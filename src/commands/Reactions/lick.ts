@@ -1,5 +1,5 @@
 import { GuildMember, Message } from "discord.js";
-import { KaikiCommand } from "kaiki";
+import KaikiCommand from "Kaiki/KaikiCommand";
 import getKawaiiResponseEmbed from "../../lib/APIs/KawaiiAPI";
 
 export default class Lick extends KaikiCommand {

@@ -1,5 +1,5 @@
 import { Message, MessageEmbed, User } from "discord.js";
-import { KaikiCommand } from "kaiki";
+import KaikiCommand from "Kaiki/KaikiCommand";
 
 export default class take extends KaikiCommand {
     constructor() {
@@ -30,7 +30,7 @@ export default class take extends KaikiCommand {
     }
 
     public async exec(msg: Message, { amount, user }: { amount: number; user: User; }): Promise<void> {
-    	const success = await this.client.money.TryTake(user.id, amount);
+    	const success = await this.client.money.TryTake(user.id, amount, "-");
     	if (!success) {
     		await msg.channel.send({
     			embeds: [new MessageEmbed()

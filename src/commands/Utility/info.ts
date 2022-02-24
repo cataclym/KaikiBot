@@ -15,12 +15,12 @@ import {
 } from "discord.js";
 import * as emojis from "node-emoji";
 import { EMOTE_REGEX } from "../../struct/constants";
-import { KaikiCommand } from "kaiki";
-import { regexpType } from "../../struct/types";
+import KaikiCommand from "Kaiki/KaikiCommand";
 import { isRegex } from "../../lib/functions";
 import { time } from "@discordjs/builders";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 import Utility from "../../lib/Utility";
+import { regexpType } from "../../lib/Types/TCustom";
 
 export default class InfoCommand extends KaikiCommand {
     constructor() {
