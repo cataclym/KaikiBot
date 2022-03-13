@@ -3,7 +3,7 @@
   "version": "4.0.0-Gainsboro",
   "main": "./dist/index.js",
   "scripts": {
-    "start": "node -r dotenv/config ./dist/index.js --color",
+    "start": "node -r dotenv/config dist/index.js --color",
     "build": "tsc -p tsconfig.json",
     "version": "auto-changelog -u --template keepachangelog && git add CHANGELOG.md",
     "watch": "tsc -p tsconfig.json -w"
@@ -40,7 +40,7 @@
     "node-emoji": "^1.10.0",
     "node-fetch": "^2.6.6",
     "node-html-parser": "^5.2.0",
-    "sharp": "^0.29.3",
+    "sharp": "^0.30.2",
     "utf-8-validate": "^5.0.8",
     "zlib-sync": "^0.1.7"
   },
@@ -52,7 +52,7 @@
     "eslint-import-resolver-typescript": "^2.4.0",
     "eslint-plugin-import": "^2.25.4",
     "prisma": "^3.8.1",
-    "typescript": "^4.5.5"
+    "typescript": "^4.6.2"
   },
   "optionalDependencies": {
     "mongoose": "^5.13.0"

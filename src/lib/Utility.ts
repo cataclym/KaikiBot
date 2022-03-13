@@ -1,5 +1,5 @@
 import { ColorResolvable, Message, UserFlagsString } from "discord.js";
-import { hexColorTable } from "./Color";
+import fetch from "node-fetch";
 import { Command, Listener } from "discord-akairo";
 import chalk from "chalk/index";
 
@@ -162,5 +162,10 @@ Executed ${chalk.blueBright(command?.id ?? "N/A")} | "${chalk.yellow(message.con
     // https://stackoverflow.com/a/64093016
     static partition(array: any[], predicate: (...args: any) => boolean) {
         return array.reduce((acc, item) => (acc[+!predicate(item)].push(item), acc), [[], []]);
+    }
+
+    static async loadimage(url: string) {
+        return fetch(url)
+            .then(res => res.buffer());
     }
 }

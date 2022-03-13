@@ -14,6 +14,7 @@ export default class AnimeQuoteCommand extends KaikiCommand {
             typing: true,
         });
     }
+
     public async exec(message: Message): Promise<Message | void> {
 
         const { animeQuoteCache } = this.client.cache;
@@ -22,8 +23,8 @@ export default class AnimeQuoteCommand extends KaikiCommand {
             .then(response => response.json())
             .catch((reason) => {
                 logger.warn(`Animequote received no data: ${reason}\n`);
-                if (Object.entries(animeQuoteCache).length) {
-                    return sendQuote(animeQuoteCache.random(), message);
+                if (animeQuoteCache.size) {
+                    return sendQuote(animeQuoteCache.random()!, message);
                 }
             });
 
