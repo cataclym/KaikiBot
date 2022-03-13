@@ -14,6 +14,7 @@ export default class PrefixConfigCommand extends KaikiCommand {
             }],
         });
     }
+
     public async exec(message: Message, { value }: { value: string }): Promise<Message | void> {
 
         const guildID = (message.guild as Guild).id,

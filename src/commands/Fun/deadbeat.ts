@@ -1,10 +1,13 @@
-import Canvas, { loadImage } from "canvas";
-import Discord, { Message } from "discord.js";
+import Discord, { GuildMember, Message } from "discord.js";
+import sharp from "sharp";
 import KaikiCommand from "Kaiki/KaikiCommand";
-
+import Utility from "../../lib/Utility.js";
 const background = async () => await loadImage("https://cdn.discordapp.com/attachments/717045059215687691/763459004352954368/deadbeats.jpg");
 
 module.exports = class DeadbeatCommand extends KaikiCommand {
+    // I should host this on GitLab
+    private backgroundUrl = "https://cdn.discordapp.com/attachments/717045059215687691/763459004352954368/deadbeats.jpg";
+
     constructor() {
         super("deadbeat", {
             aliases: ["dead", "deadbeat"],
@@ -21,38 +24,19 @@ module.exports = class DeadbeatCommand extends KaikiCommand {
         });
     }
 
-    public async exec(message: Message, args: any) {
+    public async exec(message: Message, args: { member: GuildMember, default: GuildMember }) {
         const member = args.member || args.default;
-        const applyText = (canvas: Canvas.Canvas, text: string) => {
-            const ctx = canvas.getContext("2d");
 
-            let fontSize = 70;
+        const url = await Utility.loadimage(member.displayAvatarURL({ format: "jpg", size: 64 }));
 
-            do {
-                ctx.font = `${fontSize -= 4}px sans-serif`;
-            } while (ctx.measureText(text).width > 300);
+        const image = sharp(await this.background())
+            .composite([{ input: url, top: 100, left: 625 }]);
 
-            return ctx.font;
-        };
-        const canvas = Canvas.createCanvas(960, 540);
-        const ctx = canvas.getContext("2d");
-
-        ctx.drawImage(await background(), 0, 0, canvas.width, canvas.height);
-
-        ctx.strokeStyle = "#000000";
-        ctx.strokeRect(0, 0, canvas.width, canvas.height);
-
-        ctx.font = applyText(canvas, member.displayName);
-        ctx.fillStyle = "#ffffff";
-        ctx.textAlign = "center";
-        ctx.rotate(0.02);
-        ctx.fillText(member.displayName, 677, canvas.height / 2.20);
-
-        ctx.rotate(-0.02);
-        const avatar = await Canvas.loadImage(member.user.displayAvatarURL({ format: "png" }));
-        ctx.drawImage(avatar, 620, 100, 100, 100);
-
-        const attachment = new Discord.MessageAttachment(canvas.toBuffer(), "deadBeats.jpg");
+        const attachment = new Discord.MessageAttachment(image, "deadBeats.jpg");
         await message.channel.send({ content: `Deadbeat 👉 ${member.user}`, files: [attachment] });
+    }
+
+    private async background() {
+        return Utility.loadimage(this.backgroundUrl);
     }
 };

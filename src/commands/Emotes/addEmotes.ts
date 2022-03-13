@@ -27,10 +27,11 @@ export default class AddEmotesCommand extends KaikiCommand {
     }
     public async exec(message: Message, { urls, names }: { urls: RegExpMatchArray, names: string[]}): Promise<Message | void> {
 
+        // TODO: Test args
         for (const url of urls) {
             const msNow = Date.now().toString();
             const file = getFileOut(msNow);
-            await saveFile(url.match[0], file);
+            await saveFile(url, file);
 
             const name = msNow.substring(7, 39);
 
@@ -38,7 +39,7 @@ export default class AddEmotesCommand extends KaikiCommand {
             const imgDimensions = sizeOf(file);
 
             if ((imgDimensions.width && imgDimensions.height) && imgDimensions.width <= 128 && imgDimensions.height <= 128) {
-                await saveEmoji(message, url.match[0], name);
+                await saveEmoji(message, url, name);
             }
             else if (imgDimensions.type) {
                 const img = await resizeImage(file, imgDimensions.type, 128, message);

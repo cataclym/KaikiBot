@@ -37,21 +37,36 @@ export default class MyRoleCommand extends KaikiCommand {
         }
     }
 
-    public async exec(message: Message): Promise<Message> {
+    public async exec(message: Message<true>): Promise<Message> {
 
-        const guild = (message.guild as Guild);
+        const db = await this.client.orm.guildUsers.findFirst({
+            where: {
+                GuildId: BigInt(message.guildId),
+                UserId: BigInt(message.author.id),
+            },
+            select: {
+                UserRole: true,
+                Id: true,
+                UserId: true,
+            },
+        });
 
-        const db = await getGuildDocument(guild.id),
-            roleID = db.userRoles[message.author.id];
+        if (!db) return message.channel.send({ embeds: [await KaikiEmbeds.embedFail(message)] });
 
-        if (!roleID) return message.channel.send({ embeds: [await KaikiEmbeds.embedFail(message)] });
-
-        const myRole = guild.roles.cache.get(roleID as Snowflake);
+        const myRole = message.guild.roles.cache.get(String(db.UserRole));
 
         if (!myRole) {
-            delete db.userRoles[message.author.id];
-            db.markModified("userRoles");
-            await db.save();
+            this.client.orm.guildUsers.update({
+                where: {
+                    Id_UserId: {
+                        Id: db.Id,
+                        UserId: db.UserId,
+                    },
+                },
+                data: {
+                    UserRole: null,
+                },
+            });
             return message.channel.send({ embeds: [await KaikiEmbeds.embedFail(message)] });
         }
 
@@ -59,8 +74,8 @@ export default class MyRoleCommand extends KaikiCommand {
             embeds: [new MessageEmbed()
                 .setAuthor({
                     name: `Current role assigned to ${message.author.username}`,
-                    iconURL: guild.iconURL({ size: 2048, dynamic: true })
-                      || message.author.displayAvatarURL({ size: 2048, dynamic: true }),
+                    iconURL: message.guild.iconURL({ size: 2048, dynamic: true })
+                        || message.author.displayAvatarURL({ size: 2048, dynamic: true }),
                 })
                 .setColor(myRole.hexColor)
                 .addField("Name", myRole.name, true)

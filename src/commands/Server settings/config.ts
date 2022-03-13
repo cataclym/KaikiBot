@@ -12,11 +12,12 @@ export default class ConfigCommand extends KaikiCommand {
         super("config", {
             aliases: ["config", "configure", "conf"],
             channel: "guild",
-            description: "Configure or display guild specific settings. Will always respond to default prefix.",
+            description: "Configure or display guild specific settings. Will always respond to default prefix regardless of server prefix.",
             usage: ["", "dadbot enable", "anniversary enable", "prefix !", "okcolor <hex>", "errorcolor <hex>"],
+            userPermissions: Permissions.FLAGS.MANAGE_MESSAGES,
             prefix: (msg: Message) => {
                 const mentions = [`<@${this.client.user?.id}>`, `<@!${this.client.user?.id}>`];
-                const prefixes = [(this.handler.prefix as PrefixSupplier)(msg) as string, "-"];
+                const prefixes = [(this.handler.prefix as PrefixSupplier)(msg) as string, process.env.PREFIX || ";"];
                 if (this.client.user) {
                     return [...prefixes, ...mentions];
                 }
@@ -24,7 +25,8 @@ export default class ConfigCommand extends KaikiCommand {
             },
         });
     }
-    *args(): unknown {
+
+    * args(): unknown {
         const method = yield {
             type: [
                 ["config-dadbot", "dadbot", "dad"],
@@ -39,14 +41,19 @@ export default class ConfigCommand extends KaikiCommand {
         }
     }
 
-    public async exec(message: Message): Promise<Message> {
+    public async exec(message: Message<true>): Promise<Message> {
 
         if (!message.member) return message;
 
-        const db = await this.client.orm.guilds.findUnique({ where: { Id: BigInt(message.guild!.id) }, include: { BlockedCategories: true } });
-        if (!db) return await message.channel.send({ embeds: [await KaikiEmbeds.errorMessage(message, "No data for this guild was stored in the database!")] });
+        const db = await this.client.orm.guilds.findUnique({
+            where: { Id: BigInt(message.guildId) },
+            include: { BlockedCategories: true },
+        });
 
-        const { Anniversary, DadBot, Prefix, ErrorColor, OkColor, WelcomeChannel, ByeChannel } = db;
+        if (!db) return message;
+
+        // Is this okay?
+        const { Anniversary, DadBot, Prefix, ErrorColor, OkColor, WelcomeChannel, ByeChannel } = db as pkg.Guilds;
 
         const pages: (MessageEmbed | MessageOptions)[] = [
             new MessageEmbed()
@@ -60,9 +67,9 @@ export default class ConfigCommand extends KaikiCommand {
                         ? `\`${process.env.PREFIX}\` (Default)`
                         : `\`${Prefix}\``, true)
                 .addField("Embed ok color",
-                    OkColor.toString(16), true)
+                    Number(OkColor).toString(16), true)
                 .addField("Embed error color",
-                    ErrorColor.toString(16), true)
+                    Number(ErrorColor).toString(16), true)
                 .addField("\u200B", "\u200B", true)
                 .addField("Welcome message",
                     Utility.toggledTernary(!!WelcomeChannel), true)
@@ -70,7 +77,7 @@ export default class ConfigCommand extends KaikiCommand {
                     Utility.toggledTernary(!!ByeChannel), true)
                 .addField("\u200B", "\u200B", true)
                 .addField("Sticky roles",
-                    Utility.toggledTernary(await this.client.guildProvider.get(message.guild!.id, "StickyRoles", false)), false),
+                    Utility.toggledTernary(await this.client.guildProvider.get(message.guildId, "StickyRoles", false)), false),
         ];
 
         if (db.WelcomeMessage) {

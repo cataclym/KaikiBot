@@ -1,13 +1,13 @@
-import { PrismaClient } from "@prisma/client";
-import { Connection, RowDataPacket } from "mysql2/promise";
-import { respType } from "Types/TCustom";
+import pkg from "@prisma/client";
 import { Collection, Snowflake } from "discord.js";
+import { Connection, RowDataPacket } from "mysql2/promise";
+import { respType } from "../lib/Types/TCustom.js";
 
-type TEmoteStringTypes = "has_space" | "no_space";
-type TEmoteTrigger = string;
-type TGuildString = Snowflake;
-type TTriggerString = string;
-type TEmoteReactCache = Collection<TGuildString, Collection<TEmoteStringTypes, Collection<TEmoteTrigger, TTriggerString>>>
+export type TEmoteStringTypes = "has_space" | "no_space";
+export type TEmoteTrigger = string;
+export type TGuildString = Snowflake;
+export type TTriggerString = string;
+export type TEmoteReactCache = Map<TGuildString, Map<TEmoteStringTypes, Map<TEmoteTrigger, TTriggerString>>>;
 
 export default class Cache {
     public animeQuoteCache: Collection<string, respType>;
@@ -15,20 +15,16 @@ export default class Cache {
     public emoteReactCache: TEmoteReactCache;
     public dailyProvider: MySQLDailyProvider;
     private readonly _connection: Connection;
-    private _orm: PrismaClient;
+    private _orm: pkg.PrismaClient;
 
-    constructor(orm: PrismaClient, connection: Connection) {
+    constructor(orm: pkg.PrismaClient, connection: Connection) {
         this._connection = connection;
         this._orm = orm;
         this.animeQuoteCache = new Collection<string, respType>();
         this.cmdStatsCache = new Collection<string, number>();
         this.dailyProvider = new MySQLDailyProvider(this._connection);
-        this.emoteReactCache = new Collection<TGuildString, Collection<TEmoteStringTypes, Collection<TEmoteTrigger, TTriggerString>>>();
+        this.emoteReactCache = new Map<TGuildString, Map<TEmoteStringTypes, Map<TEmoteTrigger, TTriggerString>>>();
         this.initDailyProvider();
-    }
-
-    private initDailyProvider() {
-        (async () => await this.dailyProvider.init())();
     }
 
     public init = async () => setInterval(async () => {
@@ -69,6 +65,10 @@ export default class Cache {
             await this.dailyProvider.init();
         }
     }
+
+    private initDailyProvider() {
+        (async () => await this.dailyProvider.init())();
+    }
 }
 
 class MySQLDailyProvider {
@@ -77,13 +77,15 @@ class MySQLDailyProvider {
     private _dataColumn = "ClaimedDaily";
     private _idColumn = "UserId";
     private items: Collection<string, boolean>;
+
     constructor(connection: Connection) {
         this._db = connection;
     }
 
     async init(): Promise<void> {
         const [rows] = <RowDataPacket[][]> await this._db.query({
-            sql: `SELECT ${this._idColumn}, ${this._dataColumn} FROM ${this._tableName}`,
+            sql: `SELECT ${this._idColumn}, ${this._dataColumn}
+                  FROM ${this._tableName}`,
             rowsAsArray: true,
         });
 
@@ -108,8 +110,11 @@ class MySQLDailyProvider {
         this.items.set(id, value);
 
         return this._db.execute(exists
-            ? `UPDATE ${this._tableName} SET ${this._dataColumn} = $value WHERE ${this._idColumn} = $id`
-            : `INSERT INTO ${this._tableName} (${this._idColumn}, ${this._dataColumn}) VALUES ($id, $value)`, {
+            ? `UPDATE ${this._tableName}
+               SET ${this._dataColumn} = $value
+               WHERE ${this._idColumn} = $id`
+            : `INSERT INTO ${this._tableName} (${this._idColumn}, ${this._dataColumn})
+               VALUES ($id, $value)`, {
             $id: id,
             $value: JSON.stringify(data),
         });
@@ -119,7 +124,9 @@ class MySQLDailyProvider {
     delete(id: string) {
         const data = this.items.get(id) || false;
 
-        return this._db.execute(`UPDATE ${this._tableName} SET ${this._dataColumn} = $value WHERE ${this._idColumn} = $id`, {
+        return this._db.execute(`UPDATE ${this._tableName}
+                                 SET ${this._dataColumn} = $value
+                                 WHERE ${this._idColumn} = $id`, {
             $id: id,
             $value: JSON.stringify(data),
         });
@@ -127,6 +134,9 @@ class MySQLDailyProvider {
 
     clear(id: string) {
         this.items.delete(id);
-        return this._db.execute(`DELETE FROM ${this._tableName} WHERE ${this._idColumn} = $id`, { $id: id });
+        return this._db.execute(`DELETE
+                                 FROM ${this._tableName}
+                                 WHERE ${this._idColumn} = $id`, { $id: id });
     }
 }
+

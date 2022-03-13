@@ -21,14 +21,25 @@ export default class ListUserRoles extends KaikiCommand {
     }
     public async exec(message: Message): Promise<Message> {
 
-        const guildID = (message.guild as Guild).id,
-            db = await getGuildDocument(guildID);
-        const roles = Object.entries(db.userRoles);
+    public async exec(message: Message<true>): Promise<Message> {
 
-        if (roles.length) {
+        const db = await this.client.orm.guildUsers.findMany({
+            where: {
+                GuildId: BigInt(message.guildId),
+                UserRole: {
+                    not: null,
+                },
+            },
+            select: {
+                UserRole: true,
+                UserId: true,
+            },
+        });
 
-            const mapped = roles
-                    .map(([u, r]) => `${message.guild?.members.cache.get(u as Snowflake) || u}: ${message.guild?.roles.cache.get(r as Snowflake) || r}`)
+        if (db.length) {
+
+            const mapped = db
+                    .map(table => `${message.guild?.members.cache.get(String(table.UserId)) || table.UserId}: ${message.guild?.roles.cache.get(String(table.UserRole)) || table.UserRole}`)
                     .sort(),
                 pages: MessageEmbed[] = [];
 

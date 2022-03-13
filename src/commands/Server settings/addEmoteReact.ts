@@ -10,7 +10,7 @@ export default class EmoteReactCommand extends KaikiCommand {
         super("addemotereact", {
             aliases: ["addemotereact", "emotereact", "aer"],
             userPermissions: Permissions.FLAGS.MANAGE_EMOJIS_AND_STICKERS,
-            clientPermissions:  Permissions.FLAGS.ADD_REACTIONS,
+            clientPermissions: Permissions.FLAGS.ADD_REACTIONS,
             channel: "guild",
             description: "Add triggers for the bot to react with emojis/emotes to. Use quotes for triggers with spaces.",
             usage: ["red :red:", "anime :weeaboosgetout:"],
@@ -29,32 +29,48 @@ export default class EmoteReactCommand extends KaikiCommand {
         });
     }
 
-    public async exec(message: Message, { trigger, emoji }: { trigger: string, emoji: GuildEmoji }): Promise<Message> {
+    public async exec(message: Message<true>, {
+        trigger,
+        emoji,
+    }: { trigger: string, emoji: GuildEmoji }): Promise<Message> {
 
         trigger = trigger.toLowerCase();
-        const gid = (message.guild as Guild).id,
-            db = await getGuildDocument(gid);
 
-        db.emojiReactions[trigger] = emoji.id;
-        db.markModified(`emojiReactions.${trigger}`);
-        await db.save();
+        this.client.orm.emojiReactions.create({
+            data: {
+                Guilds: {
+                    connectOrCreate: {
+                        where: {
+                            Id: BigInt(message.guildId),
+                        },
+                        create: {
+                            Id: BigInt(message.guildId),
+                            Prefix: process.env.PREFIX || ";",
+                        },
+                    },
+                },
+                EmojiId: BigInt(emoji.id),
+                TriggerString: trigger,
+            },
+        });
 
-        if (!emoteReactCache[gid]) await populateERCache(message);
+
+        if (!this.client.cache.emoteReactCache.get(message.guildId)) await populateERCache(message);
 
         if (trigger.includes(" ")) {
-            emoteReactCache[message.guild!.id].has_space[trigger] = emoji.id;
+            this.client.cache.emoteReactCache.get(message.guildId)?.get("has_space")?.set(trigger, emoji.id);
         }
 
         else {
-            emoteReactCache[message.guild!.id].no_space[trigger] = emoji.id;
+            this.client.cache.emoteReactCache.get(message.guildId)?.get("no_space")?.set(trigger, emoji.id);
         }
 
-        return message.channel.send({ embeds:
-			[new MessageEmbed()
-			    .setTitle("New emoji trigger added")
-			    .setDescription(`Saying \`${trigger}\` will force me to react with ${emoji}`)
-			    .setThumbnail(emoji.url)
-			    .withOkColor(message)],
+        return message.channel.send({
+            embeds: [new MessageEmbed()
+                .setTitle("New emoji trigger added")
+                .setDescription(`Typing \`${trigger}\` will force me to react with ${emoji}...`)
+                .setThumbnail(emoji.url)
+                .withOkColor(message)],
         });
     }
 }

@@ -1,9 +1,8 @@
-import { createCanvas } from "canvas";
 import { ColorResolvable } from "discord.js";
-import { colors } from "./Colors.json";
+import sharp from "sharp";
 
 export const colorTable: {
-  [index: string]: string
+    [index: string]: string
 } = {
     "transparent": "rgba(0,0,0,0)",
     "aliceblue": "rgba(240,248,255,1)",
@@ -157,11 +156,10 @@ export const colorTable: {
 };
 
 export async function imgFromColor(color: ColorResolvable, size = 128): Promise<Buffer> {
-    const canv = createCanvas(size, size), ctx = canv.getContext("2d");
-    ctx.fillStyle = color.toString();
-    ctx.fillRect(0, 0, canv.width, canv.height);
-
-    return canv.toBuffer();
+    return sharp()
+        .resize(size, size)
+        .tint(color.toString())
+        .toBuffer();
 }
 
 export async function resolveColor(color: string): Promise<ColorResolvable> {
@@ -183,11 +181,10 @@ export async function resolveColor(color: string): Promise<ColorResolvable> {
             ? color
             : `#${color}`) as ColorResolvable;
     }
-
 }
 
 export const hexColorTable: {
-  [i: string]: ColorResolvable
+    [index: string]: ColorResolvable
 } = {
     "aqua": "#00ffff",
     "aquamarine": "#7fffd4",

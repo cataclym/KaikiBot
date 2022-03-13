@@ -24,36 +24,46 @@ export default class MyRoleSubIcon extends KaikiCommand {
                         return message.attachments.first();
                     }
                 }, "emoji", resetWords, EMOTE_REGEX, IMAGE_REGEX),
-                otherwise: (m: Message) => ({ embeds: [new MessageEmbed()
-                    .setTitle("Please provide a valid emote or image link!")
-                    .withErrorColor(m)] }),
+                otherwise: (m: Message) => ({
+                    embeds: [new MessageEmbed()
+                        .setTitle("Please provide a valid emote or image link!")
+                        .withErrorColor(m)],
+                }),
             }],
         });
     }
 
-    async getRole(message: Message) {
-        const db = await getGuildDocument(message.guild!.id),
-            roleID = db.userRoles[message.author.id];
+    async getRole(message: Message<true>) {
+        const db = await this.client.orm.guildUsers.findFirst({
+            where: {
+                GuildId: BigInt(message.guildId),
+                UserId: BigInt(message.author.id),
+            },
+        });
 
-        if (!roleID) {
-            message.channel.send({ embeds: [await KaikiEmbeds.embedFail(message)] });
-            return false;
-        }
+        if (!db || !db.UserRole) return false;
 
-        const myRole = message.guild!.roles.cache.get(roleID as Snowflake);
+        const myRole = message.guild.roles.cache.get(String(db.UserRole));
 
         if (!myRole) {
-            delete db.userRoles[message.author.id];
-            db.markModified("userRoles");
-            await db.save();
-            message.channel.send({ embeds: [await KaikiEmbeds.embedFail(message)] });
+            this.client.orm.guildUsers.update({
+                where: {
+                    Id_UserId: {
+                        Id: db.Id,
+                        UserId: db.UserId,
+                    },
+                },
+                data: {
+                    UserRole: null,
+                },
+            });
             return false;
         }
 
         return myRole;
     }
 
-    async exec(message: Message, { icon }: { icon: { match: RegExpMatchArray } | GuildEmoji | MessageAttachment | string }): Promise<Message | undefined> {
+    async exec(message: Message<true>, { icon }: { icon: { match: RegExpMatchArray } | GuildEmoji | MessageAttachment | string }): Promise<Message | undefined> {
 
         let roleIconSrc: string | Buffer | GuildEmoji | ReactionEmoji | null = null;
 

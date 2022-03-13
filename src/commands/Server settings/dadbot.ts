@@ -20,63 +20,56 @@ export default class DadBotConfigCommand extends KaikiCommand {
         });
     }
 
-    public async exec(message: Message, { value }: { value: "enable" | "true" | "disable" | "false" }): Promise<Message> {
-        const embed = new MessageEmbed().withOkColor(message),
-            guildID = (message.guild as Guild).id,
-            db = await getGuildDocument(guildID);
+    public async exec(message: Message<true>, { value }: { value: "enable" | "true" | "disable" | "false" }): Promise<Message> {
 
-        const isEnabled = message.client.guildProvider.get(guildID, "DadBot", 0);
+        const embed = new MessageEmbed()
+            .withOkColor(message);
+
+        const isEnabled: boolean = message.client.guildProvider.get(message.guildId, "DadBot", false);
 
         switch (value) {
             case ("enable"):
             case ("true"): {
                 if (!isEnabled) {
-                    db.settings.dadBot.enabled = true;
-                    db.markModified("settings.dadBot.enabled");
-                    await message.client.guildProvider.set(guildID, "DadBot", db.settings.dadBot.enabled);
-                    await db.save();
-
+                    await message.client.guildProvider.set(message.guildId, "DadBot", true);
                     await message.guild?.commands.create(excludeData);
 
-                    return message.channel.send({ embeds: [embed
-                        .setTitle(`dad-bot has been enabled in ${message.guild?.name}!`)
-                        .setDescription(`Individual users can still disable dad-bot on themselves with \`${(this.handler.prefix as PrefixSupplier)(message)}exclude\`.`)],
-                    });
+                    embed
+                        .setTitle(`Dad-bot has been enabled in ${message.guild?.name}!`)
+                        .setDescription(`Individual users can still disable dad-bot on themselves with \`${(this.handler.prefix as PrefixSupplier)(message)}exclude\`.`);
                 }
                 else {
-                    return message.channel.send({
-                        embeds: [embed
-                            .setTitle("Already enabled")
-                            .setDescription("You have already **enabled** dad-bot in this server.")
-                            .withErrorColor(message)],
-                    });
+                    embed
+                        .setTitle("Already enabled")
+                        .setDescription("You have already **enabled** dad-bot in this server.")
+                        .withErrorColor(message);
                 }
+                break;
             }
             case ("disable"):
             case ("false"): {
                 if (isEnabled) {
-                    db.settings.dadBot.enabled = false;
-                    db.markModified("settings.dadBot.enabled");
-                    await message.client.guildProvider.set(guildID, "DadBot", db.settings.dadBot.enabled);
-                    await db.save();
+                    await message.client.guildProvider.set(message.guildId, "DadBot", false);
 
                     const cmd = message.guild?.commands.cache.find(c => c.name === "exclude");
+
                     if (cmd) {
                         await message.guild?.commands.delete(cmd.id);
                     }
 
-                    return message.channel.send({ embeds: [embed
-                        .setTitle(`dad-bot has been disabled in ${message.guild?.name}!`)] });
+                    embed.setTitle(`Dad-bot has been disabled in ${message.guild?.name}!`);
                 }
                 else {
-                    return message.channel.send({
-                        embeds: [embed
-                            .setTitle("Already disabled")
-                            .setDescription("You have already **disabled** dad-bot in this server.")
-                            .withErrorColor(message)],
-                    });
+                    embed
+                        .setTitle("Already disabled")
+                        .setDescription("You have already **disabled** dad-bot in this server.")
+                        .withErrorColor(message);
                 }
+                break;
             }
         }
+        return message.channel.send({
+            embeds: [embed],
+        });
     }
 }

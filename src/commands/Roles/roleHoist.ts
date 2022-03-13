@@ -7,8 +7,8 @@ export default class RoleHoistCommand extends KaikiCommand {
     constructor() {
         super("rolehoist", {
             aliases: ["rolehoist", "hoistrole", "hoist"],
-            clientPermissions: "MANAGE_ROLES",
-            userPermissions: "MANAGE_ROLES",
+            clientPermissions: Permissions.FLAGS.MANAGE_ROLES,
+            userPermissions: Permissions.FLAGS.MANAGE_ROLES,
             description: "Hoists or unhoists a role",
             usage: "@gamers",
             channel: "guild",
@@ -22,7 +22,7 @@ export default class RoleHoistCommand extends KaikiCommand {
         });
     }
 
-    public async exec(message: Message, { role }: { role: Role}): Promise<Message> {
+    public async exec(message: Message<true>, { role }: { role: Role }): Promise<Message> {
 
         if (await rolePermissionCheck(message, role)) {
 

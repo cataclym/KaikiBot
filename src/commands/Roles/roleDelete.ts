@@ -8,8 +8,8 @@ export default class RoleDeleteCommand extends KaikiCommand {
     constructor() {
         super("roledelete", {
             aliases: ["roledelete", "deleterole", "dr"],
-            clientPermissions: "MANAGE_ROLES",
-            userPermissions: "MANAGE_ROLES",
+            clientPermissions: Permissions.FLAGS.MANAGE_ROLES,
+            userPermissions: Permissions.FLAGS.MANAGE_ROLES,
             description: "Deletes one or more roles",
             usage: "@gamers @streamers @weebs",
             channel: "guild",
@@ -24,7 +24,7 @@ export default class RoleDeleteCommand extends KaikiCommand {
         });
     }
 
-    public async exec(message: Message, { roles }: { roles: Collection<string, Role>[]}): Promise<Message> {
+    public async exec(message: Message<true>, { roles }: { roles: Collection<string, Role>[] }): Promise<Message> {
 
         const deletedRoles: string[] = [];
         const otherRoles: string[] = [];

@@ -16,14 +16,12 @@ export default class RemoveEmoteReactCommand extends KaikiCommand {
         });
     }
 
-    public async exec(message: Message): Promise<Message> {
+    public async exec(message: Message<true>): Promise<Message> {
 
-        const gid = message.guild!.id,
-            db = await getGuildDocument(gid),
-            emojis = Object.entries(db.emojiReactions),
+        const db = await this.client.orm.emojiReactions.findMany({ where: { GuildId: BigInt(message.guildId) } }),
             pages: MessageEmbed[] = [];
 
-        if (!emojis?.length) {
+        if (!db.length) {
             return message.channel.send({
                 embeds: [new MessageEmbed()
                     .setTitle("No triggers")
@@ -32,12 +30,12 @@ export default class RemoveEmoteReactCommand extends KaikiCommand {
             });
         }
 
-        for (let index = 15, p = 0; p < emojis.length; index += 15, p += 15) {
+        for (let index = 15, p = 0; p < db.length; index += 15, p += 15) {
 
             pages.push(new MessageEmbed()
                 .setTitle("Emoji triggers")
-                .setDescription(emojis.slice(p, index).map(([t, e]) => {
-                    return `**${t}** => ${message.guild?.emojis.cache.get(e as Snowflake) ?? e}`;
+                .setDescription(db.slice(p, index).map(table => {
+                    return `**${table.TriggerString}** => ${message.guild?.emojis.cache.get(String(table.EmojiId)) ?? table.EmojiId}`;
                 }).join("\n"))
                 .withOkColor(message));
         }

@@ -22,23 +22,38 @@ export default class MyRoleSubCommandColor extends KaikiCommand {
         });
     }
 
-    async exec(message: Message, { color }: { color: string | number }): Promise<Message> {
+    async exec(message: Message<true>, { color }: { color: string | number }): Promise<Message> {
 
         if (typeof color === "number") color = color.toString(16);
 
-        const guild = (message.guild as Guild);
+        const db = await this.client.orm.guildUsers.findFirst({
+            where: {
+                GuildId: BigInt(message.guildId),
+                UserId: BigInt(message.author.id),
+            },
+            select: {
+                UserRole: true,
+                Id: true,
+                UserId: true,
+            },
+        });
 
-        const db = await getGuildDocument(guild.id),
-            roleID = db.userRoles[message.author.id];
+        if (!db || !db.UserRole) return message.channel.send({ embeds: [await KaikiEmbeds.embedFail(message)] });
 
-        if (!roleID) return message.channel.send({ embeds: [await KaikiEmbeds.embedFail(message)] });
-
-        const myRole = guild.roles.cache.get(roleID as Snowflake);
+        const myRole = message.guild.roles.cache.get(String(db.UserRole));
 
         if (!myRole) {
-            delete db.userRoles[message.author.id];
-            db.markModified("userRoles");
-            await db.save();
+            this.client.orm.guildUsers.update({
+                where: {
+                    Id_UserId: {
+                        Id: db.Id,
+                        UserId: db.UserId,
+                    },
+                },
+                data: {
+                    UserRole: null,
+                },
+            });
             return message.channel.send({ embeds: [await KaikiEmbeds.embedFail(message)] });
         }
 

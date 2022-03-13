@@ -7,34 +7,24 @@ export default class SetDailyCommand extends KaikiCommand {
     constructor() {
         super("setdaily", {
             aliases: ["setdaily", "dailyset"],
-            description: "Sets the daily currency allowance amount for users. Set to 0 to disable.",
+            description: "Sets the daily currency allowance amount. Set to 0 to disable.",
             usage: "",
             ownerOnly: true,
-            args: [
-                {
-                    id: "arg",
-                    type: "integer",
-                    otherwise: (msg: Message) => ({ embeds: [KaikiEmbeds.genericArgumentError(msg)] }),
-                },
-            ],
+            args: [{
+                id: "arg",
+                type: "integer",
+                default: 0,
+            }],
         });
     }
 
-    public async exec(message: Message, { arg }: { arg: number }): Promise<Message> {
+    public async exec(message: Message<true>, { arg }: { arg: number }): Promise<Message> {
 
-        const db = await getBotDocument();
-        const isEnabled = db.settings.dailyEnabled;
+        const isEnabled = this.client.botSettingsProvider.get("1", "DailyEnabled", false);
 
         if (arg > 0) {
-            db.settings.dailyAmount = arg;
-
-            if (!isEnabled) {
-                db.settings.dailyEnabled = true;
-            }
-
-            db.markModified("settings");
-            await db.save();
-
+            await this.client.botSettingsProvider.set("1", "DailyEnabled", true);
+            await this.client.botSettingsProvider.set("1", "DailyAmount", arg);
             return message.channel.send({
                 embeds: [new MessageEmbed()
                     .setDescription(`Users will be able to claim ${arg} ${this.client.money.currencyName} ${this.client.money.currencySymbol} every day`)
@@ -53,9 +43,7 @@ export default class SetDailyCommand extends KaikiCommand {
         }
 
         else {
-
-            db.settings.dailyEnabled = false;
-
+            await this.client.botSettingsProvider.set("1", "DailyEnabled", false);
             return message.channel.send({
                 embeds: [new MessageEmbed()
                     .setDescription("Disabled daily currency allowance.")

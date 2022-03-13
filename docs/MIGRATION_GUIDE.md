@@ -1,0 +1,15 @@
+# Migration guide
+
+### Requirements
+- Make sure you're on the latest v3 release: [3.7.0](https://gitlab.com/cataclym/KaikiDeishuBot/-/tags/3.7.0)
+
+### Steps
+
+- Run bot once.
+- Update to v4 release [4.0.0]("") 
+    - ```shell
+      git do fun
+- Update your `.env` file to mirror the new entries from `.env.example`
+- Install MySQL for your distro and
+  - ```shell
+    mysql --exec=

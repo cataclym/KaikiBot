@@ -23,38 +23,40 @@ export default class AnniversaryRolesConfigCommand extends KaikiCommand {
             ],
         });
     }
-    public async exec(message: Message, { value }: { value: values }): Promise<IGuild> {
-        const guildID = (message.guild as Guild).id,
-            db = await getGuildDocument(guildID),
-            boolean = db.settings.anniversary,
-            embed = new MessageEmbed()
-                .withOkColor(message);
+
+    public async exec(message: Message<true>, { value }: { value: values }): Promise<Message> {
+        const embed = new MessageEmbed()
+            .withOkColor(message);
+
+        const isEnabled: boolean = message.client.guildProvider.get(message.guildId, "Anniversary", false);
 
         switch (value) {
             case ("enable"):
             case ("true"): {
-                if (!boolean) {
-                    db.settings.anniversary = true;
-                    await checkBirthdayOnAdd(message.guild as Guild);
-                    message.channel.send({ embeds: [embed.setDescription(`Anniversary-roles functionality has been enabled in ${message.guild?.name}!`)] });
+                if (!isEnabled) {
+                    await this.client.anniversaryService.checkBirthdayOnAdd(message.guild as Guild);
+                    await message.client.guildProvider.set(message.guildId, "Anniversary", true);
+                    embed.setDescription(`Anniversary-roles functionality has been enabled in ${message.guild?.name}!`);
                 }
                 else {
-                    message.channel.send({ embeds: [embed.setDescription("You have already enabled Anniversary-roles.")] });
+                    embed.setDescription("You have already enabled Anniversary-roles.");
                 }
                 break;
             }
             case ("disable"):
             case ("false"): {
-                if (boolean) {
-                    db.settings.anniversary = false;
-                    message.channel.send({ embeds: [embed.setDescription(`Anniversary-roles functionality has been disabled in ${message.guild?.name}!`)] });
+                if (isEnabled) {
+                    await message.client.guildProvider.set(message.guildId, "Anniversary", false);
+                    embed.setDescription(`Anniversary-roles functionality has been disabled in ${message.guild?.name}!`);
                 }
                 else {
-                    message.channel.send({ embeds: [embed.setDescription("You have already disabled Anniversary-roles.")] });
+                    embed.setDescription("You have already disabled Anniversary-roles.");
                 }
+                break;
             }
         }
-        db.markModified("settings.anniversary");
-        return db.save();
+        return message.channel.send({
+            embeds: [embed],
+        });
     }
 }

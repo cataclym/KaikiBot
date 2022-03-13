@@ -28,7 +28,8 @@ export default class RoleRenameCommand extends KaikiCommand {
             ],
         });
     }
-    public async exec(message: Message, { role, name }: { role: Role, name: string }): Promise<Message> {
+
+    public async exec(message: Message<true>, { role, name }: { role: Role, name: string }): Promise<Message> {
 
         if (await rolePermissionCheck(message, role)) {
 

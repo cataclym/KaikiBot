@@ -27,16 +27,18 @@ export default class HelpCommand extends KaikiCommand {
 
         if (command instanceof KaikiCommand) {
 
-            const usage = command.usage;
+            const aliases = command.aliases.sort((a, b) => b.length - a.length || a.localeCompare(b)).join("`, `");
+            const commandUsage = command.usage
+                ? Array.isArray(command.usage)
+                    ? command.usage.sort((a, b) => b.length - a.length || a.localeCompare(b)).map(u => `${prefix}${command.id} ${u}`).join("\n")
+                    : `${prefix}${command.id} ${command.usage}`
+                : `${prefix}${command.id}`;
 
-            embed.setTitle(`Command: ${command.id}`)
-                .setDescription(`**Aliases:** \`${command.aliases.sort((a, b) => b.length - a.length || a.localeCompare(b)).join("`, `")}\``)
-                .addField("**Description:**", command.description || "?", false)
-                .addField("**Usage:**", usage
-                    ? Array.isArray(usage)
-                        ? usage.sort((a, b) => b.length - a.length || a.localeCompare(b)).map(u => `${prefix}${command.id} ${u}`).join("\n")
-                        : `${prefix}${command.id} ${usage}`
-                    : `${prefix}${command.id}`, false)
+            embed.setTitle(`${prefix}${command.id}`)
+                .setAuthor({ name: `CD: ${command.cooldown || this.handler.defaultCooldown}` })
+                .setDescription(command.description || "Command is missing description.")
+                .addField("**Aliases**", `\`${aliases}\``)
+                .addField("**Usage**", commandUsage, false)
                 .setFooter({ text: command.categoryID });
 
             if (command.userPermissions) {
@@ -55,7 +57,7 @@ export default class HelpCommand extends KaikiCommand {
             });
         }
 
-        const avatarURL = (message.client.users.cache.get("140788173885276160") || (await message.client.users.fetch("140788173885276160", { cache: true })))
+        const avatarURL = this.client.owner.displayAvatarURL({ dynamic: true });
             .displayAvatarURL({ dynamic: true });
 
         embed.setTitle(`${message.client.user?.username} help page`)

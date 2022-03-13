@@ -7,59 +7,53 @@ import Utility from "./Utility";
 import { PrismaClient } from "@prisma/client";
 import chalk from "chalk";
 
+// TODO: Verify this!!
 export async function populateERCache(message: Message<true>) {
 
     const emoteReacts = (await message.client.orm.emojiReactions.findMany({ where: { GuildId: BigInt(message.guildId) } }))
         .map(table => [table.TriggerString, table.EmojiId]);
 
     if (!emoteReacts.length) {
-        message.client.cache.emoteReactCache.set(message.guildId, {
-            has_space: {},
-            no_space: {},
-        });
+        message.client.cache.emoteReactCache.set(message.guildId, new Map([["has_space", new Map()], ["no_space", new Map()]]));
     }
 
     else {
         const [array_has_space, array_no_space] = Utility.partition(emoteReacts, ([k]) => k.includes(" "));
 
-        message.client.cache.emoteReactCache.set(message.guildId, {
-            has_space: Object.fromEntries(array_has_space),
-            no_space: Object.fromEntries(array_no_space),
-        });
+        message.client.cache.emoteReactCache.set(message.guildId, new Map([["has_space", new Map(array_has_space)], ["no_space", new Map(array_no_space)]]));
     }
 }
-
 
 // Reacts with emote to specified words
 export async function emoteReact(message: Message<true>): Promise<void> {
 
-    const { id } = message.guild,
+    const id = message.guildId,
         messageContent = message.content.toLowerCase();
     let emotes = message.client.cache.emoteReactCache.get(id);
 
     if (!emotes) {
         await populateERCache(message);
-        emotes = message.client.cache.emoteReactCache.get(id)!;
+        emotes = message.client.cache.emoteReactCache.get(id);
     }
 
-    const matches = Object.keys(emotes.has_space)
+    const matches = Array.from(emotes?.get("has_space")?.keys() || [])
         .filter(k => messageContent.match(new RegExp(k.toLowerCase(), "g")));
 
     for (const word of messageContent.split(" ")) {
-        if (emotes.no_space[word]) {
+        if (emotes?.get("no_space")?.has(word)) {
             matches.push(word);
         }
     }
 
     if (!matches.length) return;
 
-    return emoteReactLoop(message, matches, emotes);
+    return emoteReactLoop(message, matches, emotes!);
 }
 
-async function emoteReactLoop(message: Message, matches: RegExpMatchArray, wordObj: separatedEmoteReactTypes) {
+async function emoteReactLoop(message: Message, matches: RegExpMatchArray, wordObj: Map<TEmoteStringTypes, Map<TEmoteTrigger, TTriggerString>>) {
     for (const word of matches) {
-        const emote = wordObj.no_space[word] || wordObj.has_space[word];
-        if (!message.guild?.emojis.cache.has(emote as Snowflake)) continue;
+        const emote = wordObj.get("no_space")?.get(word) || wordObj.get("has_space")?.get(word);
+        if (!message.guild?.emojis.cache.has(emote as Snowflake) || !emote) continue;
         await message.react(emote);
     }
 }
@@ -73,16 +67,15 @@ export async function tiredKaikiCryReact(message: Message<true>): Promise<void> 
     }
 
     if (new RegExp(botName.join("|")).test(message.content.toLowerCase())
-		    && new RegExp(badWords.join("|")).test(message.content.toLowerCase())) {
+        && new RegExp(badWords.join("|")).test(message.content.toLowerCase())) {
 
-        const index: number = Math.floor(Math.random() * 10);
-
-        if (index < 7) {
+        // Absolute randomness
+        if (Math.floor(Math.random() * 10) < 7) {
             await message.react("😢");
         }
 
         else {
-            message.channel.send("😢");
+            await message.channel.send("😢");
         }
     }
 }
@@ -157,7 +150,7 @@ export async function sendDM(message: Message): Promise<Message | undefined> {
     })
         .withOkColor();
 
-    // Attachments (Terrible, I know)
+    // Attachments lol
     const { attachments } = message;
 
     if (attachments.first()) {
@@ -192,6 +185,7 @@ export async function parsePlaceHolders(input: string, guildMember: GuildMember)
     }
     return input;
 }
+
 export function isRegex(value: any): value is regexpType {
     return (value as regexpType).match !== undefined;
 }

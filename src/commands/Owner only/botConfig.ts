@@ -73,24 +73,22 @@ export default class BotConfigCommand extends KaikiCommand {
 	    const client = this.client;
 	    let oldValue;
 
-	    switch (type) {
+        switch (type) {
             case validEnum.ACTIVITY:
-                oldValue = await client.botSettingsProvider.get("1", "Activity", null);
-                await client.botSettingsProvider.set("1", "Activity", value);
-                this.client.user?.presence.set({ activities: [{ name: String(value) }] });
+                oldValue = await this.client.botSettingsProvider.get("1", "Activity", "N/A");
+                await this.handler.findCommand("setactivity")
+                    .exec(message, {
+                        type: await this.client.botSettingsProvider.get("1", "ActivityType", ActivityTypes.PLAYING),
+                        name: value,
+                    });
                 break;
             case validEnum.ACTIVITYTYPE:
-                if (SetActivityCommand.validTypes.includes(value.toUpperCase())) {
-                    this.client.user?.presence.set({ activities: [{ type: value as ExcludeEnum<typeof ActivityTypes, "CUSTOM"> }] });
-                    oldValue = await client.botSettingsProvider.get("1", "ActivityType", null);
-                    await client.botSettingsProvider.set("1", "ActivityType", value);
-                }
-                else {
-                    return message.channel.send(SetActivityCommand.typeErrorEmbed(message, {
-                        phrase: value,
-                        failure: undefined,
-                    }));
-                }
+                oldValue = await this.client.botSettingsProvider.get("1", "ActivityType", ActivityTypes.PLAYING);
+                await this.handler.findCommand("setactivity")
+                    .exec(message, {
+                        type: value,
+                        name: await this.client.botSettingsProvider.get("1", "Activity", "N/A"),
+                    });
                 break;
             case validEnum.CURRENCYNAME:
                 oldValue = await client.botSettingsProvider.get("1", "CurrencyName", "Yen");

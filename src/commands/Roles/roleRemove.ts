@@ -29,7 +29,8 @@ export default class RoleRemoveCommand extends KaikiCommand {
             ],
         });
     }
-    public async exec(message: Message, { member, role }: { member: GuildMember, role: Role }): Promise<Message> {
+
+    public async exec(message: Message<true>, { member, role }: { member: GuildMember, role: Role }): Promise<Message> {
 
         if (await rolePermissionCheck(message, role)) {
             if (member.roles.cache.has(role.id)) {

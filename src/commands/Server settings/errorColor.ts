@@ -18,6 +18,7 @@ export default class ErrorColorConfigCommand extends KaikiCommand {
             ],
         });
     }
+
     public async exec(message: Message, { value }: { value: string | number }): Promise<Message> {
         const guildID = (message.guild as Guild).id;
 

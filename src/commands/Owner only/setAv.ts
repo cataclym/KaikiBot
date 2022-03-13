@@ -24,27 +24,17 @@ export default class SetAvatarCommand extends KaikiCommand {
     }
     public async exec(message: Message, { url }: { url: URL}): Promise<Message> {
 
-        const img = await Canvas.loadImage(url.href);
-        const canv = Canvas.createCanvas(img.width, img.height);
-        const ctx = canv.getContext("2d");
+    public async exec(message: Message, { url }: { url: URL }): Promise<Message> {
 
-        const { width, height } = Utility.calculateAspectRatioFit(img.width, img.height, img.width, img.height);
-
-        ctx.drawImage(img,
-            canv.width / 2 - width / 2,
-            canv.height / 2 - height / 2,
-            width, height);
-
-        const buffer = canv.toBuffer();
+        const img = await Utility.loadimage(url.href);
 
         try {
-            await this.client.user?.setAvatar(buffer);
+            await this.client.user?.setAvatar(img);
         }
         catch (error) {
-            logger.error(error);
-            return message.channel.send("Unsupported image type. Please provide a PNG, JPEG or GIF link.");
+            throw new Error("Unsupported image type. Please provide a PNG, JPEG or GIF link.");
         }
 
-        return message.channel.send({ content: "Avatar set.", attachments: [new MessageAttachment(buffer)] });
+        return message.channel.send({ content: "Avatar set.", attachments: [new MessageAttachment(img)] });
     }
 }

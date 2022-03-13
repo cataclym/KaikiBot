@@ -9,8 +9,8 @@ export default class RoleAssignCommand extends KaikiCommand {
             aliases: ["setrole", "sr"],
             description: "Gives a role to a user. The role you specify has to be lower in the role hierarchy than your highest role.",
             usage: "@Dreb Gamer",
-            clientPermissions: "MANAGE_ROLES",
-            userPermissions: "MANAGE_ROLES",
+            clientPermissions: Permissions.FLAGS.MANAGE_ROLES,
+            userPermissions: Permissions.FLAGS.MANAGE_ROLES,
             channel: "guild",
             args: [
                 {
@@ -29,7 +29,8 @@ export default class RoleAssignCommand extends KaikiCommand {
             ],
         });
     }
-    public async exec(message: Message, { member, role }: { member: GuildMember, role: Role }): Promise<Message> {
+
+    public async exec(message: Message<true>, { member, role }: { member: GuildMember, role: Role }): Promise<Message> {
 
         if (await rolePermissionCheck(message, role)) {
             if (!member.roles.cache.has(role.id)) {
