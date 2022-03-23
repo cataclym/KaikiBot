@@ -1,6 +1,6 @@
 import { model, Schema } from "mongoose";
+import KaikiUtil from "../Kaiki/KaikiUtil";
 import { IBlacklist, IBot, ICommandStats, IGuild, IMigration, IMoney, ITinder, IUser } from "./IMongoModels";
-import KaikiUtil from "Kaiki/KaikiUtil";
 
 export const guildSchema = new Schema({
     // ID of the guild

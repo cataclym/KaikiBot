@@ -1,10 +1,7 @@
-import Canvas from "canvas";
 import { Message, MessageAttachment } from "discord.js";
-import logger from "loglevel";
-import KaikiCommand from "Kaiki/KaikiCommand";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 import Utility from "../../lib/Utility";
-
 
 export default class SetAvatarCommand extends KaikiCommand {
     constructor() {
@@ -22,11 +19,10 @@ export default class SetAvatarCommand extends KaikiCommand {
             ],
         });
     }
-    public async exec(message: Message, { url }: { url: URL}): Promise<Message> {
 
     public async exec(message: Message, { url }: { url: URL }): Promise<Message> {
 
-        const img = await Utility.loadimage(url.href);
+        const img = await Utility.loadImage(url.href);
 
         try {
             await this.client.user?.setAvatar(img);
@@ -35,6 +31,6 @@ export default class SetAvatarCommand extends KaikiCommand {
             throw new Error("Unsupported image type. Please provide a PNG, JPEG or GIF link.");
         }
 
-        return message.channel.send({ content: "Avatar set.", attachments: [new MessageAttachment(img)] });
+        return message.channel.send({ content: "Avatar set.", files: [new MessageAttachment(img)] });
     }
 }

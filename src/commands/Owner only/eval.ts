@@ -1,5 +1,6 @@
 import { Message } from "discord.js";
-import KaikiCommand from "Kaiki/KaikiCommand";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+
 import Utility from "../../lib/Utility";
 
 const clean = (text: string) => {
@@ -20,6 +21,7 @@ export default class EvalCommand extends KaikiCommand {
             ],
         });
     }
+
     public async exec(message: Message, { code }: { code: string }): Promise<Message | Message[]> {
         try {
             let evaled = await eval("(async () => " + code + ")()");

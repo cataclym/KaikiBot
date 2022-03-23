@@ -1,7 +1,8 @@
 import { Argument, Flag, PrefixSupplier } from "discord-akairo";
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
 import { Message, MessageEmbed } from "discord.js";
-import KaikiCommand from "Kaiki/KaikiCommand";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+
 import Utility from "../../lib/Utility";
 
 export default class TodoCommand extends KaikiCommand {
@@ -12,7 +13,8 @@ export default class TodoCommand extends KaikiCommand {
             usage: ["", "add make cake 07/07/2020", "remove 5", "remove last", "remove first", "remove all", "rm 1", "2"],
         });
     }
-    *args(): unknown {
+
+    * args(): unknown {
         const method = yield {
             type: [
                 ["add"],

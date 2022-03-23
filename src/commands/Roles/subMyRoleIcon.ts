@@ -1,17 +1,15 @@
-import { Guild, GuildEmoji, Message, MessageAttachment, MessageEmbed, ReactionEmoji, Role } from "discord.js";
 import { Argument } from "discord-akairo";
-import { getGuildDocument } from "../../struct/documentMethods";
-import { Snowflake } from "discord-api-types";
-import KaikiCommand from "Kaiki/KaikiCommand";
-import { EMOTE_REGEX, IMAGE_REGEX } from "../../struct/constants";
+import { Guild, GuildEmoji, Message, MessageAttachment, MessageEmbed, ReactionEmoji, Role } from "discord.js";
 import { isRegex } from "../../lib/functions";
-import { rolePermissionCheck } from "../../lib/roles";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
+import { rolePermissionCheck } from "../../lib/roles";
 import Utility from "../../lib/Utility";
-
-const resetWords = ["clear", "reset"];
+import { EMOTE_REGEX, IMAGE_REGEX } from "../../struct/constants";
 
 export default class MyRoleSubIcon extends KaikiCommand {
+    static resetWords = ["clear", "reset"];
+
     constructor() {
         super("myroleicon", {
             clientPermissions: ["MANAGE_ROLES"],
@@ -23,7 +21,7 @@ export default class MyRoleSubIcon extends KaikiCommand {
                     if (message.attachments.first()) {
                         return message.attachments.first();
                     }
-                }, "emoji", resetWords, EMOTE_REGEX, IMAGE_REGEX),
+                }, "emoji", MyRoleSubIcon.resetWords, EMOTE_REGEX, IMAGE_REGEX),
                 otherwise: (m: Message) => ({
                     embeds: [new MessageEmbed()
                         .setTitle("Please provide a valid emote or image link!")
@@ -72,7 +70,7 @@ export default class MyRoleSubIcon extends KaikiCommand {
         }
 
         else if (typeof icon === "string") {
-            if (resetWords.includes(icon.toLowerCase())) {
+            if (MyRoleSubIcon.resetWords.includes(icon.toLowerCase())) {
                 const myRole = await this.getRole(message);
                 if (myRole && await rolePermissionCheck(message, myRole as Role)) {
                     myRole.setIcon(null);

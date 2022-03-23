@@ -1,6 +1,7 @@
 import { ChildProcess, exec } from "child_process";
 import { Message, MessageEmbed } from "discord.js";
-import KaikiCommand from "Kaiki/KaikiCommand";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+
 import Utility from "../../lib/Utility";
 
 
@@ -20,6 +21,7 @@ export default class ExecCommand extends KaikiCommand {
         });
 
     }
+
     public async exec(message: Message, { command }: { command: string }): Promise<ChildProcess> {
 
         return exec(command, async (e, stdout) => {
@@ -27,7 +29,10 @@ export default class ExecCommand extends KaikiCommand {
             if (e) {
                 return message.channel.send({
                     embeds: [new MessageEmbed()
-                        .setAuthor({ name: "Command errored", iconURL: message.client.user?.displayAvatarURL({ dynamic: true }) })
+                        .setAuthor({
+                            name: "Command errored",
+                            iconURL: message.client.user?.displayAvatarURL({ dynamic: true }),
+                        })
                         .setDescription(await Utility.codeblock(Utility.trim(String(e ?? "Unknown error"), 1997)))
                         .withErrorColor(message)],
                 });
@@ -35,7 +40,10 @@ export default class ExecCommand extends KaikiCommand {
 
             return message.channel.send({
                 embeds: [new MessageEmbed()
-                    .setAuthor({ name: "Executed command", iconURL: message.client.user?.displayAvatarURL({ dynamic: true }) })
+                    .setAuthor({
+                        name: "Executed command",
+                        iconURL: message.client.user?.displayAvatarURL({ dynamic: true }),
+                    })
                     .setDescription(await Utility.codeblock(Utility.trim(stdout ?? "Command executed", 1997)))
                     .withOkColor(message)],
             });

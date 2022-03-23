@@ -1,5 +1,6 @@
 import { ColorResolvable, Message, MessageEmbed } from "discord.js";
-import KaikiCommand from "Kaiki/KaikiCommand";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+
 
 import { getMikuImage } from "../../lib/APIs/MikuAPI";
 import { hexColorTable } from "../../lib/Color";
@@ -15,9 +16,10 @@ export default class Miku extends KaikiCommand {
     }
 
     public async exec(message: Message): Promise<Message> {
-        return message.channel.send({ embeds: [new MessageEmbed()
-            .setImage(<string> await getMikuImage())
-            .setColor(hexColorTable["cyan"] as ColorResolvable)],
+        return message.channel.send({
+            embeds: [new MessageEmbed()
+                .setImage(<string> await getMikuImage())
+                .setColor(hexColorTable["cyan"] as ColorResolvable)],
         });
     }
 }

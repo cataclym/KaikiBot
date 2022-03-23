@@ -1,6 +1,7 @@
 import { Message, MessageEmbed } from "discord.js";
 import { DapiGrabber, DapiSearchType } from "./hentaiService";
-import KaikiCommand from "Kaiki/KaikiCommand";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 import Utility from "../../lib/Utility";
 
@@ -18,6 +19,7 @@ export default class E621Command extends KaikiCommand {
             }],
         });
     }
+
     public async exec(message: Message, { tags }: { tags: string | null }): Promise<Message> {
         const post = await DapiGrabber(tags?.split("+").map(tag => tag.replace(" ", "_")) ?? null, DapiSearchType.E621);
         if (post) {

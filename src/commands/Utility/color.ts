@@ -1,9 +1,10 @@
+import { PrefixSupplier } from "discord-akairo";
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
-import { ColorResolvable, Message, MessageAttachment, MessageEmbed } from "discord.js";
-import { hexColorTable, imgFromColor, resolveColor } from "../../lib/Color";
-import KaikiCommand from "Kaiki/KaikiCommand";
-import { Argument, PrefixSupplier } from "discord-akairo";
-
+import { ColorResolvable, Message, MessageAttachment, MessageEmbed, Util } from "discord.js";
+import { hexColorTable, imgFromColor } from "../../lib/Color";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+import { TKaikiColor } from "../../lib/Types/TColor";
+import Utility from "../../lib/Utility";
 
 export default class ColorCommand extends KaikiCommand {
     constructor() {
@@ -11,6 +12,7 @@ export default class ColorCommand extends KaikiCommand {
             aliases: ["color", "clr"],
             description: "Returns a representation of a color string, or shows list of available color names to use.",
             usage: ["#ff00ff", "list"],
+            typing: true,
             args: [
                 {
                     id: "list",
@@ -20,14 +22,14 @@ export default class ColorCommand extends KaikiCommand {
                 {
                     id: "color",
                     match: "rest",
-                    type: Argument.union((_, phrase) => hexColorTable[phrase.toLowerCase()], "color"),
+                    type: "kaiki_color",
                     default: null,
                 },
             ],
         });
     }
 
-    public async exec(message: Message, { color, list }: { color: string | number, list: boolean }): Promise<Message> {
+    public async exec(message: Message, { color, list }: { color: TKaikiColor, list: boolean }): Promise<Message> {
 
         if (list) {
             const colorList = Object.keys(hexColorTable),
@@ -53,19 +55,19 @@ export default class ColorCommand extends KaikiCommand {
                     .withErrorColor(message)],
             });
         }
+        const colorInt = Util.resolveColor([color.r!, color.g!, color.b!]);
+        const colorString = `Hex: **${Utility.RGBtoHEX(color)}** [${colorInt}]\nRed: **${color.r}**\nGreen: **${color.g}**\nBlue: **${color.b}**\n`;
+        const attachment = new MessageAttachment(await imgFromColor(color), "color.jpg");
+        const embed = new MessageEmbed({
+            description: colorString,
+            color: colorInt,
+            image: {
+                url: "attachment://color.jpg",
+            },
+        });
 
-        const clrStr = await resolveColor(String(color).startsWith("#")
-                ? color.toString()
-                : color.toString(16)),
-            embed = new MessageEmbed({
-                description: clrStr.toString(),
-                color: clrStr,
-            }),
-            attachment = new MessageAttachment(await imgFromColor(clrStr !== "RANDOM" ? clrStr : embed.hexColor ?? "#000000"), "color.png");
-
-        embed.setImage("attachment://color.png");
-
-        return message.channel.send({ files: [attachment],
+        return message.channel.send({
+            files: [attachment],
             embeds: [embed],
         });
     }

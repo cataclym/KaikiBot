@@ -1,9 +1,9 @@
 import { Message } from "discord.js";
 import logger from "loglevel";
 import fetch from "node-fetch";
-import type { respType } from "Types/TCustom";
 import { sendQuote } from "../../lib/APIs/animeQuote";
-import KaikiCommand from "Kaiki/KaikiCommand";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+import { respType } from "../../lib/Types/TCustom";
 
 export default class AnimeQuoteCommand extends KaikiCommand {
     constructor() {

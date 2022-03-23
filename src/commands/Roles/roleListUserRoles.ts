@@ -1,10 +1,7 @@
 import { PrefixSupplier } from "discord-akairo";
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
-import { Snowflake } from "discord-api-types";
-import { Guild, Message, MessageEmbed } from "discord.js";
-import { getGuildDocument } from "../../struct/documentMethods";
-import KaikiCommand from "Kaiki/KaikiCommand";
-
+import { Message, MessageEmbed } from "discord.js";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 export default class ListUserRoles extends KaikiCommand {
     constructor() {
@@ -19,7 +16,6 @@ export default class ListUserRoles extends KaikiCommand {
             channel: "guild",
         });
     }
-    public async exec(message: Message): Promise<Message> {
 
     public async exec(message: Message<true>): Promise<Message> {
 
@@ -39,7 +35,7 @@ export default class ListUserRoles extends KaikiCommand {
         if (db.length) {
 
             const mapped = db
-                    .map(table => `${message.guild?.members.cache.get(String(table.UserId)) || table.UserId}: ${message.guild?.roles.cache.get(String(table.UserRole)) || table.UserRole}`)
+                    .map((table) => `${message.guild?.members.cache.get(String(table.UserId)) || table.UserId}: ${message.guild?.roles.cache.get(String(table.UserRole)) || table.UserRole}`)
                     .sort(),
                 pages: MessageEmbed[] = [];
 

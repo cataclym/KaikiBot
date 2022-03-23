@@ -1,6 +1,6 @@
 {
   "name": "kaikideishubot",
-  "version": "4.0.0-Gainsboro",
+  "version": "4.0.0-Gainsboro_alpha_0.1",
   "main": "./dist/index.js",
   "scripts": {
     "start": "node -r dotenv/config dist/index.js --color",
@@ -26,7 +26,6 @@
     "@types/validator": "^13.7.1",
     "@types/ws": "^8.2.2",
     "bufferutil": "^4.0.6",
-    "canvas": "^2.8.0",
     "chalk": "^4.1.2",
     "discord-akairo": "git+https://github.com/discord-akairo/discord-akairo.git",
     "discord-js-button-pagination-ts": "^3.1.0",

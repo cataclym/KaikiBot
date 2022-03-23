@@ -1,7 +1,7 @@
 import { Command } from "discord-akairo";
 import { Message } from "discord.js";
-import KaikiInhibitor from "Kaiki/KaikiInhibitor";
 import { blockedCategories } from "../lib/enums/blockedCategories";
+import KaikiInhibitor from "../lib/Kaiki/KaikiInhibitor";
 
 export default class BlockModulesInhibitor extends KaikiInhibitor {
     constructor() {

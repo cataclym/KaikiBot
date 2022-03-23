@@ -1,6 +1,7 @@
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
 import { GuildMember, Message, MessageEmbed, Role } from "discord.js";
-import KaikiCommand from "Kaiki/KaikiCommand";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+
 import { Argument } from "discord-akairo";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 

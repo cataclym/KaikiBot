@@ -1,7 +1,7 @@
-import { Argument, PrefixSupplier } from "discord-akairo";
 import { execSync } from "child_process";
+import { Argument, PrefixSupplier } from "discord-akairo";
 import { Message, MessageEmbed, PermissionResolvable, Permissions } from "discord.js";
-import KaikiCommand from "Kaiki/KaikiCommand";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 export default class HelpCommand extends KaikiCommand {
     constructor() {
@@ -58,7 +58,6 @@ export default class HelpCommand extends KaikiCommand {
         }
 
         const avatarURL = this.client.owner.displayAvatarURL({ dynamic: true });
-            .displayAvatarURL({ dynamic: true });
 
         embed.setTitle(`${message.client.user?.username} help page`)
             .setDescription(`Current prefix: \`${prefix}\``)

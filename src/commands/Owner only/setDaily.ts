@@ -1,7 +1,5 @@
 import { Message, MessageEmbed } from "discord.js";
-import KaikiCommand from "Kaiki/KaikiCommand";
-import { getBotDocument } from "../../struct/documentMethods";
-import KaikiEmbeds from "../../lib/KaikiEmbeds";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 export default class SetDailyCommand extends KaikiCommand {
     constructor() {
@@ -20,11 +18,11 @@ export default class SetDailyCommand extends KaikiCommand {
 
     public async exec(message: Message<true>, { arg }: { arg: number }): Promise<Message> {
 
-        const isEnabled = this.client.botSettingsProvider.get("1", "DailyEnabled", false);
+        const isEnabled = this.client.botSettings.get("1", "DailyEnabled", false);
 
         if (arg > 0) {
-            await this.client.botSettingsProvider.set("1", "DailyEnabled", true);
-            await this.client.botSettingsProvider.set("1", "DailyAmount", arg);
+            await this.client.botSettings.set("1", "DailyEnabled", true);
+            await this.client.botSettings.set("1", "DailyAmount", arg);
             return message.channel.send({
                 embeds: [new MessageEmbed()
                     .setDescription(`Users will be able to claim ${arg} ${this.client.money.currencyName} ${this.client.money.currencySymbol} every day`)
@@ -43,7 +41,7 @@ export default class SetDailyCommand extends KaikiCommand {
         }
 
         else {
-            await this.client.botSettingsProvider.set("1", "DailyEnabled", false);
+            await this.client.botSettings.set("1", "DailyEnabled", false);
             return message.channel.send({
                 embeds: [new MessageEmbed()
                     .setDescription("Disabled daily currency allowance.")

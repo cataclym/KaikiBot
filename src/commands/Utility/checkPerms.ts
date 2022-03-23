@@ -1,7 +1,8 @@
 import { Argument } from "discord-akairo";
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
 import { GuildMember, Message, MessageEmbed, Role, TextChannel } from "discord.js";
-import KaikiCommand from "Kaiki/KaikiCommand";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+
 import Utility from "../../lib/Utility";
 
 export default class CheckPermissionsCommand extends KaikiCommand {
@@ -24,7 +25,10 @@ export default class CheckPermissionsCommand extends KaikiCommand {
         });
     }
 
-    public async exec(message: Message, { input, channel }: { input: Role | GuildMember, channel: TextChannel }): Promise<Message> {
+    public async exec(message: Message, {
+        input,
+        channel,
+    }: { input: Role | GuildMember, channel: TextChannel }): Promise<Message> {
 
         const { permissions } = input,
             permissionsIn = input.permissionsIn(message.channel as TextChannel),

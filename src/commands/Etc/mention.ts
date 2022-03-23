@@ -1,6 +1,6 @@
 import { PrefixSupplier } from "discord-akairo";
 import { Message, MessageEmbed, User } from "discord.js";
-import KaikiCommand from "Kaiki/KaikiCommand";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 
 export default class MentionCommand extends KaikiCommand {
@@ -12,7 +12,11 @@ export default class MentionCommand extends KaikiCommand {
     }
 
     condition(msg: Message): boolean {
-        return msg.mentions.has(msg.client.user as User, { ignoreDirect: false, ignoreEveryone: true, ignoreRoles: true }) && !msg.author.bot && msg.content.split(" ").length === 1;
+        return msg.mentions.has(msg.client.user as User, {
+            ignoreDirect: false,
+            ignoreEveryone: true,
+            ignoreRoles: true,
+        }) && !msg.author.bot && msg.content.split(" ").length === 1;
     }
 
     public async exec(msg: Message): Promise<NodeJS.Timeout> {

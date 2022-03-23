@@ -1,10 +1,9 @@
-import Discord, { GuildMember, Message } from "discord.js";
+import Discord, { Message, User } from "discord.js";
 import sharp from "sharp";
-import KaikiCommand from "Kaiki/KaikiCommand";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import Utility from "../../lib/Utility.js";
-const background = async () => await loadImage("https://cdn.discordapp.com/attachments/717045059215687691/763459004352954368/deadbeats.jpg");
 
-module.exports = class DeadbeatCommand extends KaikiCommand {
+export default class DeadbeatCommand extends KaikiCommand {
     // I should host this on GitLab
     private backgroundUrl = "https://cdn.discordapp.com/attachments/717045059215687691/763459004352954368/deadbeats.jpg";
 
@@ -18,25 +17,27 @@ module.exports = class DeadbeatCommand extends KaikiCommand {
             args: [{
                 id: "member",
                 type: "member",
-                match: "rest",
-                default: (message: Message) => message.member,
+                default: (message: Message) => message.author,
             }],
         });
     }
 
-    public async exec(message: Message, args: { member: GuildMember, default: GuildMember }) {
-        const member = args.member || args.default;
+    public async exec(message: Message, { member }: { member: User }) {
 
-        const url = await Utility.loadimage(member.displayAvatarURL({ format: "jpg", size: 64 }));
+        const buffer = await Utility.loadImage(member.displayAvatarURL({ format: "jpg", size: 128 }));
+
+        const modified = await sharp(buffer)
+            .resize({ height: 189, width: 205 })
+            .toBuffer();
 
         const image = sharp(await this.background())
-            .composite([{ input: url, top: 100, left: 625 }]);
+            .composite([{ input: modified, top: 88, left: 570 }]);
 
         const attachment = new Discord.MessageAttachment(image, "deadBeats.jpg");
-        await message.channel.send({ content: `Deadbeat 👉 ${member.user}`, files: [attachment] });
+        await message.channel.send({ content: `Deadbeat 👉 ${member}!`, files: [attachment] });
     }
 
     private async background() {
-        return Utility.loadimage(this.backgroundUrl);
+        return Utility.loadImage(this.backgroundUrl);
     }
-};
+}

@@ -1,5 +1,6 @@
 import { Message, MessageEmbed } from "discord.js";
-import KaikiCommand from "Kaiki/KaikiCommand";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+
 
 export default class ToggleStickyRolesCommand extends KaikiCommand {
     constructor() {
@@ -11,6 +12,7 @@ export default class ToggleStickyRolesCommand extends KaikiCommand {
             usage: "",
         });
     }
+
     public async exec(message: Message<true>): Promise<Message> {
 
         const db = await this.client.orm.guilds.findUnique({
@@ -22,7 +24,7 @@ export default class ToggleStickyRolesCommand extends KaikiCommand {
             },
         });
 
-        await this.client.guildProvider.set(message.guild!.id, "StickyRoles", !!db?.StickyRoles);
+        await this.client.guildsDb.set(message.guild!.id, "StickyRoles", !!db?.StickyRoles);
 
         return message.channel.send({
             embeds: [new MessageEmbed()

@@ -1,6 +1,7 @@
 import { Argument, Category, Command, PrefixSupplier } from "discord-akairo";
 import { Message, MessageEmbed } from "discord.js";
-import KaikiCommand from "Kaiki/KaikiCommand";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+
 import images from "../../data/images.json";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
@@ -33,22 +34,24 @@ export default class commandsList extends KaikiCommand {
         });
     }
 
-    public async exec(message: Message, { category }: { category: Category<string, Command>}): Promise<Message | undefined> {
+    public async exec(message: Message, { category }: { category: Category<string, Command> }): Promise<Message | undefined> {
 
         const { name, repository, version } = this.client.package;
 
         const prefix = (this.handler.prefix as PrefixSupplier)(message);
 
         if (category) {
-            return message.channel.send({ embeds: [new MessageEmbed()
-                .setTitle(`Commands in ${category.id}`)
-                .setDescription(category
-                    .filter(cmd => cmd.aliases.length > 0)
-                    .map(cmd => `**${prefix}${cmd}** [\`${cmd.aliases
-                        .sort((a, b) => b.length - a.length
-							|| a.localeCompare(b)).join("`, `")}\`]`)
-                    .join("\n") || "Empty")
-                .withOkColor(message)] });
+            return message.channel.send({
+                embeds: [new MessageEmbed()
+                    .setTitle(`Commands in ${category.id}`)
+                    .setDescription(category
+                        .filter(cmd => cmd.aliases.length > 0)
+                        .map(cmd => `**${prefix}${cmd}** [\`${cmd.aliases
+                            .sort((a, b) => b.length - a.length
+                                || a.localeCompare(b)).join("`, `")}\`]`)
+                        .join("\n") || "Empty")
+                    .withOkColor(message)],
+            });
         }
 
         else {

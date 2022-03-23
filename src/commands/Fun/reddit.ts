@@ -1,7 +1,8 @@
 import { Message, MessageEmbed, TextChannel } from "discord.js";
 import fetch from "node-fetch";
 import { PurpleData, RedditData } from "../../lib/Interfaces/IRedditAPI";
-import KaikiCommand from "Kaiki/KaikiCommand";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 import Utility from "../../lib/Utility";
 
@@ -41,12 +42,13 @@ export default class RedditCommand extends KaikiCommand {
             }
 
             // We don´t want nsfw in normal channels, do we?
-            if (data.over_18 && (!(message.channel as TextChannel)?.nsfw ||	message.channel.type !== "DM")) {
-                return message.channel.send({ embeds: [new MessageEmbed({
-                    title: "This post is NSFW",
-                    description: "Cannot show NSFW in DMs or non-NSFW channels",
-                })
-                    .withErrorColor(message)],
+            if (data.over_18 && (!(message.channel as TextChannel)?.nsfw || message.channel.type !== "DM")) {
+                return message.channel.send({
+                    embeds: [new MessageEmbed({
+                        title: "This post is NSFW",
+                        description: "Cannot show NSFW in DMs or non-NSFW channels",
+                    })
+                        .withErrorColor(message)],
                 })
                     .then(msg => setTimeout(() => {
                         message.delete();

@@ -1,6 +1,6 @@
-import KaikiAkairoClient from "Kaiki/KaikiAkairoClient";
 import logger from "loglevel";
 import { extensionHook } from "./extensions/Discord";
+import KaikiAkairoClient from "./lib/Kaiki/KaikiAkairoClient";
 import { Bot } from "./struct/bot";
 import { startLogger } from "./struct/logging";
 

@@ -1,7 +1,7 @@
-import { GuildMember, Message, MessageEmbed, Role } from "discord.js";
-import KaikiCommand from "Kaiki/KaikiCommand";
-import { rolePermissionCheck } from "../../lib/roles";
+import { GuildMember, Message, MessageEmbed, Permissions, Role } from "discord.js";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
+import { rolePermissionCheck } from "../../lib/roles";
 
 export default class RoleAssignCommand extends KaikiCommand {
     constructor() {
@@ -16,10 +16,12 @@ export default class RoleAssignCommand extends KaikiCommand {
                 {
                     id: "member",
                     type: "member",
-                    otherwise: (m: Message) => ({ embeds: [new MessageEmbed({
-                        title: "Can't find this user. Try again.",
-                    })
-                        .withErrorColor(m)] }),
+                    otherwise: (m: Message) => ({
+                        embeds: [new MessageEmbed({
+                            title: "Can't find this user. Try again.",
+                        })
+                            .withErrorColor(m)],
+                    }),
                 },
                 {
                     id: "role",
@@ -37,19 +39,21 @@ export default class RoleAssignCommand extends KaikiCommand {
 
                 await member.roles.add(role);
 
-                return message.channel.send({ embeds: [new MessageEmbed({
-                    title: "Success!",
-                    description: `Added ${role} to ${member.user}`,
-                })
-                    .withOkColor(message)],
+                return message.channel.send({
+                    embeds: [new MessageEmbed({
+                        title: "Success!",
+                        description: `Added ${role} to ${member.user}`,
+                    })
+                        .withOkColor(message)],
                 });
             }
             else {
-                return message.channel.send({ embeds: [new MessageEmbed({
-                    title: "Error",
-                    description: `${member} already has ${role}`,
-                })
-                    .withErrorColor(message)],
+                return message.channel.send({
+                    embeds: [new MessageEmbed({
+                        title: "Error",
+                        description: `${member} already has ${role}`,
+                    })
+                        .withErrorColor(message)],
                 });
             }
         }

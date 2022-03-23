@@ -1,5 +1,6 @@
 import { Message, MessageEmbed } from "discord.js";
-import KaikiCommand from "Kaiki/KaikiCommand";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
 export default class RoleCreateCommand extends KaikiCommand {
@@ -22,17 +23,18 @@ export default class RoleCreateCommand extends KaikiCommand {
 
     public async exec(message: Message, { name }: { name: string }): Promise<Message> {
 
-        const createdRole = await message.guild?.roles.create({ name:  name });
+        const createdRole = await message.guild?.roles.create({ name: name });
 
         if (!createdRole) {
             throw new Error("Role creation failed.");
         }
 
-        return message.channel.send({ embeds: [new MessageEmbed({
-            title: "Success!",
-            description: `Created ${createdRole}!`,
-        })
-            .withOkColor(message)],
+        return message.channel.send({
+            embeds: [new MessageEmbed({
+                title: "Success!",
+                description: `Created ${createdRole}!`,
+            })
+                .withOkColor(message)],
         });
     }
 }

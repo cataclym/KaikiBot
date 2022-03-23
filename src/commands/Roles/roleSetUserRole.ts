@@ -1,9 +1,8 @@
 import { PrefixSupplier } from "discord-akairo";
 import { Snowflake } from "discord-api-types";
-import { Guild, GuildMember, Message, MessageEmbed, Role } from "discord.js";
-import KaikiCommand from "Kaiki/KaikiCommand";
-import { IGuild } from "../../lib/Migrations/src/IDocuments";
-import { getGuildDocument } from "../../struct/documentMethods";
+import { GuildMember, Message, MessageEmbed, Role } from "discord.js";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
 // Rewrite of Miyano's setuserrole command
 // https://github.com/PlatinumFT/Miyano-v2

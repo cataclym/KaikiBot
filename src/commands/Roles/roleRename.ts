@@ -1,5 +1,6 @@
 import { Message, MessageEmbed, Role } from "discord.js";
-import KaikiCommand from "Kaiki/KaikiCommand";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+
 import { rolePermissionCheck } from "../../lib/roles";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 import Utility from "../../lib/Utility";

@@ -1,5 +1,6 @@
 import { ColorResolvable } from "discord.js";
 import sharp from "sharp";
+import { TKaikiColor } from "./Types/TColor";
 
 export const colorTable: {
     [index: string]: string
@@ -155,32 +156,17 @@ export const colorTable: {
     "yellowgreen": "rgba(154,205,50,1)",
 };
 
-export async function imgFromColor(color: ColorResolvable, size = 128): Promise<Buffer> {
-    return sharp()
-        .resize(size, size)
-        .tint(color.toString())
-        .toBuffer();
-}
-
-export async function resolveColor(color: string): Promise<ColorResolvable> {
-
-    color = color.toLowerCase();
-
-    const clrStr = hexColorTable[color]
-        ? hexColorTable[color]
-        : colors.find(c => c.name === color || c.hex === color)?.hex;
-
-    if (clrStr) {
-        return (String(clrStr).startsWith("#")
-            ? clrStr
-            : `#${clrStr}`) as ColorResolvable;
-    }
-
-    else {
-        return (color.startsWith("#")
-            ? color
-            : `#${color}`) as ColorResolvable;
-    }
+export async function imgFromColor(color: TKaikiColor, size = 128): Promise<Buffer> {
+    return Promise.resolve(sharp({
+        create: {
+            width: size,
+            height: size,
+            channels: 3,
+            background: color,
+        },
+    })
+        .jpeg()
+        .toBuffer());
 }
 
 export const hexColorTable: {

@@ -1,7 +1,8 @@
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
 import { execSync } from "child_process";
 import { Message, MessageEmbed, version } from "discord.js";
-import KaikiCommand from "Kaiki/KaikiCommand";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+
 import Akairo from "discord-akairo";
 
 function format(seconds: number) {

@@ -1,6 +1,7 @@
 import { PrefixSupplier } from "discord-akairo";
 import { Guild, Message, MessageEmbed, Permissions } from "discord.js";
-import KaikiCommand from "Kaiki/KaikiCommand";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+
 import GreetHandler, { JSONToMessageOptions } from "../../lib/GreetHandler";
 
 export default class WelcomeMessageCommand extends KaikiCommand {
@@ -19,10 +20,12 @@ export default class WelcomeMessageCommand extends KaikiCommand {
                         return undefined;
                     }
                 },
-                otherwise: (m) => ({ embeds: [new MessageEmbed()
-                    .setTitle("Error")
-                    .setDescription("Please provide valid json")
-                    .withErrorColor(m)] }),
+                otherwise: (m) => ({
+                    embeds: [new MessageEmbed()
+                        .setTitle("Error")
+                        .setDescription("Please provide valid json")
+                        .withErrorColor(m)],
+                }),
             }],
         });
     }

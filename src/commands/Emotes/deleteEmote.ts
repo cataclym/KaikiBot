@@ -1,5 +1,6 @@
 import { Collection, GuildEmoji, Message, MessageEmbed, Permissions } from "discord.js";
-import KaikiCommand from "Kaiki/KaikiCommand";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 import Utility from "../../lib/Utility";
 
@@ -25,7 +26,7 @@ export default class DeleteEmoteCommand extends KaikiCommand {
         });
     }
 
-    public async exec(message: Message, { emotes }: { emotes: Collection<string, GuildEmoji>[]}): Promise<Message> {
+    public async exec(message: Message, { emotes }: { emotes: Collection<string, GuildEmoji>[] }): Promise<Message> {
 
         return (async function() {
             let i = 0;
@@ -40,11 +41,12 @@ export default class DeleteEmoteCommand extends KaikiCommand {
                     const deleted = await newEmote.delete();
 
                     if (!deleted) {
-                        return message.channel.send({ embeds: [new MessageEmbed({
-                            title: "Error occurred",
-                            description: "Some or all emotes could not be deleted.",
-                        })
-                            .withErrorColor(message)],
+                        return message.channel.send({
+                            embeds: [new MessageEmbed({
+                                title: "Error occurred",
+                                description: "Some or all emotes could not be deleted.",
+                            })
+                                .withErrorColor(message)],
                         });
                     }
                 }
@@ -59,10 +61,11 @@ export default class DeleteEmoteCommand extends KaikiCommand {
                 }
             }
 
-            return message.channel.send({ embeds: [new MessageEmbed()
-                .setTitle("Success!")
-                .setDescription(`Deleted:\n${Utility.trim(emotes.map((es) => es.map((e) => e)).join("\n"), 2048)}`)
-                .withOkColor(message)],
+            return message.channel.send({
+                embeds: [new MessageEmbed()
+                    .setTitle("Success!")
+                    .setDescription(`Deleted:\n${Utility.trim(emotes.map((es) => es.map((e) => e)).join("\n"), 2048)}`)
+                    .withOkColor(message)],
             });
         })();
     }

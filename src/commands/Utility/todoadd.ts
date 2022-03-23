@@ -1,5 +1,6 @@
 import { Message, MessageReaction } from "discord.js";
-import KaikiCommand from "Kaiki/KaikiCommand";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
 
@@ -15,7 +16,7 @@ export default class todoAddCommand extends KaikiCommand {
         });
     }
 
-    public async exec(message: Message, { toAdd }: { toAdd: string}): Promise<MessageReaction> {
+    public async exec(message: Message, { toAdd }: { toAdd: string }): Promise<MessageReaction> {
 
         this.client.orm.todos.create({
             data: {

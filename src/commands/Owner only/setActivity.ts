@@ -1,8 +1,6 @@
 import { FailureData } from "discord-akairo";
 import { ActivityType, Message, MessageEmbed } from "discord.js";
-import { getBotDocument } from "../../struct/documentMethods";
-import KaikiCommand from "Kaiki/KaikiCommand";
-import { ActivityTypes } from "discord.js/typings/enums";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
 export default class SetActivityCommand extends KaikiCommand {
@@ -16,7 +14,12 @@ export default class SetActivityCommand extends KaikiCommand {
             ownerOnly: true,
             args: [{
                 id: "type",
-                type: SetActivityCommand.validTypes,
+                type: (m, p) => {
+                    if (!p) return null;
+                    p = p.toUpperCase();
+                    if (SetActivityCommand.validTypes.includes(p)) return p;
+                    return null;
+                },
                 otherwise: (msg: Message, _: FailureData) => this.typeErrorEmbed(msg, _),
             },
             {
@@ -38,12 +41,12 @@ export default class SetActivityCommand extends KaikiCommand {
     public async exec(message: Message, {
         type,
         name,
-    }: { type: Exclude<ActivityType, "CUSTOM"> | Exclude<ActivityTypes, ActivityTypes.CUSTOM>, name: string }) {
+    }: { type: Exclude<ActivityType, "CUSTOM">, name: string }) {
 
         return Promise.all([
             message.client.user?.setActivity({ type: type, name: name }),
-            this.client.botSettingsProvider.set("1", "Activity", name),
-            this.client.botSettingsProvider.set("1", "ActivityType", type),
+            this.client.botSettings.set("1", "Activity", name),
+            this.client.botSettings.set("1", "ActivityType", type),
             message.channel.send({
                 embeds: [new MessageEmbed()
                     .addField("Status changed", `**Type**: ${type}\n**Activity**: ${name}`)

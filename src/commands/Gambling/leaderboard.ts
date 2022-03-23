@@ -1,5 +1,6 @@
 import { Message, MessageEmbed } from "discord.js";
-import KaikiCommand from "Kaiki/KaikiCommand";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
 
 export default class LeaderboardCommand extends KaikiCommand {

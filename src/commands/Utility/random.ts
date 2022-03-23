@@ -1,5 +1,5 @@
 import { Message, MessageEmbed } from "discord.js";
-import KaikiCommand from "Kaiki/KaikiCommand";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 
 function getRndInteger(min: number, max: number) {
@@ -31,7 +31,8 @@ export default class RandomNumberCommand extends KaikiCommand {
             number2 = args.int2,
             embed = new MessageEmbed()
                 .setTitle("Result:")
-                .setFooter({ text: `Random number between ${number1} and ${number2}`,
+                .setFooter({
+                    text: `Random number between ${number1} and ${number2}`,
                 })
                 .withOkColor(message);
 

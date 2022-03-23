@@ -1,5 +1,5 @@
 import { Message, MessageEmbed } from "discord.js";
-import KaikiCommand from "Kaiki/KaikiCommand";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 
 export default class InviteCommand extends KaikiCommand {
@@ -10,6 +10,7 @@ export default class InviteCommand extends KaikiCommand {
             usage: "",
         });
     }
+
     public async exec(message: Message): Promise<Message> {
         return message.channel.send({
             embeds: [new MessageEmbed({

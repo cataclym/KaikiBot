@@ -1,6 +1,7 @@
 import { Category, Command } from "discord-akairo";
 import { Guild, Message, MessageEmbed } from "discord.js";
-import KaikiCommand from "Kaiki/KaikiCommand";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 import { blockedCategories } from "../../lib/enums/blockedCategories";
 
@@ -26,6 +27,7 @@ export default class ToggleCategoryCommand extends KaikiCommand {
             }],
         });
     }
+
     public async exec(message: Message, { category }: { category: Category<string, Command> }): Promise<Message> {
 
         const guild = (message.guild as Guild);

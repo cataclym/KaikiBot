@@ -1,5 +1,6 @@
 import { Message, MessageReaction } from "discord.js";
-import KaikiCommand from "Kaiki/KaikiCommand";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 import fs from "fs";
 
@@ -20,7 +21,8 @@ export default class SaveChatCommand extends KaikiCommand {
             ],
         });
     }
-    public async exec(message: Message, { amount }: { amount: number}): Promise<MessageReaction> {
+
+    public async exec(message: Message, { amount }: { amount: number }): Promise<MessageReaction> {
 
         if (amount > 100) amount = 100;
 

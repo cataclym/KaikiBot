@@ -1,7 +1,8 @@
 import { Argument } from "discord-akairo";
 import { Guild, Message, MessageEmbed } from "discord.js";
 import { hexColorTable } from "../../lib/Color";
-import KaikiCommand from "Kaiki/KaikiCommand";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
 export default class ErrorColorConfigCommand extends KaikiCommand {
@@ -24,7 +25,7 @@ export default class ErrorColorConfigCommand extends KaikiCommand {
 
         if (typeof value === "number") value = value.toString(16);
 
-        await this.client.guildProvider.set(guildID, "ErrorColor", value);
+        await this.client.guildsDb.set(guildID, "ErrorColor", value);
 
         return message.channel.send({
             embeds: [new MessageEmbed({

@@ -1,6 +1,7 @@
 import { Message, MessageEmbed } from "discord.js";
 import fetch from "node-fetch";
-import KaikiCommand from "Kaiki/KaikiCommand";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+
 import { aniQuery, handleError, handleResponse } from "../../lib/APIs/AnilistGraphQL";
 import { IAnimeRes } from "../../lib/Interfaces/IAnimeRes";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
@@ -21,7 +22,7 @@ export default class AnimeCommand extends KaikiCommand {
         });
     }
 
-    public async exec(message: Message, { anime }: { anime: string}): Promise<Message | void> {
+    public async exec(message: Message, { anime }: { anime: string }): Promise<Message | void> {
 
         const url = "https://graphql.anilist.co",
             options = {
@@ -44,7 +45,19 @@ export default class AnimeCommand extends KaikiCommand {
         return await fetch(url, options).then(handleResponse)
             .then((response: IAnimeRes) => {
 
-                const { coverImage, title, episodes, description, format, status, studios, startDate, genres, endDate, siteUrl } = response.data.Page.media[0];
+                const {
+                    coverImage,
+                    title,
+                    episodes,
+                    description,
+                    format,
+                    status,
+                    studios,
+                    startDate,
+                    genres,
+                    endDate,
+                    siteUrl,
+                } = response.data.Page.media[0];
                 const monthFormat = new Intl.DateTimeFormat("en-US", { month: "long" });
                 const started = `${monthFormat.format(startDate.month)} ${startDate.day}, ${startDate.year}`;
                 const ended = `${monthFormat.format(endDate.month)} ${endDate.day}, ${endDate.year}`;

@@ -1,6 +1,7 @@
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
 import { Message, MessageEmbed, User } from "discord.js";
-import KaikiCommand from "Kaiki/KaikiCommand";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+
 
 export default class NamesCommand extends KaikiCommand {
     constructor() {
@@ -10,7 +11,8 @@ export default class NamesCommand extends KaikiCommand {
             usage: ["@dreb", "delete"],
         });
     }
-    *args(): unknown {
+
+    * args(): unknown {
         const method = yield {
             // TODO: figure out type of phrase
             type: async (message: Message, phrase: string) => {
@@ -30,7 +32,10 @@ export default class NamesCommand extends KaikiCommand {
         .setThumbnail(unionUser.displayAvatarURL({ dynamic: true }))
         .withOkColor(message);
 
-    public async exec(message: Message, { method, unionUser }: { method: boolean, unionUser: User }): Promise<Message | void> {
+    public async exec(message: Message, {
+        method,
+        unionUser,
+    }: { method: boolean, unionUser: User }): Promise<Message | void> {
 
         if (method) {
             let deleted;

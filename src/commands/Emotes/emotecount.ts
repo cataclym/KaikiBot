@@ -1,6 +1,7 @@
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
 import { Guild, Message, MessageEmbed } from "discord.js";
-import KaikiCommand from "Kaiki/KaikiCommand";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+
 import Utility from "../../lib/Utility";
 
 export default class EmoteCount extends KaikiCommand {
@@ -46,8 +47,12 @@ export default class EmoteCount extends KaikiCommand {
 
             if (!Emote) continue;
 
-            if (!flag) data.push(`\`${Count}\` ${Emote} | ${Emote.name}`);
-            else data.push(`${Emote} \`${Count}\` `);
+            if (!flag) {
+                data.push(`\`${Count}\` ${Emote} | ${Emote.name}`);
+            }
+            else {
+                data.push(`${Emote} \`${Count}\` `);
+            }
         }
 
         if (!flag) {

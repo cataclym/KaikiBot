@@ -1,5 +1,6 @@
 import { GuildMember, Message, MessageEmbed, Permissions } from "discord.js";
-import KaikiCommand from "Kaiki/KaikiCommand";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+
 import { restoreUserRoles } from "../../lib/roles";
 import Utility from "../../lib/Utility";
 
@@ -16,9 +17,11 @@ export default class RestoreUserRoles extends KaikiCommand {
                 {
                     id: "member",
                     type: "member",
-                    otherwise: (m) => ({ embeds: [new MessageEmbed()
-                        .setDescription("Please provide a valid member")
-                        .withErrorColor(m)] }),
+                    otherwise: (m) => ({
+                        embeds: [new MessageEmbed()
+                            .setDescription("Please provide a valid member")
+                            .withErrorColor(m)],
+                    }),
                 },
             ],
         });

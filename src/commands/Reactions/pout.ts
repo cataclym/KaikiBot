@@ -1,6 +1,6 @@
 import { Message } from "discord.js";
 import getKawaiiResponseEmbed from "../../lib/APIs/KawaiiAPI";
-import KaikiCommand from "Kaiki/KaikiCommand";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 
 export default class Pout extends KaikiCommand {

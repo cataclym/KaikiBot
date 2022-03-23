@@ -1,9 +1,8 @@
 import { PrefixSupplier } from "discord-akairo";
-import { Guild, Message, MessageEmbed } from "discord.js";
-import KaikiCommand from "Kaiki/KaikiCommand";
-import { getGuildDocument } from "../../struct/documentMethods";
-import { excludeData } from "../../lib/slashCommands/data";
+import { Message, MessageEmbed } from "discord.js";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
+import { excludeData } from "../../lib/slashCommands/data";
 
 export default class DadBotConfigCommand extends KaikiCommand {
     constructor() {
@@ -25,13 +24,13 @@ export default class DadBotConfigCommand extends KaikiCommand {
         const embed = new MessageEmbed()
             .withOkColor(message);
 
-        const isEnabled: boolean = message.client.guildProvider.get(message.guildId, "DadBot", false);
+        const isEnabled: boolean = message.client.guildsDb.get(message.guildId, "DadBot", false);
 
         switch (value) {
             case ("enable"):
             case ("true"): {
                 if (!isEnabled) {
-                    await message.client.guildProvider.set(message.guildId, "DadBot", true);
+                    await message.client.guildsDb.set(message.guildId, "DadBot", true);
                     await message.guild?.commands.create(excludeData);
 
                     embed
@@ -49,7 +48,7 @@ export default class DadBotConfigCommand extends KaikiCommand {
             case ("disable"):
             case ("false"): {
                 if (isEnabled) {
-                    await message.client.guildProvider.set(message.guildId, "DadBot", false);
+                    await message.client.guildsDb.set(message.guildId, "DadBot", false);
 
                     const cmd = message.guild?.commands.cache.find(c => c.name === "exclude");
 

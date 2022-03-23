@@ -1,5 +1,5 @@
 import { Message, MessageEmbed, User } from "discord.js";
-import KaikiCommand from "Kaiki/KaikiCommand";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 
 export default class AvatarCommand extends KaikiCommand {
@@ -17,6 +17,7 @@ export default class AvatarCommand extends KaikiCommand {
             ],
         });
     }
+
     public async exec(message: Message, { user }: { user: User }): Promise<Message> {
 
         const av = user.displayAvatarURL({ size: 4096, dynamic: true }),
@@ -26,7 +27,11 @@ export default class AvatarCommand extends KaikiCommand {
 
         const embeds = [new MessageEmbed({
             title: user.tag,
-            fields: [{ name: "Links", value: `${av !== webp ? `[gif](${av}) ` : ""}[jpg](${jpeg}) [png](${png}) [webp](${webp})`, inline: false }],
+            fields: [{
+                name: "Links",
+                value: `${av !== webp ? `[gif](${av}) ` : ""}[jpg](${jpeg}) [png](${png}) [webp](${webp})`,
+                inline: false,
+            }],
             image: { url: av },
             footer: { text: "ID: " + user.id },
         })
@@ -42,7 +47,11 @@ export default class AvatarCommand extends KaikiCommand {
 
                 embeds.push(new MessageEmbed({
                     title: "Server avatar",
-                    fields: [{ name: "Links", value: `${memberAvatar !== memberWebp ? `[gif](${memberAvatar}) ` : ""}[jpg](${memberJpeg}) [png](${memberPng}) [webp](${memberWebp})`, inline: false }],
+                    fields: [{
+                        name: "Links",
+                        value: `${memberAvatar !== memberWebp ? `[gif](${memberAvatar}) ` : ""}[jpg](${memberJpeg}) [png](${memberPng}) [webp](${memberWebp})`,
+                        inline: false,
+                    }],
                     image: { url: memberAvatar },
                 })
                     .withOkColor(message));

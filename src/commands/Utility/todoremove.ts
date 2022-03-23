@@ -1,6 +1,7 @@
 import { Argument } from "discord-akairo";
 import { Message, MessageEmbed } from "discord.js";
-import KaikiCommand from "Kaiki/KaikiCommand";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+
 
 export default class todoRemoveCommand extends KaikiCommand {
     constructor() {

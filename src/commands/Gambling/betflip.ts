@@ -1,11 +1,13 @@
 import { Message, MessageEmbed } from "discord.js";
 import images from "../../data/images.json";
-import KaikiCommand from "Kaiki/KaikiCommand";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+
 
 type sides = "tails" | "heads";
 
 export default class BetflipCommands extends KaikiCommand {
-    private readonly coinArgs: {[index: string]: sides };
+    private readonly coinArgs: { [index: string]: sides };
+
     constructor() {
         super("betflip", {
             aliases: ["betflip", "bf"],
@@ -23,9 +25,11 @@ export default class BetflipCommands extends KaikiCommand {
             {
                 id: "coin",
                 type: (_m, p) => this.coinArgs[p.toLowerCase()],
-                otherwise: (m) => ({ embeds: [new MessageEmbed()
-                    .setDescription("Please select heads or tails!")
-                    .withErrorColor(m)] }),
+                otherwise: (m) => ({
+                    embeds: [new MessageEmbed()
+                        .setDescription("Please select heads or tails!")
+                        .withErrorColor(m)],
+                }),
             }],
         });
         this.coinArgs = {

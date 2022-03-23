@@ -1,5 +1,6 @@
 import { GuildMember, Message, MessageActionRow, MessageButton, MessageEmbed } from "discord.js";
-import KaikiCommand from "Kaiki/KaikiCommand";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+
 import TicTacToe from "../../lib/games/TTT";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
@@ -18,7 +19,7 @@ export default class TicTacToeCommand extends KaikiCommand {
         });
     }
 
-    public async exec(message: Message, { player2 } : { player2: GuildMember }): Promise<any> {
+    public async exec(message: Message, { player2 }: { player2: GuildMember }): Promise<any> {
 
         if (player2.id === message.member!.id || player2.user.bot) {
             return message.channel.send({ embeds: [await KaikiEmbeds.errorMessage(message, "You can't play against yourself or a bot!")] });
@@ -42,10 +43,12 @@ export default class TicTacToeCommand extends KaikiCommand {
             })],
         });
 
-        acceptMessage.awaitMessageComponent({ filter: (m) => {
-            m.deferUpdate();
-            return m.user.id === player2.id;
-        }, componentType: "BUTTON", time: 20000 })
+        acceptMessage.awaitMessageComponent({
+            filter: (m) => {
+                m.deferUpdate();
+                return m.user.id === player2.id;
+            }, componentType: "BUTTON", time: 20000,
+        })
             .then(async (interaction) => {
 
                 if (interaction.customId === "1") {
@@ -54,20 +57,23 @@ export default class TicTacToeCommand extends KaikiCommand {
                 }
 
                 else {
-                    await message.reply({ embeds: [new MessageEmbed()
-                        .setDescription(`${player2.user.tag} has declined your Tic-Tac-Toe challenge`)
-                        .withErrorColor(message),
-                    ] });
+                    await message.reply({
+                        embeds: [new MessageEmbed()
+                            .setDescription(`${player2.user.tag} has declined your Tic-Tac-Toe challenge`)
+                            .withErrorColor(message),
+                        ],
+                    });
                     acceptMessage.delete();
                 }
             })
             .catch(() => {
                 const emb = acceptMessage.embeds[0];
-                acceptMessage.edit({ embeds: [new MessageEmbed(emb)
-                    .setDescription(`~~${emb.description}~~`)
-                    .setFooter({ text: "Timed out!" })
-                    .withErrorColor(message)],
-                components: [],
+                acceptMessage.edit({
+                    embeds: [new MessageEmbed(emb)
+                        .setDescription(`~~${emb.description}~~`)
+                        .setFooter({ text: "Timed out!" })
+                        .withErrorColor(message)],
+                    components: [],
                 });
             });
     }

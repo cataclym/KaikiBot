@@ -1,11 +1,8 @@
-import { hexColorTable } from "../../lib/Color";
-import { ColorResolvable, Guild, Message, MessageEmbed } from "discord.js";
 import { Argument } from "discord-akairo";
-import { getGuildDocument } from "../../struct/documentMethods";
-import { Snowflake } from "discord-api-types";
-import KaikiCommand from "Kaiki/KaikiCommand";
+import { ColorResolvable, Message, MessageEmbed } from "discord.js";
+import { hexColorTable } from "../../lib/Color";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
-
 
 export default class MyRoleSubCommandColor extends KaikiCommand {
     constructor() {
@@ -15,9 +12,11 @@ export default class MyRoleSubCommandColor extends KaikiCommand {
             args: [{
                 id: "color",
                 type: Argument.union((_, phrase) => hexColorTable[phrase.toLowerCase()], "color"),
-                otherwise: (m: Message) => ({ embeds: [new MessageEmbed()
-                    .setTitle("Please provide a valid hex-color or color name")
-                    .withErrorColor(m)] }),
+                otherwise: (m: Message) => ({
+                    embeds: [new MessageEmbed()
+                        .setTitle("Please provide a valid hex-color or color name")
+                        .withErrorColor(m)],
+                }),
             }],
         });
     }

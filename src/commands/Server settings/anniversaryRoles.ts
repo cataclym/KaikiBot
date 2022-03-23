@@ -1,9 +1,5 @@
 import { Guild, Message, MessageEmbed } from "discord.js";
-import { IGuild } from "../../lib/Migrations/src/IDocuments";
-import { checkBirthdayOnAdd } from "../../lib/AnniversaryRoles";
-import KaikiCommand from "Kaiki/KaikiCommand";
-
-import { getGuildDocument } from "../../struct/documentMethods";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
 type values = "enable" | "true" | "disable" | "false";
@@ -28,14 +24,14 @@ export default class AnniversaryRolesConfigCommand extends KaikiCommand {
         const embed = new MessageEmbed()
             .withOkColor(message);
 
-        const isEnabled: boolean = message.client.guildProvider.get(message.guildId, "Anniversary", false);
+        const isEnabled: boolean = message.client.guildsDb.get(message.guildId, "Anniversary", false);
 
         switch (value) {
             case ("enable"):
             case ("true"): {
                 if (!isEnabled) {
                     await this.client.anniversaryService.checkBirthdayOnAdd(message.guild as Guild);
-                    await message.client.guildProvider.set(message.guildId, "Anniversary", true);
+                    await message.client.guildsDb.set(message.guildId, "Anniversary", true);
                     embed.setDescription(`Anniversary-roles functionality has been enabled in ${message.guild?.name}!`);
                 }
                 else {
@@ -46,7 +42,7 @@ export default class AnniversaryRolesConfigCommand extends KaikiCommand {
             case ("disable"):
             case ("false"): {
                 if (isEnabled) {
-                    await message.client.guildProvider.set(message.guildId, "Anniversary", false);
+                    await message.client.guildsDb.set(message.guildId, "Anniversary", false);
                     embed.setDescription(`Anniversary-roles functionality has been disabled in ${message.guild?.name}!`);
                 }
                 else {

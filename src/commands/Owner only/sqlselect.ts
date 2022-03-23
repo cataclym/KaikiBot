@@ -1,5 +1,6 @@
 import { Message } from "discord.js";
-import KaikiCommand from "Kaiki/KaikiCommand";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+
 import { RowDataPacket } from "mysql2/promise";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 import Utility from "../../lib/Utility";
@@ -20,7 +21,8 @@ export default class SetNameCommand extends KaikiCommand {
             ],
         });
     }
-    public async exec(message: Message, { str }: { str: string}): Promise<Message> {
+
+    public async exec(message: Message, { str }: { str: string }): Promise<Message> {
 
         const res = await this.client.connection.query<RowDataPacket[]>(str);
 

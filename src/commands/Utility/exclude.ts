@@ -1,5 +1,6 @@
 import { Message, MessageEmbed, Permissions } from "discord.js";
-import KaikiCommand from "Kaiki/KaikiCommand";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
 export default class ExcludeCommand extends KaikiCommand {

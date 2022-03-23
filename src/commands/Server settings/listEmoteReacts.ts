@@ -1,10 +1,7 @@
-import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
 import { PrefixSupplier } from "discord-akairo";
-import { Snowflake } from "discord-api-types";
+import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
 import { Message, MessageEmbed } from "discord.js";
-import KaikiCommand from "Kaiki/KaikiCommand";
-
-import { getGuildDocument } from "../../struct/documentMethods";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 export default class RemoveEmoteReactCommand extends KaikiCommand {
     constructor() {

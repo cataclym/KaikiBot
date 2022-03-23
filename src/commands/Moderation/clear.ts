@@ -1,5 +1,6 @@
 import type { TextBasedChannel, TextChannel } from "discord.js";
-import KaikiCommand from "Kaiki/KaikiCommand";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+
 
 export default class ClearCommand extends KaikiCommand {
     constructor() {
@@ -19,6 +20,7 @@ export default class ClearCommand extends KaikiCommand {
             ],
         });
     }
+
     public async exec({ channel }: { channel: TextBasedChannel }, { int }: { int: number }): Promise<void> {
 
         if (int > 99) {

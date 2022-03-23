@@ -1,6 +1,7 @@
 import { Message, MessageEmbed } from "discord.js";
 import fetch from "node-fetch";
-import KaikiCommand from "Kaiki/KaikiCommand";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+
 import { handleError, handleResponse, mangaQuery } from "../../lib/APIs/AnilistGraphQL";
 import { IMangaRes } from "../../lib/Interfaces/IMangaRes";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
@@ -21,7 +22,7 @@ export default class MangaCommand extends KaikiCommand {
         });
     }
 
-    public async exec(message: Message, { manga }: { manga: string}): Promise<Message | void> {
+    public async exec(message: Message, { manga }: { manga: string }): Promise<Message | void> {
 
         const url = "https://graphql.anilist.co",
             options = {
@@ -44,16 +45,26 @@ export default class MangaCommand extends KaikiCommand {
         return await fetch(url, options).then(handleResponse)
             .then((response: IMangaRes) => {
 
-                const { coverImage, title, chapters, description, status, startDate, genres, endDate, siteUrl } = response.data.Page.media[0];
+                const {
+                    coverImage,
+                    title,
+                    chapters,
+                    description,
+                    status,
+                    startDate,
+                    genres,
+                    endDate,
+                    siteUrl,
+                } = response.data.Page.media[0];
                 const monthFormat = new Intl.DateTimeFormat("en-US", { month: "long" });
                 const started = startDate.month ? `${monthFormat.format(startDate.month)} ${startDate.day}, ${startDate.year}` : null;
                 const ended = endDate.month ? `${monthFormat.format(endDate.month)} ${endDate.day}, ${endDate.year}` : null;
                 const aired =
-                  started && ended
-                      ? started === ended
-                          ? started
-                          : `${started} to ${ended}`
-                      : started || "N/A";
+                    started && ended
+                        ? started === ended
+                            ? started
+                            : `${started} to ${ended}`
+                        : started || "N/A";
 
                 return message.channel.send({
                     embeds: [new MessageEmbed()

@@ -1,11 +1,12 @@
 import { Argument } from "discord-akairo";
 import { Message, MessageAttachment, Permissions } from "discord.js";
 import sizeOf from "image-size";
-import { deleteImage, getFileOut, getFilesizeInBytes, resizeImage, saveEmoji, saveFile } from "../../lib/Emote";
-import { EMOTE_REGEX, IMAGE_REGEX } from "../../struct/constants";
-import KaikiCommand from "Kaiki/KaikiCommand";
+import Emotes from "../../lib/Emotes";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 import Utility from "../../lib/Utility";
+import { EMOTE_REGEX, IMAGE_REGEX } from "../../struct/constants";
 
 export default class AddEmoteCommand extends KaikiCommand {
     constructor() {
@@ -40,7 +41,11 @@ export default class AddEmoteCommand extends KaikiCommand {
             ],
         });
     }
-    public async exec(message: Message, { url, name }: { url: { match: RegExpMatchArray, matches: [][] } | MessageAttachment, name: string | null | undefined }): Promise<Message | void> {
+
+    public async exec(message: Message, {
+        url,
+        name,
+    }: { url: { match: RegExpMatchArray, matches: [][] } | MessageAttachment, name: string | null | undefined }): Promise<Message | void> {
 
         let emote, urlMatch;
 
@@ -68,24 +73,24 @@ export default class AddEmoteCommand extends KaikiCommand {
         if (!emote) return;
 
         const msNow = Date.now().toString();
-        const file = getFileOut(msNow);
+        const file = Emotes.getFileOut(msNow);
 
         name = Utility.trim(name || msNow, 32).replace(/ /g, "_");
-        await saveFile(emote, file);
+        await Emotes.saveFile(emote, file);
 
         // Example output: { width: 240, height: 240, type: 'gif' }
         const imgDimensions = sizeOf(file),
-            fileSize = await getFilesizeInBytes(file);
+            fileSize = await Emotes.getFilesizeInBytes(file);
 
         // Had to add filesizeCheck
         if ((imgDimensions.width && imgDimensions.height) && imgDimensions.width <= 128 && imgDimensions.height <= 128 && !(fileSize > 25600)) {
-            await saveEmoji(message, emote, name);
+            await Emotes.saveEmoji(message, emote, name);
         }
 
         else if (imgDimensions.type) {
-            const img = await resizeImage(file, imgDimensions.type, 128, message);
-            await saveEmoji(message, img, name);
+            const img = await Emotes.resizeImage(file, imgDimensions.type, 128, message);
+            await Emotes.saveEmoji(message, img, name);
         }
-        await deleteImage(file);
+        await Emotes.deleteImage(file);
     }
 }

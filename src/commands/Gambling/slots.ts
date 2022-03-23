@@ -1,6 +1,7 @@
 import { Message, MessageEmbed } from "discord.js";
 import Gambling from "../../lib/gambling/gambling";
-import KaikiCommand from "Kaiki/KaikiCommand";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+
 
 export default class slotsCommand extends KaikiCommand {
     constructor() {

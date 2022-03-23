@@ -1,5 +1,6 @@
 import { Guild, GuildMember, Message, MessageEmbed } from "discord.js";
-import KaikiCommand from "Kaiki/KaikiCommand";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+
 
 export default class KickCommand extends KaikiCommand {
     constructor() {
@@ -14,10 +15,12 @@ export default class KickCommand extends KaikiCommand {
                 {
                     id: "member",
                     type: "member",
-                    otherwise: (m: Message) => ({ embeds: [new MessageEmbed({
-                        description: "Can't find this user.",
-                    })
-                        .withErrorColor(m)] }),
+                    otherwise: (m: Message) => ({
+                        embeds: [new MessageEmbed({
+                            description: "Can't find this user.",
+                        })
+                            .withErrorColor(m)],
+                    }),
                 },
                 {
                     id: "reason",
@@ -28,13 +31,14 @@ export default class KickCommand extends KaikiCommand {
             ],
         });
     }
+
     public async exec(message: Message, { member, reason }: { member: GuildMember, reason: string }): Promise<Message> {
 
         const guild = message.guild as Guild;
         const guildClientMember = guild.me as GuildMember;
 
         if (message.author.id !== message.guild?.ownerId &&
-			(message.member as GuildMember).roles.highest.position <= member.roles.highest.position) {
+            (message.member as GuildMember).roles.highest.position <= member.roles.highest.position) {
 
             return message.channel.send({
                 embeds: [new MessageEmbed({
@@ -62,10 +66,12 @@ export default class KickCommand extends KaikiCommand {
             .withOkColor(message);
 
         await member.kick(reason).then(m => {
-            m.user.send({ embeds: [new MessageEmbed({
-                description: `You have been kicked from ${message.guild?.name}.\nReason: ${reason}`,
+            m.user.send({
+                embeds: [new MessageEmbed({
+                    description: `You have been kicked from ${message.guild?.name}.\nReason: ${reason}`,
+                })
+                    .withErrorColor(message)],
             })
-                .withErrorColor(message)] })
                 .catch(() => embed.setFooter({ text: "DM'ing user failed." }));
         })
             .catch((err) => console.log(err));

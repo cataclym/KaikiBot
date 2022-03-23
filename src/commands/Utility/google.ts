@@ -1,4 +1,5 @@
-import KaikiCommand from "Kaiki/KaikiCommand";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+
 import fetch from "node-fetch";
 import querystring from "querystring";
 import { Message, MessageEmbed } from "discord.js";
@@ -6,9 +7,9 @@ import { parse } from "node-html-parser";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
 type parsedResult = {
-	title: string | undefined,
-	url: string | undefined,
-	description: string
+    title: string | undefined,
+    url: string | undefined,
+    description: string
 }
 
 export default class GoogleSearchCommand extends KaikiCommand {
@@ -44,8 +45,8 @@ export default class GoogleSearchCommand extends KaikiCommand {
                 title: res.querySelector("div.yuRUbf > a > h3")?.innerText,
                 url: res.querySelector("div.yuRUbf > a")?.rawAttributes.href,
                 description: res.querySelector("div > div > div.IsZvec > div > span")?.innerText
-					|| res.querySelector("div > div > div.IsZvec > div")?.innerText
-					|| "N/A",
+                    || res.querySelector("div > div > div.IsZvec > div")?.innerText
+                    || "N/A",
             });
         }
 

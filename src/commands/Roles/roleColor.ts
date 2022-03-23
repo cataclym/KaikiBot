@@ -1,14 +1,15 @@
 import { Message, MessageAttachment, MessageEmbed, Role } from "discord.js";
-import { imgFromColor, resolveColor } from "../../lib/Color";
-import KaikiCommand from "Kaiki/KaikiCommand";
-import { rolePermissionCheck } from "../../lib/roles";
+import { imgFromColor } from "../../lib/Color";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
+import { rolePermissionCheck } from "../../lib/roles";
+import { TKaikiColor } from "../../lib/Types/TColor";
 
 export default class RoleColorCommand extends KaikiCommand {
     constructor() {
         super("rolecolor", {
             aliases: ["rolecolor", "roleclr", "rclr"],
-            description: "Displays the color of a given role, or your highest role.",
+            description: "Sets or displays the color of a given role, or your highest role.",
             usage: "@Gamer ff00ff",
             channel: "guild",
             args: [
@@ -18,18 +19,21 @@ export default class RoleColorCommand extends KaikiCommand {
                 },
                 {
                     id: "clr",
-                    type: "string",
-                    match: "rest",
+                    type: "kaiki_color",
                     default: null,
                 },
             ],
         });
     }
-    public async exec(message: Message, { role, clr }: { role: Role | undefined, clr: string | null }): Promise<Message> {
+
+    public async exec(message: Message<true>, {
+        role,
+        clr,
+    }: { role: Role | undefined, clr: TKaikiColor | null }): Promise<Message> {
 
         const { member } = message;
 
-        if (typeof clr !== "string") {
+        if (!clr) {
 
             if (!role) role = message.member!.roles.highest;
 
@@ -48,11 +52,9 @@ export default class RoleColorCommand extends KaikiCommand {
         if (!role) return message.channel.send({ embeds: [KaikiEmbeds.genericArgumentError(message)] });
 
         const { hexColor } = role,
-            newColor = await resolveColor(clr),
-            attachment = new MessageAttachment(await imgFromColor(newColor), "color.png");
+            attachment = new MessageAttachment(await imgFromColor(clr), "color.png");
 
         if (await rolePermissionCheck(message, role)) {
-
 
             if (!member?.permissions.has("MANAGE_ROLES")) {
                 return message.channel.send({
@@ -66,7 +68,7 @@ export default class RoleColorCommand extends KaikiCommand {
                 });
             }
 
-            return role.edit({ color: newColor }).then(r => {
+            return role.edit({ color: [clr.r!, clr.g!, clr.b!] }).then(r => {
                 return message.channel.send({
                     files: [attachment],
                     embeds: [new MessageEmbed({

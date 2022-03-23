@@ -1,9 +1,11 @@
 import { PrismaClient } from "@prisma/client";
-import logger from "loglevel";
-import chalk from "chalk/index";
+import chalk from "chalk";
+
+
 import { Guild, GuildMember, Permissions, Role } from "discord.js";
+import logger from "loglevel";
 import { AnniversaryStrings } from "../struct/constants";
-import KaikiAkairoClient from "Kaiki/KaikiAkairoClient";
+import KaikiAkairoClient from "./Kaiki/KaikiAkairoClient";
 
 export default class AnniversaryRolesService {
     readonly client: KaikiAkairoClient;

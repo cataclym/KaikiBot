@@ -1,5 +1,6 @@
 import { Message } from "discord.js";
-import KaikiCommand from "Kaiki/KaikiCommand";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
 
@@ -19,7 +20,8 @@ export default class SetNameCommand extends KaikiCommand {
             ],
         });
     }
-    public async exec(message: Message, { name }: { name: string[]}): Promise<Message> {
+
+    public async exec(message: Message, { name }: { name: string[] }): Promise<Message> {
 
         const fullName = name.join(" ").substring(0, 32);
 

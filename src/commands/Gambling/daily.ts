@@ -1,5 +1,5 @@
 import { Message, MessageEmbed } from "discord.js";
-import KaikiCommand from "Kaiki/KaikiCommand";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
 export default class ClaimDailyCommand extends KaikiCommand {
@@ -13,27 +13,22 @@ export default class ClaimDailyCommand extends KaikiCommand {
 
     public async exec(message: Message): Promise<Message> {
 
-        const data = await this.client.orm.botSettings.findFirst({
-            select: {
-                DailyAmount: true,
-                DailyEnabled: true,
-            },
-        });
+        const enabled = this.client.botSettings.get("1", "DailyEnabled", false);
 
-        const isEnabled = data!.DailyEnabled;
+        if (!enabled) {
+            return message.channel.send({ embeds: [await KaikiEmbeds.errorMessage(message, "A daily amount has not been set by the bot owner!")] });
+        }
 
-        if (!isEnabled) return message.channel.send({ embeds: [await KaikiEmbeds.errorMessage(message, "A daily amount has not been set by the bot owner!")] });
+        const amount = this.client.botSettings.get("1", "DailyAmount", 250);
 
-        const amount = data!.DailyAmount;
+        if (!await this.client.cache.dailyProvider.checkClaimed(message.author.id)) {
 
-        if (!this.client.cache.dailyProvider.get(message.author.id, false)) {
-
-            this.client.cache.dailyProvider.set(message.author.id, true);
+            await this.client.cache.dailyProvider.setClaimed(message.author.id);
             await this.client.money.Add(message.author.id, Number(amount), "Claimed daily");
 
             return message.channel.send({
                 embeds: [new MessageEmbed()
-                    .setDescription(`**${message.author.tag}**, You've just claimed your daily allowance! ${amount} ${this.client.money.currencyName} ${this.client.money.currencySymbol}`)
+                    .setDescription(`**${message.author.tag}**, You've just claimed your daily allowance!\n${amount} ${this.client.money.currencyName} ${this.client.money.currencySymbol}`)
                     .withOkColor(message),
                 ],
             });

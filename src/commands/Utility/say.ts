@@ -1,10 +1,11 @@
 import { Message, MessageEmbed, Permissions, TextChannel } from "discord.js";
-import KaikiCommand from "Kaiki/KaikiCommand";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 import { JSONToMessageOptions } from "../../lib/GreetHandler";
 
 type argumentMessage = {
-	[str: string]: string | any
+    [str: string]: string | any
 } | string
 
 export default class SayCommand extends KaikiCommand {
@@ -30,14 +31,19 @@ export default class SayCommand extends KaikiCommand {
                         return message.content.substring(message.content.indexOf(phrase));
                     }
                 },
-                otherwise: (m) => ({ embeds: [new MessageEmbed()
-                    .setDescription("Please provide arguments!")
-                    .withErrorColor(m)] }),
+                otherwise: (m) => ({
+                    embeds: [new MessageEmbed()
+                        .setDescription("Please provide arguments!")
+                        .withErrorColor(m)],
+                }),
             }],
         });
     }
 
-    public async exec(_: Message, { channel, argMessage }: { channel: TextChannel, argMessage: argumentMessage }): Promise<Message> {
+    public async exec(_: Message, {
+        channel,
+        argMessage,
+    }: { channel: TextChannel, argMessage: argumentMessage }): Promise<Message> {
 
         if (_.member && !_.member.permissionsIn(channel).has(Permissions.FLAGS.MANAGE_MESSAGES)) {
             return _.channel.send({ embeds: [await KaikiEmbeds.errorMessage(_, `You do not have \`MANAGE_MESSAGES\` in ${channel}`)] });

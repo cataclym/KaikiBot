@@ -3,7 +3,8 @@ import { Message } from "discord.js";
 import fs from "fs";
 import logger from "loglevel";
 import * as path from "path";
-import KaikiCommand from "Kaiki/KaikiCommand";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+
 import Utility from "../../lib/Utility";
 
 export default class UpdateCommand extends KaikiCommand {
@@ -13,6 +14,7 @@ export default class UpdateCommand extends KaikiCommand {
             ownerOnly: true,
         });
     }
+
     public async exec(message: Message): Promise<void> {
 
         try {
@@ -70,8 +72,7 @@ export default class UpdateCommand extends KaikiCommand {
             });
         }
         catch {
-            throw new Error("An error occurred during update. Please update manually\n```<GITLAB LINK TO GUIDE HERE.>```xl\n");
-            // TODO: add link to update.md on gitlab
+            throw new Error("An error occurred during update. Please update manually\nhttps://gitlab.com/cataclym/KaikiDeishuBot/-/tree/master/docs/UPDATE.md");
         }
     }
 }

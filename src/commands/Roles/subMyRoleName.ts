@@ -1,7 +1,5 @@
-import { Guild, Message, MessageEmbed } from "discord.js";
-import { getGuildDocument } from "../../struct/documentMethods";
-import { Snowflake } from "discord-api-types";
-import KaikiCommand from "Kaiki/KaikiCommand";
+import { Message, MessageEmbed } from "discord.js";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 import Utility from "../../lib/Utility";
 
@@ -13,9 +11,11 @@ export default class MyRoleSubCommandName extends KaikiCommand {
             args: [{
                 id: "name",
                 match: "rest",
-                otherwise: (m: Message) => ({ embeds: [new MessageEmbed()
-                    .setTitle("Please provide a name")
-                    .withErrorColor(m)] }),
+                otherwise: (m: Message) => ({
+                    embeds: [new MessageEmbed()
+                        .setTitle("Please provide a name")
+                        .withErrorColor(m)],
+                }),
             }],
         });
     }
@@ -62,9 +62,10 @@ export default class MyRoleSubCommandName extends KaikiCommand {
 
         const oldName = myRole.name;
         await myRole.setName(Utility.trim(name, 32));
-        return message.channel.send({ embeds: [new MessageEmbed()
-            .setDescription(`You have changed \`${oldName}\`'s name to \`${name}\`!`)
-            .setColor(myRole.color)],
+        return message.channel.send({
+            embeds: [new MessageEmbed()
+                .setDescription(`You have changed \`${oldName}\`'s name to \`${name}\`!`)
+                .setColor(myRole.color)],
         });
     }
 }

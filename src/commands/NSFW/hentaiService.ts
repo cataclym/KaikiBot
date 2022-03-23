@@ -1,13 +1,13 @@
 import logger from "loglevel";
 import fetch from "node-fetch";
-import { Post, responseE621 } from "Interfaces/IDapi";
-import KaikiUtil from "Kaiki/KaikiUtil";
+import { Post, responseE621 } from "../../lib/Interfaces/IDapi";
+import KaikiUtil from "../../lib/Kaiki/KaikiUtil";
 
-const imageCache: {[id: string]: Post} = {};
+const imageCache: { [id: string]: Post } = {};
 
 export enum DapiSearchType {
-	E621,
-	Danbooru,
+    E621,
+    Danbooru,
 }
 
 const options = {

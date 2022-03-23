@@ -1,5 +1,5 @@
 import { Message, MessageEmbed, User } from "discord.js";
-import KaikiCommand from "Kaiki/KaikiCommand";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 
 export default class give extends KaikiCommand {

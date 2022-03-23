@@ -1,3 +1,4 @@
+import { time } from "@discordjs/builders";
 import { Argument } from "discord-akairo";
 import {
     CategoryChannel,
@@ -14,13 +15,13 @@ import {
     VoiceChannel,
 } from "discord.js";
 import * as emojis from "node-emoji";
-import { EMOTE_REGEX } from "../../struct/constants";
-import KaikiCommand from "Kaiki/KaikiCommand";
+
 import { isRegex } from "../../lib/functions";
-import { time } from "@discordjs/builders";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
-import Utility from "../../lib/Utility";
 import { regexpType } from "../../lib/Types/TCustom";
+import Utility from "../../lib/Utility";
+import { EMOTE_REGEX } from "../../struct/constants";
 
 export default class InfoCommand extends KaikiCommand {
     constructor() {
@@ -28,7 +29,7 @@ export default class InfoCommand extends KaikiCommand {
             aliases: ["info"],
             channel: "guild",
             description: "Returns info on a channel, role, member, emoji, or message",
-            usage: ["#channel", "@member", "@role", ":coolCustomEmoji:", "messageID" ],
+            usage: ["#channel", "@member", "@role", ":coolCustomEmoji:", "messageID"],
             args: [
                 {
                     id: "obj",
@@ -44,7 +45,7 @@ export default class InfoCommand extends KaikiCommand {
         });
     }
 
-    public async exec(message: Message, { obj }: { obj: Channel | GuildMember | Role | regexpType | emojis.Emoji | Emoji | Message }): Promise<Message | void> {
+    public async exec(message: Message<true>, { obj }: { obj: Channel | GuildMember | Role | regexpType | emojis.Emoji | Emoji | Message }): Promise<Message | void> {
 
         const emb = new MessageEmbed()
             .withOkColor(message);
@@ -87,7 +88,7 @@ export default class InfoCommand extends KaikiCommand {
                     .addField("Created at", String(obj.createdAt));
 
                 if (obj.ownerId) {
-                    emb.addField("Author", message.guild?.members.cache.get(obj.ownerId)?.user.username ?? obj.ownerId);
+                    emb.addField("Author", message.guild.members.cache.get(obj.ownerId)?.user.username ?? obj.ownerId);
                 }
 
                 if (obj.parent) emb.addField("Parent", `${obj.parent.name} [${obj.parentId}]`);
@@ -95,7 +96,8 @@ export default class InfoCommand extends KaikiCommand {
         }
 
         else if (obj instanceof GuildMember) {
-            // TODO: Add presence / rewrite presence
+            const presence = Utility.getMemberPresence(obj);
+
             emb.setTitle(`Info about user: ${obj.user.tag}`)
                 .setDescription(obj.displayName)
                 .setThumbnail(obj.user.displayAvatarURL({ dynamic: true }))
@@ -116,6 +118,13 @@ export default class InfoCommand extends KaikiCommand {
             }
 
             if (obj.user.bot) emb.addField("Bot", "✅", true);
+
+            if (presence) {
+                emb.addField(presence.name, presence.value);
+                if (presence.image) {
+                    emb.setImage(presence.image);
+                }
+            }
         }
 
         else if (obj instanceof Role) {

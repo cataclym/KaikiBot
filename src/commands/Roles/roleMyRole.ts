@@ -1,8 +1,6 @@
 import { Argument, Flag, PrefixSupplier } from "discord-akairo";
-import { Snowflake } from "discord-api-types";
-import { Guild, Message, MessageEmbed } from "discord.js";
-import { getGuildDocument } from "../../struct/documentMethods";
-import KaikiCommand from "Kaiki/KaikiCommand";
+import { Message, MessageEmbed } from "discord.js";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
 export default class MyRoleCommand extends KaikiCommand {
@@ -24,7 +22,7 @@ export default class MyRoleCommand extends KaikiCommand {
         });
     }
 
-    *args(): unknown {
+    * args(): unknown {
         const method = yield {
             type: [
                 ["myrolename", "name"],

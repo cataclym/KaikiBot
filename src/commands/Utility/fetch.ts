@@ -1,7 +1,8 @@
 import { Argument } from "discord-akairo";
 import { Snowflake } from "discord-api-types";
 import { Message, MessageEmbed, User } from "discord.js";
-import KaikiCommand from "Kaiki/KaikiCommand";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+
 import Utility from "../../lib/Utility";
 import { time } from "@discordjs/builders";
 
@@ -24,12 +25,15 @@ export default class FetchUserCommand extends KaikiCommand {
                         return;
                     }
                 }),
-                otherwise: (m) => ({ embeds: [new MessageEmbed()
-                    .setDescription("No user found")
-                    .withErrorColor(m)] }),
+                otherwise: (m) => ({
+                    embeds: [new MessageEmbed()
+                        .setDescription("No user found")
+                        .withErrorColor(m)],
+                }),
             }],
         });
     }
+
     public async exec(message: Message, { userObject }: { userObject: User }): Promise<Message | void> {
 
         const userinfo = this.handler.modules.get("uinfo");

@@ -1,10 +1,10 @@
-import logger from "loglevel";
-import * as Path from "path";
-import * as fs from "fs";
-import { Collection } from "discord.js";
-import * as chalk from "chalk";
-import { Connection } from "mysql2/promise";
+import chalk from "chalk";
 import { execSync } from "child_process";
+import { Collection } from "discord.js";
+import * as fs from "fs";
+import logger from "loglevel";
+import { Connection } from "mysql2/promise";
+import * as Path from "path";
 import KaikiAkairoClient from "../Kaiki/KaikiAkairoClient";
 
 export class Migrations {
@@ -15,7 +15,7 @@ export class Migrations {
     private _count: number;
 
     constructor(db: Connection, client: KaikiAkairoClient) {
-        this.currentFolder = Path.join(__dirname, "./scripts/");
+        this.currentFolder = Path.join(__dirname, "./scripts");
         this.migrationClasses = new Collection();
         this.db = db;
         this._client = client;
@@ -42,10 +42,10 @@ export class Migrations {
         }
 
         // Executes the migration script
-        logger.warn(`Migration running - [${chalk.hex("#ffa500")(migration.migrationId)}]`);
+        logger.warn(`Migration running - [${chalk.hex("#ffa500")(`${migration.name} - ${migration.migrationId}`)}]`);
         await this.db.execute("INSERT INTO _Migrations (migrationId, versionString) VALUES (?, ?)", [migration.migrationId, migration.version]);
         const migrated = await new Migration(migration).migration(this._client);
-        logger.info(`Migration finished - [${chalk.hex("#ffa500")(migration.migrationId)}]`);
+        logger.info(`Migration finished - [${chalk.hex("#ffa500")(`${migration.name} - ${migration.migrationId}`)}]`);
 
         return migrated;
     }
@@ -55,7 +55,7 @@ export class Migrations {
         const files = fs.readdirSync(this.currentFolder);
 
         for (const file of files) {
-            if (file.endsWith(".js")) result.push("./" + file);
+            if (file.endsWith(".js")) result.push("./scripts/" + file);
         }
 
         return result;
@@ -63,16 +63,18 @@ export class Migrations {
 
     private load(filePath: string) {
         // eslint-disable-next-line @typescript-eslint/no-var-requires
-        const mod = ((m: { default: Migration } | null) => m)(require(filePath));
+        const mod = ((m: { default: typeof Migration } | null) => m)(require(filePath));
 
-        if (!mod?.default) {
+        if (!mod || !mod.default) {
             return;
         }
 
-        if (this.migrationClasses.has(mod.default.migrationId)) throw new Error(`Class already loaded: ${mod.default.migrationId}`);
+        const migration = new mod.default(undefined as unknown as migrationConstructionData);
 
-        this.migrationClasses.set(mod.default.migrationId, mod.default);
-        return mod;
+        if (this.migrationClasses.has(migration.migrationId)) throw new Error(`Class already loaded: ${migration.migrationId}`);
+
+        this.migrationClasses.set(migration.migrationId, migration);
+        return migration;
     }
 
     public async runAllMigrations() {
@@ -91,26 +93,30 @@ export class Migrations {
     }
 }
 
+type migrationConstructionData = {
+    /**
+     *  Git commit hash, short version
+     * @param {string} hash git rev-parse --short HEAD
+     */
+    hash?: string;
+    name: string,
+    version: string,
+    migration: (client: KaikiAkairoClient) => Promise<number> | number;
+
+}
+
 export class Migration {
     public name: string;
     public version: string;
     public hash?: string;
     public migrationId: string;
     public migration: (client: KaikiAkairoClient) => Promise<number> | number;
-    constructor(data: {
-            /**
-             *  Git commit hash, short version
-             * @param {string} hash git rev-parse --short HEAD
-             */
-            hash?: string;
-            name: string,
-            version: string,
-            migration: (client: KaikiAkairoClient) => Promise<number> | number;
-        }) {
+
+    constructor(data: migrationConstructionData) {
         this.migration = data.migration;
         this.hash = data.hash;
         this.name = data.name;
         this.version = data.version;
-        this.migrationId = `${this.hash || execSync("git rev-parse --short HEAD").toString().trim()}_${this.name}`;
+        this.migrationId = this.hash || `${execSync("git rev-parse --short HEAD").toString().trim()}_${this.name}`;
     }
 }

@@ -4,7 +4,6 @@ import { PrismaClient } from "@prisma/client";
 export class MoneyService {
     currencyName: string;
     currencySymbol: string;
-    // private dailyProvider: MySQLProvider;
     private _orm: PrismaClient;
 
     constructor(connection: PrismaClient) {
@@ -17,12 +16,15 @@ export class MoneyService {
     }
 
     async Get(id: string): Promise<bigint> {
-        const query = await this._orm.discordUsers.findFirst({ select: { Amount: true }, where: { UserId: BigInt(id) } });
+        const query = await this._orm.discordUsers.findFirst({
+            select: { Amount: true },
+            where: { UserId: BigInt(id) },
+        });
 
         if (query) {
             return query.Amount;
         }
-        this._orm.discordUsers.create({ data: { UserId: BigInt(id) } });
+        await this._orm.discordUsers.create({ data: { UserId: BigInt(id) } });
         return 0n;
     }
 
@@ -38,7 +40,8 @@ export class MoneyService {
         const query = await this._orm.discordUsers.upsert({
             where: { UserId: bIntId },
             update: { Amount: { increment: bIntAmount } },
-            create: { UserId: bIntId } });
+            create: { UserId: bIntId },
+        });
         return query.Amount;
     }
 
@@ -56,7 +59,7 @@ export class MoneyService {
         });
 
         if (currentAmount && currentAmount.Amount >= bIntAmount) {
-            this.lazyCreateCurtrs(bIntId, bIntAmount, reason);
+            this.lazyCreateCurtrs(bIntId, -bIntAmount, reason);
             await this._orm.discordUsers.update({
                 where: {
                     UserId: bIntId,

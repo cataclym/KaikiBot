@@ -1,7 +1,7 @@
 import { Message, Permissions } from "discord.js";
 import sizeOf from "image-size";
-import { deleteImage, getFileOut, resizeImage, saveEmoji, saveFile } from "../../lib/Emote";
-import KaikiCommand from "Kaiki/KaikiCommand";
+import Emotes from "../../lib/Emotes";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
 const imgRegex = /(http(s?):)([/|.\w\s-])*\.(?:jpg|gif|png|jpeg)/gi;
@@ -25,13 +25,17 @@ export default class AddEmotesCommand extends KaikiCommand {
             ],
         });
     }
-    public async exec(message: Message, { urls, names }: { urls: RegExpMatchArray, names: string[]}): Promise<Message | void> {
+
+    public async exec(message: Message, {
+        urls,
+        names,
+    }: { urls: RegExpMatchArray, names: string[] }): Promise<Message | void> {
 
         // TODO: Test args
         for (const url of urls) {
             const msNow = Date.now().toString();
-            const file = getFileOut(msNow);
-            await saveFile(url, file);
+            const file = Emotes.getFileOut(msNow);
+            await Emotes.saveFile(url, file);
 
             const name = msNow.substring(7, 39);
 
@@ -39,13 +43,13 @@ export default class AddEmotesCommand extends KaikiCommand {
             const imgDimensions = sizeOf(file);
 
             if ((imgDimensions.width && imgDimensions.height) && imgDimensions.width <= 128 && imgDimensions.height <= 128) {
-                await saveEmoji(message, url, name);
+                await Emotes.saveEmoji(message, url, name);
             }
             else if (imgDimensions.type) {
-                const img = await resizeImage(file, imgDimensions.type, 128, message);
-                await saveEmoji(message, img, name);
+                const img = await Emotes.resizeImage(file, imgDimensions.type, 128, message);
+                await Emotes.saveEmoji(message, img, name);
             }
-            await deleteImage(file);
+            await Emotes.deleteImage(file);
         }
     }
 }

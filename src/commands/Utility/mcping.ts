@@ -1,7 +1,8 @@
 import { Message, MessageAttachment, MessageEmbed } from "discord.js";
 import fetch from "node-fetch";
 import { ServerOffline, ServerOnline } from "../../lib/Interfaces/IMinecraftServerPing";
-import KaikiCommand from "Kaiki/KaikiCommand";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 import Utility from "../../lib/Utility";
 
@@ -31,14 +32,22 @@ export default class mcpingCommand extends KaikiCommand {
 
             const embed = new MessageEmbed()
                 .setTitle("Ping! Server is online")
-                .setDescription(`${result.ip}:${result.port} ${result?.hostname?.length ? "/ " + result?.hostname : "" }`)
+                .setDescription(`${result.ip}:${result.port} ${result?.hostname?.length ? "/ " + result?.hostname : ""}`)
                 .addFields([
                     { name: "Version", value: String(result.version), inline: true },
                     { name: "MOTD", value: result.motd.clean.join("\n"), inline: true },
                     { name: "Players", value: `${result.players.online}/${result.players.max}`, inline: true },
-                    { name: "Plugins", value: result.plugins?.names.length ? Utility.trim(result.plugins?.names.join(", "), 1024) : "None", inline: true },
+                    {
+                        name: "Plugins",
+                        value: result.plugins?.names.length ? Utility.trim(result.plugins?.names.join(", "), 1024) : "None",
+                        inline: true,
+                    },
                     { name: "Software", value: result?.software ?? "Unknown", inline: true },
-                    { name: "Mods", value: result.mods?.names.length ? Utility.trim(result.mods?.names.join(", "), 1024) : "None", inline: true },
+                    {
+                        name: "Mods",
+                        value: result.mods?.names.length ? Utility.trim(result.mods?.names.join(", "), 1024) : "None",
+                        inline: true,
+                    },
                 ])
                 .withOkColor(message);
 
@@ -56,9 +65,11 @@ export default class mcpingCommand extends KaikiCommand {
         }
 
         else {
-            return message.channel.send({ embeds: [new MessageEmbed()
-                .setTitle("No ping :< Server is offline or address is incorrect.")
-                .withErrorColor(message)] });
+            return message.channel.send({
+                embeds: [new MessageEmbed()
+                    .setTitle("No ping :< Server is offline or address is incorrect.")
+                    .withErrorColor(message)],
+            });
         }
     }
 }

@@ -1,6 +1,7 @@
 import { Message } from "discord.js";
-import { dadbotArray } from "../../struct/constants";
-import KaikiCommand from "Kaiki/KaikiCommand";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+import { dadBotArray } from "../../struct/constants";
+
 
 // dad bot
 export default class dadBot extends KaikiCommand {
@@ -12,7 +13,7 @@ export default class dadBot extends KaikiCommand {
                 if (message.guild && message.member && !message.author.bot) {
                     if (message.guild.determineIsDadBotEnabled(message) && message.member.hasExcludedRole() && !message.content.includes("||")) {
 
-                        for (const item of dadbotArray) {
+                        for (const item of dadBotArray) {
 
                             const r = new RegExp(`(^|\\s|$)(?<statement>(?<prefix>${item})\\s*(?<nickname>.*)$)`, "mi");
                             if (r.test(message.content)) {
@@ -37,8 +38,8 @@ export default class dadBot extends KaikiCommand {
     }
 
     nickname: {
-                [id: string]: string
-            } = {};
+        [id: string]: string
+    } = {};
 
     public async exec(message: Message): Promise<boolean> {
 

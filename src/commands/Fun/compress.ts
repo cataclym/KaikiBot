@@ -1,7 +1,7 @@
-import { GuildMember, Message, MessageAttachment, MessageEmbed } from "discord.js";
+import { Message, MessageAttachment, MessageEmbed, User } from "discord.js";
 import fetch from "node-fetch";
 import sharp from "sharp";
-
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 export default class SquishCommand extends KaikiCommand {
     constructor() {
@@ -12,28 +12,31 @@ export default class SquishCommand extends KaikiCommand {
             args: [
                 {
                     id: "member",
-                    type: "member",
-                    default: (message: Message) => message.member,
+                    type: "user",
+                    default: (message: Message) => message.author,
                 },
             ],
         });
     }
 
-    public async exec(message: Message, { member }: { member: GuildMember }) {
-        const avatar = await (await fetch(member.user.displayAvatarURL({
+    public async exec(message: Message, { member }: { member: User }) {
+        const avatar = await (await fetch(member.displayAvatarURL({
             dynamic: true,
             size: 32,
             format: "jpg",
         }))).buffer();
-        const picture = await sharp(avatar)
-            .resize(256, 256, { kernel: "cubic" })
-            .webp({ quality: 25 });
+
+        const picture = sharp(avatar)
+            .resize(256, 256, { kernel: "nearest" })
+            .webp({ quality: 50 });
+
         const attachment: MessageAttachment = new MessageAttachment(picture, "compressed.jpg");
+
         const embed = new MessageEmbed({
             title: "High quality avatar",
             image: { url: "attachment://compressed.jpg" },
-            color: member.displayColor,
-        });
+        })
+            .withOkColor(message);
 
         return message.channel.send({ files: [attachment], embeds: [embed] });
     }

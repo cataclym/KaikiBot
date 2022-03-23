@@ -1,6 +1,7 @@
 import { Listener } from "discord-akairo";
 import { GuildMember, Message, MessageEmbed } from "discord.js";
-import KaikiCommand from "Kaiki/KaikiCommand";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
 
@@ -31,17 +32,23 @@ export default class EmitCommand extends KaikiCommand {
             }],
         });
     }
-    public async exec(message: Message, { event, eventArguments, member }: { event: Listener, eventArguments: string[], member: GuildMember }): Promise<Message | void> {
+
+    public async exec(message: Message, {
+        event,
+        eventArguments,
+        member,
+    }: { event: Listener, eventArguments: string[], member: GuildMember }): Promise<Message | void> {
 
         const value = event.emitter === "client"
             ? this.client.emit(event.id, member, eventArguments)
             : this.handler.emit(event.id, member, eventArguments);
 
         if (value) {
-            return message.channel.send({ embeds:
-					[new MessageEmbed({
-					    description: `Emitted ${event.id}.`,
-					})],
+            return message.channel.send({
+                embeds:
+                    [new MessageEmbed({
+                        description: `Emitted ${event.id}.`,
+                    })],
             });
         }
     }

@@ -1,7 +1,8 @@
-import { Message, MessageEmbed, Role } from "discord.js";
-import KaikiCommand from "Kaiki/KaikiCommand";
-import { rolePermissionCheck } from "../../lib/roles";
+import { Message, MessageEmbed, Permissions, Role } from "discord.js";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
+
+import { rolePermissionCheck } from "../../lib/roles";
 
 export default class RoleHoistCommand extends KaikiCommand {
     constructor() {

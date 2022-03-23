@@ -1,5 +1,6 @@
 import { GuildTextBasedChannel, Message, MessageEmbed, Permissions } from "discord.js";
-import KaikiCommand from "Kaiki/KaikiCommand";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+
 
 export default class GoodbyeConfigCommand extends KaikiCommand {
     constructor() {

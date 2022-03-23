@@ -1,5 +1,6 @@
 import { InteractionCollector, Message, MessageActionRow, MessageButton, MessageEmbed } from "discord.js";
-import KaikiCommand from "Kaiki/KaikiCommand";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+
 
 export default class ForgetMeCommand extends KaikiCommand {
     constructor() {
@@ -19,16 +20,16 @@ export default class ForgetMeCommand extends KaikiCommand {
             isInteraction: true,
             components: [new MessageActionRow({
                 components:
-					[new MessageButton()
-					    .setCustomId("1")
-					    .setLabel("Yes")
-					    .setEmoji("⚠️")
-					    .setStyle("DANGER"),
-					new MessageButton()
-					    .setCustomId("2")
-					    .setLabel("No")
-					    .setEmoji("❌")
-					    .setStyle("SECONDARY")],
+                    [new MessageButton()
+                        .setCustomId("1")
+                        .setLabel("Yes")
+                        .setEmoji("⚠️")
+                        .setStyle("DANGER"),
+                    new MessageButton()
+                        .setCustomId("2")
+                        .setLabel("No")
+                        .setEmoji("❌")
+                        .setStyle("SECONDARY")],
             })],
         });
 

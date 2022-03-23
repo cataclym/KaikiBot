@@ -1,8 +1,5 @@
-import { Guild, GuildEmoji, Message, MessageEmbed, Permissions } from "discord.js";
-import KaikiCommand from "Kaiki/KaikiCommand";
-import { getGuildDocument } from "../../struct/documentMethods";
-import { emoteReactCache } from "../../cache/cache";
-import { populateERCache } from "../../lib/functions";
+import { GuildEmoji, Message, MessageEmbed, Permissions } from "discord.js";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
 export default class EmoteReactCommand extends KaikiCommand {
@@ -36,7 +33,7 @@ export default class EmoteReactCommand extends KaikiCommand {
 
         trigger = trigger.toLowerCase();
 
-        this.client.orm.emojiReactions.create({
+        await this.client.orm.emojiReactions.create({
             data: {
                 Guilds: {
                     connectOrCreate: {
@@ -55,7 +52,7 @@ export default class EmoteReactCommand extends KaikiCommand {
         });
 
 
-        if (!this.client.cache.emoteReactCache.get(message.guildId)) await populateERCache(message);
+        if (!this.client.cache.emoteReactCache.get(message.guildId)) await this.client.cache.populateERCache(message);
 
         if (trigger.includes(" ")) {
             this.client.cache.emoteReactCache.get(message.guildId)?.get("has_space")?.set(trigger, emoji.id);
