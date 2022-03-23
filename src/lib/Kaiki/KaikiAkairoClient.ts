@@ -1,29 +1,29 @@
+import { PrismaClient } from "@prisma/client";
+import chalk from "chalk";
 import { AkairoClient, CommandHandler, InhibitorHandler, ListenerHandler } from "discord-akairo";
-import { Snowflake } from "discord-api-types";
 import { Intents, User } from "discord.js";
 import logger from "loglevel";
-import { join } from "path";
-import { MoneyService } from "../money/MoneyService";
-import MySQLProvider from "../../struct/db/MySQLProvider";
-import { PrismaClient } from "@prisma/client";
-import Cache from "../../cache/cache";
-import Utility from "../Utility";
-import { resetDailyClaims } from "../functions";
-import AnniversaryRolesService from "../AnniversaryRolesService";
-import Database from "../../struct/db/Database";
-import chalk from "chalk/index";
-import { Migrations } from "Migrations/Migrations";
 import { Connection } from "mysql2/promise";
-import IPackageJSON from "Interfaces/IPackageJSON";
+import { join } from "path";
+import KaikiCache from "../../cache/KaikiCache";
+import Database from "../../struct/db/Database";
+import MySQLProvider from "../../struct/db/MySQLProvider";
+import AnniversaryRolesService from "../AnniversaryRolesService";
+import { resetDailyClaims } from "../functions";
+import IPackageJSON from "../Interfaces/IPackageJSON";
+import { Migrations } from "../Migrations/Migrations";
+import { MoneyService } from "../money/MoneyService";
+import Utility from "../Utility";
+import KaikiCommandHandler from "./KaikiCommandHandler";
 
 export default class KaikiAkairoClient extends AkairoClient {
     public anniversaryService: AnniversaryRolesService;
-    public botSettingsProvider: MySQLProvider;
-    public cache: Cache;
+    public botSettings: MySQLProvider;
+    public cache: KaikiCache;
     public commandHandler: CommandHandler;
     public connection: Connection;
-    public dadBotChannelsProvider: MySQLProvider;
-    public guildProvider: MySQLProvider;
+    public dadBotChannels: MySQLProvider;
+    public guildsDb: MySQLProvider;
     public inhibitorHandler: InhibitorHandler;
     public listenerHandler: ListenerHandler;
     public money: MoneyService;
@@ -34,7 +34,6 @@ export default class KaikiAkairoClient extends AkairoClient {
 
     constructor() {
         super({
-            ownerID: process.env.OWNER as Snowflake,
             allowedMentions: { parse: ["users"], repliedUser: true },
             intents: [
                 Intents.FLAGS.DIRECT_MESSAGES,
@@ -61,26 +60,26 @@ export default class KaikiAkairoClient extends AkairoClient {
 
         this.initializeDatabase();
 
-        this.commandHandler = new CommandHandler(this, {
+        this.commandHandler = new KaikiCommandHandler(this, {
             allowMention: true,
             automateCategories: true,
             blockBots: true,
             blockClient: true,
             commandUtil: true,
             defaultCooldown: 2500,
-            directory: join(__dirname, "../commands"),
+            directory: join(__dirname, "../../commands"),
             fetchMembers: true,
             handleEdits: false,
             prefix: message => {
                 if (message.guild) {
-                    return this.guildProvider.get(message.guild.id, "Prefix", process.env.PREFIX);
+                    return this.guildsDb.get(message.guild.id, "Prefix", process.env.PREFIX);
                 }
                 return String(process.env.PREFIX);
             },
         });
 
-        this.listenerHandler = new ListenerHandler(this, { directory: join(__dirname, "../listeners") });
-        this.inhibitorHandler = new InhibitorHandler(this, { directory: join(__dirname, "../inhibitors") });
+        this.listenerHandler = new ListenerHandler(this, { directory: join(__dirname, "../../listeners") });
+        this.inhibitorHandler = new InhibitorHandler(this, { directory: join(__dirname, "../../inhibitors") });
 
         this.listenerHandler.setEmitters({ commandHandler: this.commandHandler });
 
@@ -111,24 +110,10 @@ export default class KaikiAkairoClient extends AkairoClient {
 
         if (!client) client = this;
 
-        const ownerId = Array.isArray(client.ownerID)
-            ? client.ownerID[0]
-            : client.ownerID;
-
-        this.owner = Array.isArray(client.application?.owner)
-            ? client.application?.owner[0]
-            : client.application?.owner;
-
-        if (!this.owner) {
-            this.owner = (client.users.cache.get(ownerId) || await client.users.fetch(ownerId, { cache: true }));
-        }
-
         this.anniversaryService = new AnniversaryRolesService(client);
 
         // This will execute at midnight
         await this.dailyResetTimer(client);
-
-        await this.anniversaryService.birthdayService();
         logger.info("birthdayService | Service initiated");
     }
 
@@ -140,17 +125,15 @@ export default class KaikiAkairoClient extends AkairoClient {
                 this.orm = obj.orm;
                 this.connection = obj.connection;
 
-                this.botSettingsProvider = new MySQLProvider(this.connection, "BotSettings", { idColumn: "Id" });
-                this.botSettingsProvider.init().then(() => logger.info(`SQL BotSettings provider - ${chalk.green("READY")}`));
+                this.botSettings = new MySQLProvider(this.connection, "BotSettings", { idColumn: "Id" });
+                this.botSettings.init().then(() => logger.info(`SQL BotSettings provider - ${chalk.green("READY")}`));
 
-                this.guildProvider = new MySQLProvider(this.connection, "Guilds", { idColumn: "Id" });
-                this.guildProvider.init().then(() => logger.info(`SQL Guild provider - ${chalk.green("READY")}`));
+                this.guildsDb = new MySQLProvider(this.connection, "Guilds", { idColumn: "Id" });
+                this.guildsDb.init().then(() => logger.info(`SQL Guild provider - ${chalk.green("READY")}`));
 
-                this.cache = new Cache(this.orm, this.connection);
+                this.cache = new KaikiCache(this.orm, this.connection);
                 void this.cache.init();
                 this.money = new MoneyService(this.orm);
-
-                void this.initializeServices;
 
                 new Migrations(this.connection, this)
                     .runAllMigrations()

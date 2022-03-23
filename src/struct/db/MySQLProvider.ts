@@ -1,6 +1,6 @@
 import { Provider, ProviderOptions } from "discord-akairo";
-import { Connection, RowDataPacket } from "mysql2/promise";
 import { Collection } from "discord.js";
+import { Connection, RowDataPacket } from "mysql2/promise";
 
 class MySQLProvider extends Provider {
     private _db: Connection;
@@ -18,15 +18,13 @@ class MySQLProvider extends Provider {
     }
 
     async init(): Promise<void> {
-        const [rows] = <RowDataPacket[][]> await this._db.query({
-            sql: `SELECT * FROM ${this._tableName}`,
-            rowsAsArray: true,
-        });
+        const [rows] = <RowDataPacket[][]> await this._db.query(
+            `SELECT *
+             FROM ${this._tableName}`,
+        );
 
         for (const row of rows) {
-            this.items.set(row[this._idColumn], this._dataColumn
-                ? JSON.parse(row[this._dataColumn])
-                : row);
+            this.items.set(String(row[this._idColumn]), this._dataColumn ? JSON.parse(row[this._dataColumn]) : row);
         }
     }
 
@@ -48,19 +46,25 @@ class MySQLProvider extends Provider {
 
         if (this._dataColumn) {
             return this._db.execute(exists
-                ? `UPDATE ${this._tableName} SET ${this._dataColumn} = $value WHERE ${this._idColumn} = $id`
-                : `INSERT INTO ${this._tableName} (${this._idColumn}, ${this._dataColumn}) VALUES ($id, $value)`, {
-                $id: id,
-                $value: JSON.stringify(data),
-            });
+                ? `UPDATE ${this._tableName}
+                   SET ${this._dataColumn} = ?
+                   WHERE ${this._idColumn} = ?`
+                : `INSERT INTO ${this._tableName} (${this._idColumn}, ${this._dataColumn})
+                   VALUES (?, ?)`, exists
+                ? [data[key], id]
+                : [id, data[key]],
+            );
         }
 
         return this._db.execute(exists
-            ? `UPDATE ${this._tableName} SET ${key} = $value WHERE ${this._idColumn} = $id`
-            : `INSERT INTO ${this._tableName} (${this._idColumn}, ${key}) VALUES ($id, $value)`, {
-            $id: id,
-            $value: value,
-        });
+            ? `UPDATE ${this._tableName}
+               SET ${key} = ?
+               WHERE ${this._idColumn} = ?`
+            : `INSERT INTO ${this._tableName} (${this._idColumn}, ${key})
+               VALUES (?, ?)`, exists
+            ? [data[key], id]
+            : [id, data[key]],
+        );
     }
 
     delete(id: string, key: string) {
@@ -68,13 +72,17 @@ class MySQLProvider extends Provider {
         delete data[key];
 
         if (this._dataColumn) {
-            return this._db.execute(`UPDATE ${this._tableName} SET ${this._dataColumn} = $value WHERE ${this._idColumn} = $id`, {
+            return this._db.execute(`UPDATE ${this._tableName}
+                                     SET ${this._dataColumn} = $value
+                                     WHERE ${this._idColumn} = $id`, {
                 $id: id,
                 $value: JSON.stringify(data),
             });
         }
 
-        return this._db.execute(`UPDATE ${this._tableName} SET ${key} = $value WHERE ${this._idColumn} = $id`, {
+        return this._db.execute(`UPDATE ${this._tableName}
+                                 SET ${key} = $value
+                                 WHERE ${this._idColumn} = $id`, {
             $id: id,
             $value: null,
         });
@@ -82,7 +90,9 @@ class MySQLProvider extends Provider {
 
     clear(id: string) {
         this.items.delete(id);
-        return this._db.execute(`DELETE FROM ${this._tableName} WHERE ${this._idColumn} = $id`, { $id: id });
+        return this._db.execute(`DELETE
+                                 FROM ${this._tableName}
+                                 WHERE ${this._idColumn} = $id`, { $id: id });
     }
 }
 

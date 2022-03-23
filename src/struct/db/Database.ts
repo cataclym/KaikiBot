@@ -1,7 +1,7 @@
+import { PrismaClient } from "@prisma/client";
 import { ActivityType } from "discord.js";
 import * as mysql2 from "mysql2/promise";
 import { Connection } from "mysql2/promise";
-import { PrismaClient } from "@prisma/client";
 
 type initReturn = {
     orm: PrismaClient,
@@ -17,17 +17,26 @@ export default class Database {
             uri: process.env.DATABASE_URL,
         };
     }
+
     public async init(): Promise<initReturn> {
         const connection = await mysql2.createConnection(this._config)
             .catch(async () => {
                 await mysql2.createConnection({ uri: process.env.DATABASE_URL, database: "mysql" })
                     .then(c => c.execute("CREATE DATABASE IF NOT EXISTS kaikidb")
-                        .then(() => c.end()));
+                        .then(() => c.end()),
+                    );
 
                 return (await this.init()).connection;
             });
 
         this.orm = new PrismaClient();
+
+        const botSettings = await this.orm.botSettings.findFirst();
+        if (!botSettings) {
+            await this.orm.botSettings.create({
+                data: { Id: 1 },
+            });
+        }
 
         return {
             orm: this.orm,
@@ -84,6 +93,7 @@ export class BotConfig {
     private currencySymbol: string;
     private dailyEnabled: boolean;
     private dailyAmount: number;
+
     constructor(array: [any, any]) {
         const data = array[0][0];
         this.activity = data.Activity;
