@@ -1,5 +1,5 @@
 import { Presence } from "discord.js";
-import KaikiListener from "Kaiki/KaikiListener";
+import KaikiListener from "../lib/Kaiki/KaikiListener";
 
 export default class PresenceUpdateListener extends KaikiListener {
     constructor() {
@@ -15,12 +15,14 @@ export default class PresenceUpdateListener extends KaikiListener {
             if (!db || !db.Activity) return;
 
             if (newPresence.activities[0].type !== db.ActivityType || newPresence.activities[0].name !== db.Activity) {
-                this.client.user?.setPresence({
-                    activities: [{
-                        name: db.Activity || undefined,
-                        type: db.ActivityType || undefined,
-                    }],
-                });
+                if (db.Activity && db.ActivityType) {
+                    this.client.user?.setPresence({
+                        activities: [{
+                            name: db.Activity,
+                            type: db.ActivityType,
+                        }],
+                    });
+                }
             }
         }
     }

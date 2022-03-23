@@ -1,10 +1,10 @@
 import { Command } from "discord-akairo";
 import { Message, MessageEmbed } from "discord.js";
 import logger from "loglevel";
+import KaikiListener from "../lib/Kaiki/KaikiListener";
 import Utility from "../lib/Utility";
-import KaikiListener from "Kaiki/KaikiListener";
 
-export default class missingPermissionsListener extends KaikiListener {
+export default class MissingPermissionsListener extends KaikiListener {
     constructor() {
         super("missingPermissions", {
             event: "missingPermissions",
@@ -25,13 +25,14 @@ export default class missingPermissionsListener extends KaikiListener {
             : this.client.cache.cmdStatsCache.set(command.id, 1);
 
         if (message.channel.type !== "DM") {
-            await message.channel.send({ embeds:
-				[new MessageEmbed({
-				    title: "Missing permissions",
-				    description: `${type === "client" ? "Client" : "User"} can't execute \`${command.id}\` due to missing permissions.`,
-				    footer: { text: `Missing: ${missing}` },
-				})
-				    .withErrorColor(message)],
+            await message.channel.send({
+                embeds:
+                    [new MessageEmbed({
+                        title: "Missing permissions",
+                        description: `${type === "client" ? "Client" : "User"} can't execute \`${command.id}\` due to missing permissions.`,
+                        footer: { text: `Missing: ${missing}` },
+                    })
+                        .withErrorColor(message)],
             });
         }
     }

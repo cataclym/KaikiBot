@@ -1,7 +1,6 @@
+import chalk from "chalk";
 import { Listener } from "discord-akairo";
 import logger from "loglevel";
-import chalk from "chalk";
-
 
 export default class RateLimitListener extends Listener {
     constructor() {
@@ -10,9 +9,10 @@ export default class RateLimitListener extends Listener {
             emitter: "client",
         });
     }
+
     // Emitted when the client hits a rate limit while making a request
 
-    public async exec({ timeout, _, method }: { timeout: number, _	: number, method: string }): Promise<void> {
+    public async exec({ timeout, _, method }: { timeout: number, _: number, method: string }): Promise<void> {
 
         // Shut uuuuup
         logger.warn(chalk.magenta(`rateLimit | Timeout: ${chalk.green(timeout)} | Method: ${chalk.green(method)}`));

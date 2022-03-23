@@ -1,10 +1,10 @@
 import { Command } from "discord-akairo";
 import { Message } from "discord.js";
 import logger from "loglevel";
+import KaikiListener from "../lib/Kaiki/KaikiListener";
 import Utility from "../lib/Utility";
-import KaikiListener from "Kaiki/KaikiListener";
 
-export default class commandFinishedListener extends KaikiListener {
+export default class CommandFinishedListener extends KaikiListener {
     constructor() {
         super("commandFinished", {
             event: "commandFinished",

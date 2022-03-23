@@ -2,7 +2,7 @@ import { Guild } from "discord.js";
 import logger from "loglevel";
 import KaikiListener from "../lib/Kaiki/KaikiListener";
 
-export default class GuildCreate extends KaikiListener {
+export default class GuildCreateListener extends KaikiListener {
     constructor() {
         super("guildCreate", {
             event: "guildCreate",

@@ -1,11 +1,11 @@
 import { Command } from "discord-akairo";
 import { Message } from "discord.js";
 import logger from "loglevel";
+import KaikiListener from "../lib/Kaiki/KaikiListener";
 import KaikiEmbeds from "../lib/KaikiEmbeds";
 import Utility from "../lib/Utility";
-import KaikiListener from "Kaiki/KaikiListener";
 
-export default class errorListener extends KaikiListener {
+export default class ErrorListener extends KaikiListener {
     constructor() {
         super("error", {
             event: "error",

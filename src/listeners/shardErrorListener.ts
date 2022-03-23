@@ -1,7 +1,6 @@
+import chalk from "chalk";
 import { Listener } from "discord-akairo";
 import logger from "loglevel";
-import chalk from "chalk";
-
 
 export default class ShardErrorListener extends Listener {
     constructor() {
@@ -10,6 +9,7 @@ export default class ShardErrorListener extends Listener {
             emitter: "client",
         });
     }
+
     // Emitted whenever a shard's WebSocket encounters a connection error.
 
     public async exec(error: Error, id: number): Promise<void> {

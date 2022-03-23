@@ -1,7 +1,6 @@
+import chalk from "chalk";
 import { Listener } from "discord-akairo";
 import logger from "loglevel";
-import chalk from "chalk";
-
 
 export default class ShardReadyListener extends Listener {
     constructor() {
@@ -10,6 +9,7 @@ export default class ShardReadyListener extends Listener {
             emitter: "client",
         });
     }
+
     // Emitted when a shard turns ready.
 
     public async exec(id: number, unavailableGuilds?: Set<string>): Promise<void> {

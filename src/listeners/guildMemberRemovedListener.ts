@@ -1,6 +1,6 @@
 import { GuildMember } from "discord.js";
 import GreetHandler from "../lib/GreetHandler";
-import KaikiListener from "Kaiki/KaikiListener";
+import KaikiListener from "../lib/Kaiki/KaikiListener";
 
 export default class GuildMemberRemovedListener extends KaikiListener {
     constructor() {
