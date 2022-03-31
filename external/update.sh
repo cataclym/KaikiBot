@@ -1,4 +1,10 @@
 #! /usr/bin/bash
-if ! git diff-index --quiet HEAD --; then
-    git checkout origin/master package-lock.json
-fi
+echo "This is a placeholder. Updates will be implemented in v4.1+"
+#currentTag =
+#
+#git fetch --tags
+#
+#latestTag=$(git describe --tags "$(git rev-list --tags --max-count=1)")
+#
+#if ["$latestTag" == ]
+#git checkout "$latestTag" package-lock.json
