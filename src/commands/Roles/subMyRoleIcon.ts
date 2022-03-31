@@ -3,7 +3,7 @@ import { Guild, GuildEmoji, Message, MessageAttachment, MessageEmbed, ReactionEm
 import { isRegex } from "../../lib/functions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
-import { rolePermissionCheck } from "../../lib/roles";
+import Roles, { rolePermissionCheck } from "../../lib/roles";
 import Utility from "../../lib/Utility";
 import { EMOTE_REGEX, IMAGE_REGEX } from "../../struct/constants";
 
@@ -31,36 +31,6 @@ export default class MyRoleSubIcon extends KaikiCommand {
         });
     }
 
-    async getRole(message: Message<true>) {
-        const db = await this.client.orm.guildUsers.findFirst({
-            where: {
-                GuildId: BigInt(message.guildId),
-                UserId: BigInt(message.author.id),
-            },
-        });
-
-        if (!db || !db.UserRole) return false;
-
-        const myRole = message.guild.roles.cache.get(String(db.UserRole));
-
-        if (!myRole) {
-            this.client.orm.guildUsers.update({
-                where: {
-                    Id_UserId: {
-                        Id: db.Id,
-                        UserId: db.UserId,
-                    },
-                },
-                data: {
-                    UserRole: null,
-                },
-            });
-            return false;
-        }
-
-        return myRole;
-    }
-
     async exec(message: Message<true>, { icon }: { icon: { match: RegExpMatchArray } | GuildEmoji | MessageAttachment | string }): Promise<Message | undefined> {
 
         let roleIconSrc: string | Buffer | GuildEmoji | ReactionEmoji | null = null;
@@ -71,7 +41,7 @@ export default class MyRoleSubIcon extends KaikiCommand {
 
         else if (typeof icon === "string") {
             if (MyRoleSubIcon.resetWords.includes(icon.toLowerCase())) {
-                const myRole = await this.getRole(message);
+                const myRole = await Roles.getRole(message);
                 if (myRole && await rolePermissionCheck(message, myRole as Role)) {
                     myRole.setIcon(null);
                     return message.channel.send({
@@ -114,33 +84,32 @@ export default class MyRoleSubIcon extends KaikiCommand {
             });
         }
 
-        const myRole = await this.getRole(message);
+        const myRole = await Roles.getRole(message);
 
-        if (myRole) {
+        if (!myRole) return message.channel.send({ embeds: [await KaikiEmbeds.embedFail(message)] });
 
-            const botRole = message.guild?.me?.roles.highest,
-                isPosition = botRole?.comparePositionTo(myRole);
+        const botRole = message.guild?.me?.roles.highest,
+            isPosition = botRole?.comparePositionTo(myRole);
 
-            if (isPosition && isPosition <= 0) {
-                return message.channel.send({ embeds: [await KaikiEmbeds.embedFail(message, "This role is higher than me, I cannot edit this role!")] });
-            }
+        if (isPosition && isPosition <= 0) {
+            return message.channel.send({ embeds: [await KaikiEmbeds.embedFail(message, "This role is higher than me, I cannot edit this role!")] });
+        }
 
-            try {
-                await myRole.setIcon(roleIconSrc);
-            }
-            catch (err) {
-                return message.channel.send({
-                    embeds: [(await KaikiEmbeds.errorMessage(message.guild || message, "Unsupported image format"))
-                        .addField("Message", await Utility.codeblock(err, "xl"))],
-                });
-            }
-
+        try {
+            await myRole.setIcon(roleIconSrc);
+        }
+        catch (err) {
             return message.channel.send({
-                embeds: [new MessageEmbed()
-                    .setDescription(`You have set \`${myRole.name}\`'s icon!`)
-                    .withOkColor(message),
-                ],
+                embeds: [(await KaikiEmbeds.errorMessage(message.guild || message, "Unsupported image format"))
+                    .addField("Message", await Utility.codeblock(err, "xl"))],
             });
         }
+
+        return message.channel.send({
+            embeds: [new MessageEmbed()
+                .setDescription(`You have set \`${myRole.name}\`'s icon!`)
+                .withOkColor(message),
+            ],
+        });
     }
 }

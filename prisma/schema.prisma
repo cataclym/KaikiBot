@@ -85,7 +85,6 @@ model EmojiStats {
 }
 
 model GuildUsers {
-  Id            BigInt          @default(autoincrement())
   UserId        BigInt
   UserRole      BigInt?
   GuildId       BigInt
@@ -94,7 +93,7 @@ model GuildUsers {
   LeaveRoles    LeaveRoles[]
   UserNicknames UserNicknames[]
 
-  @@id([Id, UserId])
+  @@id([UserId, GuildId])
   @@index([GuildId], map: "GuildId")
 }
 
@@ -126,7 +125,8 @@ model LeaveRoles {
   Id          BigInt     @id @default(autoincrement())
   RoleId      BigInt
   GuildUserId BigInt
-  GuildUsers  GuildUsers @relation(fields: [GuildUserId], references: [Id], onDelete: Cascade, map: "LeaveRoles_ibfk_1")
+  GuildId     BigInt
+  GuildUsers  GuildUsers @relation(fields: [GuildUserId, GuildId], references: [UserId, GuildId], onDelete: Cascade, map: "LeaveRoles_ibfk_1")
 
   @@index([GuildUserId], map: "GuildUserId")
 }
@@ -144,7 +144,8 @@ model UserNicknames {
   Id          BigInt     @id @default(autoincrement())
   Nickname    String     @db.VarChar(255)
   GuildUserId BigInt
-  GuildUsers  GuildUsers @relation(fields: [GuildUserId], references: [Id], onDelete: Cascade, map: "UserNicknames_ibfk_1")
+  GuildId     BigInt
+  GuildUsers  GuildUsers @relation(fields: [GuildUserId, GuildId], references: [UserId, GuildId], onDelete: Cascade, map: "UserNicknames_ibfk_1")
 
   @@index([GuildUserId], map: "GuildUserId")
 }

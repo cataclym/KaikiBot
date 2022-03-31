@@ -3,6 +3,7 @@ import { ColorResolvable, Message, MessageEmbed } from "discord.js";
 import { hexColorTable } from "../../lib/Color";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
+import Roles from "../../lib/roles";
 
 export default class MyRoleSubCommandColor extends KaikiCommand {
     constructor() {
@@ -23,38 +24,11 @@ export default class MyRoleSubCommandColor extends KaikiCommand {
 
     async exec(message: Message<true>, { color }: { color: string | number }): Promise<Message> {
 
+        const myRole = await Roles.getRole(message);
+
+        if (!myRole) return message.channel.send({ embeds: [await KaikiEmbeds.embedFail(message)] });
+
         if (typeof color === "number") color = color.toString(16);
-
-        const db = await this.client.orm.guildUsers.findFirst({
-            where: {
-                GuildId: BigInt(message.guildId),
-                UserId: BigInt(message.author.id),
-            },
-            select: {
-                UserRole: true,
-                Id: true,
-                UserId: true,
-            },
-        });
-
-        if (!db || !db.UserRole) return message.channel.send({ embeds: [await KaikiEmbeds.embedFail(message)] });
-
-        const myRole = message.guild.roles.cache.get(String(db.UserRole));
-
-        if (!myRole) {
-            this.client.orm.guildUsers.update({
-                where: {
-                    Id_UserId: {
-                        Id: db.Id,
-                        UserId: db.UserId,
-                    },
-                },
-                data: {
-                    UserRole: null,
-                },
-            });
-            return message.channel.send({ embeds: [await KaikiEmbeds.embedFail(message)] });
-        }
 
         const botRole = message.guild?.me?.roles.highest,
             isPosition = botRole?.comparePositionTo(myRole);

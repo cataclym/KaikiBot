@@ -33,7 +33,7 @@ export class Migrations {
     private async runMigration(migration: Migration) {
 
         // Checks if migration exists
-        const result = await this.db.query("SELECT migrationId FROM _Migrations WHERE MigrationId = ?", [migration.migrationId])
+        const result = await this.db.query("SELECT migrationId FROM _Migrations WHERE VersionString = ?", [migration.version])
             .catch(e => logger.warn(e));
 
         if (result && (result[0] as []).length) {

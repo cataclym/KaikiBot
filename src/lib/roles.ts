@@ -4,6 +4,38 @@ import logger from "loglevel";
 
 type genericArrayFilter = <T>(x: T | undefined) => x is T;
 
+export default class Roles {
+    static async getRole(message: Message<true>) {
+        const db = await message.client.orm.guildUsers.findFirst({
+            where: {
+                GuildId: BigInt(message.guildId),
+                UserId: BigInt(message.author.id),
+            },
+        });
+
+        if (!db || !db.UserRole) return false;
+
+        const myRole = message.guild.roles.cache.get(String(db.UserRole));
+
+        if (!myRole) {
+            message.client.orm.guildUsers.update({
+                where: {
+                    UserId_GuildId: {
+                        UserId: BigInt(message.author.id),
+                        GuildId: BigInt(message.guildId),
+                    },
+                },
+                data: {
+                    UserRole: null,
+                },
+            });
+            return false;
+        }
+
+        return myRole;
+    }
+}
+
 export async function handleStickyRoles(member: GuildMember) {
 
     if (!await member.client.guildsDb.get(member.guild.id, "StickyRoles", 0)) return;

@@ -2,6 +2,7 @@ import { Argument, Flag, PrefixSupplier } from "discord-akairo";
 import { Message, MessageEmbed } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
+import Roles from "../../lib/roles";
 
 export default class MyRoleCommand extends KaikiCommand {
     constructor() {
@@ -37,36 +38,9 @@ export default class MyRoleCommand extends KaikiCommand {
 
     public async exec(message: Message<true>): Promise<Message> {
 
-        const db = await this.client.orm.guildUsers.findFirst({
-            where: {
-                GuildId: BigInt(message.guildId),
-                UserId: BigInt(message.author.id),
-            },
-            select: {
-                UserRole: true,
-                Id: true,
-                UserId: true,
-            },
-        });
+        const myRole = await Roles.getRole(message);
 
-        if (!db) return message.channel.send({ embeds: [await KaikiEmbeds.embedFail(message)] });
-
-        const myRole = message.guild.roles.cache.get(String(db.UserRole));
-
-        if (!myRole) {
-            this.client.orm.guildUsers.update({
-                where: {
-                    Id_UserId: {
-                        Id: db.Id,
-                        UserId: db.UserId,
-                    },
-                },
-                data: {
-                    UserRole: null,
-                },
-            });
-            return message.channel.send({ embeds: [await KaikiEmbeds.embedFail(message)] });
-        }
+        if (!myRole) return message.channel.send({ embeds: [await KaikiEmbeds.embedFail(message)] });
 
         return message.channel.send({
             embeds: [new MessageEmbed()

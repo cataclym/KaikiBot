@@ -1,8 +1,6 @@
 import { PrefixSupplier } from "discord-akairo";
-import { Snowflake } from "discord-api-types";
 import { GuildMember, Message, MessageEmbed, Role } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
 // Rewrite of Miyano's setuserrole command
 // https://github.com/PlatinumFT/Miyano-v2
@@ -36,51 +34,46 @@ export default class SetUserRoleCommand extends KaikiCommand {
         });
     }
 
+    embedFail = async (message: Message<boolean>, text: string) => new MessageEmbed()
+        .setDescription(text)
+        .withErrorColor(message);
+
+    embedSuccess = async (message: Message<boolean>, text: string) => new MessageEmbed()
+        .setDescription(text)
+        .withOkColor(message);
+
     public async exec(message: Message<true>, { member, role }: { member: GuildMember, role: Role }): Promise<Message> {
-
-        const embedFail = async (text: string) => new MessageEmbed()
-                .setDescription(text)
-                .withErrorColor(message),
-
-            embedSuccess = async (text: string) => new MessageEmbed()
-                .setDescription(text)
-                .withOkColor(message);
 
         const botRole = message.guild?.me?.roles.highest,
             isPosition = botRole?.comparePositionTo(role);
 
         if (!isPosition || (isPosition <= 0)) {
-            return message.channel.send({ embeds: [await embedFail("This role is higher than me, I cannot add this role!")] });
+            return message.channel.send({ embeds: [await this.embedFail(message, "This role is higher than me, I cannot add this role!")] });
         }
 
         else if (message.author.id !== message.guild?.ownerId &&
             (message.member as GuildMember).roles.highest.position < role.position) {
 
-            return message.channel.send({ embeds: [await embedFail("This role is higher than your highest, I cannot add this role!")] });
+            return message.channel.send({ embeds: [await this.embedFail(message, "This role is higher than your highest, I cannot add this role!")] });
         }
 
         const db = await this.client.orm.guildUsers.findFirst({
             where: {
                 GuildId: BigInt(message.guildId),
-                UserId: BigInt(message.author.id),
+                UserId: BigInt(member.id),
             },
             select: {
                 UserRole: true,
-                Id: true,
-                UserId: true,
             },
         });
 
-        if (!db) return message.channel.send({ embeds: [await KaikiEmbeds.embedFail(message)] });
+        if (db && db.UserRole) {
 
-        if (db?.UserRole) {
-            const userRole = message.guild.roles.cache.get(String(db.UserRole));
-
-            this.client.orm.guildUsers.update({
+            await this.client.orm.guildUsers.update({
                 where: {
-                    Id_UserId: {
-                        Id: db.Id,
-                        UserId: db.UserId,
+                    UserId_GuildId: {
+                        UserId: BigInt(message.author.id),
+                        GuildId: BigInt(message.guildId),
                     },
                 },
                 data: {
@@ -88,22 +81,24 @@ export default class SetUserRoleCommand extends KaikiCommand {
                 },
             });
 
+            const userRole = message.guild.roles.cache.get(String(db.UserRole));
+
             try {
-                await member.roles.remove(userRole || String(db.UserRole) as Snowflake);
+                await member.roles.remove(userRole || String(db.UserRole));
             }
             catch (err) {
-                throw new Error("Failed to delete user role.\n" + err);
+                throw new Error("Failed to remove user role.\n" + err);
             }
 
-            return message.channel.send({ embeds: [await embedSuccess(`Removed role ${(userRole)?.name ?? String(db.UserRole)} from ${member.user.username}`)] });
+            return message.channel.send({ embeds: [await this.embedSuccess(message, `Removed role ${userRole?.name ?? String(db.UserRole)} from ${member.user.username}`)] });
         }
 
         else {
-            this.client.orm.guildUsers.update({
+            await this.client.orm.guildUsers.update({
                 where: {
-                    Id_UserId: {
-                        Id: db.Id,
-                        UserId: db.UserId,
+                    UserId_GuildId: {
+                        UserId: BigInt(member.id),
+                        GuildId: BigInt(message.guildId),
                     },
                 },
                 data: {
@@ -112,7 +107,7 @@ export default class SetUserRoleCommand extends KaikiCommand {
             });
 
             await member.roles.add(role);
-            return message.channel.send({ embeds: [await embedSuccess(`Adding role ${role.name} to ${member.user.username}`)] });
+            return message.channel.send({ embeds: [await this.embedSuccess(message, `Adding role ${role.name} to ${member.user.username}`)] });
         }
     }
 }

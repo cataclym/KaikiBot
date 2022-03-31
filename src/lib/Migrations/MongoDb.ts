@@ -5,8 +5,9 @@ export default class MongoDb {
     constructor() {
         void this.init();
     }
+
     async init(): Promise<void> {
-        connect("mongodb://localhost:27017?authSource=admin'", {
+        await connect("mongodb://localhost:27017?authSource=admin'", {
             // user: process.env.DB_USER,
             // pass: process.env.DB_PASS,
             useNewUrlParser: true,

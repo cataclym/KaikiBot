@@ -14,22 +14,30 @@ export default class GuildMemberRemovedListener extends KaikiListener {
 
         await GreetHandler.handleGoodbyeMessage(member);
 
-        const GuildId = BigInt(member.id),
-            gUser = await this.client.db.getOrCreateGuildUser(member.id, GuildId);
+        const GuildId = BigInt(member.id);
+        const MemberId = BigInt(member.id);
 
-        const leaveRoles = member.roles.cache.map(role => this.client.orm.leaveRoles.create({
-            data: {
-                RoleId: BigInt(role.id),
-                GuildUsers: {
-                    connect: {
-                        Id_UserId: {
-                            Id: gUser.Id,
-                            UserId: gUser.UserId,
+        const leaveRoles = member.roles.cache.map(role => {
+            return this.client.orm.leaveRoles.create({
+                data: {
+                    RoleId: BigInt(role.id),
+                    GuildUsers: {
+                        connectOrCreate: {
+                            create: {
+                                UserId: MemberId,
+                                GuildId: GuildId,
+                            },
+                            where: {
+                                UserId_GuildId: {
+                                    UserId: MemberId,
+                                    GuildId: GuildId,
+                                },
+                            },
                         },
                     },
                 },
-            },
-        }));
+            });
+        });
         await this.client.orm.$transaction(leaveRoles);
     }
 }

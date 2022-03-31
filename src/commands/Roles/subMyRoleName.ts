@@ -1,6 +1,7 @@
 import { Message, MessageEmbed } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
+import Roles from "../../lib/roles";
 import Utility from "../../lib/Utility";
 
 export default class MyRoleSubCommandName extends KaikiCommand {
@@ -22,36 +23,9 @@ export default class MyRoleSubCommandName extends KaikiCommand {
 
     async exec(message: Message<true>, { name }: { name: string }): Promise<Message> {
 
-        const db = await this.client.orm.guildUsers.findFirst({
-            where: {
-                GuildId: BigInt(message.guildId),
-                UserId: BigInt(message.author.id),
-            },
-            select: {
-                UserRole: true,
-                Id: true,
-                UserId: true,
-            },
-        });
+        const myRole = await Roles.getRole(message);
 
-        if (!db || !db.UserRole) return message.channel.send({ embeds: [await KaikiEmbeds.embedFail(message)] });
-
-        const myRole = message.guild.roles.cache.get(String(db.UserRole));
-
-        if (!myRole) {
-            this.client.orm.guildUsers.update({
-                where: {
-                    Id_UserId: {
-                        Id: db.Id,
-                        UserId: db.UserId,
-                    },
-                },
-                data: {
-                    UserRole: null,
-                },
-            });
-            return message.channel.send({ embeds: [await KaikiEmbeds.embedFail(message)] });
-        }
+        if (!myRole) return message.channel.send({ embeds: [await KaikiEmbeds.embedFail(message)] });
 
         const botRole = message.guild?.me?.roles.highest,
             isPosition = botRole?.comparePositionTo(myRole);
