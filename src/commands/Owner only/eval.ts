@@ -1,6 +1,5 @@
 import { Message } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-
 import Utility from "../../lib/Utility";
 
 const clean = (text: string) => {
@@ -28,11 +27,11 @@ export default class EvalCommand extends KaikiCommand {
 
             evaled = (await import("util")).inspect(evaled);
             return message.channel.send({
-                content: await Utility.codeblock(clean(evaled.toString()), "xl"),
+                content: await Utility.codeblock(Utility.trim(clean(evaled.toString()), 1990), "xl"),
             });
         }
         catch (err) {
-            return message.channel.send(`\`ERROR\` ${await Utility.codeblock(clean(err.toString()), "xl")}`);
+            return message.channel.send(`\`ERROR\` ${await Utility.codeblock(Utility.trim(clean(err.toString()), 1960), "xl")}`);
         }
     }
 }
