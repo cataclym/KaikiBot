@@ -4,9 +4,11 @@ import { MessageEmbed } from "discord.js";
 import fs from "fs/promises";
 import logger from "loglevel";
 import KaikiAkairoClient from "../lib/Kaiki/KaikiAkairoClient";
+import MongoDb from "../lib/Migrations/MongoDb";
 
 export class Bot {
     private readonly client: KaikiAkairoClient;
+    private mongoDb: MongoDb;
 
     constructor(client: KaikiAkairoClient) {
         this.client = client;
@@ -33,7 +35,13 @@ export class Bot {
         }
 
         this.loadPackageJSON()
-            .then(() => logger.info("Package loaded!"));
+            .then(() => {
+                logger.info("Package loaded!");
+                if (this.client.package.optionalDependencies["mongoose"]) {
+                    this.mongoDb = new MongoDb();
+                }
+            });
+
 
         this.client.login(process.env.CLIENT_TOKEN)
             .then(async () => {

@@ -9,7 +9,7 @@ export default class TodoCommand extends KaikiCommand {
     constructor() {
         super("todo", {
             aliases: ["todo", "note"],
-            description: "A personal todo list. The items are limited to 204 characters. Intended for small notes, not detailed cooking recipies.",
+            description: "A personal todo list. The items are limited to 204 characters. Intended for small notes.",
             usage: ["", "add make cake 07/07/2020", "remove 5", "remove last", "remove first", "remove all", "rm 1", "2"],
         });
     }
@@ -45,9 +45,7 @@ export default class TodoCommand extends KaikiCommand {
 
         const todoArray = await this.client.orm.todos.findMany({
             where: {
-                DiscordUsers: {
-                    UserId: BigInt(message.author.id),
-                },
+                UserId: BigInt(message.author.id),
             },
         });
 
@@ -59,13 +57,13 @@ export default class TodoCommand extends KaikiCommand {
             });
         }
 
-        const reminderArray = todoArray.map((todo) => Utility.trim(todo.String.split(/\r?\n/).join(" "), 204));
+        const reminderArray = todoArray.map((todo, i) => `${+i + 1}. ${Utility.trim(todo.String.split(/\r?\n/).join(" "), 204)}`);
         const pages = [];
 
         for (let index = 10, p = 0; p < reminderArray.length; index += 10, p += 10) {
-            pages.push(emb
+            pages.push(new MessageEmbed(emb)
                 .setDescription(reminderArray
-                    .map((item: string, i: number) => `${+i + 1}. ${item}`).slice(p, index).join("\n"),
+                    .slice(p, index).join("\n"),
                 ),
             );
         }

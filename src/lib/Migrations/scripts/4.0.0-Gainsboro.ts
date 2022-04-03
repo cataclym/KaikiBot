@@ -1,8 +1,10 @@
+import { Snowflake } from "discord.js";
 import { OkPacket } from "mysql2";
+import { RowDataPacket } from "mysql2/promise";
 import { blockedCategories } from "../../enums/blockedCategories";
 import KaikiAkairoClient from "../../Kaiki/KaikiAkairoClient";
 import { Migration } from "../Migrations";
-import { _MigrationsModel, botModel, commandStatsModel, guildsModel, moneyModel, usersModel } from "../mongoModels";
+import { botModel, commandStatsModel, guildsModel, moneyModel, usersModel } from "../mongoModels";
 
 export default class Gainsboro extends Migration {
     private changes: number;
@@ -14,16 +16,9 @@ export default class Gainsboro extends Migration {
 
             migration: async (client: KaikiAkairoClient) => {
                 this.changes = 0;
+
                 const { connection } = client;
                 // This migration moves most data from MongoDB to MySQL
-                const migration = await _MigrationsModel.find({}).exec();
-
-                for (const { migrationId, versionString } of migration) {
-                    this.changes++;
-                    await connection.query("INSERT INTO _Migrations (MigrationId, VersionString) VALUES (?, ?)",
-                        [migrationId, versionString],
-                    );
-                }
 
                 const {
                     activity,
@@ -41,9 +36,16 @@ export default class Gainsboro extends Migration {
                 const guilds = await guildsModel.find({}).exec();
 
                 for (const guild of guilds) {
+
+                    if (!client.guilds.cache.has(guild.id)) {
+                        continue;
+                    }
+
                     this.changes++;
                     const { id, settings, registeredAt, leaveRoles, userRoles } = guild;
                     const guildBlockedCategories = guild.blockedCategories;
+                    const emojiStats = guild.emojiStats;
+                    const emojiReactions = guild.emojiReactions;
                     const {
                         prefix,
                         anniversary,
@@ -89,39 +91,56 @@ export default class Gainsboro extends Migration {
                         }
                     }
 
-                    const insertedUsers: { [index: string]: number } = {};
+                    const insertedUsers: Snowflake[] = [];
 
                     if (Object.keys(userRoles).length) {
                         const userRolesKeyValues = Object.entries(userRoles);
                         for (let i = 0; i < Object.keys(userRoles).length; i++) {
                             this.changes++;
 
-                            const [res] = await connection.query<OkPacket>("INSERT INTO GuildUsers (UserId, UserRole, GuildId) VALUES (?, ?, ?)",
+                            await connection.query<OkPacket>("INSERT INTO GuildUsers (UserId, UserRole, GuildId) VALUES (?, ?, ?)",
                                 [BigInt(userRolesKeyValues[i][0]), BigInt(userRolesKeyValues[i][1]), BigInt(guild.id)]);
-                            insertedUsers[userRolesKeyValues[i][0]] = res.insertId;
+
+                            insertedUsers.push(userRolesKeyValues[i][0]);
                         }
                     }
 
                     if (Object.keys(leaveRoles).length) {
                         for (const key in leaveRoles) {
-                            let insertId;
-                            if (insertedUsers[key]) {
-                                insertId = insertedUsers[key];
-                            }
-                            else {
+
+                            if (!insertedUsers.includes(key)) {
                                 this.changes++;
+
                                 await connection.query<OkPacket>("INSERT INTO GuildUsers (UserId, UserRole, GuildId) VALUES (?, ?, ?)",
-                                    [BigInt(key), userRoles[key] ?? null, BigInt(guild.id)])
-                                    .then(([res]) => {
-                                        insertId = res.insertId;
-                                    });
+                                    [BigInt(key), userRoles[key] ?? null, BigInt(guild.id)]);
+                                insertedUsers.push(key);
                             }
+
                             for (const role of leaveRoles[key]) {
                                 this.changes++;
+
                                 await connection.query("INSERT INTO LeaveRoles (RoleId, GuildUserId, GuildId) VALUES (?, ?, ?)",
-                                    [BigInt(role), insertId, BigInt(guild.id)],
+                                    [BigInt(role), BigInt(key), BigInt(guild.id)],
                                 );
                             }
+                        }
+                    }
+
+                    if (emojiReactions && Object.keys(emojiReactions).length) {
+                        for (const reaction in emojiReactions) {
+                            this.changes++;
+
+                            await connection.query("INSERT INTO EmojiReactions (EmojiId, TriggerString, GuildId) VALUES (?, ?, ?)",
+                                [BigInt(emojiReactions[reaction]), reaction, BigInt(guild.id)]);
+                        }
+                    }
+
+                    if (emojiStats && Object.keys(emojiStats).length) {
+                        for (const statistic in emojiStats) {
+                            this.changes++;
+
+                            await connection.query("INSERT INTO EmojiStats (EmojiId, Count, GuildId) VALUES (?, ?, ?)",
+                                [BigInt(statistic), BigInt(emojiStats[statistic]), BigInt(guild.id)]);
                         }
                     }
                 }
@@ -130,6 +149,7 @@ export default class Gainsboro extends Migration {
 
                 for (const user of users) {
                     this.changes++;
+
                     const money = await moneyModel.findOne({ id: user.id }).exec();
                     await connection.query<OkPacket>("INSERT INTO DiscordUsers (UserId, Amount, CreatedAt) VALUES (?, ?, ?)",
                         [BigInt(user.id), money?.amount ?? 0, new Date(user.registeredAt)],
@@ -137,15 +157,38 @@ export default class Gainsboro extends Migration {
 
                     for (let i = 0; i < user.todo.length; i++) {
                         this.changes++;
+
                         await connection.query("INSERT INTO Todos (UserId, String) VALUES (?, ?)",
                             [BigInt(user.id), user.todo[i]],
                         );
                     }
 
-                    // This data will not be migrated due to no guild-user association
-                    // for (let i = 0; i < user.userNicknames.length; i++) {
-                    //     await db.query("INSERT INTO UserNicknames (nickname, guildUserId) VALUES (?, ?)", [user.userNicknames[i] ]);
-                    // }
+                    const filteredGuilds = client.guilds.cache.filter(g => g.members.cache.has(user.id));
+
+                    for (let i = 0; i < user.userNicknames.length; i++) {
+
+                        for (const guild of filteredGuilds.keys()) {
+                            this.changes++;
+
+                            const query = "INSERT INTO UserNicknames (Nickname, GuildUserId, GuildId) VALUES (?, ?, ?)",
+                                values = [user.userNicknames[i], BigInt(user.id), BigInt(guild)];
+
+                            const res = await connection.query<RowDataPacket[][]>("SELECT * FROM GuildUsers WHERE UserId = ? AND GuildId = ?",
+                                [BigInt(user.id), BigInt(guild)],
+                            );
+
+                            if (!res[0] || !res[0].length) {
+                                await connection.query("INSERT INTO GuildUsers (UserId, GuildId) VALUES (?, ?)",
+                                    [BigInt(user.id), BigInt(guild)],
+                                )
+                                    .then(async () => await connection.query(query, values));
+                            }
+
+                            else {
+                                await connection.query(query, values);
+                            }
+                        }
+                    }
                 }
 
                 const res = await commandStatsModel.findOne({}).exec();

@@ -1,8 +1,6 @@
 import { Message, MessageReaction } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
-
 
 export default class todoAddCommand extends KaikiCommand {
     constructor() {
@@ -18,19 +16,10 @@ export default class todoAddCommand extends KaikiCommand {
 
     public async exec(message: Message, { toAdd }: { toAdd: string }): Promise<MessageReaction> {
 
-        this.client.orm.todos.create({
+        await this.client.orm.todos.create({
             data: {
                 String: toAdd,
-                DiscordUsers: {
-                    connectOrCreate: {
-                        create: {
-                            UserId: BigInt(message.author.id),
-                        },
-                        where: {
-                            UserId: BigInt(message.author.id),
-                        },
-                    },
-                },
+                UserId: BigInt(message.author.id),
             },
         });
         return message.react("✅");

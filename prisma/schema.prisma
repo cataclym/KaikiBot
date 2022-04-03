@@ -57,8 +57,7 @@ model ExcludedStickyRoles {
 }
 
 model DiscordUsers {
-  Id           BigInt   @id @default(autoincrement())
-  UserId       BigInt   @unique(map: "UserId")
+  UserId       BigInt   @id @unique(map: "UserId")
   Amount       BigInt   @default(0)
   ClaimedDaily Boolean  @default(false)
   CreatedAt    DateTime @default(now()) @db.Timestamp(0)
@@ -98,7 +97,7 @@ model GuildUsers {
 }
 
 model Guilds {
-  Id                  BigInt                @id @unique(map: "Id")
+  Id                  BigInt                @id
   Prefix              String                @db.VarChar(50)
   Anniversary         Boolean               @default(false)
   DadBot              Boolean               @default(false)
@@ -129,13 +128,14 @@ model LeaveRoles {
   GuildUsers  GuildUsers @relation(fields: [GuildUserId, GuildId], references: [UserId, GuildId], onDelete: Cascade, map: "LeaveRoles_ibfk_1")
 
   @@index([GuildUserId], map: "GuildUserId")
+  @@index([GuildId], map: "GuildId")
 }
 
 model Todos {
   Id           BigInt       @id @default(autoincrement())
   UserId       BigInt
   String       String       @db.VarChar(255)
-  DiscordUsers DiscordUsers @relation(fields: [UserId], references: [Id], onDelete: Cascade, map: "Todos_ibfk_1")
+  DiscordUsers DiscordUsers @relation(fields: [UserId], references: [UserId], onDelete: Cascade, map: "Todos_ibfk_1")
 
   @@index([UserId], map: "UserId")
 }
@@ -148,6 +148,7 @@ model UserNicknames {
   GuildUsers  GuildUsers @relation(fields: [GuildUserId, GuildId], references: [UserId, GuildId], onDelete: Cascade, map: "UserNicknames_ibfk_1")
 
   @@index([GuildUserId], map: "GuildUserId")
+  @@index([GuildId], map: "GuildId")
 }
 
 model Migrations {

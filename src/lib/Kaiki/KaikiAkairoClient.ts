@@ -11,7 +11,6 @@ import MySQLProvider from "../../struct/db/MySQLProvider";
 import AnniversaryRolesService from "../AnniversaryRolesService";
 import { resetDailyClaims } from "../functions";
 import IPackageJSON from "../Interfaces/IPackageJSON";
-import { Migrations } from "../Migrations/Migrations";
 import { MoneyService } from "../money/MoneyService";
 import Utility from "../Utility";
 import KaikiCommandHandler from "./KaikiCommandHandler";
@@ -134,21 +133,6 @@ export default class KaikiAkairoClient extends AkairoClient {
                 this.cache = new KaikiCache(this.orm, this.connection);
                 void this.cache.init();
                 this.money = new MoneyService(this.orm);
-
-                new Migrations(this.connection, this)
-                    .runAllMigrations()
-                    .then((res: number) => {
-                        if (res) {
-                            logger.info(`
-    ${(chalk.greenBright)("|----------------------------------------------------------|")}
-    migrationService | Migrations have successfully finished
-    migrationService | Inserted ${(chalk.green)(res)} records into kaikidb
-    ${(chalk.greenBright)("|----------------------------------------------------------|")}`);
-                        }
-                    })
-                    .catch(e => {
-                        throw e;
-                    });
             });
     }
 }
