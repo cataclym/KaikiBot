@@ -11,6 +11,7 @@ build:
     - npm run build
 stages:
   - test
+  - release
 
 release_job:
   stage: release
