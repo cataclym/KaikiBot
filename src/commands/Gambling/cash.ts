@@ -21,7 +21,7 @@ export default class cash extends KaikiCommand {
         const moneh = await this.client.money.Get(user.id);
         await msg.channel.send({
             embeds: [new MessageEmbed()
-                .setDescription(`${user.username} has ${moneh} ${this.client.money.currencyName} ${this.client.money.currencySymbol}`)
+                .setDescription(`${user.username} has **${moneh}** ${this.client.money.currencyName} ${this.client.money.currencySymbol}`)
                 .withOkColor(msg)],
         });
     }

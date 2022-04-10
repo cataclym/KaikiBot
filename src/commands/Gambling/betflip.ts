@@ -1,7 +1,7 @@
 import { Message, MessageEmbed } from "discord.js";
 import images from "../../data/images.json";
+import KaikiArgumentsTypes from "../../lib/Kaiki/KaikiArgumentsTypes";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-
 
 type sides = "tails" | "heads";
 
@@ -15,7 +15,7 @@ export default class BetflipCommands extends KaikiCommand {
             usage: ["5 heads", "10 t"],
             args: [{
                 id: "number",
-                type: "integer",
+                type: KaikiArgumentsTypes.KaikiMoneyArgument,
                 otherwise: (m) => ({
                     embeds: [new MessageEmbed()
                         .setDescription("Please provide an amount to bet!")

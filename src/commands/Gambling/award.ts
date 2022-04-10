@@ -1,6 +1,6 @@
 import { Message, MessageEmbed, User } from "discord.js";
+import KaikiArgumentsTypes from "../../lib/Kaiki/KaikiArgumentsTypes";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-
 
 export default class award extends KaikiCommand {
     constructor() {
@@ -12,7 +12,7 @@ export default class award extends KaikiCommand {
             args: [
                 {
                     id: "amount",
-                    type: "integer",
+                    type: KaikiArgumentsTypes.KaikiMoneyArgument,
                     otherwise: (m: Message) => ({
                         embeds: [new MessageEmbed({
                             title: "Invalid amount. It must be a number",

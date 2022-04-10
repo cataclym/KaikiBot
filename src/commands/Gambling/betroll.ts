@@ -1,6 +1,6 @@
 import { Message, MessageEmbed } from "discord.js";
+import KaikiArgumentsTypes from "../../lib/Kaiki/KaikiArgumentsTypes";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-
 
 export default class BetRollCommand extends KaikiCommand {
     constructor() {
@@ -10,7 +10,7 @@ export default class BetRollCommand extends KaikiCommand {
             usage: "69",
             args: [{
                 id: "number",
-                type: "integer",
+                type: KaikiArgumentsTypes.KaikiMoneyArgument,
                 otherwise: (m) => ({
                     embeds: [new MessageEmbed()
                         .setDescription("Please provide an amount to bet!")

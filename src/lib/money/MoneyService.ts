@@ -40,7 +40,7 @@ export class MoneyService {
         const query = await this._orm.discordUsers.upsert({
             where: { UserId: bIntId },
             update: { Amount: { increment: bIntAmount } },
-            create: { UserId: bIntId },
+            create: { UserId: bIntId, Amount: bIntAmount },
         });
         return query.Amount;
     }

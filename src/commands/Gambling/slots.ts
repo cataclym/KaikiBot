@@ -1,7 +1,7 @@
 import { Message, MessageEmbed } from "discord.js";
 import Gambling from "../../lib/gambling/gambling";
+import KaikiArgumentsTypes from "../../lib/Kaiki/KaikiArgumentsTypes";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-
 
 export default class slotsCommand extends KaikiCommand {
     constructor() {
@@ -12,7 +12,7 @@ export default class slotsCommand extends KaikiCommand {
             args: [
                 {
                     id: "amount",
-                    type: "integer",
+                    type: KaikiArgumentsTypes.KaikiMoneyArgument,
                     otherwise: (m: Message) => ({
                         embeds: [new MessageEmbed()
                             .setTitle("Invalid amount. It must be a number")
