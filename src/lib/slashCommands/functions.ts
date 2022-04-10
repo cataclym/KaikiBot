@@ -3,9 +3,9 @@ import KaikiEmbeds from "../KaikiEmbeds";
 
 export async function ExcludeSlashCommand(interaction: CommandInteraction): Promise<void> {
 
-    if (!interaction.channel?.isText() || !interaction.guild) return interaction.deferReply({ ephemeral:true });
+    if (!interaction.channel?.isText() || !interaction.guild) return interaction.deferReply({ ephemeral: true });
 
-    if (!interaction.guild!.determineIsDadBotEnabled()) {
+    if (!interaction.guild!.isDadBotEnabled()) {
         return interaction.reply({
             ephemeral: true,
             embeds: [new MessageEmbed()
@@ -38,7 +38,8 @@ export async function ExcludeSlashCommand(interaction: CommandInteraction): Prom
                 description: `A role with name \`${process.env.DADBOT_DEFAULT_ROLENAME}\` was not found in guild. Creating... `,
                 footer: { text: "Beep boop..." },
             })
-                .withErrorColor(interaction.guild)] });
+                .withErrorColor(interaction.guild)],
+        });
         created = true;
     }
 

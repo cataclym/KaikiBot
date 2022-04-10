@@ -9,6 +9,13 @@ import { botModel, commandStatsModel, guildsModel, moneyModel, usersModel } from
 export default class Gainsboro extends Migration {
     private changes: number;
 
+    embedToMessageOptions(embed: any): string {
+        const parsed = typeof embed === "string" ? JSON.parse(embed) : embed;
+        return JSON.stringify({
+            embeds: [parsed],
+        });
+    }
+
     constructor() {
         super({
             name: "init_sql",
@@ -77,7 +84,7 @@ export default class Gainsboro extends Migration {
                                 : null,
                             goodbye.channel
                                 ? BigInt(goodbye.channel)
-                                : null, JSON.stringify(welcome.embed), JSON.stringify(goodbye.embed), stickyRoles, new Date(registeredAt)]);
+                                : null, this.embedToMessageOptions(welcome.embed), this.embedToMessageOptions(goodbye.embed), stickyRoles, new Date(registeredAt)]);
 
                     if (Object.keys(guildBlockedCategories).length) {
                         for (const key in guildBlockedCategories) {

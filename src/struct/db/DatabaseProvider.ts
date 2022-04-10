@@ -2,7 +2,7 @@ import { Provider, ProviderOptions } from "discord-akairo";
 import { Collection } from "discord.js";
 import { Connection, RowDataPacket } from "mysql2/promise";
 
-class MySQLProvider extends Provider {
+export default class DatabaseProvider extends Provider {
     private _db: Connection;
     private readonly _tableName: string;
     private readonly _idColumn: string;
@@ -24,7 +24,7 @@ class MySQLProvider extends Provider {
         );
 
         for (const row of rows) {
-            this.items.set(String(row[this._idColumn]), this._dataColumn ? JSON.parse(row[this._dataColumn]) : row);
+            this.items.set(row[this._idColumn], this._dataColumn ? JSON.parse(row[this._dataColumn]) : row);
         }
     }
 
@@ -95,5 +95,3 @@ class MySQLProvider extends Provider {
                                  WHERE ${this._idColumn} = $id`, { $id: id });
     }
 }
-
-export default MySQLProvider;

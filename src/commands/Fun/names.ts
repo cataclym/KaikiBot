@@ -61,7 +61,7 @@ export default class NamesCommand extends KaikiCommand {
             }
             return message.channel.send({
                 embeds: [new MessageEmbed()
-                    .setDescription(`Deleted all of <@${message.author.id}>'s nicknames${message.inGuild() ? " from this server" : ""}!.\nWell done, you made daddy forget.`)
+                    .setDescription(`Deleted all of <@${message.author.id}>'s nicknames from ${message.inGuild() ? "this server" : "all servers"}!.\nWell done, you made daddy forget.`)
                     .setFooter({
                         text: `Deleted ${deleted.count} entries.`,
                     })

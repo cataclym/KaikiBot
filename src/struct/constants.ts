@@ -17,6 +17,7 @@ export const IMAGE_REGEX = /(http(s?):)([/|.\w\s-])*\.(?:jpg|gif|png|jpeg)/gi;
 export const guildFeatures: { [index in GuildFeatures]: string } & { [index in theseDoNotYetExist]: string } = {
     ANIMATED_ICON: "Animated icon",
     BANNER: "Banner",
+    BOOSTING_TIERS_EXPERIMENT_MEDIUM_GUILD: "Experimental boosting tiers",
     COMMERCE: "Commerce",
     COMMUNITY: "Community",
     DISCOVERABLE: "Discoverable",

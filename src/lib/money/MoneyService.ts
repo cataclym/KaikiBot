@@ -1,6 +1,5 @@
 import { PrismaClient } from "@prisma/client";
 
-// TODO: CurrencyTransactions need to be added!
 export class MoneyService {
     currencyName: string;
     currencySymbol: string;
@@ -36,7 +35,7 @@ export class MoneyService {
         const bIntId = BigInt(id),
             bIntAmount = BigInt(amount);
 
-        this.lazyCreateCurtrs(bIntId, bIntAmount, reason);
+        this.lazyCreateCurrencyTransactions(bIntId, bIntAmount, reason);
         const query = await this._orm.discordUsers.upsert({
             where: { UserId: bIntId },
             update: { Amount: { increment: bIntAmount } },
@@ -59,7 +58,7 @@ export class MoneyService {
         });
 
         if (currentAmount && currentAmount.Amount >= bIntAmount) {
-            this.lazyCreateCurtrs(bIntId, -bIntAmount, reason);
+            this.lazyCreateCurrencyTransactions(bIntId, -bIntAmount, reason);
             await this._orm.discordUsers.update({
                 where: {
                     UserId: bIntId,
@@ -71,7 +70,7 @@ export class MoneyService {
             return true;
         }
         else if (!currentAmount) {
-            this.lazyCreateCurtrs(bIntId, bIntAmount, reason);
+            this.lazyCreateCurrencyTransactions(bIntId, bIntAmount, reason);
             await this._orm.discordUsers.create({
                 data: { UserId: bIntId },
             });
@@ -79,7 +78,7 @@ export class MoneyService {
         return false;
     }
 
-    lazyCreateCurtrs(id: bigint, amount: bigint, reason: string) {
+    lazyCreateCurrencyTransactions(id: bigint, amount: bigint, reason: string) {
         return setTimeout(async () => {
             await this._orm.currencyTransactions.create({
                 data: {

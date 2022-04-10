@@ -1,3 +1,4 @@
+import { Argument } from "discord-akairo";
 import { Message, MessageEmbed } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
@@ -10,7 +11,12 @@ export default class ReloadCommand extends KaikiCommand {
             ownerOnly: true,
             args: [{
                 id: "command",
-                type: "command",
+                type: Argument.union("command", (m, p) => {
+                    if (!p) return null;
+                    const alias = this.handler.aliases.get(p);
+                    if (!alias) return null;
+                    return this.handler.findCommand(alias);
+                }),
                 otherwise: (msg: Message) => ({ embeds: [KaikiEmbeds.genericArgumentError(msg)] }),
             }],
         });

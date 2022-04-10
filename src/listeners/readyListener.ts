@@ -17,13 +17,15 @@ export default class ReadyListener extends KaikiListener {
 
         new Migrations(this.client.connection, this.client)
             .runAllMigrations()
-            .then((res: number) => {
+            .then(async (res: number) => {
                 if (res) {
                     logger.info(`
 ${(chalk.greenBright)("|----------------------------------------------------------|")}
 migrationService | Migrations have successfully finished
 migrationService | Inserted ${(chalk.green)(res)} records into kaikidb
 ${(chalk.greenBright)("|----------------------------------------------------------|")}`);
+                    await this.client.botSettings.init();
+                    await this.client.guildsDb.init();
                 }
             })
             .catch(e => {

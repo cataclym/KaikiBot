@@ -18,7 +18,8 @@ export default class BlockModulesInhibitor extends KaikiInhibitor {
 
             const _blockedCategories = await this.client.orm.blockedCategories.findFirst({ where: { Guilds: { Id: BigInt(message.guildId!) } } });
             if (_blockedCategories) {
-                return !!blockedCategories[_blockedCategories.CategoryTarget];
+                const category = blockedCategories[_blockedCategories.CategoryTarget];
+                return category === command.categoryID;
             }
             return false;
         }

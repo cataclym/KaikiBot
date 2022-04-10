@@ -1,7 +1,7 @@
 import { Guilds } from "@prisma/client";
 import { Argument, Flag, PrefixSupplier } from "discord-akairo";
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
-import { Message, MessageEmbed, Permissions } from "discord.js";
+import { Message, MessageEmbed, MessageOptions, Permissions } from "discord.js";
 import { blockedCategories } from "../../lib/enums/blockedCategories";
 import GreetHandler from "../../lib/GreetHandler";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
@@ -55,43 +55,55 @@ export default class ConfigCommand extends KaikiCommand {
         // Is this okay?
         const { Anniversary, DadBot, Prefix, ErrorColor, OkColor, WelcomeChannel, ByeChannel } = db as Guilds;
 
-        const pages = [];
+        const categories = db.BlockedCategories
+            .map(e => blockedCategories[e.CategoryTarget])
+            .filter(Boolean);
 
-        pages.push(new MessageEmbed()
-            .withOkColor(message)
-            .addField("Dad-bot",
-                Utility.toggledTernary(DadBot), true)
-            .addField("Anniversary-Roles",
-                Utility.toggledTernary(Anniversary), true)
-            .addField("Guild prefix",
-                Prefix === process.env.PREFIX
-                    ? `\`${process.env.PREFIX}\` (Default)`
-                    : `\`${Prefix}\``, true)
-            .addField("Embed ok color",
-                Number(OkColor).toString(16), true)
-            .addField("Embed error color",
-                Number(ErrorColor).toString(16), true)
-            .addField("\u200B", "\u200B", true)
-            .addField("Welcome message",
-                Utility.toggledTernary(!!WelcomeChannel), true)
-            .addField("Goodbye message",
-                Utility.toggledTernary(!!ByeChannel), true)
-            .addField("\u200B", "\u200B", true)
-            .addField("Sticky roles",
-                Utility.toggledTernary(await this.client.guildsDb.get(message.guildId, "StickyRoles", false)), false));
+        const firstPage: MessageOptions = {
+            embeds: [new MessageEmbed()
+                .withOkColor(message)
+                .addField("Dad-bot",
+                    Utility.toggledTernary(DadBot), true)
+                .addField("Anniversary-Roles",
+                    Utility.toggledTernary(Anniversary), true)
+                .addField("Guild prefix",
+                    Prefix === process.env.PREFIX
+                        ? `\`${process.env.PREFIX}\` (Default)`
+                        : `\`${Prefix}\``, true)
+                .addField("Embed ok color",
+                    Number(OkColor).toString(16), true)
+                .addField("Embed error color",
+                    Number(ErrorColor).toString(16), true)
+                .addField("\u200B", "\u200B", true)
+                .addField("Welcome message",
+                    Utility.toggledTernary(!!WelcomeChannel), true)
+                .addField("Goodbye message",
+                    Utility.toggledTernary(!!ByeChannel), true)
+                .addField("\u200B", "\u200B", true)
+                .addField("Sticky roles",
+                    Utility.toggledTernary(await this.client.guildsDb.get(message.guildId, "StickyRoles", false)), false)],
+        };
+
+        if (categories.length && firstPage.embeds) {
+            (firstPage.embeds[0] as MessageEmbed).addField("Disabled categories", categories.join("\n"), false);
+        }
+
+        const pages: MessageOptions[] = [];
+        pages.push(firstPage);
 
         if (db.WelcomeMessage) {
-            pages.push(await GreetHandler.createAndParseWelcomeLeaveMessage(JSON.parse(db.WelcomeMessage), message.member));
+            pages.push(await GreetHandler.createAndParseWelcomeLeaveMessage({
+                embed: db.WelcomeMessage ? JSON.parse(db.WelcomeMessage) : null,
+                channel: db.WelcomeChannel,
+                timeout: db.WelcomeTimeout,
+            }, message.member));
         }
         if (db.ByeMessage) {
-            pages.push(await GreetHandler.createAndParseWelcomeLeaveMessage(JSON.parse(db.ByeMessage), message.member));
-        }
-
-        const categories = db.BlockedCategories.filter(e => blockedCategories[e.CategoryTarget]);
-
-        if (categories.length) {
-            (pages[0] as MessageEmbed)
-                .addField("Disabled categories", categories.join("\n"), false);
+            pages.push(await GreetHandler.createAndParseWelcomeLeaveMessage({
+                embed: db.WelcomeMessage ? JSON.parse(db.ByeMessage) : null,
+                channel: db.ByeChannel,
+                timeout: db.ByeTimeout,
+            }, message.member));
         }
 
         return sendPaginatedMessage(message, pages, {});

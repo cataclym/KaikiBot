@@ -14,9 +14,9 @@ export default class WelcomeTestCommand extends KaikiCommand {
         });
     }
 
-    public async exec(message: Message): Promise<void> {
+    public async exec(message: Message<true>): Promise<void> {
         const db = await this.client.orm.guilds.findUnique({
-            where: { Id: BigInt(message.guildId!) },
+            where: { Id: BigInt(message.guildId) },
             select: { WelcomeChannel: true, WelcomeMessage: true, WelcomeTimeout: true },
         });
 
@@ -25,7 +25,7 @@ export default class WelcomeTestCommand extends KaikiCommand {
         const welcomeData = {
             channel: db.WelcomeChannel || BigInt(message.channelId),
             embed: db.WelcomeMessage,
-            timeout: db.WelcomeTimeout || undefined,
+            timeout: db.WelcomeTimeout,
         };
 
         await GreetHandler.sendWelcomeLeaveMessage(welcomeData, message.member!);

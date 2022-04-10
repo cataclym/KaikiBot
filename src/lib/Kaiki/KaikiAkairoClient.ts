@@ -7,7 +7,7 @@ import { Connection } from "mysql2/promise";
 import { join } from "path";
 import KaikiCache from "../../cache/KaikiCache";
 import Database from "../../struct/db/Database";
-import MySQLProvider from "../../struct/db/MySQLProvider";
+import DatabaseProvider from "../../struct/db/DatabaseProvider";
 import AnniversaryRolesService from "../AnniversaryRolesService";
 import { resetDailyClaims } from "../functions";
 import IPackageJSON from "../Interfaces/IPackageJSON";
@@ -17,12 +17,12 @@ import KaikiCommandHandler from "./KaikiCommandHandler";
 
 export default class KaikiAkairoClient extends AkairoClient {
     public anniversaryService: AnniversaryRolesService;
-    public botSettings: MySQLProvider;
+    public botSettings: DatabaseProvider;
     public cache: KaikiCache;
     public commandHandler: CommandHandler;
     public connection: Connection;
-    public dadBotChannels: MySQLProvider;
-    public guildsDb: MySQLProvider;
+    public dadBotChannels: DatabaseProvider;
+    public guildsDb: DatabaseProvider;
     public inhibitorHandler: InhibitorHandler;
     public listenerHandler: ListenerHandler;
     public money: MoneyService;
@@ -122,16 +122,17 @@ export default class KaikiAkairoClient extends AkairoClient {
         this.db.init()
             .then((obj) => {
                 this.orm = obj.orm;
-                this.connection = obj.connection;
+                this.connection = obj.mySQLConnection;
 
-                this.botSettings = new MySQLProvider(this.connection, "BotSettings", { idColumn: "Id" });
+                this.botSettings = new DatabaseProvider(this.connection, "BotSettings", { idColumn: "Id" });
                 this.botSettings.init().then(() => logger.info(`SQL BotSettings provider - ${chalk.green("READY")}`));
 
-                this.guildsDb = new MySQLProvider(this.connection, "Guilds", { idColumn: "Id" });
+                this.guildsDb = new DatabaseProvider(this.connection, "Guilds", { idColumn: "Id" });
                 this.guildsDb.init().then(() => logger.info(`SQL Guild provider - ${chalk.green("READY")}`));
 
                 this.cache = new KaikiCache(this.orm, this.connection);
                 void this.cache.init();
+
                 this.money = new MoneyService(this.orm);
             });
     }

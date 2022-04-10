@@ -8,6 +8,7 @@ export type separatedEmoteReactTypes = {
     no_space: emoteReactObjectType
 };
 
-export type theseDoNotYetExist = "MEMBER_PROFILES"
+export type theseDoNotYetExist = "BOOSTING_TIERS_EXPERIMENT_MEDIUM_GUILD"
+    | "MEMBER_PROFILES"
     | "NEW_THREAD_PERMISSIONS"
     | "THREADS_ENABLED";

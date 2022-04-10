@@ -1,47 +1,37 @@
 import { PrismaClient } from "@prisma/client";
 import { ActivityType } from "discord.js";
 import * as mysql2 from "mysql2/promise";
-import { Connection } from "mysql2/promise";
-
-type initReturn = {
-    orm: PrismaClient,
-    connection: Connection
-}
 
 export default class Database {
-    private _config: mysql2.ConnectionOptions;
-    private orm: PrismaClient;
+    private _config: mysql2.ConnectionOptions = {
+        uri: process.env.DATABASE_URL,
+        supportBigNumbers: true,
+    };
+    public orm: PrismaClient;
+    public mySQLConnection: any;
 
-    constructor() {
-        this._config = {
-            uri: process.env.DATABASE_URL,
-        };
-    }
-
-    public async init(): Promise<initReturn> {
-        const connection = await mysql2.createConnection(this._config)
+    public async init(): Promise<Database> {
+        this.mySQLConnection = await mysql2.createConnection(this._config)
             .catch(async () => {
                 await mysql2.createConnection({ uri: process.env.DATABASE_URL, database: "mysql" })
                     .then(c => c.execute("CREATE DATABASE IF NOT EXISTS kaikidb")
                         .then(() => c.end()),
                     );
 
-                return (await this.init()).connection;
+                return this.init();
             });
 
         this.orm = new PrismaClient();
 
         const botSettings = await this.orm.botSettings.findFirst();
+
         if (!botSettings) {
             await this.orm.botSettings.create({
                 data: { Id: 1 },
             });
         }
 
-        return {
-            orm: this.orm,
-            connection: connection,
-        };
+        return this;
     }
 
     public async getOrCreateGuild(id: string | bigint) {
