@@ -61,7 +61,7 @@ export default class slotsCommand extends KaikiCommand {
         })) {
             const winAmount = amount * 10;
             await this.client.money.Add(message.author.id, winAmount, "Slots won x10");
-            result.string += `\n\nYou won ${winAmount} ${this.client.money.currencySymbol}!`;
+            result.string += `\n\nYou won **${winAmount}** ${this.client.money.currencySymbol}!`;
         }
 
         else {

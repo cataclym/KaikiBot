@@ -28,7 +28,7 @@ export default class ClaimDailyCommand extends KaikiCommand {
 
             return message.channel.send({
                 embeds: [new MessageEmbed()
-                    .setDescription(`**${message.author.tag}**, You've just claimed your daily allowance!\n${amount} ${this.client.money.currencyName} ${this.client.money.currencySymbol}`)
+                    .setDescription(`**${message.author.tag}**, You've just claimed your daily allowance!\n**${amount}** ${this.client.money.currencyName} ${this.client.money.currencySymbol}`)
                     .withOkColor(message),
                 ],
             });

@@ -36,10 +36,11 @@ export default class award extends KaikiCommand {
 
     public async exec(msg: Message, { amount, user }: { amount: number; user: User; }): Promise<void> {
         const newAmount = await this.client.money.Add(user.id, amount, "Awarded by bot owner");
+        const bInt = BigInt(amount);
         await msg.channel.send({
             embeds: [new MessageEmbed()
-                .setDescription(`You've awarded ${amount} ${this.client.money.currencyName} ${this.client.money.currencySymbol} to ${user.username}.
-They now have ${newAmount} ${this.client.money.currencyName} ${this.client.money.currencySymbol}`)
+                .setDescription(`You've awarded **${bInt}** ${this.client.money.currencyName} ${this.client.money.currencySymbol} to ${user.username}.
+They now have **${newAmount}** ${this.client.money.currencyName} ${this.client.money.currencySymbol}`)
                 .withOkColor(msg)],
         });
     }

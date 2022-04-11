@@ -50,7 +50,7 @@ export default class BetRollCommand extends KaikiCommand {
 
             return message.channel.send({
                 embeds: [new MessageEmbed()
-                    .setDescription(`🎲 You rolled \`${roll}\`, and won ${winnings} ${this.client.money.currencySymbol}, for rolling above 66`)
+                    .setDescription(`🎲 You rolled \`${roll}\`, and won **${winnings}** ${this.client.money.currencySymbol}, for rolling above 66`)
                     .withOkColor(message)],
             });
         }

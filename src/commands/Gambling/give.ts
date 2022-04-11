@@ -52,7 +52,7 @@ export default class give extends KaikiCommand {
         await this.client.money.Add(user.id, amount, `Gift from ${msg.author.tag} [${msg.author.id}]`);
         await msg.channel.send({
             embeds: [new MessageEmbed()
-                .setDescription(`You've given ${amount} ${this.client.money.currencySymbol} to ${user.username}`)
+                .setDescription(`You've given **${amount}** ${this.client.money.currencySymbol} to ${user.username}`)
                 .withOkColor(msg)],
         });
     }

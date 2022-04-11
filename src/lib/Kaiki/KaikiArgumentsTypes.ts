@@ -45,5 +45,5 @@ export default class KaikiArgumentsTypes {
             });
     };
 
-    static KaikiMoneyArgument = Argument.range("integer", 0, parseInt("7FFFFFFFFFFFFFFF", 16));
+    static KaikiMoneyArgument = Argument.range("bigint", 0, parseInt("7FFFFFFFFFFFFFFF", 16));
 }

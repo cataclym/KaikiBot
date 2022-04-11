@@ -68,7 +68,7 @@ export default class BetflipCommands extends KaikiCommand {
 
             return message.channel.send({
                 embeds: [emb
-                    .setDescription(`You won ${amountWon} ${this.client.money.currencySymbol}!!`)
+                    .setDescription(`You won **${amountWon}** ${this.client.money.currencySymbol}!!`)
                     .withOkColor(message),
                 ],
             });

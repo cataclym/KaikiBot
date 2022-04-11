@@ -1,15 +1,17 @@
 ### Paths
+
 - [Readme](../README.md)
 - Docs
-  - [Guide](GUIDE.md)
+    - [Guide](GUIDE.md)
 
 # .env setup guide
 
 The .env file is important for the bot to run at all. Read below how to populate its fields.
 
-### CLIENT_TOKEN
+## CLIENT_TOKEN
 
 Create a bot application
+
 * Go to your discord bot applications (https://discord.com/developers/applications/)
 * Click `New Application` in top right corner
 * Fill in a name, and assign it to personal team.
@@ -22,18 +24,18 @@ Example
 
     CLIENT_TOKEN=MND5MTA2MzY2MzgwNzU5Fjgw.O08nDN.Bl6rIwtlAg9Hxuz8CLPD0l23sun
 
-### OWNER
+## OWNER
 
 * Enable developer mode in Discord
     * Navigate to Discord settings
     * Under settings, click `Advanced`
-    * Tick `Developer mode`. Make sure it's green. 
-    
+    * Tick `Developer mode`. Make sure it's green.
+
 Example
 
     OWNER=142788173885276162
 
-### PREFIX
+## PREFIX
 
 Decide what prefix the bot should default to on new servers.
 
@@ -41,10 +43,10 @@ Example
 
     PREFIX=;
 
-### KAWAIIKEY
+## KAWAIIKEY
 
 * Login to https://kawaii.red/dashboard/ with your Discord account
-* Reveal and copy the token 
+* Reveal and copy the token
 * Paste the token in the .env file. Make sure it looks like the example below.
 
 Example
@@ -53,16 +55,13 @@ Example
 
 ## MySQL
 
-Replace `root` with your MySQL user and password credentials
+Replace `yourUsername` and `yourPassword` with your MySQL user and password credentials
 
 Example
 
+    DATABASE_URL="mysql://yourUsername:yourPassword@localhost:3306/kaikidb"
 
-    MYSQL_USER=mysql_user
-
-    MYSQL_PASS=password123
-
-### The rest of the file
+## The rest of the file
 
 Please leave this as is, unless you know what you're doing
 
@@ -72,7 +71,7 @@ Please leave this as is, unless you know what you're doing
 
     NODE_ENV=production
 
-### Example of finished .env file
+## Example of finished .env file
 
     CLIENT_TOKEN=MND5MTA2MzY2MzgwNzU5Fjgw.O08nDN.Bl6rIwtlAg9Hxuz8CLPD0l23sun
 
@@ -80,11 +79,9 @@ Please leave this as is, unless you know what you're doing
 
     PREFIX=;
 
+    DATABASE_URL="mysql://yourUsername:yourPassword@localhost:3306/kaikidb"
+
     KAWAIIKEY=142788173885276162.DspDpD0isjuXAKD73vWs
-
-    MYSQL_USER=root
-
-    MYSQL_PASS=root
 
     DADBOT_MAX_LENGTH=256
 

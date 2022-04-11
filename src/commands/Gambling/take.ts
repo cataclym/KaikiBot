@@ -39,7 +39,7 @@ export default class take extends KaikiCommand {
         if (!success) {
             await msg.channel.send({
                 embeds: [new MessageEmbed()
-                    .setDescription(`${user.username} has less than ${amount} ${this.client.money.currencySymbol}`)
+                    .setDescription(`${user.username} has less than **${amount}** ${this.client.money.currencySymbol}`)
                     .withErrorColor(msg)],
             });
             return;
@@ -47,7 +47,7 @@ export default class take extends KaikiCommand {
 
         await msg.channel.send({
             embeds: [new MessageEmbed()
-                .setDescription(`Successfully took ${amount} ${this.client.money.currencySymbol} from ${user.username}`)
+                .setDescription(`Successfully took **${amount}** ${this.client.money.currencySymbol} from ${user.username}`)
                 .withOkColor(msg)],
         });
     }
