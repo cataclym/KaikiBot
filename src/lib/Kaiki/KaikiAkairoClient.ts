@@ -125,10 +125,10 @@ export default class KaikiAkairoClient extends AkairoClient {
                 this.connection = obj.mySQLConnection;
 
                 this.botSettings = new DatabaseProvider(this.connection, "BotSettings", { idColumn: "Id" });
-                this.botSettings.init().then(() => logger.info(`SQL BotSettings provider - ${chalk.green("READY")}`));
+                this.botSettings.init().then(() => logger.info(`${chalk.green("READY")} - BotSettings provider`));
 
                 this.guildsDb = new DatabaseProvider(this.connection, "Guilds", { idColumn: "Id" });
-                this.guildsDb.init().then(() => logger.info(`SQL Guild provider - ${chalk.green("READY")}`));
+                this.guildsDb.init().then(() => logger.info(`${chalk.green("READY")} - Guild provider`));
 
                 this.cache = new KaikiCache(this.orm, this.connection);
                 void this.cache.init();

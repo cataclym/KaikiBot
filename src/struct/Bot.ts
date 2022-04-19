@@ -36,7 +36,6 @@ export default class Bot {
 
         this.loadPackageJSON()
             .then(() => {
-                logger.info("Package loaded!");
                 if (this.client.package.optionalDependencies["mongoose"]) {
                     this.mongoDb = new MongoDb();
                 }
@@ -45,8 +44,8 @@ export default class Bot {
 
         this.client.login(process.env.CLIENT_TOKEN)
             .then(async () => {
-                if (this.client.user) {
-                    logger.info(`Logged in as ${chalk.greenBright(this.client.user.tag)}!`);
+                if (!this.client.user) {
+                    throw new Error("Missing bot client user!");
                 }
 
                 await this.client.application?.fetch();
@@ -61,6 +60,9 @@ export default class Bot {
                 }
 
                 this.client.ownerID = this.client.owner.id;
+
+                logger.info(`Bot account: ${chalk.greenBright(this.client.user.tag)}`);
+                logger.info(`Bot owner: ${chalk.greenBright(this.client.owner.tag)}`);
 
                 // Let bot owner know when bot goes online.
                 if (this.client.user && ["Tsukihi Araragi#3589", "Kaiki Deishū#9185"].includes(this.client.user.tag)) {
@@ -79,7 +81,8 @@ export default class Bot {
     }
 
     private async loadPackageJSON() {
-        this.client.package = await fs.readFile(process.env.npm_package_json!)
+        if (!process.env.npm_package_json) throw new Error("No package.json present in npm environment!");
+        this.client.package = await fs.readFile(process.env.npm_package_json)
             .then(file => JSON.parse(file.toString()));
     }
 }
