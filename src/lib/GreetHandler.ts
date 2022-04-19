@@ -63,7 +63,7 @@ export default class GreetHandler {
 
     static async createAndParseWelcomeLeaveMessage(data: sendMessageData, guildMember: GuildMember): Promise<MessageOptions> {
         if (!data.embed) return GreetHandler.emptyMessageOptions(guildMember.guild);
-        return JSON.parse(await parsePlaceHolders(JSON.stringify(data.embed), guildMember));
+        return JSON.parse(await parsePlaceHolders(data.embed, guildMember));
     }
 
     static async sendWelcomeLeaveMessage(data: sendMessageData, guildMember: GuildMember): Promise<Message | void> {

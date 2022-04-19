@@ -22,20 +22,13 @@ export default class WelcomeToggleCommand extends KaikiCommand {
         const embed = new MessageEmbed()
             .withOkColor(message);
 
-        const guildTable = await this.client.orm.guilds.findUnique({
-            where: {
-                Id: BigInt(message.guildId),
-            },
-            select: {
-                WelcomeChannel: true,
-            },
-        });
+        const guildTable = await this.client.db.getOrCreateGuild(BigInt(message.guildId));
 
         channel = channel || message.channel;
 
         const bigIntChannelId = BigInt(channel.id);
 
-        switch (guildTable?.WelcomeChannel) {
+        switch (guildTable.WelcomeChannel) {
             case undefined:
             case null: {
                 await this.client.orm.guilds.update({

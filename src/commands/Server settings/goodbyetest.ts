@@ -16,12 +16,7 @@ export default class GoodbyeTestTestCommand extends KaikiCommand {
 
     public async exec(message: Message<true>): Promise<void> {
 
-        const db = await this.client.orm.guilds.findUnique({
-            where: { Id: BigInt(message.guildId) },
-            select: { ByeMessage: true, ByeChannel: true, ByeTimeout: true },
-        });
-
-        if (!db) return;
+        const db = await this.client.db.getOrCreateGuild(BigInt(message.guildId));
 
         const welcomeData = {
             channel: db.ByeChannel || BigInt(message.channelId),
@@ -29,6 +24,8 @@ export default class GoodbyeTestTestCommand extends KaikiCommand {
             timeout: db.ByeTimeout,
         };
 
-        await GreetHandler.sendWelcomeLeaveMessage(welcomeData, message.member!);
+        if (!message.member) return;
+
+        await GreetHandler.sendWelcomeLeaveMessage(welcomeData, message.member);
     }
 }

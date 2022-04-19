@@ -15,20 +15,13 @@ export default class ToggleStickyRolesCommand extends KaikiCommand {
 
     public async exec(message: Message<true>): Promise<Message> {
 
-        const db = await this.client.orm.guilds.findUnique({
-            where: {
-                Id: BigInt(message.guildId),
-            },
-            select: {
-                StickyRoles: true,
-            },
-        });
+        const db = await this.client.db.getOrCreateGuild(BigInt(message.guildId));
 
-        await this.client.guildsDb.set(message.guild!.id, "StickyRoles", !!db?.StickyRoles);
+        await this.client.guildsDb.set(message.guild.id, "StickyRoles", !!db.StickyRoles);
 
         return message.channel.send({
             embeds: [new MessageEmbed()
-                .setDescription(`Sticky roles have been ${db?.StickyRoles ? "enabled" : "disabled"}.`)
+                .setDescription(`Sticky roles have been ${db.StickyRoles ? "enabled" : "disabled"}.`)
                 .withOkColor(message)],
         });
     }

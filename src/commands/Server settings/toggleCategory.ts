@@ -28,12 +28,12 @@ export default class ToggleCategoryCommand extends KaikiCommand {
         });
     }
 
-    public async exec(message: Message, { category }: { category: Category<string, Command> }): Promise<Message> {
+    public async exec(message: Message<true>, { category }: { category: Category<string, Command> }): Promise<Message> {
 
         const guild = (message.guild as Guild);
         const index = blockedCategories[category.id as keyof typeof blockedCategories];
 
-        const guildDb = await this.client.orm.guilds.findFirst({
+        let guildDb = await this.client.orm.guilds.findFirst({
             where: {
                 Id: BigInt(guild.id),
             },
@@ -43,9 +43,11 @@ export default class ToggleCategoryCommand extends KaikiCommand {
         });
 
         if (!guildDb) {
-            return message.channel.send({
-                embeds: [await KaikiEmbeds.errorMessage(message, "Guild is not registered in DB! Contact bot owner as soon as possible.")],
-            });
+            const obj = {
+                BlockedCategories: [],
+            };
+            Object.assign(obj, await this.client.db.getOrCreateGuild(BigInt(message.guildId)));
+            guildDb = obj;
         }
 
         const exists = guildDb.BlockedCategories.find(cat => cat.CategoryTarget === index);
