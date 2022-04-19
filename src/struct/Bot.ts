@@ -1,6 +1,6 @@
 import chalk from "chalk";
 import { execSync } from "child_process";
-import { MessageEmbed } from "discord.js";
+import { MessageEmbed, Team } from "discord.js";
 import fs from "fs/promises";
 import logger from "loglevel";
 import KaikiAkairoClient from "../lib/Kaiki/KaikiAkairoClient";
@@ -50,14 +50,22 @@ export default class Bot {
 
                 await this.client.application?.fetch();
 
-                this.client.owner = Array.isArray(this.client.application?.owner)
-                    ? this.client.application?.owner[0]
-                    : this.client.application?.owner;
-
-                if (!this.client.owner) {
-                    logger.error("No owner found! Double check your bot application in Discord's developer panel.");
-                    process.exit(1);
+                if (!this.client.application?.owner) {
+                    return this.noBotOwner();
                 }
+
+                const owner = this.client.application.owner instanceof Team
+                    ? this.client.application.owner.owner?.user
+                    : this.client.application.owner;
+
+                if (!owner) {
+                    return this.noBotOwner();
+                }
+
+                else {
+                    this.client.owner = owner;
+                }
+
 
                 this.client.ownerID = this.client.owner.id;
 
@@ -84,5 +92,10 @@ export default class Bot {
         if (!process.env.npm_package_json) throw new Error("No package.json present in npm environment!");
         this.client.package = await fs.readFile(process.env.npm_package_json)
             .then(file => JSON.parse(file.toString()));
+    }
+
+    private noBotOwner() {
+        logger.error("No bot owner found! Double check your bot application in Discord's developer panel.");
+        process.exit(1);
     }
 }
