@@ -22,7 +22,7 @@ export default class GoodbyeConfigCommand extends KaikiCommand {
         const embed = new MessageEmbed()
             .withOkColor(message);
 
-        const guildTable = await this.client.orm.guilds.findUnique({
+        let guildTable = await this.client.orm.guilds.findUnique({
             where: {
                 Id: BigInt(message.guildId),
             },
@@ -30,6 +30,11 @@ export default class GoodbyeConfigCommand extends KaikiCommand {
                 ByeChannel: true,
             },
         });
+
+        if (!guildTable) {
+            guildTable = await this.client.db.getOrCreateGuild(message.guildId);
+        }
+
 
         channel = channel || message.channel;
 

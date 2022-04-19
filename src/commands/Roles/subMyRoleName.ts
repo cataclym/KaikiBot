@@ -1,7 +1,7 @@
 import { Message, MessageEmbed } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
-import Roles from "../../lib/roles";
+import Roles from "../../lib/Roles";
 import Utility from "../../lib/Utility";
 
 export default class MyRoleSubCommandName extends KaikiCommand {

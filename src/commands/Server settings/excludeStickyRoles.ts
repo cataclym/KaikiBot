@@ -1,3 +1,4 @@
+import { ExcludedStickyRoles, Guilds } from "@prisma/client";
 import { Collection, Message, MessageEmbed, Permissions, Role, Snowflake } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
@@ -29,7 +30,7 @@ export default class ExcludeStickyRolesCommand extends KaikiCommand {
     public async exec(message: Message<true>, { roles }: { roles: Collection<Snowflake, Role> }) {
 
         const bigIntGuildId = BigInt(message.guildId);
-        const guildDb = await this.client.orm.guilds.findUnique({
+        let guildDb = await this.client.orm.guilds.findUnique({
             where: {
                 Id: bigIntGuildId,
             },
@@ -37,6 +38,11 @@ export default class ExcludeStickyRolesCommand extends KaikiCommand {
                 ExcludedStickyRoles: true,
             },
         });
+
+        if (!guildDb) {
+            guildDb = await this.client.db.getOrCreateGuild(bigIntGuildId) as (Guilds & { ExcludedStickyRoles: ExcludedStickyRoles[] });
+            guildDb["ExcludedStickyRoles"] = [];
+        }
 
         const embed = new MessageEmbed()
             .setTitle("Excluded sticky-roles")

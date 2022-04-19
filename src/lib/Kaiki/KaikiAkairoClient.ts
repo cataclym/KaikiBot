@@ -117,7 +117,7 @@ export default class KaikiAkairoClient extends AkairoClient {
     }
 
     private initializeDatabase() {
-        this.db = new Database();
+        this.db = new Database(this);
 
         this.db.init()
             .then((obj) => {

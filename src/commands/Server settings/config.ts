@@ -1,4 +1,4 @@
-import { Guilds } from "@prisma/client";
+import { BlockedCategories, Guilds } from "@prisma/client";
 import { Argument, Flag, PrefixSupplier } from "discord-akairo";
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
 import { Message, MessageEmbed, MessageOptions, Permissions } from "discord.js";
@@ -45,12 +45,16 @@ export default class ConfigCommand extends KaikiCommand {
 
         if (!message.member) return message;
 
-        const db = await this.client.orm.guilds.findUnique({
+        let db = await this.client.orm.guilds.findUnique({
             where: { Id: BigInt(message.guildId) },
             include: { BlockedCategories: true },
         });
 
-        if (!db) return message;
+        if (!db) {
+            const g: any = await this.client.db.getOrCreateGuild(BigInt(message.guildId));
+            g["BlockedCategories"] = [];
+            db = g as (Guilds & { BlockedCategories: BlockedCategories[] });
+        }
 
         // Is this okay?
         const { Anniversary, DadBot, Prefix, ErrorColor, OkColor, WelcomeChannel, ByeChannel } = db as Guilds;

@@ -1,7 +1,7 @@
 import { GuildMember, Message, MessageEmbed, Permissions } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
-import { restoreUserRoles } from "../../lib/roles";
+import { restoreUserRoles } from "../../lib/Roles";
 import Utility from "../../lib/Utility";
 
 export default class RestoreUserRoles extends KaikiCommand {

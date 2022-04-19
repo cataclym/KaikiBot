@@ -1,8 +1,8 @@
 import { GuildMember, Message, MessageEmbed, Role } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-
-import { rolePermissionCheck } from "../../lib/roles";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
+
+import { rolePermissionCheck } from "../../lib/Roles";
 
 export default class RoleRemoveCommand extends KaikiCommand {
     constructor() {

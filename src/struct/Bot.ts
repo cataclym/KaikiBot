@@ -6,7 +6,7 @@ import logger from "loglevel";
 import KaikiAkairoClient from "../lib/Kaiki/KaikiAkairoClient";
 import MongoDb from "../lib/Migrations/MongoDb";
 
-export class Bot {
+export default class Bot {
     private readonly client: KaikiAkairoClient;
     private mongoDb: MongoDb;
 

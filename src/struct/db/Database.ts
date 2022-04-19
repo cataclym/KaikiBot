@@ -1,27 +1,29 @@
 import { PrismaClient } from "@prisma/client";
 import { ActivityType } from "discord.js";
 import * as mysql2 from "mysql2/promise";
+import KaikiAkairoClient from "../../lib/Kaiki/KaikiAkairoClient";
 
 export default class Database {
+    private _client: KaikiAkairoClient;
     private _config: mysql2.ConnectionOptions = {
         uri: process.env.DATABASE_URL,
         supportBigNumbers: true,
     };
     public orm: PrismaClient;
-    public mySQLConnection: any;
+    public mySQLConnection: mysql2.Connection;
+
+    constructor(client: KaikiAkairoClient) {
+        this._client = client;
+    }
 
     public async init(): Promise<Database> {
-        this.mySQLConnection = await mysql2.createConnection(this._config)
-            .catch(async () => {
-                await mysql2.createConnection({ uri: process.env.DATABASE_URL, database: "mysql" })
-                    .then(c => c.execute("CREATE DATABASE IF NOT EXISTS kaikidb")
-                        .then(() => c.end()),
-                    );
-
-                return this.init();
-            });
-
-        this.orm = new PrismaClient();
+        try {
+            this.mySQLConnection = await mysql2.createConnection(this._config);
+            this.orm = new PrismaClient();
+        }
+        catch (e) {
+            throw new Error(e);
+        }
 
         const botSettings = await this.orm.botSettings.findFirst();
 
@@ -42,12 +44,14 @@ export default class Database {
         });
 
         if (!guild) {
-            return await this.orm.guilds.create({
+            const newGuild = await this.orm.guilds.create({
                 data: {
                     Prefix: process.env.PREFIX!,
                     Id: BigInt(id),
                 },
             });
+            await this._client.guildsDb.items.set(String(newGuild.Id), newGuild);
+            return newGuild;
         }
         return guild;
     }

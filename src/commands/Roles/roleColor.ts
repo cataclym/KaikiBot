@@ -2,7 +2,7 @@ import { Message, MessageAttachment, MessageEmbed, Role } from "discord.js";
 import { imgFromColor } from "../../lib/Color";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
-import { rolePermissionCheck } from "../../lib/roles";
+import { rolePermissionCheck } from "../../lib/Roles";
 import { TKaikiColor } from "../../lib/Types/TColor";
 
 export default class RoleColorCommand extends KaikiCommand {

@@ -1,3 +1,4 @@
+import { DadBotChannels, Guilds } from "@prisma/client";
 import { Argument } from "discord-akairo";
 import { GuildChannel, Message, MessageEmbed, Snowflake, TextChannel } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
@@ -22,7 +23,7 @@ export default class ExcludeDadbotChannelCommand extends KaikiCommand {
     public async exec(message: Message<true>, { channels }: { channels: Map<Snowflake, TextChannel> | undefined }): Promise<Message> {
 
         const bigIntGuildId = BigInt(message.guildId);
-        const guildDb = await this.client.orm.guilds.findUnique({
+        let guildDb = await this.client.orm.guilds.findUnique({
             where: {
                 Id: bigIntGuildId,
             },
@@ -30,6 +31,11 @@ export default class ExcludeDadbotChannelCommand extends KaikiCommand {
                 DadBotChannels: true,
             },
         });
+
+        if (!guildDb) {
+            guildDb = await this.client.db.getOrCreateGuild(bigIntGuildId) as (Guilds & { DadBotChannels: DadBotChannels[] });
+            guildDb["DadBotChannels"] = [];
+        }
 
         const embed = new MessageEmbed()
             .setTitle("Excluded channels")

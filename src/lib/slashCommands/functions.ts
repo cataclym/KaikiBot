@@ -14,11 +14,7 @@ export async function ExcludeSlashCommand(interaction: CommandInteraction): Prom
         });
     }
 
-    const db = await interaction.client.orm.guilds.findUnique({
-        where: {
-            Id: BigInt(interaction.guildId as Snowflake),
-        },
-    });
+    const db = await interaction.client.db.getOrCreateGuild(BigInt(interaction.guildId as Snowflake));
     if (!db) return;
     const roleId = db.ExcludeRole;
 

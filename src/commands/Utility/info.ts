@@ -21,7 +21,7 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 import { regexpType } from "../../lib/Types/TCustom";
 import Utility from "../../lib/Utility";
-import { EMOTE_REGEX } from "../../struct/constants";
+import Constants from "../../struct/Constants";
 
 export default class InfoCommand extends KaikiCommand {
     constructor() {
@@ -35,7 +35,7 @@ export default class InfoCommand extends KaikiCommand {
                     id: "obj",
                     type: Argument.union("member", "channel", "role", "emoji", (message, content) => {
                         return emojis.find(content);
-                    }, "guildMessage", EMOTE_REGEX),
+                    }, "guildMessage", Constants.EMOTE_REGEX),
                     match: "content",
                     otherwise: async (m: Message) => ({
                         embeds: [await KaikiEmbeds.errorMessage(m, "A channel, user, role, emoji or message was not found. Make sure to provide a valid argument!")],

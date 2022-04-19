@@ -3,9 +3,9 @@ import { Guild, GuildEmoji, Message, MessageAttachment, MessageEmbed, ReactionEm
 import { isRegex } from "../../lib/functions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
-import Roles, { rolePermissionCheck } from "../../lib/roles";
+import Roles, { rolePermissionCheck } from "../../lib/Roles";
 import Utility from "../../lib/Utility";
-import { EMOTE_REGEX, IMAGE_REGEX } from "../../struct/constants";
+import Constants from "../../struct/Constants";
 
 export default class MyRoleSubIcon extends KaikiCommand {
     static resetWords = ["clear", "reset"];
@@ -21,7 +21,7 @@ export default class MyRoleSubIcon extends KaikiCommand {
                     if (message.attachments.first()) {
                         return message.attachments.first();
                     }
-                }, "emoji", MyRoleSubIcon.resetWords, EMOTE_REGEX, IMAGE_REGEX),
+                }, "emoji", MyRoleSubIcon.resetWords, Constants.EMOTE_REGEX, Constants.IMAGE_REGEX),
                 otherwise: (m: Message) => ({
                     embeds: [new MessageEmbed()
                         .setTitle("Please provide a valid emote or image link!")
@@ -56,7 +56,7 @@ export default class MyRoleSubIcon extends KaikiCommand {
 
         else if (isRegex(icon)) {
 
-            if (EMOTE_REGEX.exec(icon.match[0])) {
+            if (Constants.EMOTE_REGEX.exec(icon.match[0])) {
                 const emoji = icon.match[0].toString().split(":");
 
                 if (emoji.length < 3) return message.channel.send({ embeds: [KaikiEmbeds.genericArgumentError(message)] });

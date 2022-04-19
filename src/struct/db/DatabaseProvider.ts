@@ -7,6 +7,7 @@ export default class DatabaseProvider extends Provider {
     private readonly _tableName: string;
     private readonly _idColumn: string;
     private readonly _dataColumn?: string;
+    public items: Collection<string, any>;
 
     constructor(db: Connection, tableName: string, options?: ProviderOptions) {
         super();

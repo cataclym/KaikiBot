@@ -2,7 +2,7 @@ import { PrismaClient } from "@prisma/client";
 import chalk from "chalk";
 import { GuildMember, Message, MessageEmbed } from "discord.js";
 import logger from "loglevel";
-import { badWords } from "../struct/constants";
+import Constants from "../struct/Constants";
 import { regexpType } from "./Types/TCustom";
 import Utility from "./Utility";
 
@@ -15,7 +15,7 @@ export async function tiredKaikiCryReact(message: Message<true>): Promise<void> 
     }
 
     if (new RegExp(botName.join("|")).test(message.content.toLowerCase())
-        && new RegExp(badWords.join("|")).test(message.content.toLowerCase())) {
+        && new RegExp(Constants.badWords.join("|")).test(message.content.toLowerCase())) {
 
         // Absolute randomness
         if (Math.floor(Math.random() * 10) < 7) {

@@ -1,8 +1,8 @@
+import { time } from "@discordjs/builders";
 import { Guild, Message, MessageEmbed } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
-import { guildFeatures } from "../../struct/constants";
-import { time } from "@discordjs/builders";
+import Constants from "../../struct/Constants";
 
 export default class ServerInfoCommand extends KaikiCommand {
     constructor() {
@@ -44,7 +44,7 @@ News: **${guild?.channels.cache.filter((channel) => channel.type === "GUILD_NEWS
                 },
                 {
                     name: "Features", value: guild?.features.length
-                        ? guild?.features.map(f => guildFeatures[f] || f).sort().join("\n")
+                        ? guild?.features.map(f => Constants.guildFeatures[f] || f).sort().join("\n")
                         : "None", inline: false,
                 },
             ],

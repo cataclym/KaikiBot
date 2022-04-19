@@ -4,7 +4,7 @@ import chalk from "chalk";
 
 import { Guild, GuildMember, Permissions, Role } from "discord.js";
 import logger from "loglevel";
-import { AnniversaryStrings } from "../struct/constants";
+import Constants from "../struct/Constants";
 import KaikiAkairoClient from "./Kaiki/KaikiAkairoClient";
 
 export default class AnniversaryRolesService {
@@ -78,20 +78,20 @@ export default class AnniversaryRolesService {
     }
 
     async handleGuildRoles(guild: Guild): Promise<Role[] | unknown[]> {
-        if (!guild.roles.cache.some(r => r.name === AnniversaryStrings.roleNameJoin)) {
+        if (!guild.roles.cache.some(r => r.name === Constants.AnniversaryStrings.roleNameJoin)) {
             guild.roles.create({
-                name: AnniversaryStrings.roleNameJoin,
+                name: Constants.AnniversaryStrings.roleNameJoin,
                 reason: "Role didn't exist yet",
             }).catch(err => logger.error(err));
         }
-        if (!guild.roles.cache.some(r => r.name === AnniversaryStrings.roleNameCreated)) {
+        if (!guild.roles.cache.some(r => r.name === Constants.AnniversaryStrings.roleNameCreated)) {
             guild.roles.create({
-                name: AnniversaryStrings.roleNameCreated,
+                name: Constants.AnniversaryStrings.roleNameCreated,
                 reason: "Role didn't exist yet",
             }).catch(err => logger.error(err));
         }
-        const AnniversaryRoleJ = guild.roles.cache.find(r => r.name === AnniversaryStrings.roleNameJoin);
-        const AnniversaryRoleC = guild.roles.cache.find(r => r.name === AnniversaryStrings.roleNameCreated);
+        const AnniversaryRoleJ = guild.roles.cache.find(r => r.name === Constants.AnniversaryStrings.roleNameJoin);
+        const AnniversaryRoleC = guild.roles.cache.find(r => r.name === Constants.AnniversaryStrings.roleNameCreated);
 
         return [AnniversaryRoleC, AnniversaryRoleJ];
     }

@@ -20,26 +20,31 @@ export default class EmoteCount extends KaikiCommand {
         });
     }
 
-    public async exec(message: Message, { flag }: { flag: boolean }): Promise<Message | void> {
+    public async exec(message: Message<true>, { flag }: { flag: boolean }): Promise<Message | void> {
 
-        const data: string[] = [],
-            pages: MessageEmbed[] = [],
-            guildDB = await this.client.orm.guilds.findUnique({
-                where: {
-                    Id: BigInt(message.guildId!),
-                },
-                select: {
-                    EmojiStats: true,
-                },
-            });
+        const data: string[] = [];
+        const pages: MessageEmbed[] = [];
+        let guildDB = await this.client.orm.guilds.findUnique({
+            where: {
+                Id: BigInt(message.guildId),
+            },
+            select: {
+                EmojiStats: true,
+            },
+        });
+
+        if (!guildDB) {
+            await this.client.db.getOrCreateGuild(BigInt(message.guildId));
+            guildDB = { EmojiStats: [] };
+        }
 
         const baseEmbed = new MessageEmbed()
                 .setTitle("Emote count")
                 .setAuthor({ name: (message.guild as Guild).name })
                 .withOkColor(message),
 
-            emoteDataPair = guildDB!.EmojiStats
-                .sort((a, b) => Number(b.Count) - Number(a.Count));
+            emoteDataPair = guildDB?.EmojiStats
+                .sort((a, b) => Number(b.Count) - Number(a.Count)) || [];
 
         for (const { EmojiId, Count } of emoteDataPair) {
 

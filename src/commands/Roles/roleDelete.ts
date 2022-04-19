@@ -2,7 +2,7 @@ import { Collection, Message, MessageEmbed, Permissions, Role } from "discord.js
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
-import { rolePermissionCheck } from "../../lib/roles";
+import { rolePermissionCheck } from "../../lib/Roles";
 
 
 export default class RoleDeleteCommand extends KaikiCommand {

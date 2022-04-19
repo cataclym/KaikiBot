@@ -6,7 +6,7 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 import Utility from "../../lib/Utility";
-import { EMOTE_REGEX, IMAGE_REGEX } from "../../struct/constants";
+import Constants from "../../struct/Constants";
 
 export default class AddEmoteCommand extends KaikiCommand {
     constructor() {
@@ -21,7 +21,7 @@ export default class AddEmoteCommand extends KaikiCommand {
             args: [
                 {
                     id: "url",
-                    type: Argument.union(IMAGE_REGEX, EMOTE_REGEX, (m: Message) => {
+                    type: Argument.union(Constants.IMAGE_REGEX, Constants.EMOTE_REGEX, (m: Message) => {
                         if (m.attachments.first()) {
                             return m.attachments.first();
                         }

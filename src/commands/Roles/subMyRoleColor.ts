@@ -3,7 +3,7 @@ import { ColorResolvable, Message, MessageEmbed } from "discord.js";
 import { hexColorTable } from "../../lib/Color";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
-import Roles from "../../lib/roles";
+import Roles from "../../lib/Roles";
 
 export default class MyRoleSubCommandColor extends KaikiCommand {
     constructor() {
