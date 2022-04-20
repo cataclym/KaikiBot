@@ -37,19 +37,12 @@ export default class AnniversaryRolesService {
 
     async checkBirthdayOnAdd(guild: Guild): Promise<void> {
 
-        const enabled = await this.orm.guilds.findUnique({
-                where: {
-                    Id: BigInt(guild.id),
-                },
-                select: {
-                    Anniversary: true,
-                },
-            }),
+        const guildDb = await this.client.db.getOrCreateGuild(BigInt(guild.id)),
             { Day, Month } = await AnniversaryRolesService.dateObject();
 
         logger.info(`birthdayService | Checking newly added guild ${guild.name} [${guild.id}]`);
 
-        if (enabled && enabled.Anniversary) {
+        if (guildDb.Anniversary) {
             try {
                 if (guild.me?.permissions.has(Permissions.FLAGS.MANAGE_ROLES)) {
                     const [AnniversaryRoleC, AnniversaryRoleJ] = <Role[]> await this.handleGuildRoles(guild);
@@ -100,16 +93,9 @@ export default class AnniversaryRolesService {
         if (member.user.bot) return;
 
         const { guild } = member,
-            enabled = await this.orm.guilds.findUnique({
-                where: {
-                    Id: BigInt(guild.id),
-                },
-                select: {
-                    Anniversary: true,
-                },
-            });
+            guildDb = await this.client.db.getOrCreateGuild(BigInt(guild.id));
 
-        if (enabled && enabled.Anniversary) {
+        if (guildDb.Anniversary) {
             const { Day, Month } = await AnniversaryRolesService.dateObject();
 
             try {

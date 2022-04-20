@@ -57,17 +57,9 @@ export default class SetUserRoleCommand extends KaikiCommand {
             return message.channel.send({ embeds: [await this.embedFail(message, "This role is higher than your highest, I cannot add this role!")] });
         }
 
-        const db = await this.client.orm.guildUsers.findFirst({
-            where: {
-                GuildId: BigInt(message.guildId),
-                UserId: BigInt(member.id),
-            },
-            select: {
-                UserRole: true,
-            },
-        });
+        const db = await this.client.db.getOrCreateGuildUser(BigInt(member.id), BigInt(message.guildId));
 
-        if (db && db.UserRole) {
+        if (db.UserRole) {
 
             await this.client.orm.guildUsers.update({
                 where: {

@@ -36,9 +36,9 @@ export default class GreetHandler {
 
     static async handleGreetMessage(guildMember: GuildMember): Promise<Message | void> {
 
-        const db = await guildMember.client.orm.guilds.findFirst({ where: { Id: BigInt(guildMember.guild.id) } });
+        const db = await guildMember.client.db.getOrCreateGuild(BigInt(guildMember.guild.id));
 
-        if (db && db.WelcomeChannel) {
+        if (db.WelcomeChannel) {
             return GreetHandler.sendWelcomeLeaveMessage({
                 channel: db.WelcomeChannel,
                 embed: db.WelcomeMessage,
@@ -49,16 +49,15 @@ export default class GreetHandler {
 
     static async handleGoodbyeMessage(guildMember: GuildMember): Promise<Message | void> {
 
-        const db = await guildMember.client.orm.guilds.findFirst({ where: { Id: BigInt(guildMember.guild.id) } });
+        const db = await guildMember.client.db.getOrCreateGuild(BigInt(guildMember.guild.id));
 
-        if (db && db.ByeChannel) {
+        if (db.ByeChannel) {
             return GreetHandler.sendWelcomeLeaveMessage({
                 channel: db.ByeChannel,
                 embed: db.ByeMessage,
                 timeout: db.ByeTimeout,
             }, guildMember);
         }
-        return;
     }
 
     static async createAndParseWelcomeLeaveMessage(data: sendMessageData, guildMember: GuildMember): Promise<MessageOptions> {

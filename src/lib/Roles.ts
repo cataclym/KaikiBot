@@ -6,19 +6,14 @@ type genericArrayFilter = <T>(x: T | undefined) => x is T;
 
 export default class Roles {
     static async getRole(message: Message<true>) {
-        const db = await message.client.orm.guildUsers.findFirst({
-            where: {
-                GuildId: BigInt(message.guildId),
-                UserId: BigInt(message.author.id),
-            },
-        });
+        const db = await message.client.db.getOrCreateGuildUser(BigInt(message.author.id), BigInt(message.guildId));
 
-        if (!db || !db.UserRole) return false;
+        if (!db.UserRole) return false;
 
         const myRole = message.guild.roles.cache.get(String(db.UserRole));
 
         if (!myRole) {
-            message.client.orm.guildUsers.update({
+            await message.client.orm.guildUsers.update({
                 where: {
                     UserId_GuildId: {
                         UserId: BigInt(message.author.id),
@@ -76,7 +71,7 @@ export async function restoreUserRoles(member: GuildMember): Promise<{ success: 
         },
     })).map(t => t.RoleId);
 
-    if (leaveRoles && leaveRoles.length) {
+    if (leaveRoles.length) {
 
         // Filter excluded roles
         // Resolve IDs to roles in guild
