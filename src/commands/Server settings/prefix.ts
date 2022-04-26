@@ -1,35 +1,35 @@
 import { Guild, Message, MessageEmbed } from "discord.js";
-import { noArgGeneric } from "../../lib/Embeds";
-import { KaikiCommand } from "kaiki";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+
+import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
 export default class PrefixConfigCommand extends KaikiCommand {
-	constructor() {
-		super("config-prefix", {
-			userPermissions: ["ADMINISTRATOR"],
-			channel: "guild",
-			args: [
-				{
-					id: "value",
-					type: "string",
-					otherwise: (m: Message) => ({ embeds: [noArgGeneric(m)] }),
-				},
-			],
-		});
-	}
-	public async exec(message: Message, { value }: { value: string }): Promise<Message | void> {
+    constructor() {
+        super("config-prefix", {
+            userPermissions: ["ADMINISTRATOR"],
+            channel: "guild",
+            args: [{
+                id: "value",
+                type: "string",
+                otherwise: (m: Message) => ({ embeds: [KaikiEmbeds.genericArgumentError(m)] }),
+            }],
+        });
+    }
 
-		const guildID = (message.guild as Guild).id,
-			oldPrefix = message.client.guildSettings.get(guildID, "prefix", process.env.PREFIX);
+    public async exec(message: Message, { value }: { value: string }): Promise<Message | void> {
 
-		await message.client.guildSettings.set(guildID, "prefix", value);
+        const guildID = (message.guild as Guild).id,
+            oldPrefix = message.client.guildsDb.get(guildID, "Prefix", process.env.PREFIX);
 
-		return message.channel.send({
-			embeds:	[new MessageEmbed({
-				title: "Prefix changed!",
-				description: `Prefix has been set to \`${value}\` !`,
-				footer: { text: `Old prefix: \`${oldPrefix}\`` },
-			})
-				.withOkColor(message)],
-		});
-	}
+        await message.client.guildsDb.set(guildID, "Prefix", value);
+
+        return message.channel.send({
+            embeds: [new MessageEmbed({
+                title: "Prefix changed!",
+                description: `Prefix has been set to \`${value}\` !`,
+                footer: { text: `Old prefix: \`${oldPrefix}\`` },
+            })
+                .withOkColor(message)],
+        });
+    }
 }

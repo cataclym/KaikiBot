@@ -1,96 +1,106 @@
 import { Argument } from "discord-akairo";
-import { KaikiCommand } from "kaiki";
+
 import { Snowflake } from "discord-api-types";
-import { Guild, GuildMember, Message, MessageEmbed, User } from "discord.js";
+import { Guild, GuildMember, Message, MessageEmbed, Permissions, User } from "discord.js";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand.js";
 
 export default class BanCommand extends KaikiCommand {
-	constructor() {
-		super("ban", {
-			aliases: ["ban", "bean", "b"],
-			userPermissions: ["BAN_MEMBERS"],
-			clientPermissions: "BAN_MEMBERS",
-			description: "Bans a user by ID or name with an optional message.",
-			usage: "@notdreb Your behaviour is harmful.",
-			channel: "guild",
-			args: [
-				{
-					id: "user",
-					type: Argument.union("member", "user", async (_, phrase) => {
-						const u = await this.client.users.fetch(phrase as Snowflake);
-						return u || null;
-					}),
-					otherwise: (m: Message) => ({
-						embeds: [new MessageEmbed({
-							description: "Can't find this user.",
-						})
-							.withErrorColor(m)] }),
-				},
-				{
-					id: "reason",
-					type: "string",
-					match: "restContent",
-					default: "banned",
-				},
-			],
-		});
-	}
-	public async exec(message: Message, { user, reason }: { user: GuildMember | User, reason: string}): Promise<Message> {
+    constructor() {
+        super("ban", {
+            aliases: ["ban", "bean", "b"],
+            userPermissions: Permissions.FLAGS.BAN_MEMBERS,
+            clientPermissions: Permissions.FLAGS.BAN_MEMBERS,
+            description: "Bans a user by ID or name with an optional message.",
+            usage: "@notdreb Your behaviour is harmful",
+            channel: "guild",
+            args: [{
+                id: "user",
+                type: Argument.union("member", "user", async (_, phrase) => {
+                    const u = await this.client.users.fetch(phrase as Snowflake);
+                    return u || null;
+                }),
+                otherwise: (m: Message) => ({
+                    embeds: [new MessageEmbed({
+                        description: "Can't find this user.",
+                    })
+                        .withErrorColor(m)],
+                }),
+            },
+            {
+                id: "reason",
+                type: "string",
+                match: "restContent",
+                default: "No reason specified",
+            }],
+        });
+    }
 
-		const guild = message.guild as Guild,
-			guildClientMember = guild.me as GuildMember;
+    public async exec(message: Message, {
+        user,
+        reason,
+    }: { user: GuildMember | User, reason: string }): Promise<Message> {
 
-		const successBan = new MessageEmbed({
-			title: "Banned user",
-			fields: [
-				{ name: "Username", value: user instanceof GuildMember
-					? user.user.username
-					: user.username, inline: true },
-				{ name: "ID", value: user.id, inline: true },
-			],
-		})
-			.withOkColor(message);
+        const guild = message.guild as Guild,
+            guildClientMember = guild.me as GuildMember;
 
-		// If user is currently in the guild
-		const guildMember = message.guild?.members.cache.get(user.id);
+        const successBan = new MessageEmbed({
+            title: "Banned user",
+            fields: [
+                {
+                    name: "Username", value: user instanceof GuildMember
+                        ? user.user.username
+                        : user.username, inline: true,
+                },
+                { name: "ID", value: user.id, inline: true },
+            ],
+        })
+            .withOkColor(message);
 
-		if (!guildMember) {
-			await message.guild?.members.ban(user, { reason: reason });
-			return message.channel.send({ embeds: [successBan] });
-		}
+        // If user is currently in the guild
+        const guildMember = message.guild?.members.cache.get(user.id);
 
-		// Check if member is bannable
-		if (message.author.id !== message.guild?.ownerId &&
-			(message.member as GuildMember).roles.highest.position <= guildMember.roles.highest.position) {
+        if (!guildMember) {
+            await message.guild?.members.ban(user, { reason: reason });
+            return message.channel.send({ embeds: [successBan] });
+        }
 
-			return message.channel.send({ embeds: [new MessageEmbed({
-				description: `${message.author}, You can't use this command on users with a role higher or equal to yours in the role hierarchy.`,
-			})
-				.withErrorColor(message)] });
-		}
+        // Check if member is bannable
+        if (message.author.id !== message.guild?.ownerId &&
+            (message.member as GuildMember).roles.highest.position <= guildMember.roles.highest.position) {
 
-		// x2
-		else if (guildClientMember.roles.highest.position <= guildMember.roles.highest.position) {
-			return message.channel.send({ embeds: [new MessageEmbed({
-				description: "Sorry, I don't have permissions to ban this member.",
-			})
-				.withErrorColor(message)],
-			});
-		}
+            return message.channel.send({
+                embeds: [new MessageEmbed({
+                    description: `${message.author}, You can't use this command on users with a role higher or equal to yours in the role hierarchy.`,
+                })
+                    .withErrorColor(message)],
+            });
+        }
 
-		await message.guild?.members.ban(user, { reason: reason }).then(m => {
-			try {
-				(m as GuildMember | User).send({ embeds: [new MessageEmbed({
-					description: `You have been banned from ${message.guild?.name}.\nReason: ${reason}`,
-				})
-					.withOkColor(message)],
-				});
-			}
-			catch {
-				// ignored
-			}
-		})
-			.catch((err) => console.log(err));
+        // x2
+        else if (guildClientMember.roles.highest.position <= guildMember.roles.highest.position) {
+            return message.channel.send({
+                embeds: [new MessageEmbed({
+                    description: "Sorry, I don't have permissions to ban this member.",
+                })
+                    .withErrorColor(message)],
+            });
+        }
 
-		return message.channel.send({ embeds: [successBan] });
-	}
+        await message.guild?.members.ban(user, { reason: reason }).then(m => {
+            try {
+                (m as GuildMember | User).send({
+                    embeds: [new MessageEmbed({
+                        description: `You have been banned from ${message.guild?.name}.\nReason: ${reason}`,
+                    })
+                        .withOkColor(message)],
+                });
+            }
+            catch {
+                // ignored
+            }
+        })
+            .catch((err) => console.log(err));
+
+        return message.channel.send({ embeds: [successBan] });
+    }
 }

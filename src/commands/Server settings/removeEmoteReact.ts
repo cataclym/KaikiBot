@@ -1,66 +1,75 @@
-import { Snowflake } from "discord-api-types";
 import { Message, MessageEmbed, Permissions } from "discord.js";
-import { KaikiCommand } from "kaiki";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
-import { getGuildDocument } from "../../struct/documentMethods";
-import { emoteReactCache } from "../../cache/cache";
 
 export default class RemoveEmoteReactCommand extends KaikiCommand {
-	constructor() {
-		super("removereact", {
-			aliases: ["removereact", "rer"],
-			userPermissions: Permissions.FLAGS.MANAGE_EMOJIS_AND_STICKERS,
-			channel: "guild",
-			description: "Remove emotereact triggers.",
-			usage: ["anime"],
-			args: [
-				{
-					id: "trigger",
-					type: "string",
-					match: "rest",
-				},
-			],
-		});
-	}
+    constructor() {
+        super("removereact", {
+            aliases: ["removereact", "rer"],
+            userPermissions: Permissions.FLAGS.MANAGE_EMOJIS_AND_STICKERS,
+            channel: "guild",
+            description: "Remove emotereact triggers.",
+            usage: ["anime"],
+            args: [
+                {
+                    id: "trigger",
+                    type: "string",
+                    match: "rest",
+                },
+            ],
+        });
+    }
 
-	public async exec(message: Message, { trigger }: { trigger: string }): Promise<Message> {
+    public async exec(message: Message<true>, { trigger }: { trigger: string }): Promise<Message> {
 
-		const db = await getGuildDocument(message.guild!.id),
-			emoji = message.guild?.emojis.cache
-				.get(db.emojiReactions[trigger] as Snowflake);
+        const db = await this.client.orm.emojiReactions.findFirst({
+            where: {
+                GuildId: BigInt(message.guildId),
+                // TODO: Check if this needs lowercase/string formatting
+                TriggerString: trigger,
+            },
+            select: {
+                Id: true,
+                EmojiId: true,
+            },
+        });
 
-		if (db.emojiReactions[trigger]) {
+        const emoji = message.guild?.emojis.cache
+            .get(String(db?.EmojiId));
 
-			if (trigger.includes(" ")) {
-				delete emoteReactCache[message.guild!.id].has_space[trigger];
-			}
+        if (db && emoji) {
 
-			else {
-				delete emoteReactCache[message.guild!.id].no_space[trigger];
-			}
+            await this.client.orm.emojiReactions.delete({
+                where: {
+                    Id: db.Id,
+                },
+            });
 
-			delete db.emojiReactions[trigger];
-			db.markModified("emojiReactions");
-			await db.save();
+            if (trigger.includes(" ")) {
+                this.client.cache.emoteReactCache.get(message.guildId)?.get("has_space")?.delete(trigger);
+            }
 
-			const embed = new MessageEmbed()
-				.setTitle("Removed emoji trigger")
-				.setDescription(`Saying \`${trigger}\` will no longer force me to react with \`${emoji?.name ?? "missing emote"}\``)
-				.withOkColor(message);
+            else {
+                this.client.cache.emoteReactCache.get(message.guildId)?.get("no_space")?.delete(trigger);
+            }
 
-			if (emoji) embed.setThumbnail(emoji.url);
+            const embed = new MessageEmbed()
+                .setTitle("Removed emoji trigger")
+                .setDescription(`Saying \`${trigger}\` will no longer force me to react with \`${emoji?.name ?? "missing emote"}\``)
+                .withOkColor(message);
 
-			return message.channel.send({ embeds: [embed] });
-		}
+            if (emoji) embed.setThumbnail(emoji.url);
 
-		else {
-			await db.save();
-			return message.channel.send({
-				embeds: [new MessageEmbed()
-					.setTitle("Not found")
-					.setDescription("Trigger not found in the database")
-					.withErrorColor(message)],
-			});
-		}
-	}
+            return message.channel.send({ embeds: [embed] });
+        }
+
+        else {
+            return message.channel.send({
+                embeds: [new MessageEmbed()
+                    .setTitle("Not found")
+                    .setDescription("Trigger not found in the database")
+                    .withErrorColor(message)],
+            });
+        }
+    }
 }

@@ -1,47 +1,42 @@
-import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
 import { PrefixSupplier } from "discord-akairo";
-import { Snowflake } from "discord-api-types";
+import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
 import { Message, MessageEmbed } from "discord.js";
-import { KaikiCommand } from "kaiki";
-
-import { getGuildDocument } from "../../struct/documentMethods";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 export default class RemoveEmoteReactCommand extends KaikiCommand {
-	constructor() {
-		super("listreacts", {
-			aliases: ["listreacts", "ler"],
-			channel: "guild",
-			description: "List emotereact triggers.",
-			usage: [""],
-		});
-	}
+    constructor() {
+        super("listreacts", {
+            aliases: ["listreacts", "ler"],
+            channel: "guild",
+            description: "List emotereact triggers.",
+            usage: [""],
+        });
+    }
 
-	public async exec(message: Message): Promise<Message> {
+    public async exec(message: Message<true>): Promise<Message> {
 
-		const gid = message.guild!.id,
-			db = await getGuildDocument(gid),
-			emojis = Object.entries(db.emojiReactions),
-			pages: MessageEmbed[] = [];
+        const db = await this.client.orm.emojiReactions.findMany({ where: { GuildId: BigInt(message.guildId) } }),
+            pages: MessageEmbed[] = [];
 
-		if (!emojis?.length) {
-			return message.channel.send({
-				embeds: [new MessageEmbed()
-					.setTitle("No triggers")
-					.setDescription(`Add triggers with ${(this.handler.prefix as PrefixSupplier)(message)}aer`)
-					.withErrorColor(message)],
-			});
-		}
+        if (!db.length) {
+            return message.channel.send({
+                embeds: [new MessageEmbed()
+                    .setTitle("No triggers")
+                    .setDescription(`Add triggers with ${(this.handler.prefix as PrefixSupplier)(message)}aer`)
+                    .withErrorColor(message)],
+            });
+        }
 
-		for (let index = 15, p = 0; p < emojis.length; index += 15, p += 15) {
+        for (let index = 15, p = 0; p < db.length; index += 15, p += 15) {
 
-			pages.push(new MessageEmbed()
-				.setTitle("Emoji triggers")
-				.setDescription(emojis.slice(p, index).map(([t, e]) => {
-					return `**${t}** => ${message.guild?.emojis.cache.get(e as Snowflake) ?? e}`;
-				}).join("\n"))
-				.withOkColor(message));
-		}
+            pages.push(new MessageEmbed()
+                .setTitle("Emoji triggers")
+                .setDescription(db.slice(p, index).map(table => {
+                    return `**${table.TriggerString}** => ${message.guild?.emojis.cache.get(String(table.EmojiId)) ?? table.EmojiId}`;
+                }).join("\n"))
+                .withOkColor(message));
+        }
 
-		return sendPaginatedMessage(message, pages, {});
-	}
+        return sendPaginatedMessage(message, pages, {});
+    }
 }

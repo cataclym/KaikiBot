@@ -1,50 +1,36 @@
-import Canvas from "canvas";
 import { Message, MessageAttachment } from "discord.js";
-import logger from "loglevel";
-import { noArgGeneric } from "../../lib/Embeds";
-import { calculateAspectRatioFit } from "../../lib/Util";
-import { KaikiCommand } from "kaiki";
-
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+import KaikiEmbeds from "../../lib/KaikiEmbeds";
+import Utility from "../../lib/Utility";
 
 export default class SetAvatarCommand extends KaikiCommand {
-	constructor() {
-		super("setavatar", {
-			aliases: ["setavatar", "setav"],
-			description: "Assigns the bot a new avatar.",
-			usage: "http://discord.com/media/1231231231231312321/1231231312323132.png",
-			ownerOnly: true,
-			args: [
-				{
-					id: "url",
-					type: "url",
-					otherwise: (msg: Message) => ({ embeds: [noArgGeneric(msg)] }),
-				},
-			],
-		});
-	}
-	public async exec(message: Message, { url }: { url: URL}): Promise<Message> {
+    constructor() {
+        super("setavatar", {
+            aliases: ["setavatar", "setav"],
+            description: "Assigns the bot a new avatar.",
+            usage: "https://discord.com/media/1231231231231312321/1231231312323132.png",
+            ownerOnly: true,
+            args: [
+                {
+                    id: "url",
+                    type: "url",
+                    otherwise: (msg: Message) => ({ embeds: [KaikiEmbeds.genericArgumentError(msg)] }),
+                },
+            ],
+        });
+    }
 
-		const img = await Canvas.loadImage(url.href);
-		const canv = Canvas.createCanvas(img.width, img.height);
-		const ctx = canv.getContext("2d");
+    public async exec(message: Message, { url }: { url: URL }): Promise<Message> {
 
-		const { width, height } = calculateAspectRatioFit(img.width, img.height, img.width, img.height);
+        const img = await Utility.loadImage(url.href);
 
-		ctx.drawImage(img,
-			canv.width / 2 - width / 2,
-			canv.height / 2 - height / 2,
-			width, height);
+        try {
+            await this.client.user?.setAvatar(img);
+        }
+        catch (error) {
+            throw new Error("Unsupported image type. Please provide a PNG, JPEG or GIF link.");
+        }
 
-		const buffer = canv.toBuffer();
-
-		try {
-			await this.client.user?.setAvatar(buffer);
-		}
-		catch (error) {
-			logger.error(error);
-			return message.channel.send("Unsupported image type. Please use PNG, JPEG or GIF.");
-		}
-
-		return message.channel.send({ content: "Avatar set.", embeds: [new MessageAttachment(buffer)] });
-	}
+        return message.channel.send({ content: "Avatar set.", files: [new MessageAttachment(img)] });
+    }
 }

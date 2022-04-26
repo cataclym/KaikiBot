@@ -1,88 +1,104 @@
+import { DadBotChannels, Guilds } from "@prisma/client";
 import { Argument } from "discord-akairo";
-import {
-    Guild,
-    GuildChannel,
-    Message,
-    MessageEmbed,
-    NewsChannel,
-    Snowflake,
-    StoreChannel,
-    TextChannel
-} from "discord.js";
-import { KaikiCommand } from "kaiki";
-
-import { getGuildDocument } from "../../struct/documentMethods";
+import { GuildChannel, Message, MessageEmbed, Snowflake, TextChannel } from "discord.js";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 export default class ExcludeDadbotChannelCommand extends KaikiCommand {
-	constructor() {
-		super("excludechannel", {
-			aliases: ["excludechannel", "excludechnl", "echnl"],
-			userPermissions: "MANAGE_CHANNELS",
-			channel: "guild",
-			description: "Exclude or include a channel from dadbot. Provide no parameter to show a list of excluded channels. ",
-			usage: ["", "#channel"],
-			args: [
-				{
-					id: "channel",
-					type: Argument.union("textChannel", "newsChannel", "storeChannel"),
-				},
-			],
-		});
-	}
+    constructor() {
+        super("excludechannel", {
+            aliases: ["excludechannel", "excludechnl", "echnl"],
+            userPermissions: "MANAGE_CHANNELS",
+            channel: "guild",
+            description: "Exclude or include a channel from dadbot. Provide no parameter to show a list of excluded channels. ",
+            usage: ["", "#channel"],
+            args: [
+                {
+                    id: "channels",
+                    type: Argument.union("textChannels"),
+                },
+            ],
+        });
+    }
 
-	public async exec(message: Message, { channel }: { channel: TextChannel | NewsChannel | StoreChannel }): Promise<Message> {
+    public async exec(message: Message<true>, { channels }: { channels: Map<Snowflake, TextChannel> | undefined }): Promise<Message> {
 
-		const gId = (message.guild as Guild).id;
-		const guildDb = await getGuildDocument(gId);
+        const bigIntGuildId = BigInt(message.guildId);
+        let guildDb = await this.client.orm.guilds.findUnique({
+            where: {
+                Id: bigIntGuildId,
+            },
+            select: {
+                DadBotChannels: true,
+            },
+        });
 
-		if (!channel) {
-			return message.channel.send({
-				embeds: [new MessageEmbed()
-					.setTitle("Excluded channels")
-					.setDescription(Object.keys(guildDb.settings.dadBot.excludedChannels ?? {})
-				 		.map(k => message.guild!.channels.cache.get(k as Snowflake) ?? k)
-						.sort((a, b) => {
-							return (a as GuildChannel).name < (b as GuildChannel).name
-								? -1
-								: 1;
-						})
-						.join("\n"))
-					.withOkColor(message)],
-			});
-		}
+        if (!guildDb) {
+            guildDb = await this.client.db.getOrCreateGuild(bigIntGuildId) as (Guilds & { DadBotChannels: DadBotChannels[] });
+            guildDb["DadBotChannels"] = [];
+        }
 
-		const dadBot = guildDb.settings.dadBot;
-		if (dadBot.excludedChannels && dadBot.excludedChannels[channel.id]) {
-			delete guildDb.settings.dadBot.excludedChannels[channel.id];
-			guildDb.markModified("settings.dadBot.excludedChannels");
-			await message.client.guildSettings.set(gId, "dadBot", guildDb.settings.dadBot);
-			await guildDb.save();
+        const embed = new MessageEmbed()
+            .setTitle("Excluded channels")
+            .withOkColor(message);
 
-			return message.channel.send({ embeds:
-					[new MessageEmbed()
-						.setDescription(`Removed ${channel} from exclusion list`)
-						.withOkColor(message)],
-			});
-		}
+        if (!channels) {
+            return message.channel.send({
+                embeds: [embed
+                    .setDescription((guildDb?.DadBotChannels ?? [])
+                        .map(k => message.guild.channels.cache.get(String(k.ChannelId)) ?? String(k.ChannelId))
+                        .sort((a, b) => {
+                            return (a as GuildChannel).name < (b as GuildChannel).name
+                                ? -1
+                                : 1;
+                        })
+                        .join("\n").trim() ?? "No channels excluded")
+                    .withOkColor(message)],
+            });
+        }
 
-		if (typeof guildDb.settings["dadBot"] === "boolean") {
-			const bool = guildDb.settings["dadBot"];
-			guildDb.settings["dadBot"] = {
-				enabled: bool,
-				excludedChannels: {},
-			};
-			guildDb.markModified("settings.dadBot");
-		}
+        const GuildId = BigInt(message.guildId), enabledChannels: bigint[] = [],
+            excludedChannels: { GuildId: bigint, ChannelId: bigint }[] = [];
 
-		guildDb.settings.dadBot.excludedChannels[channel.id] = true;
-		guildDb.markModified("settings.dadBot.excludedChannels");
-		await message.client.guildSettings.set(gId, "dadBot", guildDb.settings.dadBot);
-		await guildDb.save();
+        for (const [, channel] of channels) {
 
-		return message.channel.send({ embeds:
-				[new MessageEmbed()
-					.setDescription(`Added ${channel} to exclusion list`)
-					.withOkColor(message)],
-		});
-	}
+            if (guildDb?.DadBotChannels.find(c => String(c.ChannelId) === channel.id)) {
+                enabledChannels.push(BigInt(channel.id));
+            }
+
+            else {
+                excludedChannels.push({
+                    GuildId,
+                    ChannelId: BigInt(channel.id),
+                });
+            }
+        }
+
+        if (excludedChannels.length) {
+            await this.client.orm.dadBotChannels.createMany({
+                data: excludedChannels,
+                skipDuplicates: true,
+            });
+            embed.addField("Excluded", excludedChannels
+                .map(k => message.guild.channels.cache.get(String(k.ChannelId)) ?? String(k.ChannelId))
+                .join("\n"));
+        }
+
+        if (enabledChannels.length) {
+            await this.client.orm.dadBotChannels.deleteMany({
+                where: {
+                    ChannelId: {
+                        in: enabledChannels,
+                    },
+                    GuildId: bigIntGuildId,
+                },
+            });
+            embed.addField("Un-excluded", enabledChannels
+                .map(k => message.guild.channels.cache.get(String(k)) ?? String(k))
+                .join("\n"));
+        }
+
+        return message.channel.send({
+            embeds: [embed],
+        });
+    }
 }

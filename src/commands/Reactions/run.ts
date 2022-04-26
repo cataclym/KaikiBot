@@ -1,22 +1,22 @@
 import { Message } from "discord.js";
 import getKawaiiResponseEmbed from "../../lib/APIs/KawaiiAPI";
-import { KaikiCommand } from "kaiki";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 
 export default class Run extends KaikiCommand {
-	constructor() {
-		super("run", {
-			aliases: ["run"],
-			description: "Gotta go fast~",
-			usage: [""],
-			typing: true,
-		});
-	}
+    constructor() {
+        super("run", {
+            aliases: ["run"],
+            description: "Gotta go fast~",
+            usage: [""],
+            typing: true,
+        });
+    }
 
-	public async exec(message: Message): Promise<Message | void> {
+    public async exec(message: Message): Promise<Message | void> {
 
-		const embed = await getKawaiiResponseEmbed(message, "run");
+        const embed = await getKawaiiResponseEmbed(message, "run");
 
-		if (embed) return message.channel.send({ embeds: [embed] });
-	}
+        if (embed) return message.channel.send({ embeds: [embed] });
+    }
 }

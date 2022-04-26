@@ -1,95 +1,115 @@
-import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
+import { BlockedCategories, Guilds } from "@prisma/client";
 import { Argument, Flag, PrefixSupplier } from "discord-akairo";
-import { Guild, Message, MessageEmbed } from "discord.js";
-import { EmbedFromJson } from "../../interfaces/IGreetLeave";
-import { createAndParseWelcomeLeaveMessage } from "../../lib/GreetHandler";
-import { KaikiCommand } from "kaiki";
-import { getGuildDocument } from "../../struct/documentMethods";
-import { customClient } from "../../struct/client";
+import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
+import { Message, MessageEmbed, MessageOptions, Permissions } from "discord.js";
+import { blockedCategories } from "../../lib/enums/blockedCategories";
+import GreetHandler from "../../lib/GreetHandler";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+import Utility from "../../lib/Utility";
 
 export default class ConfigCommand extends KaikiCommand {
-	constructor() {
-		super("config", {
-			aliases: ["config", "configure", "conf"],
-			channel: "guild",
-			description: "Configure or display guild specific settings. Will always respond to default prefix.",
-			usage: ["", "dadbot enable", "anniversary enable", "prefix !", "okcolor <hex>", "errorcolor <hex>"],
-			prefix: (msg: Message) => {
-				const mentions = [`<@${this.client.user?.id}>`, `<@!${this.client.user?.id}>`];
-				const prefixes = [(this.handler.prefix as PrefixSupplier)(msg) as string, "-"];
-				if (this.client.user) {return [...prefixes, ...mentions];}
-				return prefixes;
-			},
-		});
-	}
-	*args(): unknown {
-		const method = yield {
-			type: [
-				["config-dadbot", "dadbot", "dad"],
-				["config-anniversary", "anniversary", "roles", "anniversaryroles"],
-				["config-prefix", "prefix"],
-				["config-okcolor", "okcolor"],
-				["config-errorcolor", "errorcolor"],
-			],
-		};
-		if (!Argument.isFailure(method)) {
-			return Flag.continue(method as string);
-		}
-	}
+    constructor() {
+        super("config", {
+            aliases: ["config", "configure", "conf"],
+            channel: "guild",
+            description: "Configure or display guild specific settings. Will always respond to default prefix regardless of server prefix.",
+            usage: ["", "dadbot enable", "anniversary enable", "prefix !", "okcolor <hex>", "errorcolor <hex>"],
+            userPermissions: Permissions.FLAGS.MANAGE_MESSAGES,
+            prefix: (msg: Message) => {
+                const mentions = [`<@${this.client.user?.id}>`, `<@!${this.client.user?.id}>`];
+                const prefixes = [(this.handler.prefix as PrefixSupplier)(msg) as string, process.env.PREFIX || ";"];
+                if (this.client.user) {
+                    return [...prefixes, ...mentions];
+                }
+                return prefixes;
+            },
+        });
+    }
 
-	public async exec(message: Message): Promise<Message> {
+    * args(): unknown {
+        const method = yield {
+            type: [
+                ["config-dadbot", "dadbot", "dad"],
+                ["config-anniversary", "anniversary", "roles", "anniversaryroles"],
+                ["config-prefix", "prefix"],
+                ["config-okcolor", "okcolor"],
+                ["config-errorcolor", "errorcolor"],
+            ],
+        };
+        if (!Argument.isFailure(method)) {
+            return Flag.continue(method as string);
+        }
+    }
 
-		if (!message.member) return message;
+    public async exec(message: Message<true>): Promise<Message> {
 
-		const db = await getGuildDocument((message.guild as Guild).id),
-			{ anniversary, dadBot, prefix, errorColor, okColor, welcome, goodbye } = db.settings,
-			welcomeEmbed = await new EmbedFromJson(await createAndParseWelcomeLeaveMessage(welcome, message.member)).createEmbed(),
-			goodbyeEmbed = await new EmbedFromJson(await createAndParseWelcomeLeaveMessage(goodbye, message.member)).createEmbed();
+        if (!message.member) return message;
 
-		function toggledTernary(value: boolean) {
-			return value
-				? "Enabled"
-				: "Disabled";
-		}
+        let db = await this.client.orm.guilds.findUnique({
+            where: { Id: BigInt(message.guildId) },
+            include: { BlockedCategories: true },
+        });
 
-		const pages = [
-			new MessageEmbed()
-				.withOkColor(message)
-				.addField("Dad-bot",
-					toggledTernary(dadBot.enabled), true)
-				.addField("Anniversary-Roles",
-					toggledTernary(anniversary), true)
-				.addField("Guild prefix",
-					prefix === process.env.PREFIX
-						? `\`${process.env.PREFIX}\` (Default)`
-						: `\`${prefix}\``, true)
-				.addField("Embed error color",
-					errorColor.toString().startsWith("#")
-						? errorColor.toString()
-						: "#" + errorColor.toString(16), true)
-				.addField("Embed ok color",
-					okColor.toString().startsWith("#")
-						? okColor.toString()
-						: "#" + okColor.toString(16), true)
-				.addField("\u200B", "\u200B", true)
-				.addField("Welcome message",
-					toggledTernary(welcome.enabled), true)
-				.addField("Goodbye message",
-					toggledTernary(goodbye.enabled), true)
-				.addField("\u200B", "\u200B", true)
-				.addField("Sticky roles",
-					toggledTernary(await (this.client as customClient).guildSettings.get(message.guild!.id, "stickyRoles", false)), false),
-			welcomeEmbed,
-			goodbyeEmbed,
-		];
+        if (!db) {
+            const g: any = await this.client.db.getOrCreateGuild(BigInt(message.guildId));
+            g["BlockedCategories"] = [];
+            db = g as (Guilds & { BlockedCategories: BlockedCategories[] });
+        }
 
-		const categories = Object.entries(db.blockedCategories).filter(e => e[1]);
+        // Is this okay?
+        const { Anniversary, DadBot, Prefix, ErrorColor, OkColor, WelcomeChannel, ByeChannel } = db as Guilds;
 
-		if (categories.length) {
-			(pages[0] as MessageEmbed)
-				.addField("Disabled categories", categories.map(c => c[0]).join("\n"), false);
-		}
+        const categories = db.BlockedCategories
+            .map(e => blockedCategories[e.CategoryTarget])
+            .filter(Boolean);
 
-		return sendPaginatedMessage(message, pages, {});
-	}
+        const firstPage: MessageOptions = {
+            embeds: [new MessageEmbed()
+                .withOkColor(message)
+                .addField("Dad-bot",
+                    Utility.toggledTernary(DadBot), true)
+                .addField("Anniversary-Roles",
+                    Utility.toggledTernary(Anniversary), true)
+                .addField("Guild prefix",
+                    Prefix === process.env.PREFIX
+                        ? `\`${process.env.PREFIX}\` (Default)`
+                        : `\`${Prefix}\``, true)
+                .addField("Embed ok color",
+                    Number(OkColor).toString(16), true)
+                .addField("Embed error color",
+                    Number(ErrorColor).toString(16), true)
+                .addField("\u200B", "\u200B", true)
+                .addField("Welcome message",
+                    Utility.toggledTernary(!!WelcomeChannel), true)
+                .addField("Goodbye message",
+                    Utility.toggledTernary(!!ByeChannel), true)
+                .addField("\u200B", "\u200B", true)
+                .addField("Sticky roles",
+                    Utility.toggledTernary(await this.client.guildsDb.get(message.guildId, "StickyRoles", false)), false)],
+        };
+
+        if (categories.length && firstPage.embeds) {
+            (firstPage.embeds[0] as MessageEmbed).addField("Disabled categories", categories.join("\n"), false);
+        }
+
+        const pages: MessageOptions[] = [];
+        pages.push(firstPage);
+
+        if (db.WelcomeMessage) {
+            pages.push(await GreetHandler.createAndParseWelcomeLeaveMessage({
+                embed: db.WelcomeMessage ? JSON.parse(db.WelcomeMessage) : null,
+                channel: db.WelcomeChannel,
+                timeout: db.WelcomeTimeout,
+            }, message.member));
+        }
+        if (db.ByeMessage) {
+            pages.push(await GreetHandler.createAndParseWelcomeLeaveMessage({
+                embed: db.WelcomeMessage ? JSON.parse(db.ByeMessage) : null,
+                channel: db.ByeChannel,
+                timeout: db.ByeTimeout,
+            }, message.member));
+        }
+
+        return sendPaginatedMessage(message, pages, {});
+    }
 }

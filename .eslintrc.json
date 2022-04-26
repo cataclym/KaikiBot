@@ -1,5 +1,4 @@
 {
-
 	"parser": "@typescript-eslint/parser",
 	// Specifies the ESLint parser
 
@@ -29,18 +28,17 @@
 	"rules": {
 
 		// Place to specify ESLint rules. Can be used to overwrite rules specified from the extended configs
-
 		// e.g. "@typescript-eslint/explicit-function-return-type": "off",
-        
+
 		"@typescript-eslint/no-shadow": ["error"],
-		"brace-style": ["error", "stroustrup", { "allowSingleLine": true }],
+		"brace-style": ["error", "stroustrup"],
 		"comma-dangle": ["error", "always-multiline"],
 		"comma-spacing": "error",
 		"comma-style": "error",
 		"curly": ["error", "multi-line", "consistent"],
 		"dot-location": ["error", "property"],
 		"handle-callback-err": "off",
-		"indent": ["error", "tab", { "SwitchCase": 1 }],
+		"indent": ["error", 4, { "SwitchCase": 1 }],
 		"max-nested-callbacks": ["error", { "max": 4 }],
 		"max-statements-per-line": ["error", { "max": 2 }],
 		"no-console": "off",
@@ -63,12 +61,12 @@
 			"asyncArrow": "always"
 		}],
 		"space-in-parens": "error",
-		"space-infix-ops": "error",
+//		"space-infix-ops": "error",
 		"space-unary-ops": "error",
 		"spaced-comment": "error",
 		"yoda": "error",
 		"keyword-spacing": ["error", { "before": true }],
 		"no-mixed-spaces-and-tabs": "off",
-        "no-shadow": ["error", { "allow": ["err", "resolve", "reject"] }]
+        "no-shadow": "off"
 	}
 }

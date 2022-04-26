@@ -117,13 +117,13 @@ query ($page: Int, $perPage: Int, $search: String, $type: MediaType) {
 `;
 
 export function handleResponse(response: { json: () => Promise<any>; ok: any; }) {
-	return response.json().then((json) => {
-		return response.ok
-			? json
-			: Promise.reject(json);
-	});
+    return response.json().then((json) => {
+        return response.ok
+            ? json
+            : Promise.reject(json);
+    });
 }
 
 export function handleError(error: any) {
-	logger.error(error);
+    logger.error(error);
 }

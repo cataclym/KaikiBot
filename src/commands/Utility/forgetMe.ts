@@ -1,73 +1,88 @@
 import { InteractionCollector, Message, MessageActionRow, MessageButton, MessageEmbed } from "discord.js";
-import { KaikiCommand } from "kaiki";
-import { moneyModel, usersModel } from "../../struct/models";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+
 
 export default class ForgetMeCommand extends KaikiCommand {
-	constructor() {
-		super("forgetme", {
-			aliases: ["forgetme"],
-			description: "Deletes all information about you in the database",
-			usage: "",
-		});
-	}
+    constructor() {
+        super("forgetme", {
+            aliases: ["forgetme"],
+            description: "Deletes all information about you in the database",
+            usage: "",
+        });
+    }
 
-	public async exec(message: Message): Promise<void> {
+    public async exec(message: Message): Promise<void> {
 
-		const deleteMsg = await message.channel.send({
-			embeds: [new MessageEmbed()
-				.setDescription("Are you *sure* you want to delete all your entries in the database?")
-				.withOkColor(message)],
-			isInteraction: true,
-			components: [new MessageActionRow({
-				components:
-					[new MessageButton()
-						.setCustomId("1")
-						.setLabel("Yes")
-						.setStyle("DANGER"),
-					new MessageButton()
-						.setCustomId("2")
-						.setLabel("No")
-						.setStyle("SECONDARY")],
-			})],
-		});
+        const deleteMsg = await message.channel.send({
+            embeds: [new MessageEmbed()
+                .setDescription("Are you *sure* you want to delete all your entries in the database?")
+                .withOkColor(message)],
+            isInteraction: true,
+            components: [new MessageActionRow({
+                components:
+                    [new MessageButton()
+                        .setCustomId("1")
+                        .setLabel("Yes")
+                        .setEmoji("⚠️")
+                        .setStyle("DANGER"),
+                    new MessageButton()
+                        .setCustomId("2")
+                        .setLabel("No")
+                        .setEmoji("❌")
+                        .setStyle("SECONDARY")],
+            })],
+        });
 
-		const buttonListener = new InteractionCollector(message.client, {
-			message: deleteMsg,
-			time: 20000,
-			filter: (m) => m.user.id === message.author.id,
-		});
+        const buttonListener = new InteractionCollector(message.client, {
+            message: deleteMsg,
+            time: 20000,
+            filter: (m) => m.user.id === message.author.id,
+        });
 
-		buttonListener.once("collect", async (i) => {
+        buttonListener.once("collect", async (i) => {
 
-			if (i.isButton()) {
-				if (i.customId === "1") {
-					const userData = await usersModel.findOneAndDelete({ id: message.author.id });
-					const moneyData = await moneyModel.findOneAndDelete({ id: message.author.id });
-					// const tinderData = await tinderDataModel.findOneAndDelete({ id: message.author.id });
+            if (i.isButton()) {
+                if (i.customId === "1") {
+                    const userData = await this.client.orm.discordUsers.delete({
+                        select: {
+                            Amount: true,
+                            CreatedAt: true,
+                            Todos: true,
+                        },
+                        where: {
+                            UserId: BigInt(message.author.id),
+                        },
+                    });
 
-					message.channel.send({
-						embeds: [new MessageEmbed()
-							.setTitle("Deleted data")
-							.setDescription("All data stored about you has been deleted!")
-							.addField("Cleared user-data", userData
-								? `${userData.todo.length + userData.userNicknames.length} entrie(s) deleted`
-								: "N/A")
-							.addField("Cleared money-data", moneyData
-								? `${moneyData.amount} currency deleted`
-								: "N/A")
-							.withOkColor(message),
-						],
-					});
-				}
-				else {
-					await message.delete();
-				}
-				buttonListener.stop();
-			}
-		});
+                    const guildData = await this.client.orm.guildUsers.deleteMany({
+                        where: {
+                            UserId: BigInt(message.author.id),
+                        },
+                    });
 
-		buttonListener.once("end", async () => {
-			await deleteMsg.delete();
-		});
-	}
+                    message.channel.send({
+                        embeds: [new MessageEmbed()
+                            .setTitle("Deleted data")
+                            .setDescription("All data stored about you has been deleted!")
+                            .addField("Cleared user-data", userData.Todos.length
+                                ? `${userData.Todos.length + guildData.count} entrie(s) deleted`
+                                : "N/A")
+                            .addField("Cleared money-data", userData.Amount
+                                ? `${userData.Amount} currency deleted`
+                                : "N/A")
+                            .withOkColor(message),
+                        ],
+                    });
+                }
+                else {
+                    await message.delete();
+                }
+                buttonListener.stop();
+            }
+        });
+
+        buttonListener.once("end", async () => {
+            await deleteMsg.delete();
+        });
+    }
 }

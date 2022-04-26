@@ -1,38 +1,75 @@
-import { Guild, Message, MessageEmbed, Permissions, TextChannel } from "discord.js";
-import { KaikiCommand } from "kaiki";
+import { GuildTextBasedChannel, Message, MessageEmbed, Permissions } from "discord.js";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
-import { getGuildDocument } from "../../struct/documentMethods";
 
 export default class WelcomeToggleCommand extends KaikiCommand {
-	constructor() {
-		super("welcometoggle", {
-			aliases: ["welcometoggle", "welcome"],
-			userPermissions: Permissions.FLAGS.MANAGE_GUILD,
-			channel: "guild",
-			description: "Toggles welcome messages. Bot defaults to current channel if no channel is provided.",
-			usage: ["", "#welcome-channel"],
-			args: [{
-				id: "channel",
-				type: "textChannel",
-			}],
-		});
-	}
+    constructor() {
+        super("welcometoggle", {
+            aliases: ["welcometoggle", "welcome"],
+            userPermissions: Permissions.FLAGS.MANAGE_GUILD,
+            channel: "guild",
+            description: "Toggles welcome messages. Bot defaults to current channel if no channel is provided.",
+            usage: ["", "#welcome-channel"],
+            args: [{
+                id: "channel",
+                type: "textChannel",
+            }],
+        });
+    }
 
-	public async exec(message: Message, { channel }: { channel: TextChannel | null }): Promise<Message> {
+    public async exec(message: Message<true>, { channel }: { channel: GuildTextBasedChannel | null }): Promise<Message> {
 
-		const guildID = (message.guild as Guild).id;
-		const db = await getGuildDocument(guildID);
+        const embed = new MessageEmbed()
+            .withOkColor(message);
 
-		db.settings.welcome.enabled = !db.settings.welcome.enabled;
-		db.settings.welcome.channel = channel ? channel.id : message.channel.id;
-		db.markModified("settings.welcome.enabled");
-		db.markModified("settings.welcome.channel");
-		await db.save();
+        const guildTable = await this.client.db.getOrCreateGuild(BigInt(message.guildId));
 
-		return message.channel.send({
-			embeds: [new MessageEmbed()
-				.setDescription(`${db.settings.welcome.enabled ? "Enabled" : "Disabled"} welcome message`)
-				.withOkColor(message)],
-		});
-	}
+        channel = channel || message.channel;
+
+        const bigIntChannelId = BigInt(channel.id);
+
+        switch (guildTable.WelcomeChannel) {
+            case undefined:
+            case null: {
+                await this.client.orm.guilds.update({
+                    where: {
+                        Id: BigInt(message.guildId),
+                    },
+                    data: {
+                        WelcomeChannel: bigIntChannelId,
+                    },
+                });
+                embed.setDescription(`Enabled welcome message in ${channel.name}`);
+                break;
+            }
+            case bigIntChannelId: {
+                await this.client.orm.guilds.update({
+                    where: {
+                        Id: BigInt(message.guildId),
+                    },
+                    data: {
+                        WelcomeChannel: null,
+                    },
+                });
+                embed.setDescription("Disabled welcome message");
+                break;
+            }
+            default: {
+                await this.client.orm.guilds.update({
+                    where: {
+                        Id: BigInt(message.guildId),
+                    },
+                    data: {
+                        WelcomeChannel: bigIntChannelId,
+                    },
+                });
+                embed.setDescription(`Set welcome message to ${channel.name}`);
+                break;
+            }
+        }
+
+        return message.channel.send({
+            embeds: [embed],
+        });
+    }
 }

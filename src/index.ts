@@ -1,17 +1,19 @@
 import logger from "loglevel";
-import { extensionHook } from "./Extensions/Discord";
-import container from "./inversify.config";
-import { Bot } from "./struct/bot";
-import { TYPES } from "./struct/types";
+import { extensionHook } from "./extensions/Discord";
+import KaikiAkairoClient from "./lib/Kaiki/KaikiAkairoClient";
+import Bot from "./struct/Bot";
 import { startLogger } from "./struct/logging";
 
-extensionHook();
-(async () => await startLogger())();
+class KaikiProgram {
+    async init() {
+        extensionHook();
+        await startLogger();
+        process.on("unhandledRejection", async (reason: Error, promise) => {
+            logger.warn("Unhandled Rejection at:", promise);
+        });
 
-process.on("unhandledRejection", (reason: Error, promise) => {
-	logger.warn("Unhandled Rejection at:", promise);
-});
+        new Bot(new KaikiAkairoClient());
+    }
+}
 
-const bot = container.get<Bot>(TYPES.Bot);
-
-bot.start().catch(e => logger.error(e));
+void new KaikiProgram().init();

@@ -1,21 +1,28 @@
-import { Command, Inhibitor } from "discord-akairo";
+import { Command } from "discord-akairo";
 import { Message } from "discord.js";
-import { getGuildDocument } from "../struct/documentMethods";
-export default class BlockModulesInhibitor extends Inhibitor {
-	constructor() {
-		super("blockmodules", {
-			reason: "blocked module",
-		});
-	}
+import { blockedCategories } from "../lib/enums/blockedCategories";
+import KaikiInhibitor from "../lib/Kaiki/KaikiInhibitor";
 
-	async exec(message: Message, command: Command): Promise<boolean> {
+export default class BlockModulesInhibitor extends KaikiInhibitor {
+    constructor() {
+        super("blockmodules", {
+            reason: "blocked module",
+        });
+    }
 
-		if (message.guild) {
+    async exec(message: Message, command: Command): Promise<boolean> {
 
-			if (command.id === "togglecategory") return false;
+        if (message.guild) {
 
-			return (await getGuildDocument(message.guild.id)).blockedCategories[command.category.id];
-		}
-		return false;
-	}
+            if (command.id === "togglecategory") return false;
+
+            const _blockedCategories = await this.client.orm.blockedCategories.findFirst({ where: { Guilds: { Id: BigInt(message.guildId!) } } });
+            if (_blockedCategories) {
+                const category = blockedCategories[_blockedCategories.CategoryTarget];
+                return category === command.categoryID;
+            }
+            return false;
+        }
+        return false;
+    }
 }

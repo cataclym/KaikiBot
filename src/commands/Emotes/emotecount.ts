@@ -1,72 +1,82 @@
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
-import { Snowflake } from "discord-api-types";
 import { Guild, Message, MessageEmbed } from "discord.js";
-import { trim } from "../../lib/Util";
-import { getGuildDocument } from "../../struct/documentMethods";
-import { KaikiCommand } from "kaiki";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
+import Utility from "../../lib/Utility";
 
 export default class EmoteCount extends KaikiCommand {
-	constructor() {
-		super("emotecount", {
-			cooldown: 15000,
-			aliases: ["emotecount", "emojicount", "ec"],
-			description: "Shows amount of times each emote has been used",
-			usage: ["", "-s", "--small"],
-			channel: "guild",
-			args: [{
-				id: "flag",
-				flag: ["--small", "-s"],
-				match: "flag",
-			}],
-		});
-	}
+    constructor() {
+        super("emotecount", {
+            cooldown: 15000,
+            aliases: ["emotecount", "emojicount", "ec"],
+            description: "Shows amount of times each emote has been used",
+            usage: ["", "-s", "--small"],
+            channel: "guild",
+            args: [{
+                id: "flag",
+                flag: ["--small", "-s"],
+                match: "flag",
+            }],
+        });
+    }
 
-	public async exec(message: Message, { flag }: { flag: boolean }): Promise<Message | void> {
+    public async exec(message: Message<true>, { flag }: { flag: boolean }): Promise<Message | void> {
 
-		const data: string[] = [],
-			pages: MessageEmbed[] = [],
-			guildDB = await getGuildDocument((message.guild as Guild).id),
-			GuildEmoteCount = guildDB.emojiStats,
+        const data: string[] = [];
+        const pages: MessageEmbed[] = [];
+        let guildDB = await this.client.orm.guilds.findUnique({
+            where: {
+                Id: BigInt(message.guildId),
+            },
+            select: {
+                EmojiStats: true,
+            },
+        });
 
-			baseEmbed = new MessageEmbed()
-				.setTitle("Emote count")
-				.setAuthor((message.guild as Guild).name)
-				.withOkColor(message),
+        if (!guildDB) {
+            await this.client.db.getOrCreateGuild(BigInt(message.guildId));
+            guildDB = { EmojiStats: [] };
+        }
 
-			emoteDataPair = Object
-				.entries(GuildEmoteCount)
-				.sort((a, b) => b[1] - a[1]);
+        const baseEmbed = new MessageEmbed()
+                .setTitle("Emote count")
+                .setAuthor({ name: (message.guild as Guild).name })
+                .withOkColor(message),
 
-		for (const [key, value] of emoteDataPair) {
+            emoteDataPair = guildDB?.EmojiStats
+                .sort((a, b) => Number(b.Count) - Number(a.Count)) || [];
 
-			const Emote = (message.guild as Guild).emojis.cache.get(key as Snowflake);
+        for (const { EmojiId, Count } of emoteDataPair) {
 
-			if (!Emote) continue;
+            const Emote = (message.guild as Guild).emojis.cache.get(String(EmojiId));
 
-			if (!flag) data.push(`\`${value}\` ${Emote} | ${Emote.name}`);
-			else data.push(`${Emote} \`${value}\` `);
-		}
+            if (!Emote) continue;
 
-		if (!flag) {
+            if (!flag) {
+                data.push(`\`${Count}\` ${Emote} | ${Emote.name}`);
+            }
+            else {
+                data.push(`${Emote} \`${Count}\` `);
+            }
+        }
 
-			for (let i = 25, p = 0; p < data.length; i += 25, p += 25) {
+        if (!flag) {
+            for (let i = 25, p = 0; p < data.length; i += 25, p += 25) {
 
-				pages.push(new MessageEmbed(baseEmbed)
-					.setDescription(trim(data.slice(p, i).join("\n"), 2048)),
-				);
-			}
-		}
+                pages.push(new MessageEmbed(baseEmbed)
+                    .setDescription(Utility.trim(data.slice(p, i).join("\n"), 2048)),
+                );
+            }
+        }
 
-		else {
+        else {
+            for (let i = 50, p = 0; p < data.length; i += 50, p += 50) {
 
-			for (let i = 50, p = 0; p < data.length; i += 50, p += 50) {
-
-				pages.push(new MessageEmbed(baseEmbed)
-					.setDescription(trim(data.slice(p, i).join(""), 2048)),
-				);
-			}
-		}
-		return sendPaginatedMessage(message, pages, {});
-	}
+                pages.push(new MessageEmbed(baseEmbed)
+                    .setDescription(Utility.trim(data.slice(p, i).join(""), 2048)),
+                );
+            }
+        }
+        return sendPaginatedMessage(message, pages, {});
+    }
 }

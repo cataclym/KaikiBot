@@ -1,41 +1,42 @@
 import { Message, MessageEmbed } from "discord.js";
-import { errorMessage } from "../../lib/Embeds";
-import { trim } from "../../lib/Util";
 import { DapiGrabber, DapiSearchType } from "./hentaiService";
-import { KaikiCommand } from "kaiki";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
+import KaikiEmbeds from "../../lib/KaikiEmbeds";
+import Utility from "../../lib/Utility";
 
 export default class E621Command extends KaikiCommand {
-	constructor() {
-		super("e621", {
-			aliases: ["e621"],
-			description: "e621 :hahaa:",
-			typing: true,
-			args: [{
-				id: "tags",
-				match: "rest",
-				type: "string",
-				default: null,
-			}],
-		});
-	}
-	public async exec(message: Message, { tags }: { tags: string | null }): Promise<Message> {
-		const post = await DapiGrabber(tags?.split("+").map(tag => tag.replace(" ", "_")) ?? null, DapiSearchType.E621);
-		if (post) {
+    constructor() {
+        super("e621", {
+            aliases: ["e621"],
+            description: "e621 :hahaa:",
+            typing: true,
+            args: [{
+                id: "tags",
+                match: "rest",
+                type: "string",
+                default: null,
+            }],
+        });
+    }
 
-			const emb = new MessageEmbed()
-				.setAuthor(post.tags.artist.join(", "))
-				.setDescription(trim(`**Tags**: ${post.tags.general.join(",")}`, 2048))
-				.setImage(post.file.url || post.preview.url || post.sample.url || post.sources[0])
-				.withOkColor(message);
+    public async exec(message: Message, { tags }: { tags: string | null }): Promise<Message> {
+        const post = await DapiGrabber(tags?.split("+").map(tag => tag.replace(" ", "_")) ?? null, DapiSearchType.E621);
+        if (post) {
 
-			if (post.tags.character.length) emb.addField("Character(s)", post.tags.character.join(", "), true);
+            const emb = new MessageEmbed()
+                .setAuthor({ name: post.tags.artist.join(", ") })
+                .setDescription(Utility.trim(`**Tags**: ${post.tags.general.join(",")}`, 2048))
+                .setImage(post.file.url || post.preview.url || post.sample.url || post.sources[0])
+                .withOkColor(message);
 
-			return message.channel.send({ embeds: [emb] });
-		}
+            if (post.tags.character.length) emb.addField("Character(s)", post.tags.character.join(", "), true);
 
-		else {
-			return message.channel.send({ embeds: [await errorMessage(message, "No data received")] });
-		}
-	}
+            return message.channel.send({ embeds: [emb] });
+        }
+
+        else {
+            return message.channel.send({ embeds: [await KaikiEmbeds.errorMessage(message, "No data received")] });
+        }
+    }
 }

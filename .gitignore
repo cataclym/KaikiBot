@@ -134,3 +134,9 @@ credentials.json
 obj/
 
 bin/
+
+# VSC
+/.vscode
+
+# Testing
+/testDb.js

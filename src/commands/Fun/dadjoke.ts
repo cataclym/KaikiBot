@@ -1,49 +1,49 @@
 import { Command } from "discord-akairo";
 import { Message, MessageEmbed } from "discord.js";
 import fetch from "node-fetch";
-import { PurpleData, RedditData } from "../../interfaces/IRedditAPI";
-import { trim } from "../../lib/Util";
+import { PurpleData, RedditData } from "../../lib/Interfaces/IRedditAPI";
+import Utility from "../../lib/Utility";
 
 export default class DadJokeCommand extends Command {
-	constructor() {
-		super("dadjoke", {
-			cooldown: 8000,
-			typing: true,
-			aliases: ["dadjoke", "dadjokes"],
-			description: "Returns a dadjoke.",
-		});
-	}
+    constructor() {
+        super("dadjoke", {
+            cooldown: 8000,
+            typing: true,
+            aliases: ["dadjoke", "dadjokes"],
+            description: "Returns a dadjoke.",
+        });
+    }
 
-	public async exec(message: Message): Promise<Message | void> {
+    public async exec(message: Message): Promise<Message | void> {
 
-		await (async function loadTitle() {
-			const promise = async () => fetch("https://www.reddit.com/r/dadjokes.json?limit=1000&?sort=top&t=all");
-			await promise()
-				.then(res => res.json())
-				.then((json: RedditData) => json.data.children.map(t => t.data))
-				.then((data) => postRandomTitle(data));
-		})();
+        await (async function loadTitle() {
+            const promise = async () => fetch("https://www.reddit.com/r/dadjokes.json?limit=1000&?sort=top&t=all");
+            await promise()
+                .then(res => res.json())
+                .then((json: RedditData) => json.data.children.map(t => t.data))
+                .then((data) => postRandomTitle(data));
+        })();
 
-		async function postRandomTitle(data: PurpleData[]) {
+        async function postRandomTitle(data: PurpleData[]) {
 
-			const randomRedditPost = data[Math.floor(Math.random() * data.length) + 1];
+            const randomRedditPost = data[Math.floor(Math.random() * data.length) + 1];
 
-			return message?.util?.send({ embeds: [new MessageEmbed({
-				title: randomRedditPost.title ? trim(randomRedditPost.title, 256) : "\u200B",
-				description: randomRedditPost.selftext ? trim(randomRedditPost.selftext, 2048) : "\u200B",
-				author: {
-					name: `Submitted by ${randomRedditPost.author}`,
-					url: randomRedditPost.url,
-				},
-				image: {
-					url: randomRedditPost.url,
-				},
-				footer: {
-					text: `${randomRedditPost.ups} updoots`,
-				},
-			})
-				.withOkColor(message)],
-			});
-		}
-	}
+            return message?.util?.send({ embeds: [new MessageEmbed({
+                title: randomRedditPost.title ? Utility.trim(randomRedditPost.title, 256) : "\u200B",
+                description: randomRedditPost.selftext ? Utility.trim(randomRedditPost.selftext, 2048) : "\u200B",
+                author: {
+                    name: `Submitted by ${randomRedditPost.author}`,
+                    url: randomRedditPost.url,
+                },
+                image: {
+                    url: randomRedditPost.url,
+                },
+                footer: {
+                    text: `${randomRedditPost.ups} updoots`,
+                },
+            })
+                .withOkColor(message)],
+            });
+        }
+    }
 }

@@ -1,79 +1,136 @@
 import { FailureData } from "discord-akairo";
 import { Message, MessageEmbed } from "discord.js";
-import { noArgGeneric } from "../../lib/Embeds";
-import { codeblock } from "../../lib/Util";
-import { customClient } from "../../struct/client";
-import { IMoneyService } from "../../lib/money/IMoneyService";
-import { MongoMoney } from "../../lib/money/MongoMoneyService";
-import { KaikiCommand } from "kaiki";
+import { ActivityTypes } from "discord.js/typings/enums";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+import KaikiEmbeds from "../../lib/KaikiEmbeds";
+import Utility from "../../lib/Utility";
+import { BotConfig } from "../../struct/db/Database";
+import SetActivityCommand from "./setActivity";
 
+enum validEnum {
+    ACTIVITY = "activity",
+    ACTIVITYTYPE = "activityType",
+    CURRENCYNAME = "currencyname",
+    CURRENCYSYMBOL = "currencysymbol",
+    DAILYENABLED = "dailyEnabled",
+    DAILYAMOUNT = "dailyAmount"
+}
 
-const validTypes = ["currencyname", "currencysymbol"];
+type validTypes = "activity"
+    | "activityType"
+    | "currencyname"
+    | "currencysymbol"
+    | "dailyEnabled"
+    | "dailyAmount";
 
 export default class BotConfigCommand extends KaikiCommand {
-	private readonly _money: IMoneyService;
+    private static _validTypes: validTypes[] = [
+        "activity",
+        "activityType",
+        "currencyname",
+        "currencysymbol",
+        "dailyEnabled",
+        "dailyAmount",
+    ];
 
-	constructor() {
-		super("botconfig", {
-			aliases: ["botconfig", "bc"],
-			description: "Change various bot configurations. Run without arguments to see current settings.",
-			usage: ["<setting> <value>", "currencyname Europe Dollars"],
-			ownerOnly: true,
-			args: [
-				{
-					id: "type",
-					type: validTypes,
-					otherwise: async (msg: Message, _: FailureData) => {
-						if (_.phrase.length) {
-							return ({ embeds: [new MessageEmbed()
-								.setDescription(`\`${_.phrase}\` is not a valid setting`)
-								.addField("Valid settings", validTypes.join("\n"))
-								.withErrorColor(msg)] });
-						}
-						else {
-							return ({ embeds: [new MessageEmbed()
-								.addField("Bot config", await codeblock(JSON
-									.stringify((await msg.client.botSettings
-										.getDocument(msg.client.botSettingID)).settings, null, 4), "xl"))
-								.withOkColor(msg)] });
-						}
-					},
-				},
-				{
-					id: "name",
-					type: "string",
-					match: "restContent",
-					otherwise: (m: Message) => ({ embeds: [noArgGeneric(m)] }),
-				},
-			],
-		});
+    constructor() {
+        super("botconfig", {
+            aliases: ["botconfig", "bc"],
+            description: "Change various bot configurations. Run without arguments to see current settings.",
+            usage: ["<setting> <value>", "currencyname Europe Dollars"],
+            ownerOnly: true,
+            args: [
+                {
+                    id: "type",
+                    type: BotConfigCommand._validTypes,
+                    otherwise: async (msg: Message, _: FailureData) => {
+                        if (_.phrase.length) {
+                            return ({
+                                embeds: [new MessageEmbed()
+                                    .setDescription(`\`${_.phrase}\` is not a valid setting`)
+                                    .addField("Valid settings", BotConfigCommand._validTypes.join("\n"))
+                                    .withErrorColor(msg)],
+                            });
+                        }
+                        else {
+                            return ({
+                                embeds: [new MessageEmbed()
+                                    .addField("Bot config", await Utility.codeblock(JSON
+                                        .stringify(new BotConfig(await this.client.connection.query("SELECT * FROM BotSettings")), null, 4), "xl"))
+                                    .withOkColor(msg)],
+                            });
+                        }
+                    },
+                },
+                {
+                    id: "value",
+                    type: "string",
+                    match: "restContent",
+                    otherwise: (m: Message) => ({ embeds: [KaikiEmbeds.genericArgumentError(m)] }),
+                },
+            ],
+        });
+    }
 
-		this._money = MongoMoney;
-	}
-	public async exec(message: Message, { type, name }: { type: string, name: string}): Promise<Message> {
+    public async exec(message: Message, { type, value }: { type: validTypes, value: string }): Promise<Message> {
 
-		const client = this.client as customClient;
-		let oldValue;
+        const client = this.client;
+        let oldValue;
 
-		switch (type.toLowerCase()) {
-			case validTypes[0]:
-				oldValue = await client.botSettings.get(client.botSettingID, "currencyName", "Yen");
-				await client.botSettings.set(client.botSettingID, "currencyName", name);
-				break;
-			case validTypes[1]:
-				oldValue = await client.botSettings.get(client.botSettingID, "currencySymbol", "💴");
-				await client.botSettings.set(client.botSettingID, "currencySymbol", name);
-				break;
-		}
+        switch (type) {
+            case validEnum.ACTIVITY:
+                oldValue = await this.client.botSettings.get("1", "Activity", "N/A");
+                await this.handler.findCommand("setactivity")
+                    .exec(message, {
+                        type: await this.client.botSettings.get("1", "ActivityType", "PLAYING"),
+                        name: value,
+                    });
+                break;
+            case validEnum.ACTIVITYTYPE:
+                value = value.toUpperCase();
+                if (SetActivityCommand.validTypes.includes(value)) {
+                    oldValue = await this.client.botSettings.get("1", "ActivityType", SetActivityCommand.validTypes[ActivityTypes.PLAYING]);
+                    await this.handler.findCommand("setactivity")
+                        .exec(message, {
+                            name: await this.client.botSettings.get("1", "Activity", "N/A"),
+                            type: value,
+                        });
+                }
+                break;
+            case validEnum.CURRENCYNAME:
+                oldValue = await client.botSettings.get("1", "CurrencyName", "Yen");
+                await client.botSettings.set("1", "CurrencyName", String(value));
+                client.money.currencyName = value;
+                break;
+            case validEnum.CURRENCYSYMBOL:
+                oldValue = await client.botSettings.get("1", "CurrencySymbol", 128180);
+                await client.botSettings.set("1", "CurrencySymbol", value.codePointAt(0));
+                client.money.currencySymbol = value;
+                break;
+            case validEnum.DAILYAMOUNT:
+                oldValue = await client.botSettings.get("1", "DailyAmount", 250);
+                await client.botSettings.set("1", "DailyAmount", value);
+                break;
+            case validEnum.DAILYENABLED:
+                oldValue = await client.botSettings.get("1", "DailyEnabled", false);
+                await client.botSettings.set("1", "DailyEnabled", value);
+                break;
+            default:
+                throw new Error("Invalid bot-configuration provided!");
+        }
 
-		await this._money.UpdateCurrencyNameAndSymbol(this.client as customClient);
+        if (oldValue == null || value == null) {
+            return message.channel.send({
+                embeds: [await KaikiEmbeds.errorMessage(message, "An invalid configuration was provided.")],
+            });
+        }
 
-		return message.channel.send({
-			embeds: [new MessageEmbed()
-				.setTitle("Changed bot configuration")
-				.addField("Old Value", oldValue)
-				.addField("New value", name)
-				.withOkColor(message)],
-		});
-	}
+        return message.channel.send({
+            embeds: [new MessageEmbed()
+                .setTitle("Changed bot configuration")
+                .addField("Old Value", oldValue)
+                .addField("New value", value)
+                .withOkColor(message)],
+        });
+    }
 }

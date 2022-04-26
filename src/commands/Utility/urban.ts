@@ -2,57 +2,58 @@ import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
 import { Message, MessageEmbed } from "discord.js";
 import fetch from "node-fetch";
 import querystring from "querystring";
-import { noArgGeneric } from "../../lib/Embeds";
-import { trim } from "../../lib/Util";
-import { KaikiCommand, KaikiUtil } from "kaiki";
-import { List } from "../../interfaces/IUrbanResponse";
-
+import { List } from "../../lib/Interfaces/IUrbanResponse";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+import KaikiUtil from "../../lib/Kaiki/KaikiUtil";
+import KaikiEmbeds from "../../lib/KaikiEmbeds";
+import Utility from "../../lib/Utility";
 
 export default class UrbanDictCommand extends KaikiCommand {
-	constructor() {
-		super("urbandict", {
-			aliases: ["urbandict", "urban", "ud"],
-			description: "Searches Urban Dictionary for a word or sentence",
-			usage: ["Watermelon", "anime"],
-			args: [
-				{
-					id: "term",
-					match: "rest",
-					otherwise: (msg: Message) => ({ embeds: [noArgGeneric(msg)] }),
-				},
-			],
-		});
-	}
-	public async exec(message: Message, { term }: { term: string }): Promise<Message | void> {
+    constructor() {
+        super("urbandict", {
+            aliases: ["urbandict", "urban", "ud"],
+            description: "Searches Urban Dictionary for a word or sentence",
+            usage: ["Watermelon", "anime"],
+            args: [
+                {
+                    id: "term",
+                    match: "rest",
+                    otherwise: (msg: Message) => ({ embeds: [KaikiEmbeds.genericArgumentError(msg)] }),
+                },
+            ],
+        });
+    }
 
-		const query = querystring.stringify({ term: term });
+    public async exec(message: Message, { term }: { term: string }): Promise<Message | void> {
 
-		const { list }: { list: List[] } = (await KaikiUtil.handleToJSON(await (await fetch(`https://api.urbandictionary.com/v0/define?${query}`)).json()));
+        const query = querystring.stringify({ term: term });
 
-		if (!list.length) {
-			return message.channel.send({
-				embeds: [new MessageEmbed({
-					description: `No results found for **${term}**.`,
-				})
-					.withErrorColor(message)],
-			});
-		}
+        const { list }: { list: List[] } = (await KaikiUtil.handleToJSON(await (await fetch(`https://api.urbandictionary.com/v0/define?${query}`)).json()));
 
-		const pages: MessageEmbed[] = [];
+        if (!list.length) {
+            return message.channel.send({
+                embeds: [new MessageEmbed({
+                    description: `No results found for **${term}**.`,
+                })
+                    .withErrorColor(message)],
+            });
+        }
 
-		for (const result of list) {
-			pages.push(new MessageEmbed()
-				.setTitle(result.word)
-				.setURL(result.permalink)
-				.addFields(
-					{ name: "Definition", value: trim(result.definition, 1024) },
-					{ name: "Example", value: trim(result.example || "N/A", 1024) },
-					{ name: "Rating", value: `${result.thumbs_up} thumbs up. ${result.thumbs_down} thumbs down.` },
-				)
-				.withOkColor(message),
-			);
-		}
+        const pages: MessageEmbed[] = [];
 
-		return sendPaginatedMessage(message, pages, {});
-	}
+        for (const result of list) {
+            pages.push(new MessageEmbed()
+                .setTitle(result.word)
+                .setURL(result.permalink)
+                .addFields(
+                    { name: "Definition", value: Utility.trim(result.definition, 1024) },
+                    { name: "Example", value: Utility.trim(result.example || "N/A", 1024) },
+                    { name: "Rating", value: `${result.thumbs_up} thumbs up. ${result.thumbs_down} thumbs down.` },
+                )
+                .withOkColor(message),
+            );
+        }
+
+        return sendPaginatedMessage(message, pages, {});
+    }
 }
