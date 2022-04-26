@@ -1,8 +1,8 @@
 import { PrefixSupplier } from "discord-akairo";
 import { Guild, Message, MessageEmbed, Permissions } from "discord.js";
-import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 import GreetHandler, { JSONToMessageOptions } from "../../lib/GreetHandler";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 export default class WelcomeMessageCommand extends KaikiCommand {
     constructor() {
@@ -39,7 +39,7 @@ export default class WelcomeMessageCommand extends KaikiCommand {
 
         const db = await this.client.orm.guilds.update({
             where: { Id: BigInt(guildID) },
-            data: { WelcomeMessage: String(json) },
+            data: { WelcomeMessage: JSON.stringify(json) },
         });
 
         const prefix = (this.handler.prefix as PrefixSupplier)(message);
