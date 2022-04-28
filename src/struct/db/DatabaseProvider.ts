@@ -8,14 +8,16 @@ export default class DatabaseProvider extends Provider {
     private readonly _idColumn: string;
     private readonly _dataColumn?: string;
     public items: Collection<string, any>;
+    private readonly _bigInt: boolean;
 
-    constructor(db: Connection, tableName: string, options?: ProviderOptions) {
+    constructor(db: Connection, tableName: string, options?: ProviderOptions, bigint?: boolean) {
         super();
         this.items = new Collection();
         this._db = db;
         this._tableName = tableName;
         this._idColumn = options?.idColumn ?? "Id";
         this._dataColumn = options?.dataColumn;
+        this._bigInt = bigint ?? true;
     }
 
     async init(): Promise<void> {
@@ -25,7 +27,12 @@ export default class DatabaseProvider extends Provider {
         );
 
         for (const row of rows) {
-            this.items.set(row[this._idColumn], this._dataColumn ? JSON.parse(row[this._dataColumn]) : row);
+            if (this._bigInt) {
+                this.items.set(row[this._idColumn], this._dataColumn ? JSON.parse(row[this._dataColumn]) : row);
+            }
+            else {
+                this.items.set(String(row[this._idColumn]), this._dataColumn ? JSON.parse(row[this._dataColumn]) : row);
+            }
         }
     }
 
