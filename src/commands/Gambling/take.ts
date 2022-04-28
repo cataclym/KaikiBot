@@ -34,7 +34,7 @@ export default class take extends KaikiCommand {
         });
     }
 
-    public async exec(msg: Message, { amount, user }: { amount: number; user: User; }): Promise<void> {
+    public async exec(msg: Message, { amount, user }: { amount: bigint; user: User; }): Promise<void> {
         const success = await this.client.money.TryTake(user.id, amount, "-");
         if (!success) {
             await msg.channel.send({

@@ -24,7 +24,7 @@ export default class ClaimDailyCommand extends KaikiCommand {
         if (!await this.client.cache.dailyProvider.checkClaimed(message.author.id)) {
 
             await this.client.cache.dailyProvider.setClaimed(message.author.id);
-            await this.client.money.Add(message.author.id, Number(amount), "Claimed daily");
+            await this.client.money.Add(message.author.id, BigInt(amount), "Claimed daily");
 
             return message.channel.send({
                 embeds: [new MessageEmbed()

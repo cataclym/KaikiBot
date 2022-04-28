@@ -34,7 +34,7 @@ export default class award extends KaikiCommand {
         });
     }
 
-    public async exec(msg: Message, { amount, user }: { amount: number; user: User; }): Promise<void> {
+    public async exec(msg: Message, { amount, user }: { amount: bigint; user: User; }): Promise<void> {
         const newAmount = await this.client.money.Add(user.id, amount, "Awarded by bot owner");
         const bInt = BigInt(amount);
         await msg.channel.send({

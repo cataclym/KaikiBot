@@ -27,50 +27,48 @@ export class MoneyService {
         return 0n;
     }
 
-    async Add(id: string, amount: number, reason: string): Promise<bigint> {
+    async Add(id: string, amount: bigint, reason: string): Promise<bigint> {
         if (amount <= 0) {
             throw new Error("Amount must be greater than 0");
         }
 
-        const bIntId = BigInt(id),
-            bIntAmount = BigInt(amount);
+        const bIntId = BigInt(id);
 
-        this.lazyCreateCurrencyTransactions(bIntId, bIntAmount, reason);
+        this.lazyCreateCurrencyTransactions(bIntId, amount, reason);
+
         const query = await this._orm.discordUsers.upsert({
             where: { UserId: bIntId },
-            update: { Amount: { increment: bIntAmount } },
-            create: { UserId: bIntId, Amount: bIntAmount },
+            update: { Amount: { increment: amount } },
+            create: { UserId: bIntId, Amount: amount },
         });
         return query.Amount;
     }
 
-    async TryTake(id: string, amount: number, reason: string): Promise<boolean> {
+    async TryTake(id: string, amount: bigint, reason: string): Promise<boolean> {
         if (amount <= 0) {
             throw new Error("Amount must be greater than 0");
         }
 
-        const bIntId = BigInt(id),
-            bIntAmount = BigInt(amount);
-
+        const bIntId = BigInt(id);
         const currentAmount = await this._orm.discordUsers.findFirst({
             select: { Amount: true },
             where: { UserId: bIntId },
         });
 
-        if (currentAmount && currentAmount.Amount >= bIntAmount) {
-            this.lazyCreateCurrencyTransactions(bIntId, -bIntAmount, reason);
+        if (currentAmount && currentAmount.Amount >= amount) {
+            this.lazyCreateCurrencyTransactions(bIntId, -amount, reason);
             await this._orm.discordUsers.update({
                 where: {
                     UserId: bIntId,
                 },
                 data: {
-                    Amount: { decrement: bIntAmount },
+                    Amount: { decrement: amount },
                 },
             });
             return true;
         }
         else if (!currentAmount) {
-            this.lazyCreateCurrencyTransactions(bIntId, bIntAmount, reason);
+            this.lazyCreateCurrencyTransactions(bIntId, amount, reason);
             await this._orm.discordUsers.create({
                 data: { UserId: bIntId },
             });

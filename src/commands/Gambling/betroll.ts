@@ -20,7 +20,7 @@ export default class BetRollCommand extends KaikiCommand {
         });
     }
 
-    public async exec(message: Message, { number }: { number: number }): Promise<Message> {
+    public async exec(message: Message, { number }: { number: bigint }): Promise<Message> {
         const success = await this.client.money.TryTake(message.author.id, number, "Betroll gamble");
 
         if (!success) {
@@ -44,7 +44,7 @@ export default class BetRollCommand extends KaikiCommand {
 
         else if (roll < 90) {
 
-            const winnings = Math.round(number * 2);
+            const winnings = number * 2n;
 
             await this.client.money.Add(message.author.id, winnings, "Betroll won x2");
 
@@ -57,7 +57,7 @@ export default class BetRollCommand extends KaikiCommand {
 
         else if (roll < 100) {
 
-            const winnings = Math.round(number * 4);
+            const winnings = number * 4n;
 
             await this.client.money.Add(message.author.id, winnings, "Betroll won x4");
 
@@ -70,7 +70,7 @@ export default class BetRollCommand extends KaikiCommand {
 
         else {
 
-            const winnings = Math.round(number * 10);
+            const winnings = number * 10n;
 
             await this.client.money.Add(message.author.id, winnings, "Betroll won x10");
 

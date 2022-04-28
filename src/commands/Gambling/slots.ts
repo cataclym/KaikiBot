@@ -23,7 +23,7 @@ export default class slotsCommand extends KaikiCommand {
         });
     }
 
-    public async exec(message: Message, { amount }: { amount: number }): Promise<void> {
+    public async exec(message: Message, { amount }: { amount: bigint }): Promise<void> {
 
         if (amount < 2) {
             await message.channel.send({
@@ -49,7 +49,7 @@ export default class slotsCommand extends KaikiCommand {
 
         // Check if all three indexes are the same before we check if there are 2 similar ones
         if (result.numbers.every((val, i, arr) => val === arr[0])) {
-            const winAmount = amount * 30;
+            const winAmount = amount * 30n;
             await this.client.money.Add(message.author.id, winAmount, "Slots won x30");
             result.string += `\n\nYou won ${winAmount} ${this.client.money.currencySymbol}!`;
         }
@@ -59,7 +59,7 @@ export default class slotsCommand extends KaikiCommand {
             arr.splice(i, 1);
             if (arr.includes(r)) return true;
         })) {
-            const winAmount = amount * 10;
+            const winAmount = amount * 10n;
             await this.client.money.Add(message.author.id, winAmount, "Slots won x10");
             result.string += `\n\nYou won **${winAmount}** ${this.client.money.currencySymbol}!`;
         }

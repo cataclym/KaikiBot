@@ -33,7 +33,7 @@ export default class give extends KaikiCommand {
         });
     }
 
-    public async exec(msg: Message, { amount, user }: { amount: number, user: User }): Promise<void> {
+    public async exec(msg: Message, { amount, user }: { amount: bigint, user: User }): Promise<void> {
         if (user.id === msg.author.id) {
             await msg.channel.send(`You can't give yourself ${this.client.money.currencySymbol}`);
             return;
