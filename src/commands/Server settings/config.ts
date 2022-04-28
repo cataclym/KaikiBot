@@ -97,14 +97,14 @@ export default class ConfigCommand extends KaikiCommand {
 
         if (db.WelcomeMessage) {
             pages.push(await GreetHandler.createAndParseWelcomeLeaveMessage({
-                embed: db.WelcomeMessage ? JSON.parse(db.WelcomeMessage) : null,
+                embed: db.WelcomeMessage || null,
                 channel: db.WelcomeChannel,
                 timeout: db.WelcomeTimeout,
             }, message.member));
         }
         if (db.ByeMessage) {
             pages.push(await GreetHandler.createAndParseWelcomeLeaveMessage({
-                embed: db.WelcomeMessage ? JSON.parse(db.ByeMessage) : null,
+                embed: db.WelcomeMessage || null,
                 channel: db.ByeChannel,
                 timeout: db.ByeTimeout,
             }, message.member));
