@@ -45,7 +45,7 @@ GuildMember.prototype.hasExcludedRole = function(member?: GuildMember) {
 
 Guild.prototype.isDadBotEnabled = function(message?: Message) {
 
-    const g = message?.guild ?? this as Guild;
+    const g = message?.guild || this as Guild;
 
     if (g && g.client.guildsDb.get(g.id, "DadBot", false)) {
         return message
