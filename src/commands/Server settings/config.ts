@@ -104,7 +104,7 @@ export default class ConfigCommand extends KaikiCommand {
         }
         if (db.ByeMessage) {
             pages.push(await GreetHandler.createAndParseWelcomeLeaveMessage({
-                embed: db.WelcomeMessage || null,
+                embed: db.ByeMessage || null,
                 channel: db.ByeChannel,
                 timeout: db.ByeTimeout,
             }, message.member));
