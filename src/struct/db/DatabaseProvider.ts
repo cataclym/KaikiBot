@@ -3,14 +3,14 @@ import { Collection } from "discord.js";
 import { Connection, RowDataPacket } from "mysql2/promise";
 
 export default class DatabaseProvider extends Provider {
-    private _db: Connection;
+    private _db: () => Connection;
     private readonly _tableName: string;
     private readonly _idColumn: string;
     private readonly _dataColumn?: string;
     public items: Collection<string, any>;
     private readonly _bigInt: boolean;
 
-    constructor(db: Connection, tableName: string, options?: ProviderOptions, bigint?: boolean) {
+    constructor(db: () => Connection, tableName: string, options?: ProviderOptions, bigint?: boolean) {
         super();
         this.items = new Collection();
         this._db = db;
@@ -21,7 +21,7 @@ export default class DatabaseProvider extends Provider {
     }
 
     async init(): Promise<void> {
-        const [rows] = <RowDataPacket[][]> await this._db.query(
+        const [rows] = <RowDataPacket[][]> await this._db().query(
             `SELECT *
              FROM ${this._tableName}`,
         );
@@ -53,7 +53,7 @@ export default class DatabaseProvider extends Provider {
         this.items.set(id, data);
 
         if (this._dataColumn) {
-            return this._db.execute(exists
+            return this._db().execute(exists
                 ? `UPDATE ${this._tableName}
                    SET ${this._dataColumn} = ?
                    WHERE ${this._idColumn} = ?`
@@ -64,7 +64,7 @@ export default class DatabaseProvider extends Provider {
             );
         }
 
-        return this._db.execute(exists
+        return this._db().execute(exists
             ? `UPDATE ${this._tableName}
                SET ${key} = ?
                WHERE ${this._idColumn} = ?`
@@ -80,17 +80,17 @@ export default class DatabaseProvider extends Provider {
         delete data[key];
 
         if (this._dataColumn) {
-            return this._db.execute(`UPDATE ${this._tableName}
-                                     SET ${this._dataColumn} = $value
-                                     WHERE ${this._idColumn} = $id`, {
+            return this._db().execute(`UPDATE ${this._tableName}
+                                       SET ${this._dataColumn} = $value
+                                       WHERE ${this._idColumn} = $id`, {
                 $id: id,
                 $value: JSON.stringify(data),
             });
         }
 
-        return this._db.execute(`UPDATE ${this._tableName}
-                                 SET ${key} = $value
-                                 WHERE ${this._idColumn} = $id`, {
+        return this._db().execute(`UPDATE ${this._tableName}
+                                   SET ${key} = $value
+                                   WHERE ${this._idColumn} = $id`, {
             $id: id,
             $value: null,
         });
@@ -98,8 +98,8 @@ export default class DatabaseProvider extends Provider {
 
     clear(id: string) {
         this.items.delete(id);
-        return this._db.execute(`DELETE
-                                 FROM ${this._tableName}
-                                 WHERE ${this._idColumn} = $id`, { $id: id });
+        return this._db().execute(`DELETE
+                                   FROM ${this._tableName}
+                                   WHERE ${this._idColumn} = $id`, { $id: id });
     }
 }

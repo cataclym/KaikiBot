@@ -20,7 +20,7 @@ export default class KaikiAkairoClient extends AkairoClient {
     public botSettings: DatabaseProvider;
     public cache: KaikiCache;
     public commandHandler: CommandHandler;
-    public connection: Connection;
+    public connection: () => Connection;
     public dadBotChannels: DatabaseProvider;
     public guildsDb: DatabaseProvider;
     public inhibitorHandler: InhibitorHandler;
@@ -122,7 +122,7 @@ export default class KaikiAkairoClient extends AkairoClient {
         this.db.init()
             .then((obj) => {
                 this.orm = obj.orm;
-                this.connection = obj.mySQLConnection;
+                this.connection = () => obj.mySQLConnection;
 
                 this.botSettings = new DatabaseProvider(this.connection, "BotSettings", { idColumn: "Id" }, false);
                 this.botSettings.init().then(() => logger.info(`${chalk.green("READY")} - Bot settings provider`));

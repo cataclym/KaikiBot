@@ -56,7 +56,7 @@ export default class BotConfigCommand extends KaikiCommand {
                             return ({
                                 embeds: [new MessageEmbed()
                                     .addField("Bot config", await Utility.codeblock(JSON
-                                        .stringify(new BotConfig(await this.client.connection.query("SELECT * FROM BotSettings")), null, 4), "xl"))
+                                        .stringify(new BotConfig(await this.client.connection().query("SELECT * FROM BotSettings")), null, 4), "xl"))
                                     .withOkColor(msg)],
                             });
                         }

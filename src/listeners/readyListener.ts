@@ -15,7 +15,7 @@ export default class ReadyListener extends KaikiListener {
 
     public async exec(): Promise<void> {
 
-        new Migrations(this.client.connection, this.client)
+        new Migrations(this.client.connection(), this.client)
             .runAllMigrations()
             .then(async (res: number) => {
                 if (res) {

@@ -36,7 +36,7 @@ export default class Gainsboro extends Migration {
                     dailyEnabled,
                 } = (await botModel.findOne({}).exec())!.settings;
                 this.changes++;
-                await connection.query("INSERT INTO BotSettings (Id, Activity, ActivityType, CurrencyName, CurrencySymbol, DailyAmount, DailyEnabled) VALUES (?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE Id = 1",
+                await connection().query("INSERT INTO BotSettings (Id, Activity, ActivityType, CurrencyName, CurrencySymbol, DailyAmount, DailyEnabled) VALUES (?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE Id = 1",
                     [1, activity || null, activityType || null, currencyName, Number(currencySymbol.codePointAt(0)), dailyAmount, dailyEnabled],
                 );
 
@@ -68,7 +68,7 @@ export default class Gainsboro extends Migration {
                     const excludeGuildRole = (client.guilds.cache.get(id) || await client.guilds.fetch(id))
                         ?.roles.cache.find(r => r.name === excludeRole);
 
-                    await connection.query("INSERT INTO Guilds (Id, Prefix, Anniversary, DadBot, ErrorColor, OkColor, ExcludeRole, WelcomeChannel, ByeChannel, WelcomeMessage, ByeMessage, StickyRoles, CreatedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                    await connection().query("INSERT INTO Guilds (Id, Prefix, Anniversary, DadBot, ErrorColor, OkColor, ExcludeRole, WelcomeChannel, ByeChannel, WelcomeMessage, ByeMessage, StickyRoles, CreatedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                         [BigInt(id), prefix, anniversary, dadBot.enabled,
                             typeof errorColor === "string"
                                 ? parseInt(errorColor.replace("#", ""), 16)
@@ -90,7 +90,7 @@ export default class Gainsboro extends Migration {
                         for (const key in guildBlockedCategories) {
                             this.changes++;
 
-                            await connection.query("INSERT INTO BlockedCategories (GuildId, CategoryTarget) VALUES (?, ?)",
+                            await connection().query("INSERT INTO BlockedCategories (GuildId, CategoryTarget) VALUES (?, ?)",
                                 // This is dumb. A string can index an enum and return a number.
                                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                                 // @ts-ignore
@@ -105,7 +105,7 @@ export default class Gainsboro extends Migration {
                         for (let i = 0; i < Object.keys(userRoles).length; i++) {
                             this.changes++;
 
-                            await connection.query<OkPacket>("INSERT INTO GuildUsers (UserId, UserRole, GuildId) VALUES (?, ?, ?)",
+                            await connection().query<OkPacket>("INSERT INTO GuildUsers (UserId, UserRole, GuildId) VALUES (?, ?, ?)",
                                 [BigInt(userRolesKeyValues[i][0]), BigInt(userRolesKeyValues[i][1]), BigInt(guild.id)]);
 
                             insertedUsers.push(userRolesKeyValues[i][0]);
@@ -118,7 +118,7 @@ export default class Gainsboro extends Migration {
                             if (!insertedUsers.includes(key)) {
                                 this.changes++;
 
-                                await connection.query<OkPacket>("INSERT INTO GuildUsers (UserId, UserRole, GuildId) VALUES (?, ?, ?)",
+                                await connection().query<OkPacket>("INSERT INTO GuildUsers (UserId, UserRole, GuildId) VALUES (?, ?, ?)",
                                     [BigInt(key), userRoles[key] ?? null, BigInt(guild.id)]);
                                 insertedUsers.push(key);
                             }
@@ -126,7 +126,7 @@ export default class Gainsboro extends Migration {
                             for (const role of leaveRoles[key]) {
                                 this.changes++;
 
-                                await connection.query("INSERT INTO LeaveRoles (RoleId, GuildUserId, GuildId) VALUES (?, ?, ?)",
+                                await connection().query("INSERT INTO LeaveRoles (RoleId, GuildUserId, GuildId) VALUES (?, ?, ?)",
                                     [BigInt(role), BigInt(key), BigInt(guild.id)],
                                 );
                             }
@@ -137,7 +137,7 @@ export default class Gainsboro extends Migration {
                         for (const reaction in emojiReactions) {
                             this.changes++;
 
-                            await connection.query("INSERT INTO EmojiReactions (EmojiId, TriggerString, GuildId) VALUES (?, ?, ?)",
+                            await connection().query("INSERT INTO EmojiReactions (EmojiId, TriggerString, GuildId) VALUES (?, ?, ?)",
                                 [BigInt(emojiReactions[reaction]), reaction, BigInt(guild.id)]);
                         }
                     }
@@ -146,7 +146,7 @@ export default class Gainsboro extends Migration {
                         for (const statistic in emojiStats) {
                             this.changes++;
 
-                            await connection.query("INSERT INTO EmojiStats (EmojiId, Count, GuildId) VALUES (?, ?, ?)",
+                            await connection().query("INSERT INTO EmojiStats (EmojiId, Count, GuildId) VALUES (?, ?, ?)",
                                 [BigInt(statistic), BigInt(emojiStats[statistic]), BigInt(guild.id)]);
                         }
                     }
@@ -158,14 +158,14 @@ export default class Gainsboro extends Migration {
                     this.changes++;
 
                     const money = await moneyModel.findOne({ id: user.id }).exec();
-                    await connection.query<OkPacket>("INSERT INTO DiscordUsers (UserId, Amount, CreatedAt) VALUES (?, ?, ?)",
+                    await connection().query<OkPacket>("INSERT INTO DiscordUsers (UserId, Amount, CreatedAt) VALUES (?, ?, ?)",
                         [BigInt(user.id), money?.amount ?? 0, new Date(user.registeredAt)],
                     );
 
                     for (let i = 0; i < user.todo.length; i++) {
                         this.changes++;
 
-                        await connection.query("INSERT INTO Todos (UserId, String) VALUES (?, ?)",
+                        await connection().query("INSERT INTO Todos (UserId, String) VALUES (?, ?)",
                             [BigInt(user.id), user.todo[i]],
                         );
                     }
@@ -180,19 +180,19 @@ export default class Gainsboro extends Migration {
                             const query = "INSERT INTO UserNicknames (Nickname, GuildUserId, GuildId) VALUES (?, ?, ?)",
                                 values = [user.userNicknames[i], BigInt(user.id), BigInt(guild)];
 
-                            const res = await connection.query<RowDataPacket[][]>("SELECT * FROM GuildUsers WHERE UserId = ? AND GuildId = ?",
+                            const res = await connection().query<RowDataPacket[][]>("SELECT * FROM GuildUsers WHERE UserId = ? AND GuildId = ?",
                                 [BigInt(user.id), BigInt(guild)],
                             );
 
                             if (!res[0] || !res[0].length) {
-                                await connection.query("INSERT INTO GuildUsers (UserId, GuildId) VALUES (?, ?)",
+                                await connection().query("INSERT INTO GuildUsers (UserId, GuildId) VALUES (?, ?)",
                                     [BigInt(user.id), BigInt(guild)],
                                 )
-                                    .then(async () => await connection.query(query, values));
+                                    .then(async () => await connection().query(query, values));
                             }
 
                             else {
-                                await connection.query(query, values);
+                                await connection().query(query, values);
                             }
                         }
                     }
@@ -204,7 +204,7 @@ export default class Gainsboro extends Migration {
 
                 for (const key in res.count) {
                     this.changes++;
-                    await connection.query("INSERT INTO CommandStats (commandAlias, count) VALUES (?, ?)",
+                    await connection().query("INSERT INTO CommandStats (commandAlias, count) VALUES (?, ?)",
                         [key, res.count[key]],
                     );
                 }

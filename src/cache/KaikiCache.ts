@@ -13,14 +13,15 @@ export type TEmoteReactCache = Map<TGuildString, Map<TEmoteStringTypes, Map<TEmo
 type partitionResult = [[string, bigint][], [string, bigint][]];
 
 export default class KaikiCache {
+
     public animeQuoteCache: Collection<string, respType>;
     public cmdStatsCache: Collection<string, number>;
     public emoteReactCache: TEmoteReactCache;
     public dailyProvider: MySQLDailyProvider;
-    private readonly _connection: Connection;
+    private _connection: () => Connection;
     private _orm: pkg.PrismaClient;
 
-    constructor(orm: pkg.PrismaClient, connection: Connection) {
+    constructor(orm: pkg.PrismaClient, connection: () => Connection) {
         this._connection = connection;
         this._orm = orm;
         this.animeQuoteCache = new Collection<string, respType>();
@@ -113,20 +114,20 @@ export default class KaikiCache {
 }
 
 class MySQLDailyProvider {
-    private connection: Connection;
+    private connection: () => Connection;
 
-    constructor(connection: Connection) {
+    constructor(connection: () => Connection) {
         this.connection = connection;
     }
 
     async checkClaimed(id: string) {
-        return this.connection.query<RowDataPacket[]>("SELECT ClaimedDaily FROM DiscordUsers WHERE UserId = ?", [BigInt(id)])
+        return this.connection().query<RowDataPacket[]>("SELECT ClaimedDaily FROM DiscordUsers WHERE UserId = ?", [BigInt(id)])
             .then(([row]) => row[0].ClaimedDaily ?? false);
     }
 
     // Sets claimed status to true
     async setClaimed(id: string) {
-        return this.connection.query<ResultSetHeader>("UPDATE DiscordUsers SET ClaimedDaily = ? WHERE UserId = ?", [true, BigInt(id)])
+        return this.connection().query<ResultSetHeader>("UPDATE DiscordUsers SET ClaimedDaily = ? WHERE UserId = ?", [true, BigInt(id)])
             .then(([result]) => result.changedRows
                 ? result.changedRows > 0
                 : false)
