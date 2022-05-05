@@ -60,13 +60,15 @@ export default class CurrencyTransactionsCommand extends KaikiCommand {
 
         for (let i = 15, p = 0; p < db.length; i += 15, p += 15) {
             pages.push(CurrencyTransactionsCommand.baseEmbed(message)
-                .setDescription(db.slice(p, i)
-                    .map(row =>
-                        `${row.Amount > 0n
-                            ? "🟩"
-                            : "🟥"} ${time(row.DateAdded)} ${this.client.money.currencySymbol} ${row.Amount}\nNote: \`${row.Reason}\``,
-                    )
-                    .join("\n"),
+                .setDescription(
+                    db.slice(p, i)
+                        .reverse()
+                        .map(row =>
+                            `${row.Amount > 0n
+                                ? "🟩"
+                                : "🟥"} ${time(row.DateAdded)} ${this.client.money.currencySymbol} ${row.Amount}\nNote: \`${row.Reason}\``,
+                        )
+                        .join("\n"),
                 ),
             );
         }
