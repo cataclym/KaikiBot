@@ -31,6 +31,10 @@ export default class Database {
             throw new Error(e);
         }
 
+        this._mySQLConnection.on("error", async () => this._mySQLConnection = await mysql2.createConnection(this._config));
+        this._mySQLConnection.on("close", async () => this._mySQLConnection = await mysql2.createConnection(this._config));
+        this._mySQLConnection.on("end", async () => this._mySQLConnection = await mysql2.createConnection(this._config));
+
         const botSettings = await this.orm.botSettings.findFirst();
 
         if (!botSettings) {
