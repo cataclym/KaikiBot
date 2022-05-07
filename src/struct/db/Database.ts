@@ -31,9 +31,7 @@ export default class Database {
             throw new Error(e);
         }
 
-        this._mySQLConnection.on("error", async () => this._mySQLConnection = await mysql2.createConnection(this._config));
-        this._mySQLConnection.on("close", async () => this._mySQLConnection = await mysql2.createConnection(this._config));
-        this._mySQLConnection.on("end", async () => this._mySQLConnection = await mysql2.createConnection(this._config));
+        this.handleOnRelease();
 
         const botSettings = await this.orm.botSettings.findFirst();
 
@@ -87,6 +85,13 @@ export default class Database {
             });
         }
         return guildUser;
+    }
+
+    private handleOnRelease() {
+        this._mySQLConnection.on("release", async () => {
+            await this._mySQLConnection.end();
+            this._mySQLConnection = await mysql2.createConnection(this._config);
+        });
     }
 }
 
