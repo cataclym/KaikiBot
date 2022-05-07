@@ -9,46 +9,39 @@ export default class CurrencyTransactionsCommand extends KaikiCommand {
         super("currencytransactions", {
             aliases: ["currencytransactions", "curtrs"],
             description: "Shows your currency transactions. Bot owner can see other people's transactions.",
-            usage: ["", "7", "@drev 10"],
-            args: [{
-                id: "optionalUser",
-                type: "user",
-                default: (m: Message) => m.author,
-            },
-            {
-                id: "optionalPage",
-                type: "number",
-                default: 1,
-            }],
+            usage: ["", "7", "10 @drev"],
+            args: [
+                {
+                    id: "optionalPage",
+                    type: "number",
+                    default: 1,
+                    unordered: true,
+                },
+                {
+                    id: "optionalUser",
+                    type: "user",
+                    default: (m: Message) => m.author,
+                    unordered: true,
+                }],
         });
     }
 
     public async exec(message: Message, {
-        optionalUser,
         optionalPage,
+        optionalUser,
     }: { optionalUser: User, optionalPage: number }) {
 
-        if (optionalPage < 1 || !Number.isSafeInteger(optionalPage)) {
+        if (optionalPage <= 0 || !Number.isSafeInteger(optionalPage)) {
             optionalPage = 1;
         }
 
-        let db;
-
-        if (optionalUser.id !== message.author.id && message.author.id === message.client.owner.id) {
-            db = await this.client.orm.currencyTransactions.findMany({
-                where: {
-                    UserId: BigInt(optionalUser.id),
-                },
-            });
-        }
-
-        else {
-            db = await this.client.orm.currencyTransactions.findMany({
-                where: {
-                    UserId: BigInt(message.author.id),
-                },
-            });
-        }
+        const db = (await this.client.orm.currencyTransactions.findMany({
+            where: {
+                UserId: (optionalUser.id !== message.author.id && message.author.id === message.client.owner.id)
+                    ? BigInt(optionalUser.id)
+                    : BigInt(message.author.id),
+            },
+        })).sort((a, b) => b.DateAdded.getTime() - a.DateAdded.getTime());
 
         if (!db || !db.length) {
             return message.channel.send({
@@ -62,7 +55,6 @@ export default class CurrencyTransactionsCommand extends KaikiCommand {
             pages.push(CurrencyTransactionsCommand.baseEmbed(message)
                 .setDescription(
                     db.slice(p, i)
-                        .reverse()
                         .map(row =>
                             `${row.Amount > 0n
                                 ? "🟩"
@@ -72,7 +64,7 @@ export default class CurrencyTransactionsCommand extends KaikiCommand {
                 ),
             );
         }
-        return sendPaginatedMessage(message, pages, {}, optionalPage);
+        return sendPaginatedMessage(message, pages, {}, optionalPage - 1);
 
     }
 
