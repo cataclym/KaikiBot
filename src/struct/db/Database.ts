@@ -1,22 +1,21 @@
 import { PrismaClient } from "@prisma/client";
 import { ActivityType } from "discord.js";
-import * as mysql2 from "mysql2/promise";
-import { Connection } from "mysql2/promise";
+import { ConnectionOptions, createPool, Pool } from "mysql2/promise";
 import KaikiAkairoClient from "../../lib/Kaiki/KaikiAkairoClient";
 
 export default class Database {
-    get mySQLConnection(): Connection {
+    get mySQLConnection(): Pool {
         return this._mySQLConnection;
     }
 
     private _client: KaikiAkairoClient;
-    private _config: mysql2.ConnectionOptions = {
+    private _config: ConnectionOptions = {
         uri: process.env.DATABASE_URL,
         supportBigNumbers: true,
         waitForConnections: true,
     };
     public orm: PrismaClient;
-    private _mySQLConnection: mysql2.Connection;
+    private _mySQLConnection: Pool;
 
     constructor(client: KaikiAkairoClient) {
         this._client = client;
@@ -24,14 +23,12 @@ export default class Database {
 
     public async init(): Promise<Database> {
         try {
-            this._mySQLConnection = await mysql2.createConnection(this._config);
+            this._mySQLConnection = await createPool(this._config);
             this.orm = new PrismaClient();
         }
         catch (e) {
             throw new Error(e);
         }
-
-        this.handleOnRelease();
 
         const botSettings = await this.orm.botSettings.findFirst();
 
@@ -85,13 +82,6 @@ export default class Database {
             });
         }
         return guildUser;
-    }
-
-    private handleOnRelease() {
-        this._mySQLConnection.on("release", async () => {
-            await this._mySQLConnection.end();
-            this._mySQLConnection = await mysql2.createConnection(this._config);
-        });
     }
 }
 

@@ -1,16 +1,16 @@
 import { Provider, ProviderOptions } from "discord-akairo";
 import { Collection } from "discord.js";
-import { Connection, RowDataPacket } from "mysql2/promise";
+import { Pool, RowDataPacket } from "mysql2/promise";
 
 export default class DatabaseProvider extends Provider {
-    private _db: () => Connection;
+    private _db: () => Pool;
     private readonly _tableName: string;
     private readonly _idColumn: string;
     private readonly _dataColumn?: string;
     public items: Collection<string, any>;
     private readonly _bigInt: boolean;
 
-    constructor(db: () => Connection, tableName: string, options?: ProviderOptions, bigint?: boolean) {
+    constructor(db: () => Pool, tableName: string, options?: ProviderOptions, bigint?: boolean) {
         super();
         this.items = new Collection();
         this._db = db;

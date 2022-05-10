@@ -3,18 +3,18 @@ import { execSync } from "child_process";
 import { Collection } from "discord.js";
 import * as fs from "fs";
 import logger from "loglevel";
-import { Connection } from "mysql2/promise";
+import { Pool } from "mysql2/promise";
 import * as Path from "path";
 import KaikiAkairoClient from "../Kaiki/KaikiAkairoClient";
 
 export class Migrations {
     private readonly currentFolder: string;
     public migrationClasses: Collection<string, Migration>;
-    public db: Connection;
+    public db: Pool;
     private readonly _client: KaikiAkairoClient;
     private _count: number;
 
-    constructor(db: Connection, client: KaikiAkairoClient) {
+    constructor(db: Pool, client: KaikiAkairoClient) {
         this.currentFolder = Path.join(__dirname, "./scripts");
         this.migrationClasses = new Collection();
         this.db = db;

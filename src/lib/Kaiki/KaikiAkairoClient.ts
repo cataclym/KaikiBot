@@ -3,7 +3,7 @@ import chalk from "chalk";
 import { AkairoClient, CommandHandler, InhibitorHandler, ListenerHandler } from "discord-akairo";
 import { Intents, User } from "discord.js";
 import logger from "loglevel";
-import { Connection } from "mysql2/promise";
+import { Pool } from "mysql2/promise";
 import { join } from "path";
 import KaikiCache from "../../cache/KaikiCache";
 import Database from "../../struct/db/Database";
@@ -20,7 +20,7 @@ export default class KaikiAkairoClient extends AkairoClient {
     public botSettings: DatabaseProvider;
     public cache: KaikiCache;
     public commandHandler: CommandHandler;
-    public connection: () => Connection;
+    public connection: () => Pool;
     public dadBotChannels: DatabaseProvider;
     public guildsDb: DatabaseProvider;
     public inhibitorHandler: InhibitorHandler;

@@ -1,6 +1,6 @@
 import pkg from "@prisma/client";
 import { Collection, Message, Snowflake } from "discord.js";
-import { Connection, ResultSetHeader, RowDataPacket } from "mysql2/promise";
+import { Pool, ResultSetHeader, RowDataPacket } from "mysql2/promise";
 import { respType } from "../lib/Types/TCustom.js";
 import Utility from "../lib/Utility";
 
@@ -18,10 +18,10 @@ export default class KaikiCache {
     public cmdStatsCache: Collection<string, number>;
     public emoteReactCache: TEmoteReactCache;
     public dailyProvider: MySQLDailyProvider;
-    private _connection: () => Connection;
+    private _connection: () => Pool;
     private _orm: pkg.PrismaClient;
 
-    constructor(orm: pkg.PrismaClient, connection: () => Connection) {
+    constructor(orm: pkg.PrismaClient, connection: () => Pool) {
         this._connection = connection;
         this._orm = orm;
         this.animeQuoteCache = new Collection<string, respType>();
@@ -114,9 +114,9 @@ export default class KaikiCache {
 }
 
 class MySQLDailyProvider {
-    private connection: () => Connection;
+    private connection: () => Pool;
 
-    constructor(connection: () => Connection) {
+    constructor(connection: () => Pool) {
         this.connection = connection;
     }
 
