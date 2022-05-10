@@ -25,6 +25,9 @@ export default class todoRemoveCommand extends KaikiCommand {
                     UserId: BigInt(author.id),
                 },
             },
+            orderBy: {
+                Id: "asc",
+            },
         });
 
         if (!todos) {
@@ -34,8 +37,27 @@ export default class todoRemoveCommand extends KaikiCommand {
         let removedItem = undefined;
 
         if (typeof toRemove === "number") {
+
+            if ((toRemove - 1) >= todos.length) {
+                return message.channel.send({
+                    embeds: [new MessageEmbed()
+                        .setTitle("Doesn't exist")
+                        .setDescription(`No entry with Id: \`${toRemove}\``)
+                        .withErrorColor(message),
+                    ],
+                });
+            }
+
             // Matches given number to array item
-            removedItem = todos.splice(toRemove - 1, 1).toString();
+            removedItem = await message.client.orm.todos.delete({
+                select: {
+                    String: true,
+                },
+                where: {
+                    Id: todos[toRemove - 1].Id,
+                },
+            });
+
         }
 
         else {
@@ -48,10 +70,14 @@ export default class todoRemoveCommand extends KaikiCommand {
                             },
                         },
                     });
-                    break;
+                    return message.channel.send("List deleted.")
+                        .then(SentMsg => {
+                            SentMsg.react("✅");
+                            return SentMsg;
+                        });
                 }
                 case "last": {
-                    const toRemoveTodoId = Math.max(...todos.map(t => Number(t.Id)));
+                    const toRemoveTodoId = todos[todos.length - 1].Id;
                     removedItem = (await message.client.orm.todos.delete({
                         select: {
                             String: true,
@@ -59,12 +85,11 @@ export default class todoRemoveCommand extends KaikiCommand {
                         where: {
                             Id: BigInt(toRemoveTodoId),
                         },
-                    }))
-                        .String;
+                    }));
                     break;
                 }
                 case "first": {
-                    const toRemoveTodoId = Math.min(...todos.map(t => Number(t.Id)));
+                    const toRemoveTodoId = todos[0].Id;
                     removedItem = (await message.client.orm.todos.delete({
                         select: {
                             String: true,
@@ -72,34 +97,23 @@ export default class todoRemoveCommand extends KaikiCommand {
                         where: {
                             Id: BigInt(toRemoveTodoId),
                         },
-                    }))
-                        .String;
+                    }));
                     break;
                 }
             }
         }
 
-        if (!removedItem) {
-            return message.channel.send("List deleted.")
-                .then(SentMsg => {
-                    SentMsg.react("✅");
-                    return SentMsg;
-                });
-        }
-
-        else {
-            return message.reply({
-                content: "Removed an item from list.",
-                embeds: [new MessageEmbed()
-                    .setAuthor({ name: "Deleted:" })
-                    .setDescription(`\`${removedItem}\``)
-                    .withOkColor(message),
-                ],
-            })
-                .then(SentMsg => {
-                    SentMsg.react("✅");
-                    return SentMsg;
-                });
-        }
+        return message.reply({
+            content: "Removed an item from list.",
+            embeds: [new MessageEmbed()
+                .setAuthor({ name: "Deleted:" })
+                .setDescription(`\`${removedItem.String}\``)
+                .withOkColor(message),
+            ],
+        })
+            .then(SentMsg => {
+                SentMsg.react("✅");
+                return SentMsg;
+            });
     }
 }
