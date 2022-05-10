@@ -29,7 +29,7 @@ export default class MissingPermissionsListener extends KaikiListener {
                 embeds:
                     [new MessageEmbed({
                         title: "Missing permissions",
-                        description: `${type === "client" ? "Client" : "User"} can't execute \`${command.id}\` due to missing permissions.`,
+                        description: `${type === "client" ? "Bot" : "User"} cannot execute \`${command.id}\` due to missing permissions.`,
                         footer: { text: `Missing: ${missing}` },
                     })
                         .withErrorColor(message)],

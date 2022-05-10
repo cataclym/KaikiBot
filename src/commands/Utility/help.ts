@@ -35,10 +35,10 @@ export default class HelpCommand extends KaikiCommand {
                 : `${prefix}${command.id}`;
 
             embed.setTitle(`${prefix}${command.id}`)
-                .setAuthor({ name: `CD: ${command.cooldown || this.handler.defaultCooldown}` })
                 .setDescription(command.description || "Command is missing description.")
                 .addField("**Aliases**", `\`${aliases}\``)
                 .addField("**Usage**", commandUsage, false)
+                .addField("Cooldown", `${(command.cooldown || this.handler.defaultCooldown) / 1000}s`)
                 .setFooter({ text: command.categoryID });
 
             if (command.userPermissions) {
