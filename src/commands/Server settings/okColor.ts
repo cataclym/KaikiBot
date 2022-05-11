@@ -23,7 +23,7 @@ export default class OkColorConfigCommand extends KaikiCommand {
     public async exec(message: Message, { value }: { value: string | number }): Promise<Message> {
         const guildID = (message.guild as Guild).id;
 
-        if (typeof value === "number") value = value.toString(16);
+        if (typeof value === "string") value = parseInt(value, 16);
 
         await this.client.guildsDb.set(guildID, "OkColor", value);
 
