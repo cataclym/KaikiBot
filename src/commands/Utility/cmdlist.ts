@@ -1,9 +1,10 @@
 import { Argument, Category, Command, PrefixSupplier } from "discord-akairo";
 import { Message, MessageEmbed } from "discord.js";
-import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 import images from "../../data/images.json";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
+import Constants from "../../struct/Constants";
 
 export default class commandsList extends KaikiCommand {
     constructor() {
@@ -76,8 +77,9 @@ export default class commandsList extends KaikiCommand {
             for (const _category of this.handler.categories.values()) {
                 if (["default", "Etc"].includes(_category.id)) continue;
 
-                embed.addField(_category.id, `Commands: **${_category.filter(c => !!c.aliases.length).size}**`, true);
+                embed.addField(`${_category.id} [${_category.filter(c => !!c.aliases.length).size}]`, `${Constants.categories[_category.id]}`, true);
             }
+
             return message.channel.send({ embeds: [embed] });
         }
     }

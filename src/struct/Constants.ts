@@ -44,4 +44,19 @@ export default class Constants {
         VIP_REGIONS: "VIP Regions",
         WELCOME_SCREEN_ENABLED: "Welcome screen enabled",
     };
+
+    static categories: { [category: string]: string } = {
+        Administration: "For server admins. Manage bans and channels.",
+        Anime: "Search anime, manga and quotes.",
+        Emotes: "Steal or create entirely new emotes",
+        Fun: "Silly commands. Has avatar manipulation, games and more",
+        Gambling: "Try your game at betting. Gain and lose. Lose a lot",
+        Interactions: "Put your feelings on display with kiss, or just hug, or something else?",
+        Moderation: "Moderate the chat with clear, kick and savechat",
+        NSFW: "🔞",
+        "Owner only": "**Bot owner only.** Manage the bot and execute dangerous commands",
+        Roles: "Create, edit and manage server roles, personal roles and more",
+        "Server settings": "Commands to configure the bot for your server",
+        Utility: "Info, color, search, ping and much more.",
+    };
 }
