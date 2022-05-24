@@ -65,7 +65,7 @@ export default class KaikiAkairoClient extends AkairoClient {
             blockBots: true,
             blockClient: true,
             commandUtil: true,
-            defaultCooldown: 2500,
+            defaultCooldown: 1000,
             directory: join(__dirname, "../../commands"),
             fetchMembers: true,
             handleEdits: false,
