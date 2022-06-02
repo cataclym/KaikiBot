@@ -42,6 +42,7 @@ export default class InfoCommand extends KaikiCommand {
                     }),
                 },
             ],
+            subCategory: "Info",
         });
     }
 

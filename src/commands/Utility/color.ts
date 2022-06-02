@@ -26,6 +26,7 @@ export default class ColorCommand extends KaikiCommand {
                     default: null,
                 },
             ],
+            subCategory: "Color",
         });
     }
 

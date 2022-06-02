@@ -27,6 +27,7 @@ export default class WelcomeMessageCommand extends KaikiCommand {
                         .withErrorColor(m)],
                 }),
             }],
+            subCategory: "Welcome",
         });
     }
 

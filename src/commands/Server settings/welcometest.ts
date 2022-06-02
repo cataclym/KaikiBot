@@ -11,6 +11,7 @@ export default class WelcomeTestCommand extends KaikiCommand {
             userPermissions: Permissions.FLAGS.MANAGE_GUILD,
             channel: "guild",
             usage: "",
+            subCategory: "Welcome",
         });
     }
 

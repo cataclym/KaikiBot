@@ -1,9 +1,9 @@
-import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
 import { execSync } from "child_process";
-import { Message, MessageEmbed, version } from "discord.js";
-import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 import Akairo from "discord-akairo";
+import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
+import { Message, MessageEmbed, version } from "discord.js";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 function format(seconds: number) {
     const days = Math.floor(seconds / (60 * 60 * 24));
@@ -19,6 +19,7 @@ export default class StatsCommand extends KaikiCommand {
         super("stats", {
             aliases: ["stats"],
             description: "Statistics and information",
+            subCategory: "Info",
         });
     }
 

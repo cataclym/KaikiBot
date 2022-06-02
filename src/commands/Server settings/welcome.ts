@@ -14,6 +14,7 @@ export default class WelcomeToggleCommand extends KaikiCommand {
                 id: "channel",
                 type: "textChannel",
             }],
+            subCategory: "Welcome",
         });
     }
 

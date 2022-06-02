@@ -1,4 +1,4 @@
-import { Argument, Category, Command, PrefixSupplier } from "discord-akairo";
+import { Argument, Category, PrefixSupplier } from "discord-akairo";
 import { Message, MessageEmbed } from "discord.js";
 
 import images from "../../data/images.json";
@@ -35,19 +35,34 @@ export default class commandsList extends KaikiCommand {
         });
     }
 
-    public async exec(message: Message, { category }: { category: Category<string, Command> }): Promise<Message | undefined> {
+    public async exec(message: Message, { category }: { category: Category<string, KaikiCommand> }): Promise<Message> {
 
         const { name, repository, version } = this.client.package;
 
         const prefix = (this.handler.prefix as PrefixSupplier)(message);
 
         if (category) {
+
+            const emb = new MessageEmbed();
+            const filtered = category.filter(cmd => cmd.subCategory !== undefined);
+
+            [...new Set(filtered.map(value => value.subCategory))]
+                .forEach(cmd => {
+                    if (!cmd) return;
+                    emb.addField(cmd, Array.from(filtered.filter(c => c.subCategory === cmd).values())
+                        .sort()
+                        .map(command => `[\`${command.aliases
+                            .sort((a, b) => b.length - a.length
+                                || a.localeCompare(b)).join("`, `")}\`]`)
+                        .join("\n") || "Empty", true);
+                });
+
             return message.channel.send({
-                embeds: [new MessageEmbed()
+                embeds: [new MessageEmbed(emb)
                     .setTitle(`Commands in ${category.id}`)
-                    .setDescription(category
+                    .setDescription(filtered
                         .filter(cmd => cmd.aliases.length > 0)
-                        .map(cmd => `**${prefix}${cmd}** [\`${cmd.aliases
+                        .map(cmd => `[\`${cmd.aliases
                             .sort((a, b) => b.length - a.length
                                 || a.localeCompare(b)).join("`, `")}\`]`)
                         .join("\n") || "Empty")

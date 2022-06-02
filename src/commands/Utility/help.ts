@@ -13,6 +13,7 @@ export default class HelpCommand extends KaikiCommand {
                 id: "command",
                 type: Argument.union("commandAlias", "string"),
             }],
+            subCategory: "Info",
         });
     }
 

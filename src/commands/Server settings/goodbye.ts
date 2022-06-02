@@ -14,6 +14,7 @@ export default class GoodbyeConfigCommand extends KaikiCommand {
                 id: "channel",
                 type: "textChannel",
             }],
+            subCategory: "Goodbye",
         });
     }
 

@@ -15,6 +15,7 @@ export default class GoodbyeDeleteCommand extends KaikiCommand {
                 type: "number",
                 otherwise: (m) => ({ embeds: [KaikiEmbeds.genericArgumentError(m)] }),
             }],
+            subCategory: "Goodbye",
         });
     }
 

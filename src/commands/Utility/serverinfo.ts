@@ -16,6 +16,7 @@ export default class ServerInfoCommand extends KaikiCommand {
                     default: (message: Message) => message.guild,
                 },
             ],
+            subCategory: "Info",
         });
     }
 

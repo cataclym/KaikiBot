@@ -12,6 +12,7 @@ export default class ColorListCommand extends KaikiCommand {
             description: "Shows a list of all supported color names for the bot",
             typing: true,
             usage: "",
+            subCategory: "Color",
         });
     }
 

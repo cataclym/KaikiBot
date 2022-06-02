@@ -1,4 +1,4 @@
-import { MessageEmbed, Message } from "discord.js";
+import { Message, MessageEmbed } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 
@@ -7,6 +7,7 @@ export default class PingCommand extends KaikiCommand {
         super("ping", {
             description: "Ping the bot and websocket to see if there are latency issues.",
             aliases: ["p", "ping"],
+            subCategory: "Info",
         });
     }
 

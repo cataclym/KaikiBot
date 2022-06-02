@@ -18,6 +18,7 @@ export default class mcpingCommand extends KaikiCommand {
                 otherwise: (msg: Message) => ({ embeds: [KaikiEmbeds.genericArgumentError(msg)] }),
             }],
             typing: true,
+            subCategory: "Info",
         });
     }
 

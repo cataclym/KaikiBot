@@ -22,6 +22,7 @@ export default class CheckPermissionsCommand extends KaikiCommand {
                 type: "textChannel",
                 default: (message: Message) => message.channel,
             }],
+            subCategory: "Info",
         });
     }
 

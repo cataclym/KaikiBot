@@ -11,6 +11,7 @@ export default class GoodbyeTestTestCommand extends KaikiCommand {
             userPermissions: Permissions.FLAGS.MANAGE_GUILD,
             channel: "guild",
             usage: "",
+            subCategory: "Goodbye",
         });
     }
 

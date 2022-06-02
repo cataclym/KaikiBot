@@ -1,5 +1,5 @@
-import { Command } from "discord-akairo";
 import { Message } from "discord.js";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import Utility from "../../lib/Utility";
 
 enum shardStats {
@@ -11,14 +11,16 @@ enum shardStats {
     "DISCONNECTED",
 }
 
-export default class ShardStatisticsCommand extends Command {
+export default class ShardStatisticsCommand extends KaikiCommand {
     constructor() {
         super("shardstats", {
             aliases: ["shards", "shardstats"],
             description: "Displays the states of all shards",
             channel: "guild",
+            subCategory: "Info",
         });
     }
+
     public async exec(message: Message<true>) {
 
         const { ws } = message.client;

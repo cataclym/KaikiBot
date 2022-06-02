@@ -22,6 +22,7 @@ export default class ByeMessageCommand extends KaikiCommand {
                 },
                 otherwise: (m) => GreetHandler.JSONErrorMessage(m),
             }],
+            subCategory: "Goodbye",
         });
     }
 

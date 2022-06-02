@@ -16,6 +16,7 @@ export default class WelcomeDeleteCommand extends KaikiCommand {
                 type: "number",
                 otherwise: (m) => ({ embeds: [KaikiEmbeds.genericArgumentError(m)] }),
             }],
+            subCategory: "Welcome",
         });
     }
 
