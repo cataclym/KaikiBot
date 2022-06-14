@@ -1,7 +1,6 @@
 import { Argument } from "discord-akairo";
 
-import { Snowflake } from "discord-api-types";
-import { Guild, GuildMember, Message, MessageEmbed, Permissions, User } from "discord.js";
+import { Guild, GuildMember, Message, MessageEmbed, Permissions, Snowflake, User } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand.js";
 
 export default class BanCommand extends KaikiCommand {

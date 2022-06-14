@@ -36,6 +36,7 @@ export default class Constants {
         PRIVATE_THREADS: "Private threads",
         ROLE_ICONS: "Role icons",
         SEVEN_DAY_THREAD_ARCHIVE: "Seven day thread archive",
+        TEXT_IN_VOICE_ENABLED: "Text in voice",
         THREADS_ENABLED: "Threads enabled",
         THREE_DAY_THREAD_ARCHIVE: "Three day thread archive",
         TICKETED_EVENTS_ENABLED: "Ticketed events enabled",

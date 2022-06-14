@@ -1,6 +1,5 @@
 import cp from "child_process";
-import { Snowflake } from "discord-api-types";
-import { GuildEmoji, Message } from "discord.js";
+import { GuildEmoji, Message, Snowflake } from "discord.js";
 import fs from "fs";
 import gifsicle from "gifsicle";
 import sharp from "sharp";

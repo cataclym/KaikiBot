@@ -1,10 +1,9 @@
+import { time } from "@discordjs/builders";
 import { Argument } from "discord-akairo";
-import { Snowflake } from "discord-api-types";
-import { Message, MessageEmbed, User } from "discord.js";
+import { Message, MessageEmbed, Snowflake, User } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 import Utility from "../../lib/Utility";
-import { time } from "@discordjs/builders";
 
 
 export default class FetchUserCommand extends KaikiCommand {
