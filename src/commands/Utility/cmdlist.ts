@@ -60,7 +60,8 @@ export default class commandsList extends KaikiCommand {
             return message.channel.send({
                 embeds: [new MessageEmbed(emb)
                     .setTitle(`Commands in ${category.id}`)
-                    .setDescription(filtered
+                    .setDescription(category
+                        .filter(cmd => !(cmd.subCategory !== undefined))
                         .filter(cmd => cmd.aliases.length > 0)
                         .map(cmd => `[\`${cmd.aliases
                             .sort((a, b) => b.length - a.length
