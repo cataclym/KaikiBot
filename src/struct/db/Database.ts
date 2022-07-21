@@ -23,7 +23,7 @@ export default class Database {
 
     public async init(): Promise<Database> {
         try {
-            this._mySQLConnection = await createPool(this._config);
+            this._mySQLConnection = createPool(this._config);
             this.orm = new PrismaClient();
         }
         catch (e) {
@@ -55,7 +55,7 @@ export default class Database {
                     Id: BigInt(id),
                 },
             });
-            await this._client.guildsDb.items.set(String(newGuild.Id), newGuild);
+            this._client.guildsDb.items.set(String(newGuild.Id), newGuild);
             return newGuild;
         }
         return guild;

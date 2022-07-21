@@ -1,4 +1,5 @@
 import { Guild, GuildMember, Message, MessageEmbed } from "discord.js";
+import { getLogger } from "loglevel";
 import KaikiAkairoClient from "../lib/Kaiki/KaikiAkairoClient";
 import Utility from "../lib/Utility";
 
@@ -39,9 +40,9 @@ GuildMember.prototype.hasExcludedRole = function(member?: GuildMember) {
     member = member || this as GuildMember;
 
     const roleId = member.guild.client.guildsDb.get(member.guild.id, "ExcludeRole", undefined);
-
-    return !member.roles.cache.get(roleId);
-};
+        
+    return !!member.roles.cache.get(roleId);
+};  
 
 Guild.prototype.isDadBotEnabled = function(message?: Message) {
 
@@ -59,7 +60,7 @@ MessageEmbed.prototype.withErrorColor = function(m?: Message | Guild) {
 
     if (m) {
         if (m instanceof Message && m.guild) {
-            return this.setColor((m.client as KaikiAkairoClient).guildsDb.get(m.guildId!, "ErrorColor", Utility.errorColor));
+            return this.setColor(m.client.guildsDb.get(m.guildId!, "ErrorColor", Utility.errorColor));
         }
         return this.setColor((m.client as KaikiAkairoClient).guildsDb.get(m.id, "ErrorColor", Utility.errorColor));
     }
@@ -71,9 +72,9 @@ MessageEmbed.prototype.withOkColor = function(m?: Message | Guild) {
 
     if (m) {
         if (m instanceof Message && m.guild) {
-            return this.setColor((m.client as KaikiAkairoClient).guildsDb.get(m.guildId!, "OkColor", Utility.okColor));
+            return this.setColor(m.client.guildsDb.get(m.guildId!, "OkColor", Utility.okColor));
         }
-        return this.setColor((m.client as KaikiAkairoClient).guildsDb.get(m.id, "OkColor", Utility.okColor));
+        return this.setColor(m.client.guildsDb.get(m.id, "OkColor", Utility.okColor));
     }
 
     return this.setColor(Utility.okColor);

@@ -89,9 +89,15 @@ export default class Bot {
     }
 
     private async loadPackageJSON() {
-        if (!process.env.npm_package_json) throw new Error("No package.json present in npm environment!");
-        this.client.package = await fs.readFile(process.env.npm_package_json)
-            .then(file => JSON.parse(file.toString()));
+        if (!process.env.npm_package_json) {
+            this.client.package = await fs.readFile("package.json")
+                .then(file => JSON.parse(file.toString()));
+        }
+
+        else {
+            this.client.package = await fs.readFile(process.env.npm_package_json)
+                .then(file => JSON.parse(file.toString()));
+        }
     }
 
     private noBotOwner() {

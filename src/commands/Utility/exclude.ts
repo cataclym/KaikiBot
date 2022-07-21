@@ -1,6 +1,5 @@
 import { Message, MessageEmbed, Permissions } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
 export default class ExcludeCommand extends KaikiCommand {
@@ -13,7 +12,7 @@ export default class ExcludeCommand extends KaikiCommand {
         });
     }
 
-    public async exec(message: Message): Promise<Message | void> {
+    public async exec(message: Message<true>): Promise<Message | void> {
 
         if (!message.guild!.isDadBotEnabled()) {
             return message.channel.send({
@@ -33,6 +32,17 @@ export default class ExcludeCommand extends KaikiCommand {
                 name: process.env.DADBOT_DEFAULT_ROLENAME,
                 reason: "Initiate default dad-bot exclusion role.",
             });
+
+            await this.client.db.orm.guilds.update({
+                where: {
+                    Id: BigInt(message.guildId)
+                },
+                data: {
+                    ExcludeRole: BigInt(excludedRole?.id)
+                }
+            })
+
+            await this.client.guildsDb.set(message.guildId, "ExcludeRole", excludedRole.id);
 
             embeds.push(new MessageEmbed({
                 title: "Creating dad-bot role!",
