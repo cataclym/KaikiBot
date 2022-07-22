@@ -14,15 +14,15 @@ export default class ExcludeCommand extends KaikiCommand {
 
     public async exec(message: Message<true>): Promise<Message | void> {
 
-        if (!message.guild!.isDadBotEnabled()) {
+        if (!message.guild.isDadBotEnabled()) {
             return message.channel.send({
                 embeds: [new MessageEmbed()
-                    .setTitle("Dadbot is not enabled")
+                    .setTitle("Dad-bot is not enabled")
                     .withErrorColor(message)],
             });
         }
 
-        const db = await this.client.db.getOrCreateGuild(message.guildId!);
+        const db = await this.client.db.getOrCreateGuild(message.guildId);
 
         const embeds = [];
         let excludedRole = message.guild?.roles.cache.get(String(db.ExcludeRole));
@@ -35,12 +35,12 @@ export default class ExcludeCommand extends KaikiCommand {
 
             await this.client.db.orm.guilds.update({
                 where: {
-                    Id: BigInt(message.guildId)
+                    Id: BigInt(message.guildId),
                 },
                 data: {
-                    ExcludeRole: BigInt(excludedRole?.id)
-                }
-            })
+                    ExcludeRole: BigInt(excludedRole?.id),
+                },
+            });
 
             await this.client.guildsDb.set(message.guildId, "ExcludeRole", excludedRole.id);
 
@@ -53,15 +53,15 @@ export default class ExcludeCommand extends KaikiCommand {
         }
 
         if (!message.member?.hasExcludedRole()) {
-            await message.member?.roles.add(excludedRole!);
-            embeds.push(KaikiEmbeds.addedRoleEmbed(excludedRole!.name)
+            await message.member?.roles.add(excludedRole);
+            embeds.push(KaikiEmbeds.addedRoleEmbed(excludedRole.name)
                 .withOkColor(message));
             return message.channel.send({ embeds: embeds });
         }
 
         else {
-            await message.member?.roles.remove(excludedRole!);
-            embeds.push(KaikiEmbeds.removedRoleEmbed(excludedRole!.name)
+            await message.member?.roles.remove(excludedRole);
+            embeds.push(KaikiEmbeds.removedRoleEmbed(excludedRole.name)
                 .withOkColor(message));
             return message.channel.send({ embeds: embeds });
         }

@@ -130,7 +130,7 @@ export default class KaikiAkairoClient extends AkairoClient {
                 this.guildsDb = new DatabaseProvider(this.connection, "Guilds", { idColumn: "Id" });
                 this.guildsDb.init().then(() => logger.info(`${chalk.green("READY")} - Guild provider`));
 
-                this.dadBotChannels = new DatabaseProvider(this.connection, "DadBotChannels", { idColumn: "GuildId" });
+                this.dadBotChannels = new DatabaseProvider(this.connection, "DadBotChannels", { idColumn: "ChannelId" });
                 this.dadBotChannels.init().then(() => logger.info(`${chalk.green("READY")} - DadBot channel provider`));
 
                 this.cache = new KaikiCache(this.orm, this.connection);
