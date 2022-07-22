@@ -10,7 +10,7 @@ export default class dadBot extends KaikiCommand {
             editable: false,
             condition: (message: Message) => {
                 if (message.guild && message.member && !message.author.bot) {
-                    if (message.guild.isDadBotEnabled(message) && message.member.hasExcludedRole() && !message.content.includes("||")) {
+                    if (message.guild.isDadBotEnabled(message) && !message.member.hasExcludedRole() && !message.content.includes("||")) {
 
                         for (const item of Constants.dadBotArray) {
 

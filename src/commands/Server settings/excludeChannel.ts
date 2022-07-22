@@ -61,7 +61,7 @@ export default class ExcludeDadbotChannelCommand extends KaikiCommand {
 
         for (const [, channel] of channels) {
 
-            if (guildDb?.DadBotChannels.find(c => String(c.ChannelId) === channel.id)) {
+            if (guildDb.DadBotChannels.find(c => String(c.ChannelId) === channel.id)) {
                 enabledChannels.push(BigInt(channel.id));
             }
 
@@ -78,6 +78,14 @@ export default class ExcludeDadbotChannelCommand extends KaikiCommand {
                 data: excludedChannels,
                 skipDuplicates: true,
             });
+
+            for (const obj of excludedChannels) {
+                this.client.dadBotChannels.items.set(String(obj.ChannelId), {
+                    ChannelId: String(obj.ChannelId),
+                    GuildId: String(obj.GuildId),
+                });
+            }
+
             embed.addField("Excluded", excludedChannels
                 .map(k => message.guild.channels.cache.get(String(k.ChannelId)) ?? String(k.ChannelId))
                 .join("\n"));
@@ -92,6 +100,11 @@ export default class ExcludeDadbotChannelCommand extends KaikiCommand {
                     GuildId: bigIntGuildId,
                 },
             });
+
+            for (const channel of enabledChannels) {
+                this.client.dadBotChannels.items.delete(String(channel));
+            }
+
             embed.addField("Un-excluded", enabledChannels
                 .map(k => message.guild.channels.cache.get(String(k)) ?? String(k))
                 .join("\n"));
