@@ -1,6 +1,6 @@
-import { GuildMember, Message, MessageEmbed, MessageAttachment } from "discord.js";
-import sharp from "sharp";
+import { GuildMember, Message, MessageAttachment, MessageEmbed } from "discord.js";
 import fetch from "node-fetch";
+import sharp from "sharp";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand.js";
 
 
@@ -19,7 +19,8 @@ export default class SquishCommand extends KaikiCommand {
             ],
         });
     }
-    public async exec(message: Message, { member }: { member: GuildMember}): Promise<Message> {
+
+    public async exec(message: Message, { member }: { member: GuildMember }): Promise<Message> {
 
         const avatar = await (await fetch(member.displayAvatarURL({
             dynamic: true,
@@ -28,7 +29,7 @@ export default class SquishCommand extends KaikiCommand {
         }))).buffer();
 
         const picture = sharp(avatar)
-            .resize(64, 256)
+            .resize(64, 256, { fit: "fill" })
             .webp();
 
         const attachment: MessageAttachment = new MessageAttachment(await picture.toBuffer(), "Squished.jpg");
