@@ -1,6 +1,6 @@
 {
   "name": "kaikideishubot",
-  "version": "4.1.0",
+  "version": "4.1.1",
   "main": "./dist/index.js",
   "scripts": {
     "start": "node -r dotenv/config dist/index.js --color",
