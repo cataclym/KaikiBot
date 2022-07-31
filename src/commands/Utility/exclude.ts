@@ -14,7 +14,7 @@ export default class ExcludeCommand extends KaikiCommand {
 
     public async exec(message: Message<true>): Promise<Message | void> {
 
-        if (!message.guild.isDadBotEnabled()) {
+        if (!message.guild.isDadBotEnabled() || !message.member) {
             return message.channel.send({
                 embeds: [new MessageEmbed()
                     .setTitle("Dad-bot is not enabled")
@@ -52,15 +52,15 @@ export default class ExcludeCommand extends KaikiCommand {
                 .withErrorColor(message));
         }
 
-        if (!message.member?.hasExcludedRole()) {
-            await message.member?.roles.add(excludedRole);
+        if (!message.member.hasExcludedRole()) {
+            await message.member.roles.add(excludedRole);
             embeds.push(KaikiEmbeds.addedRoleEmbed(excludedRole.name)
                 .withOkColor(message));
             return message.channel.send({ embeds: embeds });
         }
 
         else {
-            await message.member?.roles.remove(excludedRole);
+            await message.member.roles.remove(excludedRole);
             embeds.push(KaikiEmbeds.removedRoleEmbed(excludedRole.name)
                 .withOkColor(message));
             return message.channel.send({ embeds: embeds });

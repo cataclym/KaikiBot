@@ -1,4 +1,5 @@
 import { Message } from "discord.js";
+import logger from "loglevel";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import Constants from "../../struct/Constants";
 
@@ -54,17 +55,24 @@ export default class dadBot extends KaikiCommand {
 
             if (user.id !== message.guild?.ownerId) {
                 // Avoids setting nickname on Server owners
-                await message.member?.setNickname(nick);
+                await message.member?.setNickname(nick)
+                    .catch(e => logger.warn(`Insufficient permissions to set member's nickname [${message.member?.user.id}]`));
             }
         }
 
         await this.client.orm.userNicknames.create({
             data: {
                 GuildUsers: {
-                    connect: {
-                        UserId_GuildId: {
+                    connectOrCreate: {
+                        create: {
                             UserId: BigInt(message.author.id),
                             GuildId: BigInt(message.guildId),
+                        },
+                        where: {
+                            UserId_GuildId: {
+                                UserId: BigInt(message.author.id),
+                                GuildId: BigInt(message.guildId),
+                            },
                         },
                     },
                 },
