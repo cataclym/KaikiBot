@@ -10,7 +10,6 @@ export default class KaikiArgumentsTypes {
     };
 
     static checkInt = (phrase: string) => {
-        if (!phrase) return null;
         const int = parseInt(phrase);
 
         if (!int) return null;
@@ -30,9 +29,31 @@ export default class KaikiArgumentsTypes {
         return Utility.HEXtoRGB(String(hexColorTable[hexColorString] ?? hexColorString));
     };
 
+    static max = parseInt("7FFFFFFFFFFFFFFF", 16);
+
     static kaiki_money = async (message: Message, phrase: string) => {
-        const int = KaikiArgumentsTypes.checkInt(phrase);
-        if (!int) return null;
+        if (!phrase) return null;
+
+        const input = phrase.trim().toUpperCase().replace("K", "000");
+
+        const int = KaikiArgumentsTypes.checkInt(input);
+        if (!int) {
+            if (typeof input === "string") {
+
+                switch (input) {
+                    case "ALL": {
+                        return await KaikiArgumentsTypes.GetCurrency(message);
+                    }
+                    case "HALF": {
+                        return (await KaikiArgumentsTypes.GetCurrency(message)) / BigInt(2);
+                    }
+                    case "MAX": {
+                        return KaikiArgumentsTypes.max;
+                    }
+                }
+            }
+            return null;
+        }
 
         return message.client.money.Get(message.author.id)
             .then(money => {
@@ -47,25 +68,5 @@ export default class KaikiArgumentsTypes {
 
     static KaikiMoneyArgument = Argument.range("bigint", 0, parseInt("7FFFFFFFFFFFFFFF", 16));
 
-    static KaikiMoneyArgumentV2 = async (message: Message, phrase: string) => {
-
-        const min = 0,
-            max = parseInt("7FFFFFFFFFFFFFFF", 16);
-        
-            const number = Argument.validate("bigint", (msg, p, x) => {
-                /* eslint-disable-next-line valid-typeof */
-                const o = typeof x === 'number' || typeof x === 'bigint'
-                    ? x
-                    : x.length != null
-                        ? x.length
-                        : x.size != null
-                            ? x.size
-                            : x;
-    
-                return o >= min && (o < max);
-            });
-
-            
-            
-    }
+    static GetCurrency = async (message: Message) => await message.client.money.Get(message.author.id);
 }

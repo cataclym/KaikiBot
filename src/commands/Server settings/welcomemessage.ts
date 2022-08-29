@@ -8,6 +8,7 @@ export default class WelcomeMessageCommand extends KaikiCommand {
     constructor() {
         super("welcomemessage", {
             aliases: ["welcomemessage", "welcomemsg"],
+            description: "Set message to display when someone joins the guild. Provide either text, or valid JSON from the [embed creator](https://embed.kaikibot.xyz)",
             userPermissions: Permissions.FLAGS.MANAGE_GUILD,
             channel: "guild",
             args: [{

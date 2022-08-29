@@ -24,10 +24,9 @@ export default class commandsList extends KaikiCommand {
                                 .toLowerCase()
                                 .startsWith(k.slice(0, Math.max(phrase.length - 1, 1)));
                         });
-                    }, (__, _phrase) => _phrase.length <= 0
+                    }, (_, _phrase) => _phrase.length <= 0
                         ? ""
                         : undefined),
-                    // Thanks js
                     otherwise: (msg: Message) => ({ embeds: [KaikiEmbeds.genericArgumentError(msg)] }),
 
                 },

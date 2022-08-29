@@ -1,6 +1,5 @@
 import { DadBotChannels, Guilds } from "@prisma/client";
-import { Argument } from "discord-akairo";
-import { GuildChannel, Message, MessageEmbed, Snowflake, TextChannel } from "discord.js";
+import { Collection, GuildChannel, Message, MessageEmbed, Snowflake, TextChannel } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 export default class ExcludeDadbotChannelCommand extends KaikiCommand {
@@ -14,13 +13,13 @@ export default class ExcludeDadbotChannelCommand extends KaikiCommand {
             args: [
                 {
                     id: "channels",
-                    type: Argument.union("textChannels"),
+                    type: "textChannels",
                 },
             ],
         });
     }
 
-    public async exec(message: Message<true>, { channels }: { channels: Map<Snowflake, TextChannel> | undefined }): Promise<Message> {
+    public async exec(message: Message<true>, { channels }: { channels: Collection<Snowflake, TextChannel> | undefined }): Promise<Message> {
 
         const bigIntGuildId = BigInt(message.guildId);
         let guildDb = await this.client.orm.guilds.findUnique({
@@ -59,16 +58,16 @@ export default class ExcludeDadbotChannelCommand extends KaikiCommand {
         const GuildId = BigInt(message.guildId), enabledChannels: bigint[] = [],
             excludedChannels: { GuildId: bigint, ChannelId: bigint }[] = [];
 
-        for (const [, channel] of channels) {
+        for (const [id] of channels) {
 
-            if (guildDb.DadBotChannels.find(c => String(c.ChannelId) === channel.id)) {
-                enabledChannels.push(BigInt(channel.id));
+            if (guildDb.DadBotChannels.find(c => String(c.ChannelId) === id)) {
+                enabledChannels.push(BigInt(id));
             }
 
             else {
                 excludedChannels.push({
                     GuildId,
-                    ChannelId: BigInt(channel.id),
+                    ChannelId: BigInt(id),
                 });
             }
         }

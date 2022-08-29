@@ -35,7 +35,9 @@ export default class InfoCommand extends KaikiCommand {
                     id: "obj",
                     type: Argument.union("member", "channel", "role", "emoji", (message, content) => {
                         return emojis.find(content);
-                    }, "guildMessage", Constants.EMOTE_REGEX),
+                    }, "guildMessage", Constants.EMOTE_REGEX, (_, _phrase) => _phrase.length <= 0
+                        ? ""
+                        : undefined),
                     match: "content",
                     otherwise: async (m: Message) => ({
                         embeds: [await KaikiEmbeds.errorMessage(m, "A channel, user, role, emoji or message was not found. Make sure to provide a valid argument!")],
@@ -48,6 +50,8 @@ export default class InfoCommand extends KaikiCommand {
 
     public async exec(message: Message<true>, { obj }: { obj: Channel | GuildMember | Role | regexpType | emojis.Emoji | Emoji | Message }): Promise<Message | void> {
 
+        if (!obj) obj = message.member!;
+
         const emb = new MessageEmbed()
             .withOkColor(message);
 
@@ -56,6 +60,7 @@ export default class InfoCommand extends KaikiCommand {
             if (obj instanceof VoiceChannel || obj instanceof StageChannel) {
                 emb.setTitle(`Info about voice channel: ${obj.name}`)
                     .addField("ID", obj.id)
+                    .addField("Type", Constants.channelTypes[obj.type])
                     .addField("User limit", obj.userLimit === 0
                         ? "No limit"
                         : String(obj.userLimit))
@@ -68,6 +73,7 @@ export default class InfoCommand extends KaikiCommand {
             else if (obj instanceof TextChannel || obj instanceof NewsChannel) {
                 emb.setTitle(`Info about text channel: ${obj.name}`)
                     .addField("ID", obj.id)
+                    .addField("Type", Constants.channelTypes[obj.type])
                     .addField("NSFW", obj.nsfw ? "Enabled" : "Disabled")
                     .addField("Created at", String(obj.createdAt));
 
@@ -77,6 +83,7 @@ export default class InfoCommand extends KaikiCommand {
             else if (obj instanceof CategoryChannel) {
                 emb.setTitle(`Info about category channel: ${obj.name}`)
                     .addField("ID", obj.id)
+                    .addField("Type", Constants.channelTypes[obj.type])
                     .addField("Children", String(obj.children.size))
                     .addField("Created at", String(obj.createdAt));
 
@@ -85,6 +92,7 @@ export default class InfoCommand extends KaikiCommand {
 
             else if (obj instanceof ThreadChannel) {
                 emb.setTitle(`Info about Thread: ${obj.name}`)
+                    .addField("Type", Constants.channelTypes[obj.type])
                     .addField("ID", obj.id)
                     .addField("Created at", String(obj.createdAt));
 

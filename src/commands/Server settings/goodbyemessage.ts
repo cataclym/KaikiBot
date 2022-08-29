@@ -9,6 +9,7 @@ export default class ByeMessageCommand extends KaikiCommand {
         super("goodbyemessage", {
             aliases: ["goodbyemessage", "goodbyemsg", "byemsg"],
             userPermissions: Permissions.FLAGS.MANAGE_GUILD,
+            description: "Set message to display when someone leaves the guild. Provide either text, or valid JSON from the [embed creator](https://embed.kaikibot.xyz)",
             channel: "guild",
             args: [{
                 id: "msg",

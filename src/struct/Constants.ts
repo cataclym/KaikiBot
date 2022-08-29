@@ -60,4 +60,15 @@ export default class Constants {
         "Server settings": "Commands to configure the bot for your server",
         Utility: "Info, color, search, ping and much more.",
     };
+
+    static channelTypes: { [type: string]: string } = {
+        GUILD_TEXT: "Text",
+        GUILD_NEWS: "News",
+        GUILD_CATEGORY: "Category",
+        GUILD_VOICE: "Voice",
+        GUILD_STAGE_VOICE: "Stage",
+        GUILD_NEWS_THREAD: "News thread",
+        GUILD_PUBLIC_THREAD: "Public thread",
+        GUILD_PRIVATE_THREAD: "Private thread",
+    };
 }

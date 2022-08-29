@@ -43,7 +43,7 @@ export default class dadBot extends KaikiCommand {
 
         const nick = this.nickname.get(message.author.id);
 
-        if (!nick) return;
+        if (!nick || !message.member) return;
 
         message.channel.send({
             content: `Hi, ${nick}`,
@@ -52,11 +52,12 @@ export default class dadBot extends KaikiCommand {
 
         if (nick.length <= (process.env.DADBOT_NICKNAME_LENGTH || 32)) {
             const user = message.author;
+            const position = message.guild.me?.roles.highest.comparePositionTo(message.member.roles.highest);
 
-            if (user.id !== message.guild?.ownerId) {
+            if (user.id !== message.guild?.ownerId && position ? position >= 0 : false) {
                 // Avoids setting nickname on Server owners
                 await message.member?.setNickname(nick)
-                    .catch(e => logger.warn(`Insufficient permissions to set member's nickname [${message.member?.user.id}]`));
+                    .catch(() => logger.warn(`Insufficient permissions to set member's nickname [${message.member?.user.id}]`));
             }
         }
 
