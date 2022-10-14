@@ -1,4 +1,4 @@
-import { Message, MessageEmbed, Permissions, Role } from "discord.js";
+import { Message, EmbedBuilder, Permissions, Role } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
@@ -30,7 +30,7 @@ export default class RoleHoistCommand extends KaikiCommand {
             await role.setHoist(!role.hoist);
 
             return message.channel.send({
-                embeds: [new MessageEmbed({
+                embeds: [new EmbedBuilder({
                     description: `Toggled ${role.name}'s hoist status to ${!role.hoist}.`,
                 })
                     .withOkColor(message)],

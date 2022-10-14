@@ -1,4 +1,4 @@
-import { Message, MessageEmbed, User } from "discord.js";
+import { Message, EmbedBuilder, User } from "discord.js";
 import KaikiArgumentsTypes from "../../lib/Kaiki/KaikiArgumentsTypes";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
@@ -14,7 +14,7 @@ export default class award extends KaikiCommand {
                     id: "amount",
                     type: KaikiArgumentsTypes.KaikiMoneyArgument,
                     otherwise: (m: Message) => ({
-                        embeds: [new MessageEmbed({
+                        embeds: [new EmbedBuilder({
                             title: "Invalid amount. It must be a number",
                         })
                             .withErrorColor(m)],
@@ -24,7 +24,7 @@ export default class award extends KaikiCommand {
                     id: "user",
                     type: "user",
                     otherwise: (m: Message) => ({
-                        embeds: [new MessageEmbed({
+                        embeds: [new EmbedBuilder({
                             title: "Can't find this user. Try again.",
                         })
                             .withErrorColor(m)],
@@ -38,7 +38,7 @@ export default class award extends KaikiCommand {
         const newAmount = await this.client.money.Add(user.id, amount, "Awarded by bot owner");
         const bInt = BigInt(amount);
         await msg.channel.send({
-            embeds: [new MessageEmbed()
+            embeds: [new EmbedBuilder()
                 .setDescription(`You've awarded **${bInt}** ${this.client.money.currencyName} ${this.client.money.currencySymbol} to ${user.username}.
 They now have **${newAmount}** ${this.client.money.currencyName} ${this.client.money.currencySymbol}`)
                 .withOkColor(msg)],

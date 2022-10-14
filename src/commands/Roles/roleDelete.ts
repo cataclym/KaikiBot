@@ -1,4 +1,4 @@
-import { Collection, Message, MessageEmbed, Permissions, Role } from "discord.js";
+import { Collection, Message, EmbedBuilder, Permissions, Role } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
@@ -47,7 +47,7 @@ export default class RoleDeleteCommand extends KaikiCommand {
 
         if (otherRoles.length) {
             return message.channel.send({
-                embeds: [new MessageEmbed()
+                embeds: [new EmbedBuilder()
                     .setDescription(`Role(s) \`${otherRoles.join("`, `")}\` could not be deleted due to insufficient permissions.`)
                     .withErrorColor(message)],
             });
@@ -55,7 +55,7 @@ export default class RoleDeleteCommand extends KaikiCommand {
 
         else if (deletedRoles.length) {
             return message.channel.send({
-                embeds: [new MessageEmbed()
+                embeds: [new EmbedBuilder()
                     .setDescription(`Deleted: \`${deletedRoles.join("`, `")}\``)
                     .withOkColor(message)],
             });
@@ -63,7 +63,7 @@ export default class RoleDeleteCommand extends KaikiCommand {
 
         else {
             return message.channel.send({
-                embeds: [new MessageEmbed()
+                embeds: [new EmbedBuilder()
                     .setDescription("Couldn't delete roles!")
                     .withErrorColor(message)],
             });

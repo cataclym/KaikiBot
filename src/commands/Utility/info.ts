@@ -6,7 +6,7 @@ import {
     Emoji,
     GuildMember,
     Message,
-    MessageEmbed,
+    EmbedBuilder,
     NewsChannel,
     Role,
     StageChannel,
@@ -52,7 +52,7 @@ export default class InfoCommand extends KaikiCommand {
 
         if (!obj) obj = message.member!;
 
-        const emb = new MessageEmbed()
+        const emb = new EmbedBuilder()
             .withOkColor(message);
 
         if (obj instanceof Channel) {

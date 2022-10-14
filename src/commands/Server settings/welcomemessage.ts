@@ -1,5 +1,5 @@
 import { PrefixSupplier } from "discord-akairo";
-import { Guild, Message, MessageEmbed, Permissions } from "discord.js";
+import { Guild, Message, EmbedBuilder, Permissions } from "discord.js";
 
 import GreetHandler, { JSONToMessageOptions } from "../../lib/GreetHandler";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
@@ -22,7 +22,7 @@ export default class WelcomeMessageCommand extends KaikiCommand {
                     }
                 },
                 otherwise: (m) => ({
-                    embeds: [new MessageEmbed()
+                    embeds: [new EmbedBuilder()
                         .setTitle("Error")
                         .setDescription("Please provide valid json")
                         .withErrorColor(m)],
@@ -45,12 +45,12 @@ export default class WelcomeMessageCommand extends KaikiCommand {
         });
 
         const prefix = (this.handler.prefix as PrefixSupplier)(message);
-        const embeds = [new MessageEmbed()
+        const embeds = [new EmbedBuilder()
             .setDescription(`New welcome message has been set!\n\nTest what the message looks like by typing \`${prefix}welcometest\``)
             .withOkColor(message)];
 
         if (!db.WelcomeChannel) {
-            embeds.push(new MessageEmbed()
+            embeds.push(new EmbedBuilder()
                 .setDescription(`Enable \`welcome\` messages by typing \`${prefix}welcome\`.`)
                 .withOkColor(message),
             );

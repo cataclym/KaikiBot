@@ -1,5 +1,5 @@
 import { Argument } from "discord-akairo";
-import { Message, MessageEmbed } from "discord.js";
+import { Message, EmbedBuilder } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
@@ -26,7 +26,7 @@ export default class ReloadCommand extends KaikiCommand {
 
         command.reload();
         return message.channel.send({
-            embeds: [new MessageEmbed({
+            embeds: [new EmbedBuilder({
                 title: "Command reloaded",
                 description: command.filepath,
                 footer: { text: `Command: ${command.id}` },

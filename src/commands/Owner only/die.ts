@@ -1,4 +1,4 @@
-import { InteractionCollector, Message, MessageActionRow, MessageButton, MessageEmbed } from "discord.js";
+import { InteractionCollector, Message, MessageActionRow, MessageButton, EmbedBuilder } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 
@@ -16,7 +16,7 @@ export default class KillBotProcess extends KaikiCommand {
     public async exec(message: Message): Promise<void> {
 
         const deleteMsg = await message.channel.send({
-            embeds: [new MessageEmbed()
+            embeds: [new EmbedBuilder()
                 .setDescription("Do you *really* want to shut me down?")
                 .withOkColor(message)],
             isInteraction: true,
@@ -39,7 +39,7 @@ export default class KillBotProcess extends KaikiCommand {
 
             if (mci.isButton()) {
                 await mci.reply({
-                    ephemeral: true, embeds: [new MessageEmbed()
+                    ephemeral: true, embeds: [new EmbedBuilder()
                         .setAuthor({ name: "Dying", iconURL: message.client.user?.displayAvatarURL({ dynamic: true }) })
                         .addField("Shutting down", "See you later", false)
                         .withOkColor(message)],

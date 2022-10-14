@@ -2,7 +2,7 @@ import { execSync } from "child_process";
 
 import Akairo from "discord-akairo";
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
-import { Message, MessageEmbed, version } from "discord.js";
+import { Message, EmbedBuilder, version } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 function format(seconds: number) {
@@ -27,7 +27,7 @@ export default class StatsCommand extends KaikiCommand {
 
         const packageJSON = this.client.package;
         const { cache } = this.client.guilds;
-        const pages = [new MessageEmbed()
+        const pages = [new EmbedBuilder()
             .setAuthor({
                 name: `${packageJSON.name} v${packageJSON.version}-${execSync("git rev-parse --short HEAD").toString()}`,
                 iconURL: message.client.user?.displayAvatarURL({ dynamic: true }),
@@ -51,7 +51,7 @@ export default class StatsCommand extends KaikiCommand {
                         .reduce((a, b) => a + b, 0)}**`, inline: true,
                 }])
             .withOkColor(message),
-        new MessageEmbed()
+        new EmbedBuilder()
             .setDescription("**Built using**:")
             .addFields([
                 {

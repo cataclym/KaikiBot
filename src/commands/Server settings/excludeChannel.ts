@@ -1,5 +1,5 @@
 import { DadBotChannels, Guilds } from "@prisma/client";
-import { Collection, GuildChannel, Message, MessageEmbed, Snowflake, TextChannel } from "discord.js";
+import { Collection, GuildChannel, Message, EmbedBuilder, Snowflake, TextChannel } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 export default class ExcludeDadbotChannelCommand extends KaikiCommand {
@@ -36,7 +36,7 @@ export default class ExcludeDadbotChannelCommand extends KaikiCommand {
             guildDb["DadBotChannels"] = [];
         }
 
-        const embed = new MessageEmbed()
+        const embed = new EmbedBuilder()
             .setTitle("Excluded channels")
             .withOkColor(message);
 

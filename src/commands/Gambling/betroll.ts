@@ -1,4 +1,4 @@
-import { Message, MessageEmbed } from "discord.js";
+import { Message, EmbedBuilder } from "discord.js";
 import KaikiArgumentsTypes from "../../lib/Kaiki/KaikiArgumentsTypes";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
@@ -12,7 +12,7 @@ export default class BetRollCommand extends KaikiCommand {
                 id: "number",
                 type: KaikiArgumentsTypes.KaikiMoneyArgument,
                 otherwise: (m) => ({
-                    embeds: [new MessageEmbed()
+                    embeds: [new EmbedBuilder()
                         .setDescription("Please provide an amount to bet!")
                         .withErrorColor(m)],
                 }),
@@ -25,7 +25,7 @@ export default class BetRollCommand extends KaikiCommand {
 
         if (!success) {
             return await message.channel.send({
-                embeds: [new MessageEmbed()
+                embeds: [new EmbedBuilder()
                     .setDescription(`You don't have enough ${this.client.money.currencySymbol}`)
                     .withErrorColor(message)],
             });
@@ -36,7 +36,7 @@ export default class BetRollCommand extends KaikiCommand {
 
         if (roll < 66) {
             return message.channel.send({
-                embeds: [new MessageEmbed()
+                embeds: [new EmbedBuilder()
                     .setDescription(`🎲 You rolled \`${roll}\`. Better luck next time!`)
                     .withOkColor(message)],
             });
@@ -49,7 +49,7 @@ export default class BetRollCommand extends KaikiCommand {
             await this.client.money.Add(message.author.id, winnings, "Betroll won x2");
 
             return message.channel.send({
-                embeds: [new MessageEmbed()
+                embeds: [new EmbedBuilder()
                     .setDescription(`🎲 You rolled \`${roll}\`, and won **${winnings}** ${this.client.money.currencySymbol}, for rolling above 66`)
                     .withOkColor(message)],
             });
@@ -62,7 +62,7 @@ export default class BetRollCommand extends KaikiCommand {
             await this.client.money.Add(message.author.id, winnings, "Betroll won x4");
 
             return message.channel.send({
-                embeds: [new MessageEmbed()
+                embeds: [new EmbedBuilder()
                     .setDescription(`🎲 You rolled \`${roll}\`, and won ${winnings} ${this.client.money.currencySymbol}, for rolling above 90`)
                     .withOkColor(message)],
             });
@@ -75,7 +75,7 @@ export default class BetRollCommand extends KaikiCommand {
             await this.client.money.Add(message.author.id, winnings, "Betroll won x10");
 
             return message.channel.send({
-                embeds: [new MessageEmbed()
+                embeds: [new EmbedBuilder()
                     .setDescription(`🎲 You rolled \`${roll}\`!!! You won ${winnings} ${this.client.money.currencySymbol}, for rolling above 99`)
                     .withOkColor(message)],
             });

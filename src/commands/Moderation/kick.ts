@@ -1,4 +1,4 @@
-import { Guild, GuildMember, Message, MessageEmbed } from "discord.js";
+import { Guild, GuildMember, Message, EmbedBuilder } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 
@@ -16,7 +16,7 @@ export default class KickCommand extends KaikiCommand {
                     id: "member",
                     type: "member",
                     otherwise: (m: Message) => ({
-                        embeds: [new MessageEmbed({
+                        embeds: [new EmbedBuilder({
                             description: "Can't find this user.",
                         })
                             .withErrorColor(m)],
@@ -41,7 +41,7 @@ export default class KickCommand extends KaikiCommand {
             (message.member as GuildMember).roles.highest.position <= member.roles.highest.position) {
 
             return message.channel.send({
-                embeds: [new MessageEmbed({
+                embeds: [new EmbedBuilder({
                     description: "You don't have permissions to kick this member.",
                 })
                     .withErrorColor(message)],
@@ -49,14 +49,14 @@ export default class KickCommand extends KaikiCommand {
         }
         else if (guildClientMember.roles.highest.position <= member.roles.highest.position) {
             return message.channel.send({
-                embeds: [new MessageEmbed({
+                embeds: [new EmbedBuilder({
                     description: "Sorry, I don't have permissions to kick this member.",
                 })
                     .withErrorColor(message)],
             });
         }
 
-        const embed = new MessageEmbed({
+        const embed = new EmbedBuilder({
             title: "Kicked user",
             fields: [
                 { name: "Username", value: member.user.username, inline: true },
@@ -67,7 +67,7 @@ export default class KickCommand extends KaikiCommand {
 
         await member.kick(reason).then(m => {
             m.user.send({
-                embeds: [new MessageEmbed({
+                embeds: [new EmbedBuilder({
                     description: `You have been kicked from ${message.guild?.name}.\nReason: ${reason}`,
                 })
                     .withErrorColor(message)],

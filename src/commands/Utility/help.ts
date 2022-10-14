@@ -1,6 +1,6 @@
 import { execSync } from "child_process";
 import { Argument, PrefixSupplier } from "discord-akairo";
-import { Message, MessageEmbed, PermissionResolvable, Permissions } from "discord.js";
+import { Message, EmbedBuilder, PermissionResolvable, Permissions } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 export default class HelpCommand extends KaikiCommand {
@@ -23,7 +23,7 @@ export default class HelpCommand extends KaikiCommand {
 
         const prefix = (this.handler.prefix as PrefixSupplier)(message),
             command = args?.command,
-            embed = new MessageEmbed()
+            embed = new EmbedBuilder()
                 .withOkColor(message);
 
         if (command instanceof KaikiCommand) {
@@ -51,7 +51,7 @@ export default class HelpCommand extends KaikiCommand {
 
         else if (typeof command === "string") {
             return message.channel.send({
-                embeds: [new MessageEmbed({
+                embeds: [new EmbedBuilder({
                     description: `**${message.author.tag}** Command \`${command}\` not found.`,
                 })
                     .withErrorColor(message)],

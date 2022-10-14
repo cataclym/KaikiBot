@@ -1,4 +1,4 @@
-import { Message, MessageEmbed, TextChannel } from "discord.js";
+import { Message, EmbedBuilder, TextChannel } from "discord.js";
 import fetch from "node-fetch";
 import { PurpleData, RedditData } from "../../lib/Interfaces/IRedditAPI";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
@@ -44,7 +44,7 @@ export default class RedditCommand extends KaikiCommand {
             // We don´t want nsfw in normal channels, do we?
             if (data.over_18 && (!(message.channel as TextChannel)?.nsfw || message.channel.type !== "DM")) {
                 return message.channel.send({
-                    embeds: [new MessageEmbed({
+                    embeds: [new EmbedBuilder({
                         title: "This post is NSFW",
                         description: "Cannot show NSFW in DMs or non-NSFW channels",
                     })
@@ -56,7 +56,7 @@ export default class RedditCommand extends KaikiCommand {
                     }, 7500));
             }
 
-            const embed = new MessageEmbed({
+            const embed = new EmbedBuilder({
                 author: {
                     name: `Submitted by ${data.author}`,
                     url: data.url,

@@ -1,5 +1,5 @@
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
-import { Message, MessageEmbed } from "discord.js";
+import { Message, EmbedBuilder } from "discord.js";
 import fetch from "node-fetch";
 import querystring from "querystring";
 import { List } from "../../lib/Interfaces/IUrbanResponse";
@@ -32,17 +32,17 @@ export default class UrbanDictCommand extends KaikiCommand {
 
         if (!list.length) {
             return message.channel.send({
-                embeds: [new MessageEmbed({
+                embeds: [new EmbedBuilder({
                     description: `No results found for **${term}**.`,
                 })
                     .withErrorColor(message)],
             });
         }
 
-        const pages: MessageEmbed[] = [];
+        const pages: EmbedBuilder[] = [];
 
         for (const result of list) {
-            pages.push(new MessageEmbed()
+            pages.push(new EmbedBuilder()
                 .setTitle(result.word)
                 .setURL(result.permalink)
                 .addFields(

@@ -1,4 +1,4 @@
-import { Message, MessageEmbed, User } from "discord.js";
+import { Message, EmbedBuilder, User } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 
@@ -25,7 +25,7 @@ export default class AvatarCommand extends KaikiCommand {
             png = user.displayAvatarURL({ size: 4096, dynamic: false, format: "png" }),
             webp = user.displayAvatarURL({ size: 4096, dynamic: false, format: "webp" });
 
-        const embeds = [new MessageEmbed({
+        const embeds = [new EmbedBuilder({
             title: user.tag,
             fields: [{
                 name: "Links",
@@ -45,7 +45,7 @@ export default class AvatarCommand extends KaikiCommand {
                     memberPng = member.displayAvatarURL({ size: 4096, dynamic: false, format: "png" }),
                     memberWebp = member.displayAvatarURL({ size: 4096, dynamic: false, format: "webp" });
 
-                embeds.push(new MessageEmbed({
+                embeds.push(new EmbedBuilder({
                     title: "Server avatar",
                     fields: [{
                         name: "Links",

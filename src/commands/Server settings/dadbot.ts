@@ -1,5 +1,5 @@
 import { PrefixSupplier } from "discord-akairo";
-import { Message, MessageEmbed } from "discord.js";
+import { Message, EmbedBuilder } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 import { excludeData } from "../../lib/slashCommands/data";
@@ -21,7 +21,7 @@ export default class DadBotConfigCommand extends KaikiCommand {
 
     public async exec(message: Message<true>, { value }: { value: "enable" | "true" | "disable" | "false" }): Promise<Message> {
 
-        const embed = new MessageEmbed()
+        const embed = new EmbedBuilder()
             .withOkColor(message);
 
         const isEnabled: boolean = message.client.guildsDb.get(message.guildId, "DadBot", false);

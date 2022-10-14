@@ -1,6 +1,6 @@
 import { PrefixSupplier } from "discord-akairo";
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
-import { ColorResolvable, Message, MessageAttachment, MessageEmbed, Util } from "discord.js";
+import { ColorResolvable, Message, MessageAttachment, EmbedBuilder, Util } from "discord.js";
 import { hexColorTable, imgFromColor } from "../../lib/Color";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import { TKaikiColor } from "../../lib/Types/TColor";
@@ -35,10 +35,10 @@ export default class ColorCommand extends KaikiCommand {
         if (list) {
             const colorList = Object.keys(hexColorTable),
                 embedColor = hexColorTable[(colorList[Math.floor(Math.random() * colorList.length)])],
-                pages: MessageEmbed[] = [];
+                pages: EmbedBuilder[] = [];
 
             for (let index = 15, p = 0; p < colorList.length; index = index + 15, p = p + 15) {
-                pages.push(new MessageEmbed({
+                pages.push(new EmbedBuilder({
                     title: "List of all available color names",
                     description: colorList.slice(p, index).join("\n"),
                     color: embedColor as ColorResolvable,
@@ -51,7 +51,7 @@ export default class ColorCommand extends KaikiCommand {
 
         if (color === null) {
             return message.channel.send({
-                embeds: [new MessageEmbed()
+                embeds: [new EmbedBuilder()
                     .setTitle("Please provide a valid hex-color or color name")
                     .withErrorColor(message)],
             });
@@ -59,7 +59,7 @@ export default class ColorCommand extends KaikiCommand {
         const colorInt = Util.resolveColor([color.r!, color.g!, color.b!]);
         const colorString = `Hex: **${Utility.RGBtoHEX(color)}** [${colorInt}]\nRed: **${color.r}**\nGreen: **${color.g}**\nBlue: **${color.b}**\n`;
         const attachment = new MessageAttachment(await imgFromColor(color), "color.jpg");
-        const embed = new MessageEmbed({
+        const embed = new EmbedBuilder({
             description: colorString,
             color: colorInt,
             image: {

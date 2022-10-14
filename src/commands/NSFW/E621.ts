@@ -1,4 +1,4 @@
-import { Message, MessageEmbed } from "discord.js";
+import { Message, EmbedBuilder } from "discord.js";
 import { DapiGrabber, DapiSearchType } from "./hentaiService";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
@@ -24,7 +24,7 @@ export default class E621Command extends KaikiCommand {
         const post = await DapiGrabber(tags?.split("+").map(tag => tag.replace(" ", "_")) ?? null, DapiSearchType.E621);
         if (post) {
 
-            const emb = new MessageEmbed()
+            const emb = new EmbedBuilder()
                 .setAuthor({ name: post.tags.artist.join(", ") })
                 .setDescription(Utility.trim(`**Tags**: ${post.tags.general.join(",")}`, 2048))
                 .setImage(post.file.url || post.preview.url || post.sample.url || post.sources[0])

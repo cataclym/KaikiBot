@@ -1,6 +1,6 @@
 import { time } from "@discordjs/builders";
 import { Argument } from "discord-akairo";
-import { Message, MessageEmbed, Snowflake, User } from "discord.js";
+import { Message, EmbedBuilder, Snowflake, User } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 import Utility from "../../lib/Utility";
@@ -25,7 +25,7 @@ export default class FetchUserCommand extends KaikiCommand {
                     }
                 }),
                 otherwise: (m) => ({
-                    embeds: [new MessageEmbed()
+                    embeds: [new EmbedBuilder()
                         .setDescription("No user found")
                         .withErrorColor(m)],
                 }),
@@ -42,7 +42,7 @@ export default class FetchUserCommand extends KaikiCommand {
         }
 
         const userFlags = userObject.flags ? userObject.flags.toArray() : [],
-            embed = new MessageEmbed()
+            embed = new EmbedBuilder()
                 .setDescription(userObject.username)
                 .setThumbnail(userObject.displayAvatarURL({ dynamic: true, size: 4096 }))
                 .setTitle(userObject.tag)

@@ -1,4 +1,4 @@
-import { Message, MessageAttachment, MessageEmbed, Role } from "discord.js";
+import { Message, MessageAttachment, EmbedBuilder, Role } from "discord.js";
 import { imgFromColor } from "../../lib/Color";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
@@ -40,7 +40,7 @@ export default class RoleColorCommand extends KaikiCommand {
             const attachment = new MessageAttachment(await imgFromColor(role.hexColor), "color.png");
             return message.channel.send({
                 files: [attachment],
-                embeds: [new MessageEmbed({
+                embeds: [new EmbedBuilder({
                     title: `Role color of ${role.name}.`,
                     description: `${role.hexColor}`,
                     image: { url: "attachment://color.png" },
@@ -71,7 +71,7 @@ export default class RoleColorCommand extends KaikiCommand {
             return role.edit({ color: [clr.r!, clr.g!, clr.b!] }).then(r => {
                 return message.channel.send({
                     files: [attachment],
-                    embeds: [new MessageEmbed({
+                    embeds: [new EmbedBuilder({
                         title: `You have changed ${r.name}'s color from ${hexColor} to ${r.hexColor}!`,
                         thumbnail: { url: "attachment://color.png" },
                     })

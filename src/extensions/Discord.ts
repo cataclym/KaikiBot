@@ -1,4 +1,4 @@
-import { Guild, GuildMember, Message, MessageEmbed } from "discord.js";
+import { EmbedBuilder, Guild, GuildMember, Message } from "discord.js";
 import KaikiAkairoClient from "../lib/Kaiki/KaikiAkairoClient";
 import Utility from "../lib/Utility";
 
@@ -23,7 +23,7 @@ declare module "discord.js" {
         client: KaikiAkairoClient;
     }
 
-    export interface MessageEmbed {
+    export interface EmbedBuilder {
         withOkColor(m?: Message | Guild): this;
 
         withErrorColor(m?: Message | Guild): this;
@@ -32,6 +32,7 @@ declare module "discord.js" {
     export interface Interaction {
         client: KaikiAkairoClient;
     }
+
 }
 
 GuildMember.prototype.hasExcludedRole = function(member?: GuildMember) {
@@ -60,7 +61,7 @@ Guild.prototype.isDadBotEnabled = function(message?: Message) {
     return false;
 };
 
-MessageEmbed.prototype.withErrorColor = function(m?: Message | Guild) {
+EmbedBuilder.prototype.withErrorColor = function(m?: Message | Guild) {
 
     if (m) {
 
@@ -74,7 +75,7 @@ MessageEmbed.prototype.withErrorColor = function(m?: Message | Guild) {
     return this.setColor(Utility.errorColor);
 };
 
-MessageEmbed.prototype.withOkColor = function(m?: Message | Guild) {
+EmbedBuilder.prototype.withOkColor = function(m?: Message | Guild) {
 
     if (m) {
 

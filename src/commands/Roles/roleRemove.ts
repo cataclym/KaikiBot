@@ -1,4 +1,4 @@
-import { GuildMember, Message, MessageEmbed, Role } from "discord.js";
+import { GuildMember, Message, EmbedBuilder, Role } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
@@ -18,7 +18,7 @@ export default class RoleRemoveCommand extends KaikiCommand {
                     id: "member",
                     type: "member",
                     otherwise: (m: Message) => ({
-                        embeds: [new MessageEmbed({
+                        embeds: [new EmbedBuilder({
                             description: "Can't find this user. Try again.",
                         })
                             .withErrorColor(m)],
@@ -41,7 +41,7 @@ export default class RoleRemoveCommand extends KaikiCommand {
                 await member.roles.remove(role);
 
                 return message.channel.send({
-                    embeds: [new MessageEmbed({
+                    embeds: [new EmbedBuilder({
                         title: "Success!",
                         description: `Removed ${role} from ${member.user}`,
                     })
@@ -51,7 +51,7 @@ export default class RoleRemoveCommand extends KaikiCommand {
 
             else {
                 return message.channel.send({
-                    embeds: [new MessageEmbed({
+                    embeds: [new EmbedBuilder({
                         title: "Error",
                         description: `${member} doesn't have ${role}`,
                     })

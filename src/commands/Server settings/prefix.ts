@@ -1,4 +1,4 @@
-import { Guild, Message, MessageEmbed } from "discord.js";
+import { Guild, Message, EmbedBuilder } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
@@ -24,7 +24,7 @@ export default class PrefixConfigCommand extends KaikiCommand {
         await message.client.guildsDb.set(guildID, "Prefix", value);
 
         return message.channel.send({
-            embeds: [new MessageEmbed({
+            embeds: [new EmbedBuilder({
                 title: "Prefix changed!",
                 description: `Prefix has been set to \`${value}\` !`,
                 footer: { text: `Old prefix: \`${oldPrefix}\`` },

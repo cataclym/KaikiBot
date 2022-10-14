@@ -1,4 +1,4 @@
-import { Message, MessageEmbed, Role } from "discord.js";
+import { Message, EmbedBuilder, Role } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 import { Argument } from "discord-akairo";
@@ -27,7 +27,7 @@ export default class RoleInfoCommand extends KaikiCommand {
 
     public async exec(message: Message, { role }: { role: Role }): Promise<Message> {
         return message.channel.send({
-            embeds: [new MessageEmbed({
+            embeds: [new EmbedBuilder({
                 title: `Info for ${role.name}`,
                 color: role.hexColor,
                 fields: [

@@ -1,4 +1,4 @@
-import { GuildMember, Message, MessageEmbed } from "discord.js";
+import { GuildMember, Message, EmbedBuilder } from "discord.js";
 import { hexColorTable } from "../Color";
 import { processAPIRequest } from "./APIProcessor";
 import { endpointData } from "../Interfaces/IAPIData";
@@ -38,7 +38,7 @@ const endPoints: {
     },
 };
 
-export default async function getKawaiiResponseEmbed(message: Message, endpoint: endPointSignatures, mention?: GuildMember | null): Promise<MessageEmbed | undefined> {
+export default async function getKawaiiResponseEmbed(message: Message, endpoint: endPointSignatures, mention?: GuildMember | null): Promise<EmbedBuilder | undefined> {
 
     if (!token) {
         return;

@@ -1,6 +1,6 @@
 import chalk from "chalk";
 import { execSync } from "child_process";
-import { MessageEmbed, Team } from "discord.js";
+import { EmbedBuilder, Team } from "discord.js";
 import fs from "fs/promises";
 import logger from "loglevel";
 import KaikiAkairoClient from "../lib/Kaiki/KaikiAkairoClient";
@@ -78,7 +78,7 @@ export default class Bot {
                     const emoji = ["✨", "♥️", "✅", "🇹🇼"][Math.floor(Math.random() * 4)];
                     await this.client.owner.send({
                         embeds:
-                            [new MessageEmbed()
+                            [new EmbedBuilder()
                                 .setTitle(emoji)
                                 .setDescription("Bot is online!")
                                 .withOkColor(),

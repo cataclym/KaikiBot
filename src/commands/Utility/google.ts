@@ -2,7 +2,7 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 import fetch from "node-fetch";
 import querystring from "querystring";
-import { Message, MessageEmbed } from "discord.js";
+import { Message, EmbedBuilder } from "discord.js";
 import { parse } from "node-html-parser";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
@@ -56,7 +56,7 @@ export default class GoogleSearchCommand extends KaikiCommand {
 
         return message.channel.send({
             embeds: parsedResults.slice(0, 5)
-                .map(r => new MessageEmbed({
+                .map(r => new EmbedBuilder({
                     url: r.url,
                 })
                     .setTitle(r.title || "🔍")

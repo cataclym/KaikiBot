@@ -1,4 +1,4 @@
-import { Message, MessageEmbed, Permissions, TextChannel } from "discord.js";
+import { Message, EmbedBuilder, Permissions, TextChannel } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 
@@ -22,7 +22,7 @@ export default class ChannelNsfwCommand extends KaikiCommand {
         await channel.setNSFW(!channel.nsfw, `${message.author.tag} toggled NSFW.`);
 
         return message.channel.send({
-            embeds: [new MessageEmbed({
+            embeds: [new EmbedBuilder({
                 description: result,
             })
                 .withOkColor(message)],

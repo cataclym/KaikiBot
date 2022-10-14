@@ -1,4 +1,4 @@
-import { Message, MessageEmbed } from "discord.js";
+import { Message, EmbedBuilder } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 import Roles from "../../lib/Roles";
@@ -13,7 +13,7 @@ export default class MyRoleSubCommandName extends KaikiCommand {
                 id: "name",
                 match: "rest",
                 otherwise: (m: Message) => ({
-                    embeds: [new MessageEmbed()
+                    embeds: [new EmbedBuilder()
                         .setTitle("Please provide a name")
                         .withErrorColor(m)],
                 }),
@@ -37,7 +37,7 @@ export default class MyRoleSubCommandName extends KaikiCommand {
         const oldName = myRole.name;
         await myRole.setName(Utility.trim(name, 32));
         return message.channel.send({
-            embeds: [new MessageEmbed()
+            embeds: [new EmbedBuilder()
                 .setDescription(`You have changed \`${oldName}\`'s name to \`${name}\`!`)
                 .setColor(myRole.color)],
         });

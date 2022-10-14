@@ -1,4 +1,4 @@
-import { GuildMember, Message, MessageAttachment, MessageEmbed } from "discord.js";
+import { GuildMember, Message, MessageAttachment, EmbedBuilder } from "discord.js";
 import fetch from "node-fetch";
 import sharp from "sharp";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand.js";
@@ -33,7 +33,7 @@ export default class SquishCommand extends KaikiCommand {
             .webp();
 
         const attachment: MessageAttachment = new MessageAttachment(await picture.toBuffer(), "Stretched.jpg");
-        const embed = new MessageEmbed({
+        const embed = new EmbedBuilder({
             title: "Stretched avatar...",
             image: { url: "attachment://Stretched.jpg" },
             color: member.displayColor,

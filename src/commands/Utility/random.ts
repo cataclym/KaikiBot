@@ -1,4 +1,4 @@
-import { Message, MessageEmbed } from "discord.js";
+import { Message, EmbedBuilder } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 
@@ -29,7 +29,7 @@ export default class RandomNumberCommand extends KaikiCommand {
 
         const number1 = args.int,
             number2 = args.int2,
-            embed = new MessageEmbed()
+            embed = new EmbedBuilder()
                 .setTitle("Result:")
                 .setFooter({
                     text: `Random number between ${number1} and ${number2}`,

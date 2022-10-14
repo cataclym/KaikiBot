@@ -1,5 +1,5 @@
 import { ChildProcess, exec } from "child_process";
-import { Message, MessageEmbed } from "discord.js";
+import { Message, EmbedBuilder } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 import Utility from "../../lib/Utility";
@@ -28,7 +28,7 @@ export default class ExecCommand extends KaikiCommand {
 
             if (e) {
                 return message.channel.send({
-                    embeds: [new MessageEmbed()
+                    embeds: [new EmbedBuilder()
                         .setAuthor({
                             name: "Command errored",
                             iconURL: message.client.user?.displayAvatarURL({ dynamic: true }),
@@ -39,7 +39,7 @@ export default class ExecCommand extends KaikiCommand {
             }
 
             return message.channel.send({
-                embeds: [new MessageEmbed()
+                embeds: [new EmbedBuilder()
                     .setAuthor({
                         name: "Executed command",
                         iconURL: message.client.user?.displayAvatarURL({ dynamic: true }),

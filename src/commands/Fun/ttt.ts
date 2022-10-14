@@ -1,4 +1,4 @@
-import { GuildMember, Message, MessageActionRow, MessageButton, MessageEmbed } from "discord.js";
+import { GuildMember, Message, MessageActionRow, MessageButton, EmbedBuilder } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 import TicTacToe from "../../lib/games/TTT";
@@ -26,7 +26,7 @@ export default class TicTacToeCommand extends KaikiCommand {
         }
 
         const acceptMessage = await message.channel.send({
-            embeds: [new MessageEmbed()
+            embeds: [new EmbedBuilder()
                 .setDescription(`Do you wanna participate in a game of Tic-Tac-Toe against ${message.author.tag}?`)
                 .setFooter({ text: "Timeout in 20 seconds" })
                 .withOkColor(message)],
@@ -58,7 +58,7 @@ export default class TicTacToeCommand extends KaikiCommand {
 
                 else {
                     await message.reply({
-                        embeds: [new MessageEmbed()
+                        embeds: [new EmbedBuilder()
                             .setDescription(`${player2.user.tag} has declined your Tic-Tac-Toe challenge`)
                             .withErrorColor(message),
                         ],
@@ -69,7 +69,7 @@ export default class TicTacToeCommand extends KaikiCommand {
             .catch(() => {
                 const emb = acceptMessage.embeds[0];
                 acceptMessage.edit({
-                    embeds: [new MessageEmbed(emb)
+                    embeds: [new EmbedBuilder(emb)
                         .setDescription(`~~${emb.description}~~`)
                         .setFooter({ text: "Timed out!" })
                         .withErrorColor(message)],

@@ -1,5 +1,5 @@
 import { PrefixSupplier } from "discord-akairo";
-import { GuildMember, Message, MessageEmbed, Role } from "discord.js";
+import { GuildMember, Message, EmbedBuilder, Role } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 // Rewrite of Miyano's setuserrole command
@@ -34,11 +34,11 @@ export default class SetUserRoleCommand extends KaikiCommand {
         });
     }
 
-    embedFail = async (message: Message<boolean>, text: string) => new MessageEmbed()
+    embedFail = async (message: Message<boolean>, text: string) => new EmbedBuilder()
         .setDescription(text)
         .withErrorColor(message);
 
-    embedSuccess = async (message: Message<boolean>, text: string) => new MessageEmbed()
+    embedSuccess = async (message: Message<boolean>, text: string) => new EmbedBuilder()
         .setDescription(text)
         .withOkColor(message);
 

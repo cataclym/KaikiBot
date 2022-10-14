@@ -1,4 +1,4 @@
-import { GuildMember, Message, MessageEmbed } from "discord.js";
+import { GuildMember, Message, EmbedBuilder } from "discord.js";
 import sendNekosPics from "../../lib/APIs/nekos.life";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
@@ -25,7 +25,7 @@ export default class spank extends KaikiCommand {
 
         else {
             return message.channel.send({
-                embeds: [new MessageEmbed({
+                embeds: [new EmbedBuilder({
                     title: "Error",
                     description: "Channel is not NSFW.",
                 })

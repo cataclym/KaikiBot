@@ -1,5 +1,5 @@
 import { FailureData } from "discord-akairo";
-import { ActivityType, Message, MessageEmbed } from "discord.js";
+import { ActivityType, Message, EmbedBuilder } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
@@ -32,7 +32,7 @@ export default class SetActivityCommand extends KaikiCommand {
     }
 
     typeErrorEmbed = (msg: Message, _: FailureData) => ({
-        embeds: [new MessageEmbed()
+        embeds: [new EmbedBuilder()
             .setDescription(`\`${_.phrase}\` is not an status type`)
             .addField("Valid types", SetActivityCommand.validTypes.join("\n"))
             .withErrorColor(msg)],
@@ -48,7 +48,7 @@ export default class SetActivityCommand extends KaikiCommand {
             this.client.botSettings.set("1", "Activity", name),
             this.client.botSettings.set("1", "ActivityType", type),
             message.channel.send({
-                embeds: [new MessageEmbed()
+                embeds: [new EmbedBuilder()
                     .addField("Status changed", `**Type**: ${type}\n**Activity**: ${name}`)
                     .withOkColor(message)],
             }),

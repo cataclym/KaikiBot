@@ -1,4 +1,4 @@
-import { Message, MessageEmbed, Permissions, TextChannel } from "discord.js";
+import { Message, EmbedBuilder, Permissions, TextChannel } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
@@ -32,7 +32,7 @@ export default class SayCommand extends KaikiCommand {
                     }
                 },
                 otherwise: (m) => ({
-                    embeds: [new MessageEmbed()
+                    embeds: [new EmbedBuilder()
                         .setDescription("Please provide arguments!")
                         .withErrorColor(m)],
                 }),

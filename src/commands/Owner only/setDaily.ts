@@ -1,4 +1,4 @@
-import { Message, MessageEmbed } from "discord.js";
+import { Message, EmbedBuilder } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 export default class SetDailyCommand extends KaikiCommand {
@@ -24,7 +24,7 @@ export default class SetDailyCommand extends KaikiCommand {
             await this.client.botSettings.set("1", "DailyEnabled", true);
             await this.client.botSettings.set("1", "DailyAmount", arg);
             return message.channel.send({
-                embeds: [new MessageEmbed()
+                embeds: [new EmbedBuilder()
                     .setDescription(`Users will be able to claim ${arg} ${this.client.money.currencyName} ${this.client.money.currencySymbol} every day`)
                     .withOkColor(message),
                 ],
@@ -33,7 +33,7 @@ export default class SetDailyCommand extends KaikiCommand {
 
         else if (!isEnabled) {
             return message.channel.send({
-                embeds: [new MessageEmbed()
+                embeds: [new EmbedBuilder()
                     .setDescription("Daily currency allowance is already disabled!")
                     .withErrorColor(message),
                 ],
@@ -43,7 +43,7 @@ export default class SetDailyCommand extends KaikiCommand {
         else {
             await this.client.botSettings.set("1", "DailyEnabled", false);
             return message.channel.send({
-                embeds: [new MessageEmbed()
+                embeds: [new EmbedBuilder()
                     .setDescription("Disabled daily currency allowance.")
                     .withOkColor(message),
                 ],

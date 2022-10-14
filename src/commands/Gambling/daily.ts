@@ -1,4 +1,4 @@
-import { Message, MessageEmbed } from "discord.js";
+import { Message, EmbedBuilder } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
@@ -27,7 +27,7 @@ export default class ClaimDailyCommand extends KaikiCommand {
             await this.client.money.Add(message.author.id, BigInt(amount), "Claimed daily");
 
             return message.channel.send({
-                embeds: [new MessageEmbed()
+                embeds: [new EmbedBuilder()
                     .setDescription(`**${message.author.tag}**, You've just claimed your daily allowance!\n**${amount}** ${this.client.money.currencyName} ${this.client.money.currencySymbol}`)
                     .withOkColor(message),
                 ],
@@ -36,7 +36,7 @@ export default class ClaimDailyCommand extends KaikiCommand {
 
         else {
             return message.channel.send({
-                embeds: [new MessageEmbed()
+                embeds: [new EmbedBuilder()
                     .setDescription(`**${message.author.tag}**, You've already claimed your daily allowance!!`)
                     .withErrorColor(message),
                 ],

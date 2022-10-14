@@ -1,7 +1,7 @@
 import { BlockedCategories, Guilds } from "@prisma/client";
 import { Argument, Flag, PrefixSupplier } from "discord-akairo";
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
-import { Message, MessageEmbed, MessageOptions, Permissions } from "discord.js";
+import { Message, EmbedBuilder, MessageOptions, Permissions } from "discord.js";
 import { blockedCategories } from "../../lib/enums/blockedCategories";
 import GreetHandler from "../../lib/GreetHandler";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
@@ -64,7 +64,7 @@ export default class ConfigCommand extends KaikiCommand {
             .filter(Boolean);
 
         const firstPage: MessageOptions = {
-            embeds: [new MessageEmbed()
+            embeds: [new EmbedBuilder()
                 .withOkColor(message)
                 .addField("Dad-bot",
                     Utility.toggledTernary(DadBot), true)
@@ -89,7 +89,7 @@ export default class ConfigCommand extends KaikiCommand {
         };
 
         if (categories.length && firstPage.embeds) {
-            (firstPage.embeds[0] as MessageEmbed).addField("Disabled categories", categories.join("\n"), false);
+            (firstPage.embeds[0] as EmbedBuilder).addField("Disabled categories", categories.join("\n"), false);
         }
 
         const pages: MessageOptions[] = [];

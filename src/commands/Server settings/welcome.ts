@@ -1,4 +1,4 @@
-import { GuildTextBasedChannel, Message, MessageEmbed, Permissions } from "discord.js";
+import { GuildTextBasedChannel, Message, EmbedBuilder, Permissions } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 
@@ -20,7 +20,7 @@ export default class WelcomeToggleCommand extends KaikiCommand {
 
     public async exec(message: Message<true>, { channel }: { channel: GuildTextBasedChannel | null }): Promise<Message> {
 
-        const embed = new MessageEmbed()
+        const embed = new EmbedBuilder()
             .withOkColor(message);
 
         const guildTable = await this.client.db.getOrCreateGuild(BigInt(message.guildId));

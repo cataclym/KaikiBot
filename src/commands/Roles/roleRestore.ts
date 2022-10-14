@@ -1,4 +1,4 @@
-import { GuildMember, Message, MessageEmbed, Permissions } from "discord.js";
+import { GuildMember, Message, EmbedBuilder, Permissions } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 import { restoreUserRoles } from "../../lib/Roles";
@@ -18,7 +18,7 @@ export default class RestoreUserRoles extends KaikiCommand {
                     id: "member",
                     type: "member",
                     otherwise: (m) => ({
-                        embeds: [new MessageEmbed()
+                        embeds: [new EmbedBuilder()
                             .setDescription("Please provide a valid member")
                             .withErrorColor(m)],
                     }),
@@ -37,7 +37,7 @@ export default class RestoreUserRoles extends KaikiCommand {
 
         else if (result.success) {
             return message.channel.send({
-                embeds: [new MessageEmbed()
+                embeds: [new EmbedBuilder()
                     .setDescription(`Restored roles of \`${member.user.tag}\` [${member.id}]`)
                     .addField("Roles added", Utility.trim(result.roles.join("\n"), 1024))
                     .withOkColor(message)],
@@ -46,7 +46,7 @@ export default class RestoreUserRoles extends KaikiCommand {
 
         else if (result.roles) {
             return message.channel.send({
-                embeds: [new MessageEmbed()
+                embeds: [new EmbedBuilder()
                     .setDescription("This member already has all the roles.")
                     .withErrorColor(message)],
             });
@@ -54,7 +54,7 @@ export default class RestoreUserRoles extends KaikiCommand {
 
         else {
             return message.channel.send({
-                embeds: [new MessageEmbed()
+                embeds: [new EmbedBuilder()
                     .setDescription("This user's roles have not been saved, or they have not left the guild.")
                     .withErrorColor(message)],
             });

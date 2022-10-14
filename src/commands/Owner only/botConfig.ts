@@ -1,5 +1,5 @@
 import { FailureData } from "discord-akairo";
-import { Message, MessageEmbed } from "discord.js";
+import { Message, EmbedBuilder } from "discord.js";
 import { ActivityTypes } from "discord.js/typings/enums";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
@@ -46,7 +46,7 @@ export default class BotConfigCommand extends KaikiCommand {
                     otherwise: async (msg: Message, _: FailureData) => {
                         if (_.phrase.length) {
                             return ({
-                                embeds: [new MessageEmbed()
+                                embeds: [new EmbedBuilder()
                                     .setDescription(`\`${_.phrase}\` is not a valid setting`)
                                     .addField("Valid settings", BotConfigCommand._validTypes.join("\n"))
                                     .withErrorColor(msg)],
@@ -54,7 +54,7 @@ export default class BotConfigCommand extends KaikiCommand {
                         }
                         else {
                             return ({
-                                embeds: [new MessageEmbed()
+                                embeds: [new EmbedBuilder()
                                     .addField("Bot config", await Utility.codeblock(JSON
                                         .stringify(new BotConfig(await this.client.connection().query("SELECT * FROM BotSettings")), null, 4), "xl"))
                                     .withOkColor(msg)],
@@ -126,7 +126,7 @@ export default class BotConfigCommand extends KaikiCommand {
         }
 
         return message.channel.send({
-            embeds: [new MessageEmbed()
+            embeds: [new EmbedBuilder()
                 .setTitle("Changed bot configuration")
                 .addField("Old Value", oldValue)
                 .addField("New value", value)

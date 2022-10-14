@@ -1,7 +1,7 @@
 /* eslint-disable no-useless-escape */
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
 import { exec } from "child_process";
-import { Message, MessageEmbed } from "discord.js";
+import { Message, EmbedBuilder } from "discord.js";
 import logger from "loglevel";
 import { distros } from "../../lib/distros.json";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
@@ -43,9 +43,9 @@ export default class NeofetchCommand extends KaikiCommand {
     public async exec(message: Message, { os, list }: { os: string | null, list: boolean }): Promise<Message | void> {
 
         if (list) {
-            const pages: MessageEmbed[] = [];
+            const pages: EmbedBuilder[] = [];
             for (let i = 150, p = 0; p < distros.length; i = i + 150, p = p + 150) {
-                pages.push(new MessageEmbed()
+                pages.push(new EmbedBuilder()
                     .setTitle("ascii_distro list")
                     .setThumbnail(message.author.displayAvatarURL({ dynamic: true }))
                     .setDescription(await Utility.codeblock(distros.slice(p, i).join(", "), "json"))

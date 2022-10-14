@@ -1,5 +1,5 @@
 import { Argument, Flag, PrefixSupplier } from "discord-akairo";
-import { Message, MessageEmbed } from "discord.js";
+import { Message, EmbedBuilder } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 import Roles from "../../lib/Roles";
@@ -43,7 +43,7 @@ export default class MyRoleCommand extends KaikiCommand {
         if (!myRole) return message.channel.send({ embeds: [await KaikiEmbeds.embedFail(message)] });
 
         return message.channel.send({
-            embeds: [new MessageEmbed()
+            embeds: [new EmbedBuilder()
                 .setAuthor({
                     name: `Current role assigned to ${message.author.username}`,
                     iconURL: message.guild.iconURL({ size: 2048, dynamic: true })

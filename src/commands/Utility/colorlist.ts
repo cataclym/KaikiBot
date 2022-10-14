@@ -1,5 +1,5 @@
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
-import { ColorResolvable, Message, MessageAttachment, MessageEmbed, MessageOptions } from "discord.js";
+import { ColorResolvable, Message, MessageAttachment, EmbedBuilder, MessageOptions } from "discord.js";
 import { colorTable, hexColorTable, imgFromColor } from "../../lib/Color";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import Utility from "../../lib/Utility";
@@ -18,13 +18,13 @@ export default class ColorListCommand extends KaikiCommand {
 
     public async exec(message: Message) {
 
-        let embeds: MessageEmbed[] = [];
+        let embeds: EmbedBuilder[] = [];
         let attachments: MessageAttachment[] = [];
         const messageOptions: MessageOptions[] = [];
 
         for (const color in colorTable) {
             const random = `${Math.random()}`;
-            embeds.push(new MessageEmbed()
+            embeds.push(new EmbedBuilder()
                 .addField(color, `${hexColorTable[color]}\n${colorTable[color]}`)
                 .setImage(`attachment://color${random}.png`)
                 .setColor(hexColorTable[color] as ColorResolvable),

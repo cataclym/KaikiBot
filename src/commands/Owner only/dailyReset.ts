@@ -1,5 +1,5 @@
 import { resetDailyClaims } from "../../lib/functions";
-import { Message, MessageEmbed } from "discord.js";
+import { Message, EmbedBuilder } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 
@@ -16,7 +16,7 @@ export default class DailyResetCommand extends KaikiCommand {
     public async exec(message: Message): Promise<Message> {
         await resetDailyClaims(this.client.orm);
         return message.channel.send({
-            embeds: [new MessageEmbed()
+            embeds: [new EmbedBuilder()
                 .setDescription("Daily claims have been reset!")
                 .withOkColor(message),
             ],

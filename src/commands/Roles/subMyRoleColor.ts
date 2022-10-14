@@ -1,5 +1,5 @@
 import { Argument } from "discord-akairo";
-import { ColorResolvable, Message, MessageEmbed } from "discord.js";
+import { ColorResolvable, Message, EmbedBuilder } from "discord.js";
 import { hexColorTable } from "../../lib/Color";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
@@ -14,7 +14,7 @@ export default class MyRoleSubCommandColor extends KaikiCommand {
                 id: "color",
                 type: Argument.union((_, phrase) => hexColorTable[phrase.toLowerCase()], "color"),
                 otherwise: (m: Message) => ({
-                    embeds: [new MessageEmbed()
+                    embeds: [new EmbedBuilder()
                         .setTitle("Please provide a valid hex-color or color name")
                         .withErrorColor(m)],
                 }),
@@ -40,7 +40,7 @@ export default class MyRoleSubCommandColor extends KaikiCommand {
         const oldHex = myRole.hexColor;
         await myRole.setColor(color as ColorResolvable);
         return message.channel.send({
-            embeds: [new MessageEmbed()
+            embeds: [new EmbedBuilder()
                 .setDescription(`You have changed \`${myRole.name}\`'s color from \`${oldHex}\` to \`${color}\`!`)
                 .setColor(color as ColorResolvable)],
         });

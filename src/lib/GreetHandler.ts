@@ -2,7 +2,7 @@ import {
     Guild,
     GuildMember,
     Message,
-    MessageEmbed,
+    EmbedBuilder,
     MessageEmbedOptions,
     MessageOptions,
     StickerResolvable,
@@ -20,14 +20,14 @@ interface sendMessageData {
 
 export default class GreetHandler {
     static JSONErrorMessage = (m: Message) => ({
-        embeds: [new MessageEmbed()
+        embeds: [new EmbedBuilder()
             .setTitle("Error")
             .setDescription("Please provide valid json")
             .withErrorColor(m)],
     });
 
     static emptyMessageOptions = (m: Message | Guild) => ({
-        embeds: [new MessageEmbed()
+        embeds: [new EmbedBuilder()
             .setTitle("No data")
             .setTitle("No welcome/bye message set.")
             .withErrorColor(m),
@@ -93,7 +93,7 @@ export class JSONToMessageOptions implements MessageOptions {
         this.stickers = any.stickers;
     }
 
-    embeds: (MessageEmbed | MessageEmbedOptions)[];
+    embeds: (EmbedBuilder | MessageEmbedOptions)[];
     content?: string | null | undefined;
     stickers?: StickerResolvable[] | undefined;
 }

@@ -1,5 +1,5 @@
 import { Listener } from "discord-akairo";
-import { GuildMember, Message, MessageEmbed } from "discord.js";
+import { GuildMember, Message, EmbedBuilder } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
@@ -46,7 +46,7 @@ export default class EmitCommand extends KaikiCommand {
         if (value) {
             return message.channel.send({
                 embeds:
-                    [new MessageEmbed({
+                    [new EmbedBuilder({
                         description: `Emitted ${event.id}.`,
                     })],
             });

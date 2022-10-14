@@ -1,6 +1,6 @@
 import { time } from "@discordjs/builders";
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
-import { Message, MessageEmbed, User } from "discord.js";
+import { Message, EmbedBuilder, User } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
@@ -69,7 +69,7 @@ export default class CurrencyTransactionsCommand extends KaikiCommand {
     }
 
     private static baseEmbed(message: Message) {
-        return new MessageEmbed()
+        return new EmbedBuilder()
             .withOkColor(message);
     }
 }

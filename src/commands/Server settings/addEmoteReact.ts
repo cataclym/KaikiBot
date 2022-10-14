@@ -1,4 +1,4 @@
-import { GuildEmoji, Message, MessageEmbed, Permissions } from "discord.js";
+import { GuildEmoji, Message, EmbedBuilder, Permissions } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
@@ -63,7 +63,7 @@ export default class EmoteReactCommand extends KaikiCommand {
         }
 
         return message.channel.send({
-            embeds: [new MessageEmbed()
+            embeds: [new EmbedBuilder()
                 .setTitle("New emoji trigger added")
                 .setDescription(`Typing \`${trigger}\` will force me to react with ${emoji}...`)
                 .setThumbnail(emoji.url)

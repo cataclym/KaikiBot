@@ -1,6 +1,6 @@
 import { Argument, Flag, PrefixSupplier } from "discord-akairo";
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
-import { Message, MessageEmbed } from "discord.js";
+import { Message, EmbedBuilder } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 import Utility from "../../lib/Utility";
@@ -35,7 +35,7 @@ export default class TodoCommand extends KaikiCommand {
 
     public async exec(message: Message, { page }: { page: number }): Promise<Message> {
 
-        const emb = new MessageEmbed()
+        const emb = new EmbedBuilder()
             .setTitle("Todo")
             .setAuthor({
                 name: `${message.author.tag} 📔 To learn more about the command, type ${(this.handler.prefix as PrefixSupplier)(message)}help todo`,
@@ -61,7 +61,7 @@ export default class TodoCommand extends KaikiCommand {
         const pages = [];
 
         for (let index = 10, p = 0; p < reminderArray.length; index += 10, p += 10) {
-            pages.push(new MessageEmbed(emb)
+            pages.push(new EmbedBuilder(emb)
                 .setDescription(reminderArray
                     .slice(p, index).join("\n"),
                 ),

@@ -1,4 +1,4 @@
-import { Message, MessageEmbed, Permissions } from "discord.js";
+import { Message, EmbedBuilder, Permissions } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
@@ -16,7 +16,7 @@ export default class ExcludeCommand extends KaikiCommand {
 
         if (!message.guild.isDadBotEnabled() || !message.member) {
             return message.channel.send({
-                embeds: [new MessageEmbed()
+                embeds: [new EmbedBuilder()
                     .setTitle("Dad-bot is not enabled")
                     .withErrorColor(message)],
             });
@@ -44,7 +44,7 @@ export default class ExcludeCommand extends KaikiCommand {
 
             await this.client.guildsDb.set(message.guildId, "ExcludeRole", excludedRole.id);
 
-            embeds.push(new MessageEmbed({
+            embeds.push(new EmbedBuilder({
                 title: "Creating dad-bot role!",
                 description: "There doesn't seem to be a default dad-bot role in this server. Creating one...",
                 footer: { text: "Beep boop..." },

@@ -1,4 +1,4 @@
-import { Message, MessageEmbed } from "discord.js";
+import { Message, EmbedBuilder } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 
@@ -40,7 +40,7 @@ export default class ClearCommand extends KaikiCommand {
         await message.channel.bulkDelete(bulkDeletable);
 
         message.channel.send({
-            embeds: [new MessageEmbed()
+            embeds: [new EmbedBuilder()
                 .setDescription(`Deleting **${int}** messages...!`)
                 .withOkColor(message),
             ],

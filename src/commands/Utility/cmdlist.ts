@@ -1,5 +1,5 @@
 import { Argument, Category, PrefixSupplier } from "discord-akairo";
-import { Message, MessageEmbed } from "discord.js";
+import { Message, EmbedBuilder } from "discord.js";
 
 import images from "../../data/images.json";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
@@ -42,7 +42,7 @@ export default class commandsList extends KaikiCommand {
 
         if (category) {
 
-            const emb = new MessageEmbed();
+            const emb = new EmbedBuilder();
             const filtered = category.filter(cmd => cmd.subCategory !== undefined);
 
             [...new Set(filtered.map(value => value.subCategory))]
@@ -57,7 +57,7 @@ export default class commandsList extends KaikiCommand {
                 });
 
             return message.channel.send({
-                embeds: [new MessageEmbed(emb)
+                embeds: [new EmbedBuilder(emb)
                     .setTitle(`Commands in ${category.id}`)
                     .setDescription(category
                         .filter(cmd => !(cmd.subCategory !== undefined))
@@ -71,7 +71,7 @@ export default class commandsList extends KaikiCommand {
         }
 
         else {
-            const embed = new MessageEmbed({
+            const embed = new EmbedBuilder({
                 title: "Command categories",
                 description: `\`${prefix}cmds <category>\` returns all commands in the category.`,
                 author: {

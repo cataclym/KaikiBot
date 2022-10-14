@@ -1,5 +1,5 @@
 import { time } from "@discordjs/builders";
-import { Guild, Message, MessageEmbed } from "discord.js";
+import { Guild, Message, EmbedBuilder } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 import Constants from "../../struct/Constants";
@@ -22,7 +22,7 @@ export default class ServerInfoCommand extends KaikiCommand {
 
     public async exec(message: Message, { guild }: { guild: Guild }): Promise<Message> {
 
-        const emb = new MessageEmbed({
+        const emb = new EmbedBuilder({
             thumbnail: { url: <string>guild?.iconURL({ format: "png", size: 2048, dynamic: true }) },
             title: `${guild.name} [${guild.id}]`,
             author: { name: "Server info" },

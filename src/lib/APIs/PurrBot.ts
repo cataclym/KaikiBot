@@ -1,4 +1,4 @@
-import { GuildMember, Message, MessageEmbed } from "discord.js";
+import { GuildMember, Message, EmbedBuilder } from "discord.js";
 import { hexColorTable } from "../Color";
 import { processAPIRequest } from "./APIProcessor";
 import { endpointData } from "../Interfaces/IAPIData";
@@ -28,7 +28,7 @@ const endPoints: {
     },
 };
 
-export default async function getPurrBotResponseEmbed(message: Message, endpoint: endPointSignatures, mention?: GuildMember | null): Promise<MessageEmbed> {
+export default async function getPurrBotResponseEmbed(message: Message, endpoint: endPointSignatures, mention?: GuildMember | null): Promise<EmbedBuilder> {
     return processAPIRequest(message, `https://purrbot.site/api/img/sfw/${endpoint}/gif`, endPoints[endpoint], "link", mention);
 }
 

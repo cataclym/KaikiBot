@@ -1,5 +1,5 @@
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
-import { Message, MessageEmbed, User } from "discord.js";
+import { Message, EmbedBuilder, User } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 
@@ -27,7 +27,7 @@ export default class NamesCommand extends KaikiCommand {
         return { unionUser, method };
     }
 
-    private static baseEmbed = (message: Message, unionUser: User) => new MessageEmbed()
+    private static baseEmbed = (message: Message, unionUser: User) => new EmbedBuilder()
         .setTitle(`${unionUser.username}'s past names`)
         .setThumbnail(unionUser.displayAvatarURL({ dynamic: true }))
         .withOkColor(message);
@@ -60,7 +60,7 @@ export default class NamesCommand extends KaikiCommand {
                 });
             }
             return message.channel.send({
-                embeds: [new MessageEmbed()
+                embeds: [new EmbedBuilder()
                     .setDescription(`Deleted all of <@${message.author.id}>'s nicknames from ${message.inGuild() ? "this server" : "all servers"}!.\nWell done, you made daddy forget.`)
                     .setFooter({
                         text: `Deleted ${deleted.count} entries.`,
@@ -74,7 +74,7 @@ export default class NamesCommand extends KaikiCommand {
         }
 
         let nicknames;
-        const pages: MessageEmbed[] = [];
+        const pages: EmbedBuilder[] = [];
         if (message.inGuild()) {
             const db = await this.client.orm.userNicknames.findMany({
                 where: {

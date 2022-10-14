@@ -1,5 +1,5 @@
 import { Category, Command } from "discord-akairo";
-import { Guild, Message, MessageEmbed } from "discord.js";
+import { Guild, Message, EmbedBuilder } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
@@ -75,7 +75,7 @@ export default class ToggleCategoryCommand extends KaikiCommand {
             });
         }
 
-        const embed = new MessageEmbed()
+        const embed = new EmbedBuilder()
             .setDescription(`${category.id} has been ${exists ? "enabled" : "disabled"}.`);
 
         return message.channel.send({

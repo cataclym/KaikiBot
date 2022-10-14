@@ -1,4 +1,4 @@
-import { GuildMember, Message, MessageEmbed } from "discord.js";
+import { GuildMember, Message, EmbedBuilder } from "discord.js";
 import { hexColorTable } from "../Color";
 import { processAPIRequest } from "./APIProcessor";
 import { endpointData } from "../Interfaces/IAPIData";
@@ -85,7 +85,7 @@ const WaifuData: {
 	    },
 	};
 
-export default async function sendWaifuPics(message: Message, API: APIs, mention?: GuildMember | null): Promise<MessageEmbed> {
+export default async function sendWaifuPics(message: Message, API: APIs, mention?: GuildMember | null): Promise<EmbedBuilder> {
 
     return processAPIRequest(message, `https://api.waifu.pics/sfw/${API}`, WaifuData[API], "url", mention);
 

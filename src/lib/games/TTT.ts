@@ -1,4 +1,4 @@
-import { GuildMember, Message, MessageEmbed } from "discord.js";
+import { GuildMember, Message, EmbedBuilder } from "discord.js";
 
 const numbers = ["1", "2", "3", "4", "5", "6", "7", "8", "9"];
 const winningCombos = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]];
@@ -42,7 +42,7 @@ export default class TicTacToe {
 
         this.embed = this.message.channel.send({
             content: `${this.p2.player} starts!`,
-            embeds: [new MessageEmbed({
+            embeds: [new EmbedBuilder({
                 description: Object.values(this.stateDict).map((v, i) => [2, 5].includes(i) ? v + "\n" : v).join(""),
                 color: parseInt(this.p2.color, 16),
             })],
@@ -116,7 +116,7 @@ export default class TicTacToe {
     private async updateEmbed(playerObject: playerType): Promise<Message | NodeJS.Timeout> {
 
         const finalString = `It's ${playerObject.player}'s turn to make a move.`;
-        const finalEmbed = new MessageEmbed({
+        const finalEmbed = new EmbedBuilder({
             description: Object.values(this.stateDict)
                 .map((v, i) => [2, 5].includes(i) ? v + "\n" : v)
                 .join("")

@@ -1,4 +1,4 @@
-import { Message, MessageEmbed, Permissions } from "discord.js";
+import { Message, EmbedBuilder, Permissions } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
@@ -33,7 +33,7 @@ export default class GoodbyeDeleteCommand extends KaikiCommand {
         });
 
         return message.channel.send({
-            embeds: [new MessageEmbed()
+            embeds: [new EmbedBuilder()
                 .setDescription(time
                     ? `Goodbye messages will be deleted after ${time} seconds.`
                     : "Goodbye message will not be deleted.",

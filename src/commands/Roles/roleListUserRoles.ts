@@ -1,6 +1,6 @@
 import { PrefixSupplier } from "discord-akairo";
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
-import { Message, MessageEmbed } from "discord.js";
+import { Message, EmbedBuilder } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 export default class ListUserRoles extends KaikiCommand {
@@ -37,13 +37,13 @@ export default class ListUserRoles extends KaikiCommand {
             const mapped = db
                     .map((table) => `${message.guild?.members.cache.get(String(table.UserId)) || table.UserId}: ${message.guild?.roles.cache.get(String(table.UserRole)) || table.UserRole}`)
                     .sort(),
-                pages: MessageEmbed[] = [];
+                pages: EmbedBuilder[] = [];
 
             for (let items = 20, from = 0; mapped.length > from; items += 20, from += 20) {
 
                 const pageRoles = mapped.slice(from, items);
 
-                pages.push(new MessageEmbed()
+                pages.push(new EmbedBuilder()
                     .setTitle("Custom Userroles")
                     .setDescription(pageRoles.join("\n"))
                     .withOkColor(message));
@@ -54,7 +54,7 @@ export default class ListUserRoles extends KaikiCommand {
 
         else {
             return message.channel.send({
-                embeds: [new MessageEmbed()
+                embeds: [new EmbedBuilder()
                     .withErrorColor(message)
                     .setTitle("No user roles")
                     .setDescription("This guild has not used this feature yet.")],

@@ -1,4 +1,4 @@
-import { Message, MessageEmbed } from "discord.js";
+import { Message, EmbedBuilder } from "discord.js";
 import { grabHentai, types, typesArray } from "./hentaiService";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
@@ -25,7 +25,7 @@ export default class HentaiBombCommand extends KaikiCommand {
 
         for (let index = 10, p = 0; p < megaResponse.length; index += 10, p += 10) {
             await message.channel.send({
-                embeds: megaResponse.slice(p, index).map(link => new MessageEmbed()
+                embeds: megaResponse.slice(p, index).map(link => new EmbedBuilder()
                     .setImage(link)
                     .withOkColor(message)),
             });

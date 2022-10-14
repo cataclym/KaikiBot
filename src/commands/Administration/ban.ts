@@ -1,6 +1,6 @@
 import { Argument } from "discord-akairo";
 
-import { Guild, GuildMember, Message, MessageEmbed, Permissions, Snowflake, User } from "discord.js";
+import { Guild, GuildMember, Message, EmbedBuilder, Permissions, Snowflake, User } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand.js";
 
 export default class BanCommand extends KaikiCommand {
@@ -19,7 +19,7 @@ export default class BanCommand extends KaikiCommand {
                     return u || null;
                 }),
                 otherwise: (m: Message) => ({
-                    embeds: [new MessageEmbed({
+                    embeds: [new EmbedBuilder({
                         description: "Can't find this user.",
                     })
                         .withErrorColor(m)],
@@ -42,7 +42,7 @@ export default class BanCommand extends KaikiCommand {
         const guild = message.guild as Guild,
             guildClientMember = guild.me as GuildMember;
 
-        const successBan = new MessageEmbed({
+        const successBan = new EmbedBuilder({
             title: "Banned user",
             fields: [
                 {
@@ -68,7 +68,7 @@ export default class BanCommand extends KaikiCommand {
             (message.member as GuildMember).roles.highest.position <= guildMember.roles.highest.position) {
 
             return message.channel.send({
-                embeds: [new MessageEmbed({
+                embeds: [new EmbedBuilder({
                     description: `${message.author}, You can't use this command on users with a role higher or equal to yours in the role hierarchy.`,
                 })
                     .withErrorColor(message)],
@@ -78,7 +78,7 @@ export default class BanCommand extends KaikiCommand {
         // x2
         else if (guildClientMember.roles.highest.position <= guildMember.roles.highest.position) {
             return message.channel.send({
-                embeds: [new MessageEmbed({
+                embeds: [new EmbedBuilder({
                     description: "Sorry, I don't have permissions to ban this member.",
                 })
                     .withErrorColor(message)],
@@ -88,7 +88,7 @@ export default class BanCommand extends KaikiCommand {
         await message.guild?.members.ban(user, { reason: reason }).then(m => {
             try {
                 (m as GuildMember | User).send({
-                    embeds: [new MessageEmbed({
+                    embeds: [new EmbedBuilder({
                         description: `You have been banned from ${message.guild?.name}.\nReason: ${reason}`,
                     })
                         .withOkColor(message)],

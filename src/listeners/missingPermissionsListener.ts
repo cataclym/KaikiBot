@@ -1,5 +1,5 @@
 import { Command } from "discord-akairo";
-import { Message, MessageEmbed } from "discord.js";
+import { Message, EmbedBuilder } from "discord.js";
 import logger from "loglevel";
 import KaikiListener from "../lib/Kaiki/KaikiListener";
 import Utility from "../lib/Utility";
@@ -27,7 +27,7 @@ export default class MissingPermissionsListener extends KaikiListener {
         if (message.channel.type !== "DM") {
             await message.channel.send({
                 embeds:
-                    [new MessageEmbed({
+                    [new EmbedBuilder({
                         title: "Missing permissions",
                         description: `${type === "client" ? "Bot" : "User"} cannot execute \`${command.id}\` due to missing permissions.`,
                         footer: { text: `Missing: ${missing}` },

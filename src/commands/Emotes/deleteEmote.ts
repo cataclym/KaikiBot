@@ -1,4 +1,4 @@
-import { Collection, GuildEmoji, Message, MessageEmbed, Permissions } from "discord.js";
+import { Collection, GuildEmoji, Message, EmbedBuilder, Permissions } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
@@ -42,7 +42,7 @@ export default class DeleteEmoteCommand extends KaikiCommand {
 
                     if (!deleted) {
                         return message.channel.send({
-                            embeds: [new MessageEmbed({
+                            embeds: [new EmbedBuilder({
                                 title: "Error occurred",
                                 description: "Some or all emotes could not be deleted.",
                             })
@@ -52,7 +52,7 @@ export default class DeleteEmoteCommand extends KaikiCommand {
                 }
                 else {
                     return message.channel.send({
-                        embeds: [new MessageEmbed({
+                        embeds: [new EmbedBuilder({
                             title: "Error occurred",
                             description: "Not valid emote(s).",
                         })
@@ -62,7 +62,7 @@ export default class DeleteEmoteCommand extends KaikiCommand {
             }
 
             return message.channel.send({
-                embeds: [new MessageEmbed()
+                embeds: [new EmbedBuilder()
                     .setTitle("Success!")
                     .setDescription(`Deleted:\n${Utility.trim(emotes.map((es) => es.map((e) => e)).join("\n"), 2048)}`)
                     .withOkColor(message)],

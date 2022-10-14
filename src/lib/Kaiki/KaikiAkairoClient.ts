@@ -1,7 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import chalk from "chalk";
 import { AkairoClient, CommandHandler, InhibitorHandler, ListenerHandler } from "discord-akairo";
-import { Intents, User } from "discord.js";
+import { ClientApplication, GatewayIntentBits, Partials, User } from "discord.js";
 import logger from "loglevel";
 import { Pool } from "mysql2/promise";
 import { join } from "path";
@@ -15,8 +15,13 @@ import { MoneyService } from "../money/MoneyService";
 import Utility from "../Utility";
 import KaikiCommandHandler from "./KaikiCommandHandler";
 
-export default class KaikiAkairoClient extends AkairoClient {
+export default class KaikiAkairoClient<Ready extends boolean = boolean> extends AkairoClient {
+    get readyAt(): Date {
+        return super.readyAt!;
+    }
+
     public anniversaryService: AnniversaryRolesService;
+    public application: ClientApplication;
     public botSettings: DatabaseProvider;
     public cache: KaikiCache;
     public commandHandler: CommandHandler;
@@ -35,23 +40,21 @@ export default class KaikiAkairoClient extends AkairoClient {
         super({
             allowedMentions: { parse: ["users"], repliedUser: true },
             intents: [
-                Intents.FLAGS.DIRECT_MESSAGES,
-                Intents.FLAGS.DIRECT_MESSAGE_REACTIONS,
-                Intents.FLAGS.DIRECT_MESSAGE_TYPING,
-                Intents.FLAGS.GUILDS,
-                Intents.FLAGS.GUILD_BANS,
-                Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS,
-                Intents.FLAGS.GUILD_INTEGRATIONS,
-                Intents.FLAGS.GUILD_INVITES,
-                Intents.FLAGS.GUILD_MEMBERS,
-                Intents.FLAGS.GUILD_MESSAGES,
-                Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
-                // Intents.FLAGS.GUILD_MESSAGE_TYPING,
-                Intents.FLAGS.GUILD_PRESENCES,
-                // Intents.FLAGS.GUILD_VOICE_STATES,
-                Intents.FLAGS.GUILD_WEBHOOKS,
+                GatewayIntentBits.DirectMessageReactions,
+                GatewayIntentBits.DirectMessageTyping,
+                GatewayIntentBits.DirectMessages,
+                GatewayIntentBits.GuildBans,
+                GatewayIntentBits.GuildEmojisAndStickers,
+                GatewayIntentBits.GuildIntegrations,
+                GatewayIntentBits.GuildInvites,
+                GatewayIntentBits.GuildMembers,
+                GatewayIntentBits.GuildMessageReactions,
+                GatewayIntentBits.GuildMessages,
+                GatewayIntentBits.GuildPresences,
+                GatewayIntentBits.GuildWebhooks,
+                GatewayIntentBits.Guilds,
             ],
-            partials: ["REACTION", "CHANNEL"],
+            partials: [Partials.Reaction, Partials.Channel],
             shards: "auto",
             // Uncomment to have mobile status on bot.
             // ws: { properties: { $browser: "Discord Android" } },

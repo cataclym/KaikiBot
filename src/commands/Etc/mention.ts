@@ -1,5 +1,5 @@
 import { PrefixSupplier } from "discord-akairo";
-import { Message, MessageEmbed, User } from "discord.js";
+import { Message, EmbedBuilder, User } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 
@@ -22,7 +22,7 @@ export default class MentionCommand extends KaikiCommand {
     public async exec(msg: Message): Promise<NodeJS.Timeout> {
 
         const embed = msg.channel.send({
-            embeds: [new MessageEmbed({
+            embeds: [new EmbedBuilder({
                 title: `Hi ${msg.author.username}, what's up?`,
                 description: `If you need help type \`${(this.handler.prefix as PrefixSupplier)(msg)}help\`.`,
             })

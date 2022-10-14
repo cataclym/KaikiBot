@@ -1,5 +1,5 @@
 import { Argument } from "discord-akairo";
-import { Guild, GuildEmoji, Message, MessageAttachment, MessageEmbed, ReactionEmoji, Role } from "discord.js";
+import { Guild, GuildEmoji, Message, MessageAttachment, EmbedBuilder, ReactionEmoji, Role } from "discord.js";
 import { isRegex } from "../../lib/functions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
@@ -23,7 +23,7 @@ export default class MyRoleSubIcon extends KaikiCommand {
                     }
                 }, "emoji", MyRoleSubIcon.resetWords, Constants.EMOTE_REGEX, Constants.IMAGE_REGEX),
                 otherwise: (m: Message) => ({
-                    embeds: [new MessageEmbed()
+                    embeds: [new EmbedBuilder()
                         .setTitle("Please provide a valid emote or image link!")
                         .withErrorColor(m)],
                 }),
@@ -45,7 +45,7 @@ export default class MyRoleSubIcon extends KaikiCommand {
                 if (myRole && await rolePermissionCheck(message, myRole as Role)) {
                     myRole.setIcon(null);
                     return message.channel.send({
-                        embeds: [new MessageEmbed()
+                        embeds: [new EmbedBuilder()
                             .setDescription("Role-icon has been reset!")
                             .withOkColor(message),
                         ],
@@ -106,7 +106,7 @@ export default class MyRoleSubIcon extends KaikiCommand {
         }
 
         return message.channel.send({
-            embeds: [new MessageEmbed()
+            embeds: [new EmbedBuilder()
                 .setDescription(`You have set \`${myRole.name}\`'s icon!`)
                 .withOkColor(message),
             ],

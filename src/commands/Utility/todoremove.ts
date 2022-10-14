@@ -1,5 +1,5 @@
 import { Argument } from "discord-akairo";
-import { Message, MessageEmbed } from "discord.js";
+import { Message, EmbedBuilder } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 
@@ -40,7 +40,7 @@ export default class todoRemoveCommand extends KaikiCommand {
 
             if ((toRemove - 1) >= todos.length) {
                 return message.channel.send({
-                    embeds: [new MessageEmbed()
+                    embeds: [new EmbedBuilder()
                         .setTitle("Doesn't exist")
                         .setDescription(`No entry with Id: \`${toRemove}\``)
                         .withErrorColor(message),
@@ -105,7 +105,7 @@ export default class todoRemoveCommand extends KaikiCommand {
 
         return message.reply({
             content: "Removed an item from list.",
-            embeds: [new MessageEmbed()
+            embeds: [new EmbedBuilder()
                 .setAuthor({ name: "Deleted:" })
                 .setDescription(`\`${removedItem.String}\``)
                 .withOkColor(message),

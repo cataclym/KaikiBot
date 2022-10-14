@@ -1,4 +1,4 @@
-import { Message, MessageEmbed } from "discord.js";
+import { Message, EmbedBuilder } from "discord.js";
 import Gambling from "../../lib/gambling/gambling";
 import KaikiArgumentsTypes from "../../lib/Kaiki/KaikiArgumentsTypes";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
@@ -14,7 +14,7 @@ export default class slotsCommand extends KaikiCommand {
                     id: "amount",
                     type: KaikiArgumentsTypes.KaikiMoneyArgument,
                     otherwise: (m: Message) => ({
-                        embeds: [new MessageEmbed()
+                        embeds: [new EmbedBuilder()
                             .setTitle("Invalid amount. It must be a number")
                             .withOkColor(m)],
                     }),
@@ -27,7 +27,7 @@ export default class slotsCommand extends KaikiCommand {
 
         if (amount < 2) {
             await message.channel.send({
-                embeds: [new MessageEmbed()
+                embeds: [new EmbedBuilder()
                     .setDescription(`You need to bet more than 2 ${this.client.money.currencySymbol}`)
                     .withErrorColor(message)],
             });
@@ -38,7 +38,7 @@ export default class slotsCommand extends KaikiCommand {
 
         if (!success) {
             await message.channel.send({
-                embeds: [new MessageEmbed()
+                embeds: [new EmbedBuilder()
                     .setDescription(`You have less than ${amount} ${this.client.money.currencySymbol}`)
                     .withErrorColor(message)],
             });

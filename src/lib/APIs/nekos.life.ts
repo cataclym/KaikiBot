@@ -1,4 +1,4 @@
-import { GuildMember, Message, MessageEmbed } from "discord.js";
+import { GuildMember, Message, EmbedBuilder } from "discord.js";
 import { hexColorTable } from "../Color";
 import { processAPIRequest } from "./APIProcessor";
 import { endpointData } from "../Interfaces/IAPIData";
@@ -15,7 +15,7 @@ const nekosData: {
 	    },
 	};
 
-export default async function sendNekosPics(message: Message, API: APIs, mention?: GuildMember | null): Promise<MessageEmbed> {
+export default async function sendNekosPics(message: Message, API: APIs, mention?: GuildMember | null): Promise<EmbedBuilder> {
 
     return processAPIRequest(message, `https://nekos.life/api/v2/img/${API}`, nekosData[API], "url", mention);
 }

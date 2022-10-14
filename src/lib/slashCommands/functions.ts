@@ -1,4 +1,4 @@
-import { CommandInteraction, GuildMemberRoleManager, MessageEmbed, Snowflake } from "discord.js";
+import { CommandInteraction, GuildMemberRoleManager, EmbedBuilder, Snowflake } from "discord.js";
 import KaikiEmbeds from "../KaikiEmbeds";
 
 export async function ExcludeSlashCommand(interaction: CommandInteraction): Promise<void> {
@@ -8,7 +8,7 @@ export async function ExcludeSlashCommand(interaction: CommandInteraction): Prom
     if (!interaction.guild!.isDadBotEnabled()) {
         return interaction.reply({
             ephemeral: true,
-            embeds: [new MessageEmbed()
+            embeds: [new EmbedBuilder()
                 .setTitle("Dadbot is not enabled")
                 .withErrorColor(interaction.guild)],
         });
@@ -29,7 +29,7 @@ export async function ExcludeSlashCommand(interaction: CommandInteraction): Prom
         });
 
         await interaction.reply({
-            ephemeral: true, embeds: [new MessageEmbed({
+            ephemeral: true, embeds: [new EmbedBuilder({
                 title: "Error!",
                 description: `A role with name \`${process.env.DADBOT_DEFAULT_ROLENAME}\` was not found in guild. Creating... `,
                 footer: { text: "Beep boop..." },

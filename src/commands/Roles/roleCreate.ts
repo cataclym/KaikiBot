@@ -1,4 +1,4 @@
-import { Message, MessageEmbed } from "discord.js";
+import { Message, EmbedBuilder } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
@@ -30,7 +30,7 @@ export default class RoleCreateCommand extends KaikiCommand {
         }
 
         return message.channel.send({
-            embeds: [new MessageEmbed({
+            embeds: [new EmbedBuilder({
                 title: "Success!",
                 description: `Created ${createdRole}!`,
             })

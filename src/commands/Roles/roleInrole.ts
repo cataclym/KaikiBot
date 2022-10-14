@@ -1,5 +1,5 @@
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
-import { GuildMember, Message, MessageEmbed, Role } from "discord.js";
+import { GuildMember, Message, EmbedBuilder, Role } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 import { Argument } from "discord-akairo";
@@ -31,14 +31,14 @@ export default class RoleInRoleCommand extends KaikiCommand {
                 || (a.id as unknown as number) - (b.id as unknown as number))
             .slice(0, 400);
 
-        const pages: MessageEmbed[] = [];
+        const pages: EmbedBuilder[] = [];
 
         if (data && data.length) {
 
             for (let i = 40, p = 0; p < data.length; i += 40, p += 40) {
 
                 const currentPageUsers = data.slice(p, i),
-                    emb = new MessageEmbed()
+                    emb = new EmbedBuilder()
                         .setTitle(`Users in ${role.name} (${data.length})`)
                         .setAuthor({ name: message.guild!.name })
                         .addField("•", currentPageUsers
@@ -59,7 +59,7 @@ export default class RoleInRoleCommand extends KaikiCommand {
 
         }
         else {
-            return sendPaginatedMessage(message, [new MessageEmbed({
+            return sendPaginatedMessage(message, [new EmbedBuilder({
                 title: `No users in ${role.name}`,
             })
                 .withErrorColor(message)], {});

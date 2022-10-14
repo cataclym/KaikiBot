@@ -1,4 +1,4 @@
-import { Message, MessageEmbed } from "discord.js";
+import { Message, EmbedBuilder } from "discord.js";
 import images from "../../data/images.json";
 import KaikiArgumentsTypes from "../../lib/Kaiki/KaikiArgumentsTypes";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
@@ -17,7 +17,7 @@ export default class BetflipCommands extends KaikiCommand {
                 id: "number",
                 type: KaikiArgumentsTypes.KaikiMoneyArgument,
                 otherwise: (m) => ({
-                    embeds: [new MessageEmbed()
+                    embeds: [new EmbedBuilder()
                         .setDescription("Please provide an amount to bet!")
                         .withErrorColor(m)],
                 }),
@@ -26,7 +26,7 @@ export default class BetflipCommands extends KaikiCommand {
                 id: "coin",
                 type: (_m, p) => this.coinArgs[p.toLowerCase()],
                 otherwise: (m) => ({
-                    embeds: [new MessageEmbed()
+                    embeds: [new EmbedBuilder()
                         .setDescription("Please select heads or tails!")
                         .withErrorColor(m)],
                 }),
@@ -47,7 +47,7 @@ export default class BetflipCommands extends KaikiCommand {
 
         if (!success) {
             return await message.channel.send({
-                embeds: [new MessageEmbed()
+                embeds: [new EmbedBuilder()
                     .setDescription(`You don't have enough ${this.client.money.currencySymbol}`)
                     .withErrorColor(message)],
             });
@@ -57,7 +57,7 @@ export default class BetflipCommands extends KaikiCommand {
             ? "tails"
             : "heads";
 
-        const emb = new MessageEmbed({
+        const emb = new EmbedBuilder({
             image: { url: images.gambling.coin[coinFlipped] },
         })
             .setTitle(`Flipped ${coinFlipped}!`);

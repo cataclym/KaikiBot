@@ -1,5 +1,5 @@
 import { PrefixSupplier } from "discord-akairo";
-import { Guild, Message, MessageEmbed, Permissions } from "discord.js";
+import { Guild, Message, EmbedBuilder, Permissions } from "discord.js";
 
 import GreetHandler, { JSONToMessageOptions } from "../../lib/GreetHandler";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
@@ -40,12 +40,12 @@ export default class ByeMessageCommand extends KaikiCommand {
         });
 
         const prefix = (this.handler.prefix as PrefixSupplier)(message);
-        const embed = [new MessageEmbed()
+        const embed = [new EmbedBuilder()
             .setDescription(`New bye message has been set!\n\nTest what the message looks like by typing \`${prefix}byetest\``)
             .withOkColor(message)];
 
         if (!db.ByeChannel) {
-            embed.push(new MessageEmbed()
+            embed.push(new EmbedBuilder()
                 .setDescription(`Enable \`goodbye\` messages by typing \`${prefix}goodbye\`.`)
                 .withOkColor(message),
             );

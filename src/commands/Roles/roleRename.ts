@@ -1,4 +1,4 @@
-import { Message, MessageEmbed, Role } from "discord.js";
+import { Message, EmbedBuilder, Role } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
@@ -41,7 +41,7 @@ export default class RoleRenameCommand extends KaikiCommand {
                     throw new Error("Error: Failed to edit role.\n" + e);
                 });
             return message.channel.send({
-                embeds: [new MessageEmbed()
+                embeds: [new EmbedBuilder()
                     .setTitle("Success!")
                     .setDescription(`\`${oldName}\` renamed to ${role}.`)
                     .withOkColor(message)],

@@ -1,6 +1,6 @@
 import { Argument, Command } from "discord-akairo";
 import { Snowflake } from "discord-api-types/globals";
-import { Message, MessageEmbed, Permissions, User } from "discord.js";
+import { Message, EmbedBuilder, Permissions, User } from "discord.js";
 
 export default class UnbanCommand extends Command {
     constructor() {
@@ -16,7 +16,7 @@ export default class UnbanCommand extends Command {
                         const u = await this.client.users.fetch(phrase as Snowflake);
                         return u || null;
                     }),
-                    otherwise: (m: Message) => ({ embeds: [new MessageEmbed({
+                    otherwise: (m: Message) => ({ embeds: [new EmbedBuilder({
                         description: "Can't find this user.",
                     })
                         .withErrorColor(m)] }),
@@ -33,7 +33,7 @@ export default class UnbanCommand extends Command {
         if (bans?.find((u) => u.user.id === user.id)) {
             await message.guild?.members.unban(user);
             return message.channel.send({
-                embeds: [new MessageEmbed({
+                embeds: [new EmbedBuilder({
                     description: `Unbanned ${user.tag}.`,
                 })
                     .withOkColor(message)],
@@ -42,7 +42,7 @@ export default class UnbanCommand extends Command {
 
         else {
             return message.channel.send({
-                embeds: [new MessageEmbed({
+                embeds: [new EmbedBuilder({
                     description: `\`${user.tag}\` is not banned.`,
                 })
                     .withErrorColor(message)],

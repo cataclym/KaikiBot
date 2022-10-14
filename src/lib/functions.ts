@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import chalk from "chalk";
-import { GuildMember, Message, MessageEmbed } from "discord.js";
+import { GuildMember, Message, EmbedBuilder } from "discord.js";
 import logger from "loglevel";
 import Constants from "../struct/Constants";
 import { regexpType } from "./Types/TCustom";
@@ -47,7 +47,7 @@ export async function sendDM(message: Message): Promise<Message | undefined> {
     let attachmentLinks = "";
     logger.info(`message | DM from ${message.author.tag} [${message.author.id}]`);
 
-    const embed = new MessageEmbed({
+    const embed = new EmbedBuilder({
         author: { name: `${message.author.tag} [${message.author.id}]` },
         description: Utility.trim(message.content, 2048),
     })

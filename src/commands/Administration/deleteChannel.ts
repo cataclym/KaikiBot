@@ -1,4 +1,4 @@
-import { Channel, Collection, GuildChannel, Message, MessageEmbed, Permissions, ThreadChannel } from "discord.js";
+import { Channel, Collection, GuildChannel, Message, EmbedBuilder, Permissions, ThreadChannel } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
@@ -31,7 +31,7 @@ export default class DeleteChannelCommand extends KaikiCommand {
         const deletedChannels = await Promise.all(([] as Promise<Channel>[]).concat(...await deleteChannels()));
 
         return m.channel.send({
-            embeds: [new MessageEmbed()
+            embeds: [new EmbedBuilder()
                 .setTitle("Channel(s) deleted")
                 .addField("Deleted:", (await Promise.all(deletedChannels
                     .map(async (c) => {

@@ -1,4 +1,4 @@
-import { Message, MessageEmbed } from "discord.js";
+import { Message, EmbedBuilder } from "discord.js";
 import fetch from "node-fetch";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
@@ -67,7 +67,7 @@ export default class MangaCommand extends KaikiCommand {
                         : started || "N/A";
 
                 return message.channel.send({
-                    embeds: [new MessageEmbed()
+                    embeds: [new EmbedBuilder()
                         .setImage(coverImage.large)
                         .setTitle(title.english && title.romaji
                             ? `${title.english} / ${title.romaji}`
@@ -75,7 +75,7 @@ export default class MangaCommand extends KaikiCommand {
                         .setURL(siteUrl)
                         .setDescription(Utility.stripHtml(Utility.trim(description, 2000)))
                         .withOkColor(message),
-                    new MessageEmbed()
+                    new EmbedBuilder()
                         .addFields([
                             { name: "Chapters", value: String(chapters ?? "N/A"), inline: true },
                             { name: "Release period", value: aired, inline: true },

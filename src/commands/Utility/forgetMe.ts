@@ -1,4 +1,4 @@
-import { InteractionCollector, Message, MessageActionRow, MessageButton, MessageEmbed } from "discord.js";
+import { InteractionCollector, Message, MessageActionRow, MessageButton, EmbedBuilder } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 
@@ -14,7 +14,7 @@ export default class ForgetMeCommand extends KaikiCommand {
     public async exec(message: Message): Promise<void> {
 
         const deleteMsg = await message.channel.send({
-            embeds: [new MessageEmbed()
+            embeds: [new EmbedBuilder()
                 .setDescription("Are you *sure* you want to delete all your entries in the database?")
                 .withOkColor(message)],
             isInteraction: true,
@@ -61,7 +61,7 @@ export default class ForgetMeCommand extends KaikiCommand {
                     });
 
                     message.channel.send({
-                        embeds: [new MessageEmbed()
+                        embeds: [new EmbedBuilder()
                             .setTitle("Deleted data")
                             .setDescription("All data stored about you has been deleted!")
                             .addField("Cleared user-data", userData.Todos.length

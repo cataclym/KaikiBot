@@ -1,5 +1,5 @@
 import { ExcludedStickyRoles, Guilds } from "@prisma/client";
-import { Collection, Message, MessageEmbed, Permissions, Role, Snowflake } from "discord.js";
+import { Collection, Message, EmbedBuilder, Permissions, Role, Snowflake } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 class UncachedObject {
@@ -44,7 +44,7 @@ export default class ExcludeStickyRolesCommand extends KaikiCommand {
             guildDb["ExcludedStickyRoles"] = [];
         }
 
-        const embed = new MessageEmbed()
+        const embed = new EmbedBuilder()
             .setTitle("Excluded sticky-roles")
             .withOkColor(message);
 

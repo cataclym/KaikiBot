@@ -1,4 +1,4 @@
-import { GuildMember, Message, MessageEmbed, Permissions, Role } from "discord.js";
+import { GuildMember, Message, EmbedBuilder, Permissions, Role } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 import { rolePermissionCheck } from "../../lib/Roles";
@@ -17,7 +17,7 @@ export default class RoleAssignCommand extends KaikiCommand {
                     id: "member",
                     type: "member",
                     otherwise: (m: Message) => ({
-                        embeds: [new MessageEmbed({
+                        embeds: [new EmbedBuilder({
                             title: "Can't find this user. Try again.",
                         })
                             .withErrorColor(m)],
@@ -40,7 +40,7 @@ export default class RoleAssignCommand extends KaikiCommand {
                 await member.roles.add(role);
 
                 return message.channel.send({
-                    embeds: [new MessageEmbed({
+                    embeds: [new EmbedBuilder({
                         title: "Success!",
                         description: `Added ${role} to ${member.user}`,
                     })
@@ -49,7 +49,7 @@ export default class RoleAssignCommand extends KaikiCommand {
             }
             else {
                 return message.channel.send({
-                    embeds: [new MessageEmbed({
+                    embeds: [new EmbedBuilder({
                         title: "Error",
                         description: `${member} already has ${role}`,
                     })

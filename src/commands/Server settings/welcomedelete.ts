@@ -1,4 +1,4 @@
-import { Message, MessageEmbed, Permissions } from "discord.js";
+import { Message, EmbedBuilder, Permissions } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
@@ -32,7 +32,7 @@ export default class WelcomeDeleteCommand extends KaikiCommand {
         });
 
         return message.channel.send({
-            embeds: [new MessageEmbed()
+            embeds: [new EmbedBuilder()
                 .setDescription(`Welcome messages will be deleted after ${time} seconds.`)
                 .withOkColor(message)],
         });

@@ -1,4 +1,4 @@
-import { Message, MessageAttachment, MessageEmbed } from "discord.js";
+import { Message, MessageAttachment, EmbedBuilder } from "discord.js";
 import fetch from "node-fetch";
 import { ServerOffline, ServerOnline } from "../../lib/Interfaces/IMinecraftServerPing";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
@@ -31,7 +31,7 @@ export default class mcpingCommand extends KaikiCommand {
 
             const attachment = result?.icon?.length ? new MessageAttachment(Buffer.from(result.icon.slice(result.icon.indexOf(",")), "base64"), "icon.png") : undefined;
 
-            const embed = new MessageEmbed()
+            const embed = new EmbedBuilder()
                 .setTitle("Ping! Server is online")
                 .setDescription(`${result.ip}:${result.port} ${result?.hostname?.length ? "/ " + result?.hostname : ""}`)
                 .addFields([
@@ -67,7 +67,7 @@ export default class mcpingCommand extends KaikiCommand {
 
         else {
             return message.channel.send({
-                embeds: [new MessageEmbed()
+                embeds: [new EmbedBuilder()
                     .setTitle("No ping :< Server is offline or address is incorrect.")
                     .withErrorColor(message)],
             });
