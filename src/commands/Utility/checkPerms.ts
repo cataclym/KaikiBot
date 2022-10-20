@@ -1,8 +1,7 @@
 import { Argument } from "discord-akairo";
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
-import { GuildMember, Message, EmbedBuilder, Role, TextChannel } from "discord.js";
+import { EmbedBuilder, GuildMember, Message, Role, TextChannel } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-
 import Utility from "../../lib/Utility";
 
 export default class CheckPermissionsCommand extends KaikiCommand {
@@ -12,16 +11,18 @@ export default class CheckPermissionsCommand extends KaikiCommand {
             description: "Lists perms for role/member",
             usage: ["", "@user", "@role", "@user #channel"],
             channel: "guild",
-            args: [{
-                id: "input",
-                type: Argument.union("role", "member"),
-                default: (message: Message) => message.member,
-            },
-            {
-                id: "channel",
-                type: "textChannel",
-                default: (message: Message) => message.channel,
-            }],
+            args: [
+                {
+                    id: "input",
+                    type: Argument.union("role", "member"),
+                    default: (message: Message) => message.member,
+                },
+                {
+                    id: "channel",
+                    type: "textChannel",
+                    default: (message: Message) => message.channel,
+                },
+            ],
             subCategory: "Info",
         });
     }

@@ -1,5 +1,5 @@
 import { ExcludedStickyRoles, Guilds } from "@prisma/client";
-import { Collection, Message, EmbedBuilder, Permissions, Role, Snowflake } from "discord.js";
+import { Collection, EmbedBuilder, Message, PermissionsBitField, Role, Snowflake } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 class UncachedObject {
@@ -14,7 +14,7 @@ export default class ExcludeStickyRolesCommand extends KaikiCommand {
     constructor() {
         super("excludestickyroles", {
             aliases: ["excludestickyroles", "estickyroles", "estickyrole", "esrole"],
-            userPermissions: Permissions.FLAGS.MANAGE_GUILD,
+            userPermissions: PermissionsBitField.Flags.ManageGuild,
             channel: "guild",
             description: "Exclude or include a role from stickyroles. Provide no parameter to show a list of excluded roles.\nIf someone who had one or more excluded roles, re-joins this server, they wont get any excluded roles.",
             usage: ["", "@excludedRole @anotherRole"],
@@ -50,15 +50,17 @@ export default class ExcludeStickyRolesCommand extends KaikiCommand {
 
         if (!roles) {
             return message.channel.send({
-                embeds: [embed.setDescription((guildDb?.ExcludedStickyRoles ?? [])
-                    .map(k => message.guild.roles.cache.get(String(k.RoleId)) ?? new UncachedObject(String(k.RoleId)))
-                    .sort((a, b) => {
-                        return a.name < b.name
-                            ? -1
-                            : 1;
-                    })
-                    .join("\n").trim() ?? "No roles excluded")
-                    .withOkColor(message)],
+                embeds: [
+                    embed.setDescription((guildDb?.ExcludedStickyRoles ?? [])
+                        .map(k => message.guild.roles.cache.get(String(k.RoleId)) ?? new UncachedObject(String(k.RoleId)))
+                        .sort((a, b) => {
+                            return a.name < b.name
+                                ? -1
+                                : 1;
+                        })
+                        .join("\n").trim() ?? "No roles excluded")
+                        .withOkColor(message),
+                ],
             });
         }
 
@@ -84,9 +86,14 @@ export default class ExcludeStickyRolesCommand extends KaikiCommand {
                 data: excludedRoles,
                 skipDuplicates: true,
             });
-            embed.addField("Excluded", excludedRoles
-                .map(k => message.guild.channels.cache.get(String(k.RoleId)) ?? String(k.RoleId))
-                .join("\n"));
+            embed.addFields([
+                {
+                    name: "Excluded",
+                    value: excludedRoles
+                        .map(k => message.guild.channels.cache.get(String(k.RoleId)) ?? String(k.RoleId))
+                        .join("\n"),
+                },
+            ]);
         }
 
         if (enabledRoles.length) {
@@ -98,9 +105,14 @@ export default class ExcludeStickyRolesCommand extends KaikiCommand {
                     GuildId: bigIntGuildId,
                 },
             });
-            embed.addField("Un-excluded", enabledRoles
-                .map(k => message.guild.channels.cache.get(String(k)) ?? String(k))
-                .join("\n"));
+            embed.addFields([
+                {
+                    name: "Un-excluded",
+                    value: enabledRoles
+                        .map(k => message.guild.channels.cache.get(String(k)) ?? String(k))
+                        .join("\n"),
+                },
+            ]);
         }
 
         return message.channel.send({

@@ -1,5 +1,5 @@
 import { Argument, Category, PrefixSupplier } from "discord-akairo";
-import { Message, EmbedBuilder } from "discord.js";
+import { EmbedBuilder, Message } from "discord.js";
 
 import images from "../../data/images.json";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
@@ -48,25 +48,32 @@ export default class commandsList extends KaikiCommand {
             [...new Set(filtered.map(value => value.subCategory))]
                 .forEach(cmd => {
                     if (!cmd) return;
-                    emb.addField(cmd, Array.from(filtered.filter(c => c.subCategory === cmd).values())
-                        .sort()
-                        .map(command => `[\`${command.aliases
-                            .sort((a, b) => b.length - a.length
-                                || a.localeCompare(b)).join("`, `")}\`]`)
-                        .join("\n") || "Empty", true);
+                    emb.addFields([
+                        {
+                            name: cmd,
+                            value: Array.from(filtered.filter(c => c.subCategory === cmd).values())
+                                .sort()
+                                .map(command => `[\`${command.aliases
+                                    .sort((a, b) => b.length - a.length
+                                        || a.localeCompare(b)).join("`, `")}\`]`)
+                                .join("\n") || "Empty", inline: true,
+                        },
+                    ]);
                 });
 
             return message.channel.send({
-                embeds: [new EmbedBuilder(emb)
-                    .setTitle(`Commands in ${category.id}`)
-                    .setDescription(category
-                        .filter(cmd => !(cmd.subCategory !== undefined))
-                        .filter(cmd => cmd.aliases.length > 0)
-                        .map(cmd => `[\`${cmd.aliases
-                            .sort((a, b) => b.length - a.length
-                                || a.localeCompare(b)).join("`, `")}\`]`)
-                        .join("\n") || "Empty")
-                    .withOkColor(message)],
+                embeds: [
+                    new EmbedBuilder(emb.data)
+                        .setTitle(`Commands in ${category.id}`)
+                        .setDescription(category
+                            .filter(cmd => !(cmd.subCategory !== undefined))
+                            .filter(cmd => cmd.aliases.length > 0)
+                            .map(cmd => `[\`${cmd.aliases
+                                .sort((a, b) => b.length - a.length
+                                    || a.localeCompare(b)).join("`, `")}\`]`)
+                            .join("\n") || "Empty")
+                        .withOkColor(message),
+                ],
             });
         }
 
@@ -77,14 +84,15 @@ export default class commandsList extends KaikiCommand {
                 author: {
                     name: `${name} v${version}`,
                     url: repository.url,
-                    icon_url: message.author.displayAvatarURL({ dynamic: true }),
+                    iconURL: message.author.displayAvatarURL(),
                 },
                 thumbnail: {
                     url: images.utility.commands.notebook,
                 },
                 footer: {
-                    icon_url: (message.client.users.cache.get("140788173885276160") || (await message.client.users.fetch("140788173885276160", { cache: true })))
-                        .displayAvatarURL({ dynamic: true }),
+                    text: message.author.tag,
+                    iconURL: (message.client.users.cache.get("140788173885276160") || (await message.client.users.fetch("140788173885276160", { cache: true })))
+                        .displayAvatarURL(),
                 },
             })
                 .withOkColor(message);
@@ -92,7 +100,13 @@ export default class commandsList extends KaikiCommand {
             for (const _category of this.handler.categories.values()) {
                 if (["default", "Etc"].includes(_category.id)) continue;
 
-                embed.addField(`${_category.id} [${_category.filter(c => !!c.aliases.length).size}]`, `${Constants.categories[_category.id]}`, true);
+                embed.addFields([
+                    {
+                        name: `${_category.id} [${_category.filter(c => !!c.aliases.length).size}]`,
+                        value: `${Constants.categories[_category.id]}`,
+                        inline: true,
+                    },
+                ]);
             }
 
             return message.channel.send({ embeds: [embed] });

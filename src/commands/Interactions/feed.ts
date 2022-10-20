@@ -11,11 +11,13 @@ export default class Feed extends KaikiCommand {
             description: "When you need to feed someone...?",
             usage: [""],
             typing: true,
-            args: [{
-                id: "mention",
-                type: "member",
-                default: null,
-            }],
+            args: [
+                {
+                    id: "mention",
+                    type: "member",
+                    default: null,
+                },
+            ],
         });
     }
 

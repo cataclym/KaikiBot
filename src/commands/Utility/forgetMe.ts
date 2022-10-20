@@ -1,4 +1,4 @@
-import { InteractionCollector, Message, MessageActionRow, MessageButton, EmbedBuilder } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, EmbedBuilder, InteractionCollector, Message } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 
@@ -14,23 +14,29 @@ export default class ForgetMeCommand extends KaikiCommand {
     public async exec(message: Message): Promise<void> {
 
         const deleteMsg = await message.channel.send({
-            embeds: [new EmbedBuilder()
-                .setDescription("Are you *sure* you want to delete all your entries in the database?")
-                .withOkColor(message)],
+            embeds: [
+                new EmbedBuilder()
+                    .setDescription("Are you *sure* you want to delete all your entries in the database?")
+                    .withOkColor(message),
+            ],
             isInteraction: true,
-            components: [new MessageActionRow({
-                components:
-                    [new MessageButton()
-                        .setCustomId("1")
-                        .setLabel("Yes")
-                        .setEmoji("⚠️")
-                        .setStyle("DANGER"),
-                    new MessageButton()
-                        .setCustomId("2")
-                        .setLabel("No")
-                        .setEmoji("❌")
-                        .setStyle("SECONDARY")],
-            })],
+            components: [
+                new ActionRowBuilder<ButtonBuilder>({
+                    components:
+                        [
+                            new ButtonBuilder()
+                                .setCustomId("1")
+                                .setLabel("Yes")
+                                .setEmoji("⚠️")
+                                .setStyle(4),
+                            new ButtonBuilder()
+                                .setCustomId("2")
+                                .setLabel("No")
+                                .setEmoji("❌")
+                                .setStyle(2),
+                        ],
+                }),
+            ],
         });
 
         const buttonListener = new InteractionCollector(message.client, {
@@ -61,16 +67,25 @@ export default class ForgetMeCommand extends KaikiCommand {
                     });
 
                     message.channel.send({
-                        embeds: [new EmbedBuilder()
-                            .setTitle("Deleted data")
-                            .setDescription("All data stored about you has been deleted!")
-                            .addField("Cleared user-data", userData.Todos.length
-                                ? `${userData.Todos.length + guildData.count} entrie(s) deleted`
-                                : "N/A")
-                            .addField("Cleared money-data", userData.Amount
-                                ? `${userData.Amount} currency deleted`
-                                : "N/A")
-                            .withOkColor(message),
+                        embeds: [
+                            new EmbedBuilder()
+                                .setTitle("Deleted data")
+                                .setDescription("All data stored about you has been deleted!")
+                                .addFields([
+                                    {
+                                        name: "Cleared user-data",
+                                        value: userData.Todos.length
+                                            ? `${userData.Todos.length + guildData.count} entrie(s) deleted`
+                                            : "N/A",
+                                    },
+                                    {
+                                        name: "Cleared money-data",
+                                        value: userData.Amount
+                                            ? `${userData.Amount} currency deleted`
+                                            : "N/A",
+                                    },
+                                ])
+                                .withOkColor(message),
                         ],
                     });
                 }

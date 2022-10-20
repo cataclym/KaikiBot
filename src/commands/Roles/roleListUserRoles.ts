@@ -54,10 +54,12 @@ export default class ListUserRoles extends KaikiCommand {
 
         else {
             return message.channel.send({
-                embeds: [new EmbedBuilder()
-                    .withErrorColor(message)
-                    .setTitle("No user roles")
-                    .setDescription("This guild has not used this feature yet.")],
+                embeds: [
+                    new EmbedBuilder()
+                        .withErrorColor(message)
+                        .setTitle("No user roles")
+                        .setDescription("This guild has not used this feature yet."),
+                ],
             });
         }
     }

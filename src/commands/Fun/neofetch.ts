@@ -1,7 +1,7 @@
 /* eslint-disable no-useless-escape */
-import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
 import { exec } from "child_process";
-import { Message, EmbedBuilder } from "discord.js";
+import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
+import { EmbedBuilder, Message } from "discord.js";
 import logger from "loglevel";
 import { distros } from "../../lib/distros.json";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
@@ -16,16 +16,18 @@ export default class NeofetchCommand extends KaikiCommand {
             usage: ["", "opensuse", "list"],
             cooldown: 2000,
             typing: true,
-            args: [{
-                id: "os",
-                type: distros,
-                default: null,
-            },
-            {
-                id: "list",
-                flag: ["list"],
-                match: "flag",
-            }],
+            args: [
+                {
+                    id: "os",
+                    type: distros,
+                    default: null,
+                },
+                {
+                    id: "list",
+                    flag: ["list"],
+                    match: "flag",
+                },
+            ],
         });
     }
 
@@ -47,7 +49,7 @@ export default class NeofetchCommand extends KaikiCommand {
             for (let i = 150, p = 0; p < distros.length; i = i + 150, p = p + 150) {
                 pages.push(new EmbedBuilder()
                     .setTitle("ascii_distro list")
-                    .setThumbnail(message.author.displayAvatarURL({ dynamic: true }))
+                    .setThumbnail(message.author.displayAvatarURL())
                     .setDescription(await Utility.codeblock(distros.slice(p, i).join(", "), "json"))
                     .withOkColor(message));
             }

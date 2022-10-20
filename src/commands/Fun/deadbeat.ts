@@ -14,17 +14,19 @@ export default class DeadbeatCommand extends KaikiCommand {
             usage: "@dreb",
             cooldown: 8000,
             typing: true,
-            args: [{
-                id: "member",
-                type: "member",
-                default: (message: Message) => message.author,
-            }],
+            args: [
+                {
+                    id: "member",
+                    type: "member",
+                    default: (message: Message) => message.author,
+                },
+            ],
         });
     }
 
     public async exec(message: Message, { member }: { member: User }) {
 
-        const buffer = await Utility.loadImage(member.displayAvatarURL({ format: "jpg", size: 128 }));
+        const buffer = await Utility.loadImage(member.displayAvatarURL({ extension: "jpg", size: 128 }));
 
         const modified = await sharp(buffer)
             .resize({ height: 189, width: 205 })
@@ -33,7 +35,7 @@ export default class DeadbeatCommand extends KaikiCommand {
         const image = sharp(await this.background())
             .composite([{ input: modified, top: 88, left: 570 }]);
 
-        const attachment = new Discord.MessageAttachment(image, "deadBeats.jpg");
+        const attachment = new Discord.AttachmentBuilder(image, { name: "deadBeats.jpg" });
         await message.channel.send({ content: `Deadbeat 👉 ${member}!`, files: [attachment] });
     }
 

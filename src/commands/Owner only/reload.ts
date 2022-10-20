@@ -9,16 +9,18 @@ export default class ReloadCommand extends KaikiCommand {
             aliases: ["re", "reload"],
             description: "Reloads a command..",
             ownerOnly: true,
-            args: [{
-                id: "command",
-                type: Argument.union("command", (m, p) => {
-                    if (!p) return null;
-                    const alias = this.handler.aliases.get(p);
-                    if (!alias) return null;
-                    return this.handler.findCommand(alias);
-                }),
-                otherwise: (msg: Message) => ({ embeds: [KaikiEmbeds.genericArgumentError(msg)] }),
-            }],
+            args: [
+                {
+                    id: "command",
+                    type: Argument.union("command", (m, p) => {
+                        if (!p) return null;
+                        const alias = this.handler.aliases.get(p);
+                        if (!alias) return null;
+                        return this.handler.findCommand(alias);
+                    }),
+                    otherwise: (msg: Message) => ({ embeds: [KaikiEmbeds.genericArgumentError(msg)] }),
+                },
+            ],
         });
     }
 
@@ -26,12 +28,14 @@ export default class ReloadCommand extends KaikiCommand {
 
         command.reload();
         return message.channel.send({
-            embeds: [new EmbedBuilder({
-                title: "Command reloaded",
-                description: command.filepath,
-                footer: { text: `Command: ${command.id}` },
-            })
-                .withOkColor(message)],
+            embeds: [
+                new EmbedBuilder({
+                    title: "Command reloaded",
+                    description: command.filepath,
+                    footer: { text: `Command: ${command.id}` },
+                })
+                    .withOkColor(message),
+            ],
         });
     }
 }

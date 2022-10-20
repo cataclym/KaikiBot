@@ -1,5 +1,5 @@
 import { time } from "@discordjs/builders";
-import { Guild, Message, EmbedBuilder } from "discord.js";
+import { ChannelType, EmbedBuilder, Guild, Message } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 import Constants from "../../struct/Constants";
@@ -23,7 +23,7 @@ export default class ServerInfoCommand extends KaikiCommand {
     public async exec(message: Message, { guild }: { guild: Guild }): Promise<Message> {
 
         const emb = new EmbedBuilder({
-            thumbnail: { url: <string>guild?.iconURL({ format: "png", size: 2048, dynamic: true }) },
+            thumbnail: { url: <string>guild?.iconURL({ extension: "png", size: 2048 }) },
             title: `${guild.name} [${guild.id}]`,
             author: { name: "Server info" },
             fields: [
@@ -38,9 +38,9 @@ export default class ServerInfoCommand extends KaikiCommand {
                 { name: "Emotes", value: String(guild?.emojis.cache.size), inline: true },
                 {
                     name: "Channels",
-                    value: `Text: **${guild?.channels.cache.filter((channel) => channel.type === "GUILD_TEXT").size}**
-Voice: **${guild?.channels.cache.filter((channel) => channel.type === "GUILD_VOICE").size}**
-News: **${guild?.channels.cache.filter((channel) => channel.type === "GUILD_NEWS").size}**`,
+                    value: `Text: **${guild?.channels.cache.filter((channel) => channel.type === ChannelType.GuildText).size}**
+Voice: **${guild?.channels.cache.filter((channel) => channel.type === ChannelType.GuildVoice).size}**
+News: **${guild?.channels.cache.filter((channel) => channel.type === ChannelType.GuildNews).size}**`,
                     inline: true,
                 },
                 {

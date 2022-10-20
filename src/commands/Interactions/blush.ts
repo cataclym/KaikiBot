@@ -11,11 +11,13 @@ export default class Blush extends KaikiCommand {
             description: "O//////O",
             usage: [""],
             typing: true,
-            args: [{
-                id: "mention",
-                type: "member",
-                default: null,
-            }],
+            args: [
+                {
+                    id: "mention",
+                    type: "member",
+                    default: null,
+                },
+            ],
         });
     }
 

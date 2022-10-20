@@ -52,7 +52,7 @@ export default class dadBot extends KaikiCommand {
 
         if (nick.length <= (process.env.DADBOT_NICKNAME_LENGTH || 32)) {
             const user = message.author;
-            const position = message.guild.me?.roles.highest.comparePositionTo(message.member.roles.highest);
+            const position = message.guild.members.me?.roles.highest.comparePositionTo(message.member.roles.highest);
 
             if (user.id !== message.guild?.ownerId && position ? position >= 0 : false) {
                 // Avoids setting nickname on Server owners

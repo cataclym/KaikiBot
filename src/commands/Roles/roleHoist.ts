@@ -1,4 +1,4 @@
-import { Message, EmbedBuilder, Permissions, Role } from "discord.js";
+import { EmbedBuilder, Message, Permissions, PermissionsBitField, Role } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
@@ -8,8 +8,8 @@ export default class RoleHoistCommand extends KaikiCommand {
     constructor() {
         super("rolehoist", {
             aliases: ["rolehoist", "hoistrole", "hoist"],
-            clientPermissions: Permissions.FLAGS.MANAGE_ROLES,
-            userPermissions: Permissions.FLAGS.MANAGE_ROLES,
+            clientPermissions: PermissionsBitField.Flags.ManageRoles,
+            userPermissions: PermissionsBitField.Flags.ManageRoles,
             description: "Hoists or unhoists a role",
             usage: "@gamers",
             channel: "guild",
@@ -30,10 +30,12 @@ export default class RoleHoistCommand extends KaikiCommand {
             await role.setHoist(!role.hoist);
 
             return message.channel.send({
-                embeds: [new EmbedBuilder({
-                    description: `Toggled ${role.name}'s hoist status to ${!role.hoist}.`,
-                })
-                    .withOkColor(message)],
+                embeds: [
+                    new EmbedBuilder({
+                        description: `Toggled ${role.name}'s hoist status to ${!role.hoist}.`,
+                    })
+                        .withOkColor(message),
+                ],
             });
         }
 

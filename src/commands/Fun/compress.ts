@@ -1,4 +1,4 @@
-import { Message, MessageAttachment, EmbedBuilder, User } from "discord.js";
+import { AttachmentBuilder, EmbedBuilder, Message, User } from "discord.js";
 import fetch from "node-fetch";
 import sharp from "sharp";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
@@ -21,16 +21,15 @@ export default class SquishCommand extends KaikiCommand {
 
     public async exec(message: Message, { member }: { member: User }) {
         const avatar = await (await fetch(member.displayAvatarURL({
-            dynamic: true,
             size: 32,
-            format: "jpg",
+            extension: "jpg",
         }))).buffer();
 
         const picture = sharp(avatar)
             .resize(256, 256, { kernel: "nearest" })
             .webp({ quality: 50 });
 
-        const attachment: MessageAttachment = new MessageAttachment(picture, "compressed.jpg");
+        const attachment = new AttachmentBuilder(picture, { name: "compressed.jpg" });
 
         const embed = new EmbedBuilder({
             title: "High quality avatar",

@@ -1,9 +1,9 @@
-import { Message, EmbedBuilder } from "discord.js";
-import { DapiGrabber, DapiSearchType } from "./hentaiService";
+import { EmbedBuilder, Message } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 import Utility from "../../lib/Utility";
+import { DapiGrabber, DapiSearchType } from "./hentaiService";
 
 export default class E621Command extends KaikiCommand {
     constructor() {
@@ -11,12 +11,14 @@ export default class E621Command extends KaikiCommand {
             aliases: ["e621"],
             description: "e621 :hahaa:",
             typing: true,
-            args: [{
-                id: "tags",
-                match: "rest",
-                type: "string",
-                default: null,
-            }],
+            args: [
+                {
+                    id: "tags",
+                    match: "rest",
+                    type: "string",
+                    default: null,
+                },
+            ],
         });
     }
 
@@ -30,7 +32,15 @@ export default class E621Command extends KaikiCommand {
                 .setImage(post.file.url || post.preview.url || post.sample.url || post.sources[0])
                 .withOkColor(message);
 
-            if (post.tags.character.length) emb.addField("Character(s)", post.tags.character.join(", "), true);
+            if (post.tags.character.length) {
+                emb.addFields([
+                    {
+                        name: "Character(s)",
+                        value: post.tags.character.join(", "),
+                        inline: true,
+                    },
+                ]);
+            }
 
             return message.channel.send({ embeds: [emb] });
         }

@@ -1,8 +1,7 @@
-import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
-import { GuildMember, Message, EmbedBuilder, Role } from "discord.js";
-import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-
 import { Argument } from "discord-akairo";
+import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
+import { EmbedBuilder, GuildMember, Message, Role } from "discord.js";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
 
@@ -13,14 +12,16 @@ export default class RoleInRoleCommand extends KaikiCommand {
             description: "Lists all users in role",
             usage: "",
             channel: "guild",
-            args: [{
-                id: "role",
-                type: Argument.union("role", (m, p) => p?.length
-                    ? undefined
-                    : m.member?.roles.highest),
-                match: "content",
-                otherwise: (m) => ({ embeds: [KaikiEmbeds.roleArgumentError(m)] }),
-            }],
+            args: [
+                {
+                    id: "role",
+                    type: Argument.union("role", (m, p) => p?.length
+                        ? undefined
+                        : m.member?.roles.highest),
+                    match: "content",
+                    otherwise: (m) => ({ embeds: [KaikiEmbeds.roleArgumentError(m)] }),
+                },
+            ],
         });
     }
 
@@ -41,17 +42,25 @@ export default class RoleInRoleCommand extends KaikiCommand {
                     emb = new EmbedBuilder()
                         .setTitle(`Users in ${role.name} (${data.length})`)
                         .setAuthor({ name: message.guild!.name })
-                        .addField("•", currentPageUsers
-                            .slice(0, 20)
-                            .map(u => `${u.user} - ${u.user.username}`)
-                            .join("\n"), true)
+                        .addFields({
+                            name: "•",
+                            value: currentPageUsers
+                                .slice(0, 20)
+                                .map(u => `${u.user} - ${u.user.username}`)
+                                .join("\n"),
+                            inline: true,
+                        })
                         .withOkColor(message);
 
                 if (currentPageUsers.length > 20) {
-                    emb.addField("•", currentPageUsers
-                        .slice(20, 40)
-                        .map(u => `${u.user} - ${u.user.username}`)
-                        .join("\n"), true);
+                    emb.addFields({
+                        name: "•",
+                        value: currentPageUsers
+                            .slice(20, 40)
+                            .map(u => `${u.user} - ${u.user.username}`)
+                            .join("\n"),
+                        inline: true,
+                    });
                 }
                 pages.push(emb);
             }
@@ -59,10 +68,12 @@ export default class RoleInRoleCommand extends KaikiCommand {
 
         }
         else {
-            return sendPaginatedMessage(message, [new EmbedBuilder({
-                title: `No users in ${role.name}`,
-            })
-                .withErrorColor(message)], {});
+            return sendPaginatedMessage(message, [
+                new EmbedBuilder({
+                    title: `No users in ${role.name}`,
+                })
+                    .withErrorColor(message),
+            ], {});
         }
     }
 }

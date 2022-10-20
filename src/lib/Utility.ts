@@ -1,6 +1,6 @@
 import chalk from "chalk";
 import { Command, Listener } from "discord-akairo";
-import { ColorResolvable, GuildMember, HexColorString, Message, UserFlagsString } from "discord.js";
+import { ActivityType, ChannelType, ColorResolvable, GuildMember, HexColorString, Message } from "discord.js";
 import fetch from "node-fetch";
 import { hexColorTable } from "./Color";
 import { TKaikiColor } from "./Types/TColor";
@@ -29,23 +29,6 @@ export default class Utility {
     static errorColor: ColorResolvable = hexColorTable["red"];
 
     static okColor: ColorResolvable = "#00ff00";
-
-    static flags: { [index in UserFlagsString]: string } = {
-        DISCORD_EMPLOYEE: "Discord Employee 👨‍💼",
-        PARTNERED_SERVER_OWNER: "Discord Partner ❤️",
-        HYPESQUAD_EVENTS: "HypeSquad Events 🎊",
-        BUGHUNTER_LEVEL_1: "Bug Hunter (Level 1) 🐛",
-        BUGHUNTER_LEVEL_2: "Bug Hunter (Level 2) 🐛",
-        HOUSE_BRAVERY: "House of Bravery 🏠",
-        HOUSE_BRILLIANCE: "House of Brilliance 🏠",
-        HOUSE_BALANCE: "House of Balance 🏠",
-        EARLY_SUPPORTER: "Early Supporter 👍",
-        TEAM_USER: "Team User 🏁",
-        VERIFIED_BOT: "Verified Bot ☑️",
-        EARLY_VERIFIED_BOT_DEVELOPER: "Early Verified Developer ✅",
-        DISCORD_CERTIFIED_MODERATOR: "Certified Moderator",
-        BOT_HTTP_INTERACTIONS: "Bot interactions",
-    };
 
     static trim(str: string, max: number): string {
         return (str.length > max) ? `${str.slice(0, max - 3)}...` : str;
@@ -109,7 +92,7 @@ export default class Utility {
         logger: (...msg: any[]) => void, command?: Command, extra = ""): Promise<void> {
 
         logger(`${chalk.blueBright(listener.id)} | ${chalk.blueBright(Date.now() - message.createdTimestamp)}ms
-${message.channel.type !== "DM"
+${message.channel.type !== ChannelType.DM
         ? `Guild: ${chalk.blueBright(message.guild?.name ?? "N/A")} [${chalk.blueBright(message.guild?.id ?? "N/A")}]\nChannel: #${chalk.blueBright(message.channel.name)} [${chalk.blueBright(message.channel.id)}]`
         : `DMChannel: [${chalk.blueBright(message.author.dmChannel?.id)}]`}
 User: ${chalk.blueBright(message.author.username)} [${chalk.blueBright(message.author.id)}]
@@ -190,7 +173,7 @@ Executed ${chalk.blueBright(command?.id ?? "N/A")} | "${chalk.yellow(message.con
             return { name, type, state, emoji, assets };
         });
 
-        const presence = activities?.find(psnc => psnc.type !== "CUSTOM") || activities?.shift();
+        const presence = activities?.find(psnc => psnc.type !== ActivityType.Custom) || activities?.shift();
 
         if (!activities || !presence) {
             return null;
@@ -200,7 +183,7 @@ Executed ${chalk.blueBright(command?.id ?? "N/A")} | "${chalk.yellow(message.con
             const image = presence.assets?.largeImageURL() || presence.assets?.smallImageURL();
 
             return {
-                name: `${presence.type !== "CUSTOM" ? presence.type.toLocaleLowerCase() : presence.emoji || ""} ${presence.name} - ${presence.state}`,
+                name: `${presence.type !== ActivityType.Custom ? String(presence.type).toLocaleLowerCase() : presence.emoji || ""} ${presence.name} - ${presence.state}`,
                 value: `${presence.assets.largeText}\n${presence.assets.smallText}`,
                 image: image,
             };
@@ -208,7 +191,7 @@ Executed ${chalk.blueBright(command?.id ?? "N/A")} | "${chalk.yellow(message.con
 
         else {
             return {
-                name: `${presence.type !== "CUSTOM" ? presence.type.toLocaleLowerCase() : presence.emoji || ""} ${presence.name}`,
+                name: `${presence.type !== ActivityType.Custom ? String(presence.type).toLocaleLowerCase() : presence.emoji || ""} ${presence.name}`,
                 value: presence.state || "N/A",
                 image: null,
             };

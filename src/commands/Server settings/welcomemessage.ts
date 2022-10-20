@@ -1,5 +1,5 @@
 import { PrefixSupplier } from "discord-akairo";
-import { Guild, Message, EmbedBuilder, Permissions } from "discord.js";
+import { EmbedBuilder, Guild, Message, Permissions, PermissionsBitField } from "discord.js";
 
 import GreetHandler, { JSONToMessageOptions } from "../../lib/GreetHandler";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
@@ -9,25 +9,29 @@ export default class WelcomeMessageCommand extends KaikiCommand {
         super("welcomemessage", {
             aliases: ["welcomemessage", "welcomemsg"],
             description: "Set message to display when someone joins the guild. Provide either text, or valid JSON from the [embed creator](https://embed.kaikibot.xyz)",
-            userPermissions: Permissions.FLAGS.MANAGE_GUILD,
+            userPermissions: PermissionsBitField.Flags.ManageGuild,
             channel: "guild",
-            args: [{
-                id: "msg",
-                type: (message, phrase) => {
-                    try {
-                        return JSON.parse(message.content.substring(message.content.indexOf(phrase)));
-                    }
-                    catch {
-                        return undefined;
-                    }
+            args: [
+                {
+                    id: "msg",
+                    type: (message, phrase) => {
+                        try {
+                            return JSON.parse(message.content.substring(message.content.indexOf(phrase)));
+                        }
+                        catch {
+                            return undefined;
+                        }
+                    },
+                    otherwise: (m) => ({
+                        embeds: [
+                            new EmbedBuilder()
+                                .setTitle("Error")
+                                .setDescription("Please provide valid json")
+                                .withErrorColor(m),
+                        ],
+                    }),
                 },
-                otherwise: (m) => ({
-                    embeds: [new EmbedBuilder()
-                        .setTitle("Error")
-                        .setDescription("Please provide valid json")
-                        .withErrorColor(m)],
-                }),
-            }],
+            ],
             subCategory: "Welcome",
         });
     }
@@ -45,9 +49,11 @@ export default class WelcomeMessageCommand extends KaikiCommand {
         });
 
         const prefix = (this.handler.prefix as PrefixSupplier)(message);
-        const embeds = [new EmbedBuilder()
-            .setDescription(`New welcome message has been set!\n\nTest what the message looks like by typing \`${prefix}welcometest\``)
-            .withOkColor(message)];
+        const embeds = [
+            new EmbedBuilder()
+                .setDescription(`New welcome message has been set!\n\nTest what the message looks like by typing \`${prefix}welcometest\``)
+                .withOkColor(message),
+        ];
 
         if (!db.WelcomeChannel) {
             embeds.push(new EmbedBuilder()

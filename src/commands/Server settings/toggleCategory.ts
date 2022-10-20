@@ -1,30 +1,32 @@
 import { Category, Command } from "discord-akairo";
-import { Guild, Message, EmbedBuilder } from "discord.js";
+import { EmbedBuilder, Guild, Message, PermissionsBitField } from "discord.js";
+import { blockedCategories } from "../../lib/enums/blockedCategories";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
-import { blockedCategories } from "../../lib/enums/blockedCategories";
 
 export default class ToggleCategoryCommand extends KaikiCommand {
     constructor() {
         super("togglecategory", {
             aliases: ["togglecategory", "tc"],
-            userPermissions: "ADMINISTRATOR",
+            userPermissions: PermissionsBitField.Flags.Administrator,
             channel: "guild",
             description: "Toggles a category",
             usage: "Anime",
-            args: [{
-                id: "category",
-                type: (_, phrase) => {
-                    return this.handler.categories.find((__, k) => {
-                        k = k.toLowerCase();
-                        return phrase
-                            .toLowerCase()
-                            .startsWith(k.slice(0, Math.max(phrase.length - 1, 1)));
-                    });
+            args: [
+                {
+                    id: "category",
+                    type: (_, phrase) => {
+                        return this.handler.categories.find((__, k) => {
+                            k = k.toLowerCase();
+                            return phrase
+                                .toLowerCase()
+                                .startsWith(k.slice(0, Math.max(phrase.length - 1, 1)));
+                        });
+                    },
+                    otherwise: (msg: Message) => ({ embeds: [KaikiEmbeds.genericArgumentError(msg)] }),
                 },
-                otherwise: (msg: Message) => ({ embeds: [KaikiEmbeds.genericArgumentError(msg)] }),
-            }],
+            ],
         });
     }
 
@@ -79,9 +81,11 @@ export default class ToggleCategoryCommand extends KaikiCommand {
             .setDescription(`${category.id} has been ${exists ? "enabled" : "disabled"}.`);
 
         return message.channel.send({
-            embeds: [exists
-                ? embed.withOkColor(message)
-                : embed.withErrorColor(message)],
+            embeds: [
+                exists
+                    ? embed.withOkColor(message)
+                    : embed.withErrorColor(message),
+            ],
         });
     }
 }

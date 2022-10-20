@@ -1,4 +1,4 @@
-import { Guild, Message, EmbedBuilder } from "discord.js";
+import { EmbedBuilder, Guild, Message, PermissionsBitField } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
@@ -6,13 +6,15 @@ import KaikiEmbeds from "../../lib/KaikiEmbeds";
 export default class PrefixConfigCommand extends KaikiCommand {
     constructor() {
         super("config-prefix", {
-            userPermissions: ["ADMINISTRATOR"],
+            userPermissions: PermissionsBitField.Flags.Administrator,
             channel: "guild",
-            args: [{
-                id: "value",
-                type: "string",
-                otherwise: (m: Message) => ({ embeds: [KaikiEmbeds.genericArgumentError(m)] }),
-            }],
+            args: [
+                {
+                    id: "value",
+                    type: "string",
+                    otherwise: (m: Message) => ({ embeds: [KaikiEmbeds.genericArgumentError(m)] }),
+                },
+            ],
         });
     }
 
@@ -24,12 +26,14 @@ export default class PrefixConfigCommand extends KaikiCommand {
         await message.client.guildsDb.set(guildID, "Prefix", value);
 
         return message.channel.send({
-            embeds: [new EmbedBuilder({
-                title: "Prefix changed!",
-                description: `Prefix has been set to \`${value}\` !`,
-                footer: { text: `Old prefix: \`${oldPrefix}\`` },
-            })
-                .withOkColor(message)],
+            embeds: [
+                new EmbedBuilder({
+                    title: "Prefix changed!",
+                    description: `Prefix has been set to \`${value}\` !`,
+                    footer: { text: `Old prefix: \`${oldPrefix}\`` },
+                })
+                    .withOkColor(message),
+            ],
         });
     }
 }

@@ -14,20 +14,24 @@ export default class award extends KaikiCommand {
                     id: "amount",
                     type: KaikiArgumentsTypes.KaikiMoneyArgument,
                     otherwise: (m: Message) => ({
-                        embeds: [new EmbedBuilder({
-                            title: "Invalid amount. It must be a number",
-                        })
-                            .withErrorColor(m)],
+                        embeds: [
+                            new EmbedBuilder({
+                                title: "Invalid amount. It must be a number",
+                            })
+                                .withErrorColor(m),
+                        ],
                     }),
                 },
                 {
                     id: "user",
                     type: "user",
                     otherwise: (m: Message) => ({
-                        embeds: [new EmbedBuilder({
-                            title: "Can't find this user. Try again.",
-                        })
-                            .withErrorColor(m)],
+                        embeds: [
+                            new EmbedBuilder({
+                                title: "Can't find this user. Try again.",
+                            })
+                                .withErrorColor(m),
+                        ],
                     }),
                 },
             ],
@@ -38,10 +42,12 @@ export default class award extends KaikiCommand {
         const newAmount = await this.client.money.Add(user.id, amount, "Awarded by bot owner");
         const bInt = BigInt(amount);
         await msg.channel.send({
-            embeds: [new EmbedBuilder()
-                .setDescription(`You've awarded **${bInt}** ${this.client.money.currencyName} ${this.client.money.currencySymbol} to ${user.username}.
+            embeds: [
+                new EmbedBuilder()
+                    .setDescription(`You've awarded **${bInt}** ${this.client.money.currencyName} ${this.client.money.currencySymbol} to ${user.username}.
 They now have **${newAmount}** ${this.client.money.currencyName} ${this.client.money.currencySymbol}`)
-                .withOkColor(msg)],
+                    .withOkColor(msg),
+            ],
         });
     }
 }

@@ -10,7 +10,7 @@ export default class BlockModulesInhibitor extends KaikiInhibitor {
         });
     }
 
-    async exec(message: Message, command: Command): Promise<boolean> {
+    public async exec(message: Message, command: Command): Promise<boolean> {
 
         if (message.guild) {
 

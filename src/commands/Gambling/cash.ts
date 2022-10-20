@@ -20,9 +20,11 @@ export default class cash extends KaikiCommand {
     public async exec(msg: Message, { user }: { user: User }): Promise<void> {
         const moneh = await this.client.money.Get(user.id);
         await msg.channel.send({
-            embeds: [new EmbedBuilder()
-                .setDescription(`${user.username} has **${moneh}** ${this.client.money.currencyName} ${this.client.money.currencySymbol}`)
-                .withOkColor(msg)],
+            embeds: [
+                new EmbedBuilder()
+                    .setDescription(`${user.username} has **${moneh}** ${this.client.money.currencyName} ${this.client.money.currencySymbol}`)
+                    .withOkColor(msg),
+            ],
         });
     }
 }

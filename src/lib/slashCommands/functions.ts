@@ -1,70 +1,61 @@
-import { CommandInteraction, GuildMemberRoleManager, EmbedBuilder, Snowflake } from "discord.js";
+import { AkairoMessage } from "discord-akairo";
+import { EmbedBuilder, Message } from "discord.js";
+import KaikiAkairoClient from "../Kaiki/KaikiAkairoClient";
 import KaikiEmbeds from "../KaikiEmbeds";
 
-export async function ExcludeSlashCommand(interaction: CommandInteraction): Promise<void> {
-
-    if (!interaction.channel?.isText() || !interaction.guild) return interaction.deferReply({ ephemeral: true });
-
-    if (!interaction.guild!.isDadBotEnabled()) {
-        return interaction.reply({
-            ephemeral: true,
-            embeds: [new EmbedBuilder()
-                .setTitle("Dadbot is not enabled")
-                .withErrorColor(interaction.guild)],
-        });
+export function dadbotCheck(message: AkairoMessage | Message) {
+    if (!message.guild?.isDadBotEnabled()) {
+        return false;
     }
+}
 
-    const db = await interaction.client.db.getOrCreateGuild(BigInt(interaction.guildId as Snowflake));
-    if (!db) return;
-    const roleId = db.ExcludeRole;
+async function getOrCreateDadbotRole(message: AkairoMessage<"cached"> | Message<true>, client: KaikiAkairoClient) {
+    const db = await client.db.getOrCreateGuild(message.guildId);
 
-    let excludedRole = interaction.guild?.roles.cache.get(String(roleId));
+    const embeds = [];
+    return message.guild?.roles.cache.get(String(db.ExcludeRole));
+}
 
-    let created = false;
+export async function excludeCommand(message: Message<true> | AkairoMessage<"cached">, client: KaikiAkairoClient) {
+    const embeds = [];
+    let excludedRole = await getOrCreateDadbotRole(message, client);
 
-    if (!interaction.guild?.roles.cache.some(r => r.name === excludedRole?.name)) {
-        excludedRole = await interaction.guild?.roles.create({
+    if (!excludedRole) {
+        excludedRole = await message.guild?.roles.create({
             name: process.env.DADBOT_DEFAULT_ROLENAME,
-            reason: "Role didn't exist yet.",
+            reason: "Initiate default dad-bot exclusion role.",
         });
 
-        await interaction.reply({
-            ephemeral: true, embeds: [new EmbedBuilder({
-                title: "Error!",
-                description: `A role with name \`${process.env.DADBOT_DEFAULT_ROLENAME}\` was not found in guild. Creating... `,
-                footer: { text: "Beep boop..." },
-            })
-                .withErrorColor(interaction.guild)],
+        await this.client.db.orm.guilds.update({
+            where: {
+                Id: BigInt(message.guildId),
+            },
+            data: {
+                ExcludeRole: BigInt(excludedRole?.id),
+            },
         });
-        created = true;
+
+        await this.client.guildsDb.set(message.guildId, "ExcludeRole", excludedRole.id);
+
+        embeds.push(new EmbedBuilder({
+            title: "Creating dad-bot role!",
+            description: "There doesn't seem to be a default dad-bot role in this server. Creating one...",
+            footer: { text: "Beep boop..." },
+        })
+            .withErrorColor(message.guild));
     }
 
-    if (interaction.member?.roles instanceof GuildMemberRoleManager && !interaction.member?.roles.cache.find((r) => r === excludedRole)
-        && excludedRole) {
-        await interaction.member?.roles.add(excludedRole);
-        created
-            ? await interaction.webhook.send({
-                ephemeral: true, embeds: [KaikiEmbeds.addedRoleEmbed(process.env.DADBOT_DEFAULT_ROLENAME!)
-                    .withOkColor(interaction.guild)],
-            })
-            : await interaction.reply({
-                ephemeral: true, embeds: [KaikiEmbeds.addedRoleEmbed(process.env.DADBOT_DEFAULT_ROLENAME!)
-                    .withOkColor(interaction.guild)],
-            });
-        return;
+    if (!message.member?.hasExcludedRole()) {
+        await message.member?.roles.add(excludedRole);
+        embeds.push(KaikiEmbeds.addedRoleEmbed(excludedRole.name)
+            .withOkColor(message.guild));
+        return message.reply({ embeds: embeds });
     }
 
-    if (interaction.member?.roles instanceof GuildMemberRoleManager && interaction.member?.roles.cache.find((r) => r === excludedRole) && excludedRole) {
-        await interaction.member?.roles.remove(excludedRole);
-        created
-            ? await interaction.webhook.send({
-                ephemeral: true, embeds: [KaikiEmbeds.removedRoleEmbed(process.env.DADBOT_DEFAULT_ROLENAME!)
-                    .withOkColor(interaction.guild)],
-            })
-            : await interaction.reply({
-                ephemeral: true, embeds: [KaikiEmbeds.removedRoleEmbed(process.env.DADBOT_DEFAULT_ROLENAME!)
-                    .withOkColor(interaction.guild)],
-            });
-        return;
+    else {
+        await message.member.roles.remove(excludedRole);
+        embeds.push(KaikiEmbeds.removedRoleEmbed(excludedRole.name)
+            .withOkColor(message.guild));
+        return message.reply({ embeds: embeds });
     }
 }

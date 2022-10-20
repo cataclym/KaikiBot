@@ -20,10 +20,12 @@ export default class RemoveEmoteReactCommand extends KaikiCommand {
 
         if (!db.length) {
             return message.channel.send({
-                embeds: [new EmbedBuilder()
-                    .setTitle("No triggers")
-                    .setDescription(`Add triggers with ${(this.handler.prefix as PrefixSupplier)(message)}aer`)
-                    .withErrorColor(message)],
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle("No triggers")
+                        .setDescription(`Add triggers with ${(this.handler.prefix as PrefixSupplier)(message)}aer`)
+                        .withErrorColor(message),
+                ],
             });
         }
 

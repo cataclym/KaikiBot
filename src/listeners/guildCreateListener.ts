@@ -11,7 +11,7 @@ export default class GuildCreateListener extends KaikiListener {
     }
 
     public async exec(guild: Guild) {
-        logger.info(`\nBot was added to ${guild.name}!! ${guild.memberCount} members!\n`);
+        logger.info(`\nBot was added to ${guild.name}!! ${guild.members.cache.size} members!\n`);
         await this.client.anniversaryService.checkBirthdayOnAdd(guild);
     }
 }

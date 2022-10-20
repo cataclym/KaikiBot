@@ -1,4 +1,4 @@
-import { GuildTextBasedChannel, Message, EmbedBuilder, Permissions } from "discord.js";
+import { EmbedBuilder, GuildTextBasedChannel, Message, Permissions, PermissionsBitField } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 
@@ -6,14 +6,16 @@ export default class WelcomeToggleCommand extends KaikiCommand {
     constructor() {
         super("welcometoggle", {
             aliases: ["welcometoggle", "welcome"],
-            userPermissions: Permissions.FLAGS.MANAGE_GUILD,
+            userPermissions: PermissionsBitField.Flags.ManageGuild,
             channel: "guild",
             description: "Toggles welcome messages. Bot defaults to current channel if no channel is provided.",
             usage: ["", "#welcome-channel"],
-            args: [{
-                id: "channel",
-                type: "textChannel",
-            }],
+            args: [
+                {
+                    id: "channel",
+                    type: "textChannel",
+                },
+            ],
             subCategory: "Welcome",
         });
     }

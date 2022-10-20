@@ -1,9 +1,9 @@
-import { Message, EmbedBuilder } from "discord.js";
+import { EmbedBuilder, Message } from "discord.js";
 import fetch from "node-fetch";
-import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 import { handleError, handleResponse, mangaQuery } from "../../lib/APIs/AnilistGraphQL";
 import { IMangaRes } from "../../lib/Interfaces/IMangaRes";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 import Utility from "../../lib/Utility";
 
@@ -13,16 +13,18 @@ export default class MangaCommand extends KaikiCommand {
             aliases: ["manga"],
             description: "Shows the first result of a query to Anilist",
             usage: "Tsukimonogatari",
-            args: [{
-                id: "manga",
-                type: "string",
-                match: "content",
-                otherwise: (m) => ({ embeds: [KaikiEmbeds.genericArgumentError(m)] }),
-            }],
+            args: [
+                {
+                    id: "manga",
+                    type: "string",
+                    match: "content",
+                    otherwise: (m) => ({ embeds: [KaikiEmbeds.genericArgumentError(m)] }),
+                },
+            ],
         });
     }
 
-    public async exec(message: Message, { manga }: { manga: string }): Promise<Message | void> {
+    public async exec(message: Message<true>, { manga }: { manga: string }): Promise<Message | void> {
 
         const url = "https://graphql.anilist.co",
             options = {
@@ -44,7 +46,6 @@ export default class MangaCommand extends KaikiCommand {
 
         return await fetch(url, options).then(handleResponse)
             .then((response: IMangaRes) => {
-
                 const {
                     coverImage,
                     title,
@@ -67,22 +68,24 @@ export default class MangaCommand extends KaikiCommand {
                         : started || "N/A";
 
                 return message.channel.send({
-                    embeds: [new EmbedBuilder()
-                        .setImage(coverImage.large)
-                        .setTitle(title.english && title.romaji
-                            ? `${title.english} / ${title.romaji}`
-                            : title.english || title.romaji)
-                        .setURL(siteUrl)
-                        .setDescription(Utility.stripHtml(Utility.trim(description, 2000)))
-                        .withOkColor(message),
-                    new EmbedBuilder()
-                        .addFields([
-                            { name: "Chapters", value: String(chapters ?? "N/A"), inline: true },
-                            { name: "Release period", value: aired, inline: true },
-                            { name: "Status", value: status, inline: true },
-                            { name: "Genres", value: genres.join(", "), inline: false },
-                        ])
-                        .withOkColor(message)],
+                    embeds: [
+                        new EmbedBuilder()
+                            .setImage(coverImage.large)
+                            .setTitle(title.english && title.romaji
+                                ? `${title.english} / ${title.romaji}`
+                                : title.english || title.romaji)
+                            .setURL(siteUrl)
+                            .setDescription(Utility.stripHtml(Utility.trim(description, 2000)))
+                            .withOkColor(message),
+                        new EmbedBuilder()
+                            .addFields([
+                                { name: "Chapters", value: String(chapters ?? "N/A"), inline: true },
+                                { name: "Release period", value: aired, inline: true },
+                                { name: "Status", value: status, inline: true },
+                                { name: "Genres", value: genres.join(", "), inline: false },
+                            ])
+                            .withOkColor(message),
+                    ],
                 });
             })
             .catch(handleError);

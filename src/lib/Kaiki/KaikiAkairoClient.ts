@@ -1,7 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import chalk from "chalk";
 import { AkairoClient, CommandHandler, InhibitorHandler, ListenerHandler } from "discord-akairo";
-import { ClientApplication, GatewayIntentBits, Partials, User } from "discord.js";
+import { ClientApplication, ClientUser, GatewayIntentBits, Guild, Partials, User } from "discord.js";
 import logger from "loglevel";
 import { Pool } from "mysql2/promise";
 import { join } from "path";
@@ -16,9 +16,21 @@ import Utility from "../Utility";
 import KaikiCommandHandler from "./KaikiCommandHandler";
 
 export default class KaikiAkairoClient<Ready extends boolean = boolean> extends AkairoClient {
+
+    // The following was added to avoid errors with discord.js v14.x -->
     get readyAt(): Date {
-        return super.readyAt!;
+        return super.readyAt || new Date();
     }
+
+    public readyTimestamp: number;
+    token: string;
+
+    get uptime(): number {
+        return super.uptime || 0;
+    }
+
+    user: ClientUser;
+    // <--
 
     public anniversaryService: AnniversaryRolesService;
     public application: ClientApplication;
@@ -53,6 +65,7 @@ export default class KaikiAkairoClient<Ready extends boolean = boolean> extends 
                 GatewayIntentBits.GuildPresences,
                 GatewayIntentBits.GuildWebhooks,
                 GatewayIntentBits.Guilds,
+                GatewayIntentBits.MessageContent,
             ],
             partials: [Partials.Reaction, Partials.Channel],
             shards: "auto",
@@ -72,12 +85,13 @@ export default class KaikiAkairoClient<Ready extends boolean = boolean> extends 
             directory: join(__dirname, "../../commands"),
             fetchMembers: true,
             handleEdits: false,
-            prefix: message => {
-                if (message.guild) {
-                    return this.guildsDb.get(message.guild.id, "Prefix", process.env.PREFIX);
+            prefix: ({ guild }: { guild: Guild | null }) => {
+                if (!guild) {
+                    return String(process.env.PREFIX);
                 }
-                return String(process.env.PREFIX);
+                return String(this.guildsDb.get(guild.id, "Prefix", process.env.PREFIX));
             },
+            autoRegisterSlashCommands: true,
         });
 
         this.listenerHandler = new ListenerHandler(this, { directory: join(__dirname, "../../listeners") });
@@ -88,9 +102,9 @@ export default class KaikiAkairoClient<Ready extends boolean = boolean> extends 
         this.commandHandler.useListenerHandler(this.listenerHandler);
         this.commandHandler.useInhibitorHandler(this.inhibitorHandler);
 
-        this.inhibitorHandler.loadAll();
-        this.listenerHandler.loadAll();
-        this.commandHandler.loadAll();
+        void this.inhibitorHandler.loadAll();
+        void this.listenerHandler.loadAll();
+        void this.commandHandler.loadAll();
     }
 
     private async dailyResetTimer(client: KaikiAkairoClient): Promise<void> {

@@ -11,11 +11,13 @@ export default class Bite extends KaikiCommand {
             description: "Bite someone >:)",
             usage: [""],
             typing: true,
-            args: [{
-                id: "mention",
-                type: "member",
-                default: null,
-            }],
+            args: [
+                {
+                    id: "mention",
+                    type: "member",
+                    default: null,
+                },
+            ],
         });
     }
 

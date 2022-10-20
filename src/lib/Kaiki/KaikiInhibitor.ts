@@ -6,9 +6,12 @@ import KaikiCommand from "./KaikiCommand";
 
 export default class KaikiInhibitor extends Inhibitor {
     client: KaikiAkairoClient;
-    exec: (message: Message | AkairoMessage, command?: KaikiCommand) => SyncOrAsync<boolean>;
 
     constructor(id: string, options?: InhibitorOptions) {
         super(id, options);
+    }
+
+    exec(message: Message | AkairoMessage, command: KaikiCommand): SyncOrAsync<boolean> {
+        throw new Error("Method not implemented.");
     }
 }

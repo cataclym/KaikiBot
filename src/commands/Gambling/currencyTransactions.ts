@@ -22,7 +22,8 @@ export default class CurrencyTransactionsCommand extends KaikiCommand {
                     type: "user",
                     default: (m: Message) => m.author,
                     unordered: true,
-                }],
+                },
+            ],
         });
     }
 

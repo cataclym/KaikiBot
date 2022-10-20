@@ -1,5 +1,5 @@
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
-import { Message, EmbedBuilder, User } from "discord.js";
+import { EmbedBuilder, Message, User } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 
@@ -12,7 +12,7 @@ export default class NamesCommand extends KaikiCommand {
         });
     }
 
-    * args(): unknown {
+    * args(): Generator<{ index: 0; type: "user" } | { type: (message: Message, phrase: string) => Promise<boolean> }, { method: any; unionUser: any }> {
         const method = yield {
             // TODO: figure out type of phrase
             type: async (message: Message, phrase: string) => {
@@ -29,7 +29,7 @@ export default class NamesCommand extends KaikiCommand {
 
     private static baseEmbed = (message: Message, unionUser: User) => new EmbedBuilder()
         .setTitle(`${unionUser.username}'s past names`)
-        .setThumbnail(unionUser.displayAvatarURL({ dynamic: true }))
+        .setThumbnail(unionUser.displayAvatarURL())
         .withOkColor(message);
 
     public async exec(message: Message, {
@@ -60,12 +60,14 @@ export default class NamesCommand extends KaikiCommand {
                 });
             }
             return message.channel.send({
-                embeds: [new EmbedBuilder()
-                    .setDescription(`Deleted all of <@${message.author.id}>'s nicknames from ${message.inGuild() ? "this server" : "all servers"}!.\nWell done, you made daddy forget.`)
-                    .setFooter({
-                        text: `Deleted ${deleted.count} entries.`,
-                    })
-                    .withOkColor(message)],
+                embeds: [
+                    new EmbedBuilder()
+                        .setDescription(`Deleted all of <@${message.author.id}>'s nicknames from ${message.inGuild() ? "this server" : "all servers"}!.\nWell done, you made daddy forget.`)
+                        .setFooter({
+                            text: `Deleted ${deleted.count} entries.`,
+                        })
+                        .withOkColor(message),
+                ],
             });
         }
 

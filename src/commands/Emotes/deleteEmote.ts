@@ -1,4 +1,4 @@
-import { Collection, GuildEmoji, Message, EmbedBuilder, Permissions } from "discord.js";
+import { Collection, EmbedBuilder, GuildEmoji, Message, Permissions, PermissionsBitField } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
@@ -13,16 +13,18 @@ export default class DeleteEmoteCommand extends KaikiCommand {
             aliases: ["deleteemote", "de"],
             description: "Deletes one or multiple emotes/emoji. Multiple emotes take longer, to avoid ratelimits. Keep a space between all emotes you wish to delete.",
             usage: "<:NadekoSip:>",
-            clientPermissions: Permissions.FLAGS.MANAGE_EMOJIS_AND_STICKERS,
-            userPermissions: Permissions.FLAGS.MANAGE_EMOJIS_AND_STICKERS,
+            clientPermissions: PermissionsBitField.Flags.ManageEmojisAndStickers,
+            userPermissions: PermissionsBitField.Flags.ManageEmojisAndStickers,
             channel: "guild",
             typing: true,
-            args: [{
-                id: "emotes",
-                match: "separate",
-                type: "emojis",
-                otherwise: (msg: Message) => ({ embeds: [KaikiEmbeds.genericArgumentError(msg)] }),
-            }],
+            args: [
+                {
+                    id: "emotes",
+                    match: "separate",
+                    type: "emojis",
+                    otherwise: (msg: Message) => ({ embeds: [KaikiEmbeds.genericArgumentError(msg)] }),
+                },
+            ],
         });
     }
 
@@ -42,30 +44,36 @@ export default class DeleteEmoteCommand extends KaikiCommand {
 
                     if (!deleted) {
                         return message.channel.send({
-                            embeds: [new EmbedBuilder({
-                                title: "Error occurred",
-                                description: "Some or all emotes could not be deleted.",
-                            })
-                                .withErrorColor(message)],
+                            embeds: [
+                                new EmbedBuilder({
+                                    title: "Error occurred",
+                                    description: "Some or all emotes could not be deleted.",
+                                })
+                                    .withErrorColor(message),
+                            ],
                         });
                     }
                 }
                 else {
                     return message.channel.send({
-                        embeds: [new EmbedBuilder({
-                            title: "Error occurred",
-                            description: "Not valid emote(s).",
-                        })
-                            .withErrorColor(message)],
+                        embeds: [
+                            new EmbedBuilder({
+                                title: "Error occurred",
+                                description: "Not valid emote(s).",
+                            })
+                                .withErrorColor(message),
+                        ],
                     });
                 }
             }
 
             return message.channel.send({
-                embeds: [new EmbedBuilder()
-                    .setTitle("Success!")
-                    .setDescription(`Deleted:\n${Utility.trim(emotes.map((es) => es.map((e) => e)).join("\n"), 2048)}`)
-                    .withOkColor(message)],
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle("Success!")
+                        .setDescription(`Deleted:\n${Utility.trim(emotes.map((es) => es.map((e) => e)).join("\n"), 2048)}`)
+                        .withOkColor(message),
+                ],
             });
         })();
     }

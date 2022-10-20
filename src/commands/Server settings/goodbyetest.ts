@@ -1,4 +1,4 @@
-import { Message, Permissions } from "discord.js";
+import { Message, Permissions, PermissionsBitField } from "discord.js";
 import GreetHandler from "../../lib/GreetHandler";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
@@ -8,7 +8,7 @@ export default class GoodbyeTestTestCommand extends KaikiCommand {
         super("goodbyetest", {
             aliases: ["goodbyetest", "byetest"],
             description: "Tests goodbye message as it would appear when triggered.",
-            userPermissions: Permissions.FLAGS.MANAGE_GUILD,
+            userPermissions: PermissionsBitField.Flags.ManageGuild,
             channel: "guild",
             usage: "",
             subCategory: "Goodbye",

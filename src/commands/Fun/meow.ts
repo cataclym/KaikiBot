@@ -15,9 +15,11 @@ export default class MeowCommand extends KaikiCommand {
     public async exec(message: Message): Promise<Message | void> {
 
         return message.channel.send({
-            embeds: [new EmbedBuilder()
-                .setImage((await KaikiUtil.handleToJSON(await (await fetch("https://aws.random.cat/meow")).json())).file)
-                .withOkColor(message)],
+            embeds: [
+                new EmbedBuilder()
+                    .setImage((await KaikiUtil.handleToJSON(await (await fetch("https://aws.random.cat/meow")).json())).file)
+                    .withOkColor(message),
+            ],
         });
     }
 }

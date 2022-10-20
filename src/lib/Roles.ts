@@ -85,7 +85,7 @@ export async function restoreUserRoles(member: GuildMember): Promise<{ success: 
             .filter(Boolean as unknown as genericArrayFilter)
             .filter(r => r.position !== 0
                 && !member.roles.cache.has(r.id)
-                && r.position < (guild.me?.roles.highest.position || 0));
+                && r.position < (guild.members.me?.roles.highest.position || 0));
 
         if (!rolesToAdd.length) {
             return {
@@ -116,6 +116,6 @@ export async function rolePermissionCheck(message: Message<true>, role: Role) {
 }
 
 export async function botRolePermissionCheck(message: Message<true>, role: Role) {
-    return role.position < (message.guild.me?.roles.highest.position || 0);
+    return role.position < (message.guild.members.me?.roles.highest.position || 0);
 }
 

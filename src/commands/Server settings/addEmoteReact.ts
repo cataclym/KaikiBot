@@ -1,4 +1,4 @@
-import { GuildEmoji, Message, EmbedBuilder, Permissions } from "discord.js";
+import { EmbedBuilder, GuildEmoji, Message, PermissionsBitField } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
@@ -6,8 +6,8 @@ export default class EmoteReactCommand extends KaikiCommand {
     constructor() {
         super("addemotereact", {
             aliases: ["addemotereact", "emotereact", "aer"],
-            userPermissions: Permissions.FLAGS.MANAGE_EMOJIS_AND_STICKERS,
-            clientPermissions: Permissions.FLAGS.ADD_REACTIONS,
+            userPermissions: PermissionsBitField.Flags.ManageEmojisAndStickers,
+            clientPermissions: PermissionsBitField.Flags.AddReactions,
             channel: "guild",
             description: "Add triggers for the bot to react with emojis/emotes to. Use quotes for triggers with spaces.",
             usage: ["red :red:", "anime :weeaboosgetout:"],
@@ -63,11 +63,13 @@ export default class EmoteReactCommand extends KaikiCommand {
         }
 
         return message.channel.send({
-            embeds: [new EmbedBuilder()
-                .setTitle("New emoji trigger added")
-                .setDescription(`Typing \`${trigger}\` will force me to react with ${emoji}...`)
-                .setThumbnail(emoji.url)
-                .withOkColor(message)],
+            embeds: [
+                new EmbedBuilder()
+                    .setTitle("New emoji trigger added")
+                    .setDescription(`Typing \`${trigger}\` will force me to react with ${emoji}...`)
+                    .setThumbnail(emoji.url)
+                    .withOkColor(message),
+            ],
         });
     }
 }

@@ -14,9 +14,11 @@ export default class slotsCommand extends KaikiCommand {
                     id: "amount",
                     type: KaikiArgumentsTypes.KaikiMoneyArgument,
                     otherwise: (m: Message) => ({
-                        embeds: [new EmbedBuilder()
-                            .setTitle("Invalid amount. It must be a number")
-                            .withOkColor(m)],
+                        embeds: [
+                            new EmbedBuilder()
+                                .setTitle("Invalid amount. It must be a number")
+                                .withOkColor(m),
+                        ],
                     }),
                 },
             ],
@@ -27,9 +29,11 @@ export default class slotsCommand extends KaikiCommand {
 
         if (amount < 2) {
             await message.channel.send({
-                embeds: [new EmbedBuilder()
-                    .setDescription(`You need to bet more than 2 ${this.client.money.currencySymbol}`)
-                    .withErrorColor(message)],
+                embeds: [
+                    new EmbedBuilder()
+                        .setDescription(`You need to bet more than 2 ${this.client.money.currencySymbol}`)
+                        .withErrorColor(message),
+                ],
             });
             return;
         }
@@ -38,9 +42,11 @@ export default class slotsCommand extends KaikiCommand {
 
         if (!success) {
             await message.channel.send({
-                embeds: [new EmbedBuilder()
-                    .setDescription(`You have less than ${amount} ${this.client.money.currencySymbol}`)
-                    .withErrorColor(message)],
+                embeds: [
+                    new EmbedBuilder()
+                        .setDescription(`You have less than ${amount} ${this.client.money.currencySymbol}`)
+                        .withErrorColor(message),
+                ],
             });
             return;
         }

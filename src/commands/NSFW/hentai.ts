@@ -9,12 +9,14 @@ export default class HentaiCommand extends KaikiCommand {
             aliases: ["hentai"],
             description: "Fetches hentai images from Booru boards",
             typing: true,
-            args: [{
-                id: "tags",
-                match: "rest",
-                type: "string",
-                default: null,
-            }],
+            args: [
+                {
+                    id: "tags",
+                    match: "rest",
+                    type: "string",
+                    default: null,
+                },
+            ],
         });
     }
 

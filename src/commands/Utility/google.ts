@@ -1,9 +1,9 @@
-import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+import { EmbedBuilder, Message } from "discord.js";
 
 import fetch from "node-fetch";
-import querystring from "querystring";
-import { Message, EmbedBuilder } from "discord.js";
 import { parse } from "node-html-parser";
+import querystring from "querystring";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
 type parsedResult = {
@@ -18,11 +18,13 @@ export default class GoogleSearchCommand extends KaikiCommand {
             aliases: ["google", "search", "g"],
             description: "Search google for something .",
             usage: "bing",
-            args: [{
-                id: "search",
-                match: "rest",
-                otherwise: (m) => ({ embeds: [KaikiEmbeds.genericArgumentError(m)] }),
-            }],
+            args: [
+                {
+                    id: "search",
+                    match: "rest",
+                    otherwise: (m) => ({ embeds: [KaikiEmbeds.genericArgumentError(m)] }),
+                },
+            ],
         });
     }
 
@@ -34,7 +36,7 @@ export default class GoogleSearchCommand extends KaikiCommand {
 
     public async exec(message: Message, { search }: { search: string }): Promise<Message> {
 
-        const link = `https://www.google.com/search?${querystring.stringify({ q: search })}&hl=en&gl=us`;
+        const link = `https://www.google.com/search?${new URLSearchParams({ q: search })}&hl=en&gl=us`;
         const result = await fetch(link, this.options)
             .then(async reeee => parse(await reeee.text()));
 

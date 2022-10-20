@@ -1,4 +1,4 @@
-import { Message, EmbedBuilder, Role } from "discord.js";
+import { EmbedBuilder, Message, PermissionsBitField, Role } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
@@ -8,8 +8,8 @@ export default class RoleMentionableCommand extends KaikiCommand {
     constructor() {
         super("rolementionable", {
             aliases: ["rolementionable", "rolem", "mentionable"],
-            clientPermissions: "MANAGE_ROLES",
-            userPermissions: "MANAGE_ROLES",
+            clientPermissions: PermissionsBitField.Flags.ManageRoles,
+            userPermissions: PermissionsBitField.Flags.ManageRoles,
             description: "Toggles if a role is mentionable",
             usage: "@gamers",
             channel: "guild",
@@ -32,10 +32,12 @@ export default class RoleMentionableCommand extends KaikiCommand {
             await role.setMentionable(bool);
 
             return message.channel.send({
-                embeds: [new EmbedBuilder({
-                    description: `Toggled ${role.name}'s mentionable status to ${bool}.`,
-                })
-                    .withOkColor(message)],
+                embeds: [
+                    new EmbedBuilder({
+                        description: `Toggled ${role.name}'s mentionable status to ${bool}.`,
+                    })
+                        .withOkColor(message),
+                ],
             });
         }
 

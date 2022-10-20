@@ -1,4 +1,4 @@
-import { Message, EmbedBuilder } from "discord.js";
+import { EmbedBuilder, Message, PermissionsBitField } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
@@ -9,15 +9,17 @@ export default class RoleCreateCommand extends KaikiCommand {
             aliases: ["rolecreate", "createrole", "rc", "cr"],
             description: "Creates a role with a given name.",
             usage: "GAMERS",
-            clientPermissions: "MANAGE_ROLES",
-            userPermissions: "MANAGE_ROLES",
+            clientPermissions: PermissionsBitField.Flags.ManageRoles,
+            userPermissions: PermissionsBitField.Flags.ManageRoles,
             channel: "guild",
-            args: [{
-                id: "name",
-                type: "string",
-                match: "rest",
-                otherwise: (msg: Message) => ({ embeds: [KaikiEmbeds.genericArgumentError(msg)] }),
-            }],
+            args: [
+                {
+                    id: "name",
+                    type: "string",
+                    match: "rest",
+                    otherwise: (msg: Message) => ({ embeds: [KaikiEmbeds.genericArgumentError(msg)] }),
+                },
+            ],
         });
     }
 
@@ -30,11 +32,13 @@ export default class RoleCreateCommand extends KaikiCommand {
         }
 
         return message.channel.send({
-            embeds: [new EmbedBuilder({
-                title: "Success!",
-                description: `Created ${createdRole}!`,
-            })
-                .withOkColor(message)],
+            embeds: [
+                new EmbedBuilder({
+                    title: "Success!",
+                    description: `Created ${createdRole}!`,
+                })
+                    .withOkColor(message),
+            ],
         });
     }
 }

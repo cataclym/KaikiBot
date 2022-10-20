@@ -1,5 +1,5 @@
 import { ChildProcess, exec } from "child_process";
-import { Message, EmbedBuilder } from "discord.js";
+import { EmbedBuilder, Message } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 import Utility from "../../lib/Utility";
@@ -28,24 +28,28 @@ export default class ExecCommand extends KaikiCommand {
 
             if (e) {
                 return message.channel.send({
-                    embeds: [new EmbedBuilder()
-                        .setAuthor({
-                            name: "Command errored",
-                            iconURL: message.client.user?.displayAvatarURL({ dynamic: true }),
-                        })
-                        .setDescription(await Utility.codeblock(Utility.trim(String(e ?? "Unknown error"), 1997)))
-                        .withErrorColor(message)],
+                    embeds: [
+                        new EmbedBuilder()
+                            .setAuthor({
+                                name: "Command errored",
+                                iconURL: message.client.user?.displayAvatarURL(),
+                            })
+                            .setDescription(await Utility.codeblock(Utility.trim(String(e ?? "Unknown error"), 1997)))
+                            .withErrorColor(message),
+                    ],
                 });
             }
 
             return message.channel.send({
-                embeds: [new EmbedBuilder()
-                    .setAuthor({
-                        name: "Executed command",
-                        iconURL: message.client.user?.displayAvatarURL({ dynamic: true }),
-                    })
-                    .setDescription(await Utility.codeblock(Utility.trim(stdout ?? "Command executed", 1997)))
-                    .withOkColor(message)],
+                embeds: [
+                    new EmbedBuilder()
+                        .setAuthor({
+                            name: "Executed command",
+                            iconURL: message.client.user?.displayAvatarURL(),
+                        })
+                        .setDescription(await Utility.codeblock(Utility.trim(stdout ?? "Command executed", 1997)))
+                        .withOkColor(message),
+                ],
             });
         });
     }

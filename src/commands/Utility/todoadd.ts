@@ -5,12 +5,14 @@ import KaikiEmbeds from "../../lib/KaikiEmbeds";
 export default class todoAddCommand extends KaikiCommand {
     constructor() {
         super("add", {
-            args: [{
-                id: "toAdd",
-                type: "string",
-                match: "rest",
-                otherwise: (msg: Message) => ({ embeds: [KaikiEmbeds.genericArgumentError(msg)] }),
-            }],
+            args: [
+                {
+                    id: "toAdd",
+                    type: "string",
+                    match: "rest",
+                    otherwise: (msg: Message) => ({ embeds: [KaikiEmbeds.genericArgumentError(msg)] }),
+                },
+            ],
         });
     }
 

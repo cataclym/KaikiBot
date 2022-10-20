@@ -1,4 +1,4 @@
-export enum blockedCategories {
+export declare enum blockedCategories {
     Administration,
     Anime,
     Emotes,

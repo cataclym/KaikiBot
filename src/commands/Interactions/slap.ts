@@ -10,11 +10,13 @@ export default class Slap extends KaikiCommand {
             description: "Slap someone who's being stupid",
             usage: ["", "@dreb"],
             typing: true,
-            args: [{
-                id: "mention",
-                type: "member",
-                default: null,
-            }],
+            args: [
+                {
+                    id: "mention",
+                    type: "member",
+                    default: null,
+                },
+            ],
         });
     }
 

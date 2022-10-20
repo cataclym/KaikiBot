@@ -32,10 +32,12 @@ export default class UrbanDictCommand extends KaikiCommand {
 
         if (!list.length) {
             return message.channel.send({
-                embeds: [new EmbedBuilder({
-                    description: `No results found for **${term}**.`,
-                })
-                    .withErrorColor(message)],
+                embeds: [
+                    new EmbedBuilder({
+                        description: `No results found for **${term}**.`,
+                    })
+                        .withErrorColor(message),
+                ],
             });
         }
 

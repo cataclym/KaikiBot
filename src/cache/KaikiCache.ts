@@ -18,7 +18,7 @@ export default class KaikiCache {
     public cmdStatsCache: Collection<string, number>;
     public emoteReactCache: TEmoteReactCache;
     public dailyProvider: MySQLDailyProvider;
-    private _connection: () => Pool;
+    private readonly _connection: () => Pool;
     private _orm: pkg.PrismaClient;
 
     constructor(orm: pkg.PrismaClient, connection: () => Pool) {

@@ -1,4 +1,4 @@
-import { Guild, Message, EmbedBuilder } from "discord.js";
+import { EmbedBuilder, Guild, Message, PermissionsBitField } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
@@ -8,7 +8,7 @@ const values: values[] = ["enable", "true", "disable", "false"];
 export default class AnniversaryRolesConfigCommand extends KaikiCommand {
     constructor() {
         super("config-anniversary", {
-            userPermissions: "ADMINISTRATOR",
+            userPermissions: PermissionsBitField.Flags.Administrator,
             channel: "guild",
             args: [
                 {

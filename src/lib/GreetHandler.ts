@@ -1,16 +1,15 @@
 import {
+    ChannelType,
+    EmbedBuilder,
     Guild,
     GuildMember,
     Message,
-    EmbedBuilder,
-    MessageEmbedOptions,
-    MessageOptions,
+    MessageCreateOptions,
     StickerResolvable,
 } from "discord.js";
 import { parsePlaceHolders } from "./functions";
 
 type Diff<T, U> = T extends U ? never : T;
-type NotNull<T> = Diff<T, null | undefined>
 
 interface sendMessageData {
     channel: bigint | null,
@@ -20,17 +19,20 @@ interface sendMessageData {
 
 export default class GreetHandler {
     static JSONErrorMessage = (m: Message) => ({
-        embeds: [new EmbedBuilder()
-            .setTitle("Error")
-            .setDescription("Please provide valid json")
-            .withErrorColor(m)],
+        embeds: [
+            new EmbedBuilder()
+                .setTitle("Error")
+                .setDescription("Please provide valid json")
+                .withErrorColor(m),
+        ],
     });
 
     static emptyMessageOptions = (m: Message | Guild) => ({
-        embeds: [new EmbedBuilder()
-            .setTitle("No data")
-            .setTitle("No welcome/bye message set.")
-            .withErrorColor(m),
+        embeds: [
+            new EmbedBuilder()
+                .setTitle("No data")
+                .setTitle("No welcome/bye message set.")
+                .withErrorColor(m),
         ],
     });
 
@@ -60,7 +62,7 @@ export default class GreetHandler {
         }
     }
 
-    static async createAndParseWelcomeLeaveMessage(data: sendMessageData, guildMember: GuildMember): Promise<MessageOptions> {
+    static async createAndParseWelcomeLeaveMessage(data: sendMessageData, guildMember: GuildMember): Promise<MessageCreateOptions> {
         if (!data.embed) return GreetHandler.emptyMessageOptions(guildMember.guild);
         return JSON.parse(await parsePlaceHolders(data.embed, guildMember));
     }
@@ -71,7 +73,7 @@ export default class GreetHandler {
         const channel = guildMember.guild.channels.cache.get(String(data.channel))
             ?? await guildMember.guild.client.channels.fetch(String(data.channel), { cache: true });
 
-        if (channel && channel.type !== "GUILD_TEXT" && channel.type !== "GUILD_NEWS" || !channel?.isText()) return;
+        if (channel && channel.type !== ChannelType.GuildText && channel.type !== ChannelType.GuildNews || channel?.type !== ChannelType.GuildText) return;
 
         const parsedMessageOptions = await GreetHandler.createAndParseWelcomeLeaveMessage(<sendMessageData>data, guildMember);
 
@@ -86,15 +88,15 @@ export default class GreetHandler {
     }
 }
 
-export class JSONToMessageOptions implements MessageOptions {
+export class JSONToMessageOptions implements MessageCreateOptions {
     constructor(any: any) {
         this.embeds = any.embeds;
         this.content = any.content;
         this.stickers = any.stickers;
     }
 
-    embeds: (EmbedBuilder | MessageEmbedOptions)[];
-    content?: string | null | undefined;
+    embeds: EmbedBuilder[];
+    content?: string | undefined;
     stickers?: StickerResolvable[] | undefined;
 }
 

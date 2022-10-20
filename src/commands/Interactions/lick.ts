@@ -10,11 +10,13 @@ export default class Lick extends KaikiCommand {
             description: "Lick someone... I guess...?",
             usage: ["", "@dreb"],
             typing: true,
-            args: [{
-                id: "mention",
-                type: "member",
-                default: null,
-            }],
+            args: [
+                {
+                    id: "mention",
+                    type: "member",
+                    default: null,
+                },
+            ],
         });
     }
 

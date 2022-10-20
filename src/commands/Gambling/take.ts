@@ -14,20 +14,24 @@ export default class take extends KaikiCommand {
                     id: "amount",
                     type: KaikiArgumentsTypes.KaikiMoneyArgument,
                     otherwise: (m: Message) => ({
-                        embeds: [new EmbedBuilder({
-                            title: "Invalid amount. It must be a number",
-                        })
-                            .withOkColor(m)],
+                        embeds: [
+                            new EmbedBuilder({
+                                title: "Invalid amount. It must be a number",
+                            })
+                                .withOkColor(m),
+                        ],
                     }),
                 },
                 {
                     id: "user",
                     type: "user",
                     otherwise: (m: Message) => ({
-                        embeds: [new EmbedBuilder({
-                            title: "Can't find this user. Try again.",
-                        })
-                            .withOkColor(m)],
+                        embeds: [
+                            new EmbedBuilder({
+                                title: "Can't find this user. Try again.",
+                            })
+                                .withOkColor(m),
+                        ],
                     }),
                 },
             ],
@@ -38,17 +42,21 @@ export default class take extends KaikiCommand {
         const success = await this.client.money.TryTake(user.id, amount, "-");
         if (!success) {
             await msg.channel.send({
-                embeds: [new EmbedBuilder()
-                    .setDescription(`${user.username} has less than **${amount}** ${this.client.money.currencySymbol}`)
-                    .withErrorColor(msg)],
+                embeds: [
+                    new EmbedBuilder()
+                        .setDescription(`${user.username} has less than **${amount}** ${this.client.money.currencySymbol}`)
+                        .withErrorColor(msg),
+                ],
             });
             return;
         }
 
         await msg.channel.send({
-            embeds: [new EmbedBuilder()
-                .setDescription(`Successfully took **${amount}** ${this.client.money.currencySymbol} from ${user.username}`)
-                .withOkColor(msg)],
+            embeds: [
+                new EmbedBuilder()
+                    .setDescription(`Successfully took **${amount}** ${this.client.money.currencySymbol} from ${user.username}`)
+                    .withOkColor(msg),
+            ],
         });
     }
 }

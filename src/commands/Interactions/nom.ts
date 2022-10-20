@@ -10,11 +10,13 @@ export default class Nom extends KaikiCommand {
             description: "Nom someone, cus you're hungry",
             usage: ["", "@dreb"],
             typing: true,
-            args: [{
-                id: "mention",
-                type: "member",
-                default: null,
-            }],
+            args: [
+                {
+                    id: "mention",
+                    type: "member",
+                    default: null,
+                },
+            ],
         });
     }
 

@@ -1,5 +1,5 @@
 import { PrefixSupplier } from "discord-akairo";
-import { Message, EmbedBuilder } from "discord.js";
+import { EmbedBuilder, Message, PermissionsBitField } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 import { excludeData } from "../../lib/slashCommands/data";
@@ -7,7 +7,7 @@ import { excludeData } from "../../lib/slashCommands/data";
 export default class DadBotConfigCommand extends KaikiCommand {
     constructor() {
         super("config-dadbot", {
-            userPermissions: "ADMINISTRATOR",
+            userPermissions: PermissionsBitField.Flags.Administrator,
             channel: "guild",
             args: [
                 {

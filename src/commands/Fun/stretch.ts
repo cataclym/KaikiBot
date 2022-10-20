@@ -1,4 +1,4 @@
-import { GuildMember, Message, MessageAttachment, EmbedBuilder } from "discord.js";
+import { AttachmentBuilder, EmbedBuilder, GuildMember, Message } from "discord.js";
 import fetch from "node-fetch";
 import sharp from "sharp";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand.js";
@@ -22,17 +22,18 @@ export default class SquishCommand extends KaikiCommand {
 
     public async exec(message: Message, { member }: { member: GuildMember }): Promise<Message> {
 
-        const avatar = await (await fetch(member.displayAvatarURL({
-            dynamic: true,
-            size: 512,
-            format: "jpg",
-        }))).buffer();
+        const avatar = await (await fetch(member
+            .displayAvatarURL({
+                size: 512,
+                extension: "jpg",
+            }),
+        )).buffer();
 
         const picture = sharp(avatar)
             .resize(1024, 256, { fit: "fill" })
             .webp();
 
-        const attachment: MessageAttachment = new MessageAttachment(await picture.toBuffer(), "Stretched.jpg");
+        const attachment: AttachmentBuilder = new AttachmentBuilder(await picture.toBuffer(), { name: "Stretched.jpg" });
         const embed = new EmbedBuilder({
             title: "Stretched avatar...",
             image: { url: "attachment://Stretched.jpg" },

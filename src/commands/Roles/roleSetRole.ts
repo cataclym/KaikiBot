@@ -1,4 +1,4 @@
-import { GuildMember, Message, EmbedBuilder, Permissions, Role } from "discord.js";
+import { EmbedBuilder, GuildMember, Message, Permissions, PermissionsBitField, Role } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 import { rolePermissionCheck } from "../../lib/Roles";
@@ -9,18 +9,20 @@ export default class RoleAssignCommand extends KaikiCommand {
             aliases: ["setrole", "sr"],
             description: "Gives a role to a user. The role you specify has to be lower in the role hierarchy than your highest role.",
             usage: "@Dreb Gamer",
-            clientPermissions: Permissions.FLAGS.MANAGE_ROLES,
-            userPermissions: Permissions.FLAGS.MANAGE_ROLES,
+            clientPermissions: PermissionsBitField.Flags.ManageRoles,
+            userPermissions: PermissionsBitField.Flags.ManageRoles,
             channel: "guild",
             args: [
                 {
                     id: "member",
                     type: "member",
                     otherwise: (m: Message) => ({
-                        embeds: [new EmbedBuilder({
-                            title: "Can't find this user. Try again.",
-                        })
-                            .withErrorColor(m)],
+                        embeds: [
+                            new EmbedBuilder({
+                                title: "Can't find this user. Try again.",
+                            })
+                                .withErrorColor(m),
+                        ],
                     }),
                 },
                 {
@@ -40,20 +42,24 @@ export default class RoleAssignCommand extends KaikiCommand {
                 await member.roles.add(role);
 
                 return message.channel.send({
-                    embeds: [new EmbedBuilder({
-                        title: "Success!",
-                        description: `Added ${role} to ${member.user}`,
-                    })
-                        .withOkColor(message)],
+                    embeds: [
+                        new EmbedBuilder({
+                            title: "Success!",
+                            description: `Added ${role} to ${member.user}`,
+                        })
+                            .withOkColor(message),
+                    ],
                 });
             }
             else {
                 return message.channel.send({
-                    embeds: [new EmbedBuilder({
-                        title: "Error",
-                        description: `${member} already has ${role}`,
-                    })
-                        .withErrorColor(message)],
+                    embeds: [
+                        new EmbedBuilder({
+                            title: "Error",
+                            description: `${member} already has ${role}`,
+                        })
+                            .withErrorColor(message),
+                    ],
                 });
             }
         }

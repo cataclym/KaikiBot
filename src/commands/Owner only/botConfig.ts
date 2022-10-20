@@ -1,6 +1,5 @@
 import { FailureData } from "discord-akairo";
-import { Message, EmbedBuilder } from "discord.js";
-import { ActivityTypes } from "discord.js/typings/enums";
+import { ActivityType, EmbedBuilder, Message } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 import Utility from "../../lib/Utility";
@@ -46,19 +45,33 @@ export default class BotConfigCommand extends KaikiCommand {
                     otherwise: async (msg: Message, _: FailureData) => {
                         if (_.phrase.length) {
                             return ({
-                                embeds: [new EmbedBuilder()
-                                    .setDescription(`\`${_.phrase}\` is not a valid setting`)
-                                    .addField("Valid settings", BotConfigCommand._validTypes.join("\n"))
-                                    .withErrorColor(msg)],
+                                embeds: [
+                                    new EmbedBuilder()
+                                        .setDescription(`\`${_.phrase}\` is not a valid setting`)
+                                        .addFields([
+                                            {
+                                                name: "Valid settings",
+                                                value: BotConfigCommand._validTypes.join("\n"),
+                                            },
+                                        ])
+                                        .withErrorColor(msg),
+                                ],
                             });
                         }
                         else {
-                            return ({
-                                embeds: [new EmbedBuilder()
-                                    .addField("Bot config", await Utility.codeblock(JSON
-                                        .stringify(new BotConfig(await this.client.connection().query("SELECT * FROM BotSettings")), null, 4), "xl"))
-                                    .withOkColor(msg)],
-                            });
+                            return {
+                                embeds: [
+                                    new EmbedBuilder()
+                                        .addFields([
+                                            {
+                                                name: "Bot config",
+                                                value: await Utility.codeblock(JSON
+                                                    .stringify(new BotConfig(await this.client.connection().query("SELECT * FROM BotSettings")), null, 4), "xl"),
+                                            },
+                                        ])
+                                        .withOkColor(msg),
+                                ],
+                            };
                         }
                     },
                 },
@@ -89,7 +102,7 @@ export default class BotConfigCommand extends KaikiCommand {
             case validEnum.ACTIVITYTYPE:
                 value = value.toUpperCase();
                 if (SetActivityCommand.validTypes.includes(value)) {
-                    oldValue = await this.client.botSettings.get("1", "ActivityType", SetActivityCommand.validTypes[ActivityTypes.PLAYING]);
+                    oldValue = await this.client.botSettings.get("1", "ActivityType", SetActivityCommand.validTypes[ActivityType.Playing]);
                     await this.handler.findCommand("setactivity")
                         .exec(message, {
                             name: await this.client.botSettings.get("1", "Activity", "N/A"),
@@ -126,11 +139,21 @@ export default class BotConfigCommand extends KaikiCommand {
         }
 
         return message.channel.send({
-            embeds: [new EmbedBuilder()
-                .setTitle("Changed bot configuration")
-                .addField("Old Value", oldValue)
-                .addField("New value", value)
-                .withOkColor(message)],
+            embeds: [
+                new EmbedBuilder()
+                    .setTitle("Changed bot configuration")
+                    .addFields([
+                        {
+                            name: "Old Value",
+                            value: oldValue,
+                        },
+                        {
+                            name: "New value",
+                            value: value,
+                        },
+                    ])
+                    .withOkColor(message),
+            ],
         });
     }
 }

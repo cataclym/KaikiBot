@@ -1,6 +1,6 @@
-import { Argument, Flag, PrefixSupplier } from "discord-akairo";
+import { Argument, Flag, FlagType, PrefixSupplier } from "discord-akairo";
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
-import { Message, EmbedBuilder } from "discord.js";
+import { EmbedBuilder, Message } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 import Utility from "../../lib/Utility";
@@ -14,7 +14,7 @@ export default class TodoCommand extends KaikiCommand {
         });
     }
 
-    * args(): unknown {
+    * args(): Generator<{ type: string[][] } | { unordered: true; default: 1; type: "number" }, { page: any } | Flag<FlagType.Continue>, string> {
         const method = yield {
             type: [
                 ["add"],
@@ -51,8 +51,9 @@ export default class TodoCommand extends KaikiCommand {
 
         if (!todoArray.length) {
             return message.channel.send({
-                embeds: [emb
-                    .setDescription("Your list is empty."),
+                embeds: [
+                    emb
+                        .setDescription("Your list is empty."),
                 ],
             });
         }
@@ -61,7 +62,7 @@ export default class TodoCommand extends KaikiCommand {
         const pages = [];
 
         for (let index = 10, p = 0; p < reminderArray.length; index += 10, p += 10) {
-            pages.push(new EmbedBuilder(emb)
+            pages.push(EmbedBuilder.from(emb)
                 .setDescription(reminderArray
                     .slice(p, index).join("\n"),
                 ),

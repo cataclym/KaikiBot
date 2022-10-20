@@ -1,69 +1,47 @@
-import { Message, EmbedBuilder, Permissions } from "discord.js";
+import { AkairoMessage } from "discord-akairo";
+import { EmbedBuilder, Message, Permissions, PermissionsBitField } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-import KaikiEmbeds from "../../lib/KaikiEmbeds";
+import { dadbotCheck, excludeCommand } from "../../lib/slashCommands/functions";
 
 export default class ExcludeCommand extends KaikiCommand {
     constructor() {
         super("exclude", {
             description: "Adds or removes excluded role from user. Excludes the user from being targeted by dad-bot.",
             aliases: ["exclude", "e", "excl"],
-            clientPermissions: Permissions.FLAGS.MANAGE_ROLES,
+            clientPermissions: PermissionsBitField.Flags.ManageRoles,
             channel: "guild",
+            slash: true,
+            slashEphemeral: true,
+            slashOptions: [],
         });
     }
 
-    public async exec(message: Message<true>): Promise<Message | void> {
-
-        if (!message.guild.isDadBotEnabled() || !message.member) {
-            return message.channel.send({
-                embeds: [new EmbedBuilder()
-                    .setTitle("Dad-bot is not enabled")
-                    .withErrorColor(message)],
+    public async execSlash(message: AkairoMessage<"cached">) {
+        if (!dadbotCheck(message)) {
+            return message.reply({
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle("Dad-bot is not enabled")
+                        .withErrorColor(message.guild),
+                ],
             });
         }
 
-        const db = await this.client.db.getOrCreateGuild(message.guildId);
+        return excludeCommand(message, this.client);
+    }
 
-        const embeds = [];
-        let excludedRole = message.guild?.roles.cache.get(String(db.ExcludeRole));
+    public async exec(message: Message<true>): Promise<Message> {
 
-        if (!excludedRole) {
-            excludedRole = await message.guild?.roles.create({
-                name: process.env.DADBOT_DEFAULT_ROLENAME,
-                reason: "Initiate default dad-bot exclusion role.",
+        if (!dadbotCheck(message)) {
+            return message.reply({
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle("Dad-bot is not enabled")
+                        .withErrorColor(message.guild),
+                ],
             });
-
-            await this.client.db.orm.guilds.update({
-                where: {
-                    Id: BigInt(message.guildId),
-                },
-                data: {
-                    ExcludeRole: BigInt(excludedRole?.id),
-                },
-            });
-
-            await this.client.guildsDb.set(message.guildId, "ExcludeRole", excludedRole.id);
-
-            embeds.push(new EmbedBuilder({
-                title: "Creating dad-bot role!",
-                description: "There doesn't seem to be a default dad-bot role in this server. Creating one...",
-                footer: { text: "Beep boop..." },
-            })
-                .withErrorColor(message));
         }
 
-        if (!message.member.hasExcludedRole()) {
-            await message.member.roles.add(excludedRole);
-            embeds.push(KaikiEmbeds.addedRoleEmbed(excludedRole.name)
-                .withOkColor(message));
-            return message.channel.send({ embeds: embeds });
-        }
-
-        else {
-            await message.member.roles.remove(excludedRole);
-            embeds.push(KaikiEmbeds.removedRoleEmbed(excludedRole.name)
-                .withOkColor(message));
-            return message.channel.send({ embeds: embeds });
-        }
+        return excludeCommand(message, this.client);
     }
 }

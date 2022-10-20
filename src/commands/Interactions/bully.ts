@@ -10,11 +10,13 @@ export default class Bully extends KaikiCommand {
             description: "Be a bully to someone",
             usage: ["", "@dreb"],
             typing: true,
-            args: [{
-                id: "mention",
-                type: "member",
-                default: null,
-            }],
+            args: [
+                {
+                    id: "mention",
+                    type: "member",
+                    default: null,
+                },
+            ],
         });
     }
 

@@ -22,11 +22,13 @@ export default class MentionCommand extends KaikiCommand {
     public async exec(msg: Message): Promise<NodeJS.Timeout> {
 
         const embed = msg.channel.send({
-            embeds: [new EmbedBuilder({
-                title: `Hi ${msg.author.username}, what's up?`,
-                description: `If you need help type \`${(this.handler.prefix as PrefixSupplier)(msg)}help\`.`,
-            })
-                .withOkColor(msg)],
+            embeds: [
+                new EmbedBuilder({
+                    title: `Hi ${msg.author.username}, what's up?`,
+                    description: `If you need help type \`${(this.handler.prefix as PrefixSupplier)(msg)}help\`.`,
+                })
+                    .withOkColor(msg),
+            ],
         });
 
         return setTimeout(async () => (await embed).delete(), 10000).unref();

@@ -11,16 +11,18 @@ export default class RandomNumberCommand extends KaikiCommand {
         super("random", {
             usage: ["1 10", "25"],
             description: "Sends a random number between your two inputs.",
-            args: [{
-                id: "int",
-                type: "integer",
-                default: 1,
-            },
-            {
-                id: "int2",
-                type: "integer",
-                default: 100,
-            }],
+            args: [
+                {
+                    id: "int",
+                    type: "integer",
+                    default: 1,
+                },
+                {
+                    id: "int2",
+                    type: "integer",
+                    default: 100,
+                },
+            ],
             aliases: ["random", "rng"],
         });
     }

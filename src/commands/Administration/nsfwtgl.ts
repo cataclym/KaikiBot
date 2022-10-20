@@ -1,4 +1,4 @@
-import { Message, EmbedBuilder, Permissions, TextChannel } from "discord.js";
+import { EmbedBuilder, Message, PermissionsBitField, TextChannel } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 
@@ -6,8 +6,8 @@ export default class ChannelNsfwCommand extends KaikiCommand {
     constructor() {
         super("nsfwtgl", {
             aliases: ["nsfwtgl", "nsfw", "nsfwtoggle"],
-            clientPermissions: Permissions.FLAGS.MANAGE_CHANNELS,
-            userPermissions: Permissions.FLAGS.MANAGE_CHANNELS,
+            clientPermissions: PermissionsBitField.Flags.ManageChannels,
+            userPermissions: PermissionsBitField.Flags.ManageChannels,
             description: "Toggles NSFW in current channel",
             usage: "",
             channel: "guild",
@@ -22,10 +22,12 @@ export default class ChannelNsfwCommand extends KaikiCommand {
         await channel.setNSFW(!channel.nsfw, `${message.author.tag} toggled NSFW.`);
 
         return message.channel.send({
-            embeds: [new EmbedBuilder({
-                description: result,
-            })
-                .withOkColor(message)],
+            embeds: [
+                new EmbedBuilder({
+                    description: result,
+                })
+                    .withOkColor(message),
+            ],
         });
     }
 }

@@ -10,11 +10,13 @@ export default class Yeet extends KaikiCommand {
             description: "Yeeeeeeeeeeeeeeeeeee\neeeeeeeeeeeeeeeet",
             usage: ["", "@dreb"],
             typing: true,
-            args: [{
-                id: "mention",
-                type: "member",
-                default: null,
-            }],
+            args: [
+                {
+                    id: "mention",
+                    type: "member",
+                    default: null,
+                },
+            ],
         });
     }
 

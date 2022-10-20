@@ -10,11 +10,13 @@ export default class Bonk extends KaikiCommand {
             description: "When you need to bonk some horny teens",
             usage: ["", "@dreb"],
             typing: true,
-            args: [{
-                id: "mention",
-                type: "member",
-                default: null,
-            }],
+            args: [
+                {
+                    id: "mention",
+                    type: "member",
+                    default: null,
+                },
+            ],
         });
     }
 
