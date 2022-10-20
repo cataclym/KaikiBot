@@ -4,11 +4,9 @@ import { EmbedBuilder, Team } from "discord.js";
 import fs from "fs/promises";
 import logger from "loglevel";
 import KaikiAkairoClient from "../lib/Kaiki/KaikiAkairoClient";
-import MongoDb from "../lib/Migrations/MongoDb";
 
 export default class Bot {
     private readonly client: KaikiAkairoClient;
-    private mongoDb: MongoDb;
 
     constructor(client: KaikiAkairoClient) {
         this.client = client;
@@ -34,13 +32,7 @@ export default class Bot {
             logger.warn("Neofetch wasn't detected! Neofetch command will be disabled.");
         }
 
-        this.loadPackageJSON()
-            .then(() => {
-                if (this.client.package.optionalDependencies["mongoose"]) {
-                    this.mongoDb = new MongoDb();
-                }
-            });
-
+        void this.loadPackageJSON();
 
         this.client.login(process.env.CLIENT_TOKEN)
             .then(async () => {
@@ -78,10 +70,11 @@ export default class Bot {
                     const emoji = ["✨", "♥️", "✅", "🇹🇼"][Math.floor(Math.random() * 4)];
                     await this.client.owner.send({
                         embeds:
-                            [new EmbedBuilder()
-                                .setTitle(emoji)
-                                .setDescription("Bot is online!")
-                                .withOkColor(),
+                            [
+                                new EmbedBuilder()
+                                    .setTitle(emoji)
+                                    .setDescription("Bot is online!")
+                                    .withOkColor(),
                             ],
                     });
                 }

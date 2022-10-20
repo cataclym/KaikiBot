@@ -52,13 +52,18 @@ export class Migrations {
 
     private getFilePaths(): string[] {
         const result = [];
-        const files = fs.readdirSync(this.currentFolder);
+        try {
+            const files = fs.readdirSync(this.currentFolder);
 
-        for (const file of files) {
-            if (file.endsWith(".js")) result.push("./scripts/" + file);
+            for (const file of files) {
+                if (file.endsWith(".js")) result.push("./scripts/" + file);
+            }
+
+            return result;
         }
-
-        return result;
+        catch {
+            return result;
+        }
     }
 
     private load(filePath: string) {
