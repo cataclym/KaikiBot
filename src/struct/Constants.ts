@@ -1,4 +1,4 @@
-import { GuildFeature, UserFlags } from "discord.js";
+import { ChannelType, GuildFeature, UserFlags, UserFlagsString } from "discord.js";
 import { theseDoNotYetExist } from "../lib/Types/TCustom";
 
 export default class Constants {
@@ -64,31 +64,41 @@ export default class Constants {
         Utility: "Info, color, search, ping and much more.",
     };
 
-    static channelTypes: { [type: string]: string } = {
-        GUILD_TEXT: "Text",
-        GUILD_NEWS: "News",
-        GUILD_CATEGORY: "Category",
-        GUILD_VOICE: "Voice",
-        GUILD_STAGE_VOICE: "Stage",
-        GUILD_NEWS_THREAD: "News thread",
-        GUILD_PUBLIC_THREAD: "Public thread",
-        GUILD_PRIVATE_THREAD: "Private thread",
+    static channelTypes: { [type in keyof typeof ChannelType]: string } = {
+        GuildText: "Text",
+        GuildNews: "News",
+        GuildCategory: "Category",
+        GuildVoice: "Voice",
+        GuildStageVoice: "Stage",
+        GuildNewsThread: "News thread",
+        GuildPublicThread: "Public thread",
+        GuildPrivateThread: "Private thread",
+        GuildForum: "Guild Forum",
+        GuildAnnouncement: "Guild Announcements",
+        DM: "DM",
+        GroupDM: "GroupDM",
+        AnnouncementThread: "AnnouncementThread",
+        PublicThread: "PublicThread",
+        PrivateThread: "PrivateThread",
+        GuildDirectory: "GuildDirectory",
     };
 
-    static flags: { [index in string]: string } = {
-        DISCORD_EMPLOYEE: "Discord Employee 👨‍💼",
-        PARTNERED_SERVER_OWNER: "Discord Partner ❤️",
-        HYPESQUAD_EVENTS: "HypeSquad Events 🎊",
-        BUGHUNTER_LEVEL_1: "Bug Hunter (Level 1) 🐛",
-        BUGHUNTER_LEVEL_2: "Bug Hunter (Level 2) 🐛",
-        HOUSE_BRAVERY: "House of Bravery 🏠",
-        HOUSE_BRILLIANCE: "House of Brilliance 🏠",
-        HOUSE_BALANCE: "House of Balance 🏠",
-        EARLY_SUPPORTER: "Early Supporter 👍",
-        TEAM_USER: "Team User 🏁",
-        VERIFIED_BOT: "Verified Bot ☑️",
-        EARLY_VERIFIED_BOT_DEVELOPER: "Early Verified Developer ✅",
-        DISCORD_CERTIFIED_MODERATOR: "Certified Moderator",
-        BOT_HTTP_INTERACTIONS: "Bot interactions",
+    static flags: { [index in UserFlagsString]: string } = {
+        Staff: "Discord Employee 👨‍💼",
+        Partner: "Partnered Server Owner ❤️",
+        Hypesquad: "HypeSquad Events Member 🎊",
+        BugHunterLevel1: "Bug Hunter (Level 1) 🐛",
+        BugHunterLevel2: "Bug Hunter (Level 2) 🐛",
+        HypeSquadOnlineHouse1: "House of Bravery 🏠",
+        HypeSquadOnlineHouse2: "House of Brilliance 🏠",
+        HypeSquadOnlineHouse3: "House of Balance 🏠",
+        PremiumEarlySupporter: "Nitro Early Supporter 👍",
+        TeamPseudoUser: "Team User 🏁",
+        VerifiedBot: "Verified Bot ☑️",
+        VerifiedDeveloper: "Early Verified Developer ✅",
+        CertifiedModerator: "Certified Moderator",
+        BotHTTPInteractions: "Bot interactions",
+        Spammer: "Identified spammer ⚠",
+        Quarantined: "Quarantined/Disabled user ☣",
     };
 }

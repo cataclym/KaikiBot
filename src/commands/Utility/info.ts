@@ -3,8 +3,10 @@ import { Argument } from "discord-akairo";
 import {
     BaseChannel,
     CategoryChannel,
+    ChannelType,
     EmbedBuilder,
     Emoji,
+    ForumChannel,
     GuildBasedChannel,
     GuildMember,
     Message,
@@ -31,6 +33,7 @@ export default class InfoCommand extends KaikiCommand {
             channel: "guild",
             description: "Returns info on a channel, role, member, emoji, or message",
             usage: ["#channel", "@member", "@role", ":coolCustomEmoji:", "messageID"],
+            typing: true,
             args: [
                 {
                     id: "obj",
@@ -56,12 +59,15 @@ export default class InfoCommand extends KaikiCommand {
             obj = message.member;
         }
 
-        const emb = new EmbedBuilder()
-            .withOkColor(message);
+        const emb = [
+            new EmbedBuilder()
+                .withOkColor(message),
+        ];
 
         if (obj instanceof BaseChannel) {
             if (obj instanceof VoiceChannel || obj instanceof StageChannel) {
-                emb.setTitle(`Info about voice channel: ${obj.name}`)
+                emb[0]
+                    .setTitle(`Info about voice channel: ${obj.name}`)
                     .addFields([
                         {
                             name: "ID",
@@ -69,7 +75,7 @@ export default class InfoCommand extends KaikiCommand {
                         },
                         {
                             name: "Type",
-                            value: Constants.channelTypes[obj.type],
+                            value: Constants.channelTypes[ChannelType[obj.type] as keyof typeof ChannelType],
                         },
                         {
                             name: "User limit",
@@ -87,40 +93,44 @@ export default class InfoCommand extends KaikiCommand {
                         },
                     ]);
 
-                if (obj.parent) emb.addFields([{ name: "Parent", value: `${obj.parent.name} [${obj.parentId}]` }]);
+                if (obj.parent) emb[0].addFields([{ name: "Parent", value: `${obj.parent.name} [${obj.parentId}]` }]);
             }
 
-            else if (obj instanceof TextChannel || obj instanceof NewsChannel) {
-                emb.setTitle(`Info about text channel: ${obj.name}`)
-                    .addFields([
+            else if (obj instanceof TextChannel || obj instanceof NewsChannel || obj instanceof ForumChannel) {
+                emb[0]
+                    .setTitle(`Info about text channel: ${obj.name}`)
+                    .addFields(
                         {
-                            name: "ID", value: obj.id,
+                            name: "ID",
+                            value: obj.id,
                         },
                         {
                             name: "Type",
-                            value: Constants.channelTypes[obj.type],
+                            value: Constants.channelTypes[ChannelType[obj.type] as keyof typeof ChannelType],
                         },
                         {
-                            name: "NSFW", value: obj.nsfw ? "Enabled" : "Disabled",
+                            name: "NSFW",
+                            value: obj.nsfw ? "Enabled" : "Disabled",
                         },
                         {
                             name: "Created at",
                             value: String(obj.createdAt),
                         },
-                    ]);
+                    );
 
-                if (obj.parent) emb.addFields([{ name: "Parent", value: `${obj.parent.name} [${obj.parentId}]` }]);
+                if (obj.parent) emb[0].addFields([{ name: "Parent", value: `${obj.parent.name} [${obj.parentId}]` }]);
             }
 
             else if (obj instanceof CategoryChannel) {
-                emb.setTitle(`Info about category channel: ${obj.name}`)
+                emb[0]
+                    .setTitle(`Info about category channel: ${obj.name}`)
                     .addFields([
                         {
                             name: "ID", value: obj.id,
                         },
                         {
                             name: "Type",
-                            value: Constants.channelTypes[obj.type],
+                            value: Constants.channelTypes[ChannelType[obj.type] as keyof typeof ChannelType],
                         },
                         {
                             name: "Children", value: String(obj.children.cache.size),
@@ -132,14 +142,16 @@ export default class InfoCommand extends KaikiCommand {
                     ]);
 
 
-                if (obj.parent) emb.addFields([{ name: "Parent", value: `${obj.parent.name} [${obj.parentId}]` }]);
+                if (obj.parent) emb[0].addFields([{ name: "Parent", value: `${obj.parent.name} [${obj.parentId}]` }]);
             }
 
             else if (obj instanceof ThreadChannel) {
-                emb.setTitle(`Info about Thread: ${obj.name}`)
+                emb[0]
+                    .setTitle(`Info about Thread: ${obj.name}`)
                     .addFields([
                         {
-                            name: "Type", value: Constants.channelTypes[obj.type],
+                            name: "Type",
+                            value: Constants.channelTypes[ChannelType[obj.type] as keyof typeof ChannelType],
                         },
                         {
                             name: "ID",
@@ -151,23 +163,25 @@ export default class InfoCommand extends KaikiCommand {
                     ]);
 
                 if (obj.ownerId) {
-                    emb.addFields([
-                        {
-                            name: "Author",
-                            value: message.guild.members.cache.get(obj.ownerId)?.user.tag || obj.ownerId,
-                        },
-                    ]);
+                    emb[0]
+                        .addFields([
+                            {
+                                name: "Author",
+                                value: message.guild.members.cache.get(obj.ownerId)?.user.tag || obj.ownerId,
+                            },
+                        ]);
 
                 }
 
-                if (obj.parent) emb.addFields([{ name: "Parent", value: `${obj.parent.name} [${obj.parentId}]` }]);
+                if (obj.parent) emb[0].addFields([{ name: "Parent", value: `${obj.parent.name} [${obj.parentId}]` }]);
             }
         }
 
         else if (obj instanceof GuildMember) {
             const presence = Utility.getMemberPresence(obj);
 
-            emb.setTitle(`Info about user: ${obj.user.tag}`)
+            emb[0]
+                .setTitle(`Info about user: ${obj.user.tag}`)
                 .setDescription(obj.displayName)
                 .setThumbnail(obj.user.displayAvatarURL())
                 .addFields([
@@ -181,31 +195,39 @@ export default class InfoCommand extends KaikiCommand {
             const uFlags = obj.user.flags?.toArray();
 
             if (uFlags?.length) {
-                emb.addFields([
-                    {
-                        name: "Flags",
-                        value: uFlags.map(flag => Constants.flags[flag]).join("\n"),
-                        inline: true,
-                    },
-                ]);
+                emb[0]
+                    .addFields([
+                        {
+                            name: "Flags",
+                            value: uFlags.map(flag => Constants.flags[flag]).join("\n"),
+                            inline: true,
+                        },
+                    ]);
             }
 
             if (obj.user.banner || (await obj.user.fetch(true)).banner) {
-                emb.setImage(obj.user.bannerURL({ size: 4096 }) || null);
+                emb[0]
+                    .setImage(obj.user.bannerURL({ size: 4096 }) || null);
             }
 
-            if (obj.user.bot) emb.addFields({ name: "Bot", value: "✅", inline: true });
+            if (obj.user.bot) emb[0].addFields({ name: "Bot", value: "✅", inline: true });
 
             if (presence) {
-                emb.addFields({ name: presence.name, value: presence.value });
+                emb[1] = new EmbedBuilder()
+                    .withOkColor(message);
+
+                emb[1]
+                    .addFields({ name: presence.name, value: presence.value });
                 if (presence.image) {
-                    emb.setImage(presence.image);
+                    emb[1]
+                        .setThumbnail(presence.image);
                 }
             }
         }
 
         else if (obj instanceof Role) {
-            emb.setTitle(`Info about role: ${obj.name}`)
+            emb[0]
+                .setTitle(`Info about role: ${obj.name}`)
                 .addFields([
                     {
                         name: "ID",
@@ -244,7 +266,8 @@ export default class InfoCommand extends KaikiCommand {
         }
 
         else if (obj instanceof Emoji) {
-            emb.setTitle(`Info about Emoji: ${obj.name} ${obj}`)
+            emb[0]
+                .setTitle(`Info about Emoji: ${obj.name} ${obj}`)
                 .addFields([
                     {
                         name: "Name", value: obj.name ?? "Null", inline: true,
@@ -266,13 +289,15 @@ export default class InfoCommand extends KaikiCommand {
 
 
             if (obj.url) {
-                emb.setImage(obj.url)
+                emb[0]
+                    .setImage(obj.url)
                     .addFields([{ name: "Link", value: obj.url, inline: true }]);
             }
         }
 
         else if (obj instanceof Message) {
-            emb.setTitle(`Info about message in channel: ${(obj.channel as TextChannel).name}`)
+            emb[0]
+                .setTitle(`Info about message in channel: ${(obj.channel as TextChannel).name}`)
                 .addFields([
                     {
                         name: "ID", value: obj.id, inline: true,
@@ -302,7 +327,8 @@ export default class InfoCommand extends KaikiCommand {
             const id = emoji[2].replace(">", "");
             const link = `https://cdn.discordapp.com/emojis/${id}.${emoji[0] === "<a" ? "gif" : "png"}`;
 
-            emb.setTitle("Info about custom emoji")
+            emb[0]
+                .setTitle("Info about custom emoji")
                 .setImage(link)
                 .addFields([
                     {
@@ -326,7 +352,8 @@ export default class InfoCommand extends KaikiCommand {
         }
 
         else {
-            emb.setTitle(`Info about default emoji: ${obj.emoji}`)
+            emb[0]
+                .setTitle(`Info about default emoji: ${obj.emoji}`)
                 .addFields([
                     {
                         name: "Name", value: obj.key, inline: true,
@@ -337,10 +364,9 @@ export default class InfoCommand extends KaikiCommand {
                         inline: true,
                     },
                 ]);
-
         }
 
-        return message.channel.send({ embeds: [emb] });
+        return message.channel.send({ embeds: emb });
 
     }
 }
