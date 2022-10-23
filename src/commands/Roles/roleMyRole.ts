@@ -10,7 +10,6 @@ export default class MyRoleCommand extends KaikiCommand {
             aliases: ["myrole", "mr"],
             clientPermissions: PermissionsBitField.Flags.ManageRoles,
             channel: "guild",
-
             description: "Checks your assigned user role. Can set role color, name and icon.",
             usage: ["color FF0000", "name Dreb", "icon :someEmoji:", "icon reset"],
         });
@@ -24,10 +23,10 @@ export default class MyRoleCommand extends KaikiCommand {
                 ["myroleicon", "icon", "image"],
             ],
         };
-        if (!Argument.isFailure(method)) {
-            return Flag.continue(method);
-        }
-        return Flag.cancel();
+
+        if (Argument.isFailure(method)) return Flag.fail(method);
+
+        return Flag.continue(method);
     }
 
     public async exec(message: Message<true>): Promise<Message> {
