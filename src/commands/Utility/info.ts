@@ -91,6 +91,10 @@ export default class InfoCommand extends KaikiCommand {
                             name: "Bitrate",
                             value: obj.bitrate / 1000 + "kbps",
                         },
+                        {
+                            name: "Link",
+                            value: obj.url,
+                        },
                     ]);
 
                 if (obj.parent) emb[0].addFields([{ name: "Parent", value: `${obj.parent.name} [${obj.parentId}]` }]);
@@ -116,6 +120,10 @@ export default class InfoCommand extends KaikiCommand {
                             name: "Created at",
                             value: String(obj.createdAt),
                         },
+                        {
+                            name: "Link",
+                            value: obj.url,
+                        },
                     );
 
                 if (obj.parent) emb[0].addFields([{ name: "Parent", value: `${obj.parent.name} [${obj.parentId}]` }]);
@@ -139,6 +147,10 @@ export default class InfoCommand extends KaikiCommand {
                             name: "Created at",
                             value: String(obj.createdAt),
                         },
+                        {
+                            name: "Link",
+                            value: obj.url,
+                        },
                     ]);
 
 
@@ -159,6 +171,10 @@ export default class InfoCommand extends KaikiCommand {
                         },
                         {
                             name: "Created at", value: String(obj.createdAt),
+                        },
+                        {
+                            name: "Link",
+                            value: obj.url,
                         },
                     ]);
 

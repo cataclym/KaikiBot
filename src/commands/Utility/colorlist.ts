@@ -4,11 +4,10 @@ import { colorTable, hexColorTable, imgFromColor } from "../../lib/Color";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import Utility from "../../lib/Utility";
 
-
 export default class ColorListCommand extends KaikiCommand {
     constructor() {
         super("colorlist", {
-            aliases: ["colorlist"],
+            aliases: ["colorlist", "colors", "clrs"],
             description: "Shows a list of all supported color names for the bot",
             typing: true,
             usage: "",

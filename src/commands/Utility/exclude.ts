@@ -1,5 +1,5 @@
 import { AkairoMessage } from "discord-akairo";
-import { EmbedBuilder, Message, Permissions, PermissionsBitField } from "discord.js";
+import { EmbedBuilder, Message, PermissionsBitField } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import { dadbotCheck, excludeCommand } from "../../lib/slashCommands/functions";
 
@@ -10,9 +10,6 @@ export default class ExcludeCommand extends KaikiCommand {
             aliases: ["exclude", "e", "excl"],
             clientPermissions: PermissionsBitField.Flags.ManageRoles,
             channel: "guild",
-            slash: true,
-            slashEphemeral: true,
-            slashOptions: [],
         });
     }
 

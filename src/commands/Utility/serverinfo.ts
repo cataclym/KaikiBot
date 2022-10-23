@@ -36,6 +36,7 @@ export default class ServerInfoCommand extends KaikiCommand {
                 { name: "Members", value: String(guild?.memberCount), inline: true },
                 { name: "Roles", value: String(guild?.roles.cache.size), inline: true },
                 { name: "Emotes", value: String(guild?.emojis.cache.size), inline: true },
+                { name: "MFA level", value: String(guild.mfaLevel), inline: true },
                 {
                     name: "Channels",
                     value: `Text: **${guild?.channels.cache.filter((channel) => channel.type === ChannelType.GuildText).size}**
@@ -43,6 +44,7 @@ Voice: **${guild?.channels.cache.filter((channel) => channel.type === ChannelTyp
 News: **${guild?.channels.cache.filter((channel) => channel.type === ChannelType.GuildNews).size}**`,
                     inline: true,
                 },
+                { name: "Maximum video-channel users", value: String(guild.maxVideoChannelUsers), inline: false },
                 {
                     name: "Features", value: guild?.features.length
                         ? guild?.features.map(f => Constants.guildFeatures[f] || f).sort().join("\n")
