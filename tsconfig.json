@@ -31,12 +31,6 @@
     ]
   },
   "include": [
-    "src/**/*",
-    "src/extensions/loglevel.d.ts",
-    "src/extensions/Discord.ts"
-  ],
-  "exclude": [
-    "node_modules/*",
-    "**/node_modules/*"
+    "src/**/*"
   ]
 }

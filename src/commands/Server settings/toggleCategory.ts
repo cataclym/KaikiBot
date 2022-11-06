@@ -1,9 +1,17 @@
-import { Category, Command } from "discord-akairo";
-import { EmbedBuilder, Guild, Message, PermissionsBitField } from "discord.js";
+import { AkairoModule, Command } from "discord-akairo";
+import { Collection, EmbedBuilder, Guild, Message, PermissionsBitField } from "discord.js";
 import { blockedCategories } from "../../lib/enums/blockedCategories";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
+
+class BlockedCategory<K extends string, V extends AkairoModule<any, any>> extends Collection<K, V> {
+    public id: keyof typeof blockedCategories;
+
+    public constructor(id: keyof typeof blockedCategories, iterable?: Iterable<readonly [K, V]>) {
+        super(iterable);
+        this.id = id;
+    }
+}
 
 export default class ToggleCategoryCommand extends KaikiCommand {
     constructor() {
@@ -18,10 +26,9 @@ export default class ToggleCategoryCommand extends KaikiCommand {
                     id: "category",
                     type: (_, phrase) => {
                         return this.handler.categories.find((__, k) => {
-                            k = k.toLowerCase();
                             return phrase
                                 .toLowerCase()
-                                .startsWith(k.slice(0, Math.max(phrase.length - 1, 1)));
+                                .startsWith(k.toLowerCase().slice(0, Math.max(phrase.length - 1, 1)));
                         });
                     },
                     otherwise: (msg: Message) => ({ embeds: [KaikiEmbeds.genericArgumentError(msg)] }),
@@ -30,10 +37,10 @@ export default class ToggleCategoryCommand extends KaikiCommand {
         });
     }
 
-    public async exec(message: Message<true>, { category }: { category: Category<string, Command> }): Promise<Message> {
+    public async exec(message: Message<true>, { category }: { category: BlockedCategory<string, Command> }): Promise<Message> {
 
         const guild = (message.guild as Guild);
-        const index = blockedCategories[category.id as keyof typeof blockedCategories];
+        const index = blockedCategories[category.id];
 
         let guildDb = await this.client.orm.guilds.findFirst({
             where: {

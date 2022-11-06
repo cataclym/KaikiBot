@@ -1,12 +1,12 @@
 import { Argument } from "discord-akairo";
-import { ChannelType, EmbedBuilder, Message, Permissions, PermissionsBitField, TextChannel } from "discord.js";
+import { ChannelType, EmbedBuilder, Message, PermissionsBitField, TextChannel } from "discord.js";
 import { JSONToMessageOptions } from "../../lib/GreetHandler";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
 type argumentMessage = {
-    [str: string]: string | any
+    [str: string]: string | Record<string, any>
 } | string
 
 export default class SayCommand extends KaikiCommand {
