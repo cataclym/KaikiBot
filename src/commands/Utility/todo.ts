@@ -1,8 +1,16 @@
-import { Argument, Flag, FlagType, PrefixSupplier } from "discord-akairo";
-import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
-import { EmbedBuilder, Message } from "discord.js";
+import { PrefixSupplier } from "discord-akairo";
+import {
+    ActionRowBuilder,
+    ButtonBuilder,
+    ButtonInteraction,
+    EmbedBuilder,
+    Events,
+    Message,
+    ModalActionRowComponentBuilder,
+    ModalBuilder,
+    TextInputBuilder,
+} from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-
 import Utility from "../../lib/Utility";
 
 export default class TodoCommand extends KaikiCommand {
@@ -10,30 +18,47 @@ export default class TodoCommand extends KaikiCommand {
         super("todo", {
             aliases: ["todo", "note"],
             description: "A personal todo list. The items are limited to 204 characters. Intended for small notes.",
-            usage: ["", "add make cake 07/07/2020", "remove 5", "remove last", "remove first", "remove all", "rm 1", "2"],
         });
     }
 
-    * args(): Generator<{ type: string[][] } | { unordered: true; default: 1; type: "number" }, { page: any } | Flag<FlagType.Continue>, string> {
-        const method = yield {
-            type: [
-                ["add"],
-                ["remove", "rem", "delete", "del", "rm"],
-            ],
-        };
-        const page = yield {
-            type: "number",
-            default: 1,
-            unordered: true,
-        };
+    public async exec(message: Message, { page }: { page: number }) {
 
-        if (!Argument.isFailure(method)) {
-            return Flag.continue(method);
-        }
-        return { page };
-    }
+        const currentTime = Date.now();
 
-    public async exec(message: Message, { page }: { page: number }): Promise<Message> {
+        page = (page <= 1 ? 0 : page - 1) || 0;
+
+        const row = new ActionRowBuilder<ButtonBuilder>()
+            .addComponents(new ButtonBuilder()
+                .setCustomId(`${currentTime}Add`)
+                .setEmoji("➕")
+                .setStyle(3),
+            )
+            .addComponents(new ButtonBuilder()
+                .setCustomId(`${currentTime}Remove`)
+                .setEmoji("➖")
+                .setStyle(4),
+            )
+            .addComponents(new ButtonBuilder()
+                .setCustomId(`${currentTime}Clear`)
+                .setEmoji("⬛")
+                .setStyle(4),
+            );
+
+        const row2 = new ActionRowBuilder<ButtonBuilder>()
+            .addComponents(
+                new ButtonBuilder()
+                    .setCustomId(`${currentTime}Backward`)
+                    // .setLabel("Backward")
+                    .setEmoji("⬅")
+                    .setStyle(2),
+            )
+            .addComponents(
+                new ButtonBuilder()
+                    .setCustomId(`${currentTime}Forward`)
+                    // .setLabel("Forward")
+                    .setEmoji("➡")
+                    .setStyle(2),
+            );
 
         const emb = new EmbedBuilder()
             .setTitle("Todo")
@@ -51,24 +76,128 @@ export default class TodoCommand extends KaikiCommand {
 
         if (!todoArray.length) {
             return message.channel.send({
-                embeds: [
-                    emb
-                        .setDescription("Your list is empty."),
-                ],
+                embeds: [emb.setDescription("Your list is empty.")],
             });
         }
 
         const reminderArray = todoArray.map((todo, i) => `${+i + 1}. ${Utility.trim(todo.String.split(/\r?\n/).join(" "), 204)}`);
-        const pages = [];
+        const pages: EmbedBuilder[] = [];
 
         for (let index = 10, p = 0; p < reminderArray.length; index += 10, p += 10) {
-            pages.push(EmbedBuilder.from(emb)
+            pages.push(new EmbedBuilder(emb.data)
                 .setDescription(reminderArray
-                    .slice(p, index).join("\n"),
+                    .slice(p, index)
+                    .join("\n"),
                 ),
             );
         }
 
-        return await sendPaginatedMessage(message, pages, { owner: message.author }, page - 1);
+        const sentMsg = await message.channel.send({
+            embeds: [pages[page]],
+            components: [row, row2],
+        });
+
+        const messageComponentCollector = sentMsg.createMessageComponentCollector({
+            filter: (i) => {
+                if ([`${currentTime}Add`, `${currentTime}Backward`, `${currentTime}Clear`, `${currentTime}Forward`, `${currentTime}Remove`].includes(i.customId) && message.author.id === i.user.id) {
+                    return true;
+                }
+                else {
+                    i.deferUpdate();
+                    return false;
+                }
+            },
+            time: 120000,
+        });
+
+        messageComponentCollector.on("collect", async (buttonInteraction: ButtonInteraction) => {
+
+            switch (buttonInteraction.customId) {
+                case `${currentTime}Add`: {
+                    await buttonInteraction.showModal(this.modal(currentTime));
+                    await sentMsg.edit({
+                        components: [],
+                    });
+                    messageComponentCollector.stop();
+
+                    this.client.on(Events.InteractionCreate, async interaction => {
+                        if (!interaction.isModalSubmit()) return;
+                        if (interaction.customId !== `${currentTime}AddModal`) {
+                            return;
+                        }
+                        else {
+                            await this.client.orm.todos.create({
+                                data: {
+                                    String: interaction.fields.getTextInputValue(`${currentTime}text1`),
+                                    UserId: BigInt(message.author.id),
+                                },
+                            });
+                            await interaction.reply({
+                                ephemeral: true,
+                                content: "Item added",
+                            });
+                        }
+                    });
+                    break;
+                }
+                case `${currentTime}Backward`: {
+                    await buttonInteraction.deferUpdate();
+                    page = page > 0 ? --page : pages.length - 1;
+                    await updateMsg();
+                    break;
+                }
+                case `${currentTime}Clear`: {
+                    await sentMsg.edit({
+                        components: [],
+                    });
+                    messageComponentCollector.stop();
+                    break;
+                }
+                case `${currentTime}Forward`: {
+                    await buttonInteraction.deferUpdate();
+                    page = page + 1 < pages.length ? ++page : 0;
+                    await updateMsg();
+                    break;
+                }
+                case `${currentTime}Remove`: {
+                    await buttonInteraction.showModal(this.modal(currentTime));
+                    await sentMsg.edit({
+                        components: [],
+                    });
+                    messageComponentCollector.stop();
+                    break;
+                }
+                default: {
+                    break;
+                }
+            }
+        });
+
+        messageComponentCollector.once("end", async () => {
+            await sentMsg.edit({
+                components: [],
+            });
+            messageComponentCollector.stop();
+        });
+
+        async function updateMsg() {
+            await sentMsg.edit({
+                embeds: [pages[page]],
+            });
+        }
     }
+
+    private modal = (currentTime: number) => new ModalBuilder()
+        .setTitle("Add a TODO item")
+        .setCustomId(`${currentTime}AddModal`)
+        .addComponents(new ActionRowBuilder<ModalActionRowComponentBuilder>()
+            .addComponents(new TextInputBuilder()
+                .setStyle(2)
+                .setMaxLength(204)
+                .setMinLength(2)
+                .setLabel("TODO")
+                .setCustomId(`${currentTime}text1`)
+                .setRequired(),
+            ),
+        );
 }
