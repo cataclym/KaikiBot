@@ -29,6 +29,10 @@ declare module "discord.js" {
         withErrorColor(m?: Message | Guild): this;
     }
 
+    export interface ButtonInteraction {
+        client: KaikiAkairoClient;
+    }
+
 }
 
 GuildMember.prototype.hasExcludedRole = function(member?: GuildMember) {

@@ -1,7 +1,7 @@
 import { AkairoMessage } from "discord-akairo";
 import { EmbedBuilder, Message, PermissionsBitField } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-import { dadbotCheck, excludeCommand } from "../../lib/slashCommands/functions";
+import { dadbotCheck, excludeCommand } from "../../lib/SlashCommands/functions";
 
 export default class ExcludeCommand extends KaikiCommand {
     constructor() {

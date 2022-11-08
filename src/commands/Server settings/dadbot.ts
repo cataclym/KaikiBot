@@ -2,7 +2,7 @@ import { PrefixSupplier } from "discord-akairo";
 import { EmbedBuilder, Message, PermissionsBitField } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
-import { excludeData } from "../../lib/slashCommands/data";
+import { excludeData } from "../../lib/SlashCommands/data";
 
 export default class DadBotConfigCommand extends KaikiCommand {
     constructor() {

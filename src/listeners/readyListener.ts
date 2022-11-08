@@ -3,7 +3,7 @@ import { ActivityType } from "discord.js";
 import logger from "loglevel";
 import KaikiListener from "../lib/Kaiki/KaikiListener";
 import { Migrations } from "../lib/Migrations/Migrations";
-import { excludeData } from "../lib/slashCommands/data";
+import { excludeData } from "../lib/SlashCommands/data";
 
 export default class ReadyListener extends KaikiListener {
     constructor() {

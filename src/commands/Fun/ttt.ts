@@ -1,6 +1,6 @@
 import { ActionRowBuilder, ButtonBuilder, ComponentType, EmbedBuilder, GuildMember, Message } from "discord.js";
 
-import TicTacToe from "../../lib/games/TTT";
+import TicTacToe from "../../lib/Games/TTT";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 

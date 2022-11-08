@@ -1,6 +1,6 @@
 import { AkairoModule, Command } from "discord-akairo";
 import { Collection, EmbedBuilder, Guild, Message, PermissionsBitField } from "discord.js";
-import { blockedCategories } from "../../lib/enums/blockedCategories";
+import { blockedCategories } from "../../lib/Enums/blockedCategories";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 

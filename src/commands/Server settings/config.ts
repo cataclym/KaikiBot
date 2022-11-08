@@ -2,7 +2,7 @@ import { BlockedCategories, Guilds } from "@prisma/client";
 import { Argument, Flag } from "discord-akairo";
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
 import { EmbedBuilder, Message, MessageCreateOptions, PermissionsBitField } from "discord.js";
-import { blockedCategories } from "../../lib/enums/blockedCategories";
+import { blockedCategories } from "../../lib/Enums/blockedCategories";
 import GreetHandler from "../../lib/GreetHandler";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import Utility from "../../lib/Utility";

@@ -11,7 +11,7 @@ import DatabaseProvider from "../../struct/db/DatabaseProvider";
 import AnniversaryRolesService from "../AnniversaryRolesService";
 import { resetDailyClaims } from "../functions";
 import IPackageJSON from "../Interfaces/IPackageJSON";
-import { MoneyService } from "../money/MoneyService";
+import { MoneyService } from "../Money/MoneyService";
 import Utility from "../Utility";
 import KaikiCommandHandler from "./KaikiCommandHandler";
 

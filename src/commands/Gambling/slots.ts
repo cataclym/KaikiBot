@@ -1,5 +1,5 @@
-import { Message, EmbedBuilder } from "discord.js";
-import Gambling from "../../lib/gambling/gambling";
+import { EmbedBuilder, Message } from "discord.js";
+import Gambling from "../../lib/Gambling/gambling";
 import KaikiArgumentsTypes from "../../lib/Kaiki/KaikiArgumentsTypes";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
