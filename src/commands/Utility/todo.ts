@@ -1,27 +1,25 @@
-import { PrefixSupplier } from "discord-akairo";
-import {
-    ActionRowBuilder,
-    ButtonBuilder,
-    ButtonInteraction,
-    EmbedBuilder,
-    Events,
-    Message,
-    ModalActionRowComponentBuilder,
-    ModalBuilder,
-    TextInputBuilder,
-} from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, EmbedBuilder, Message } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-import Utility from "../../lib/Utility";
+import { ButtonAdd } from "../../lib/Todo/Buttons/Add";
+import { ButtonRemove } from "../../lib/Todo/Buttons/Remove";
+import { Todo } from "../../lib/Todo/Common";
 
 export default class TodoCommand extends KaikiCommand {
     constructor() {
         super("todo", {
             aliases: ["todo", "note"],
             description: "A personal todo list. The items are limited to 204 characters. Intended for small notes.",
+            args: [
+                {
+                    id: "page",
+                    type: "integer",
+                    default: 1,
+                },
+            ],
         });
     }
 
-    public async exec(message: Message, { page }: { page: number }) {
+    public async exec(message: Message<true>, { page }: { page: number }) {
 
         const currentTime = Date.now();
 
@@ -48,58 +46,70 @@ export default class TodoCommand extends KaikiCommand {
             .addComponents(
                 new ButtonBuilder()
                     .setCustomId(`${currentTime}Backward`)
-                    // .setLabel("Backward")
                     .setEmoji("⬅")
                     .setStyle(2),
             )
             .addComponents(
                 new ButtonBuilder()
                     .setCustomId(`${currentTime}Forward`)
-                    // .setLabel("Forward")
                     .setEmoji("➡")
                     .setStyle(2),
             );
 
         const emb = new EmbedBuilder()
             .setTitle("Todo")
-            .setAuthor({
-                name: `${message.author.tag} 📔 To learn more about the command, type ${(this.handler.prefix as PrefixSupplier)(message)}help todo`,
-            })
             .setThumbnail("https://cdn.discordapp.com/attachments/717045690022363229/726600392107884646/3391ce4715f3c814d6067911438e5bf7.png")
             .withOkColor(message);
 
-        const todoArray = await this.client.orm.todos.findMany({
+        const todoArray = await message.client.orm.todos.findMany({
             where: {
-                UserId: BigInt(message.author.id),
+                DiscordUsers: {
+                    UserId: BigInt(message.author.id),
+                },
+            },
+            orderBy: {
+                Id: "asc",
             },
         });
 
+        let sentMsg: Message<true>;
+        const pages: EmbedBuilder[] = [];
+
         if (!todoArray.length) {
-            return message.channel.send({
+            sentMsg = await message.channel.send({
                 embeds: [emb.setDescription("Your list is empty.")],
+                components: [row],
             });
         }
 
-        const reminderArray = todoArray.map((todo, i) => `${+i + 1}. ${Utility.trim(todo.String.split(/\r?\n/).join(" "), 204)}`);
-        const pages: EmbedBuilder[] = [];
+        else {
 
-        for (let index = 10, p = 0; p < reminderArray.length; index += 10, p += 10) {
-            pages.push(new EmbedBuilder(emb.data)
-                .setDescription(reminderArray
-                    .slice(p, index)
-                    .join("\n"),
-                ),
-            );
+            const reminderArray = Todo.ReminderArray(todoArray);
+            if (page >= pages.length) page = 0;
+
+            for (let index = 10, p = 0; p < reminderArray.length; index += 10, p += 10) {
+                pages.push(new EmbedBuilder(emb.data)
+                    .setDescription(reminderArray
+                        .slice(p, index)
+                        .join("\n"),
+                    ),
+                );
+            }
+
+            sentMsg = await message.channel.send({
+                embeds: [pages[page]],
+                // Only show arrows if necessary
+                components: todoArray.length > 10
+                    ? [row, row2]
+                    : [row],
+            });
         }
 
-        const sentMsg = await message.channel.send({
-            embeds: [pages[page]],
-            components: [row, row2],
-        });
+        const buttonArray = [`${currentTime}Add`, `${currentTime}Backward`, `${currentTime}Clear`, `${currentTime}Forward`, `${currentTime}Remove`];
 
         const messageComponentCollector = sentMsg.createMessageComponentCollector({
             filter: (i) => {
-                if ([`${currentTime}Add`, `${currentTime}Backward`, `${currentTime}Clear`, `${currentTime}Forward`, `${currentTime}Remove`].includes(i.customId) && message.author.id === i.user.id) {
+                if (buttonArray.includes(i.customId) && message.author.id === i.user.id) {
                     return true;
                 }
                 else {
@@ -114,30 +124,8 @@ export default class TodoCommand extends KaikiCommand {
 
             switch (buttonInteraction.customId) {
                 case `${currentTime}Add`: {
-                    await buttonInteraction.showModal(this.modal(currentTime));
-                    await sentMsg.edit({
-                        components: [],
-                    });
                     messageComponentCollector.stop();
-
-                    this.client.on(Events.InteractionCreate, async interaction => {
-                        if (!interaction.isModalSubmit()) return;
-                        if (interaction.customId !== `${currentTime}AddModal`) {
-                            return;
-                        }
-                        else {
-                            await this.client.orm.todos.create({
-                                data: {
-                                    String: interaction.fields.getTextInputValue(`${currentTime}text1`),
-                                    UserId: BigInt(message.author.id),
-                                },
-                            });
-                            await interaction.reply({
-                                ephemeral: true,
-                                content: "Item added",
-                            });
-                        }
-                    });
+                    await ButtonAdd.Add(buttonInteraction, currentTime, todoArray, sentMsg);
                     break;
                 }
                 case `${currentTime}Backward`: {
@@ -160,11 +148,8 @@ export default class TodoCommand extends KaikiCommand {
                     break;
                 }
                 case `${currentTime}Remove`: {
-                    await buttonInteraction.showModal(this.modal(currentTime));
-                    await sentMsg.edit({
-                        components: [],
-                    });
                     messageComponentCollector.stop();
+                    await ButtonRemove.Remove(buttonInteraction, currentTime, todoArray, sentMsg);
                     break;
                 }
                 default: {
@@ -186,18 +171,4 @@ export default class TodoCommand extends KaikiCommand {
             });
         }
     }
-
-    private modal = (currentTime: number) => new ModalBuilder()
-        .setTitle("Add a TODO item")
-        .setCustomId(`${currentTime}AddModal`)
-        .addComponents(new ActionRowBuilder<ModalActionRowComponentBuilder>()
-            .addComponents(new TextInputBuilder()
-                .setStyle(2)
-                .setMaxLength(204)
-                .setMinLength(2)
-                .setLabel("TODO")
-                .setCustomId(`${currentTime}text1`)
-                .setRequired(),
-            ),
-        );
 }
