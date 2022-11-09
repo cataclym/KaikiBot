@@ -1,5 +1,5 @@
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
-import { Message, EmbedBuilder } from "discord.js";
+import { EmbedBuilder, Message } from "discord.js";
 import fetch from "node-fetch";
 import querystring from "querystring";
 import { List } from "../../lib/Interfaces/IUrbanResponse";

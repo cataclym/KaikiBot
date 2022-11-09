@@ -1,6 +1,6 @@
 import { PrefixSupplier } from "discord-akairo";
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
-import { Message, EmbedBuilder } from "discord.js";
+import { EmbedBuilder, Message } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 export default class RemoveEmoteReactCommand extends KaikiCommand {

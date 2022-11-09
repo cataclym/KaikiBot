@@ -1,7 +1,7 @@
-import { GuildMember, Message, EmbedBuilder } from "discord.js";
+import { EmbedBuilder, GuildMember, Message } from "discord.js";
 import { hexColorTable } from "../Color";
-import { processAPIRequest } from "./APIProcessor";
 import { endpointData } from "../Interfaces/IAPIData";
+import { processAPIRequest } from "./APIProcessor";
 
 type APIs = "bonk"
 	| "cry"

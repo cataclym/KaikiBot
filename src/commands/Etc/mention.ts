@@ -1,5 +1,5 @@
 import { PrefixSupplier } from "discord-akairo";
-import { Message, EmbedBuilder, User } from "discord.js";
+import { EmbedBuilder, Message, User } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 

@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import chalk from "chalk";
-import { GuildMember, Message, EmbedBuilder } from "discord.js";
+import { EmbedBuilder, GuildMember, Message } from "discord.js";
 import logger from "loglevel";
 import Constants from "../struct/Constants";
 import { regexpType } from "./Types/TCustom";

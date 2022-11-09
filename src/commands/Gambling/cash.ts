@@ -1,4 +1,4 @@
-import { Message, EmbedBuilder, User } from "discord.js";
+import { EmbedBuilder, Message, User } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 export default class cash extends KaikiCommand {

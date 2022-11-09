@@ -1,6 +1,6 @@
+import chalk from "chalk";
 import logger from "loglevel";
 import prefix from "loglevel-plugin-prefix";
-import chalk from "chalk";
 
 type logColors = {
 		TRACE: chalk.Chalk,

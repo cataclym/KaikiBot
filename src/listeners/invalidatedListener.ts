@@ -8,6 +8,7 @@ export default class InvalidatedListener extends Listener {
             emitter: "client",
         });
     }
+
     // Emitted when the client's session becomes invalidated.
 
     public async exec(): Promise<never> {

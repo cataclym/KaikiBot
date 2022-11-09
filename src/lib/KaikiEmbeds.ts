@@ -1,5 +1,5 @@
 import { PrefixSupplier } from "discord-akairo";
-import { Guild, Message, EmbedBuilder } from "discord.js";
+import { EmbedBuilder, Guild, Message } from "discord.js";
 
 export default class KaikiEmbeds {
 

@@ -1,4 +1,4 @@
-import { Message, EmbedBuilder } from "discord.js";
+import { EmbedBuilder, Message } from "discord.js";
 import fetch from "node-fetch";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiUtil from "../../lib/Kaiki/KaikiUtil";

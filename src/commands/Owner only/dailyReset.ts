@@ -1,5 +1,5 @@
+import { EmbedBuilder, Message } from "discord.js";
 import { resetDailyClaims } from "../../lib/functions";
-import { Message, EmbedBuilder } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 
