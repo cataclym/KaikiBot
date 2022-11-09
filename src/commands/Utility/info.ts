@@ -4,6 +4,7 @@ import {
     BaseChannel,
     CategoryChannel,
     ChannelType,
+    Collection,
     EmbedBuilder,
     Emoji,
     ForumChannel,
@@ -13,6 +14,7 @@ import {
     NewsChannel,
     Role,
     StageChannel,
+    Sticker,
     TextChannel,
     ThreadChannel,
     VoiceChannel,
@@ -37,11 +39,17 @@ export default class InfoCommand extends KaikiCommand {
             args: [
                 {
                     id: "obj",
-                    type: Argument.union("member", "channel", "role", "emoji", (message, content) => {
-                        return emojis.find(content);
-                    }, "guildMessage", Constants.EMOTE_REGEX, (_, _phrase) => _phrase.length <= 0
-                        ? ""
-                        : undefined),
+                    type: Argument.union("member",
+                        "channel",
+                        "role",
+                        "emoji",
+                        "guildMessage",
+                        (message, content) => emojis.find(content),
+                        Constants.EMOTE_REGEX,
+                        (message) => message.stickers,
+                        (_, _phrase) => _phrase.length <= 0
+                            ? ""
+                            : undefined),
                     match: "content",
                     otherwise: async (m: Message) => ({
                         embeds: [await KaikiEmbeds.errorMessage(m, "A channel, user, role, emoji or message was not found. Make sure to provide a valid argument!")],
@@ -52,7 +60,7 @@ export default class InfoCommand extends KaikiCommand {
         });
     }
 
-    public async exec(message: Message<true>, { obj }: { obj: GuildBasedChannel | GuildMember | Role | regexpType | emojis.Emoji | Emoji | Message }): Promise<Message | void> {
+    public async exec(message: Message<true>, { obj }: { obj: GuildBasedChannel | GuildMember | Role | regexpType | Collection<string, Sticker> | emojis.Emoji | Emoji | Message }): Promise<Message | void> {
 
         if (!obj) {
             if (!message.member) return;
@@ -63,7 +71,6 @@ export default class InfoCommand extends KaikiCommand {
             new EmbedBuilder()
                 .withOkColor(message),
         ];
-
         if (obj instanceof BaseChannel) {
             if (obj instanceof VoiceChannel || obj instanceof StageChannel) {
                 emb[0]
@@ -311,6 +318,38 @@ export default class InfoCommand extends KaikiCommand {
             }
         }
 
+        else if (obj instanceof Collection) {
+            let i = 0;
+            obj.forEach(sticker => emb[i++] = new EmbedBuilder()
+                .setTitle(`Info about Sticker: ${sticker.name}`)
+                .setImage(sticker.url)
+                .addFields({
+                    name: "ID",
+                    value: sticker.id,
+                    inline: true,
+
+                },
+                {
+                    name: "Tags",
+                    value: sticker.tags || "N/A",
+                    inline: true,
+                },
+                {
+                    name: "Description",
+                    value: sticker.description || "N/A",
+                    inline: true,
+                },
+                {
+                    name: "Type",
+                    value: sticker.type === 1
+                        ? "Official"
+                        : "Guild" || "N/A",
+                    inline: true,
+                })
+                .withOkColor(message),
+            );
+        }
+
         else if (obj instanceof Message) {
             emb[0]
                 .setTitle(`Info about message in channel: ${(obj.channel as TextChannel).name}`)
@@ -331,7 +370,6 @@ export default class InfoCommand extends KaikiCommand {
                         inline: true,
                     },
                 ]);
-
         }
 
         else if (isRegex(obj)) {
