@@ -1,4 +1,4 @@
-import { Message, MessageEmbed } from "discord.js";
+import { EmbedBuilder, Message, PermissionsBitField } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 import Roles from "../../lib/Roles";
@@ -7,17 +7,21 @@ import Utility from "../../lib/Utility";
 export default class MyRoleSubCommandName extends KaikiCommand {
     constructor() {
         super("myrolename", {
-            clientPermissions: ["MANAGE_ROLES"],
+            clientPermissions: PermissionsBitField.Flags.ManageRoles,
             channel: "guild",
-            args: [{
-                id: "name",
-                match: "rest",
-                otherwise: (m: Message) => ({
-                    embeds: [new MessageEmbed()
-                        .setTitle("Please provide a name")
-                        .withErrorColor(m)],
-                }),
-            }],
+            args: [
+                {
+                    id: "name",
+                    match: "rest",
+                    otherwise: (m: Message) => ({
+                        embeds: [
+                            new EmbedBuilder()
+                                .setTitle("Please provide a name")
+                                .withErrorColor(m),
+                        ],
+                    }),
+                },
+            ],
         });
     }
 
@@ -27,7 +31,7 @@ export default class MyRoleSubCommandName extends KaikiCommand {
 
         if (!myRole) return message.channel.send({ embeds: [await KaikiEmbeds.embedFail(message)] });
 
-        const botRole = message.guild?.me?.roles.highest,
+        const botRole = message.guild?.members.me?.roles.highest,
             isPosition = botRole?.comparePositionTo(myRole);
 
         if (isPosition && isPosition <= 0) {
@@ -37,9 +41,11 @@ export default class MyRoleSubCommandName extends KaikiCommand {
         const oldName = myRole.name;
         await myRole.setName(Utility.trim(name, 32));
         return message.channel.send({
-            embeds: [new MessageEmbed()
-                .setDescription(`You have changed \`${oldName}\`'s name to \`${name}\`!`)
-                .setColor(myRole.color)],
+            embeds: [
+                new EmbedBuilder()
+                    .setDescription(`You have changed \`${oldName}\`'s name to \`${name}\`!`)
+                    .setColor(myRole.color),
+            ],
         });
     }
 }

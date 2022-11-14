@@ -1,4 +1,4 @@
-import { Message, MessageEmbed, Role } from "discord.js";
+import { EmbedBuilder, Message, PermissionsBitField, Role } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
@@ -11,8 +11,8 @@ export default class RoleRenameCommand extends KaikiCommand {
             aliases: ["rolerename", "rolename", "rn"],
             description: "Renames a given role. The role you specify has to be lower in the role hierarchy than your highest role. Use 'quotes around rolename with spaces'.",
             usage: "@Gamer weeb",
-            clientPermissions: "MANAGE_ROLES",
-            userPermissions: "MANAGE_ROLES",
+            clientPermissions: PermissionsBitField.Flags.ManageRoles,
+            userPermissions: PermissionsBitField.Flags.ManageRoles,
             channel: "guild",
             args: [
                 {
@@ -41,10 +41,12 @@ export default class RoleRenameCommand extends KaikiCommand {
                     throw new Error("Error: Failed to edit role.\n" + e);
                 });
             return message.channel.send({
-                embeds: [new MessageEmbed()
-                    .setTitle("Success!")
-                    .setDescription(`\`${oldName}\` renamed to ${role}.`)
-                    .withOkColor(message)],
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle("Success!")
+                        .setDescription(`\`${oldName}\` renamed to ${role}.`)
+                        .withOkColor(message),
+                ],
             });
         }
 

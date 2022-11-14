@@ -1,7 +1,7 @@
 import { GuildMember, Message } from "discord.js";
-import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 import getKawaiiResponseEmbed from "../../lib/APIs/KawaiiAPI";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 export default class Lick extends KaikiCommand {
     constructor() {
@@ -10,11 +10,13 @@ export default class Lick extends KaikiCommand {
             description: "Lick someone... I guess...?",
             usage: ["", "@dreb"],
             typing: true,
-            args: [{
-                id: "mention",
-                type: "member",
-                default: null,
-            }],
+            args: [
+                {
+                    id: "mention",
+                    type: "member",
+                    default: null,
+                },
+            ],
         });
     }
 

@@ -1,4 +1,4 @@
-import { GuildMember, Message, MessageEmbed } from "discord.js";
+import { GuildMember, Message } from "discord.js";
 import sendNekosPics from "../../lib/APIs/nekos.life";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
@@ -10,27 +10,18 @@ export default class spank extends KaikiCommand {
             description: "OwO Being naughty are we?",
             usage: ["", "@dreb"],
             typing: true,
-            args: [{
-                id: "mention",
-                type: "member",
-                default: null,
-            }],
+            onlyNsfw: true,
+            args: [
+                {
+                    id: "mention",
+                    type: "member",
+                    default: null,
+                },
+            ],
         });
     }
 
     public async exec(message: Message, { mention }: { mention: GuildMember | null }): Promise<Message> {
-        if (message.channel.type === "GUILD_TEXT" && message.channel.nsfw) {
-            return message.channel.send({ embeds: [await sendNekosPics(message, "spank", mention)] });
-        }
-
-        else {
-            return message.channel.send({
-                embeds: [new MessageEmbed({
-                    title: "Error",
-                    description: "Channel is not NSFW.",
-                })
-                    .withErrorColor(message)],
-            });
-        }
+        return message.channel.send({ embeds: [await sendNekosPics(message, "spank", mention)] });
     }
 }

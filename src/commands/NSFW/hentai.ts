@@ -1,6 +1,6 @@
 import { Message } from "discord.js";
-import { grabHentai, typesArray } from "./hentaiService";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+import { grabHentai, typesArray } from "./hentaiService";
 
 
 export default class HentaiCommand extends KaikiCommand {
@@ -9,12 +9,14 @@ export default class HentaiCommand extends KaikiCommand {
             aliases: ["hentai"],
             description: "Fetches hentai images from Booru boards",
             typing: true,
-            args: [{
-                id: "tags",
-                match: "rest",
-                type: "string",
-                default: null,
-            }],
+            args: [
+                {
+                    id: "tags",
+                    match: "rest",
+                    type: "string",
+                    default: null,
+                },
+            ],
         });
     }
 

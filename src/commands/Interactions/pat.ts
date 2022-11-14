@@ -10,11 +10,13 @@ export default class Pat extends KaikiCommand {
             description: "Pat a cat!\nOr a guildmember...",
             usage: ["", "@dreb"],
             typing: true,
-            args: [{
-                id: "mention",
-                type: "member",
-                default: null,
-            }],
+            args: [
+                {
+                    id: "mention",
+                    type: "member",
+                    default: null,
+                },
+            ],
         });
     }
 

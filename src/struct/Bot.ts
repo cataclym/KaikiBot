@@ -1,14 +1,12 @@
 import chalk from "chalk";
 import { execSync } from "child_process";
-import { MessageEmbed, Team } from "discord.js";
+import { EmbedBuilder, Team } from "discord.js";
 import fs from "fs/promises";
 import logger from "loglevel";
 import KaikiAkairoClient from "../lib/Kaiki/KaikiAkairoClient";
-import MongoDb from "../lib/Migrations/MongoDb";
 
 export default class Bot {
     private readonly client: KaikiAkairoClient;
-    private mongoDb: MongoDb;
 
     constructor(client: KaikiAkairoClient) {
         this.client = client;
@@ -27,20 +25,14 @@ export default class Bot {
         }
 
         try {
-            execSync("hash neofetch");
+            execSync("command -v npm >/dev/null 2>&1");
         }
         catch {
             this.client.commandHandler.remove(this.client.commandHandler.findCommand("neofetch").id);
             logger.warn("Neofetch wasn't detected! Neofetch command will be disabled.");
         }
 
-        this.loadPackageJSON()
-            .then(() => {
-                if (this.client.package.optionalDependencies["mongoose"]) {
-                    this.mongoDb = new MongoDb();
-                }
-            });
-
+        void this.loadPackageJSON();
 
         this.client.login(process.env.CLIENT_TOKEN)
             .then(async () => {
@@ -66,7 +58,6 @@ export default class Bot {
                     this.client.owner = owner;
                 }
 
-
                 this.client.ownerID = this.client.owner.id;
 
                 logger.info(`Bot account: ${chalk.greenBright(this.client.user.tag)}`);
@@ -78,10 +69,11 @@ export default class Bot {
                     const emoji = ["✨", "♥️", "✅", "🇹🇼"][Math.floor(Math.random() * 4)];
                     await this.client.owner.send({
                         embeds:
-                            [new MessageEmbed()
-                                .setTitle(emoji)
-                                .setDescription("Bot is online!")
-                                .withOkColor(),
+                            [
+                                new EmbedBuilder()
+                                    .setTitle(emoji)
+                                    .setDescription("Bot is online!")
+                                    .withOkColor(),
                             ],
                     });
                 }

@@ -1,8 +1,8 @@
 import { BlockedCategories, Guilds } from "@prisma/client";
-import { Argument, Flag, PrefixSupplier } from "discord-akairo";
+import { Argument, Flag } from "discord-akairo";
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
-import { Message, MessageEmbed, MessageOptions, Permissions } from "discord.js";
-import { blockedCategories } from "../../lib/enums/blockedCategories";
+import { EmbedBuilder, Message, MessageCreateOptions, PermissionsBitField } from "discord.js";
+import { blockedCategories } from "../../lib/Enums/blockedCategories";
 import GreetHandler from "../../lib/GreetHandler";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import Utility from "../../lib/Utility";
@@ -14,19 +14,19 @@ export default class ConfigCommand extends KaikiCommand {
             channel: "guild",
             description: "Configure or display guild specific settings. Will always respond to default prefix regardless of server prefix.",
             usage: ["", "dadbot enable", "anniversary enable", "prefix !", "okcolor <hex>", "errorcolor <hex>"],
-            userPermissions: Permissions.FLAGS.MANAGE_MESSAGES,
-            prefix: (msg: Message) => {
-                const mentions = [`<@${this.client.user?.id}>`, `<@!${this.client.user?.id}>`];
-                const prefixes = [(this.handler.prefix as PrefixSupplier)(msg) as string, process.env.PREFIX || ";"];
-                if (this.client.user) {
-                    return [...prefixes, ...mentions];
-                }
-                return prefixes;
-            },
+            userPermissions: PermissionsBitField.Flags.ManageMessages,
+            // prefix: (msg: Message) => {
+            //     const mentions = [`<@${this.client.user?.id}>`, `<@!${this.client.user?.id}>`];
+            //     const prefixes = [(this.handler.prefix as PrefixSupplier)(msg) as string, process.env.PREFIX || ";"];
+            //     if (this.client.user) {
+            //         return [...prefixes, ...mentions];
+            //     }
+            //     return prefixes;
+            // },
         });
     }
 
-    * args(): unknown {
+    * args(): Generator<{ type: string[][] }, Flag> {
         const method = yield {
             type: [
                 ["config-dadbot", "dadbot", "dad"],
@@ -39,6 +39,7 @@ export default class ConfigCommand extends KaikiCommand {
         if (!Argument.isFailure(method)) {
             return Flag.continue(method as string);
         }
+        return Flag.cancel();
     }
 
     public async exec(message: Message<true>): Promise<Message> {
@@ -63,36 +64,76 @@ export default class ConfigCommand extends KaikiCommand {
             .map(e => blockedCategories[e.CategoryTarget])
             .filter(Boolean);
 
-        const firstPage: MessageOptions = {
-            embeds: [new MessageEmbed()
-                .withOkColor(message)
-                .addField("Dad-bot",
-                    Utility.toggledTernary(DadBot), true)
-                .addField("Anniversary-Roles",
-                    Utility.toggledTernary(Anniversary), true)
-                .addField("Guild prefix",
-                    Prefix === process.env.PREFIX
-                        ? `\`${process.env.PREFIX}\` (Default)`
-                        : `\`${Prefix}\``, true)
-                .addField("Embed ok color",
-                    Number(OkColor).toString(16), true)
-                .addField("Embed error color",
-                    Number(ErrorColor).toString(16), true)
-                .addField("\u200B", "\u200B", true)
-                .addField("Welcome message",
-                    Utility.toggledTernary(!!WelcomeChannel), true)
-                .addField("Goodbye message",
-                    Utility.toggledTernary(!!ByeChannel), true)
-                .addField("\u200B", "\u200B", true)
-                .addField("Sticky roles",
-                    Utility.toggledTernary(await this.client.guildsDb.get(message.guildId, "StickyRoles", false)), false)],
+        const firstPage: MessageCreateOptions = {
+            embeds: [
+                new EmbedBuilder()
+                    .withOkColor(message)
+                    .addFields([
+                        {
+                            name: "Dad-bot",
+                            value: Utility.toggledTernary(DadBot),
+                            inline: true,
+                        },
+                        {
+                            name: "Anniversary-Roles",
+                            value: Utility.toggledTernary(Anniversary),
+                            inline: true,
+                        },
+                        {
+                            name: "Guild prefix",
+                            value: Prefix === process.env.PREFIX
+                                ? `\`${process.env.PREFIX}\` (Default)`
+                                : `\`${Prefix}\``,
+                            inline: true,
+                        },
+                        {
+                            name: "Embed ok color",
+                            value: Number(OkColor).toString(16),
+                            inline: true,
+                        },
+                        {
+                            name: "Embed error color",
+                            value: Number(ErrorColor).toString(16),
+                            inline: true,
+                        },
+                        {
+                            name: "\u200B", value: "\u200B",
+                            inline: true,
+                        },
+                        {
+                            name: "Welcome message",
+                            value: Utility.toggledTernary(!!WelcomeChannel),
+                            inline: true,
+                        },
+                        {
+                            name: "Goodbye message",
+                            value: Utility.toggledTernary(!!ByeChannel),
+                            inline: true,
+                        },
+                        {
+                            name: "\u200B", value: "\u200B",
+                            inline: true,
+                        },
+                        {
+                            name: "Sticky roles",
+                            value: Utility.toggledTernary(await this.client.guildsDb.get(message.guildId, "StickyRoles", false)),
+                            inline: false,
+                        },
+                    ]),
+            ],
         };
 
         if (categories.length && firstPage.embeds) {
-            (firstPage.embeds[0] as MessageEmbed).addField("Disabled categories", categories.join("\n"), false);
+            (firstPage.embeds[0] as EmbedBuilder).addFields([
+                {
+                    name: "Disabled categories",
+                    value: categories.join("\n"),
+                    inline: false,
+                },
+            ]);
         }
 
-        const pages: MessageOptions[] = [];
+        const pages: MessageCreateOptions[] = [];
         pages.push(firstPage);
 
         if (db.WelcomeMessage) {

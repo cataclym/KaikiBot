@@ -1,4 +1,4 @@
-import { Message, MessageAttachment } from "discord.js";
+import { AttachmentBuilder, Message } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 import Utility from "../../lib/Utility";
@@ -31,6 +31,6 @@ export default class SetAvatarCommand extends KaikiCommand {
             throw new Error("Unsupported image type. Please provide a PNG, JPEG or GIF link.");
         }
 
-        return message.channel.send({ content: "Avatar set.", files: [new MessageAttachment(img)] });
+        return message.channel.send({ content: "Avatar set.", files: [new AttachmentBuilder(img)] });
     }
 }

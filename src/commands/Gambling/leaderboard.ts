@@ -1,5 +1,5 @@
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
-import { Message, MessageEmbed } from "discord.js";
+import { EmbedBuilder, Message } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 export default class LeaderboardCommand extends KaikiCommand {
@@ -21,17 +21,21 @@ export default class LeaderboardCommand extends KaikiCommand {
                     user: String(e.UserId),
                     str: `${e.Amount} ${currencySymbol}`,
                 })),
-            embed = new MessageEmbed()
+            embed = new EmbedBuilder()
                 .setTitle("Server currency leaderboard")
                 .withOkColor(message),
-            embeds: MessageEmbed[] = [];
+            embeds: EmbedBuilder[] = [];
 
         for (let i = 9, p = 0; p < guildOnlyEntries.length; i += 9, p += 9) {
 
-            const emb = new MessageEmbed(embed);
+            const emb = EmbedBuilder.from(embed);
 
             guildOnlyEntries.slice(p, i).forEach((e) => {
-                emb.addField(message.guild?.members.cache.get(e.user)?.user.tag ?? e.user, e.str, true);
+                emb.addFields({
+                    name: message.guild?.members.cache.get(e.user)?.user.tag ?? e.user,
+                    value: e.str,
+                    inline: true,
+                });
             });
 
             embeds.push(emb);

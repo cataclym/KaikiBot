@@ -1,5 +1,5 @@
-export enum blockedCategories {
-    Administration,
+export declare enum blockedCategories {
+    Administration = 0,
     Anime,
     Emotes,
     Fun,

@@ -1,5 +1,5 @@
 import { Argument } from "discord-akairo";
-import { Guild, Message, MessageEmbed } from "discord.js";
+import { EmbedBuilder, Guild, Message, PermissionsBitField } from "discord.js";
 import { hexColorTable } from "../../lib/Color";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
@@ -8,7 +8,7 @@ import KaikiEmbeds from "../../lib/KaikiEmbeds";
 export default class OkColorConfigCommand extends KaikiCommand {
     constructor() {
         super("config-okcolor", {
-            userPermissions: "ADMINISTRATOR",
+            userPermissions: PermissionsBitField.Flags.Administrator,
             channel: "guild",
             args: [
                 {
@@ -28,11 +28,13 @@ export default class OkColorConfigCommand extends KaikiCommand {
         await this.client.guildsDb.set(guildID, "OkColor", value);
 
         return message.channel.send({
-            embeds: [new MessageEmbed({
-                title: "Success!",
-                description: `okColor has been set to \`${value}\` !`,
-            })
-                .withOkColor(message)],
+            embeds: [
+                new EmbedBuilder({
+                    title: "Success!",
+                    description: `okColor has been set to \`${value}\` !`,
+                })
+                    .withOkColor(message),
+            ],
         });
     }
 }

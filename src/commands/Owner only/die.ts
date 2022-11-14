@@ -1,8 +1,8 @@
-import { InteractionCollector, Message, MessageActionRow, MessageButton, MessageEmbed } from "discord.js";
-import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+import { ActionRowBuilder, ButtonBuilder, EmbedBuilder, InteractionCollector, Message } from "discord.js";
 
 
 import logger from "loglevel";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 export default class KillBotProcess extends KaikiCommand {
     constructor() {
@@ -16,17 +16,23 @@ export default class KillBotProcess extends KaikiCommand {
     public async exec(message: Message): Promise<void> {
 
         const deleteMsg = await message.channel.send({
-            embeds: [new MessageEmbed()
-                .setDescription("Do you *really* want to shut me down?")
-                .withOkColor(message)],
+            embeds: [
+                new EmbedBuilder()
+                    .setDescription("Do you *really* want to shut me down?")
+                    .withOkColor(message),
+            ],
             isInteraction: true,
-            components: [new MessageActionRow({
-                components:
-                    [new MessageButton()
-                        .setCustomId("1")
-                        .setLabel("Click to kill")
-                        .setStyle("DANGER")],
-            })],
+            components: [
+                new ActionRowBuilder<ButtonBuilder>({
+                    components:
+                        [
+                            new ButtonBuilder()
+                                .setCustomId("1")
+                                .setLabel("Click to kill")
+                                .setStyle(4),
+                        ],
+                }),
+            ],
         });
 
         const buttonListener = new InteractionCollector(message.client, {
@@ -39,10 +45,18 @@ export default class KillBotProcess extends KaikiCommand {
 
             if (mci.isButton()) {
                 await mci.reply({
-                    ephemeral: true, embeds: [new MessageEmbed()
-                        .setAuthor({ name: "Dying", iconURL: message.client.user?.displayAvatarURL({ dynamic: true }) })
-                        .addField("Shutting down", "See you later", false)
-                        .withOkColor(message)],
+                    ephemeral: true, embeds: [
+                        new EmbedBuilder()
+                            .setAuthor({ name: "Dying", iconURL: message.client.user?.displayAvatarURL() })
+                            .addFields([
+                                {
+                                    name: "Shutting down",
+                                    value: "See you later",
+                                    inline: false,
+                                },
+                            ])
+                            .withOkColor(message),
+                    ],
                 });
             }
 

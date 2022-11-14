@@ -1,4 +1,4 @@
-import { Collection, Message, MessageEmbed, Permissions, Role } from "discord.js";
+import { Collection, EmbedBuilder, Message, PermissionsBitField, Role } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
@@ -9,8 +9,8 @@ export default class RoleDeleteCommand extends KaikiCommand {
     constructor() {
         super("roledelete", {
             aliases: ["roledelete", "deleterole", "dr"],
-            clientPermissions: Permissions.FLAGS.MANAGE_ROLES,
-            userPermissions: Permissions.FLAGS.MANAGE_ROLES,
+            clientPermissions: PermissionsBitField.Flags.ManageRoles,
+            userPermissions: PermissionsBitField.Flags.ManageRoles,
             description: "Deletes one or more roles",
             usage: "@gamers @streamers @weebs",
             channel: "guild",
@@ -47,25 +47,31 @@ export default class RoleDeleteCommand extends KaikiCommand {
 
         if (otherRoles.length) {
             return message.channel.send({
-                embeds: [new MessageEmbed()
-                    .setDescription(`Role(s) \`${otherRoles.join("`, `")}\` could not be deleted due to insufficient permissions.`)
-                    .withErrorColor(message)],
+                embeds: [
+                    new EmbedBuilder()
+                        .setDescription(`Role(s) \`${otherRoles.join("`, `")}\` could not be deleted due to insufficient permissions.`)
+                        .withErrorColor(message),
+                ],
             });
         }
 
         else if (deletedRoles.length) {
             return message.channel.send({
-                embeds: [new MessageEmbed()
-                    .setDescription(`Deleted: \`${deletedRoles.join("`, `")}\``)
-                    .withOkColor(message)],
+                embeds: [
+                    new EmbedBuilder()
+                        .setDescription(`Deleted: \`${deletedRoles.join("`, `")}\``)
+                        .withOkColor(message),
+                ],
             });
         }
 
         else {
             return message.channel.send({
-                embeds: [new MessageEmbed()
-                    .setDescription("Couldn't delete roles!")
-                    .withErrorColor(message)],
+                embeds: [
+                    new EmbedBuilder()
+                        .setDescription("Couldn't delete roles!")
+                        .withErrorColor(message),
+                ],
             });
         }
     }

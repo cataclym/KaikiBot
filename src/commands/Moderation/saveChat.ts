@@ -1,8 +1,8 @@
-import { Message, MessageReaction } from "discord.js";
+import { Collection, Message, MessageReaction, PermissionsBitField } from "discord.js";
+import fs from "fs";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
-import fs from "fs";
 
 export default class SaveChatCommand extends KaikiCommand {
     constructor() {
@@ -10,7 +10,7 @@ export default class SaveChatCommand extends KaikiCommand {
             aliases: ["savechat"],
             description: "Saves a number of messages, and sends it to you.",
             usage: "100",
-            userPermissions: "MANAGE_MESSAGES",
+            userPermissions: PermissionsBitField.Flags.ManageMessages,
             channel: "guild",
             args: [
                 {
@@ -28,7 +28,7 @@ export default class SaveChatCommand extends KaikiCommand {
 
         const collection = await message.channel.messages.fetch({ limit: amount, before: message.id });
 
-        const attachment = Buffer.from(collection.map(m => {
+        const attachment = Buffer.from((collection as Collection<string, Message<boolean>>).map((m: Message<true | false>) => {
             return `${m.createdAt.toTimeString().slice(0, 8)} ${m.createdAt.toDateString()} - ${m.author.tag}: ${m.content} ${(m.attachments ? m.attachments.map(a => a.url).join("\n") : "")}`;
         })
             .reverse()

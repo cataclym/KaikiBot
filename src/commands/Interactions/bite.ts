@@ -1,8 +1,8 @@
 import { GuildMember, Message } from "discord.js";
-import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 
 import getPurrBotResponseEmbed from "../../lib/APIs/PurrBot";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 export default class Bite extends KaikiCommand {
     constructor() {
@@ -11,11 +11,13 @@ export default class Bite extends KaikiCommand {
             description: "Bite someone >:)",
             usage: [""],
             typing: true,
-            args: [{
-                id: "mention",
-                type: "member",
-                default: null,
-            }],
+            args: [
+                {
+                    id: "mention",
+                    type: "member",
+                    default: null,
+                },
+            ],
         });
     }
 

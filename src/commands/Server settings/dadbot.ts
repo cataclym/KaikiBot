@@ -1,13 +1,13 @@
 import { PrefixSupplier } from "discord-akairo";
-import { Message, MessageEmbed } from "discord.js";
+import { EmbedBuilder, Message, PermissionsBitField } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
-import { excludeData } from "../../lib/slashCommands/data";
+import { excludeData } from "../../lib/SlashCommands/data";
 
 export default class DadBotConfigCommand extends KaikiCommand {
     constructor() {
         super("config-dadbot", {
-            userPermissions: "ADMINISTRATOR",
+            userPermissions: PermissionsBitField.Flags.Administrator,
             channel: "guild",
             args: [
                 {
@@ -21,7 +21,7 @@ export default class DadBotConfigCommand extends KaikiCommand {
 
     public async exec(message: Message<true>, { value }: { value: "enable" | "true" | "disable" | "false" }): Promise<Message> {
 
-        const embed = new MessageEmbed()
+        const embed = new EmbedBuilder()
             .withOkColor(message);
 
         const isEnabled: boolean = message.client.guildsDb.get(message.guildId, "DadBot", false);

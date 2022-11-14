@@ -1,4 +1,4 @@
-import { GuildMember, Message, MessageEmbed } from "discord.js";
+import { EmbedBuilder, GuildMember, Message } from "discord.js";
 
 const numbers = ["1", "2", "3", "4", "5", "6", "7", "8", "9"];
 const winningCombos = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]];
@@ -16,15 +16,15 @@ export default class TicTacToe {
     currentPlayerTurn: (p: GuildMember, m: Message) => Promise<void>;
     winningMessage: (p: GuildMember) => string;
     timedWinMessage: (p: GuildMember) => string;
-    stateDict: {[index: number]: string};
+    stateDict: { [index: number]: string };
     active: boolean;
 
     /**
-	 * Initializes a TicTacToe game.
-	 * @param player1 @type {GuildMember}
-	 * @param player2 @type {GuildMember}
-	 * @param message @type {Message}
-	 */
+     * Initializes a TicTacToe game.
+     * @param player1 @type {GuildMember}
+     * @param player2 @type {GuildMember}
+     * @param message @type {Message}
+     */
 
     constructor(player1: GuildMember, player2: GuildMember, message: Message) {
         this.p1 = { player: player1, color: "78b159", sign: "p1" };
@@ -42,10 +42,12 @@ export default class TicTacToe {
 
         this.embed = this.message.channel.send({
             content: `${this.p2.player} starts!`,
-            embeds: [new MessageEmbed({
-                description: Object.values(this.stateDict).map((v, i) => [2, 5].includes(i) ? v + "\n" : v).join(""),
-                color: parseInt(this.p2.color, 16),
-            })],
+            embeds: [
+                new EmbedBuilder({
+                    description: Object.values(this.stateDict).map((v, i) => [2, 5].includes(i) ? v + "\n" : v).join(""),
+                    color: parseInt(this.p2.color, 16),
+                }),
+            ],
         });
 
         this.currentPlayerTurn = async (p: GuildMember, m: Message) => this.message.channel.send(`It's ${p}'s turn`).then(async (m2) => {
@@ -72,7 +74,7 @@ export default class TicTacToe {
             .then(collected => {
                 return this.input(playerObject, collected.first() as Message);
             })
-            .catch(() => {
+            .catch((): unknown => {
                 return this.timedWin(playerObject);
             });
     }
@@ -116,7 +118,7 @@ export default class TicTacToe {
     private async updateEmbed(playerObject: playerType): Promise<Message | NodeJS.Timeout> {
 
         const finalString = `It's ${playerObject.player}'s turn to make a move.`;
-        const finalEmbed = new MessageEmbed({
+        const finalEmbed = new EmbedBuilder({
             description: Object.values(this.stateDict)
                 .map((v, i) => [2, 5].includes(i) ? v + "\n" : v)
                 .join("")

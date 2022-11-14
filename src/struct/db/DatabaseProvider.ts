@@ -1,6 +1,6 @@
-import { Provider, ProviderOptions } from "discord-akairo";
 import { Collection } from "discord.js";
 import { Pool, RowDataPacket } from "mysql2/promise";
+import { Provider, ProviderOptions } from "./Provider";
 
 export default class DatabaseProvider extends Provider {
     private _db: () => Pool;

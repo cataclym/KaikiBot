@@ -1,4 +1,4 @@
-import { Message, MessageAttachment, PermissionResolvable, Permissions } from "discord.js";
+import { AttachmentBuilder, Message, PermissionResolvable, Permissions, PermissionsBitField } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 
@@ -17,14 +17,16 @@ export default class GenCmdListCommand extends KaikiCommand {
         const list = Array.from(this.handler.categories.entries());
 
         return message.channel.send({
-            files: [new MessageAttachment(Buffer.from(JSON.stringify(list.map((value) => {
-                return [value[0], value[1].map((v: KaikiCommand) => new generatedCommand(v))];
-            }), (key, value) =>
-                typeof value === "bigint"
-                    ? value.toString()
-                    : value,
-            4,
-            ), "utf-8"), "cmdlist.json")],
+            files: [
+                new AttachmentBuilder(Buffer.from(JSON.stringify(list.map((value) => {
+                    return [value[0], value[1].map((v: KaikiCommand) => new generatedCommand(v))];
+                }), (key, value) =>
+                    typeof value === "bigint"
+                        ? value.toString()
+                        : value,
+                4,
+                ), "utf-8"), { name: "cmdlist.json" }),
+            ],
         });
     }
 }
@@ -41,10 +43,10 @@ class generatedCommand {
     constructor(command: KaikiCommand) {
         this.id = command.id;
         this.aliases = command.aliases;
-        this.channel = command.channel;
+        this.channel = command.channel || undefined;
         this.ownerOnly = command.ownerOnly;
         this.usage = command.usage;
-        this.userPermissions = new Permissions(command.userPermissions as PermissionResolvable).toArray().join();
+        this.userPermissions = new PermissionsBitField(command.userPermissions as PermissionResolvable).toArray().join();
         this.description = command.description;
     }
 }

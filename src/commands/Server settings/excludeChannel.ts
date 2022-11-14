@@ -1,12 +1,20 @@
 import { DadBotChannels, Guilds } from "@prisma/client";
-import { Collection, GuildChannel, Message, MessageEmbed, Snowflake, TextChannel } from "discord.js";
+import {
+    Collection,
+    EmbedBuilder,
+    GuildChannel,
+    Message,
+    PermissionsBitField,
+    Snowflake,
+    TextChannel,
+} from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 export default class ExcludeDadbotChannelCommand extends KaikiCommand {
     constructor() {
         super("excludechannel", {
             aliases: ["excludechannel", "excludechnl", "echnl"],
-            userPermissions: "MANAGE_CHANNELS",
+            userPermissions: PermissionsBitField.Flags.ManageChannels,
             channel: "guild",
             description: "Exclude or include a channel from dadbot. Provide no parameter to show a list of excluded channels. ",
             usage: ["", "#channel"],
@@ -36,22 +44,24 @@ export default class ExcludeDadbotChannelCommand extends KaikiCommand {
             guildDb["DadBotChannels"] = [];
         }
 
-        const embed = new MessageEmbed()
+        const embed = new EmbedBuilder()
             .setTitle("Excluded channels")
             .withOkColor(message);
 
         if (!channels) {
             return message.channel.send({
-                embeds: [embed
-                    .setDescription((guildDb?.DadBotChannels ?? [])
-                        .map(k => message.guild.channels.cache.get(String(k.ChannelId)) ?? String(k.ChannelId))
-                        .sort((a, b) => {
-                            return (a as GuildChannel).name < (b as GuildChannel).name
-                                ? -1
-                                : 1;
-                        })
-                        .join("\n").trim() ?? "No channels excluded")
-                    .withOkColor(message)],
+                embeds: [
+                    embed
+                        .setDescription((guildDb?.DadBotChannels ?? [])
+                            .map(k => message.guild.channels.cache.get(String(k.ChannelId)) ?? String(k.ChannelId))
+                            .sort((a, b) => {
+                                return (a as GuildChannel).name < (b as GuildChannel).name
+                                    ? -1
+                                    : 1;
+                            })
+                            .join("\n").trim() ?? "No channels excluded")
+                        .withOkColor(message),
+                ],
             });
         }
 
@@ -85,9 +95,14 @@ export default class ExcludeDadbotChannelCommand extends KaikiCommand {
                 });
             }
 
-            embed.addField("Excluded", excludedChannels
-                .map(k => message.guild.channels.cache.get(String(k.ChannelId)) ?? String(k.ChannelId))
-                .join("\n"));
+            embed.addFields([
+                {
+                    name: "Excluded",
+                    value: excludedChannels
+                        .map(k => message.guild.channels.cache.get(String(k.ChannelId)) ?? String(k.ChannelId))
+                        .join("\n"),
+                },
+            ]);
         }
 
         if (enabledChannels.length) {
@@ -104,9 +119,14 @@ export default class ExcludeDadbotChannelCommand extends KaikiCommand {
                 this.client.dadBotChannels.items.delete(String(channel));
             }
 
-            embed.addField("Un-excluded", enabledChannels
-                .map(k => message.guild.channels.cache.get(String(k)) ?? String(k))
-                .join("\n"));
+            embed.addFields([
+                {
+                    name: "Un-excluded",
+                    value: enabledChannels
+                        .map(k => message.guild.channels.cache.get(String(k)) ?? String(k))
+                        .join("\n"),
+                },
+            ]);
         }
 
         return message.channel.send({

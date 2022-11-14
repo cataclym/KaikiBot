@@ -1,4 +1,4 @@
-import { Message, MessageAttachment, MessageEmbed, Role } from "discord.js";
+import { AttachmentBuilder, EmbedBuilder, Message, PermissionsBitField, resolveColor, Role } from "discord.js";
 import { imgFromColor } from "../../lib/Color";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
@@ -37,32 +37,34 @@ export default class RoleColorCommand extends KaikiCommand {
 
             if (!role) role = message.member!.roles.highest;
 
-            const attachment = new MessageAttachment(await imgFromColor(role.hexColor), "color.png");
+            const attachment = new AttachmentBuilder(await imgFromColor(role.hexColor), { name: "color.png" });
             return message.channel.send({
                 files: [attachment],
-                embeds: [new MessageEmbed({
-                    title: `Role color of ${role.name}.`,
-                    description: `${role.hexColor}`,
-                    image: { url: "attachment://color.png" },
-                    color: role.hexColor,
-                })],
+                embeds: [
+                    new EmbedBuilder({
+                        title: `Role color of ${role.name}.`,
+                        description: `${role.hexColor}`,
+                        image: { url: "attachment://color.png" },
+                        color: resolveColor(role.hexColor),
+                    }),
+                ],
             });
         }
 
         if (!role) return message.channel.send({ embeds: [KaikiEmbeds.genericArgumentError(message)] });
 
         const { hexColor } = role,
-            attachment = new MessageAttachment(await imgFromColor(clr), "color.png");
+            attachment = new AttachmentBuilder(await imgFromColor(clr), { name: "color.png" });
 
         if (await rolePermissionCheck(message, role)) {
 
-            if (!member?.permissions.has("MANAGE_ROLES")) {
+            if (!member?.permissions.has(PermissionsBitField.Flags.ManageRoles)) {
                 return message.channel.send({
                     embeds: [await KaikiEmbeds.errorMessage(message, "You do not have `MANAGE_ROLES` permission.")],
                 });
             }
 
-            else if (!message.guild?.me?.permissions.has("MANAGE_ROLES")) {
+            else if (!message.guild?.members.me?.permissions.has(PermissionsBitField.Flags.ManageRoles)) {
                 return message.channel.send({
                     embeds: [await KaikiEmbeds.errorMessage(message, "I do not have `MANAGE_ROLES` permission.")],
                 });
@@ -71,11 +73,13 @@ export default class RoleColorCommand extends KaikiCommand {
             return role.edit({ color: [clr.r!, clr.g!, clr.b!] }).then(r => {
                 return message.channel.send({
                     files: [attachment],
-                    embeds: [new MessageEmbed({
-                        title: `You have changed ${r.name}'s color from ${hexColor} to ${r.hexColor}!`,
-                        thumbnail: { url: "attachment://color.png" },
-                    })
-                        .withOkColor(message)],
+                    embeds: [
+                        new EmbedBuilder({
+                            title: `You have changed ${r.name}'s color from ${hexColor} to ${r.hexColor}!`,
+                            thumbnail: { url: "attachment://color.png" },
+                        })
+                            .withOkColor(message),
+                    ],
                 });
             });
         }

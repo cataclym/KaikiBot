@@ -1,4 +1,4 @@
-import { GuildMember, Message, MessageEmbed, Role } from "discord.js";
+import { EmbedBuilder, GuildMember, Message, PermissionsBitField, Role } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
@@ -10,18 +10,20 @@ export default class RoleRemoveCommand extends KaikiCommand {
             aliases: ["roleremove", "removerole", "rr"],
             description: "Takes away a user's role. The role you specify has to be lower in the role hierarchy than your highest role.",
             usage: "@Dreb Gamer",
-            clientPermissions: "MANAGE_ROLES",
-            userPermissions: "MANAGE_ROLES",
+            clientPermissions: PermissionsBitField.Flags.ManageRoles,
+            userPermissions: PermissionsBitField.Flags.ManageRoles,
             channel: "guild",
             args: [
                 {
                     id: "member",
                     type: "member",
                     otherwise: (m: Message) => ({
-                        embeds: [new MessageEmbed({
-                            description: "Can't find this user. Try again.",
-                        })
-                            .withErrorColor(m)],
+                        embeds: [
+                            new EmbedBuilder({
+                                description: "Can't find this user. Try again.",
+                            })
+                                .withErrorColor(m),
+                        ],
                     }),
                 },
                 {
@@ -41,21 +43,25 @@ export default class RoleRemoveCommand extends KaikiCommand {
                 await member.roles.remove(role);
 
                 return message.channel.send({
-                    embeds: [new MessageEmbed({
-                        title: "Success!",
-                        description: `Removed ${role} from ${member.user}`,
-                    })
-                        .withOkColor(message)],
+                    embeds: [
+                        new EmbedBuilder({
+                            title: "Success!",
+                            description: `Removed ${role} from ${member.user}`,
+                        })
+                            .withOkColor(message),
+                    ],
                 });
             }
 
             else {
                 return message.channel.send({
-                    embeds: [new MessageEmbed({
-                        title: "Error",
-                        description: `${member} doesn't have ${role}`,
-                    })
-                        .withErrorColor(message)],
+                    embeds: [
+                        new EmbedBuilder({
+                            title: "Error",
+                            description: `${member} doesn't have ${role}`,
+                        })
+                            .withErrorColor(message),
+                    ],
                 });
             }
         }

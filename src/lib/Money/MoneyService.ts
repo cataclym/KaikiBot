@@ -87,24 +87,4 @@ export class MoneyService {
             });
         }, 0);
     }
-
-    // async Reduce(id: string, amount: number): Promise<bool> {
-    //     // todo amount must be > 0
-    //     await moneyDB.updateOne({
-    //         id: id
-    //     },
-    //     {
-    //         $set: {
-    //             "$amount": {
-    //                 $cond: {
-    //                     if: { $lt: ["$amount", amount] },
-    //                     then: 0,
-    //                     else: { $inc: -amount }
-    //                 }
-    //             }
-    //         }
-    //     });
-
-    //     return 0;
-    // }
 }

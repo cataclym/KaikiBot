@@ -1,5 +1,5 @@
 import { Argument } from "discord-akairo";
-import { ColorResolvable, Message, MessageEmbed } from "discord.js";
+import { ColorResolvable, EmbedBuilder, Message, PermissionsBitField } from "discord.js";
 import { hexColorTable } from "../../lib/Color";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
@@ -8,17 +8,21 @@ import Roles from "../../lib/Roles";
 export default class MyRoleSubCommandColor extends KaikiCommand {
     constructor() {
         super("myrolecolor", {
-            clientPermissions: ["MANAGE_ROLES"],
+            clientPermissions: PermissionsBitField.Flags.ManageRoles,
             channel: "guild",
-            args: [{
-                id: "color",
-                type: Argument.union((_, phrase) => hexColorTable[phrase.toLowerCase()], "color"),
-                otherwise: (m: Message) => ({
-                    embeds: [new MessageEmbed()
-                        .setTitle("Please provide a valid hex-color or color name")
-                        .withErrorColor(m)],
-                }),
-            }],
+            args: [
+                {
+                    id: "color",
+                    type: Argument.union((_, phrase) => hexColorTable[phrase.toLowerCase()], "color"),
+                    otherwise: (m: Message) => ({
+                        embeds: [
+                            new EmbedBuilder()
+                                .setTitle("Please provide a valid hex-color or color name")
+                                .withErrorColor(m),
+                        ],
+                    }),
+                },
+            ],
         });
     }
 
@@ -28,9 +32,9 @@ export default class MyRoleSubCommandColor extends KaikiCommand {
 
         if (!myRole) return message.channel.send({ embeds: [await KaikiEmbeds.embedFail(message)] });
 
-        if (typeof color === "number") color = color.toString(16);
+        if (Number.isInteger(color)) color = color.toString(16);
 
-        const botRole = message.guild?.me?.roles.highest,
+        const botRole = message.guild?.members.me?.roles.highest,
             isPosition = botRole?.comparePositionTo(myRole);
 
         if (isPosition && isPosition <= 0) {
@@ -40,9 +44,11 @@ export default class MyRoleSubCommandColor extends KaikiCommand {
         const oldHex = myRole.hexColor;
         await myRole.setColor(color as ColorResolvable);
         return message.channel.send({
-            embeds: [new MessageEmbed()
-                .setDescription(`You have changed \`${myRole.name}\`'s color from \`${oldHex}\` to \`${color}\`!`)
-                .setColor(color as ColorResolvable)],
+            embeds: [
+                new EmbedBuilder()
+                    .setDescription(`You have changed \`${myRole.name}\`'s color from \`${oldHex}\` to \`${color}\`!`)
+                    .setColor(color as ColorResolvable),
+            ],
         });
     }
 }

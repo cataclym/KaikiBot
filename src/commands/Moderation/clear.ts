@@ -1,4 +1,4 @@
-import { Message, MessageEmbed } from "discord.js";
+import { EmbedBuilder, Message, PermissionsBitField } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 
@@ -6,16 +6,18 @@ export default class ClearCommand extends KaikiCommand {
     constructor() {
         super("clear", {
             aliases: ["clear", "prune"],
-            userPermissions: "MANAGE_MESSAGES",
-            clientPermissions: "MANAGE_MESSAGES",
+            userPermissions: PermissionsBitField.Flags.ManageMessages,
+            clientPermissions: PermissionsBitField.Flags.ManageMessages,
             channel: "guild",
             description: "Clears up to 100 messages in the current channel.",
             usage: "69",
-            args: [{
-                id: "int",
-                type: "integer",
-                default: 0,
-            }],
+            args: [
+                {
+                    id: "int",
+                    type: "integer",
+                    default: 0,
+                },
+            ],
             cooldown: 60000,
         });
     }
@@ -40,9 +42,10 @@ export default class ClearCommand extends KaikiCommand {
         await message.channel.bulkDelete(bulkDeletable);
 
         message.channel.send({
-            embeds: [new MessageEmbed()
-                .setDescription(`Deleting **${int}** messages...!`)
-                .withOkColor(message),
+            embeds: [
+                new EmbedBuilder()
+                    .setDescription(`Deleting **${int}** messages...!`)
+                    .withOkColor(message),
             ],
         })
             .then(m => setTimeout(() => m.delete(), manualDelete.size * 1500));

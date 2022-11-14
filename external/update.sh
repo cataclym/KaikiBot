@@ -1,10 +1,19 @@
 #! /usr/bin/bash
-echo "This is a placeholder. Updates will be implemented in v4.1+"
-#currentTag =
-#
-#git fetch --tags
-#
-#latestTag=$(git describe --tags "$(git rev-list --tags --max-count=1)")
-#
-#if ["$latestTag" == ]
-#git checkout "$latestTag" package-lock.json
+currentTag=$(git describe)
+latestTag=$(git tag | sort -V | tail -1)
+
+if [[ "$latestTag" != "$currentTag" ]]; then
+  echo "New version detected. Updating from ${currentTag} to ${latestTag}..."
+  git checkout "$latestTag" && currentTag=$(git describe)
+
+  if [[ "$latestTag" == "$currentTag" ]]; then
+    echo "Successfully updated to ${latestTag}!" 1>&2
+    exit 0
+  else
+    echo "Error, unable to update..." 1>&2
+    exit 1
+  fi
+fi
+
+echo "No update available." 1>&2
+exit 1

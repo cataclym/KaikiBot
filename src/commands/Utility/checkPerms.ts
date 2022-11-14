@@ -1,8 +1,7 @@
 import { Argument } from "discord-akairo";
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
-import { GuildMember, Message, MessageEmbed, Role, TextChannel } from "discord.js";
+import { EmbedBuilder, GuildMember, Message, Role, TextChannel } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-
 import Utility from "../../lib/Utility";
 
 export default class CheckPermissionsCommand extends KaikiCommand {
@@ -12,16 +11,18 @@ export default class CheckPermissionsCommand extends KaikiCommand {
             description: "Lists perms for role/member",
             usage: ["", "@user", "@role", "@user #channel"],
             channel: "guild",
-            args: [{
-                id: "input",
-                type: Argument.union("role", "member"),
-                default: (message: Message) => message.member,
-            },
-            {
-                id: "channel",
-                type: "textChannel",
-                default: (message: Message) => message.channel,
-            }],
+            args: [
+                {
+                    id: "input",
+                    type: Argument.union("role", "member"),
+                    default: (message: Message) => message.member,
+                },
+                {
+                    id: "channel",
+                    type: "textChannel",
+                    default: (message: Message) => message.channel,
+                },
+            ],
             subCategory: "Info",
         });
     }
@@ -38,7 +39,7 @@ export default class CheckPermissionsCommand extends KaikiCommand {
         const pages = [];
 
         if (permissionsIn.bitfield !== permissions.bitfield) {
-            pages.push(new MessageEmbed()
+            pages.push(new EmbedBuilder()
                 .withOkColor(message)
                 .setTitle(`Permissions for ${inputName} in #${channel.name}`)
                 .setDescription(await Utility.codeblock(permissionsIn
@@ -53,7 +54,7 @@ export default class CheckPermissionsCommand extends KaikiCommand {
         }
 
         else if (message.channel.id !== channel.id) {
-            pages.push(new MessageEmbed()
+            pages.push(new EmbedBuilder()
                 .withOkColor(message)
                 .setTitle(`Permissions for ${inputName} in #${channel.name}`)
                 .setDescription(await Utility.codeblock(permissionsIn
@@ -64,7 +65,7 @@ export default class CheckPermissionsCommand extends KaikiCommand {
         }
 
         else {
-            pages.push(new MessageEmbed()
+            pages.push(new EmbedBuilder()
                 .withOkColor(message)
                 .setTitle(`General permissions for ${inputName}`)
                 .setDescription(await Utility.codeblock(permissions

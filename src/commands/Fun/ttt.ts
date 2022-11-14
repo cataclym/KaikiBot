@@ -1,7 +1,7 @@
-import { GuildMember, Message, MessageActionRow, MessageButton, MessageEmbed } from "discord.js";
-import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+import { ActionRowBuilder, ButtonBuilder, ComponentType, EmbedBuilder, GuildMember, Message } from "discord.js";
 
-import TicTacToe from "../../lib/games/TTT";
+import TicTacToe from "../../lib/Games/TTT";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
 export default class TicTacToeCommand extends KaikiCommand {
@@ -11,11 +11,13 @@ export default class TicTacToeCommand extends KaikiCommand {
             channel: "guild",
             description: "Starts a TicTacToe game, where you play against an @mentioned person.",
             usage: "@Dreb",
-            args: [{
-                id: "player2",
-                type: "member",
-                otherwise: (m: Message) => ({ embeds: [KaikiEmbeds.genericArgumentError(m)] }),
-            }],
+            args: [
+                {
+                    id: "player2",
+                    type: "member",
+                    otherwise: (m: Message) => ({ embeds: [KaikiEmbeds.genericArgumentError(m)] }),
+                },
+            ],
         });
     }
 
@@ -26,28 +28,34 @@ export default class TicTacToeCommand extends KaikiCommand {
         }
 
         const acceptMessage = await message.channel.send({
-            embeds: [new MessageEmbed()
-                .setDescription(`Do you wanna participate in a game of Tic-Tac-Toe against ${message.author.tag}?`)
-                .setFooter({ text: "Timeout in 20 seconds" })
-                .withOkColor(message)],
+            embeds: [
+                new EmbedBuilder()
+                    .setDescription(`Do you wanna participate in a game of Tic-Tac-Toe against ${message.author.tag}?`)
+                    .setFooter({ text: "Timeout in 20 seconds" })
+                    .withOkColor(message),
+            ],
             isInteraction: true,
-            components: [new MessageActionRow({
-                components: [new MessageButton()
-                    .setCustomId("1")
-                    .setLabel("Yes")
-                    .setStyle("PRIMARY"),
-                new MessageButton()
-                    .setCustomId("2")
-                    .setLabel("No")
-                    .setStyle("DANGER")],
-            })],
+            components: [
+                new ActionRowBuilder<ButtonBuilder>({
+                    components: [
+                        new ButtonBuilder()
+                            .setCustomId("1")
+                            .setLabel("Yes")
+                            .setStyle(1),
+                        new ButtonBuilder()
+                            .setCustomId("2")
+                            .setLabel("No")
+                            .setStyle(4),
+                    ],
+                }),
+            ],
         });
 
         acceptMessage.awaitMessageComponent({
             filter: (m) => {
                 m.deferUpdate();
                 return m.user.id === player2.id;
-            }, componentType: "BUTTON", time: 20000,
+            }, componentType: ComponentType.Button, time: 20000,
         })
             .then(async (interaction) => {
 
@@ -58,9 +66,10 @@ export default class TicTacToeCommand extends KaikiCommand {
 
                 else {
                     await message.reply({
-                        embeds: [new MessageEmbed()
-                            .setDescription(`${player2.user.tag} has declined your Tic-Tac-Toe challenge`)
-                            .withErrorColor(message),
+                        embeds: [
+                            new EmbedBuilder()
+                                .setDescription(`${player2.user.tag} has declined your Tic-Tac-Toe challenge`)
+                                .withErrorColor(message),
                         ],
                     });
                     acceptMessage.delete();
@@ -69,10 +78,12 @@ export default class TicTacToeCommand extends KaikiCommand {
             .catch(() => {
                 const emb = acceptMessage.embeds[0];
                 acceptMessage.edit({
-                    embeds: [new MessageEmbed(emb)
-                        .setDescription(`~~${emb.description}~~`)
-                        .setFooter({ text: "Timed out!" })
-                        .withErrorColor(message)],
+                    embeds: [
+                        EmbedBuilder.from(emb)
+                            .setDescription(`~~${emb.description}~~`)
+                            .setFooter({ text: "Timed out!" })
+                            .withErrorColor(message),
+                    ],
                     components: [],
                 });
             });

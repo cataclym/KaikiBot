@@ -1,4 +1,4 @@
-import { Message, MessageEmbed } from "discord.js";
+import { EmbedBuilder, Message } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 
@@ -18,11 +18,14 @@ export default class PingCommand extends KaikiCommand {
             clientTime = initialMsg.createdTimestamp - message.createdTimestamp;
 
         return initialMsg.edit({
-            embeds: [new MessageEmbed()
-                .addFields([
-                    { name: "WebSocket ping", value: wsTime + " ms", inline: true },
-                    { name: "Client ping", value: clientTime + " ms", inline: true }])
-                .withOkColor(message)],
+            embeds: [
+                new EmbedBuilder()
+                    .addFields([
+                        { name: "WebSocket ping", value: wsTime + " ms", inline: true },
+                        { name: "Client ping", value: clientTime + " ms", inline: true },
+                    ])
+                    .withOkColor(message),
+            ],
             content: null,
         });
     }

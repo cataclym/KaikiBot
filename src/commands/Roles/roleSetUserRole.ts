@@ -1,5 +1,5 @@
 import { PrefixSupplier } from "discord-akairo";
-import { GuildMember, Message, MessageEmbed, Role } from "discord.js";
+import { EmbedBuilder, GuildMember, Message, PermissionsBitField, Role } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 // Rewrite of Miyano's setuserrole command
@@ -12,8 +12,8 @@ export default class SetUserRoleCommand extends KaikiCommand {
             aliases: ["setuserrole", "sur"],
             description: "Assigns a role to a user. Provide the command again to remove the role.",
             usage: "@Platinum [role]",
-            clientPermissions: ["MANAGE_ROLES"],
-            userPermissions: ["MANAGE_ROLES"],
+            clientPermissions: PermissionsBitField.Flags.ManageRoles,
+            userPermissions: PermissionsBitField.Flags.ManageRoles,
             prefix: (msg: Message) => {
                 const p = (this.handler.prefix as PrefixSupplier)(msg);
                 return [p as string, ";"];
@@ -34,17 +34,17 @@ export default class SetUserRoleCommand extends KaikiCommand {
         });
     }
 
-    embedFail = async (message: Message<boolean>, text: string) => new MessageEmbed()
+    embedFail = async (message: Message<boolean>, text: string) => new EmbedBuilder()
         .setDescription(text)
         .withErrorColor(message);
 
-    embedSuccess = async (message: Message<boolean>, text: string) => new MessageEmbed()
+    embedSuccess = async (message: Message<boolean>, text: string) => new EmbedBuilder()
         .setDescription(text)
         .withOkColor(message);
 
     public async exec(message: Message<true>, { member, role }: { member: GuildMember, role: Role }): Promise<Message> {
 
-        const botRole = message.guild?.me?.roles.highest,
+        const botRole = message.guild?.members.me?.roles.highest,
             isPosition = botRole?.comparePositionTo(role);
 
         if (!isPosition || (isPosition <= 0)) {

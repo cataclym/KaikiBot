@@ -1,4 +1,4 @@
-import { Guild, GuildMember, Message, MessageEmbed } from "discord.js";
+import { EmbedBuilder, Guild, GuildMember, Message, Permissions, PermissionsBitField } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 
@@ -6,8 +6,8 @@ export default class KickCommand extends KaikiCommand {
     constructor() {
         super("kick", {
             aliases: ["kick", "k"],
-            userPermissions: ["KICK_MEMBERS"],
-            clientPermissions: "KICK_MEMBERS",
+            userPermissions: PermissionsBitField.Flags.KickMembers,
+            clientPermissions: PermissionsBitField.Flags.KickMembers,
             description: "Kicks a user by ID or name with an optional message.",
             usage: "<@some Guy> Your behaviour is harmful.",
             channel: "guild",
@@ -16,10 +16,12 @@ export default class KickCommand extends KaikiCommand {
                     id: "member",
                     type: "member",
                     otherwise: (m: Message) => ({
-                        embeds: [new MessageEmbed({
-                            description: "Can't find this user.",
-                        })
-                            .withErrorColor(m)],
+                        embeds: [
+                            new EmbedBuilder({
+                                description: "Can't find this user.",
+                            })
+                                .withErrorColor(m),
+                        ],
                     }),
                 },
                 {
@@ -35,28 +37,32 @@ export default class KickCommand extends KaikiCommand {
     public async exec(message: Message, { member, reason }: { member: GuildMember, reason: string }): Promise<Message> {
 
         const guild = message.guild as Guild;
-        const guildClientMember = guild.me as GuildMember;
+        const guildClientMember = guild.members.me as GuildMember;
 
         if (message.author.id !== message.guild?.ownerId &&
             (message.member as GuildMember).roles.highest.position <= member.roles.highest.position) {
 
             return message.channel.send({
-                embeds: [new MessageEmbed({
-                    description: "You don't have permissions to kick this member.",
-                })
-                    .withErrorColor(message)],
+                embeds: [
+                    new EmbedBuilder({
+                        description: "You don't have permissions to kick this member.",
+                    })
+                        .withErrorColor(message),
+                ],
             });
         }
         else if (guildClientMember.roles.highest.position <= member.roles.highest.position) {
             return message.channel.send({
-                embeds: [new MessageEmbed({
-                    description: "Sorry, I don't have permissions to kick this member.",
-                })
-                    .withErrorColor(message)],
+                embeds: [
+                    new EmbedBuilder({
+                        description: "Sorry, I don't have permissions to kick this member.",
+                    })
+                        .withErrorColor(message),
+                ],
             });
         }
 
-        const embed = new MessageEmbed({
+        const embed = new EmbedBuilder({
             title: "Kicked user",
             fields: [
                 { name: "Username", value: member.user.username, inline: true },
@@ -67,10 +73,12 @@ export default class KickCommand extends KaikiCommand {
 
         await member.kick(reason).then(m => {
             m.user.send({
-                embeds: [new MessageEmbed({
-                    description: `You have been kicked from ${message.guild?.name}.\nReason: ${reason}`,
-                })
-                    .withErrorColor(message)],
+                embeds: [
+                    new EmbedBuilder({
+                        description: `You have been kicked from ${message.guild?.name}.\nReason: ${reason}`,
+                    })
+                        .withErrorColor(message),
+                ],
             })
                 .catch(() => embed.setFooter({ text: "DM'ing user failed." }));
         })

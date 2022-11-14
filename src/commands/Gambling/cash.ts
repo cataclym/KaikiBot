@@ -1,4 +1,4 @@
-import { Message, MessageEmbed, User } from "discord.js";
+import { EmbedBuilder, Message, User } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 export default class cash extends KaikiCommand {
@@ -20,9 +20,11 @@ export default class cash extends KaikiCommand {
     public async exec(msg: Message, { user }: { user: User }): Promise<void> {
         const moneh = await this.client.money.Get(user.id);
         await msg.channel.send({
-            embeds: [new MessageEmbed()
-                .setDescription(`${user.username} has **${moneh}** ${this.client.money.currencyName} ${this.client.money.currencySymbol}`)
-                .withOkColor(msg)],
+            embeds: [
+                new EmbedBuilder()
+                    .setDescription(`${user.username} has **${moneh}** ${this.client.money.currencyName} ${this.client.money.currencySymbol}`)
+                    .withOkColor(msg),
+            ],
         });
     }
 }

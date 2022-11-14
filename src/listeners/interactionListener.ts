@@ -1,8 +1,5 @@
 import { Listener } from "discord-akairo";
-import { CommandInteraction, Interaction } from "discord.js";
-import logger from "loglevel";
-import { ExcludeSlashCommand } from "../lib/slashCommands/functions";
-import KaikiEmbeds from "../lib/KaikiEmbeds";
+import { BooleanCache, CacheType, ChannelType, Interaction, InteractionResponse } from "discord.js";
 
 export default class InteractionListener extends Listener {
     constructor() {
@@ -12,26 +9,26 @@ export default class InteractionListener extends Listener {
         });
     }
 
-    public async exec(interaction: Interaction): Promise<CommandInteraction | void> {
-
-        if (!interaction.isCommand()) return;
-
-        if (!interaction.guild || interaction.commandName !== "exclude" || !interaction.channel?.isText()) {
-            return interaction.deferReply({ ephemeral: true });
-        }
-
-        else if (interaction.guild.me?.permissions.has("MANAGE_ROLES")) {
-            return ExcludeSlashCommand(interaction)
-                .catch((er) => logger.error(er));
-        }
-
-        else {
-            return await interaction.reply({
-                ephemeral: true,
-                embeds: [await KaikiEmbeds.errorMessage(interaction.guild,
-                    "I do not have `MANAGE_ROLES` permission.")],
-            });
-        }
+    public async exec(interaction: Interaction): Promise<InteractionResponse<BooleanCache<CacheType>> | void> {
+        //
+        // if (!interaction.isCommand()) return;
+        //
+        // if (!interaction.guild || interaction.commandName !== "exclude" || interaction.channel && !(interaction.channel.type === ChannelType.GuildText)) {
+        //     return interaction.deferReply({ ephemeral: true });
+        // }
+        //
+        // else if (interaction.guild.members.me?.permissions.has(PermissionsBitField.Flags.ManageRoles)) {
+        //     return ExcludeSlashCommand(interaction)
+        //         .catch((er: any) => logger.error(er));
+        // }
+        //
+        // else {
+        //     return await interaction.reply({
+        //         ephemeral: true,
+        //         embeds: [await KaikiEmbeds.errorMessage(interaction.guild,
+        //             "I do not have `MANAGE_ROLES` permission.")],
+        //     });
+        // }
     }
 }
 

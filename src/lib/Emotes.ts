@@ -54,7 +54,7 @@ export default class Emotes {
 
     static async saveEmoji(message: Message, file: string | Buffer, name: string): Promise<Message | void> {
         return message.guild?.emojis
-            .create(file, name)
+            .create({ attachment: file, name })
             .then((emoji: GuildEmoji) => {
                 message.channel.send(`Successfully uploaded **${name}** ${emoji}.`);
                 return Promise.resolve();

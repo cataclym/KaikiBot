@@ -1,5 +1,5 @@
 import { Argument } from "discord-akairo";
-import { Message, MessageAttachment, Permissions } from "discord.js";
+import { Attachment, Message, PermissionsBitField } from "discord.js";
 import sizeOf from "image-size";
 import Emotes from "../../lib/Emotes";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
@@ -14,8 +14,8 @@ export default class AddEmoteCommand extends KaikiCommand {
             aliases: ["addemote", "ae"],
             description: "Adds an emote from an image link or attached image, with an optional name.",
             usage: "image-link Emotename",
-            clientPermissions: Permissions.FLAGS.MANAGE_EMOJIS_AND_STICKERS,
-            userPermissions: Permissions.FLAGS.MANAGE_EMOJIS_AND_STICKERS,
+            clientPermissions: PermissionsBitField.Flags.ManageEmojisAndStickers,
+            userPermissions: PermissionsBitField.Flags.ManageEmojisAndStickers,
             typing: true,
             channel: "guild",
             args: [
@@ -45,11 +45,11 @@ export default class AddEmoteCommand extends KaikiCommand {
     public async exec(message: Message, {
         url,
         name,
-    }: { url: { match: RegExpMatchArray, matches: [][] } | MessageAttachment, name: string | null | undefined }): Promise<Message | void> {
+    }: { url: { match: RegExpMatchArray, matches: [][] } | Attachment, name: string | null | undefined }): Promise<Message | void> {
 
         let emote, urlMatch;
 
-        if (!(url instanceof MessageAttachment)) {
+        if (!(url instanceof Attachment)) {
             urlMatch = url.match[0].toString();
 
             if (urlMatch.startsWith("<") && urlMatch.endsWith(">")) {

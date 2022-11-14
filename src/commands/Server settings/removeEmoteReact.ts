@@ -1,4 +1,4 @@
-import { Message, MessageEmbed, Permissions } from "discord.js";
+import { EmbedBuilder, Message, Permissions, PermissionsBitField } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 
@@ -6,7 +6,7 @@ export default class RemoveEmoteReactCommand extends KaikiCommand {
     constructor() {
         super("removereact", {
             aliases: ["removereact", "rer"],
-            userPermissions: Permissions.FLAGS.MANAGE_EMOJIS_AND_STICKERS,
+            userPermissions: PermissionsBitField.Flags.ManageEmojisAndStickers,
             channel: "guild",
             description: "Remove emotereact triggers.",
             usage: ["anime"],
@@ -53,7 +53,7 @@ export default class RemoveEmoteReactCommand extends KaikiCommand {
                 this.client.cache.emoteReactCache.get(message.guildId)?.get("no_space")?.delete(trigger);
             }
 
-            const embed = new MessageEmbed()
+            const embed = new EmbedBuilder()
                 .setTitle("Removed emoji trigger")
                 .setDescription(`Saying \`${trigger}\` will no longer force me to react with \`${emoji?.name ?? "missing emote"}\``)
                 .withOkColor(message);
@@ -65,10 +65,12 @@ export default class RemoveEmoteReactCommand extends KaikiCommand {
 
         else {
             return message.channel.send({
-                embeds: [new MessageEmbed()
-                    .setTitle("Not found")
-                    .setDescription("Trigger not found in the database")
-                    .withErrorColor(message)],
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle("Not found")
+                        .setDescription("Trigger not found in the database")
+                        .withErrorColor(message),
+                ],
             });
         }
     }

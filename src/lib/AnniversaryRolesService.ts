@@ -2,7 +2,7 @@ import { PrismaClient } from "@prisma/client";
 import chalk from "chalk";
 
 
-import { Guild, GuildMember, Permissions, Role } from "discord.js";
+import { Guild, GuildMember, Permissions, PermissionsBitField, Role } from "discord.js";
 import logger from "loglevel";
 import Constants from "../struct/Constants";
 import KaikiAkairoClient from "./Kaiki/KaikiAkairoClient";
@@ -44,7 +44,7 @@ export default class AnniversaryRolesService {
 
         if (guildDb.Anniversary) {
             try {
-                if (guild.me?.permissions.has(Permissions.FLAGS.MANAGE_ROLES)) {
+                if (guild.members.me?.permissions.has(PermissionsBitField.Flags.ManageRoles)) {
                     const [AnniversaryRoleC, AnniversaryRoleJ] = <Role[]> await this.handleGuildRoles(guild);
                     // Get roles from the result of checking if guild has the roles at all / after creating them.
                     await Promise.all(guild.members.cache.map(async (member) => {
@@ -99,7 +99,7 @@ export default class AnniversaryRolesService {
             const { Day, Month } = await AnniversaryRolesService.dateObject();
 
             try {
-                if (guild.me?.permissions.has(Permissions.FLAGS.MANAGE_ROLES)) {
+                if (guild.members.me?.permissions.has(PermissionsBitField.Flags.ManageRoles)) {
                     const [AnniversaryRoleC, AnniversaryRoleJ] = <Role[]> await this.handleGuildRoles(guild);
                     // Get roles from the result of checking if guild has the roles at all / after creating them.
                     await this.memberCheckAnniversary(member, AnniversaryRoleC, AnniversaryRoleJ, Day, Month);
@@ -162,7 +162,7 @@ export default class AnniversaryRolesService {
         const { Day, Month } = await AnniversaryRolesService.dateObject();
         await Promise.all(enabledGuilds.map(async (guild) => {
             // Check if guild is enabled.
-            if (guild.me?.permissions.has(Permissions.FLAGS.MANAGE_ROLES)) {
+            if (guild.members.me?.permissions.has(PermissionsBitField.Flags.ManageRoles)) {
                 // Check if perms.
                 const [AnniversaryRoleC, AnniversaryRoleJ] = <Role[]> await this.handleGuildRoles(guild);
                 // Get roles from the result of checking if guild has the roles at all / after creating them.

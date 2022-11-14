@@ -1,4 +1,4 @@
-import { Message, Permissions } from "discord.js";
+import { Message, Permissions, PermissionsBitField } from "discord.js";
 import sizeOf from "image-size";
 import Emotes from "../../lib/Emotes";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
@@ -12,8 +12,8 @@ export default class AddEmotesCommand extends KaikiCommand {
             aliases: ["addemotes", "aes"],
             description: "Adds multiple emotes. Cannot specify names.",
             usage: "img-link1 img-link2 img-link3",
-            clientPermissions: Permissions.FLAGS.MANAGE_EMOJIS_AND_STICKERS,
-            userPermissions: Permissions.FLAGS.MANAGE_EMOJIS_AND_STICKERS,
+            clientPermissions: PermissionsBitField.Flags.ManageEmojisAndStickers,
+            userPermissions: PermissionsBitField.Flags.ManageEmojisAndStickers,
             channel: "guild",
             args: [
                 {

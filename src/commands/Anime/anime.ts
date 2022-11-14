@@ -1,9 +1,9 @@
-import { Message, MessageEmbed } from "discord.js";
+import { EmbedBuilder, Message } from "discord.js";
 import fetch from "node-fetch";
-import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 import { aniQuery, handleError, handleResponse } from "../../lib/APIs/AnilistGraphQL";
 import { IAnimeRes } from "../../lib/Interfaces/IAnimeRes";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 import Utility from "../../lib/Utility";
 
@@ -13,16 +13,18 @@ export default class AnimeCommand extends KaikiCommand {
             aliases: ["anime"],
             description: "Shows the first result of a query to Anilist",
             usage: "Tsukimonogatari",
-            args: [{
-                id: "anime",
-                type: "string",
-                match: "content",
-                otherwise: (m) => ({ embeds: [KaikiEmbeds.genericArgumentError(m)] }),
-            }],
+            args: [
+                {
+                    id: "anime",
+                    type: "string",
+                    match: "content",
+                    otherwise: (m) => ({ embeds: [KaikiEmbeds.genericArgumentError(m)] }),
+                },
+            ],
         });
     }
 
-    public async exec(message: Message, { anime }: { anime: string }): Promise<Message | void> {
+    public async exec(message: Message<true>, { anime }: { anime: string }): Promise<Message | void> {
 
         const url = "https://graphql.anilist.co",
             options = {
@@ -67,7 +69,7 @@ export default class AnimeCommand extends KaikiCommand {
 
                 return message.channel.send({
                     embeds: [
-                        new MessageEmbed()
+                        new EmbedBuilder()
                             .setImage(coverImage.large)
                             .setTitle(title.english && title.romaji
                                 ? `${title.english} / ${title.romaji}`
@@ -75,7 +77,7 @@ export default class AnimeCommand extends KaikiCommand {
                             .setURL(siteUrl)
                             .setDescription(Utility.stripHtml(Utility.trim(description, 2000)))
                             .withOkColor(message),
-                        new MessageEmbed()
+                        new EmbedBuilder()
                             .addFields([
                                 { name: "Format", value: format, inline: true },
                                 { name: "Episodes", value: String(episodes), inline: true },

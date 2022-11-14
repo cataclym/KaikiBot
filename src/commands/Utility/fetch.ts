@@ -1,9 +1,8 @@
 import { time } from "@discordjs/builders";
 import { Argument } from "discord-akairo";
-import { Message, MessageEmbed, Snowflake, User } from "discord.js";
+import { EmbedBuilder, Message, Snowflake, User } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-
-import Utility from "../../lib/Utility";
+import Constants from "../../struct/Constants";
 
 
 export default class FetchUserCommand extends KaikiCommand {
@@ -13,23 +12,27 @@ export default class FetchUserCommand extends KaikiCommand {
             aliases: ["fu", "fetch"],
             description: "Fetches a discord user, shows relevant information. 30sec cooldown.",
             usage: "<id>",
-            args: [{
-                id: "userObject",
-                type: Argument.union("user", async (message: Message, phrase: string) => {
-                    try {
-                        const u = await message.client.users.fetch(phrase as Snowflake);
-                        if (u) return u;
-                    }
-                    catch {
-                        return;
-                    }
-                }),
-                otherwise: (m) => ({
-                    embeds: [new MessageEmbed()
-                        .setDescription("No user found")
-                        .withErrorColor(m)],
-                }),
-            }],
+            args: [
+                {
+                    id: "userObject",
+                    type: Argument.union("user", async (message: Message, phrase: string) => {
+                        try {
+                            const u = await message.client.users.fetch(phrase as Snowflake);
+                            if (u) return u;
+                        }
+                        catch {
+                            return;
+                        }
+                    }),
+                    otherwise: (m) => ({
+                        embeds: [
+                            new EmbedBuilder()
+                                .setDescription("No user found")
+                                .withErrorColor(m),
+                        ],
+                    }),
+                },
+            ],
         });
     }
 
@@ -42,20 +45,33 @@ export default class FetchUserCommand extends KaikiCommand {
         }
 
         const userFlags = userObject.flags ? userObject.flags.toArray() : [],
-            embed = new MessageEmbed()
+            embed = new EmbedBuilder()
                 .setDescription(userObject.username)
-                .setThumbnail(userObject.displayAvatarURL({ dynamic: true, size: 4096 }))
+                .setThumbnail(userObject.displayAvatarURL({ size: 4096 }))
                 .setTitle(userObject.tag)
                 .addFields([
                     { name: "ID", value: userObject.id, inline: true },
-                    { name: "Account date", value: time(userObject.createdAt), inline: true }])
+                    { name: "Account date", value: time(userObject.createdAt), inline: true },
+                ])
                 .withOkColor(message);
 
         if (userFlags.length) {
-            embed.addField("Flags", userFlags.map((flag) => Utility.flags[flag]).join("\n"), true);
+            embed.addFields([
+                {
+                    name: "Flags",
+                    value: userFlags.map((flag) => Constants.flags[flag]).join("\n"),
+                    inline: true,
+                },
+            ]);
         }
         if (userObject.bot) {
-            embed.addField("Bot", "✅", true);
+            embed.addFields([
+                {
+                    name: "Bot",
+                    value: "✅",
+                    inline: true,
+                },
+            ]);
         }
 
         return message.channel.send({ embeds: [embed] });

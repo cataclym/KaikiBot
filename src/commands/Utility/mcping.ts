@@ -1,4 +1,4 @@
-import { Message, MessageAttachment, MessageEmbed } from "discord.js";
+import { AttachmentBuilder, EmbedBuilder, Message } from "discord.js";
 import fetch from "node-fetch";
 import { ServerOffline, ServerOnline } from "../../lib/Interfaces/IMinecraftServerPing";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
@@ -12,11 +12,13 @@ export default class mcpingCommand extends KaikiCommand {
             aliases: ["mcping"],
             description: "",
             usage: "",
-            args: [{
-                id: "term",
-                match: "rest",
-                otherwise: (msg: Message) => ({ embeds: [KaikiEmbeds.genericArgumentError(msg)] }),
-            }],
+            args: [
+                {
+                    id: "term",
+                    match: "rest",
+                    otherwise: (msg: Message) => ({ embeds: [KaikiEmbeds.genericArgumentError(msg)] }),
+                },
+            ],
             typing: true,
             subCategory: "Info",
         });
@@ -29,9 +31,9 @@ export default class mcpingCommand extends KaikiCommand {
 
         if (result.online) {
 
-            const attachment = result?.icon?.length ? new MessageAttachment(Buffer.from(result.icon.slice(result.icon.indexOf(",")), "base64"), "icon.png") : undefined;
+            const attachment = result?.icon?.length ? new AttachmentBuilder(Buffer.from(result.icon.slice(result.icon.indexOf(",")), "base64"), { name: "icon.png" }) : undefined;
 
-            const embed = new MessageEmbed()
+            const embed = new EmbedBuilder()
                 .setTitle("Ping! Server is online")
                 .setDescription(`${result.ip}:${result.port} ${result?.hostname?.length ? "/ " + result?.hostname : ""}`)
                 .addFields([
@@ -67,9 +69,11 @@ export default class mcpingCommand extends KaikiCommand {
 
         else {
             return message.channel.send({
-                embeds: [new MessageEmbed()
-                    .setTitle("No ping :< Server is offline or address is incorrect.")
-                    .withErrorColor(message)],
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle("No ping :< Server is offline or address is incorrect.")
+                        .withErrorColor(message),
+                ],
             });
         }
     }

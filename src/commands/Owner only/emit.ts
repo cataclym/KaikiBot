@@ -1,5 +1,5 @@
 import { Listener } from "discord-akairo";
-import { GuildMember, Message, MessageEmbed } from "discord.js";
+import { EmbedBuilder, GuildMember, Message } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
@@ -12,24 +12,26 @@ export default class EmitCommand extends KaikiCommand {
             description: "Emits a specified event. (WIP)",
             usage: "ratelimit <info about event>",
             ownerOnly: true,
-            args: [{
-                index: 0,
-                id: "event",
-                type: "listener",
-                otherwise: (msg: Message) => ({ embeds: [KaikiEmbeds.genericArgumentError(msg)] }),
+            args: [
+                {
+                    index: 0,
+                    id: "event",
+                    type: "listener",
+                    otherwise: (msg: Message) => ({ embeds: [KaikiEmbeds.genericArgumentError(msg)] }),
 
-            },
-            {
-                id: "member",
-                flag: ["-m"],
-                type: "member",
-                match: "option",
-            },
-            {
-                id: "eventArguments",
-                match: "separate",
-                default: null,
-            }],
+                },
+                {
+                    id: "member",
+                    flag: ["-m"],
+                    type: "member",
+                    match: "option",
+                },
+                {
+                    id: "eventArguments",
+                    match: "separate",
+                    default: null,
+                },
+            ],
         });
     }
 
@@ -46,9 +48,11 @@ export default class EmitCommand extends KaikiCommand {
         if (value) {
             return message.channel.send({
                 embeds:
-                    [new MessageEmbed({
-                        description: `Emitted ${event.id}.`,
-                    })],
+                    [
+                        new EmbedBuilder({
+                            description: `Emitted ${event.id}.`,
+                        }),
+                    ],
             });
         }
     }

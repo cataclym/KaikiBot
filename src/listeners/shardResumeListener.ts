@@ -1,4 +1,5 @@
 import chalk from "chalk";
+import { ActivityType } from "discord.js";
 import logger from "loglevel";
 import KaikiListener from "../lib/Kaiki/KaikiListener";
 
@@ -21,10 +22,12 @@ export default class ShardResumeListener extends KaikiListener {
         if (!botDb || !botDb.ActivityType || !botDb.Activity) return;
 
         this.client.user?.setPresence({
-            activities: [{
-                name: botDb.Activity,
-                type: botDb.ActivityType,
-            }],
+            activities: [
+                {
+                    name: botDb.Activity,
+                    type: Object.keys(ActivityType).indexOf(botDb.ActivityType),
+                },
+            ],
         });
     }
 }

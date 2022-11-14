@@ -1,5 +1,14 @@
 import { Argument } from "discord-akairo";
-import { Guild, GuildEmoji, Message, MessageAttachment, MessageEmbed, ReactionEmoji, Role } from "discord.js";
+import {
+    Attachment,
+    EmbedBuilder,
+    Guild,
+    GuildEmoji,
+    GuildPremiumTier,
+    Message,
+    PermissionsBitField,
+    ReactionEmoji,
+} from "discord.js";
 import { isRegex } from "../../lib/functions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
@@ -12,46 +21,35 @@ export default class MyRoleSubIcon extends KaikiCommand {
 
     constructor() {
         super("myroleicon", {
-            clientPermissions: ["MANAGE_ROLES"],
+            clientPermissions: PermissionsBitField.Flags.ManageRoles,
             channel: "guild",
             typing: true,
-            args: [{
-                id: "icon",
-                type: Argument.union((message) => {
-                    if (message.attachments.first()) {
-                        return message.attachments.first();
-                    }
-                }, "emoji", MyRoleSubIcon.resetWords, Constants.EMOTE_REGEX, Constants.IMAGE_REGEX),
-                otherwise: (m: Message) => ({
-                    embeds: [new MessageEmbed()
-                        .setTitle("Please provide a valid emote or image link!")
-                        .withErrorColor(m)],
-                }),
-            }],
+            args: [
+                {
+                    id: "icon",
+                    type: Argument.union((message) => {
+                        if (message.attachments.first()) {
+                            return message.attachments.first();
+                        }
+                    }, "emoji", MyRoleSubIcon.resetWords, Constants.EMOTE_REGEX, Constants.IMAGE_REGEX),
+                    otherwise: (m: Message) => ({
+                        embeds: [
+                            new EmbedBuilder()
+                                .setTitle("Please provide a valid emote or image link!")
+                                .withErrorColor(m),
+                        ],
+                    }),
+                },
+            ],
         });
     }
 
-    async exec(message: Message<true>, { icon }: { icon: { match: RegExpMatchArray } | GuildEmoji | MessageAttachment | string }): Promise<Message | undefined> {
+    async exec(message: Message<true>, { icon }: { icon: { match: RegExpMatchArray } | GuildEmoji | Attachment | string }): Promise<Message | undefined> {
 
         let roleIconSrc: string | Buffer | GuildEmoji | ReactionEmoji | null = null;
 
         if (icon instanceof GuildEmoji) {
             roleIconSrc = icon.url;
-        }
-
-        else if (typeof icon === "string") {
-            if (MyRoleSubIcon.resetWords.includes(icon.toLowerCase())) {
-                const myRole = await Roles.getRole(message);
-                if (myRole && await rolePermissionCheck(message, myRole as Role)) {
-                    myRole.setIcon(null);
-                    return message.channel.send({
-                        embeds: [new MessageEmbed()
-                            .setDescription("Role-icon has been reset!")
-                            .withOkColor(message),
-                        ],
-                    });
-                }
-            }
         }
 
         else if (isRegex(icon)) {
@@ -70,17 +68,29 @@ export default class MyRoleSubIcon extends KaikiCommand {
             }
         }
 
-        else {
+        else if (icon instanceof Attachment) {
             roleIconSrc = icon.url;
+        }
+
+        else {
+            const myRole = await Roles.getRole(message);
+            if (myRole && await rolePermissionCheck(message, myRole)) {
+                myRole.setIcon(null);
+                return message.channel.send({
+                    embeds: [
+                        new EmbedBuilder()
+                            .setDescription("Role-icon has been reset!")
+                            .withOkColor(message),
+                    ],
+                });
+            }
         }
 
         const guild = (message.guild as Guild);
 
-        if (["TIER_1", "NONE"].includes(guild.premiumTier)) {
+        if ([GuildPremiumTier.Tier1, GuildPremiumTier.None].includes(guild.premiumTier)) {
             return message.channel.send({
-                embeds: [
-                    await KaikiEmbeds.errorMessage(message.guild || message, "This server does not have enough boosts for role-icons!"),
-                ],
+                embeds: [await KaikiEmbeds.errorMessage(message.guild || message, "This server does not have enough boosts for role-icons!")],
             });
         }
 
@@ -88,7 +98,7 @@ export default class MyRoleSubIcon extends KaikiCommand {
 
         if (!myRole) return message.channel.send({ embeds: [await KaikiEmbeds.embedFail(message)] });
 
-        const botRole = message.guild?.me?.roles.highest,
+        const botRole = message.guild?.members.me?.roles.highest,
             isPosition = botRole?.comparePositionTo(myRole);
 
         if (isPosition && isPosition <= 0) {
@@ -100,15 +110,18 @@ export default class MyRoleSubIcon extends KaikiCommand {
         }
         catch (err) {
             return message.channel.send({
-                embeds: [(await KaikiEmbeds.errorMessage(message.guild || message, "Unsupported image format"))
-                    .addField("Message", await Utility.codeblock(err, "xl"))],
+                embeds: [
+                    (await KaikiEmbeds.errorMessage(message.guild || message, "Unsupported image format"))
+                        .addFields({ name: "Message", value: await Utility.codeblock(err, "xl") }),
+                ],
             });
         }
 
         return message.channel.send({
-            embeds: [new MessageEmbed()
-                .setDescription(`You have set \`${myRole.name}\`'s icon!`)
-                .withOkColor(message),
+            embeds: [
+                new EmbedBuilder()
+                    .setDescription(`You have set \`${myRole.name}\`'s icon!`)
+                    .withOkColor(message),
             ],
         });
     }

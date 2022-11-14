@@ -1,8 +1,9 @@
 import chalk from "chalk";
+import { ActivityType } from "discord.js";
 import logger from "loglevel";
 import KaikiListener from "../lib/Kaiki/KaikiListener";
 import { Migrations } from "../lib/Migrations/Migrations";
-import { excludeData } from "../lib/slashCommands/data";
+import { excludeData } from "../lib/SlashCommands/data";
 
 export default class ReadyListener extends KaikiListener {
     constructor() {
@@ -57,10 +58,12 @@ ${(chalk.greenBright)("|--------------------------------------------------------
         const botDb = await this.client.orm.botSettings.findFirst();
         this.client.user?.setPresence({
             activities: botDb?.Activity && botDb?.ActivityType
-                ? [{
-                    name: botDb?.Activity,
-                    type: botDb?.ActivityType,
-                }]
+                ? [
+                    {
+                        name: botDb?.Activity,
+                        type: Object.keys(ActivityType).indexOf(botDb?.ActivityType),
+                    },
+                ]
                 : undefined,
         });
     }

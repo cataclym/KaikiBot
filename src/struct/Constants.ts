@@ -1,4 +1,4 @@
-import { GuildFeatures } from "discord.js";
+import { ChannelType, GuildFeature, UserFlags, UserFlagsString } from "discord.js";
 import { theseDoNotYetExist } from "../lib/Types/TCustom";
 
 export default class Constants {
@@ -16,15 +16,19 @@ export default class Constants {
     static EMOTE_REGEX = /<(a?)((!?\d+)|(:.+?:\d+))>/g;
     static IMAGE_REGEX = /(http(s?):)([/|.\w\s-])*\.(?:jpg|gif|png|jpeg)/gi;
 
-    static guildFeatures: { [index in GuildFeatures]: string } & { [index in theseDoNotYetExist]: string } = {
+    static guildFeatures: { [index in GuildFeature]: string } & { [index in theseDoNotYetExist]: string } = {
         ANIMATED_ICON: "Animated icon",
+        ANIMATED_BANNER: "Animated banner",
         BANNER: "Banner",
         BOOSTING_TIERS_EXPERIMENT_MEDIUM_GUILD: "Experimental boosting tiers",
-        COMMERCE: "Commerce",
         COMMUNITY: "Community",
         DISCOVERABLE: "Discoverable",
         FEATURABLE: "Can be featured",
+        HAS_DIRECTORY_ENTRY: "Listed in a directory channel",
+        HUB: "Student hub",
+        INVITES_DISABLED: "Disabled invites",
         INVITE_SPLASH: "Invite splash",
+        LINKED_TO_HUB: "Linked to student hub",
         MEMBER_PROFILES: "Member profiles",
         MEMBER_VERIFICATION_GATE_ENABLED: "Member verification enabled",
         MONETIZATION_ENABLED: "Monetization enabled",
@@ -34,11 +38,10 @@ export default class Constants {
         PARTNERED: "Partnered",
         PREVIEW_ENABLED: "Preview enabled",
         PRIVATE_THREADS: "Private threads",
+        RELAY_ENABLED: "Enabled relay",
         ROLE_ICONS: "Role icons",
-        SEVEN_DAY_THREAD_ARCHIVE: "Seven day thread archive",
         TEXT_IN_VOICE_ENABLED: "Text in voice",
         THREADS_ENABLED: "Threads enabled",
-        THREE_DAY_THREAD_ARCHIVE: "Three day thread archive",
         TICKETED_EVENTS_ENABLED: "Ticketed events enabled",
         VANITY_URL: "Vanity URL",
         VERIFIED: "Verified",
@@ -61,14 +64,41 @@ export default class Constants {
         Utility: "Info, color, search, ping and much more.",
     };
 
-    static channelTypes: { [type: string]: string } = {
-        GUILD_TEXT: "Text",
-        GUILD_NEWS: "News",
-        GUILD_CATEGORY: "Category",
-        GUILD_VOICE: "Voice",
-        GUILD_STAGE_VOICE: "Stage",
-        GUILD_NEWS_THREAD: "News thread",
-        GUILD_PUBLIC_THREAD: "Public thread",
-        GUILD_PRIVATE_THREAD: "Private thread",
+    static channelTypes: { [type in keyof typeof ChannelType]: string } = {
+        GuildText: "Text",
+        GuildNews: "News",
+        GuildCategory: "Category",
+        GuildVoice: "Voice",
+        GuildStageVoice: "Stage",
+        GuildNewsThread: "News thread",
+        GuildPublicThread: "Public thread",
+        GuildPrivateThread: "Private thread",
+        GuildForum: "Guild Forum",
+        GuildAnnouncement: "Guild Announcements",
+        DM: "DM",
+        GroupDM: "GroupDM",
+        AnnouncementThread: "AnnouncementThread",
+        PublicThread: "PublicThread",
+        PrivateThread: "PrivateThread",
+        GuildDirectory: "GuildDirectory",
+    };
+
+    static flags: { [index in UserFlagsString]: string } = {
+        Staff: "Discord Employee 👨‍💼",
+        Partner: "Partnered Server Owner ❤️",
+        Hypesquad: "HypeSquad Events Member 🎊",
+        BugHunterLevel1: "Bug Hunter (Level 1) 🐛",
+        BugHunterLevel2: "Bug Hunter (Level 2) 🐛",
+        HypeSquadOnlineHouse1: "House of Bravery 🏠",
+        HypeSquadOnlineHouse2: "House of Brilliance 🏠",
+        HypeSquadOnlineHouse3: "House of Balance 🏠",
+        PremiumEarlySupporter: "Nitro Early Supporter 👍",
+        TeamPseudoUser: "Team User 🏁",
+        VerifiedBot: "Verified Bot ☑️",
+        VerifiedDeveloper: "Early Verified Developer ✅",
+        CertifiedModerator: "Certified Moderator",
+        BotHTTPInteractions: "Bot interactions",
+        Spammer: "Identified spammer ⚠",
+        Quarantined: "Quarantined/Disabled user ☣",
     };
 }

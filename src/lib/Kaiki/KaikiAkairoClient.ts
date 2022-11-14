@@ -1,7 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import chalk from "chalk";
 import { AkairoClient, CommandHandler, InhibitorHandler, ListenerHandler } from "discord-akairo";
-import { Intents, User } from "discord.js";
+import { ClientApplication, ClientUser, GatewayIntentBits, Guild, Partials, User } from "discord.js";
 import logger from "loglevel";
 import { Pool } from "mysql2/promise";
 import { join } from "path";
@@ -11,12 +11,29 @@ import DatabaseProvider from "../../struct/db/DatabaseProvider";
 import AnniversaryRolesService from "../AnniversaryRolesService";
 import { resetDailyClaims } from "../functions";
 import IPackageJSON from "../Interfaces/IPackageJSON";
-import { MoneyService } from "../money/MoneyService";
+import { MoneyService } from "../Money/MoneyService";
 import Utility from "../Utility";
 import KaikiCommandHandler from "./KaikiCommandHandler";
 
-export default class KaikiAkairoClient extends AkairoClient {
+export default class KaikiAkairoClient<Ready extends boolean = boolean> extends AkairoClient {
+
+    // The following was added to avoid errors with discord.js v14.x -->
+    get readyAt(): Date {
+        return super.readyAt || new Date();
+    }
+
+    public readyTimestamp: number;
+    token: string;
+
+    get uptime(): number {
+        return super.uptime || 0;
+    }
+
+    user: ClientUser;
+    // <--
+
     public anniversaryService: AnniversaryRolesService;
+    public application: ClientApplication;
     public botSettings: DatabaseProvider;
     public cache: KaikiCache;
     public commandHandler: CommandHandler;
@@ -35,23 +52,22 @@ export default class KaikiAkairoClient extends AkairoClient {
         super({
             allowedMentions: { parse: ["users"], repliedUser: true },
             intents: [
-                Intents.FLAGS.DIRECT_MESSAGES,
-                Intents.FLAGS.DIRECT_MESSAGE_REACTIONS,
-                Intents.FLAGS.DIRECT_MESSAGE_TYPING,
-                Intents.FLAGS.GUILDS,
-                Intents.FLAGS.GUILD_BANS,
-                Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS,
-                Intents.FLAGS.GUILD_INTEGRATIONS,
-                Intents.FLAGS.GUILD_INVITES,
-                Intents.FLAGS.GUILD_MEMBERS,
-                Intents.FLAGS.GUILD_MESSAGES,
-                Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
-                // Intents.FLAGS.GUILD_MESSAGE_TYPING,
-                Intents.FLAGS.GUILD_PRESENCES,
-                // Intents.FLAGS.GUILD_VOICE_STATES,
-                Intents.FLAGS.GUILD_WEBHOOKS,
+                GatewayIntentBits.DirectMessageReactions,
+                GatewayIntentBits.DirectMessageTyping,
+                GatewayIntentBits.DirectMessages,
+                GatewayIntentBits.GuildBans,
+                GatewayIntentBits.GuildEmojisAndStickers,
+                GatewayIntentBits.GuildIntegrations,
+                GatewayIntentBits.GuildInvites,
+                GatewayIntentBits.GuildMembers,
+                GatewayIntentBits.GuildMessageReactions,
+                GatewayIntentBits.GuildMessages,
+                GatewayIntentBits.GuildPresences,
+                GatewayIntentBits.GuildWebhooks,
+                GatewayIntentBits.Guilds,
+                GatewayIntentBits.MessageContent,
             ],
-            partials: ["REACTION", "CHANNEL"],
+            partials: [Partials.Reaction, Partials.Channel],
             shards: "auto",
             // Uncomment to have mobile status on bot.
             // ws: { properties: { $browser: "Discord Android" } },
@@ -69,12 +85,13 @@ export default class KaikiAkairoClient extends AkairoClient {
             directory: join(__dirname, "../../commands"),
             fetchMembers: true,
             handleEdits: false,
-            prefix: message => {
-                if (message.guild) {
-                    return this.guildsDb.get(message.guild.id, "Prefix", process.env.PREFIX);
+            prefix: ({ guild }: { guild: Guild | null }) => {
+                if (!guild) {
+                    return String(process.env.PREFIX);
                 }
-                return String(process.env.PREFIX);
+                return String(this.guildsDb.get(guild.id, "Prefix", process.env.PREFIX));
             },
+            autoRegisterSlashCommands: true,
         });
 
         this.listenerHandler = new ListenerHandler(this, { directory: join(__dirname, "../../listeners") });
@@ -85,9 +102,9 @@ export default class KaikiAkairoClient extends AkairoClient {
         this.commandHandler.useListenerHandler(this.listenerHandler);
         this.commandHandler.useInhibitorHandler(this.inhibitorHandler);
 
-        this.inhibitorHandler.loadAll();
-        this.listenerHandler.loadAll();
-        this.commandHandler.loadAll();
+        void this.inhibitorHandler.loadAll();
+        void this.listenerHandler.loadAll();
+        void this.commandHandler.loadAll();
     }
 
     private async dailyResetTimer(client: KaikiAkairoClient): Promise<void> {

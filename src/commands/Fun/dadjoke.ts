@@ -1,5 +1,5 @@
 import { Command } from "discord-akairo";
-import { Message, MessageEmbed } from "discord.js";
+import { EmbedBuilder, Message } from "discord.js";
 import fetch from "node-fetch";
 import { PurpleData, RedditData } from "../../lib/Interfaces/IRedditAPI";
 import Utility from "../../lib/Utility";
@@ -28,21 +28,24 @@ export default class DadJokeCommand extends Command {
 
             const randomRedditPost = data[Math.floor(Math.random() * data.length) + 1];
 
-            return message?.util?.send({ embeds: [new MessageEmbed({
-                title: randomRedditPost.title ? Utility.trim(randomRedditPost.title, 256) : "\u200B",
-                description: randomRedditPost.selftext ? Utility.trim(randomRedditPost.selftext, 2048) : "\u200B",
-                author: {
-                    name: `Submitted by ${randomRedditPost.author}`,
-                    url: randomRedditPost.url,
-                },
-                image: {
-                    url: randomRedditPost.url,
-                },
-                footer: {
-                    text: `${randomRedditPost.ups} updoots`,
-                },
-            })
-                .withOkColor(message)],
+            return message?.util?.send({
+                embeds: [
+                    new EmbedBuilder({
+                        title: randomRedditPost.title ? Utility.trim(randomRedditPost.title, 256) : "\u200B",
+                        description: randomRedditPost.selftext ? Utility.trim(randomRedditPost.selftext, 2048) : "\u200B",
+                        author: {
+                            name: `Submitted by ${randomRedditPost.author}`,
+                            url: randomRedditPost.url,
+                        },
+                        image: {
+                            url: randomRedditPost.url || "",
+                        },
+                        footer: {
+                            text: `${randomRedditPost.ups} updoots`,
+                        },
+                    })
+                        .withOkColor(message),
+                ],
             });
         }
     }

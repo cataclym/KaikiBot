@@ -10,11 +10,13 @@ export default class Hug extends KaikiCommand {
             description: "Hug a good friend, or maybe someone special ;>",
             usage: ["", "@dreb"],
             typing: true,
-            args: [{
-                id: "mention",
-                type: "member",
-                default: null,
-            }],
+            args: [
+                {
+                    id: "mention",
+                    type: "member",
+                    default: null,
+                },
+            ],
         });
     }
 
