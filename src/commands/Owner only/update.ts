@@ -13,7 +13,7 @@ export default class UpdateCommand extends KaikiCommand {
     }
 
     public async exec(message: Message): Promise<void> {
-        execFile(path.join(path.resolve(), "..", "..", "..", "external", "update.sh"), async (error, stdout, stderr) => {
+        execFile(path.join(__dirname, "..", "..", "..", "external", "update.sh"), async (error, stdout, stderr) => {
             if (error) {
                 return message.channel.send({
                     embeds: [
