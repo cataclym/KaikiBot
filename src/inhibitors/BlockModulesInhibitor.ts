@@ -12,23 +12,26 @@ export default class BlockModulesInhibitor extends KaikiInhibitor {
 
     public async exec(message: Message, command: Command): Promise<boolean> {
 
-        if (!message.inGuild()) {
-            return false;
-        }
-        else {
+        if (message.guild) {
 
             if (command.id === "togglecategory") return false;
 
-            const _blockedCategories = await this.client.orm.blockedCategories.findFirst({ where: { Guilds: { Id: BigInt(message.guildId!) } } });
+            const _blockedCategories = await this.client.orm.blockedCategories.findMany({ where: { Guilds: { Id: BigInt(message.guildId!) } } });
 
-            if (!_blockedCategories) {
-                return false;
+            if (_blockedCategories.length) {
+                const isBlocked = _blockedCategories.some(c => {
+                    const category = blockedCategories[c.CategoryTarget];
+                    return category === command.categoryID;
+                });
+                if (isBlocked) {
+                    await message.react("❌");
+                    return true;
+                }
             }
 
-            else {
-                const category = blockedCategories[_blockedCategories.CategoryTarget];
-                return category === command.categoryID;
-            }
+            return false;
         }
+
+        return false;
     }
 }

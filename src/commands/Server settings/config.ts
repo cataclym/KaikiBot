@@ -1,7 +1,7 @@
 import { BlockedCategories, Guilds } from "@prisma/client";
 import { Argument, Flag } from "discord-akairo";
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
-import { EmbedBuilder, Message, MessageCreateOptions, PermissionsBitField } from "discord.js";
+import { APIEmbed, EmbedBuilder, Message, MessageCreateOptions, PermissionsBitField } from "discord.js";
 import { blockedCategories } from "../../lib/Enums/blockedCategories";
 import GreetHandler from "../../lib/GreetHandler";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
@@ -15,31 +15,22 @@ export default class ConfigCommand extends KaikiCommand {
             description: "Configure or display guild specific settings. Will always respond to default prefix regardless of server prefix.",
             usage: ["", "dadbot enable", "anniversary enable", "prefix !", "okcolor <hex>", "errorcolor <hex>"],
             userPermissions: PermissionsBitField.Flags.ManageMessages,
-            // prefix: (msg: Message) => {
-            //     const mentions = [`<@${this.client.user?.id}>`, `<@!${this.client.user?.id}>`];
-            //     const prefixes = [(this.handler.prefix as PrefixSupplier)(msg) as string, process.env.PREFIX || ";"];
-            //     if (this.client.user) {
-            //         return [...prefixes, ...mentions];
-            //     }
-            //     return prefixes;
-            // },
+            * args() {
+                const method = yield {
+                    type: [
+                        ["config-dadbot", "dadbot", "dad"],
+                        ["config-anniversary", "anniversary", "roles", "anniversaryroles"],
+                        ["config-prefix", "prefix"],
+                        ["config-okcolor", "okcolor"],
+                        ["config-errorcolor", "errorcolor"],
+                    ],
+                };
+                if (!Argument.isFailure(method)) {
+                    return Flag.continue(method as string);
+                }
+                return {};
+            },
         });
-    }
-
-    * args(): Generator<{ type: string[][] }, Flag> {
-        const method = yield {
-            type: [
-                ["config-dadbot", "dadbot", "dad"],
-                ["config-anniversary", "anniversary", "roles", "anniversaryroles"],
-                ["config-prefix", "prefix"],
-                ["config-okcolor", "okcolor"],
-                ["config-errorcolor", "errorcolor"],
-            ],
-        };
-        if (!Argument.isFailure(method)) {
-            return Flag.continue(method as string);
-        }
-        return Flag.cancel();
     }
 
     public async exec(message: Message<true>): Promise<Message> {
@@ -65,9 +56,10 @@ export default class ConfigCommand extends KaikiCommand {
             .filter(Boolean);
 
         const firstPage: MessageCreateOptions = {
+            content: undefined,
+            components: [],
             embeds: [
                 new EmbedBuilder()
-                    .withOkColor(message)
                     .addFields([
                         {
                             name: "Dad-bot",
@@ -119,22 +111,27 @@ export default class ConfigCommand extends KaikiCommand {
                             value: Utility.toggledTernary(await this.client.guildsDb.get(message.guildId, "StickyRoles", false)),
                             inline: false,
                         },
-                    ]),
+                    ])
+                    .withOkColor(message)
+                    .data,
             ],
         };
 
         if (categories.length && firstPage.embeds) {
-            (firstPage.embeds[0] as EmbedBuilder).addFields([
-                {
-                    name: "Disabled categories",
-                    value: categories.join("\n"),
-                    inline: false,
-                },
-            ]);
+            firstPage.embeds = [
+                new EmbedBuilder(firstPage.embeds[0] as APIEmbed)
+                    .addFields([
+                        {
+                            name: "Disabled categories",
+                            value: categories.join("\n"),
+                            inline: false,
+                        },
+                    ])
+                    .data,
+            ];
         }
 
-        const pages: MessageCreateOptions[] = [];
-        pages.push(firstPage);
+        const pages: MessageCreateOptions[] = [firstPage];
 
         if (db.WelcomeMessage) {
             pages.push(await GreetHandler.createAndParseWelcomeLeaveMessage({
@@ -150,7 +147,6 @@ export default class ConfigCommand extends KaikiCommand {
                 timeout: db.ByeTimeout,
             }, message.member));
         }
-
         return sendPaginatedMessage(message, pages, {});
     }
 }

@@ -1,5 +1,5 @@
 import { AkairoModule, Command } from "discord-akairo";
-import { Collection, EmbedBuilder, Guild, Message, PermissionsBitField } from "discord.js";
+import { Collection, EmbedBuilder, Message, PermissionsBitField } from "discord.js";
 import { blockedCategories } from "../../lib/Enums/blockedCategories";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
@@ -39,7 +39,7 @@ export default class ToggleCategoryCommand extends KaikiCommand {
 
     public async exec(message: Message<true>, { category }: { category: BlockedCategory<string, Command> }): Promise<Message> {
 
-        const guild = (message.guild as Guild);
+        const { guild } = message;
         const index = blockedCategories[category.id];
 
         let guildDb = await this.client.orm.guilds.findFirst({
