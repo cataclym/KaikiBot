@@ -4,9 +4,7 @@ import KaikiAkairoClient from "../Kaiki/KaikiAkairoClient";
 import KaikiEmbeds from "../KaikiEmbeds";
 
 export function dadbotCheck(message: AkairoMessage | Message) {
-    if (!message.guild?.isDadBotEnabled()) {
-        return false;
-    }
+    return !!message.guild?.isDadBotEnabled();
 }
 
 async function getOrCreateDadbotRole(message: AkairoMessage<"cached"> | Message<true>, client: KaikiAkairoClient) {

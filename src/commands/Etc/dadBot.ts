@@ -9,30 +9,35 @@ export default class dadBot extends KaikiCommand {
         super("dadbot", {
             channel: "guild",
             editable: false,
-            condition: (message: Message) => {
-                if (message.guild && message.member && !message.author.bot) {
-                    if (message.guild.isDadBotEnabled(message) && !message.member.hasExcludedRole() && !message.content.includes("||")) {
+            condition: (message: Message<true>) => {
 
-                        for (const item of Constants.dadBotArray) {
+                if (message.author.bot) return false;
 
-                            const r = new RegExp(`(^|\\s|$)(?<statement>(?<prefix>${item})\\s*(?<nickname>.*)$)`, "mi");
-                            if (r.test(message.content)) {
+                if (!message.member) return false;
 
-                                let match = message.content.match(r)?.groups?.nickname;
-                                if (!match) continue;
+                if (!message.guild.isDadBotEnabled()) return false;
 
-                                const splits = match.split(new RegExp(`${item}`, "mig"));
-                                if (splits.length > 1) match = splits.reduce((a, b) => a.length <= b.length && a.length > 0 ? a : b);
+                if (message.member.hasExcludedRole()) return false;
 
-                                if (match.length && match.length <= (process.env.DADBOT_MAX_LENGTH || 256)) {
-                                    if (!this.nickname.has(message.member.id)) this.nickname.set(message.member.id, match);
-                                }
-                            }
+                if (message.content.includes("||")) return false;
+
+                for (const item of Constants.dadBotArray) {
+
+                    const r = new RegExp(`(^|\\s|$)(?<statement>(?<prefix>${item})\\s*(?<nickname>.*)$)`, "mi");
+                    if (r.test(message.content)) {
+
+                        let match = message.content.match(r)?.groups?.nickname;
+                        if (!match) continue;
+
+                        const splits = match.split(new RegExp(`${item}`, "mig"));
+                        if (splits.length > 1) match = splits.reduce((a, b) => a.length <= b.length && a.length > 0 ? a : b);
+
+                        if (match.length && match.length <= (process.env.DADBOT_MAX_LENGTH || 256)) {
+                            if (!this.nickname.has(message.member.id)) this.nickname.set(message.member.id, match);
                         }
-                        return this.nickname.has(message.member.id);
                     }
                 }
-                return false;
+                return this.nickname.has(message.member.id);
             },
         });
     }

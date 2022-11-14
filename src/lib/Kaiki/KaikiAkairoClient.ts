@@ -67,7 +67,7 @@ export default class KaikiAkairoClient<Ready extends boolean = boolean> extends 
                 GatewayIntentBits.Guilds,
                 GatewayIntentBits.MessageContent,
             ],
-            partials: [Partials.Reaction, Partials.Channel],
+            partials: [Partials.Reaction, Partials.Channel, Partials.GuildMember],
             shards: "auto",
             // Uncomment to have mobile status on bot.
             // ws: { properties: { $browser: "Discord Android" } },
