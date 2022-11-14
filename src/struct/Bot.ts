@@ -25,7 +25,7 @@ export default class Bot {
         }
 
         try {
-            execSync("hash neofetch");
+            execSync("command -v npm >/dev/null 2>&1");
         }
         catch {
             this.client.commandHandler.remove(this.client.commandHandler.findCommand("neofetch").id);
