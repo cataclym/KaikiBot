@@ -1,7 +1,7 @@
 #! /usr/bin/bash
 
 if command -v npm &> /dev/null; then
-  echo "$(npm run build)" 1>&2
+  echo "$(npm i)" 1>&2
   exit 0
 fi
 
