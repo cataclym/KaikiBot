@@ -4,7 +4,7 @@
   "main": "./dist/index.js",
   "scripts": {
     "start": "node -r dotenv/config dist/index.js --color",
-    "build": "tsc -p tsconfig.json",
+    "build": "rm -rf ./js/ && tsc -p tsconfig.json",
     "version": "auto-changelog -u --template keepachangelog && git add CHANGELOG.md",
     "watch": "tsc -p tsconfig.json -w"
   },
