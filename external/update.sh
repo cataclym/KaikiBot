@@ -1,6 +1,6 @@
 #! /usr/bin/bash
 currentTag=$(git describe)
-latestTag=$(git tag | tail -1 )
+latestTag=$(git tag | sort -V | tail -1)
 
 if [[ "$latestTag" != "$currentTag" ]]; then
   echo "New version detected. Updating from ${currentTag} to ${latestTag}..."
