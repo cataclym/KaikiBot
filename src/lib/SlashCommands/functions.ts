@@ -14,7 +14,7 @@ async function getOrCreateDadbotRole(message: AkairoMessage<"cached"> | Message<
     return message.guild?.roles.cache.get(String(db.ExcludeRole));
 }
 
-export async function excludeCommand(message: Message<true> | AkairoMessage<"cached">, client: KaikiAkairoClient) {
+export async function excludeCommand(message: Message<true>, client: KaikiAkairoClient) {
     const embeds = [];
     let excludedRole = await getOrCreateDadbotRole(message, client);
 
@@ -24,7 +24,7 @@ export async function excludeCommand(message: Message<true> | AkairoMessage<"cac
             reason: "Initiate default dad-bot exclusion role.",
         });
 
-        await this.client.db.orm.guilds.update({
+        await message.client.db.orm.guilds.update({
             where: {
                 Id: BigInt(message.guildId),
             },
@@ -33,7 +33,7 @@ export async function excludeCommand(message: Message<true> | AkairoMessage<"cac
             },
         });
 
-        await this.client.guildsDb.set(message.guildId, "ExcludeRole", excludedRole.id);
+        await message.client.guildsDb.set(message.guildId, "ExcludeRole", excludedRole.id);
 
         embeds.push(new EmbedBuilder({
             title: "Creating dad-bot role!",

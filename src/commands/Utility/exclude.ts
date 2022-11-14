@@ -24,7 +24,7 @@ export default class ExcludeCommand extends KaikiCommand {
             });
         }
 
-        return excludeCommand(message, this.client);
+        return excludeCommand(message as unknown as Message<true>, this.client);
     }
 
     public async exec(message: Message<true>): Promise<Message> {
