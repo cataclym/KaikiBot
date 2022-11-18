@@ -119,15 +119,14 @@ export default class ConfigCommand extends KaikiCommand {
 
         if (categories.length && firstPage.embeds) {
             firstPage.embeds = [
-                new EmbedBuilder(firstPage.embeds[0] as APIEmbed)
+                EmbedBuilder.from(firstPage.embeds[0])
                     .addFields([
                         {
                             name: "Disabled categories",
                             value: categories.join("\n"),
                             inline: false,
                         },
-                    ])
-                    .data,
+                    ]),
             ];
         }
 
