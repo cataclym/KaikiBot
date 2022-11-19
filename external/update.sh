@@ -2,6 +2,8 @@
 currentTag=$(git describe)
 latestTag=$(git tag | sort -V | tail -1)
 
+git fetch > /dev/null
+
 if [[ "$latestTag" != "$currentTag" ]]; then
   echo "New version detected. Updating from ${currentTag} to ${latestTag}..."
   git checkout "$latestTag" && currentTag=$(git describe)
