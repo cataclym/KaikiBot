@@ -1,13 +1,4 @@
-import {
-    Channel,
-    Collection,
-    EmbedBuilder,
-    GuildChannel,
-    Message,
-    Permissions,
-    PermissionsBitField,
-    ThreadChannel,
-} from "discord.js";
+import { Collection, EmbedBuilder, GuildBasedChannel, Message, PermissionsBitField } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
@@ -15,7 +6,7 @@ export default class DeleteChannelCommand extends KaikiCommand {
     constructor() {
         super("deletechannel", {
             aliases: ["deletechannel", "dtchnl", "delchan"],
-            description: "Deletes one or more channels. Also deletes categories and voice channels.",
+            description: "Deletes one or more channels. Also deletes categories, threads and voice channels.",
             usage: "#channel1 #channel2 #channel3",
             channel: "guild",
             userPermissions: PermissionsBitField.Flags.ManageChannels,
@@ -31,15 +22,15 @@ export default class DeleteChannelCommand extends KaikiCommand {
         });
     }
 
-    public async exec(m: Message, { channels }: { channels: Collection<string, Channel>[] }): Promise<Message | void> {
+    public async exec(m: Message, { channels }: { channels: Collection<string, GuildBasedChannel>[] }): Promise<Message | void> {
 
-        async function deleteChannels() {
-            return await Promise.all(channels
-                .map((chan) => chan
-                    .map(async c => c.delete())));
-        }
+        const deletedChannels: string[] = [];
 
-        const deletedChannels = await Promise.all(([] as Promise<Channel>[]).concat(...await deleteChannels()));
+        await Promise.all(channels.reduce((acc, val) => [...acc, ...val], [])
+            .map(async chan => {
+                const c = await chan[1].delete();
+                deletedChannels.push(`#${c.name} [${c.id}]`);
+            }));
 
         return m.channel.send({
             embeds: [
@@ -48,13 +39,8 @@ export default class DeleteChannelCommand extends KaikiCommand {
                     .addFields([
                         {
                             name: "Deleted:",
-                            value: (await Promise.all(deletedChannels
-                                .map(async (c) => {
-                                    if (c instanceof GuildChannel || c instanceof ThreadChannel) {
-                                        return `${c.name} [${c.id}]`;
-                                    }
-                                    return `[${c.id}]`;
-                                }))).join("\n"),
+                            value: deletedChannels
+                                .join("\n"),
                         },
                     ])
                     .withOkColor(m),
