@@ -43,7 +43,7 @@ export default class Bot {
                 await this.client.application?.fetch();
 
                 if (!this.client.application?.owner) {
-                    return this.noBotOwner();
+                    return Bot.noBotOwner();
                 }
 
                 const owner = this.client.application.owner instanceof Team
@@ -51,7 +51,7 @@ export default class Bot {
                     : this.client.application.owner;
 
                 if (!owner) {
-                    return this.noBotOwner();
+                    return Bot.noBotOwner();
                 }
 
                 else {
@@ -92,7 +92,7 @@ export default class Bot {
         }
     }
 
-    private noBotOwner() {
+    private static noBotOwner() {
         logger.error("No bot owner found! Double check your bot application in Discord's developer panel.");
         process.exit(1);
     }

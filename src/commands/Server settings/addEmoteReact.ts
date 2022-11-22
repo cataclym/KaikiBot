@@ -1,4 +1,5 @@
 import { EmbedBuilder, GuildEmoji, Message, PermissionsBitField } from "discord.js";
+import KaikiCache from "../../cache/KaikiCache";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
@@ -52,7 +53,7 @@ export default class EmoteReactCommand extends KaikiCommand {
         });
 
 
-        if (!this.client.cache.emoteReactCache.get(message.guildId)) await this.client.cache.populateERCache(message);
+        if (!this.client.cache.emoteReactCache.get(message.guildId)) await KaikiCache.populateERCache(message);
 
         if (trigger.includes(" ")) {
             this.client.cache.emoteReactCache.get(message.guildId)?.get("has_space")?.set(trigger, emoji.id);

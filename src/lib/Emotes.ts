@@ -19,7 +19,7 @@ export default class Emotes {
     // It will first try 128x128 then recursively call itself to 64 then 32 if size
     // is not below 256kb.
     static async resizeImage(file: string, type: string, imgSize: number, msg?: Message | undefined): Promise<string | Buffer> {
-        if (type == "gif") {
+        if (type === "gif") {
             // msg is only present on the first call and not recursively.
             if (msg) {
                 msg.channel.send("Processing...");
