@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { ActivityType } from "discord.js";
-import { ConnectionOptions, createPool, Pool } from "mysql2/promise";
+import { ConnectionOptions, createPool, escape, Pool } from "mysql2/promise";
 import KaikiAkairoClient from "../../lib/Kaiki/KaikiAkairoClient";
 
 export default class Database {
@@ -10,7 +10,7 @@ export default class Database {
 
     private _client: KaikiAkairoClient;
     private _config: ConnectionOptions = {
-        uri: process.env.DATABASE_URL,
+        uri: escape(process.env.DATABASE_URL),
         supportBigNumbers: true,
         waitForConnections: true,
     };
