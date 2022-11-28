@@ -1,5 +1,5 @@
 import { PrefixSupplier } from "discord-akairo";
-import { EmbedBuilder, Guild, Message, Permissions, PermissionsBitField } from "discord.js";
+import { EmbedBuilder, Guild, Message, PermissionsBitField } from "discord.js";
 
 import GreetHandler, { IJSONToMessageOptions, JSONToMessageOptions } from "../../lib/GreetHandler";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
