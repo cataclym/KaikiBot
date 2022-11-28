@@ -4,26 +4,37 @@ import { ConnectionOptions, createPool, Pool } from "mysql2/promise";
 import KaikiAkairoClient from "../../lib/Kaiki/KaikiAkairoClient";
 
 export default class Database {
-    get mySQLConnection(): Pool {
-        return this._mySQLConnection;
-    }
-
-    private _client: KaikiAkairoClient;
-    private _config: ConnectionOptions = {
-        uri: process.env.DATABASE_URL,
-        supportBigNumbers: true,
-        waitForConnections: true,
-    };
-    public orm: PrismaClient;
-    private _mySQLConnection: Pool;
-
     constructor(client: KaikiAkairoClient) {
         this._client = client;
     }
 
+    get mySQLConnection(): Pool {
+        return this._mySQLConnection;
+    }
+
+    private createConfig(): ConnectionOptions {
+
+        const parsedUrl = new URL(encodeURI(process.env.DATABASE_URL!));
+        const parsedPassword = decodeURIComponent(parsedUrl.password);
+
+        return {
+            user: parsedUrl.username,
+            password: parsedPassword,
+            host: parsedUrl.hostname,
+            port: parseInt(parsedUrl.port),
+            database: parsedUrl.pathname.slice(1),
+            supportBigNumbers: true,
+            waitForConnections: true,
+        };
+    }
+
+    private _client: KaikiAkairoClient;
+    public orm: PrismaClient;
+    private _mySQLConnection: Pool;
+
     public async init(): Promise<Database> {
         try {
-            this._mySQLConnection = createPool(this._config);
+            this._mySQLConnection = createPool(this.createConfig());
             this.orm = new PrismaClient();
         }
         catch (e) {

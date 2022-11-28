@@ -19,6 +19,10 @@ export default class Bot {
             throw new Error("Missing prefix! Set a prefix in .env");
         }
 
+        if (!process.env.DATABASE_URL) {
+            throw new Error("Missing DATABASE_URL! Set a valid url in .env");
+        }
+
         if (!process.env.KAWAIIKEY || process.env.KAWAIIKEY === "[YOUR_OPTIONAL_KAWAII_KEY]") {
             ["run", "peek", "pout", "lick"].forEach(c => this.client.commandHandler.remove(this.client.commandHandler.findCommand(c).id));
             logger.warn("Kawaii API dependant commands have been disabled. Provide a token in .env to re-enable.");
