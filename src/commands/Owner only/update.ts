@@ -77,7 +77,7 @@ export default class UpdateCommand extends KaikiCommand {
                                     },
                                 ])
                                 .withOkColor(message),
-                            await i.editReply({
+                            await i.update({
                                 embeds: embeds,
                                 components: [],
                             });
