@@ -1,4 +1,5 @@
 import { Message } from "discord.js";
+import KaikiCache from "../cache/KaikiCache";
 import Emotes from "../lib/Emotes";
 import KaikiListener from "../lib/Kaiki/KaikiListener";
 
@@ -15,7 +16,7 @@ export default class MessageListener extends KaikiListener {
         if (message.webhookId || message.author.bot || !message.inGuild()) return;
 
         if (!message.client.cache.emoteReactCache.has(message.guildId)) {
-            await this.client.cache.populateERCache(message);
+            await KaikiCache.populateERCache(message);
         }
         await Emotes.countEmotes(message);
     }

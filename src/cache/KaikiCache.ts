@@ -55,7 +55,7 @@ export default class KaikiCache {
         this.cmdStatsCache = new Collection<string, number>();
     }, 900000);
 
-    public async populateERCache(message: Message<true>) {
+    public static async populateERCache(message: Message<true>) {
 
         const emoteReacts = (await message.client.orm.emojiReactions.findMany({ where: { GuildId: BigInt(message.guildId) } }))
             .map(table => [table.TriggerString, table.EmojiId]);
@@ -86,7 +86,7 @@ export default class KaikiCache {
         let emotes = message.client.cache.emoteReactCache.get(id);
 
         if (!emotes) {
-            await this.populateERCache(message);
+            await KaikiCache.populateERCache(message);
             emotes = message.client.cache.emoteReactCache.get(id);
         }
 
@@ -101,10 +101,10 @@ export default class KaikiCache {
 
         if (!matches.length) return;
 
-        return this.emoteReactLoop(message, matches, emotes!);
+        return KaikiCache.emoteReactLoop(message, matches, emotes!);
     }
 
-    public async emoteReactLoop(message: Message, matches: RegExpMatchArray, wordObj: Map<TEmoteStringTypes, Map<TEmoteTrigger, TTriggerString>>) {
+    public static async emoteReactLoop(message: Message, matches: RegExpMatchArray, wordObj: Map<TEmoteStringTypes, Map<TEmoteTrigger, TTriggerString>>) {
         for (const word of matches) {
             const emote = wordObj.get("no_space")?.get(word) || wordObj.get("has_space")?.get(word);
             if (!message.guild?.emojis.cache.has(emote as Snowflake) || !emote) continue;

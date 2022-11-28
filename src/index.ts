@@ -8,9 +8,7 @@ class KaikiProgram {
     async init() {
         extensionHook();
         await startLogger();
-        process.on("unhandledRejection", async (reason: Error, promise) => {
-            logger.warn("Unhandled Rejection at:", promise);
-        });
+        process.on("unhandledRejection", async (reason: Error, promise) => logger.warn("Unhandled Rejection at:", promise));
 
         new Bot(new KaikiAkairoClient());
     }
