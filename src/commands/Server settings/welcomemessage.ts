@@ -1,7 +1,7 @@
 import { PrefixSupplier } from "discord-akairo";
 import { EmbedBuilder, Guild, Message, Permissions, PermissionsBitField } from "discord.js";
 
-import GreetHandler, { JSONToMessageOptions } from "../../lib/GreetHandler";
+import GreetHandler, { IJSONToMessageOptions, JSONToMessageOptions } from "../../lib/GreetHandler";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 export default class WelcomeMessageCommand extends KaikiCommand {
@@ -36,7 +36,7 @@ export default class WelcomeMessageCommand extends KaikiCommand {
         });
     }
 
-    public async exec(message: Message, { msg }: { msg: unknown | JSONToMessageOptions }): Promise<Message> {
+    public async exec(message: Message, { msg }: { msg: IJSONToMessageOptions }): Promise<Message> {
 
         const json = new JSONToMessageOptions(msg);
         if (!json) return message.channel.send(GreetHandler.JSONErrorMessage(message));

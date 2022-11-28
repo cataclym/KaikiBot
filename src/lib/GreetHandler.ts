@@ -1,7 +1,7 @@
 import {
+    APIEmbed,
     ChannelType,
     EmbedBuilder,
-    EmbedData,
     Guild,
     GuildMember,
     Message,
@@ -89,23 +89,28 @@ export default class GreetHandler {
     }
 }
 
+export type IJSONToMessageOptions = MessageCreateOptions & {
+    embeds?: APIEmbed[] | undefined;
+}
+
 export class JSONToMessageOptions implements MessageCreateOptions {
-    constructor(any: any) {
+    constructor(any: IJSONToMessageOptions) {
         this.incomingEmbed = any.embeds;
         this.content = any.content;
         this.stickers = any.stickers;
 
-        this.embeds = this.incomingEmbed.map((e: EmbedData) => {
-            if (e.color) {
-                e.color = parseInt(String(e.color).replaceAll(/#/g, ""), 16);
+        this.embeds = this.incomingEmbed?.map((e) => {
+
+            if (e.color && !Number.isInteger(e.color)) {
+                e.color = parseInt(String(e.color).replace(/#/g, ""), 16);
             }
-            return new EmbedBuilder(e);
+
+            return EmbedBuilder.from(e);
         });
     }
 
-    incomingEmbed = [];
-    embeds: EmbedBuilder[];
+    incomingEmbed?: APIEmbed[] | undefined = [];
+    embeds: EmbedBuilder[] | undefined;
     content?: string | undefined;
     stickers?: StickerResolvable[] | undefined;
 }
-
