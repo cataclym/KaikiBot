@@ -14,7 +14,7 @@ export default class GuildMemberRemovedListener extends KaikiListener {
 
         await GreetHandler.handleGoodbyeMessage(member);
 
-        const GuildId = BigInt(member.id);
+        const GuildId = BigInt(member.guild.id);
         const MemberId = BigInt(member.id);
 
         const leaveRoles = member.roles.cache.map(role => {
