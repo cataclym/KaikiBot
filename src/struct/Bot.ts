@@ -1,5 +1,4 @@
 import chalk from "chalk";
-import { execSync } from "child_process";
 import { EmbedBuilder, Team } from "discord.js";
 import fs from "fs/promises";
 import logger from "loglevel";
@@ -24,16 +23,7 @@ export default class Bot {
         }
 
         if (!process.env.KAWAIIKEY || process.env.KAWAIIKEY === "[YOUR_OPTIONAL_KAWAII_KEY]") {
-            ["run", "peek", "pout", "lick"].forEach(c => this.client.commandHandler.remove(this.client.commandHandler.findCommand(c).id));
             logger.warn("Kawaii API dependant commands have been disabled. Provide a token in .env to re-enable.");
-        }
-
-        try {
-            execSync("command -v npm >/dev/null 2>&1");
-        }
-        catch {
-            this.client.commandHandler.remove(this.client.commandHandler.findCommand("neofetch").id);
-            logger.warn("Neofetch wasn't detected! Neofetch command will be disabled.");
         }
 
         void this.loadPackageJSON();

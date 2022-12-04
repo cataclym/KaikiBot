@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import chalk from "chalk";
+import { execSync } from "child_process";
 import { AkairoClient, CommandHandler, InhibitorHandler, ListenerHandler } from "discord-akairo";
 import { ClientApplication, ClientUser, GatewayIntentBits, Guild, Partials, User } from "discord.js";
 import logger from "loglevel";
@@ -75,6 +76,23 @@ export default class KaikiAkairoClient<Ready extends boolean = boolean> extends 
 
         this.initializeDatabase();
 
+        const dir = join(__dirname, "..", "..", "commands", "Interactions");
+
+        const filterArray: string[] = [];
+
+        if (!process.env.KAWAIIKEY || process.env.KAWAIIKEY === "[YOUR_OPTIONAL_KAWAII_KEY]") {
+            filterArray.push(`${dir}/run.js`, `${dir}/peek.js`, `${dir}/pout.js`, `${dir}/lick.js`);
+        }
+
+        // Check if 'neofetch' is available
+        try {
+            execSync("command -v neofetch >/dev/null 2>&1");
+        }
+        catch {
+            filterArray.push(join(__dirname, "..", "..", "commands", "Fun", "neofetch.js"));
+            logger.warn("Neofetch wasn't detected! Neofetch command will be disabled.");
+        }
+
         this.commandHandler = new KaikiCommandHandler(this, {
             allowMention: true,
             automateCategories: true,
@@ -85,6 +103,9 @@ export default class KaikiAkairoClient<Ready extends boolean = boolean> extends 
             directory: join(__dirname, "../../commands"),
             fetchMembers: true,
             handleEdits: false,
+            loadFilter: (module) => {
+                return !filterArray.includes(module);
+            },
             prefix: ({ guild }: { guild: Guild | null }) => {
                 if (!guild) {
                     return String(process.env.PREFIX);
