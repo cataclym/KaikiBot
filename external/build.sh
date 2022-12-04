@@ -2,6 +2,7 @@
 
 if command -v npm &> /dev/null; then
   npm ci 1>&2 && sleep 2;
+  wait
   exit 0
 fi
 

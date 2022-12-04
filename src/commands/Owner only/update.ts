@@ -32,7 +32,7 @@ export default class UpdateCommand extends KaikiCommand {
                         .setDescription(await Utility.codeblock(stdout))
                         .withOkColor(message),
                     new EmbedBuilder()
-                        .setTitle("Need to build updated files")
+                        .setTitle("Bot needs to compile updated files...!")
                         .withOkColor(message),
                 ];
                 const msg = await message.channel.send({
@@ -53,7 +53,9 @@ export default class UpdateCommand extends KaikiCommand {
                 });
 
                 collector.on("collect", async (i) => {
-                    await i.deferUpdate();
+                    await i.update({
+                        components: [],
+                    });
                     execFile(path.join(__dirname, "..", "..", "..", "external", "build.sh"), async (error2, stdout2, stderr2) => {
                         if (error2) {
                             embeds[1] = new EmbedBuilder()
@@ -69,7 +71,7 @@ export default class UpdateCommand extends KaikiCommand {
                         else {
                             embeds[1] = new EmbedBuilder()
                                 .setTitle("Finished building")
-                                .setDescription(await Utility.codeblock(stdout2))
+                                .setDescription(await Utility.codeblock(stderr2))
                                 .addFields([
                                     {
                                         name: "After building...",
