@@ -1,4 +1,5 @@
-import { ChannelType, GuildFeature, UserFlags, UserFlagsString } from "discord.js";
+import { BotSettings_ActivityType } from "@prisma/client";
+import { ActivityType, ChannelType, GuildFeature, UserFlagsString } from "discord.js";
 import { theseDoNotYetExist } from "../lib/Types/TCustom";
 
 export default class Constants {
@@ -100,5 +101,13 @@ export default class Constants {
         BotHTTPInteractions: "Bot interactions",
         Spammer: "Identified spammer ⚠",
         Quarantined: "Quarantined/Disabled user ☣",
+    };
+
+    static ActivityTypes: { [index in BotSettings_ActivityType]: Exclude<ActivityType, ActivityType.Custom> } = {
+        PLAYING: 0,
+        STREAMING: 1,
+        LISTENING: 2,
+        WATCHING: 3,
+        COMPETING: 4,
     };
 }

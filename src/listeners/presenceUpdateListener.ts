@@ -1,5 +1,6 @@
-import { ActivityType, Presence } from "discord.js";
+import { Presence } from "discord.js";
 import KaikiListener from "../lib/Kaiki/KaikiListener";
+import Constants from "../struct/Constants";
 
 export default class PresenceUpdateListener extends KaikiListener {
     constructor() {
@@ -14,18 +15,17 @@ export default class PresenceUpdateListener extends KaikiListener {
             const db = await this.client.orm.botSettings.findFirst({});
             if (!db || !db.Activity || !db.ActivityType) return;
 
-            // TODO: Test!!!
-            if (ActivityType[newPresence.activities[0].type] !== ActivityType[db.ActivityType as any] || newPresence.activities[0].name !== db.Activity) {
-                if (db.Activity && db.ActivityType) {
-                    this.client.user?.setPresence({
-                        activities: [
-                            {
-                                name: db.Activity,
-                                type: Object.keys(ActivityType).indexOf(db.ActivityType),
-                            },
-                        ],
-                    });
-                }
+            const acType = Constants.ActivityTypes[db.ActivityType];
+
+            if (newPresence.activities[0].name !== db.Activity || newPresence.activities[0].type !== acType) {
+                this.client.user?.setPresence({
+                    activities: [
+                        {
+                            name: db.Activity,
+                            type: acType,
+                        },
+                    ],
+                });
             }
         }
     }

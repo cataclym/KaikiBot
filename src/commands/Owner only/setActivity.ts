@@ -1,7 +1,9 @@
+import { BotSettings_ActivityType } from "@prisma/client";
 import { FailureData } from "discord-akairo";
 import { ActivityType, EmbedBuilder, Message } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
+import Constants from "../../struct/Constants";
 
 export default class SetActivityCommand extends KaikiCommand {
     static validTypes = ["PLAYING", "STREAMING", "LISTENING", "WATCHING", "COMPETING"];
@@ -45,10 +47,10 @@ export default class SetActivityCommand extends KaikiCommand {
     public async exec(message: Message, {
         type,
         name,
-    }: { type: Exclude<keyof typeof ActivityType, "CUSTOM">, name: string }) {
+    }: { type: keyof typeof BotSettings_ActivityType, name: string }) {
 
         return Promise.all([
-            message.client.user?.setActivity({ type: Object.keys(ActivityType).indexOf(type), name: name }),
+            message.client.user?.setActivity({ type: Constants.ActivityTypes[type], name: name }),
             this.client.botSettings.set("1", "Activity", name),
             this.client.botSettings.set("1", "ActivityType", type),
             message.channel.send({

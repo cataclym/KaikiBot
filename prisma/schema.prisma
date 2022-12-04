@@ -98,7 +98,7 @@ model GuildUsers {
 
 model Guilds {
   Id                  BigInt                @id
-  Prefix              String                @db.VarChar(50)
+  Prefix              String                @default(";") @db.VarChar(50)
   Anniversary         Boolean               @default(false)
   DadBot              Boolean               @default(false)
   ErrorColor          BigInt                @default(16711680)
@@ -113,10 +113,10 @@ model Guilds {
   StickyRoles         Boolean               @default(false)
   CreatedAt           DateTime              @default(now()) @db.Timestamp(0)
   BlockedCategories   BlockedCategories[]
-  ExcludedStickyRoles ExcludedStickyRoles[]
   DadBotChannels      DadBotChannels[]
   EmojiReactions      EmojiReactions[]
   EmojiStats          EmojiStats[]
+  ExcludedStickyRoles ExcludedStickyRoles[]
   GuildUsers          GuildUsers[]
 }
 
@@ -129,6 +129,7 @@ model LeaveRoles {
 
   @@index([GuildUserId], map: "GuildUserId")
   @@index([GuildId], map: "GuildId")
+  @@index([GuildUserId, GuildId], map: "LeaveRoles_ibfk_1")
 }
 
 model Todos {
@@ -149,6 +150,7 @@ model UserNicknames {
 
   @@index([GuildUserId], map: "GuildUserId")
   @@index([GuildId], map: "GuildId")
+  @@index([GuildUserId, GuildId], map: "UserNicknames_ibfk_1")
 }
 
 model Migrations {
