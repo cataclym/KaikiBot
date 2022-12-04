@@ -10,8 +10,6 @@ import {
 } from "discord.js";
 import { parsePlaceHolders } from "./functions";
 
-type Diff<T, U> = T extends U ? never : T;
-
 interface sendMessageData {
     channel: bigint | null,
     embed: string | null,

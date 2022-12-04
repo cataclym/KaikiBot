@@ -23,6 +23,11 @@ export default class ColorListCommand extends KaikiCommand {
 
         for (const color in colorTable) {
             const random = `${Math.random()}`;
+
+            const clr = Utility.HEXtoRGB(String(hexColorTable[color]));
+
+            if (!clr) return;
+
             embeds.push(new EmbedBuilder()
                 .addFields([
                     {
@@ -34,7 +39,7 @@ export default class ColorListCommand extends KaikiCommand {
                 .setColor(hexColorTable[color] as ColorResolvable),
             );
 
-            attachments.push(new AttachmentBuilder(await imgFromColor(Utility.HEXtoRGB(String(hexColorTable[color]))!), { name: `color${random}.png` }));
+            attachments.push(new AttachmentBuilder(await imgFromColor(clr), { name: `color${random}.png` }));
 
             if (embeds.length === 5) {
                 messageOptions.push({

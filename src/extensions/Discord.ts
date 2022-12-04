@@ -61,29 +61,33 @@ Guild.prototype.isDadBotEnabled = function(message?: Message) {
     return false;
 };
 
-EmbedBuilder.prototype.withErrorColor = function(m?: Message | Guild) {
+EmbedBuilder.prototype.withErrorColor = function(messageOrGuild?: Message | Guild) {
 
-    if (m) {
+    if (messageOrGuild) {
 
-        if (m instanceof Message && m.guild) {
-            return this.setColor(m.client.guildsDb.get(m.guildId!, "ErrorColor", Utility.errorColor));
+        if (messageOrGuild instanceof Message && messageOrGuild.inGuild()) {
+            return this.setColor(messageOrGuild.client.guildsDb.get(messageOrGuild.guildId, "ErrorColor", Utility.errorColor));
         }
 
-        return this.setColor((m.client as KaikiAkairoClient).guildsDb.get(m.id, "ErrorColor", Utility.errorColor));
+        else {
+            return this.setColor((messageOrGuild.client as KaikiAkairoClient).guildsDb.get(messageOrGuild.id, "ErrorColor", Utility.errorColor));
+        }
     }
 
     return this.setColor(Utility.errorColor);
 };
 
-EmbedBuilder.prototype.withOkColor = function(m?: Message | Guild) {
+EmbedBuilder.prototype.withOkColor = function(messageOrGuild?: Message | Guild) {
 
-    if (m) {
+    if (messageOrGuild) {
 
-        if (m instanceof Message && m.guild) {
-            return this.setColor(m.client.guildsDb.get(m.guildId!, "OkColor", Utility.okColor));
+        if (messageOrGuild instanceof Message && messageOrGuild.inGuild()) {
+            return this.setColor(messageOrGuild.client.guildsDb.get(messageOrGuild.guildId, "OkColor", Utility.okColor));
         }
 
-        return this.setColor(m.client.guildsDb.get(m.id, "OkColor", Utility.okColor));
+        else {
+            return this.setColor(messageOrGuild.client.guildsDb.get(messageOrGuild.id, "OkColor", Utility.okColor));
+        }
     }
 
     return this.setColor(Utility.okColor);

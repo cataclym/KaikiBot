@@ -24,7 +24,6 @@
   "rules": {
     // Place to specify ESLint rules. Can be used to overwrite rules specified from the extended configs
     // e.g. "@typescript-eslint/explicit-function-return-type": "off",
-
     "@typescript-eslint/no-shadow": [
       "error"
     ],
@@ -93,10 +92,6 @@
     "quotes": [
       "error",
       "double"
-    ],
-    "semi": [
-      "error",
-      "always"
     ],
     "space-before-blocks": "error",
     "space-before-function-paren": [

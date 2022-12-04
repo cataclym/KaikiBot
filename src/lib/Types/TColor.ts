@@ -1,3 +1,5 @@
-import { RGBA } from "sharp";
-
-export type TKaikiColor = RGBA;
+export type TKaikiColor = {
+    r: number;
+    g: number;
+    b: number;
+};

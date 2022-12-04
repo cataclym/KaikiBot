@@ -64,7 +64,7 @@ export default class ExcludeStickyRolesCommand extends KaikiCommand {
             });
         }
 
-        const GuildId = BigInt(message.guildId!), enabledRoles: bigint[] = [],
+        const GuildId = BigInt(message.guildId), enabledRoles: bigint[] = [],
             excludedRoles: { GuildId: bigint, RoleId: bigint }[] = [];
 
         for (const [, role] of roles) {

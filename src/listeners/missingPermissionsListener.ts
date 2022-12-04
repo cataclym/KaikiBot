@@ -14,7 +14,7 @@ export default class MissingPermissionsListener extends KaikiListener {
 
     // Emitted when a permissions check is failed.
 
-    public async exec(message: Message, command: Command, type: string, missing: any): Promise<void> {
+    public async exec(message: Message, command: Command, type: string, missing?: any): Promise<void> {
 
         await Utility.listenerLog(message, this, logger.info, command);
 
@@ -31,7 +31,7 @@ export default class MissingPermissionsListener extends KaikiListener {
                         new EmbedBuilder({
                             title: "Missing permissions",
                             description: `${type === "client" ? "Bot" : "User"} cannot execute \`${command.id}\` due to missing permissions.`,
-                            footer: { text: `Missing: ${missing}` },
+                            footer: { text: `Missing: ${missing || "N/A"}` },
                         })
                             .withErrorColor(message),
                     ],

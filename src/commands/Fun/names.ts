@@ -12,7 +12,7 @@ export default class NamesCommand extends KaikiCommand {
         });
     }
 
-    * args(): Generator<{ index: 0; type: "user" } | { type: (message: Message, phrase: string) => Promise<boolean> }, { method: any; unionUser: any }> {
+    * args(): Generator<{ index: 0; type: "user" } | { type: (message: Message, phrase: string) => Promise<boolean> }, { method: unknown; unionUser: unknown }> {
         const method = yield {
             // TODO: figure out type of phrase
             type: async (message: Message, phrase: string) => {

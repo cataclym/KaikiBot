@@ -23,8 +23,10 @@ export default class AnimeQuoteCommand extends KaikiCommand {
             .then(response => response.json())
             .catch((reason) => {
                 logger.warn(`Animequote received no data: ${reason}\n`);
-                if (animeQuoteCache.size) {
-                    return sendQuote(animeQuoteCache.random()!, message);
+
+                const random = animeQuoteCache.random();
+                if (random) {
+                    return sendQuote(random, message);
                 }
             });
 

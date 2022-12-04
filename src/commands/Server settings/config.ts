@@ -1,7 +1,7 @@
 import { BlockedCategories, Guilds } from "@prisma/client";
 import { Argument, Flag } from "discord-akairo";
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
-import { APIEmbed, EmbedBuilder, Message, MessageCreateOptions, PermissionsBitField } from "discord.js";
+import { EmbedBuilder, Message, MessageCreateOptions, PermissionsBitField } from "discord.js";
 import { blockedCategories } from "../../lib/Enums/blockedCategories";
 import GreetHandler from "../../lib/GreetHandler";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
@@ -43,13 +43,14 @@ export default class ConfigCommand extends KaikiCommand {
         });
 
         if (!db) {
-            const g: any = await this.client.db.getOrCreateGuild(BigInt(message.guildId));
-            g["BlockedCategories"] = [];
+            const g = await this.client.db.getOrCreateGuild(BigInt(message.guildId));
+            const blockedCategoriesObj = { BlockedCategories: [] };
+            Object.assign(g, blockedCategoriesObj);
             db = g as (Guilds & { BlockedCategories: BlockedCategories[] });
         }
 
         // Is this okay?
-        const { Anniversary, DadBot, Prefix, ErrorColor, OkColor, WelcomeChannel, ByeChannel } = db as Guilds;
+        const { Anniversary, DadBot, Prefix, ErrorColor, OkColor, WelcomeChannel, ByeChannel } = db;
 
         const categories = db.BlockedCategories
             .map(e => blockedCategories[e.CategoryTarget])

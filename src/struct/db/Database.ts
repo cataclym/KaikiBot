@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { ActivityType } from "discord.js";
-import { ConnectionOptions, createPool, Pool } from "mysql2/promise";
+import { ConnectionOptions, createPool, FieldPacket, Pool } from "mysql2/promise";
 import KaikiAkairoClient from "../../lib/Kaiki/KaikiAkairoClient";
 
 export default class Database {
@@ -14,7 +14,7 @@ export default class Database {
 
     private createConfig(): ConnectionOptions {
 
-        const parsedUrl = new URL(encodeURI(process.env.DATABASE_URL!));
+        const parsedUrl = new URL(encodeURI(String(process.env.DATABASE_URL)));
         const parsedPassword = decodeURIComponent(parsedUrl.password);
 
         return {
@@ -62,7 +62,7 @@ export default class Database {
         if (!guild) {
             const newGuild = await this.orm.guilds.create({
                 data: {
-                    Prefix: process.env.PREFIX!,
+                    Prefix: String(process.env.PREFIX),
                     Id: BigInt(id),
                 },
             });
@@ -104,7 +104,7 @@ export class BotConfig {
     private dailyEnabled: boolean;
     private dailyAmount: number;
 
-    constructor(array: [any, any]) {
+    constructor(array: [any, FieldPacket[]]) {
         const data = array[0][0];
         this.activity = data.Activity;
         this.activityType = data.ActivityType;

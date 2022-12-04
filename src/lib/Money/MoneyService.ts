@@ -9,8 +9,9 @@ export class MoneyService {
         this._orm = connection;
         (async () => {
             const repo = await this._orm.botSettings.findFirst();
-            this.currencyName = repo!.CurrencyName;
-            this.currencySymbol = String.fromCodePoint(repo!.CurrencySymbol);
+            if (!repo) throw new Error("Missing row in BotSettings table!");
+            this.currencyName = repo.CurrencyName;
+            this.currencySymbol = String.fromCodePoint(repo.CurrencySymbol);
         })();
     }
 

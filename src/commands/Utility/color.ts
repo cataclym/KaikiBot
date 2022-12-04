@@ -58,7 +58,7 @@ export default class ColorCommand extends KaikiCommand {
                 ],
             });
         }
-        const colorInt = resolveColor([color.r!, color.g!, color.b!]);
+        const colorInt = resolveColor([color.r, color.g, color.b]);
         const colorString = `Hex: **${Utility.RGBtoHEX(color)}** [${colorInt}]\nRed: **${color.r}**\nGreen: **${color.g}**\nBlue: **${color.b}**\n`;
         const attachment = new AttachmentBuilder(await imgFromColor(color), { name: "color.jpg" });
         const embed = new EmbedBuilder({

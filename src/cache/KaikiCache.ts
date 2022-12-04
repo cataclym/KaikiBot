@@ -83,12 +83,14 @@ export default class KaikiCache {
 
         const id = message.guildId,
             messageContent = message.content.toLowerCase();
-        let emotes = message.client.cache.emoteReactCache.get(id);
 
-        if (!emotes) {
+        if (!message.client.cache.emoteReactCache.get(id)) {
             await KaikiCache.populateERCache(message);
-            emotes = message.client.cache.emoteReactCache.get(id);
         }
+
+        const emotes = message.client.cache.emoteReactCache.get(id);
+
+        if (!emotes) return;
 
         const matches = Array.from(emotes?.get("has_space")?.keys() || [])
             .filter(k => messageContent.match(new RegExp(k.toLowerCase(), "g")));
@@ -101,7 +103,7 @@ export default class KaikiCache {
 
         if (!matches.length) return;
 
-        return KaikiCache.emoteReactLoop(message, matches, emotes!);
+        return KaikiCache.emoteReactLoop(message, matches, emotes);
     }
 
     public static async emoteReactLoop(message: Message, matches: RegExpMatchArray, wordObj: Map<TEmoteStringTypes, Map<TEmoteTrigger, TTriggerString>>) {

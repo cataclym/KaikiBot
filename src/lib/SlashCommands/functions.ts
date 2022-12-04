@@ -9,8 +9,6 @@ export function dadbotCheck(message: AkairoMessage | Message) {
 
 async function getOrCreateDadbotRole(message: AkairoMessage<"cached"> | Message<true>, client: KaikiAkairoClient) {
     const db = await client.db.getOrCreateGuild(message.guildId);
-
-    const embeds = [];
     return message.guild?.roles.cache.get(String(db.ExcludeRole));
 }
 

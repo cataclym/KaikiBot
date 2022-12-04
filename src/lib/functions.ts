@@ -89,6 +89,6 @@ export async function parsePlaceHolders(input: string, guildMember: GuildMember)
     return input;
 }
 
-export function isRegex(value: any): value is regexpType {
+export function isRegex(value: unknown): value is regexpType {
     return (value as regexpType).match !== undefined;
 }

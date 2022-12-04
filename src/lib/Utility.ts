@@ -1,14 +1,13 @@
 import chalk from "chalk";
 import { Command, Listener } from "discord-akairo";
-import { ActivityType, ChannelType, ColorResolvable, GuildMember, HexColorString, Message } from "discord.js";
+import { ActivityType, ChannelType, ColorResolvable, GuildMember, HexColorString, Message, RGBTuple } from "discord.js";
 import fetch from "node-fetch";
-import { hexColorTable } from "./Color";
 import { TKaikiColor } from "./Types/TColor";
 
 export type presenceType = {
     main: string,
     richPresence: string[],
-}
+};
 
 export default class Utility {
     static toggledTernary(value: boolean) {
@@ -26,9 +25,9 @@ export default class Utility {
         return (-d + d.setHours(24, 0, 0, 0));
     }
 
-    static errorColor: ColorResolvable = hexColorTable["red"];
+    static errorColor: RGBTuple = [255, 0, 0];
 
-    static okColor: ColorResolvable = "#00ff00";
+    static okColor: RGBTuple = [0, 255, 0];
 
     static trim(str: string, max: number): string {
         return (str.length > max) ? `${str.slice(0, max - 3)}...` : str;
@@ -138,7 +137,7 @@ Executed ${chalk.blueBright(command?.id ?? "N/A")} | "${chalk.yellow(message.con
     }
 
     // Credits to https://www.html-code-generator.com/javascript/color-converter-script
-    static HEXtoRGB(hex: string): TKaikiColor | null {
+    static HEXtoRGB(hex: string): TKaikiColor {
         hex = hex.replace(/#/g, "");
         if (hex.length === 3) {
             // WTF is this
@@ -157,8 +156,8 @@ Executed ${chalk.blueBright(command?.id ?? "N/A")} | "${chalk.yellow(message.con
             return { r: red, g: green, b: blue };
         }
         else {
-            // invalid color
-            return null;
+            // Return black.
+            return { r: 0, g: 0, b: 0 };
         }
     }
 

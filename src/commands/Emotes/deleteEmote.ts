@@ -1,4 +1,4 @@
-import { Collection, EmbedBuilder, GuildEmoji, Message, Permissions, PermissionsBitField } from "discord.js";
+import { Collection, EmbedBuilder, GuildEmoji, Message, PermissionsBitField } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 import KaikiEmbeds from "../../lib/KaikiEmbeds";

@@ -2,7 +2,7 @@ import { PrismaClient } from "@prisma/client";
 import chalk from "chalk";
 
 
-import { Guild, GuildMember, Permissions, PermissionsBitField, Role } from "discord.js";
+import { Guild, GuildMember, PermissionsBitField, Role } from "discord.js";
 import logger from "loglevel";
 import Constants from "../struct/Constants";
 import KaikiAkairoClient from "./Kaiki/KaikiAkairoClient";

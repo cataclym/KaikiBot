@@ -1,9 +1,8 @@
-import { Argument } from "discord-akairo";
-import { EmbedBuilder, Guild, Message, PermissionsBitField } from "discord.js";
-import { hexColorTable } from "../../lib/Color";
+import { EmbedBuilder, Message, PermissionsBitField, resolveColor } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
+import { TKaikiColor } from "../../lib/Types/TColor";
 
 export default class OkColorConfigCommand extends KaikiCommand {
     constructor() {
@@ -13,25 +12,25 @@ export default class OkColorConfigCommand extends KaikiCommand {
             args: [
                 {
                     id: "value",
-                    type: Argument.union("color", (m: Message, content: string) => hexColorTable[content]),
+                    type: "kaiki_color",
                     otherwise: (m: Message) => ({ embeds: [KaikiEmbeds.genericArgumentError(m)] }),
                 },
             ],
         });
     }
 
-    public async exec(message: Message, { value }: { value: string | number }): Promise<Message> {
-        const guildID = (message.guild as Guild).id;
+    public async exec(message: Message<true>, { value }: { value: TKaikiColor }): Promise<Message> {
+        const guildID = message.guild.id;
 
-        if (typeof value === "string") value = parseInt(value, 16);
+        const intValue = resolveColor([value.r, value.g, value.b]);
 
-        await this.client.guildsDb.set(guildID, "OkColor", value);
+        await this.client.guildsDb.set(guildID, "OkColor", intValue);
 
         return message.channel.send({
             embeds: [
                 new EmbedBuilder({
                     title: "Success!",
-                    description: `okColor has been set to \`${value}\` !`,
+                    description: `okColor has been set to \`${intValue}\` !`,
                 })
                     .withOkColor(message),
             ],

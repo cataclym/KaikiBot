@@ -4,6 +4,7 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 import { rolePermissionCheck } from "../../lib/Roles";
 import { TKaikiColor } from "../../lib/Types/TColor";
+import Utility from "../../lib/Utility";
 
 export default class RoleColorCommand extends KaikiCommand {
     constructor() {
@@ -37,7 +38,7 @@ export default class RoleColorCommand extends KaikiCommand {
 
             if (!role) role = message.member!.roles.highest;
 
-            const attachment = new AttachmentBuilder(await imgFromColor(role.hexColor), { name: "color.png" });
+            const attachment = new AttachmentBuilder(await imgFromColor(Utility.HEXtoRGB(role.hexColor)), { name: "color.png" });
             return message.channel.send({
                 files: [attachment],
                 embeds: [

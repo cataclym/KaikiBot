@@ -1,5 +1,5 @@
 import cp from "child_process";
-import { GuildEmoji, Message, Snowflake } from "discord.js";
+import { GuildEmoji, Message } from "discord.js";
 import fs from "fs";
 import gifsicle from "gifsicle";
 import sharp from "sharp";
@@ -93,7 +93,7 @@ export default class Emotes {
                 const ids = emotes.toString().match(/\d+/g);
                 if (ids) {
                     const request = ids.map(item => {
-                        const emote = guild.emojis.cache.get(item as Snowflake);
+                        const emote = guild.emojis.cache.get(item);
                         if (emote) {
                             return message.client.orm.emojiStats.upsert({
                                 where: {
@@ -111,9 +111,7 @@ export default class Emotes {
                                 },
                             });
                         }
-                        // Heck you.
-                        // I want to explicitly type this item.
-                    }).filter((item): item is any => !!item);
+                    }).filter(<T>(n?: T): n is T => Boolean(n));
                     await message.client.orm.$transaction(request);
                 }
             }

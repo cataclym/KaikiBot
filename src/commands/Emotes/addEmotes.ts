@@ -1,4 +1,4 @@
-import { Message, Permissions, PermissionsBitField } from "discord.js";
+import { Message, PermissionsBitField } from "discord.js";
 import sizeOf from "image-size";
 import Emotes from "../../lib/Emotes";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
@@ -28,7 +28,6 @@ export default class AddEmotesCommand extends KaikiCommand {
 
     public async exec(message: Message, {
         urls,
-        names,
     }: { urls: RegExpMatchArray, names: string[] }): Promise<Message | void> {
 
         // TODO: Test args
