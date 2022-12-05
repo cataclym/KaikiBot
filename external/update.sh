@@ -8,7 +8,7 @@ if [[ "$latestTag" != "$currentTag" ]]; then
   git checkout "$latestTag" && currentTag="$(git describe)"
 
   if [[ "$latestTag" == "$currentTag" ]]; then
-    echo "Successfully updated to ${latestTag}!" 1>&2
+    echo "Successfully updated to ${latestTag}!"
     exit 0
   else
     echo "Error, unable to update..." >&2
