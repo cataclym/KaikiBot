@@ -5,7 +5,7 @@ latestTag="$(git tag | sort -V | tail -1)"
 
 if [[ "$latestTag" != "$currentTag" ]]; then
   echo "New version detected. Updating from ${currentTag} to ${latestTag}..."
-  git checkout "$latestTag" && currentTag="$(git describe)"
+  git checkout "$latestTag" 2>&1 && currentTag="$(git describe)"
 
   if [[ "$latestTag" == "$currentTag" ]]; then
     echo "Successfully updated to ${latestTag}!"
