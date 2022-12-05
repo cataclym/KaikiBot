@@ -1,4 +1,4 @@
-import { execFile } from "child_process";
+import { execFile, execSync } from "child_process";
 import { ActionRowBuilder, ButtonBuilder, EmbedBuilder, Message } from "discord.js";
 import path from "path";
 import util from "util";
@@ -34,7 +34,7 @@ export default class UpdateCommand extends KaikiCommand {
 
         const embeds = [
             new EmbedBuilder()
-                .setTitle(Utility.trim(update.stderr, 256))
+                .setTitle(`HEAD is now at ${execSync("git rev-parse --short HEAD")} ${execSync("git describe")}`)
                 .setDescription(await Utility.codeblock(Utility.trim(update.stdout, 4048)))
                 .withOkColor(message),
             new EmbedBuilder()
