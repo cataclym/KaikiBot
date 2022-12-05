@@ -12,7 +12,9 @@ export default class PresenceUpdateListener extends KaikiListener {
 
     public async exec(oldPresence: Presence | null, newPresence: Presence): Promise<void> {
         if (newPresence.user?.id === this.client.user?.id) {
+
             const db = await this.client.orm.botSettings.findFirst({});
+
             if (!db || !db.Activity || !db.ActivityType) return;
 
             const acType = Constants.ActivityTypes[db.ActivityType];
