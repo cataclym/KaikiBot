@@ -26,7 +26,7 @@ export default class UpdateCommand extends KaikiCommand {
                 embeds: [
                     new EmbedBuilder()
                         .setTitle("Error occurred while updating")
-                        .setDescription(await Utility.codeblock(update.stderr))
+                        .setDescription(await Utility.codeblock(Utility.trim(update.stderr, 4048)))
                         .withErrorColor(message),
                 ],
             });
@@ -34,8 +34,8 @@ export default class UpdateCommand extends KaikiCommand {
 
         const embeds = [
             new EmbedBuilder()
-                .setTitle(update.stderr)
-                .setDescription(await Utility.codeblock(update.stdout))
+                .setTitle(Utility.trim(update.stderr, 256))
+                .setDescription(await Utility.codeblock(Utility.trim(update.stdout, 4048)))
                 .withOkColor(message),
             new EmbedBuilder()
                 .setTitle("Bot needs to compile updated files...!")
