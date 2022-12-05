@@ -1,4 +1,4 @@
-# Migration guide
+Migration guide
 
 This guide takes you through the steps of migrating from **v3** (3.7.0) to **v4** (4.0.0).
 
