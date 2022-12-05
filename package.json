@@ -54,7 +54,7 @@
     "auto-changelog": "^2.3.0",
     "eslint": "^8.6.0",
     "eslint-plugin-import": "^2.25.4",
-    "prisma": "^4.4.0"
+    "prisma": "^4.7.1"
   },
   "description": "Discord bot built with Discord-Akairo and MySQL2",
   "repository": {
