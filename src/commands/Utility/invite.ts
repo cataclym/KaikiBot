@@ -15,7 +15,7 @@ export default class InviteCommand extends KaikiCommand {
         return message.channel.send({
             embeds: [
                 new EmbedBuilder({
-                    title: "Invite link",
+                    title: "Invite me to your server",
                     description: `[Link](https://discord.com/oauth2/authorize?client_id=${this.client.user?.id}&scope=bot)`,
                     image: { url: this.client.user?.displayAvatarURL({ size: 128 }) },
                 })

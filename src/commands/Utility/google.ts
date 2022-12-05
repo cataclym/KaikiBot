@@ -7,7 +7,7 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
 type parsedResult = {
-    title: string | undefined,
+    title: string,
     url: string | undefined,
     description: string
 }
@@ -43,8 +43,11 @@ export default class GoogleSearchCommand extends KaikiCommand {
         const parsedResults: parsedResult[] = [];
 
         for (const res of result.querySelectorAll("div.g")) {
+            const title = res.querySelector("div.yuRUbf > a > h3")?.innerText;
+            if (!title) continue;
+
             parsedResults.push({
-                title: res.querySelector("div.yuRUbf > a > h3")?.innerText,
+                title,
                 url: res.querySelector("div.yuRUbf > a")?.rawAttributes.href,
                 description: res.querySelector("div > div > div.IsZvec > div > span")?.innerText
                     || res.querySelector("div > div > div.IsZvec > div")?.innerText
@@ -61,7 +64,7 @@ export default class GoogleSearchCommand extends KaikiCommand {
                 .map(r => new EmbedBuilder({
                     url: r.url,
                 })
-                    .setTitle(r.title || "🔍")
+                    .setTitle(r.title)
                     .setDescription(querystring.unescape(r.description))
                     .withOkColor(message)),
         });
