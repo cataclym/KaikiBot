@@ -1,6 +1,6 @@
 #! /usr/bin/bash
 currentTag="$(git describe)"
-git fetch > /dev/null
+git fetch &> /dev/null
 latestTag="$(git tag | sort -V | tail -1)"
 
 if [[ "$latestTag" != "$currentTag" ]]; then
