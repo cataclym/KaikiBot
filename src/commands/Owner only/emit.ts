@@ -9,7 +9,7 @@ export default class EmitCommand extends KaikiCommand {
     constructor() {
         super("emit", {
             aliases: ["emit"],
-            description: "Emits a specified event. (WIP)",
+            description: "Emits a specified event.",
             usage: "ratelimit <info about event>",
             ownerOnly: true,
             args: [

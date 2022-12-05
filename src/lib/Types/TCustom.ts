@@ -8,10 +8,12 @@ export type separatedEmoteReactTypes = {
     no_space: emoteReactObjectType
 };
 
-export type theseDoNotYetExist = "BOOSTING_TIERS_EXPERIMENT_MEDIUM_GUILD"
+export type theseDoNotYetExist = "APPLICATION_COMMAND_PERMISSIONS_V2"
+    | "BOOSTING_TIERS_EXPERIMENT_MEDIUM_GUILD"
     | "MEMBER_PROFILES"
     | "NEW_THREAD_PERMISSIONS"
     | "THREADS_ENABLED"
+    | "THREE_DAY_THREAD_ARCHIVE"
     | "TEXT_IN_VOICE_ENABLED";
 
 export type Oldies = "DISCORD_EMPLOYEE"

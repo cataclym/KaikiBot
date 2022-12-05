@@ -18,6 +18,7 @@ export default class Constants {
     static IMAGE_REGEX = /(http(s?):)([/|.\w\s-])*\.(?:jpg|gif|png|jpeg)/gi;
 
     static guildFeatures: { [index in GuildFeature]: string } & { [index in theseDoNotYetExist]: string } = {
+        APPLICATION_COMMAND_PERMISSIONS_V2: "Application permissions v2",
         ANIMATED_ICON: "Animated icon",
         ANIMATED_BANNER: "Animated banner",
         BANNER: "Banner",
@@ -42,6 +43,7 @@ export default class Constants {
         RELAY_ENABLED: "Enabled relay",
         ROLE_ICONS: "Role icons",
         TEXT_IN_VOICE_ENABLED: "Text in voice",
+        THREE_DAY_THREAD_ARCHIVE: "Three-day thread archives",
         THREADS_ENABLED: "Threads enabled",
         TICKETED_EVENTS_ENABLED: "Ticketed events enabled",
         VANITY_URL: "Vanity URL",
