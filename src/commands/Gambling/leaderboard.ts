@@ -6,7 +6,7 @@ export default class LeaderboardCommand extends KaikiCommand {
     constructor() {
         super("leaderboard", {
             aliases: ["leaderboard", "lb"],
-            description: "",
+            description: "Shows currency leaderboard for the current server.",
             usage: "",
             channel: "guild",
         });
@@ -26,19 +26,24 @@ export default class LeaderboardCommand extends KaikiCommand {
                 .withOkColor(message),
             embeds: EmbedBuilder[] = [];
 
-        for (let i = 9, p = 0; p < guildOnlyEntries.length; i += 9, p += 9) {
+        if (guildOnlyEntries.length) {
+            for (let i = 9, p = 0; p < guildOnlyEntries.length; i += 9, p += 9) {
 
-            const emb = EmbedBuilder.from(embed);
+                const emb = EmbedBuilder.from(embed);
 
-            guildOnlyEntries.slice(p, i).forEach((e) => {
-                emb.addFields({
-                    name: message.guild?.members.cache.get(e.user)?.user.tag ?? e.user,
-                    value: e.str,
-                    inline: true,
+                guildOnlyEntries.slice(p, i).forEach((e) => {
+                    emb.addFields({
+                        name: message.guild?.members.cache.get(e.user)?.user.tag ?? e.user,
+                        value: e.str,
+                        inline: true,
+                    });
                 });
-            });
 
-            embeds.push(emb);
+                embeds.push(emb);
+            }
+        }
+        else {
+            embeds.push(embed.setDescription("There's nothing here, yet."));
         }
 
         return sendPaginatedMessage(message, embeds, {});
