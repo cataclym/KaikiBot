@@ -16,5 +16,5 @@ if [[ "$latestTag" != "$currentTag" ]]; then
   fi
 fi
 
-echo "No update available." 1>&2
-exit 1
+echo "No update available."
+exit 0
