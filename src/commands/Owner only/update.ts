@@ -32,6 +32,16 @@ export default class UpdateCommand extends KaikiCommand {
             });
         }
 
+        else if (update.stdout.trim() === "No update available.") {
+            return message.channel.send({
+                embeds: [
+                    new EmbedBuilder()
+                        .setDescription(await Utility.codeblock(Utility.trim(update.stderr, 4048)))
+                        .withErrorColor(message),
+                ],
+            });
+        }
+
         const embeds = [
             new EmbedBuilder()
                 .setTitle(`HEAD is now at ${execSync("git rev-parse --short HEAD")} ${execSync("git describe")}`)
