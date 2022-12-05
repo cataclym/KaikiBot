@@ -36,7 +36,7 @@ export default class UpdateCommand extends KaikiCommand {
             return message.channel.send({
                 embeds: [
                     new EmbedBuilder()
-                        .setDescription(await Utility.codeblock(Utility.trim(update.stderr, 4048)))
+                        .setDescription(await Utility.codeblock(Utility.trim(update.stdout, 4048)))
                         .withErrorColor(message),
                 ],
             });
