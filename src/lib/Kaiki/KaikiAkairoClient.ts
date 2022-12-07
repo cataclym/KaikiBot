@@ -7,6 +7,7 @@ import logger from "loglevel";
 import { Pool } from "mysql2/promise";
 import { join } from "path";
 import KaikiCache from "../../cache/KaikiCache";
+import Constants from "../../struct/Constants";
 import Database from "../../struct/db/Database";
 import DatabaseProvider from "../../struct/db/DatabaseProvider";
 import AnniversaryRolesService from "../AnniversaryRolesService";
@@ -152,6 +153,8 @@ export default class KaikiAkairoClient<Ready extends boolean = boolean> extends 
         // This will execute at midnight
         await this.dailyResetTimer(client);
         logger.info("birthdayService | Service initiated");
+
+        void this.presenceLoop();
     }
 
     private initializeDatabase() {
@@ -176,5 +179,24 @@ export default class KaikiAkairoClient<Ready extends boolean = boolean> extends 
 
                 this.money = new MoneyService(this.orm);
             });
+    }
+
+    private async presenceLoop(): Promise<NodeJS.Timer> {
+        const db = await this.orm.botSettings.findFirst();
+
+        if (db && db.Activity && db.ActivityType) {
+
+            const acType = Constants.ActivityTypes[db.ActivityType];
+
+            this.user.setPresence({
+                activities: [
+                    {
+                        name: db.Activity,
+                        type: acType,
+                    },
+                ],
+            });
+        }
+        return setInterval(this.presenceLoop, 60000 * 5);
     }
 }

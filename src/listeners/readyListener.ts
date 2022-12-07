@@ -4,7 +4,6 @@ import logger from "loglevel";
 import KaikiListener from "../lib/Kaiki/KaikiListener";
 import { Migrations } from "../lib/Migrations/Migrations";
 import { excludeData } from "../lib/SlashCommands/data";
-import Constants from "../struct/Constants";
 
 export default class ReadyListener extends KaikiListener {
     constructor() {
@@ -55,21 +54,5 @@ ${(chalk.greenBright)("|--------------------------------------------------------
 
         this.client.initializeServices()
             .then(() => logger.info("dailyResetTimer | Service initiated"));
-
-        const db = await this.client.orm.botSettings.findFirst();
-
-        if (db && db.Activity && db.ActivityType) {
-
-            const acType = Constants.ActivityTypes[db.ActivityType];
-
-            this.client.user?.setPresence({
-                activities: [
-                    {
-                        name: db.Activity,
-                        type: acType,
-                    },
-                ],
-            });
-        }
     }
 }
