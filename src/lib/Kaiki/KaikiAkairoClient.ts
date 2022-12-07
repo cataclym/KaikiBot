@@ -182,6 +182,16 @@ export default class KaikiAkairoClient<Ready extends boolean = boolean> extends 
     }
 
     private async presenceLoop(): Promise<NodeJS.Timer> {
+        await this.setPresence();
+
+        return setInterval(((scope: KaikiAkairoClient<Ready>) => {
+            return async () => {
+                await scope.setPresence();
+            };
+        })(this), 60000 * 5);
+    }
+
+    public async setPresence() {
         const db = await this.orm.botSettings.findFirst();
 
         if (db && db.Activity && db.ActivityType) {
@@ -197,6 +207,5 @@ export default class KaikiAkairoClient<Ready extends boolean = boolean> extends 
                 ],
             });
         }
-        return setInterval(this.presenceLoop, 60000 * 5);
     }
 }

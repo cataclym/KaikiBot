@@ -17,17 +17,6 @@ export default class ShardResumeListener extends KaikiListener {
 
         logger.info(`shardResume | Shard: ${chalk.green(id)} \nReplayed ${chalk.green(replayedEvents)} events.`);
 
-        const botDb = await this.client.orm.botSettings.findFirst({});
-
-        if (!botDb || !botDb.ActivityType || !botDb.Activity) return;
-
-        this.client.user?.setPresence({
-            activities: [
-                {
-                    name: botDb.Activity,
-                    type: Object.keys(ActivityType).indexOf(botDb.ActivityType),
-                },
-            ],
-        });
+        await this.client.setPresence();
     }
 }

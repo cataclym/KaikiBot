@@ -7,4 +7,8 @@ export default class PresenceUpdateListener extends KaikiListener {
             emitter: "client",
         });
     }
+
+    exec() {
+        return;
+    }
 }
