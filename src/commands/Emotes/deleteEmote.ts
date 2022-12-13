@@ -1,9 +1,8 @@
 import { Collection, EmbedBuilder, GuildEmoji, Message, PermissionsBitField } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 import Utility from "../../lib/Utility";
-
+import Constants from "../../struct/Constants";
 
 const timer = (ms: number) => new Promise(res => setTimeout(res, ms));
 
@@ -38,7 +37,7 @@ export default class DeleteEmoteCommand extends KaikiCommand {
 
                 if (newEmote) {
 
-                    i > 0 ? await timer(3500) && i++ : i++;
+                    i > 0 ? await timer(Constants.MAGIC_NUMBERS.CMDS.EMOTES.DELETE_EMOTE.DELETE_DELAY) && i++ : i++;
 
                     const deleted = await newEmote.delete();
 
@@ -54,6 +53,7 @@ export default class DeleteEmoteCommand extends KaikiCommand {
                         });
                     }
                 }
+
                 else {
                     return message.channel.send({
                         embeds: [
@@ -71,7 +71,7 @@ export default class DeleteEmoteCommand extends KaikiCommand {
                 embeds: [
                     new EmbedBuilder()
                         .setTitle("Success!")
-                        .setDescription(`Deleted:\n${Utility.trim(emotes.map((es) => es.map((e) => e)).join("\n"), 2048)}`)
+                        .setDescription(`Deleted:\n${Utility.trim(emotes.map((es) => es.map((e) => e)).join("\n"), Constants.MAGIC_NUMBERS.EMBED_LIMITS.DESCRIPTION)}`)
                         .withOkColor(message),
                 ],
             });

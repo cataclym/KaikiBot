@@ -59,7 +59,7 @@ export default class FetchUserCommand extends KaikiCommand {
             embed.addFields([
                 {
                     name: "Flags",
-                    value: userFlags.map((flag) => Constants.flags[flag]).join("\n"),
+                    value: userFlags.map((flag) => Constants.Flags[flag]).join("\n"),
                     inline: true,
                 },
             ]);

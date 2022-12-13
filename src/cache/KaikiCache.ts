@@ -3,6 +3,7 @@ import { Collection, Message, Snowflake } from "discord.js";
 import { Pool, ResultSetHeader, RowDataPacket } from "mysql2/promise";
 import { respType } from "../lib/Types/TCustom.js";
 import Utility from "../lib/Utility";
+import Constants from "../struct/Constants";
 
 export type TEmoteStringTypes = "has_space" | "no_space";
 export type TEmoteTrigger = string;
@@ -28,6 +29,8 @@ export default class KaikiCache {
         this.cmdStatsCache = new Collection<string, number>();
         this.dailyProvider = new MySQLDailyProvider(this._connection);
         this.emoteReactCache = new Map<TGuildString, Map<TEmoteStringTypes, Map<TEmoteTrigger, TTriggerString>>>();
+
+        (async () => await this.init())();
     }
 
     public init = async () => setInterval(async () => {
@@ -53,7 +56,7 @@ export default class KaikiCache {
         await this._orm.$transaction(requests);
 
         this.cmdStatsCache = new Collection<string, number>();
-    }, 900000);
+    }, Constants.MAGIC_NUMBERS.CACHE.FIFTEEN_MINUTES_MS);
 
     public static async populateERCache(message: Message<true>) {
 

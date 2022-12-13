@@ -5,6 +5,7 @@ import { hexColorTable, imgFromColor } from "../../lib/Color";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import { TKaikiColor } from "../../lib/Types/TColor";
 import Utility from "../../lib/Utility";
+import Constants from "../../struct/Constants";
 
 export default class ColorCommand extends KaikiCommand {
     constructor() {
@@ -37,7 +38,10 @@ export default class ColorCommand extends KaikiCommand {
                 embedColor = hexColorTable[(colorList[Math.floor(Math.random() * colorList.length)])],
                 pages: EmbedBuilder[] = [];
 
-            for (let index = 15, p = 0; p < colorList.length; index = index + 15, p = p + 15) {
+            for (let index = Number(Constants.MAGIC_NUMBERS.CMDS.UTILITY.COLOR.CLR_NAMES_PR_PAGE), p = 0;
+                p < colorList.length;
+                index += Constants.MAGIC_NUMBERS.CMDS.UTILITY.COLOR.CLR_NAMES_PR_PAGE, p += Constants.MAGIC_NUMBERS.CMDS.UTILITY.COLOR.CLR_NAMES_PR_PAGE) {
+
                 pages.push(new EmbedBuilder({
                     title: "List of all available color names",
                     description: colorList.slice(p, index).join("\n"),

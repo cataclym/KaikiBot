@@ -1,9 +1,9 @@
 import { EmbedBuilder, Message } from "discord.js";
+import { DAPI } from "../../lib/Hentai/HentaiService";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 import Utility from "../../lib/Utility";
-import { DapiGrabber, DapiSearchType } from "./hentaiService";
 
 export default class E621Command extends KaikiCommand {
     constructor() {
@@ -23,7 +23,7 @@ export default class E621Command extends KaikiCommand {
     }
 
     public async exec(message: Message, { tags }: { tags: string | null }): Promise<Message> {
-        const post = await DapiGrabber(tags?.split("+").map(tag => tag.replace(" ", "_")) ?? null, DapiSearchType.E621);
+        const post = await this.client.HentaiService.DapiGrabber(tags?.split("+").map(tag => tag.replace(" ", "_")) ?? null, DAPI.E621);
         if (post) {
 
             const emb = new EmbedBuilder()

@@ -2,6 +2,7 @@ import { PrefixSupplier } from "discord-akairo";
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
 import { EmbedBuilder, Message } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+import Constants from "../../struct/Constants";
 
 export default class RemoveEmoteReactCommand extends KaikiCommand {
     constructor() {
@@ -29,7 +30,9 @@ export default class RemoveEmoteReactCommand extends KaikiCommand {
             });
         }
 
-        for (let index = 15, p = 0; p < db.length; index += 15, p += 15) {
+        for (let index = Constants.MAGIC_NUMBERS.CMDS.SERVER_SETTINGS.EMOTES.EMOTE_TRIGGERS_PR_PAGE, p = 0;
+            p < db.length;
+            index += Constants.MAGIC_NUMBERS.CMDS.SERVER_SETTINGS.EMOTES.EMOTE_TRIGGERS_PR_PAGE, p += Constants.MAGIC_NUMBERS.CMDS.SERVER_SETTINGS.EMOTES.EMOTE_TRIGGERS_PR_PAGE) {
 
             pages.push(new EmbedBuilder()
                 .setTitle("Emoji triggers")

@@ -1,5 +1,6 @@
 import { EmbedBuilder, Message, PermissionsBitField } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+import Constants from "../../struct/Constants";
 
 
 export default class ClearCommand extends KaikiCommand {
@@ -48,12 +49,11 @@ export default class ClearCommand extends KaikiCommand {
                     .withOkColor(message),
             ],
         })
-            .then(m => setTimeout(() => m.delete(), manualDelete.size * 1500));
+            .then(m => setTimeout(() => m.delete(), manualDelete.size * Constants.MAGIC_NUMBERS.CMDS.MODERATION.CLEAR.DELETE_TIMEOUT));
 
-        // kekw
         let i = 0;
         manualDelete.each(async (m) => {
-            i += 1500;
+            i += Constants.MAGIC_NUMBERS.CMDS.MODERATION.CLEAR.DELETE_TIMEOUT;
             setTimeout(async () => {
                 await m.delete()
                     .catch(e => {

@@ -1,4 +1,5 @@
 import { EmbedBuilder, GuildMember, Message } from "discord.js";
+import Constants from "../../struct/Constants";
 
 const numbers = ["1", "2", "3", "4", "5", "6", "7", "8", "9"];
 const winningCombos = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]];
@@ -51,8 +52,8 @@ export default class TicTacToe {
         });
 
         this.currentPlayerTurn = async (p: GuildMember, m: Message) => this.message.channel.send(`It's ${p}'s turn`).then(async (m2) => {
-            setTimeout(async () => m.delete(), 4500);
-            setTimeout(async () => m2.delete(), 4500);
+            setTimeout(async () => m.delete(), Constants.MAGIC_NUMBERS.LIB.GAMES.TTT.MSG_DEL_TIMEOUT);
+            setTimeout(async () => m2.delete(), Constants.MAGIC_NUMBERS.LIB.GAMES.TTT.MSG_DEL_TIMEOUT);
         });
         this.winningMessage = (p: GuildMember) => `Player ${p} has won!`;
         this.timedWinMessage = (p: GuildMember) => `Player ${p} didn't make a move for 20 seconds, making <@${p.id !== this.p1.player.id ? this.p1.player.id : this.p2.player.id}> the winner.`;
@@ -62,7 +63,7 @@ export default class TicTacToe {
         void this.awaitInput(this.p2);
     }
 
-    private async awaitInput(playerObject: playerType): Promise<number | void | Message> {
+    private async awaitInput(playerObject: playerType) {
 
         if (!this.active) return;
 
@@ -72,10 +73,12 @@ export default class TicTacToe {
 
         this.message.channel.awaitMessages({ filter: filter, max: 1, time: 20000, errors: ["time"] })
             .then(collected => {
-                return this.input(playerObject, collected.first() as Message);
+                const msg = collected.first();
+                if (!msg) return;
+                return this.input(playerObject, msg);
             })
-            .catch((): unknown => {
-                return this.timedWin(playerObject);
+            .catch(() => {
+                this.timedWin(playerObject);
             });
     }
 

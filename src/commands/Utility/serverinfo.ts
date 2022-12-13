@@ -47,7 +47,7 @@ News: **${guild?.channels.cache.filter((channel) => channel.type === ChannelType
                 { name: "Maximum video-channel users", value: String(guild.maxVideoChannelUsers), inline: false },
                 {
                     name: "Features", value: guild?.features.length
-                        ? guild?.features.map(f => Constants.guildFeatures[f] || f).sort().join("\n")
+                        ? guild?.features.map(f => Constants.GuildFeatures[f] || f).sort().join("\n")
                         : "None", inline: false,
                 },
             ],

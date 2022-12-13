@@ -1,6 +1,6 @@
 import { EmbedBuilder, Guild, GuildMember, Message } from "discord.js";
 import KaikiAkairoClient from "../lib/Kaiki/KaikiAkairoClient";
-import Utility from "../lib/Utility";
+import Constants from "../struct/Constants";
 
 export const extensionHook = () => null;
 
@@ -66,15 +66,15 @@ EmbedBuilder.prototype.withErrorColor = function(messageOrGuild?: Message | Guil
     if (messageOrGuild) {
 
         if (messageOrGuild instanceof Message && messageOrGuild.inGuild()) {
-            return this.setColor(messageOrGuild.client.guildsDb.get(messageOrGuild.guildId, "ErrorColor", Utility.errorColor));
+            return this.setColor(messageOrGuild.client.guildsDb.get(messageOrGuild.guildId, "ErrorColor", Constants.errorColor));
         }
 
         else {
-            return this.setColor((messageOrGuild.client as KaikiAkairoClient).guildsDb.get(messageOrGuild.id, "ErrorColor", Utility.errorColor));
+            return this.setColor((messageOrGuild.client as KaikiAkairoClient).guildsDb.get(messageOrGuild.id, "ErrorColor", Constants.errorColor));
         }
     }
 
-    return this.setColor(Utility.errorColor);
+    return this.setColor(Constants.errorColor);
 };
 
 EmbedBuilder.prototype.withOkColor = function(messageOrGuild?: Message | Guild) {
@@ -82,13 +82,13 @@ EmbedBuilder.prototype.withOkColor = function(messageOrGuild?: Message | Guild) 
     if (messageOrGuild) {
 
         if (messageOrGuild instanceof Message && messageOrGuild.inGuild()) {
-            return this.setColor(messageOrGuild.client.guildsDb.get(messageOrGuild.guildId, "OkColor", Utility.okColor));
+            return this.setColor(messageOrGuild.client.guildsDb.get(messageOrGuild.guildId, "OkColor", Constants.okColor));
         }
 
         else {
-            return this.setColor(messageOrGuild.client.guildsDb.get(messageOrGuild.id, "OkColor", Utility.okColor));
+            return this.setColor(messageOrGuild.client.guildsDb.get(messageOrGuild.id, "OkColor", Constants.okColor));
         }
     }
 
-    return this.setColor(Utility.okColor);
+    return this.setColor(Constants.okColor);
 };

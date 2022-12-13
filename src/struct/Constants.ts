@@ -1,23 +1,25 @@
+// noinspection MagicNumberJS
+
 import { BotSettings_ActivityType } from "@prisma/client";
-import { ActivityType, ChannelType, GuildFeature, UserFlagsString } from "discord.js";
+import { ActivityType, ChannelType, GuildFeature, RGBTuple, UserFlagsString } from "discord.js";
 import { theseDoNotYetExist } from "../lib/Types/TCustom";
 
 export default class Constants {
 
-    static dadBotArray = ["i'm ", "im ", "i am ", "i’m "];
+    static DadBotArray = ["i'm ", "im ", "i am ", "i’m "];
 
-    static badWords = ["shit", "fuck", "stop", "dont", "kill", "don't", "don`t", "fucking", "shut", "shutup", "shuttup", "trash", "bad", "hate", "stupid", "dumb", "suck", "sucks"];
+    static BadWords = ["shit", "fuck", "stop", "dont", "kill", "don't", "don`t", "fucking", "shut", "shutup", "shuttup", "trash", "bad", "hate", "stupid", "dumb", "suck", "sucks"];
 
     static AnniversaryStrings = {
-        roleNameJoin: "Join Anniversary",
-        roleNameCreated: "Cake Day",
+        ROLE_JOIN: "Join Anniversary",
+        ROLE_CREATED: "Cake Day",
     };
 
     // Credit to https://github.com/Snitt/emojibotten/blob/master/commands/management/emoji.js
     static EMOTE_REGEX = /<(a?)((!?\d+)|(:.+?:\d+))>/g;
     static IMAGE_REGEX = /(http(s?):)([/|.\w\s-])*\.(?:jpg|gif|png|jpeg)/gi;
 
-    static guildFeatures: { [index in GuildFeature]: string } & { [index in theseDoNotYetExist]: string } = {
+    static GuildFeatures: { [index in GuildFeature]: string } & { [index in theseDoNotYetExist]: string } = {
         APPLICATION_COMMAND_PERMISSIONS_V2: "Application permissions v2",
         ANIMATED_ICON: "Animated icon",
         ANIMATED_BANNER: "Animated banner",
@@ -52,7 +54,7 @@ export default class Constants {
         WELCOME_SCREEN_ENABLED: "Welcome screen enabled",
     };
 
-    static categories: { [category: string]: string } = {
+    static Categories: { [category: string]: string } = {
         Administration: "For server admins. Manage bans and channels.",
         Anime: "Search anime, manga and quotes.",
         Emotes: "Steal or create entirely new emotes",
@@ -67,7 +69,7 @@ export default class Constants {
         Utility: "Info, color, search, ping and much more.",
     };
 
-    static channelTypes: { [type in keyof typeof ChannelType]: string } = {
+    static ChannelTypes: { [type in keyof typeof ChannelType]: string } = {
         GuildText: "Text",
         GuildNews: "News",
         GuildCategory: "Category",
@@ -86,7 +88,7 @@ export default class Constants {
         GuildDirectory: "GuildDirectory",
     };
 
-    static flags: { [index in UserFlagsString]: string } = {
+    static Flags: { [index in UserFlagsString]: string } = {
         Staff: "Discord Employee 👨‍💼",
         Partner: "Partnered Server Owner ❤️",
         Hypesquad: "HypeSquad Events Member 🎊",
@@ -112,4 +114,169 @@ export default class Constants {
         WATCHING: 3,
         COMPETING: 4,
     };
+
+    static readonly MAGIC_NUMBERS = Object.freeze({
+        COMMON: {
+            NAME_LIMIT: 32,
+        },
+        CACHE: {
+            FIFTEEN_MINUTES_MS: 900000,
+        },
+        LIB: {
+            KAIKI: {
+                KAIKI_ARGS: {
+                    MAX_COLOR_VALUE: 0xFFFFFF,
+                    // eslint-disable-next-line @typescript-eslint/no-loss-of-precision
+                    MAX_INT: 0x7FFFFFFFFFFFFFFF,
+                    // ABSOLUTE ZERO IN BINARY
+                    MIN_INT: 0b0,
+                },
+                PRESENCE_UPDATE_TIMEOUT: 300000,
+            },
+            HENTAI: {
+                HENTAI_SERVICE: {
+                    FULL_CACHE_SIZE: 200,
+                    MEDIUM_CACHE_SIZE: 50,
+                    HTTP_REQUESTS: {
+                        OK: 200,
+                        SERVICE_UNAVAILABLE: 503,
+                        TOO_MANY_REQUESTS: 429,
+                        BAD_GATEWAY: 502,
+                    },
+                },
+            },
+            MONEY: {
+                MONEY_SERVICE: {
+                    BIGINT_ZERO: 0n,
+                },
+            },
+            GAMES: {
+                TTT: {
+                    MSG_DEL_TIMEOUT: 4500,
+                },
+            },
+            UTILITY: {
+                // [R,G,B]
+                ERR_CLR: [255, 0, 0] as RGBTuple,
+                OK_CLR: [0, 255, 0] as RGBTuple,
+                HRS_DAY: 24,
+            },
+        },
+        CMDS: {
+            ANIME: {},
+            MODERATION: {
+                CLEAR: {
+                    DELETE_TIMEOUT: 1500,
+                },
+            },
+            ETC: {
+                BOT_MENTION: {
+                    DELETE_TIMEOUT: 10000,
+                },
+                DAD_BOT: {
+                    DADBOT_NICK_LENGTH: 32,
+                    DADBOT_MAX_LENGTH: 256,
+                },
+            },
+            EMOTES: {
+                MAX_WIDTH_HEIGHT: 128,
+                MAX_FILESIZE: 25600,
+
+                EMOTE_COUNT: {
+                    MIN_PR_PAGE: 25,
+                    MAX_PR_PAGE: 50,
+                },
+                DELETE_EMOTE: {
+                    DELETE_DELAY: 3500,
+                },
+                ADD_EMOTE: {
+                    NAME_MAX_LENGTH: 32,
+                },
+            },
+            GAMBLING: {
+                SLOTS: {
+                    EDIT_AFTER_1_SEC: 1000,
+                    // * Almost one second.
+                    EDIT_AFTER_2_SEC: 2100,
+                },
+                CUR_TRS: {
+                    BIGINT_ZERO: 0n,
+                    TRANS_PR_PAGE: 15,
+                },
+                BET_ROLL: {
+                    TWO_TIMES_ROLL: 66,
+                    FOUR_TIMES_ROLL: 90,
+                    TEN_TIMES_ROLL: 100,
+                },
+            },
+            SERVER_SETTINGS: {
+                EMOTES: {
+                    EMOTE_TRIGGERS_PR_PAGE: 15,
+                },
+            },
+            FUN: {
+                NAMES: {
+                    NAMES_PR_PAGE: 60,
+                },
+                NEOFETCH: {
+                    DISTROS_PR_PAGE: 150,
+                },
+                REDDIT: {
+                    NSFW_DEL_TIMEOUT: 7500,
+                },
+            },
+            ROLES: {
+                IN_ROLE: {
+                    ROLES_PR_PAGE: 40,
+                },
+                ROLE_LIST: {
+                    ROLES_PR_PAGE: 50,
+                },
+                USER_ROLES: {
+                    ROLE_PR_PAGE: 20,
+                },
+            },
+            OWNER_ONLY: {
+                SQL: {
+                    MESSAGE_LIMIT_JSON: 1960,
+                },
+                UPDATE: {
+                    DESC_STR_LIMIT: 4048,
+                },
+                BOT_CONFIG: {
+                    DAILY_AMOUNT: 250,
+                    DEFAULT_CUR_CODE: 128180,
+                },
+                EVAL: {
+                    MAX_STRING: 1990,
+                    MAX_ERROR_STRING: 1960,
+                },
+            },
+            UTILITY: {
+                TODO: {
+                    INPUT_MAX_LENGTH: 204,
+                },
+                COLOR: {
+                    CLR_NAMES_PR_PAGE: 15,
+                },
+            },
+        },
+
+        EMBED_LIMITS: {
+            AUTHOR_NAME: 256,
+            DESCRIPTION: 4096,
+            FIELD: {
+                NAME: 256,
+                VALUE: 1024,
+            },
+            FOOTER: {
+                TEXT: 2048,
+            },
+            TITLE: 256,
+        },
+    });
+
+    static readonly errorColor = Constants.MAGIC_NUMBERS.LIB.UTILITY.ERR_CLR;
+
+    static readonly okColor = Constants.MAGIC_NUMBERS.LIB.UTILITY.OK_CLR;
 }

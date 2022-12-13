@@ -1,6 +1,7 @@
 import { PrefixSupplier } from "discord-akairo";
 import { EmbedBuilder, Message, User } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+import Constants from "../../struct/Constants";
 
 
 export default class MentionCommand extends KaikiCommand {
@@ -31,6 +32,6 @@ export default class MentionCommand extends KaikiCommand {
             ],
         });
 
-        return setTimeout(async () => (await embed).delete(), 10000).unref();
+        return setTimeout(async () => (await embed).delete(), Constants.MAGIC_NUMBERS.CMDS.ETC.BOT_MENTION.DELETE_TIMEOUT).unref();
     }
 }

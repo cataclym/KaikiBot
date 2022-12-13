@@ -75,7 +75,7 @@ export default class AddEmoteCommand extends KaikiCommand {
         const msNow = Date.now().toString();
         const file = Emotes.getFileOut(msNow);
 
-        name = Utility.trim(name || msNow, 32).replace(/ /g, "_");
+        name = Utility.trim(name || msNow, Constants.MAGIC_NUMBERS.CMDS.EMOTES.ADD_EMOTE.NAME_MAX_LENGTH).replace(/ /g, "_");
         await Emotes.saveFile(emote, file);
 
         // Example output: { width: 240, height: 240, type: 'gif' }
@@ -83,7 +83,11 @@ export default class AddEmoteCommand extends KaikiCommand {
             fileSize = await Emotes.getFilesizeInBytes(file);
 
         // Had to add filesizeCheck
-        if ((imgDimensions.width && imgDimensions.height) && imgDimensions.width <= 128 && imgDimensions.height <= 128 && !(fileSize > 25600)) {
+        if ((imgDimensions.width && imgDimensions.height)
+            && imgDimensions.width <= Constants.MAGIC_NUMBERS.CMDS.EMOTES.MAX_WIDTH_HEIGHT
+            && imgDimensions.height <= Constants.MAGIC_NUMBERS.CMDS.EMOTES.MAX_WIDTH_HEIGHT
+            && fileSize <= Constants.MAGIC_NUMBERS.CMDS.EMOTES.MAX_FILESIZE) {
+
             await Emotes.saveEmoji(message, emote, name);
         }
 

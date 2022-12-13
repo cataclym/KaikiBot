@@ -16,7 +16,6 @@ import {
     StageChannel,
     Sticker,
     TextChannel,
-    ThreadChannel,
     VoiceChannel,
 } from "discord.js";
 import * as emojis from "node-emoji";
@@ -82,7 +81,7 @@ export default class InfoCommand extends KaikiCommand {
                         },
                         {
                             name: "Type",
-                            value: Constants.channelTypes[ChannelType[obj.type] as keyof typeof ChannelType],
+                            value: Constants.ChannelTypes[ChannelType[obj.type] as keyof typeof ChannelType],
                         },
                         {
                             name: "User limit",
@@ -117,7 +116,7 @@ export default class InfoCommand extends KaikiCommand {
                         },
                         {
                             name: "Type",
-                            value: Constants.channelTypes[ChannelType[obj.type] as keyof typeof ChannelType],
+                            value: Constants.ChannelTypes[ChannelType[obj.type] as keyof typeof ChannelType],
                         },
                         {
                             name: "NSFW",
@@ -145,7 +144,7 @@ export default class InfoCommand extends KaikiCommand {
                         },
                         {
                             name: "Type",
-                            value: Constants.channelTypes[ChannelType[obj.type] as keyof typeof ChannelType],
+                            value: Constants.ChannelTypes[ChannelType[obj.type] as keyof typeof ChannelType],
                         },
                         {
                             name: "Children", value: String(obj.children.cache.size),
@@ -164,13 +163,13 @@ export default class InfoCommand extends KaikiCommand {
                 if (obj.parent) emb[0].addFields([{ name: "Parent", value: `${obj.parent.name} [${obj.parentId}]` }]);
             }
 
-            else if (obj instanceof ThreadChannel) {
+            else {
                 emb[0]
                     .setTitle(`Info about Thread: ${obj.name}`)
                     .addFields([
                         {
                             name: "Type",
-                            value: Constants.channelTypes[ChannelType[obj.type] as keyof typeof ChannelType],
+                            value: Constants.ChannelTypes[ChannelType[obj.type] as keyof typeof ChannelType],
                         },
                         {
                             name: "ID",
@@ -222,7 +221,7 @@ export default class InfoCommand extends KaikiCommand {
                     .addFields([
                         {
                             name: "Flags",
-                            value: uFlags.map(flag => Constants.flags[flag]).join("\n"),
+                            value: uFlags.map(flag => Constants.Flags[flag]).join("\n"),
                             inline: true,
                         },
                     ]);

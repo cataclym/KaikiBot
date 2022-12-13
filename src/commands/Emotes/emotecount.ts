@@ -3,6 +3,7 @@ import { EmbedBuilder, Guild, Message } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 import Utility from "../../lib/Utility";
+import Constants from "../../struct/Constants";
 
 export default class EmoteCount extends KaikiCommand {
     constructor() {
@@ -57,28 +58,34 @@ export default class EmoteCount extends KaikiCommand {
             if (!flag) {
                 data.push(`\`${Count}\` ${Emote} | ${Emote.name}`);
             }
+
             else {
                 data.push(`${Emote} \`${Count}\` `);
             }
         }
 
         if (!flag) {
-            for (let i = 25, p = 0; p < data.length; i += 25, p += 25) {
+            for (let i = Constants.MAGIC_NUMBERS.CMDS.EMOTES.EMOTE_COUNT.MIN_PR_PAGE, p = 0;
+                p < data.length;
+                i += Constants.MAGIC_NUMBERS.CMDS.EMOTES.EMOTE_COUNT.MIN_PR_PAGE, p += Constants.MAGIC_NUMBERS.CMDS.EMOTES.EMOTE_COUNT.MIN_PR_PAGE) {
 
                 pages.push(new EmbedBuilder(baseEmbed.data)
-                    .setDescription(Utility.trim(data.slice(p, i).join("\n"), 2048)),
+                    .setDescription(Utility.trim(data.slice(p, i).join("\n"), Constants.MAGIC_NUMBERS.EMBED_LIMITS.DESCRIPTION)),
                 );
             }
         }
 
         else {
-            for (let i = 50, p = 0; p < data.length; i += 50, p += 50) {
+            for (let i = Constants.MAGIC_NUMBERS.CMDS.EMOTES.EMOTE_COUNT.MAX_PR_PAGE, p = 0;
+                p < data.length;
+                i += Constants.MAGIC_NUMBERS.CMDS.EMOTES.EMOTE_COUNT.MAX_PR_PAGE, p += Constants.MAGIC_NUMBERS.CMDS.EMOTES.EMOTE_COUNT.MAX_PR_PAGE) {
 
                 pages.push(new EmbedBuilder(baseEmbed.data)
-                    .setDescription(Utility.trim(data.slice(p, i).join(""), 2048)),
+                    .setDescription(Utility.trim(data.slice(p, i).join(""), Constants.MAGIC_NUMBERS.EMBED_LIMITS.DESCRIPTION)),
                 );
             }
         }
+
         return sendPaginatedMessage(message, pages, {});
     }
 }

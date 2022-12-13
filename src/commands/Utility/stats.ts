@@ -2,17 +2,9 @@ import { execSync } from "child_process";
 
 import { version as akairoVersion } from "discord-akairo";
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
-import { ChannelType, EmbedBuilder, Message, version } from "discord.js";
+import { ChannelType, EmbedBuilder, Message, time, version } from "discord.js";
+import * as process from "process";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-
-function format(seconds: number) {
-    const days = Math.floor(seconds / (60 * 60 * 24));
-    seconds %= (60 * 60 * 24);
-    const hours = Math.floor(seconds / (60 * 60));
-    seconds %= (60 * 60);
-    const minutes = Math.floor(seconds / 60);
-    return days + "** days**\n" + hours + "** hours**\n" + minutes + "** minutes**";
-}
 
 export default class StatsCommand extends KaikiCommand {
     constructor() {
@@ -31,7 +23,7 @@ export default class StatsCommand extends KaikiCommand {
             new EmbedBuilder()
                 .setAuthor({
                     name: `${packageJSON.name} v${packageJSON.version}-${execSync("git rev-parse --short HEAD").toString()}`,
-                    iconURL: message.client.user?.displayAvatarURL(),
+                    iconURL: message.client.user.displayAvatarURL(),
                     url: packageJSON.repository.url,
                 })
                 .setDescription("Detailed statistics")
@@ -41,7 +33,11 @@ export default class StatsCommand extends KaikiCommand {
                         value: `${Math.round(process.memoryUsage().heapUsed / 1024 / 1024)}MB`,
                         inline: true,
                     },
-                    { name: "Uptime", value: String(format(process.uptime())), inline: true },
+                    {
+                        name: "Uptime",
+                        value: time(new Date(Date.now() - process.uptime() * 1000), "R"),
+                        inline: true,
+                    },
                     { name: "Users", value: String(message.client.users.cache.size), inline: true },
                     {
                         name: "Presence", value: `Guilds: **${cache.size}**\nText channels: **${cache
@@ -62,8 +58,8 @@ export default class StatsCommand extends KaikiCommand {
                         inline: true,
                     },
                     {
-                        name: "Discord-Akairo framework",
-                        value: `[Discord-Akairo](https://discord-akairo.github.io/#/ 'Discord-Akairo website') v${akairoVersion}`,
+                        name: "Discord-Akairo framework (Fork by TanzaniteBot)",
+                        value: `[Discord-Akairo (forked)](https://github.com/TanzaniteBot/discord-akairo 'github') v${akairoVersion}`,
                         inline: true,
                     },
                     {
@@ -79,7 +75,7 @@ export default class StatsCommand extends KaikiCommand {
                 ])
                 .setAuthor({
                     name: "© 2022 @Cata#2702",
-                    iconURL: message.client.user?.displayAvatarURL(),
+                    iconURL: message.client.user.displayAvatarURL(),
                     url: packageJSON.repository.url,
                 })
                 .withOkColor(message),

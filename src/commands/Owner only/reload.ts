@@ -26,7 +26,7 @@ export default class ReloadCommand extends KaikiCommand {
 
     public async exec(message: Message, { command }: { command: KaikiCommand }): Promise<Message> {
 
-        command.reload();
+        await command.reload();
         return message.channel.send({
             embeds: [
                 new EmbedBuilder({

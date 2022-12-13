@@ -1,8 +1,9 @@
 import { Command } from "discord-akairo";
 import { EmbedBuilder, Message } from "discord.js";
 import fetch from "node-fetch";
-import { PurpleData, RedditData } from "../../lib/Interfaces/IRedditAPI";
+import { RedditData } from "../../lib/Interfaces/IRedditAPI";
 import Utility from "../../lib/Utility";
+import Constants from "../../struct/Constants";
 
 export default class DadJokeCommand extends Command {
     constructor() {
@@ -14,39 +15,36 @@ export default class DadJokeCommand extends Command {
         });
     }
 
+    private async LoadAndReturnDadJoke() {
+        return await fetch("https://www.reddit.com/r/dadjokes.json?limit=1000&?sort=top&t=all")
+            .then(res => res.json())
+            .then((json: RedditData) => json.data.children.map(t => t.data))
+            .then((data) => data[Math.floor(Math.random() * data.length) + 1]);
+    }
+
     public async exec(message: Message): Promise<Message | void> {
 
-        await (async function loadTitle() {
-            const promise = async () => fetch("https://www.reddit.com/r/dadjokes.json?limit=1000&?sort=top&t=all");
-            await promise()
-                .then(res => res.json())
-                .then((json: RedditData) => json.data.children.map(t => t.data))
-                .then((data) => postRandomTitle(data));
-        })();
+        const randomRedditPost = await this.LoadAndReturnDadJoke();
 
-        async function postRandomTitle(data: PurpleData[]) {
-
-            const randomRedditPost = data[Math.floor(Math.random() * data.length) + 1];
-
-            return message?.util?.send({
-                embeds: [
-                    new EmbedBuilder({
-                        title: randomRedditPost.title ? Utility.trim(randomRedditPost.title, 256) : "\u200B",
-                        description: randomRedditPost.selftext ? Utility.trim(randomRedditPost.selftext, 2048) : "\u200B",
-                        author: {
-                            name: `Submitted by ${randomRedditPost.author}`,
-                            url: randomRedditPost.url,
-                        },
-                        image: {
-                            url: randomRedditPost.url || "",
-                        },
-                        footer: {
-                            text: `${randomRedditPost.ups} updoots`,
-                        },
-                    })
-                        .withOkColor(message),
-                ],
-            });
+        if (!randomRedditPost.title || !randomRedditPost.selftext) {
+            return;
         }
+
+        return message.channel.send({
+            embeds: [
+                new EmbedBuilder()
+                    .setAuthor({
+                        name: `Submitted by ${randomRedditPost.author}`,
+                        url: randomRedditPost.url,
+                    })
+                    .setTitle(Utility.trim(randomRedditPost.title, Constants.MAGIC_NUMBERS.EMBED_LIMITS.TITLE))
+                    .setDescription(Utility.trim(randomRedditPost.selftext, Constants.MAGIC_NUMBERS.EMBED_LIMITS.DESCRIPTION))
+                    .setImage(randomRedditPost.url || "")
+                    .setFooter({
+                        text: `${randomRedditPost.ups} updoots`,
+                    })
+                    .withOkColor(message),
+            ],
+        });
     }
 }

@@ -1,9 +1,14 @@
 import { Argument } from "discord-akairo";
 import { Message } from "discord.js";
+import Constants from "../../struct/Constants";
 import { hexColorTable } from "../Color";
 import Utility from "../Utility";
 
 export default class KaikiArgumentsTypes {
+    static get GetCurrency(): (message: Message) => Promise<bigint> {
+        return this._GetCurrency;
+    }
+
     static ArgumentTypes = {
         kaiki_color: "kaiki_color",
         kaiki_money: "kaiki_money",
@@ -13,7 +18,7 @@ export default class KaikiArgumentsTypes {
         const int = parseInt(phrase);
 
         if (!int) return null;
-        if (int > 0b0) return null;
+        if (int > Constants.MAGIC_NUMBERS.LIB.KAIKI.KAIKI_ARGS.MIN_INT) return null;
         return int;
     };
 
@@ -22,14 +27,17 @@ export default class KaikiArgumentsTypes {
         const hexColorString = phrase.replace("#", "");
 
         const color = parseInt(hexColorString, 16);
-        if (color < 0 || color > 0xFFFFFF || isNaN(color) && !hexColorTable[hexColorString]) {
+        if (color < 0
+            || color > Constants.MAGIC_NUMBERS.LIB.KAIKI.KAIKI_ARGS.MAX_COLOR_VALUE
+            || isNaN(color)
+            && !hexColorTable[hexColorString]) {
             return null;
         }
 
         return Utility.HEXtoRGB(String(hexColorTable[hexColorString] ?? hexColorString));
     };
 
-    static max = parseInt("7FFFFFFFFFFFFFFF", 16);
+    private static MAX_INT = Constants.MAGIC_NUMBERS.LIB.KAIKI.KAIKI_ARGS.MAX_INT;
 
     static kaiki_money = async (message: Message, phrase: string) => {
         if (!phrase) return null;
@@ -38,18 +46,15 @@ export default class KaikiArgumentsTypes {
 
         const int = KaikiArgumentsTypes.checkInt(input);
         if (!int) {
-            if (typeof input === "string") {
-
-                switch (input) {
-                    case "ALL": {
-                        return await KaikiArgumentsTypes.GetCurrency(message);
-                    }
-                    case "HALF": {
-                        return (await KaikiArgumentsTypes.GetCurrency(message)) / BigInt(2);
-                    }
-                    case "MAX": {
-                        return KaikiArgumentsTypes.max;
-                    }
+            switch (input) {
+                case "ALL": {
+                    return await KaikiArgumentsTypes.GetCurrency(message);
+                }
+                case "HALF": {
+                    return (await KaikiArgumentsTypes.GetCurrency(message)) / BigInt(2);
+                }
+                case "MAX": {
+                    return KaikiArgumentsTypes.MAX_INT;
                 }
             }
             return null;
@@ -66,7 +71,7 @@ export default class KaikiArgumentsTypes {
             });
     };
 
-    static KaikiMoneyArgument = Argument.range("bigint", 0, parseInt("7FFFFFFFFFFFFFFF", 16));
+    static KaikiMoneyArgument = Argument.range("bigint", 0, KaikiArgumentsTypes.MAX_INT);
 
-    static GetCurrency = async (message: Message) => await message.client.money.Get(message.author.id);
+    private static _GetCurrency = async (message: Message) => await message.client.money.Get(message.author.id);
 }

@@ -1,5 +1,5 @@
 import { EmbedBuilder, Message } from "discord.js";
-import { resetDailyClaims } from "../../lib/functions";
+import { ResetDailyClaims } from "../../lib/functions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 
@@ -14,7 +14,7 @@ export default class DailyResetCommand extends KaikiCommand {
     }
 
     public async exec(message: Message): Promise<Message> {
-        await resetDailyClaims(this.client.orm);
+        await ResetDailyClaims(this.client.orm);
         return message.channel.send({
             embeds: [
                 new EmbedBuilder()

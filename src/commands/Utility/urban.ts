@@ -7,6 +7,7 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiUtil from "../../lib/Kaiki/KaikiUtil";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 import Utility from "../../lib/Utility";
+import Constants from "../../struct/Constants";
 
 export default class UrbanDictCommand extends KaikiCommand {
     constructor() {
@@ -48,9 +49,18 @@ export default class UrbanDictCommand extends KaikiCommand {
                 .setTitle(result.word)
                 .setURL(result.permalink)
                 .addFields(
-                    { name: "Definition", value: Utility.trim(result.definition, 1024) },
-                    { name: "Example", value: Utility.trim(result.example || "N/A", 1024) },
-                    { name: "Rating", value: `${result.thumbs_up} thumbs up. ${result.thumbs_down} thumbs down.` },
+                    {
+                        name: "Definition",
+                        value: Utility.trim(result.definition, Constants.MAGIC_NUMBERS.EMBED_LIMITS.FIELD.VALUE),
+                    },
+                    {
+                        name: "Example",
+                        value: Utility.trim(result.example || "N/A", Constants.MAGIC_NUMBERS.EMBED_LIMITS.FIELD.VALUE),
+                    },
+                    {
+                        name: "Rating",
+                        value: `${result.thumbs_up} thumbs up. ${result.thumbs_down} thumbs down.`,
+                    },
                 )
                 .withOkColor(message),
             );

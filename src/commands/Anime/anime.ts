@@ -6,6 +6,7 @@ import { IAnimeRes } from "../../lib/Interfaces/IAnimeRes";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 import Utility from "../../lib/Utility";
+import Constants from "../../struct/Constants";
 
 export default class AnimeCommand extends KaikiCommand {
     constructor() {
@@ -75,7 +76,7 @@ export default class AnimeCommand extends KaikiCommand {
                                 ? `${title.english} / ${title.romaji}`
                                 : title.english || title.romaji)
                             .setURL(siteUrl)
-                            .setDescription(Utility.stripHtml(Utility.trim(description, 2000)))
+                            .setDescription(Utility.stripHtml(Utility.trim(description, Constants.MAGIC_NUMBERS.EMBED_LIMITS.DESCRIPTION)))
                             .withOkColor(message),
                         new EmbedBuilder()
                             .addFields([

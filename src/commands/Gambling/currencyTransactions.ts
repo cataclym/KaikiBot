@@ -3,6 +3,7 @@ import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
 import { EmbedBuilder, Message, User } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
+import Constants from "../../struct/Constants";
 
 export default class CurrencyTransactionsCommand extends KaikiCommand {
     constructor() {
@@ -52,12 +53,14 @@ export default class CurrencyTransactionsCommand extends KaikiCommand {
 
         const pages = [];
 
-        for (let i = 15, p = 0; p < db.length; i += 15, p += 15) {
+        for (let i = Constants.MAGIC_NUMBERS.CMDS.GAMBLING.CUR_TRS.TRANS_PR_PAGE, p = 0;
+            p < db.length;
+            i += Constants.MAGIC_NUMBERS.CMDS.GAMBLING.CUR_TRS.TRANS_PR_PAGE, p += Constants.MAGIC_NUMBERS.CMDS.GAMBLING.CUR_TRS.TRANS_PR_PAGE) {
             pages.push(CurrencyTransactionsCommand.baseEmbed(message)
                 .setDescription(
                     db.slice(p, i)
                         .map(row =>
-                            `${row.Amount > 0n
+                            `${row.Amount > Constants.MAGIC_NUMBERS.CMDS.GAMBLING.CUR_TRS.BIGINT_ZERO
                                 ? "🟩"
                                 : "🟥"} ${time(row.DateAdded)} ${this.client.money.currencySymbol} ${row.Amount}\nNote: \`${row.Reason}\``,
                         )

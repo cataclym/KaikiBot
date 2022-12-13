@@ -3,6 +3,7 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 import Roles from "../../lib/Roles";
 import Utility from "../../lib/Utility";
+import Constants from "../../struct/Constants";
 
 export default class MyRoleSubCommandName extends KaikiCommand {
     constructor() {
@@ -39,7 +40,7 @@ export default class MyRoleSubCommandName extends KaikiCommand {
         }
 
         const oldName = myRole.name;
-        await myRole.setName(Utility.trim(name, 32));
+        await myRole.setName(Utility.trim(name, Constants.MAGIC_NUMBERS.COMMON.NAME_LIMIT));
         return message.channel.send({
             embeds: [
                 new EmbedBuilder()

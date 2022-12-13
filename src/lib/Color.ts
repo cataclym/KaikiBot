@@ -1,5 +1,6 @@
 import { ColorResolvable } from "discord.js";
 import sharp from "sharp";
+import Constants from "../struct/Constants";
 import { TKaikiColor } from "./Types/TColor";
 
 export const colorTable: {
@@ -156,7 +157,7 @@ export const colorTable: {
     "yellowgreen": "rgba(154,205,50,1)",
 };
 
-export async function imgFromColor(color: TKaikiColor, size = 128): Promise<Buffer> {
+export async function imgFromColor(color: TKaikiColor, size = Constants.MAGIC_NUMBERS.CMDS.EMOTES.MAX_WIDTH_HEIGHT): Promise<Buffer> {
     return Promise.resolve(sharp({
         create: {
             width: size,

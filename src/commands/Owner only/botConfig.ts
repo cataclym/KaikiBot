@@ -3,6 +3,7 @@ import { ActivityType, EmbedBuilder, Message } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 import Utility from "../../lib/Utility";
+import Constants from "../../struct/Constants";
 import { BotConfig } from "../../struct/db/Database";
 import SetActivityCommand from "./setActivity";
 
@@ -116,12 +117,12 @@ export default class BotConfigCommand extends KaikiCommand {
                 client.money.currencyName = value;
                 break;
             case validEnum.CURRENCYSYMBOL:
-                oldValue = await client.botSettings.get("1", "CurrencySymbol", 128180);
+                oldValue = await client.botSettings.get("1", "CurrencySymbol", Constants.MAGIC_NUMBERS.CMDS.OWNER_ONLY.BOT_CONFIG.DEFAULT_CUR_CODE);
                 await client.botSettings.set("1", "CurrencySymbol", value.codePointAt(0));
                 client.money.currencySymbol = value;
                 break;
             case validEnum.DAILYAMOUNT:
-                oldValue = await client.botSettings.get("1", "DailyAmount", 250);
+                oldValue = await client.botSettings.get("1", "DailyAmount", Constants.MAGIC_NUMBERS.CMDS.OWNER_ONLY.BOT_CONFIG.DAILY_AMOUNT);
                 await client.botSettings.set("1", "DailyAmount", value);
                 break;
             case validEnum.DAILYENABLED:

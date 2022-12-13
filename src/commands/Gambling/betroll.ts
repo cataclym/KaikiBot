@@ -1,6 +1,7 @@
 import { EmbedBuilder, Message } from "discord.js";
 import KaikiArgumentsTypes from "../../lib/Kaiki/KaikiArgumentsTypes";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+import Constants from "../../struct/Constants";
 
 export default class BetRollCommand extends KaikiCommand {
     constructor() {
@@ -40,7 +41,7 @@ export default class BetRollCommand extends KaikiCommand {
         // Gives a random number between 0-100
         const roll = Math.round(Math.random() * 100);
 
-        if (roll < 66) {
+        if (roll < Constants.MAGIC_NUMBERS.CMDS.GAMBLING.BET_ROLL.TWO_TIMES_ROLL) {
             return message.channel.send({
                 embeds: [
                     new EmbedBuilder()
@@ -50,7 +51,7 @@ export default class BetRollCommand extends KaikiCommand {
             });
         }
 
-        else if (roll < 90) {
+        else if (roll < Constants.MAGIC_NUMBERS.CMDS.GAMBLING.BET_ROLL.FOUR_TIMES_ROLL) {
 
             const winnings = number * 2n;
 
@@ -65,7 +66,7 @@ export default class BetRollCommand extends KaikiCommand {
             });
         }
 
-        else if (roll < 100) {
+        else if (roll < Constants.MAGIC_NUMBERS.CMDS.GAMBLING.BET_ROLL.TEN_TIMES_ROLL) {
 
             const winnings = number * 4n;
 

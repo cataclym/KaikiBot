@@ -9,6 +9,7 @@ import {
     ModalBuilder,
     TextInputBuilder,
 } from "discord.js";
+import Constants from "../../../struct/Constants";
 import { Todo } from "../Common";
 
 export class ButtonAdd {
@@ -19,7 +20,7 @@ export class ButtonAdd {
         .addComponents(new ActionRowBuilder<ModalActionRowComponentBuilder>()
             .addComponents(new TextInputBuilder()
                 .setStyle(2)
-                .setMaxLength(204)
+                .setMaxLength(Constants.MAGIC_NUMBERS.CMDS.UTILITY.TODO.INPUT_MAX_LENGTH)
                 .setMinLength(2)
                 .setLabel("TODO")
                 .setCustomId(`${currentTime}text1`)

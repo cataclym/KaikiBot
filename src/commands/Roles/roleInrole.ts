@@ -3,6 +3,7 @@ import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
 import { EmbedBuilder, GuildMember, Message, Role } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
+import Constants from "../../struct/Constants";
 
 
 export default class RoleInRoleCommand extends KaikiCommand {
@@ -25,7 +26,7 @@ export default class RoleInRoleCommand extends KaikiCommand {
         });
     }
 
-    public async exec(message: Message, { role }: { role: Role }): Promise<Message> {
+    public async exec(message: Message<true>, { role }: { role: Role }): Promise<Message> {
 
         const data = [...role.members.values()]
             .sort((a: GuildMember, b: GuildMember) => b.roles.highest.position - a.roles.highest.position
@@ -36,12 +37,16 @@ export default class RoleInRoleCommand extends KaikiCommand {
 
         if (data && data.length) {
 
-            for (let i = 40, p = 0; p < data.length; i += 40, p += 40) {
+            const { ROLES_PR_PAGE } = Constants.MAGIC_NUMBERS.CMDS.ROLES.IN_ROLE;
+
+            for (let i = ROLES_PR_PAGE, p = 0;
+                p < data.length;
+                i += ROLES_PR_PAGE, p += ROLES_PR_PAGE) {
 
                 const currentPageUsers = data.slice(p, i),
                     emb = new EmbedBuilder()
                         .setTitle(`Users in ${role.name} (${data.length})`)
-                        .setAuthor({ name: message.guild!.name })
+                        .setAuthor({ name: message.guild.name })
                         .addFields({
                             name: "•",
                             value: currentPageUsers
@@ -52,11 +57,11 @@ export default class RoleInRoleCommand extends KaikiCommand {
                         })
                         .withOkColor(message);
 
-                if (currentPageUsers.length > 20) {
+                if (currentPageUsers.length > (ROLES_PR_PAGE / 2)) {
                     emb.addFields({
                         name: "•",
                         value: currentPageUsers
-                            .slice(20, 40)
+                            .slice(ROLES_PR_PAGE / 2, ROLES_PR_PAGE)
                             .map(u => `${u.user} - ${u.user.username}`)
                             .join("\n"),
                         inline: true,
