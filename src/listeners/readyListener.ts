@@ -53,6 +53,6 @@ ${(chalk.greenBright)("|--------------------------------------------------------
         logger.info(`Created slash commands in ${chalk.green(enabled.length)} guilds.`);
 
         this.client.initializeServices()
-            .then(() => logger.info("dailyResetTimer | Service initiated"));
+            .then(() => logger.info("DailyResetTimer | Service initiated"));
     }
 }

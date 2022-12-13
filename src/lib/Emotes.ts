@@ -4,6 +4,7 @@ import fs from "fs";
 import gifsicle from "gifsicle";
 import sharp from "sharp";
 import util from "util";
+import Constants from "../struct/Constants";
 
 export default class Emotes {
 
@@ -30,7 +31,7 @@ export default class Emotes {
             await execFile(gifsicle, ["--resize-fit-width", imgSize, "-o", file, file]);
 
             const fileSize = await Emotes.getFilesizeInBytes(file);
-            if (fileSize > 256000) {
+            if (fileSize > Constants.MAGIC_NUMBERS.CMDS.EMOTES.MAX_FILESIZE) {
                 return Promise.resolve(this.resizeImage(file, type, imgSize / 2));
             }
             else {
@@ -40,7 +41,7 @@ export default class Emotes {
         else {
             return Promise.resolve(
                 await sharp(file)
-                    .resize(128, 128)
+                    .resize(Constants.MAGIC_NUMBERS.CMDS.EMOTES.MAX_WIDTH_HEIGHT, Constants.MAGIC_NUMBERS.CMDS.EMOTES.MAX_WIDTH_HEIGHT)
                     .toBuffer(),
             );
         }

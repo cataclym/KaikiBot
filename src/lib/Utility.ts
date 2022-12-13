@@ -1,7 +1,8 @@
 import chalk from "chalk";
 import { Command, Listener } from "discord-akairo";
-import { ActivityType, ChannelType, ColorResolvable, GuildMember, HexColorString, Message, RGBTuple } from "discord.js";
+import { ActivityType, ChannelType, ColorResolvable, GuildMember, HexColorString, Message } from "discord.js";
 import fetch from "node-fetch";
+import Constants from "../struct/Constants";
 import { TKaikiColor } from "./Types/TColor";
 
 export type presenceType = {
@@ -22,12 +23,8 @@ export default class Utility {
 
     static timeToMidnight(): number {
         const d = new Date();
-        return (-d + d.setHours(24, 0, 0, 0));
+        return (-d + d.setHours(Constants.MAGIC_NUMBERS.LIB.UTILITY.HRS_DAY, 0, 0, 0));
     }
-
-    static errorColor: RGBTuple = [255, 0, 0];
-
-    static okColor: RGBTuple = [0, 255, 0];
 
     static trim(str: string, max: number): string {
         return (str.length > max) ? `${str.slice(0, max - 3)}...` : str;
@@ -195,18 +192,5 @@ Executed ${chalk.blueBright(command?.id ?? "N/A")} | "${chalk.yellow(message.con
                 image: null,
             };
         }
-    }
-
-    static msToTime(duration: number): string {
-        const milliseconds: number = Math.floor((duration % 1000) / 100);
-        let seconds: number | string = Math.floor((duration / 1000) % 60),
-            minutes: number | string = Math.floor((duration / (1000 * 60)) % 60),
-            hours: number | string = Math.floor((duration / (1000 * 60 * 60)) % 24);
-
-        hours = (hours < 10) ? "0" + hours : hours;
-        minutes = (minutes < 10) ? "0" + minutes : minutes;
-        seconds = (seconds < 10) ? "0" + seconds : seconds;
-
-        return `**${hours}** hours **${minutes}** minutes **${seconds}.${milliseconds}** seconds`;
     }
 }

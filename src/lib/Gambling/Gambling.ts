@@ -22,7 +22,7 @@ export default class Gambling {
         19: "🍆",
     };
 
-    static randomEmoji = () => this.slotDict[Math.floor(Math.random() * 19)];
+    static randomEmoji = () => this.slotDict[Math.floor(Math.random() * Object.keys(this.slotDict).length)];
 
     static async playSlots(currencySymbol: string): Promise<{
         string: string;

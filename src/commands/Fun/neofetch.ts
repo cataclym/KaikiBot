@@ -3,10 +3,12 @@ import { exec } from "child_process";
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
 import { EmbedBuilder, Message } from "discord.js";
 import logger from "loglevel";
+import * as process from "process";
 import { distros } from "../../lib/distros.json";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 import Utility from "../../lib/Utility";
+import Constants from "../../struct/Constants";
 
 export default class NeofetchCommand extends KaikiCommand {
     constructor() {
@@ -46,7 +48,7 @@ export default class NeofetchCommand extends KaikiCommand {
 
         if (list) {
             const pages: EmbedBuilder[] = [];
-            for (let i = 150, p = 0; p < distros.length; i = i + 150, p = p + 150) {
+            for (let i = Constants.MAGIC_NUMBERS.CMDS.FUN.NEOFETCH.DISTROS_PR_PAGE, p = 0; p < distros.length; i = i + Constants.MAGIC_NUMBERS.CMDS.FUN.NEOFETCH.DISTROS_PR_PAGE, p = p + Constants.MAGIC_NUMBERS.CMDS.FUN.NEOFETCH.DISTROS_PR_PAGE) {
                 pages.push(new EmbedBuilder()
                     .setTitle("ascii_distro list")
                     .setThumbnail(message.author.displayAvatarURL())
@@ -57,23 +59,17 @@ export default class NeofetchCommand extends KaikiCommand {
         }
 
         else {
-            // const randomColor = NeofetchCommand.colors[Math.floor(Math.random() * 8)];
             let cmd = `neofetch -L --ascii_distro ${os}|sed 's/\x1B\[[0-9;\?]*[a-zA-Z]//g'`;
 
-            if (!os && process.platform !== "win32") cmd = "neofetch -L | sed 's/\x1B\[[0-9;\?]*[a-zA-Z]//g'";
+            const { platform } = process;
+
+            if (!os && platform !== "win32") cmd = "neofetch -L | sed 's/\x1B\[[0-9;\?]*[a-zA-Z]//g'";
 
             exec(cmd, async (error, stdout, stderr) => {
                 if (error || stderr) {
                     return logger.error(error);
                 }
                 return message.channel.send(await Utility.codeblock(stdout.replace(/```/g, "\u0300`\u0300`\u0300`\u0300")));
-
-                // return message.channel.send(
-                //     await codeblock(`[0;${randomColor}m` + stdout
-                //         .replace(/```/g, "\u0300`\u0300`\u0300`\u0300")
-                //         .replace(/\n/g, `[0m\n[0;${randomColor}m`) + "[0m",
-                //     "ansi"),
-                // );
             });
         }
     }

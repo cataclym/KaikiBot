@@ -4,6 +4,7 @@ import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
 import { rolePermissionCheck } from "../../lib/Roles";
 import Utility from "../../lib/Utility";
+import Constants from "../../struct/Constants";
 
 export default class RoleRenameCommand extends KaikiCommand {
     constructor() {
@@ -36,7 +37,7 @@ export default class RoleRenameCommand extends KaikiCommand {
 
             const oldName = role.name;
 
-            role.edit({ name: Utility.trim(name.toString(), 32) })
+            role.edit({ name: Utility.trim(name.toString(), Constants.MAGIC_NUMBERS.COMMON.NAME_LIMIT) })
                 .catch((e) => {
                     throw new Error("Error: Failed to edit role.\n" + e);
                 });

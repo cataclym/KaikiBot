@@ -2,6 +2,7 @@ import { PrefixSupplier } from "discord-akairo";
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
 import { EmbedBuilder, Message } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+import Constants from "../../struct/Constants";
 
 export default class ListUserRoles extends KaikiCommand {
     constructor() {
@@ -34,12 +35,16 @@ export default class ListUserRoles extends KaikiCommand {
 
         if (db.length) {
 
+            const { ROLE_PR_PAGE } = Constants.MAGIC_NUMBERS.CMDS.ROLES.USER_ROLES;
+
             const mapped = db
                     .map((table) => `${message.guild?.members.cache.get(String(table.UserId)) || table.UserId}: ${message.guild?.roles.cache.get(String(table.UserRole)) || table.UserRole}`)
                     .sort(),
                 pages: EmbedBuilder[] = [];
 
-            for (let items = 20, from = 0; mapped.length > from; items += 20, from += 20) {
+            for (let items = ROLE_PR_PAGE, from = 0;
+                mapped.length > from;
+                items += ROLE_PR_PAGE, from += ROLE_PR_PAGE) {
 
                 const pageRoles = mapped.slice(from, items);
 

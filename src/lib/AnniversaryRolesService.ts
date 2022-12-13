@@ -17,13 +17,13 @@ export default class AnniversaryRolesService {
         this.client = client;
         this.orm = client.orm;
 
-        (async () => await this.birthdayService())();
+        (async () => await this.BirthdayService())();
     }
 
-    async birthdayService(): Promise<void> {
+    async BirthdayService(): Promise<void> {
 
         const enabledGuilds = await this.getEnabledGuilds();
-        logger.info(`birthdayService | Checking ${chalk.green(enabledGuilds.length)} guilds`);
+        logger.info(`AnniversaryRolesService | Checking ${chalk.green(enabledGuilds.length)} guilds`);
         await this.handleAnniversaryGuilds(enabledGuilds);
         return this.resetArrays();
     }
@@ -40,7 +40,7 @@ export default class AnniversaryRolesService {
         const guildDb = await this.client.db.getOrCreateGuild(BigInt(guild.id)),
             { Day, Month } = await AnniversaryRolesService.dateObject();
 
-        logger.info(`birthdayService | Checking newly added guild ${guild.name} [${guild.id}]`);
+        logger.info(`AnniversaryRolesService | Checking newly added guild ${guild.name} [${guild.id}]`);
 
         if (guildDb.Anniversary) {
             try {
@@ -55,36 +55,36 @@ export default class AnniversaryRolesService {
                     }));
                 }
                 else {
-                    return logger.warn(`birthdayService | ${guild.name} [${guild.id}] - can't add anniversary roles due to missing permissions: 'MANAGE_ROLES'`);
+                    return logger.warn(`AnniversaryRolesService | ${guild.name} [${guild.id}] - can't add anniversary roles due to missing permissions: 'MANAGE_ROLES'`);
                 }
             }
             catch (err) {
                 logger.error(err);
             }
             finally {
-                logger.info(`birthdayService | Finished checking ${guild.name} [${guild.id}] - Anniversary enabled`);
+                logger.info(`AnniversaryRolesService | Finished checking ${guild.name} [${guild.id}] - Anniversary enabled`);
             }
         }
         else {
-            logger.info(`birthdayService | Finished checking ${guild.name} [${guild.id}] - Anniversary disabled`);
+            logger.info(`AnniversaryRolesService | Finished checking ${guild.name} [${guild.id}] - Anniversary disabled`);
         }
     }
 
     async handleGuildRoles(guild: Guild): Promise<Role[] | unknown[]> {
-        if (!guild.roles.cache.some(r => r.name === Constants.AnniversaryStrings.roleNameJoin)) {
+        if (!guild.roles.cache.some(r => r.name === Constants.AnniversaryStrings.ROLE_JOIN)) {
             guild.roles.create({
-                name: Constants.AnniversaryStrings.roleNameJoin,
+                name: Constants.AnniversaryStrings.ROLE_JOIN,
                 reason: "Role didn't exist yet",
             }).catch(err => logger.error(err));
         }
-        if (!guild.roles.cache.some(r => r.name === Constants.AnniversaryStrings.roleNameCreated)) {
+        if (!guild.roles.cache.some(r => r.name === Constants.AnniversaryStrings.ROLE_CREATED)) {
             guild.roles.create({
-                name: Constants.AnniversaryStrings.roleNameCreated,
+                name: Constants.AnniversaryStrings.ROLE_CREATED,
                 reason: "Role didn't exist yet",
             }).catch(err => logger.error(err));
         }
-        const AnniversaryRoleJ = guild.roles.cache.find(r => r.name === Constants.AnniversaryStrings.roleNameJoin);
-        const AnniversaryRoleC = guild.roles.cache.find(r => r.name === Constants.AnniversaryStrings.roleNameCreated);
+        const AnniversaryRoleJ = guild.roles.cache.find(r => r.name === Constants.AnniversaryStrings.ROLE_JOIN);
+        const AnniversaryRoleC = guild.roles.cache.find(r => r.name === Constants.AnniversaryStrings.ROLE_CREATED);
 
         return [AnniversaryRoleC, AnniversaryRoleJ];
     }
@@ -109,7 +109,7 @@ export default class AnniversaryRolesService {
                 logger.error(err);
             }
             finally {
-                logger.info(`birthdayService | Checked user ${member.user.tag} in ${guild.name} [${guild.id}]`);
+                logger.info(`AnniversaryRolesService | Checked user ${member.user.tag} in ${guild.name} [${guild.id}]`);
             }
         }
     }

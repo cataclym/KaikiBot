@@ -5,6 +5,7 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 import Utility from "../../lib/Utility";
+import Constants from "../../struct/Constants";
 
 export default class RedditCommand extends KaikiCommand {
     constructor() {
@@ -55,7 +56,7 @@ export default class RedditCommand extends KaikiCommand {
                     .then(msg => setTimeout(() => {
                         message.delete();
                         msg.delete();
-                    }, 7500));
+                    }, Constants.MAGIC_NUMBERS.CMDS.FUN.REDDIT.NSFW_DEL_TIMEOUT));
             }
 
             const embed = new EmbedBuilder({
@@ -67,11 +68,16 @@ export default class RedditCommand extends KaikiCommand {
             })
                 .withOkColor(message);
 
-            if (data.title?.length) embed.setTitle(Utility.trim(data.title, 256));
-            if (data.selftext?.length) embed.setDescription(Utility.trim(data.selftext, 2048));
-            !data.is_video && data.url?.length
-                ? embed.setImage(data.url)
-                : message.channel.send(data.url ?? data.permalink);
+            if (data.title?.length) embed.setTitle(Utility.trim(data.title, Constants.MAGIC_NUMBERS.EMBED_LIMITS.TITLE));
+            if (data.selftext?.length) embed.setDescription(Utility.trim(data.selftext, Constants.MAGIC_NUMBERS.EMBED_LIMITS.DESCRIPTION));
+
+            if (!data.is_video && data.url?.length) {
+                embed.setImage(data.url);
+            }
+
+            else {
+                message.channel.send(data.url ?? data.permalink);
+            }
 
             return message.channel.send({ embeds: [embed] });
         }

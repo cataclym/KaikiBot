@@ -67,6 +67,9 @@ export default class Bot {
                                 new EmbedBuilder()
                                     .setTitle(emoji)
                                     .setDescription("Bot is online!")
+                                    .setFooter({
+                                        text: `${this.client.package.name} - v${this.client.package.version}`,
+                                    })
                                     .withOkColor(),
                             ],
                     });

@@ -11,7 +11,8 @@ import Constants from "../../struct/Constants";
 import Database from "../../struct/db/Database";
 import DatabaseProvider from "../../struct/db/DatabaseProvider";
 import AnniversaryRolesService from "../AnniversaryRolesService";
-import { resetDailyClaims } from "../functions";
+import { ResetDailyClaims } from "../functions";
+import HentaiService from "../Hentai/HentaiService";
 import IPackageJSON from "../Interfaces/IPackageJSON";
 import { MoneyService } from "../Money/MoneyService";
 import Utility from "../Utility";
@@ -49,6 +50,7 @@ export default class KaikiAkairoClient<Ready extends boolean = boolean> extends 
     public db: Database;
     public owner: User;
     public package: IPackageJSON;
+    public HentaiService: HentaiService;
 
     constructor() {
         super({
@@ -71,8 +73,6 @@ export default class KaikiAkairoClient<Ready extends boolean = boolean> extends 
             ],
             partials: [Partials.Reaction, Partials.Channel, Partials.GuildMember],
             shards: "auto",
-            // Uncomment to have mobile status on bot.
-            // ws: { properties: { $browser: "Discord Android" } },
         });
 
         this.initializeDatabase();
@@ -136,10 +136,10 @@ export default class KaikiAkairoClient<Ready extends boolean = boolean> extends 
             await this.dailyResetTimer(client);
 
             // Reset daily currency claims
-            await resetDailyClaims(client.orm);
+            await ResetDailyClaims(client.orm);
 
             // Check for "birthdays"
-            await this.anniversaryService.birthdayService();
+            await this.anniversaryService.BirthdayService();
 
         }, Utility.timeToMidnight());
     }
@@ -152,7 +152,10 @@ export default class KaikiAkairoClient<Ready extends boolean = boolean> extends 
 
         // This will execute at midnight
         await this.dailyResetTimer(client);
-        logger.info("birthdayService | Service initiated");
+        logger.info("AnniversaryRolesService | Service initiated");
+
+        this.HentaiService = new HentaiService();
+        logger.info("HentaiService | Service initiated");
 
         void this.presenceLoop();
     }
@@ -175,8 +178,6 @@ export default class KaikiAkairoClient<Ready extends boolean = boolean> extends 
                 this.dadBotChannels.init().then(() => logger.info(`${chalk.green("READY")} - DadBot channel provider`));
 
                 this.cache = new KaikiCache(this.orm, this.connection);
-                void this.cache.init();
-
                 this.money = new MoneyService(this.orm);
             });
     }
@@ -188,7 +189,7 @@ export default class KaikiAkairoClient<Ready extends boolean = boolean> extends 
             return async () => {
                 await scope.setPresence();
             };
-        })(this), 60000 * 5);
+        })(this), Constants.MAGIC_NUMBERS.LIB.KAIKI.PRESENCE_UPDATE_TIMEOUT);
     }
 
     public async setPresence() {

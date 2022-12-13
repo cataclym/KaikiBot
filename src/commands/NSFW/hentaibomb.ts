@@ -1,27 +1,27 @@
 import { Message } from "discord.js";
+import HentaiService, { hentaiTypes } from "../../lib/Hentai/HentaiService";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-import { grabHentai, types, typesArray } from "./hentaiService";
-
 
 export default class HentaiBombCommand extends KaikiCommand {
     constructor() {
         super("hentaibomb", {
             aliases: ["hentaibomb", "hb"],
             description: "Posts 5 NSFW images, using the waifu.pics API",
-            usage: typesArray,
+            usage: HentaiService.hentaiArray,
             args: [
                 {
                     id: "category",
-                    type: typesArray,
+                    type: HentaiService.hentaiArray,
                     default: null,
                 },
             ],
         });
     }
 
-    public async exec(message: Message, { category }: { category: types | null }): Promise<Message | Message[]> {
+    public async exec(message: Message, { category }: { category: hentaiTypes | null }): Promise<Message | Message[]> {
 
-        const megaResponse = (await grabHentai(category ?? typesArray[Math.floor(Math.random() * typesArray.length)], "bomb")).splice(0, 5);
+        const megaResponse = (await this.client.HentaiService.grabHentai(category ?? HentaiService.hentaiArray[Math.floor(Math.random() * HentaiService.hentaiArray.length)], "bomb"))
+            .splice(0, 5);
 
         return message.channel.send({ content: megaResponse.join("\n") });
     }

@@ -3,6 +3,7 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 import { restoreUserRoles } from "../../lib/Roles";
 import Utility from "../../lib/Utility";
+import Constants from "../../struct/Constants";
 
 export default class RestoreUserRoles extends KaikiCommand {
     constructor() {
@@ -42,7 +43,10 @@ export default class RestoreUserRoles extends KaikiCommand {
                 embeds: [
                     new EmbedBuilder()
                         .setDescription(`Restored roles of \`${member.user.tag}\` [${member.id}]`)
-                        .addFields({ name: "Roles added", value: Utility.trim(result.roles.join("\n"), 1024) })
+                        .addFields({
+                            name: "Roles added",
+                            value: Utility.trim(result.roles.join("\n"), Constants.MAGIC_NUMBERS.EMBED_LIMITS.FIELD.VALUE),
+                        })
                         .withOkColor(message),
                 ],
             });

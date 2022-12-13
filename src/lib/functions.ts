@@ -15,7 +15,7 @@ export async function tiredKaikiCryReact(message: Message<true>): Promise<void> 
     }
 
     if (new RegExp(botName.join("|")).test(message.content.toLowerCase())
-        && new RegExp(Constants.badWords.join("|")).test(message.content.toLowerCase())) {
+        && new RegExp(Constants.BadWords.join("|")).test(message.content.toLowerCase())) {
 
         // Absolute randomness
         if (Math.floor(Math.random() * 10) < 7) {
@@ -28,7 +28,7 @@ export async function tiredKaikiCryReact(message: Message<true>): Promise<void> 
     }
 }
 
-export async function resetDailyClaims(orm: PrismaClient): Promise<void> {
+export async function ResetDailyClaims(orm: PrismaClient): Promise<void> {
     const updated = await orm.discordUsers.updateMany({
         where: {
             ClaimedDaily: true,
@@ -37,7 +37,7 @@ export async function resetDailyClaims(orm: PrismaClient): Promise<void> {
             ClaimedDaily: false,
         },
     });
-    logger.info(`resetDailyClaims | Daily claims have been reset! Updated ${chalk.green(updated.count)} entries!`);
+    logger.info(`ResetDailyClaims | Daily claims have been reset! Updated ${chalk.green(updated.count)} entries!`);
 }
 
 export async function sendDM(message: Message): Promise<Message | undefined> {
@@ -45,7 +45,7 @@ export async function sendDM(message: Message): Promise<Message | undefined> {
     if (message.author === message.client.owner) return;
 
     let attachmentLinks = "";
-    logger.info(`message | DM from ${message.author.tag} [${message.author.id}]`);
+    logger.info(`Message | DM from ${message.author.tag} [${message.author.id}]`);
 
     const embed = new EmbedBuilder({
         author: { name: `${message.author.tag} [${message.author.id}]` },

@@ -2,6 +2,7 @@ import { EmbedBuilder, Message } from "discord.js";
 import Gambling from "../../lib/Gambling/Gambling";
 import KaikiArgumentsTypes from "../../lib/Kaiki/KaikiArgumentsTypes";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+import Constants from "../../struct/Constants";
 
 export default class slotsCommand extends KaikiCommand {
     constructor() {
@@ -76,8 +77,8 @@ export default class slotsCommand extends KaikiCommand {
 
         await message.channel.send((await Gambling.playSlots(this.client.money.currencySymbol)).string)
             .then(async m => {
-                setTimeout(async () => m.edit((await Gambling.playSlots(this.client.money.currencySymbol)).string), 1000);
-                setTimeout(async () => m.edit(result.string), 2100);
+                setTimeout(async () => m.edit((await Gambling.playSlots(this.client.money.currencySymbol)).string), Constants.MAGIC_NUMBERS.CMDS.GAMBLING.SLOTS.EDIT_AFTER_1_SEC);
+                setTimeout(async () => m.edit(result.string), Constants.MAGIC_NUMBERS.CMDS.GAMBLING.SLOTS.EDIT_AFTER_2_SEC);
             });
     }
 }

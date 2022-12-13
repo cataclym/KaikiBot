@@ -1,9 +1,8 @@
 import { ChildProcess, exec } from "child_process";
 import { EmbedBuilder, Message } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-
 import Utility from "../../lib/Utility";
-
+import Constants from "../../struct/Constants";
 
 export default class ExecCommand extends KaikiCommand {
     constructor() {
@@ -34,7 +33,7 @@ export default class ExecCommand extends KaikiCommand {
                                 name: "Command errored",
                                 iconURL: message.client.user?.displayAvatarURL(),
                             })
-                            .setDescription(await Utility.codeblock(Utility.trim(String(e ?? "Unknown error"), 1997)))
+                            .setDescription(await Utility.codeblock(Utility.trim(String(e ?? "Unknown error"), Constants.MAGIC_NUMBERS.CMDS.OWNER_ONLY.EVAL.MAX_STRING)))
                             .withErrorColor(message),
                     ],
                 });
@@ -47,7 +46,7 @@ export default class ExecCommand extends KaikiCommand {
                             name: "Executed command",
                             iconURL: message.client.user?.displayAvatarURL(),
                         })
-                        .setDescription(await Utility.codeblock(Utility.trim(stdout ?? "Command executed", 1997)))
+                        .setDescription(await Utility.codeblock(Utility.trim(stdout ?? "Command executed", Constants.MAGIC_NUMBERS.CMDS.OWNER_ONLY.EVAL.MAX_STRING)))
                         .withOkColor(message),
                 ],
             });

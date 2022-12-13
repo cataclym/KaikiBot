@@ -1,6 +1,7 @@
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
 import { EmbedBuilder, Message, User } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+import Constants from "../../struct/Constants";
 
 
 export default class NamesCommand extends KaikiCommand {
@@ -110,7 +111,9 @@ export default class NamesCommand extends KaikiCommand {
             }
         }
 
-        for (let i = 60, p = 0; p < nicknames.length; i += 60, p += 60) {
+        for (let i = Constants.MAGIC_NUMBERS.CMDS.FUN.NAMES.NAMES_PR_PAGE, p = 0;
+            p < nicknames.length;
+            i += Constants.MAGIC_NUMBERS.CMDS.FUN.NAMES.NAMES_PR_PAGE, p += Constants.MAGIC_NUMBERS.CMDS.FUN.NAMES.NAMES_PR_PAGE) {
             pages.push(NamesCommand.baseEmbed(message, unionUser)
                 .setDescription(nicknames.slice(p, i).join(", ")));
         }

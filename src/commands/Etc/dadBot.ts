@@ -9,19 +9,19 @@ export default class dadBot extends KaikiCommand {
         super("dadbot", {
             channel: "guild",
             editable: false,
-            condition: (message: Message<true>) => {
+            condition: (message: Message) => {
 
                 if (message.author.bot) return false;
 
                 if (!message.member) return false;
 
-                if (!message.guild.isDadBotEnabled()) return false;
+                if (!message.guild?.isDadBotEnabled()) return false;
 
                 if (message.member.hasExcludedRole()) return false;
 
                 if (message.content.includes("||")) return false;
 
-                for (const item of Constants.dadBotArray) {
+                for (const item of Constants.DadBotArray) {
 
                     const r = new RegExp(`(^|\\s|$)(?<statement>(?<prefix>${item})\\s*(?<nickname>.*)$)`, "mi");
                     if (r.test(message.content)) {
@@ -32,7 +32,7 @@ export default class dadBot extends KaikiCommand {
                         const splits = match.split(new RegExp(`${item}`, "mig"));
                         if (splits.length > 1) match = splits.reduce((a, b) => a.length <= b.length && a.length > 0 ? a : b);
 
-                        if (match.length && match.length <= (process.env.DADBOT_MAX_LENGTH || 256)) {
+                        if (match.length && match.length <= (process.env.DADBOT_MAX_LENGTH || Constants.MAGIC_NUMBERS.CMDS.ETC.DAD_BOT.DADBOT_MAX_LENGTH)) {
                             if (!this.nickname.has(message.member.id)) this.nickname.set(message.member.id, match);
                         }
                     }
@@ -55,7 +55,7 @@ export default class dadBot extends KaikiCommand {
             allowedMentions: {},
         });
 
-        if (nick.length <= (process.env.DADBOT_NICKNAME_LENGTH || 32)) {
+        if (nick.length <= (process.env.DADBOT_NICKNAME_LENGTH || Constants.MAGIC_NUMBERS.CMDS.ETC.DAD_BOT.DADBOT_NICK_LENGTH)) {
             const user = message.author;
             const position = message.guild.members.me?.roles.highest.comparePositionTo(message.member.roles.highest);
 

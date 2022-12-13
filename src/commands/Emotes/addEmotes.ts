@@ -3,6 +3,7 @@ import sizeOf from "image-size";
 import Emotes from "../../lib/Emotes";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
+import Constants from "../../struct/Constants";
 
 const imgRegex = /(http(s?):)([/|.\w\s-])*\.(?:jpg|gif|png|jpeg)/gi;
 // Credit to https://github.com/Snitt/emojibotten/blob/master/commands/management/emoji.js
@@ -41,11 +42,13 @@ export default class AddEmotesCommand extends KaikiCommand {
             // Example output: { width: 240, height: 240, type: 'gif' }
             const imgDimensions = sizeOf(file);
 
-            if ((imgDimensions.width && imgDimensions.height) && imgDimensions.width <= 128 && imgDimensions.height <= 128) {
+            if ((imgDimensions.width && imgDimensions.height)
+                && imgDimensions.width <= Constants.MAGIC_NUMBERS.CMDS.EMOTES.MAX_WIDTH_HEIGHT
+                && imgDimensions.height <= Constants.MAGIC_NUMBERS.CMDS.EMOTES.MAX_WIDTH_HEIGHT) {
                 await Emotes.saveEmoji(message, url, name);
             }
             else if (imgDimensions.type) {
-                const img = await Emotes.resizeImage(file, imgDimensions.type, 128, message);
+                const img = await Emotes.resizeImage(file, imgDimensions.type, Constants.MAGIC_NUMBERS.CMDS.EMOTES.MAX_WIDTH_HEIGHT, message);
                 await Emotes.saveEmoji(message, img, name);
             }
             await Emotes.deleteImage(file);

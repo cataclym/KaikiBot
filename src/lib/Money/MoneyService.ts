@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import Constants from "../../struct/Constants";
 
 export class MoneyService {
     currencyName: string;
@@ -25,7 +26,7 @@ export class MoneyService {
             return query.Amount;
         }
         await this._orm.discordUsers.create({ data: { UserId: BigInt(id) } });
-        return 0n;
+        return Constants.MAGIC_NUMBERS.LIB.MONEY.MONEY_SERVICE.BIGINT_ZERO;
     }
 
     async Add(id: string, amount: bigint, reason: string): Promise<bigint> {
