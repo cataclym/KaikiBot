@@ -9,13 +9,16 @@ export default class ExcludeCommand extends KaikiCommand {
             description: "Excludes you from being targeted by dad-bot. Execute command again to reverse this action.",
             aliases: ["exclude", "e", "excl"],
             clientPermissions: PermissionsBitField.Flags.ManageRoles,
+            userPermissions: [],
             channel: "guild",
             slashEphemeral: true,
             slash: true,
+            lock: "guild",
         });
     }
 
     public async execSlash(message: AkairoMessage<"cached">) {
+
         if (!dadbotCheck(message)) {
             return message.reply({
                 embeds: [
