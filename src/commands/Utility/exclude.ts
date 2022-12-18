@@ -6,10 +6,11 @@ import { dadbotCheck, excludeCommand } from "../../lib/SlashCommands/functions";
 export default class ExcludeCommand extends KaikiCommand {
     constructor() {
         super("exclude", {
-            description: "Adds or removes excluded role from user. Excludes the user from being targeted by dad-bot.",
+            description: "Excludes you from being targeted by dad-bot. Execute command again to reverse this action.",
             aliases: ["exclude", "e", "excl"],
             clientPermissions: PermissionsBitField.Flags.ManageRoles,
             channel: "guild",
+            slashEphemeral: true,
         });
     }
 
