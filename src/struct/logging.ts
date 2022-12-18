@@ -2,15 +2,15 @@ import chalk from "chalk";
 import logger from "loglevel";
 import prefix from "loglevel-plugin-prefix";
 
-type logColors = {
-		TRACE: chalk.Chalk,
-		DEBUG: chalk.Chalk,
-		INFO: chalk.Chalk,
-		WARN: chalk.Chalk,
-		ERROR: chalk.Chalk,
+type LogColors = {
+    TRACE: chalk.Chalk,
+    DEBUG: chalk.Chalk,
+    INFO: chalk.Chalk,
+    WARN: chalk.Chalk,
+    ERROR: chalk.Chalk,
 }
 
-const colors: logColors = {
+const colors: LogColors = {
     TRACE: chalk.magenta,
     DEBUG: chalk.cyan,
     INFO: chalk.blueBright,
@@ -23,7 +23,7 @@ export async function startLogger() {
     logger.enableAll();
     prefix.apply(logger, {
         format(level, name, timestamp) {
-            return `${chalk.gray(`[${timestamp}]`)} ${colors[level.toUpperCase() as keyof logColors](level)}`;
+            return `${chalk.gray(`[${timestamp}]`)} ${colors[level.toUpperCase() as keyof LogColors](level)}`;
         },
     });
 }

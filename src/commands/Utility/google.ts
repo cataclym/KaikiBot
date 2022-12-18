@@ -6,7 +6,7 @@ import querystring from "querystring";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
-type parsedResult = {
+type ParsedResult = {
     title: string,
     url: string | undefined,
     description: string
@@ -40,7 +40,7 @@ export default class GoogleSearchCommand extends KaikiCommand {
         const result = await fetch(link, this.options)
             .then(async reeee => parse(await reeee.text()));
 
-        const parsedResults: parsedResult[] = [];
+        const parsedResults: ParsedResult[] = [];
 
         for (const res of result.querySelectorAll("div.g")) {
             const title = res.querySelector("div.yuRUbf > a > h3")?.innerText;

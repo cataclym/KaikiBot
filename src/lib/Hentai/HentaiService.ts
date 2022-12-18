@@ -2,14 +2,14 @@ import logger from "loglevel";
 import fetch from "node-fetch";
 import KaikiUtil from "../../lib/Kaiki/KaikiUtil";
 import Constants from "../../struct/Constants";
-import { Post, responseE621 } from "../Interfaces/IDapi";
+import { Post, ResponseEAPI } from "../Interfaces/IDapi";
 
 export enum DAPI {
     E621,
     Danbooru,
 }
 
-export type hentaiTypes = "waifu" | "neko" | "femboy" | "trap" | "blowjob";
+export type HentaiTypes = "waifu" | "neko" | "femboy" | "trap" | "blowjob";
 
 export default class HentaiService {
 
@@ -23,11 +23,11 @@ export default class HentaiService {
     };
 
 
-    public static hentaiArray: hentaiTypes[] = ["waifu", "neko", "femboy", "blowjob"];
+    public static hentaiArray: HentaiTypes[] = ["waifu", "neko", "femboy", "blowjob"];
 
-    public async grabHentai(type: hentaiTypes, format: "single"): Promise<string>
-    public async grabHentai(type: hentaiTypes, format: "bomb"): Promise<string[]>
-    public async grabHentai(type: hentaiTypes, format: "single" | "bomb"): Promise<string | string[]> {
+    public async grabHentai(type: HentaiTypes, format: "single"): Promise<string>
+    public async grabHentai(type: HentaiTypes, format: "bomb"): Promise<string[]>
+    public async grabHentai(type: HentaiTypes, format: "single" | "bomb"): Promise<string | string[]> {
 
         if (type === "femboy") type = "trap";
 
@@ -84,7 +84,7 @@ export default class HentaiService {
                 throw new Error(`Error: Fetch didnt return successful Status code\n${r.status} ${r.statusText}`);
             }
 
-            const json = <responseE621> await r.json()
+            const json = <ResponseEAPI> await r.json()
                 .catch((err) => logger.error(err));
 
             if (Array.isArray(json)) {

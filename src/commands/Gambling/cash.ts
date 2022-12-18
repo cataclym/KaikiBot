@@ -1,7 +1,7 @@
 import { EmbedBuilder, Message, User } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
-export default class cash extends KaikiCommand {
+export default class Cash extends KaikiCommand {
     constructor() {
         super("cash", {
             aliases: ["cash", "currency", "cur", "$", "¥", "£", "€"],

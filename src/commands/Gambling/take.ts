@@ -2,7 +2,7 @@ import { EmbedBuilder, Message, User } from "discord.js";
 import KaikiArgumentsTypes from "../../lib/Kaiki/KaikiArgumentsTypes";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
-export default class take extends KaikiCommand {
+export default class Take extends KaikiCommand {
     constructor() {
         super("take", {
             ownerOnly: true,

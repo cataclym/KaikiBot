@@ -7,7 +7,7 @@ import Constants from "../../struct/Constants";
 import { BotConfig } from "../../struct/db/Database";
 import SetActivityCommand from "./setActivity";
 
-enum validEnum {
+enum ValidEnum {
     ACTIVITY = "activity",
     ACTIVITYTYPE = "activityType",
     CURRENCYNAME = "currencyname",
@@ -16,7 +16,7 @@ enum validEnum {
     DAILYAMOUNT = "dailyAmount"
 }
 
-type validTypes = "activity"
+type ValidTypes = "activity"
     | "activityType"
     | "currencyname"
     | "currencysymbol"
@@ -24,7 +24,7 @@ type validTypes = "activity"
     | "dailyAmount";
 
 export default class BotConfigCommand extends KaikiCommand {
-    private static _validTypes: validTypes[] = [
+    private static _validTypes: ValidTypes[] = [
         "activity",
         "activityType",
         "currencyname",
@@ -86,13 +86,13 @@ export default class BotConfigCommand extends KaikiCommand {
         });
     }
 
-    public async exec(message: Message, { type, value }: { type: validTypes, value: string }): Promise<Message> {
+    public async exec(message: Message, { type, value }: { type: ValidTypes, value: string }): Promise<Message> {
 
         const client = this.client;
         let oldValue;
 
         switch (type) {
-            case validEnum.ACTIVITY:
+            case ValidEnum.ACTIVITY:
                 oldValue = await this.client.botSettings.get("1", "Activity", "N/A");
                 await this.handler.findCommand("setactivity")
                     .exec(message, {
@@ -100,7 +100,7 @@ export default class BotConfigCommand extends KaikiCommand {
                         name: value,
                     });
                 break;
-            case validEnum.ACTIVITYTYPE:
+            case ValidEnum.ACTIVITYTYPE:
                 value = value.toUpperCase();
                 if (SetActivityCommand.validTypes.includes(value)) {
                     oldValue = await this.client.botSettings.get("1", "ActivityType", SetActivityCommand.validTypes[ActivityType.Playing]);
@@ -111,21 +111,21 @@ export default class BotConfigCommand extends KaikiCommand {
                         });
                 }
                 break;
-            case validEnum.CURRENCYNAME:
+            case ValidEnum.CURRENCYNAME:
                 oldValue = await client.botSettings.get("1", "CurrencyName", "Yen");
                 await client.botSettings.set("1", "CurrencyName", String(value));
                 client.money.currencyName = value;
                 break;
-            case validEnum.CURRENCYSYMBOL:
+            case ValidEnum.CURRENCYSYMBOL:
                 oldValue = await client.botSettings.get("1", "CurrencySymbol", Constants.MAGIC_NUMBERS.CMDS.OWNER_ONLY.BOT_CONFIG.DEFAULT_CUR_CODE);
                 await client.botSettings.set("1", "CurrencySymbol", value.codePointAt(0));
                 client.money.currencySymbol = value;
                 break;
-            case validEnum.DAILYAMOUNT:
+            case ValidEnum.DAILYAMOUNT:
                 oldValue = await client.botSettings.get("1", "DailyAmount", Constants.MAGIC_NUMBERS.CMDS.OWNER_ONLY.BOT_CONFIG.DAILY_AMOUNT);
                 await client.botSettings.set("1", "DailyAmount", value);
                 break;
-            case validEnum.DAILYENABLED:
+            case ValidEnum.DAILYENABLED:
                 oldValue = await client.botSettings.get("1", "DailyEnabled", false);
                 await client.botSettings.set("1", "DailyEnabled", value);
                 break;

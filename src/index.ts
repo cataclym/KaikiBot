@@ -1,7 +1,7 @@
 import logger from "loglevel";
 import { extensionHook } from "./extensions/Discord";
 import KaikiAkairoClient from "./lib/Kaiki/KaikiAkairoClient";
-import Bot from "./struct/Bot";
+import BotContainer from "./struct/BotContainer";
 import { startLogger } from "./struct/logging";
 
 class KaikiProgram {
@@ -10,7 +10,7 @@ class KaikiProgram {
         await startLogger();
         process.on("unhandledRejection", async (reason: Error, promise) => logger.warn("Unhandled Rejection at:", promise));
 
-        new Bot(new KaikiAkairoClient());
+        new BotContainer(new KaikiAkairoClient());
     }
 }
 

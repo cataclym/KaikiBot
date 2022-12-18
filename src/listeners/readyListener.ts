@@ -1,8 +1,6 @@
 import chalk from "chalk";
-import { ActivityType } from "discord.js";
 import logger from "loglevel";
 import KaikiListener from "../lib/Kaiki/KaikiListener";
-import { Migrations } from "../lib/Migrations/Migrations";
 import { excludeData } from "../lib/SlashCommands/data";
 
 export default class ReadyListener extends KaikiListener {
@@ -15,23 +13,6 @@ export default class ReadyListener extends KaikiListener {
     }
 
     public async exec(): Promise<void> {
-
-        new Migrations(this.client.connection(), this.client)
-            .runAllMigrations()
-            .then(async (res: number) => {
-                if (res) {
-                    logger.info(`
-${(chalk.greenBright)("|----------------------------------------------------------|")}
-migrationService | Migrations have successfully finished
-migrationService | Inserted ${(chalk.green)(res)} records into kaikidb
-${(chalk.greenBright)("|----------------------------------------------------------|")}`);
-                    await this.client.botSettings.init();
-                    await this.client.guildsDb.init();
-                }
-            })
-            .catch(e => {
-                throw e;
-            });
 
         // Find all guilds that have dad-bot enabled
         const enabled = await this.client.orm.guilds.findMany({

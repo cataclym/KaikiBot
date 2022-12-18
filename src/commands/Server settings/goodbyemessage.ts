@@ -22,7 +22,7 @@ export default class ByeMessageCommand extends KaikiCommand {
                             return undefined;
                         }
                     },
-                    otherwise: (m) => GreetHandler.JSONErrorMessage(m),
+                    otherwise: (m) => GreetHandler.jsonErrorMessage(m),
                 },
             ],
             subCategory: "Goodbye",
@@ -32,7 +32,7 @@ export default class ByeMessageCommand extends KaikiCommand {
     public async exec(message: Message, { msg }: { msg: JSONToMessageOptions }): Promise<Message> {
 
         const json = new JSONToMessageOptions(msg);
-        if (!json) return message.channel.send(GreetHandler.JSONErrorMessage(message));
+        if (!json) return message.channel.send(GreetHandler.jsonErrorMessage(message));
 
         const guildID = (message.guild as Guild).id;
 

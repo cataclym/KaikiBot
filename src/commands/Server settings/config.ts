@@ -2,7 +2,7 @@ import { BlockedCategories, Guilds } from "@prisma/client";
 import { Argument, Flag } from "discord-akairo";
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
 import { EmbedBuilder, Message, MessageCreateOptions, PermissionsBitField } from "discord.js";
-import { blockedCategories } from "../../lib/Enums/blockedCategories";
+import { BlockedCategoriesEnum } from "../../lib/Enums/blockedCategoriesEnum";
 import GreetHandler from "../../lib/GreetHandler";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import Utility from "../../lib/Utility";
@@ -44,7 +44,7 @@ export default class ConfigCommand extends KaikiCommand {
 
         if (!db) {
             const g = await this.client.db.getOrCreateGuild(BigInt(message.guildId));
-            const blockedCategoriesObj = { BlockedCategories: [] };
+            const blockedCategoriesObj: { BlockedCategories: BlockedCategories[] } = { BlockedCategories: [] };
             Object.assign(g, blockedCategoriesObj);
             db = g as (Guilds & { BlockedCategories: BlockedCategories[] });
         }
@@ -53,7 +53,7 @@ export default class ConfigCommand extends KaikiCommand {
         const { Anniversary, DadBot, Prefix, ErrorColor, OkColor, WelcomeChannel, ByeChannel } = db;
 
         const categories = db.BlockedCategories
-            .map(e => blockedCategories[e.CategoryTarget])
+            .map(e => BlockedCategoriesEnum[e.CategoryTarget])
             .filter(Boolean);
 
         const firstPage: MessageCreateOptions = {

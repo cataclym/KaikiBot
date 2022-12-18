@@ -3,7 +3,7 @@ import chalk from "chalk";
 import { EmbedBuilder, GuildMember, Message } from "discord.js";
 import logger from "loglevel";
 import Constants from "../struct/Constants";
-import { regexpType } from "./Types/TCustom";
+import { RegexpType } from "./Types/TCustom";
 import Utility from "./Utility";
 
 export async function tiredKaikiCryReact(message: Message<true>): Promise<void> {
@@ -89,6 +89,6 @@ export async function parsePlaceHolders(input: string, guildMember: GuildMember)
     return input;
 }
 
-export function isRegex(value: unknown): value is regexpType {
-    return (value as regexpType).match !== undefined;
+export function isRegex(value: unknown): value is RegexpType {
+    return (value as RegexpType).match !== undefined;
 }

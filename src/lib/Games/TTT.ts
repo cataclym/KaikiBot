@@ -5,15 +5,15 @@ const numbers = ["1", "2", "3", "4", "5", "6", "7", "8", "9"];
 const winningCombos = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]];
 
 const drawMessage = "Game ended in a draw!";
-type playerType = { player: GuildMember, color: string, sign: string };
+type PlayerType = { player: GuildMember, color: string, sign: string };
 
 export default class TicTacToe {
-    p1: playerType;
-    p2: playerType;
-    currentPlayer: playerType;
+    pOne: PlayerType;
+    pTwo: PlayerType;
+    currentPlayer: PlayerType;
     message: Message;
     embed: Promise<Message>;
-    moves?: playerType[];
+    moves?: PlayerType[];
     currentPlayerTurn: (p: GuildMember, m: Message) => Promise<void>;
     winningMessage: (p: GuildMember) => string;
     timedWinMessage: (p: GuildMember) => string;
@@ -22,15 +22,15 @@ export default class TicTacToe {
 
     /**
      * Initializes a TicTacToe game.
-     * @param player1 @type {GuildMember}
-     * @param player2 @type {GuildMember}
+     * @param playerOne @type {GuildMember}
+     * @param playerTwo @type {GuildMember}
      * @param message @type {Message}
      */
 
-    constructor(player1: GuildMember, player2: GuildMember, message: Message) {
-        this.p1 = { player: player1, color: "78b159", sign: "p1" };
-        this.p2 = { player: player2, color: "dd2e44", sign: "p2" };
-        this.currentPlayer = this.p2;
+    constructor(playerOne: GuildMember, playerTwo: GuildMember, message: Message) {
+        this.pOne = { player: playerOne, color: "78b159", sign: "p1" };
+        this.pTwo = { player: playerTwo, color: "dd2e44", sign: "p2" };
+        this.currentPlayer = this.pTwo;
         this.message = message;
         this.stateDict = {
             0: "1️⃣", 1: "2️⃣", 2: "3️⃣",
@@ -42,11 +42,11 @@ export default class TicTacToe {
         this.start();
 
         this.embed = this.message.channel.send({
-            content: `${this.p2.player} starts!`,
+            content: `${this.pTwo.player} starts!`,
             embeds: [
                 new EmbedBuilder({
                     description: Object.values(this.stateDict).map((v, i) => [2, 5].includes(i) ? v + "\n" : v).join(""),
-                    color: parseInt(this.p2.color, 16),
+                    color: parseInt(this.pTwo.color, 16),
                 }),
             ],
         });
@@ -56,14 +56,14 @@ export default class TicTacToe {
             setTimeout(async () => m2.delete(), Constants.MAGIC_NUMBERS.LIB.GAMES.TTT.MSG_DEL_TIMEOUT);
         });
         this.winningMessage = (p: GuildMember) => `Player ${p} has won!`;
-        this.timedWinMessage = (p: GuildMember) => `Player ${p} didn't make a move for 20 seconds, making <@${p.id !== this.p1.player.id ? this.p1.player.id : this.p2.player.id}> the winner.`;
+        this.timedWinMessage = (p: GuildMember) => `Player ${p} didn't make a move for 20 seconds, making <@${p.id !== this.pOne.player.id ? this.pOne.player.id : this.pTwo.player.id}> the winner.`;
     }
 
     private start() {
-        void this.awaitInput(this.p2);
+        void this.awaitInput(this.pTwo);
     }
 
-    private async awaitInput(playerObject: playerType) {
+    private async awaitInput(playerObject: PlayerType) {
 
         if (!this.active) return;
 
@@ -82,7 +82,7 @@ export default class TicTacToe {
             });
     }
 
-    private async input(playerObject: playerType, m: Message) {
+    private async input(playerObject: PlayerType, m: Message) {
 
         const { player, sign } = playerObject;
 
@@ -99,9 +99,9 @@ export default class TicTacToe {
         }
 
         this.stateDict[int] = sign;
-        this.currentPlayer = player.id !== this.p1.player.id
-            ? this.p1
-            : this.p2;
+        this.currentPlayer = player.id !== this.pOne.player.id
+            ? this.pOne
+            : this.pTwo;
 
         await this.updateEmbed(this.currentPlayer);
 
@@ -118,7 +118,7 @@ export default class TicTacToe {
         return this.awaitInput(this.currentPlayer);
     }
 
-    private async updateEmbed(playerObject: playerType): Promise<Message | NodeJS.Timeout> {
+    private async updateEmbed(playerObject: PlayerType): Promise<Message | NodeJS.Timeout> {
 
         const finalString = `It's ${playerObject.player}'s turn to make a move.`;
         const finalEmbed = new EmbedBuilder({
@@ -147,14 +147,14 @@ export default class TicTacToe {
         });
     }
 
-    private win(winner: playerType) {
+    private win(winner: PlayerType) {
         if (this.active) {
             this.active = false;
             return this.message.channel.send(this.winningMessage(winner.player));
         }
     }
 
-    private timedWin(loser: playerType) {
+    private timedWin(loser: PlayerType) {
         if (this.active) {
             this.active = false;
             return this.message.channel.send(this.timedWinMessage(loser.player));

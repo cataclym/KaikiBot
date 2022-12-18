@@ -10,14 +10,14 @@ import {
 } from "discord.js";
 import { parsePlaceHolders } from "./functions";
 
-interface sendMessageData {
+interface SendMessageData {
     channel: bigint | null,
     embed: string | null,
     timeout: number | null,
 }
 
 export default class GreetHandler {
-    static JSONErrorMessage = (m: Message) => ({
+    static jsonErrorMessage = (m: Message) => ({
         embeds: [
             new EmbedBuilder()
                 .setTitle("Error")
@@ -61,12 +61,12 @@ export default class GreetHandler {
         }
     }
 
-    static async createAndParseWelcomeLeaveMessage(data: sendMessageData, guildMember: GuildMember): Promise<MessageCreateOptions> {
+    static async createAndParseWelcomeLeaveMessage(data: SendMessageData, guildMember: GuildMember): Promise<MessageCreateOptions> {
         if (!data.embed) return GreetHandler.emptyMessageOptions(guildMember.guild);
         return JSON.parse(await parsePlaceHolders(data.embed, guildMember));
     }
 
-    static async sendWelcomeLeaveMessage(data: sendMessageData, guildMember: GuildMember): Promise<Message | void> {
+    static async sendWelcomeLeaveMessage(data: SendMessageData, guildMember: GuildMember): Promise<Message | void> {
         if (!data.channel || !data.embed) return;
 
         const channel = guildMember.guild.channels.cache.get(String(data.channel))
@@ -74,7 +74,7 @@ export default class GreetHandler {
 
         if (channel && channel.type !== ChannelType.GuildText && channel.type !== ChannelType.GuildNews || channel?.type !== ChannelType.GuildText) return;
 
-        const parsedMessageOptions = await GreetHandler.createAndParseWelcomeLeaveMessage(<sendMessageData>data, guildMember);
+        const parsedMessageOptions = await GreetHandler.createAndParseWelcomeLeaveMessage(<SendMessageData>data, guildMember);
 
         return channel.send(parsedMessageOptions)
             .then((m) => {

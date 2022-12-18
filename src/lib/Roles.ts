@@ -2,7 +2,7 @@ import chalk from "chalk";
 import { GuildMember, Message, Role } from "discord.js";
 import logger from "loglevel";
 
-type genericArrayFilter = <T>(x: T | undefined) => x is T;
+type GenericArrayFilter = <T>(x: T | undefined) => x is T;
 
 export default class Roles {
     static async getRole(message: Message<true>) {
@@ -82,7 +82,7 @@ export async function restoreUserRoles(member: GuildMember): Promise<{ success: 
         const rolesToAdd = leaveRoles
             .filter(r => !excludedRoleIds.includes(r.RoleId))
             .map(roleTable => guild.roles.cache.get(String(roleTable.RoleId)))
-            .filter(Boolean as unknown as genericArrayFilter)
+            .filter(Boolean as unknown as GenericArrayFilter)
             .filter(r => r.position !== 0
                 && !member.roles.cache.has(r.id)
                 && r.position < (guild.members.me?.roles.highest.position || 0));

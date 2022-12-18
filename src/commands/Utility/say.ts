@@ -5,7 +5,7 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
-type argumentMessage = {
+type ArgumentMessage = {
     [str: string]: string | Record<string, any>
 } | string
 
@@ -90,7 +90,7 @@ export default class SayCommand extends KaikiCommand {
     public async exec(message: Message<true>, {
         targetChannel,
         argMessage,
-    }: { targetChannel: TextChannel, argMessage: argumentMessage }): Promise<Message | void> {
+    }: { targetChannel: TextChannel, argMessage: ArgumentMessage }): Promise<Message | void> {
 
         if (message.channel.type !== ChannelType.GuildText) return;
 

@@ -1,4 +1,4 @@
-import { EmbedBuilder, Message, Permissions, PermissionsBitField, Role } from "discord.js";
+import { EmbedBuilder, Message, PermissionsBitField, Role } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 

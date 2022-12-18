@@ -1,7 +1,7 @@
 import pkg from "@prisma/client";
 import { Collection, Message, Snowflake } from "discord.js";
 import { Pool, ResultSetHeader, RowDataPacket } from "mysql2/promise";
-import { respType } from "../lib/Types/TCustom.js";
+import { RespType } from "../lib/Types/TCustom.js";
 import Utility from "../lib/Utility";
 import Constants from "../struct/Constants";
 
@@ -11,23 +11,23 @@ export type TGuildString = Snowflake;
 export type TTriggerString = string;
 export type TEmoteReactCache = Map<TGuildString, Map<TEmoteStringTypes, Map<TEmoteTrigger, TTriggerString>>>;
 
-type partitionResult = [[string, bigint][], [string, bigint][]];
+type PartitionResult = [[string, bigint][], [string, bigint][]];
 
 export default class KaikiCache {
 
-    public animeQuoteCache: Collection<string, respType>;
+    public animeQuoteCache: Collection<string, RespType>;
     public cmdStatsCache: Collection<string, number>;
     public emoteReactCache: TEmoteReactCache;
     public dailyProvider: MySQLDailyProvider;
-    private readonly _connection: () => Pool;
-    private _orm: pkg.PrismaClient;
+    private readonly connection: () => Pool;
+    private orm: pkg.PrismaClient;
 
     constructor(orm: pkg.PrismaClient, connection: () => Pool) {
-        this._connection = connection;
-        this._orm = orm;
-        this.animeQuoteCache = new Collection<string, respType>();
+        this.connection = connection;
+        this.orm = orm;
+        this.animeQuoteCache = new Collection<string, RespType>();
         this.cmdStatsCache = new Collection<string, number>();
-        this.dailyProvider = new MySQLDailyProvider(this._connection);
+        this.dailyProvider = new MySQLDailyProvider(this.connection);
         this.emoteReactCache = new Map<TGuildString, Map<TEmoteStringTypes, Map<TEmoteTrigger, TTriggerString>>>();
 
         (async () => await this.init())();
@@ -37,7 +37,7 @@ export default class KaikiCache {
         if (!Object.entries(this.cmdStatsCache).length) return;
 
         const requests = Object.entries(this.cmdStatsCache)
-            .map(([command, amount]) => this._orm.commandStats
+            .map(([command, amount]) => this.orm.commandStats
                 .upsert({
                     where: {
                         CommandAlias: command,
@@ -53,7 +53,7 @@ export default class KaikiCache {
                     },
                 }));
 
-        await this._orm.$transaction(requests);
+        await this.orm.$transaction(requests);
 
         this.cmdStatsCache = new Collection<string, number>();
     }, Constants.MAGIC_NUMBERS.CACHE.FIFTEEN_MINUTES_MS);
@@ -70,13 +70,13 @@ export default class KaikiCache {
         }
 
         else {
-            const arrays: partitionResult = Utility.partition(emoteReacts, ([k]) => k.includes(" "));
+            const arrays: PartitionResult = Utility.partition(emoteReacts, ([k]) => k.includes(" "));
 
-            for (const array_has_space of arrays[0]) {
-                message.client.cache.emoteReactCache.get(message.guildId)?.get("has_space")?.set(array_has_space[0], String(array_has_space[1]));
+            for (const arrayHasSpace of arrays[0]) {
+                message.client.cache.emoteReactCache.get(message.guildId)?.get("has_space")?.set(arrayHasSpace[0], String(arrayHasSpace[1]));
             }
-            for (const array_no_space of arrays[1]) {
-                message.client.cache.emoteReactCache.get(message.guildId)?.get("no_space")?.set(array_no_space[0], String(array_no_space[1]));
+            for (const arrayNoSpace of arrays[1]) {
+                message.client.cache.emoteReactCache.get(message.guildId)?.get("no_space")?.set(arrayNoSpace[0], String(arrayNoSpace[1]));
             }
         }
     }

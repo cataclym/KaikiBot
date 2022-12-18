@@ -30,13 +30,15 @@ export default class RoleColorCommand extends KaikiCommand {
     public async exec(message: Message<true>, {
         role,
         clr,
-    }: { role: Role | undefined, clr: TKaikiColor | null }): Promise<Message> {
+    }: { role: Role | undefined, clr: TKaikiColor | null }) {
 
         const { member } = message;
 
         if (!clr) {
 
-            if (!role) role = message.member!.roles.highest;
+            if (!message.member) return;
+
+            if (!role) role = message.member.roles.highest;
 
             const attachment = new AttachmentBuilder(await imgFromColor(Utility.HEXtoRGB(role.hexColor)), { name: "color.png" });
             return message.channel.send({
@@ -71,7 +73,7 @@ export default class RoleColorCommand extends KaikiCommand {
                 });
             }
 
-            return role.edit({ color: [clr.r!, clr.g!, clr.b!] }).then(r => {
+            return role.edit({ color: [clr.r, clr.g, clr.b] }).then(r => {
                 return message.channel.send({
                     files: [attachment],
                     embeds: [

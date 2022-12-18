@@ -1,13 +1,13 @@
 import { AkairoModule, Command } from "discord-akairo";
 import { Collection, EmbedBuilder, Message, PermissionsBitField } from "discord.js";
-import { blockedCategories } from "../../lib/Enums/blockedCategories";
+import { BlockedCategoriesEnum } from "../../lib/Enums/blockedCategoriesEnum";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
 class BlockedCategory<K extends string, V extends AkairoModule<any, any>> extends Collection<K, V> {
-    public id: keyof typeof blockedCategories;
+    public id: keyof typeof BlockedCategoriesEnum;
 
-    public constructor(id: keyof typeof blockedCategories, iterable?: Iterable<readonly [K, V]>) {
+    public constructor(id: keyof typeof BlockedCategoriesEnum, iterable?: Iterable<readonly [K, V]>) {
         super(iterable);
         this.id = id;
     }
@@ -40,7 +40,7 @@ export default class ToggleCategoryCommand extends KaikiCommand {
     public async exec(message: Message<true>, { category }: { category: BlockedCategory<string, Command> }): Promise<Message> {
 
         const { guild } = message;
-        const index = blockedCategories[category.id];
+        const index = BlockedCategoriesEnum[category.id];
 
         let guildDb = await this.client.orm.guilds.findFirst({
             where: {

@@ -6,7 +6,7 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 import Constants from "../../struct/Constants";
 
-export default class commandsList extends KaikiCommand {
+export default class CommandsList extends KaikiCommand {
     constructor() {
         super("cmdlist", {
             aliases: ["commands", "cmds", "cmdlist"],

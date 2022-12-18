@@ -3,7 +3,7 @@ import sendWaifuPics from "../../lib/APIs/waifuPics";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 
-export default class Pat extends KaikiCommand {
+export default class PatCommand extends KaikiCommand {
     constructor() {
         super("pat", {
             aliases: ["pat"],

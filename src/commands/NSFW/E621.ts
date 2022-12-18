@@ -5,7 +5,7 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 import Utility from "../../lib/Utility";
 
-export default class E621Command extends KaikiCommand {
+export default class EAPICommand extends KaikiCommand {
     constructor() {
         super("e621", {
             aliases: ["e621"],

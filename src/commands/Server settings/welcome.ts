@@ -1,4 +1,4 @@
-import { EmbedBuilder, GuildTextBasedChannel, Message, Permissions, PermissionsBitField } from "discord.js";
+import { EmbedBuilder, GuildTextBasedChannel, Message, PermissionsBitField } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 

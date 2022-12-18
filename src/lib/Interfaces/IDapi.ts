@@ -27,13 +27,13 @@ export interface Post {
 export interface File {
     width: number;
     height: number;
-    ext: EXT;
+    ext: Extension;
     size: number;
     md5: string;
     url: null | string;
 }
 
-export enum EXT {
+export enum Extension {
     GIF = "gif",
     Jpg = "jpg",
     PNG = "png",
@@ -102,6 +102,6 @@ export interface Tags {
     meta: string[];
 }
 
-export interface responseE621 {
+export interface ResponseEAPI {
     posts: Post[];
 }

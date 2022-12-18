@@ -3,10 +3,10 @@ import images from "../../data/images.json";
 import KaikiArgumentsTypes from "../../lib/Kaiki/KaikiArgumentsTypes";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
-type sides = "tails" | "heads";
+type Sides = "tails" | "heads";
 
 export default class BetflipCommands extends KaikiCommand {
-    private readonly coinArgs: { [index: string]: sides };
+    private readonly coinArgs: { [index: string]: Sides };
 
     constructor() {
         super("betflip", {
@@ -48,7 +48,7 @@ export default class BetflipCommands extends KaikiCommand {
         };
     }
 
-    public async exec(message: Message, { number, coin }: { number: bigint, coin: sides }): Promise<Message> {
+    public async exec(message: Message, { number, coin }: { number: bigint, coin: Sides }): Promise<Message> {
         const success = await this.client.money.TryTake(message.author.id, number, "Betflip gamble");
 
         if (!success) {

@@ -3,7 +3,7 @@ import logger from "loglevel";
 import fetch from "node-fetch";
 import { sendQuote } from "../../lib/APIs/animeQuote";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-import { respType } from "../../lib/Types/TCustom";
+import { RespType } from "../../lib/Types/TCustom";
 
 export default class AnimeQuoteCommand extends KaikiCommand {
     constructor() {
@@ -19,7 +19,7 @@ export default class AnimeQuoteCommand extends KaikiCommand {
 
         const { animeQuoteCache } = this.client.cache;
 
-        const resp = <respType> await fetch("https://animechan.vercel.app/api/random")
+        const resp = <RespType> await fetch("https://animechan.vercel.app/api/random")
             .then(response => response.json())
             .catch((reason) => {
                 logger.warn(`Animequote received no data: ${reason}\n`);

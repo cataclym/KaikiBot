@@ -3,7 +3,7 @@ import getKawaiiResponseEmbed from "../../lib/APIs/KawaiiAPI";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 
-export default class Run extends KaikiCommand {
+export default class RunCommand extends KaikiCommand {
     constructor() {
         super("run", {
             aliases: ["run"],

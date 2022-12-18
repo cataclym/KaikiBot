@@ -21,9 +21,11 @@ export default class TicTacToeCommand extends KaikiCommand {
         });
     }
 
-    public async exec(message: Message, { player2 }: { player2: GuildMember }): Promise<any> {
+    public async exec(message: Message, { player2 }: { player2: GuildMember }) {
 
-        if (player2.id === message.member!.id || player2.user.bot) {
+        if (!message.member) return;
+
+        if (player2.id === message.member.id || player2.user.bot) {
             return message.channel.send({ embeds: [await KaikiEmbeds.errorMessage(message, "You can't play against yourself or a bot!")] });
         }
 

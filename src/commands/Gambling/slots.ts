@@ -4,11 +4,11 @@ import KaikiArgumentsTypes from "../../lib/Kaiki/KaikiArgumentsTypes";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import Constants from "../../struct/Constants";
 
-export default class slotsCommand extends KaikiCommand {
+export default class SlotsCommand extends KaikiCommand {
     constructor() {
         super("Slots", {
             aliases: ["slots", "slot"],
-            description: "Bet a certan amount in the slot machine.",
+            description: "Bet a certain amount in the slot machine.",
             usage: "69",
             args: [
                 {

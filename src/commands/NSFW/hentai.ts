@@ -1,5 +1,5 @@
 import { Message } from "discord.js";
-import HentaiService, { hentaiTypes } from "../../lib/Hentai/HentaiService";
+import HentaiService, { HentaiTypes } from "../../lib/Hentai/HentaiService";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 export default class HentaiCommand extends KaikiCommand {
@@ -18,7 +18,7 @@ export default class HentaiCommand extends KaikiCommand {
         });
     }
 
-    public async exec(message: Message, { category }: { category: hentaiTypes }): Promise<void | Message> {
+    public async exec(message: Message, { category }: { category: HentaiTypes }): Promise<void | Message> {
 
         return message.channel.send(await this.client.HentaiService.grabHentai(category || HentaiService.hentaiArray[Math.floor(Math.random() * HentaiService.hentaiArray.length)], "single"));
     }

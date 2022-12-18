@@ -74,7 +74,7 @@ export class Migrations {
             return;
         }
 
-        const migration = new mod.default(undefined as unknown as migrationConstructionData);
+        const migration = new mod.default(undefined as unknown as MigrationConstructionData);
 
         if (this.migrationClasses.has(migration.migrationId)) throw new Error(`Class already loaded: ${migration.migrationId}`);
 
@@ -98,7 +98,7 @@ export class Migrations {
     }
 }
 
-type migrationConstructionData = {
+type MigrationConstructionData = {
     /**
      *  Git commit hash, short version
      * @param {string} hash git rev-parse --short HEAD
@@ -117,7 +117,7 @@ export class Migration {
     public migrationId: string;
     public migration: (client: KaikiAkairoClient) => Promise<number> | number;
 
-    constructor(data: migrationConstructionData) {
+    constructor(data: MigrationConstructionData) {
         this.migration = data.migration;
         this.hash = data.hash;
         this.name = data.name;

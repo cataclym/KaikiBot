@@ -6,7 +6,7 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 import Utility from "../../lib/Utility";
 
-export default class mcpingCommand extends KaikiCommand {
+export default class MinecraftPingCommand extends KaikiCommand {
     constructor() {
         super("mcping", {
             aliases: ["mcping"],

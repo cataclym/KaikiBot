@@ -1,4 +1,4 @@
-import { Message, Permissions, PermissionsBitField } from "discord.js";
+import { Message, PermissionsBitField } from "discord.js";
 import GreetHandler from "../../lib/GreetHandler";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 

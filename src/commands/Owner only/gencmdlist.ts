@@ -19,7 +19,7 @@ export default class GenCmdListCommand extends KaikiCommand {
         return message.channel.send({
             files: [
                 new AttachmentBuilder(Buffer.from(JSON.stringify(list.map((value) => {
-                    return [value[0], value[1].map((v: KaikiCommand) => new generatedCommand(v))];
+                    return [value[0], value[1].map((v: KaikiCommand) => new GeneratedCommand(v))];
                 }), (key, value) =>
                     typeof value === "bigint"
                         ? value.toString()
@@ -31,7 +31,7 @@ export default class GenCmdListCommand extends KaikiCommand {
     }
 }
 
-class generatedCommand {
+class GeneratedCommand {
     id: string;
     aliases: string[];
     channel?: string | undefined;

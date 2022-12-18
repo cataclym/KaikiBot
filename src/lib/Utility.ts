@@ -5,11 +5,6 @@ import fetch from "node-fetch";
 import Constants from "../struct/Constants";
 import { TKaikiColor } from "./Types/TColor";
 
-export type presenceType = {
-    main: string,
-    richPresence: string[],
-};
-
 export default class Utility {
     static toggledTernary(value: boolean) {
         return value

@@ -1,14 +1,14 @@
 import { Snowflake } from "discord.js";
 
-export type regexpType = { match: RegExpMatchArray };
-export type respType = { anime: string, character: string, quote: string };
-export type emoteReactObjectType = { [keyWord: string]: Snowflake };
-export type separatedEmoteReactTypes = {
-    has_space: emoteReactObjectType,
-    no_space: emoteReactObjectType
+export type RegexpType = { match: RegExpMatchArray };
+export type RespType = { anime: string, character: string, quote: string };
+export type EmoteReactObjectType = { [keyWord: string]: Snowflake };
+export type SeparatedEmoteReactTypes = {
+    has_space: EmoteReactObjectType,
+    no_space: EmoteReactObjectType
 };
 
-export type theseDoNotYetExist = "APPLICATION_COMMAND_PERMISSIONS_V2"
+export type TheseDoNotYetExist = "APPLICATION_COMMAND_PERMISSIONS_V2"
     | "BOOSTING_TIERS_EXPERIMENT_MEDIUM_GUILD"
     | "MEMBER_PROFILES"
     | "NEW_THREAD_PERMISSIONS"

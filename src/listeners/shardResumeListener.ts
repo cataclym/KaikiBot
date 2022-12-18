@@ -1,5 +1,4 @@
 import chalk from "chalk";
-import { ActivityType } from "discord.js";
 import logger from "loglevel";
 import KaikiListener from "../lib/Kaiki/KaikiListener";
 

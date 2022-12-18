@@ -3,7 +3,7 @@ import sendNekosPics from "../../lib/APIs/nekos.life";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 
-export default class spank extends KaikiCommand {
+export default class SpankCommand extends KaikiCommand {
     constructor() {
         super("spank", {
             aliases: ["spank"],

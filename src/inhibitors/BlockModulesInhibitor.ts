@@ -1,6 +1,6 @@
 import { Command } from "discord-akairo";
 import { Message } from "discord.js";
-import { blockedCategories } from "../lib/Enums/blockedCategories";
+import { BlockedCategoriesEnum } from "../lib/Enums/blockedCategoriesEnum";
 import KaikiInhibitor from "../lib/Kaiki/KaikiInhibitor";
 
 export default class BlockModulesInhibitor extends KaikiInhibitor {
@@ -20,7 +20,7 @@ export default class BlockModulesInhibitor extends KaikiInhibitor {
 
             if (_blockedCategories.length) {
                 const isBlocked = _blockedCategories.some(c => {
-                    const category = blockedCategories[c.CategoryTarget];
+                    const category = BlockedCategoriesEnum[c.CategoryTarget];
                     return category === command.categoryID;
                 });
                 if (isBlocked) {

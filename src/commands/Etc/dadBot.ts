@@ -4,7 +4,7 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import Constants from "../../struct/Constants";
 
 // dad bot
-export default class dadBot extends KaikiCommand {
+export default class DadBot extends KaikiCommand {
     constructor() {
         super("dadbot", {
             channel: "guild",

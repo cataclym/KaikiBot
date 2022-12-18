@@ -2,7 +2,7 @@
 
 import { BotSettings_ActivityType } from "@prisma/client";
 import { ActivityType, ChannelType, GuildFeature, RGBTuple, UserFlagsString } from "discord.js";
-import { theseDoNotYetExist } from "../lib/Types/TCustom";
+import { TheseDoNotYetExist } from "../lib/Types/TCustom";
 
 export default class Constants {
 
@@ -19,7 +19,7 @@ export default class Constants {
     static EMOTE_REGEX = /<(a?)((!?\d+)|(:.+?:\d+))>/g;
     static IMAGE_REGEX = /(http(s?):)([/|.\w\s-])*\.(?:jpg|gif|png|jpeg)/gi;
 
-    static GuildFeatures: { [index in GuildFeature]: string } & { [index in theseDoNotYetExist]: string } = {
+    static GuildFeatures: { [index in GuildFeature]: string } & { [index in TheseDoNotYetExist]: string } = {
         APPLICATION_COMMAND_PERMISSIONS_V2: "Application permissions v2",
         ANIMATED_ICON: "Animated icon",
         ANIMATED_BANNER: "Animated banner",

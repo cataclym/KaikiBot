@@ -4,7 +4,7 @@ import fs from "fs/promises";
 import logger from "loglevel";
 import KaikiAkairoClient from "../lib/Kaiki/KaikiAkairoClient";
 
-export default class Bot {
+export default class BotContainer {
     private readonly client: KaikiAkairoClient;
 
     constructor(client: KaikiAkairoClient) {
@@ -37,7 +37,7 @@ export default class Bot {
                 await this.client.application?.fetch();
 
                 if (!this.client.application?.owner) {
-                    return Bot.noBotOwner();
+                    return BotContainer.noBotOwner();
                 }
 
                 const owner = this.client.application.owner instanceof Team
@@ -45,7 +45,7 @@ export default class Bot {
                     : this.client.application.owner;
 
                 if (!owner) {
-                    return Bot.noBotOwner();
+                    return BotContainer.noBotOwner();
                 }
 
                 else {

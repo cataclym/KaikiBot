@@ -1,6 +1,6 @@
 import { BotSettings_ActivityType } from "@prisma/client";
 import { FailureData } from "discord-akairo";
-import { ActivityType, EmbedBuilder, Message } from "discord.js";
+import { EmbedBuilder, Message } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 import Constants from "../../struct/Constants";

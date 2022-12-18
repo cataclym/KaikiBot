@@ -1,5 +1,5 @@
 import { EmbedBuilder, Message } from "discord.js";
-import HentaiService, { hentaiTypes } from "../../lib/Hentai/HentaiService";
+import HentaiService, { HentaiTypes } from "../../lib/Hentai/HentaiService";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 export default class HentaiBombCommand extends KaikiCommand {
@@ -18,7 +18,7 @@ export default class HentaiBombCommand extends KaikiCommand {
         });
     }
 
-    public async exec(message: Message, { category }: { category: hentaiTypes | null }): Promise<void> {
+    public async exec(message: Message, { category }: { category: HentaiTypes | null }): Promise<void> {
 
         const megaResponse = (await this.client.HentaiService.grabHentai(category ?? HentaiService.hentaiArray[Math.floor(Math.random() * HentaiService.hentaiArray.length)], "bomb"));
 

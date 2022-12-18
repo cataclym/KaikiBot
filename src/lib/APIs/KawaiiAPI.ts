@@ -1,17 +1,17 @@
 import { EmbedBuilder, GuildMember, Message } from "discord.js";
 import { hexColorTable } from "../Color";
-import { endpointData } from "../Interfaces/IAPIData";
+import { EndpointData } from "../Interfaces/IAPIData";
 import { processAPIRequest } from "./APIProcessor";
 
-type endPointSignatures = "run"
+type EndpointSignatures = "run"
     | "peek"
     | "pout"
-	| "lick";
+    | "lick";
 
 const token = process.env.KAWAIIKEY;
 
 const endPoints: {
-	[str in endPointSignatures]: endpointData
+    [str in EndpointSignatures]: EndpointData
 } = {
     "run": {
         action: "is running away!!",
@@ -38,7 +38,7 @@ const endPoints: {
     },
 };
 
-export default async function getKawaiiResponseEmbed(message: Message, endpoint: endPointSignatures, mention?: GuildMember | null): Promise<EmbedBuilder | undefined> {
+export default async function getKawaiiResponseEmbed(message: Message, endpoint: EndpointSignatures, mention?: GuildMember | null): Promise<EmbedBuilder | undefined> {
 
     if (!token) {
         return;
