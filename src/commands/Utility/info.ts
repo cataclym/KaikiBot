@@ -2,6 +2,7 @@ import { time } from "@discordjs/builders";
 import { Argument } from "discord-akairo";
 import {
     BaseChannel,
+    BaseGuildTextChannel,
     CategoryChannel,
     ChannelType,
     Collection,
@@ -11,7 +12,6 @@ import {
     GuildBasedChannel,
     GuildMember,
     Message,
-    NewsChannel,
     Role,
     StageChannel,
     Sticker,
@@ -23,7 +23,7 @@ import * as emojis from "node-emoji";
 import { isRegex } from "../../lib/functions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
-import { regexpType } from "../../lib/Types/TCustom";
+import { RegexpType } from "../../lib/Types/TCustom";
 import Utility from "../../lib/Utility";
 import Constants from "../../struct/Constants";
 
@@ -59,11 +59,17 @@ export default class InfoCommand extends KaikiCommand {
         });
     }
 
-    public async exec(message: Message<true>, { obj }: { obj: GuildBasedChannel | GuildMember | Role | regexpType | Collection<string, Sticker> | emojis.Emoji | Emoji | Message }): Promise<Message | void> {
+    public async exec(message: Message<true>, { obj }: { obj: GuildBasedChannel | GuildMember | Role | RegexpType | Collection<string, Sticker> | emojis.Emoji | Emoji | Message }): Promise<Message | void> {
 
         if (!obj) {
             if (!message.member) return;
             obj = message.member;
+        }
+
+        else if (obj instanceof Map && !obj.size) {
+            return message.channel.send({
+                embeds: [await KaikiEmbeds.errorMessage(message, "A channel, user, role, emoji or message was not found. Make sure to provide a valid argument!")],
+            });
         }
 
         const emb = [
@@ -91,7 +97,7 @@ export default class InfoCommand extends KaikiCommand {
                         },
                         {
                             name: "Created at",
-                            value: String(obj.createdAt),
+                            value: time(obj.createdAt),
                         },
                         {
                             name: "Bitrate",
@@ -106,7 +112,7 @@ export default class InfoCommand extends KaikiCommand {
                 if (obj.parent) emb[0].addFields([{ name: "Parent", value: `${obj.parent.name} [${obj.parentId}]` }]);
             }
 
-            else if (obj instanceof TextChannel || obj instanceof NewsChannel || obj instanceof ForumChannel) {
+            else if (obj instanceof BaseGuildTextChannel || obj instanceof ForumChannel) {
                 emb[0]
                     .setTitle(`Info about text channel: ${obj.name}`)
                     .addFields(
@@ -124,7 +130,7 @@ export default class InfoCommand extends KaikiCommand {
                         },
                         {
                             name: "Created at",
-                            value: String(obj.createdAt),
+                            value: time(obj.createdAt),
                         },
                         {
                             name: "Link",
@@ -151,7 +157,7 @@ export default class InfoCommand extends KaikiCommand {
                         },
                         {
                             name: "Created at",
-                            value: String(obj.createdAt),
+                            value: time(obj.createdAt),
                         },
                         {
                             name: "Link",
@@ -176,7 +182,10 @@ export default class InfoCommand extends KaikiCommand {
                             value: obj.id,
                         },
                         {
-                            name: "Created at", value: String(obj.createdAt),
+                            name: "Created at",
+                            value: obj.createdAt
+                                ? time(obj.createdAt)
+                                : "N/A",
                         },
                         {
                             name: "Link",
@@ -204,12 +213,16 @@ export default class InfoCommand extends KaikiCommand {
 
             emb[0]
                 .setTitle(`Info about user: ${obj.user.tag}`)
-                .setDescription(obj.displayName)
                 .setThumbnail(obj.user.displayAvatarURL())
                 .addFields([
                     { name: "ID", value: obj.id, inline: true },
-                    { name: "Joined Server", value: String(obj.joinedAt ? time(obj.joinedAt) : "N/A"), inline: true },
-                    { name: "Joined Discord", value: String(time(obj.user.createdAt)), inline: true },
+                    {
+                        name: "Joined Server",
+                        value: obj.joinedAt
+                            ? time(obj.joinedAt)
+                            : "N/A", inline: true,
+                    },
+                    { name: "Joined Discord", value: time(obj.user.createdAt), inline: true },
                     { name: "Roles", value: String(obj.roles.cache.size), inline: true },
                     { name: "Highest role", value: String(obj.roles.highest), inline: true },
                 ]);
@@ -258,7 +271,7 @@ export default class InfoCommand extends KaikiCommand {
                     },
                     {
                         name: "Created at",
-                        value: String(obj.createdAt),
+                        value: time(obj.createdAt),
                         inline: true,
                     },
                     {
@@ -292,7 +305,9 @@ export default class InfoCommand extends KaikiCommand {
                 .setTitle(`Info about Emoji: ${obj.name} ${obj}`)
                 .addFields([
                     {
-                        name: "Name", value: obj.name ?? "Null", inline: true,
+                        name: "Name",
+                        value: obj.name ?? "Null",
+                        inline: true,
                     },
                     {
                         name: "ID",
@@ -300,11 +315,16 @@ export default class InfoCommand extends KaikiCommand {
                         inline: true,
                     },
                     {
-                        name: "Created at", value: String(obj.createdAt ?? "Null"),
+                        name: "Created at",
+                        value: obj.createdAt
+                            ? time(obj.createdAt)
+                            : "N/A",
                     },
                     {
                         name: "Animated",
-                        value: obj.animated ? "Yes" : "No",
+                        value: obj.animated
+                            ? "Yes"
+                            : "No",
                         inline: true,
                     },
                 ]);
@@ -358,7 +378,7 @@ export default class InfoCommand extends KaikiCommand {
                     },
                     {
                         name: "Created at",
-                        value: String(obj.createdAt),
+                        value: time(obj.createdAt),
                     },
                     {
                         name: "Author", value: obj.author.tag, inline: true,
