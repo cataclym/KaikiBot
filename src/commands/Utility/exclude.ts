@@ -11,6 +11,7 @@ export default class ExcludeCommand extends KaikiCommand {
             clientPermissions: PermissionsBitField.Flags.ManageRoles,
             channel: "guild",
             slashEphemeral: true,
+            slash: true,
         });
     }
 
