@@ -13,7 +13,7 @@ export default class DailyResetCommand extends KaikiCommand {
     }
 
     public async exec(message: Message): Promise<Message> {
-        await this.client.resetDailyClaims(this.client.orm);
+        await this.client.resetDailyClaims();
         return message.channel.send({
             embeds: [
                 new EmbedBuilder()

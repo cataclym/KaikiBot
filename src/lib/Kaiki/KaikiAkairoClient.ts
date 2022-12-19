@@ -135,7 +135,7 @@ export default class KaikiAkairoClient<Ready extends boolean = boolean> extends 
             await this.dailyResetTimer(client);
 
             // Reset daily currency claims
-            await this.resetDailyClaims(client.orm);
+            await this.resetDailyClaims();
 
             // Check for "birthdays"
             await this.anniversaryService.BirthdayService();
