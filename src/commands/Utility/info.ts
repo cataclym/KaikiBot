@@ -20,7 +20,6 @@ import {
 } from "discord.js";
 import * as emojis from "node-emoji";
 
-import { isRegex } from "../../lib/functions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 import { RegexpType } from "../../lib/Types/TCustom";
@@ -391,7 +390,7 @@ export default class InfoCommand extends KaikiCommand {
                 ]);
         }
 
-        else if (isRegex(obj)) {
+        else if (Utility.isRegex(obj)) {
 
             const emoji = obj.match[0].toString().split(":");
 

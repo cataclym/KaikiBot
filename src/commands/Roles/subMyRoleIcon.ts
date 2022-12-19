@@ -9,7 +9,6 @@ import {
     PermissionsBitField,
     ReactionEmoji,
 } from "discord.js";
-import { isRegex } from "../../lib/functions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 import Roles, { rolePermissionCheck } from "../../lib/Roles";
@@ -52,7 +51,7 @@ export default class MyRoleSubIcon extends KaikiCommand {
             roleIconSrc = icon.url;
         }
 
-        else if (isRegex(icon)) {
+        else if (Utility.isRegex(icon)) {
 
             if (Constants.EMOTE_REGEX.exec(icon.match[0])) {
                 const emoji = icon.match[0].toString().split(":");

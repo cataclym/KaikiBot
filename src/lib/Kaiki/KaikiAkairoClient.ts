@@ -11,7 +11,6 @@ import Constants from "../../struct/Constants";
 import Database from "../../struct/db/Database";
 import DatabaseProvider from "../../struct/db/DatabaseProvider";
 import AnniversaryRolesService from "../AnniversaryRolesService";
-import { ResetDailyClaims } from "../functions";
 import HentaiService from "../Hentai/HentaiService";
 import IPackageJSON from "../Interfaces/IPackageJSON";
 import { MoneyService } from "../Money/MoneyService";
@@ -136,7 +135,7 @@ export default class KaikiAkairoClient<Ready extends boolean = boolean> extends 
             await this.dailyResetTimer(client);
 
             // Reset daily currency claims
-            await ResetDailyClaims(client.orm);
+            await this.resetDailyClaims(client.orm);
 
             // Check for "birthdays"
             await this.anniversaryService.BirthdayService();
@@ -208,5 +207,17 @@ export default class KaikiAkairoClient<Ready extends boolean = boolean> extends 
                 ],
             });
         }
+    }
+
+    public async resetDailyClaims(): Promise<void> {
+        const updated = await this.orm.discordUsers.updateMany({
+            where: {
+                ClaimedDaily: true,
+            },
+            data: {
+                ClaimedDaily: false,
+            },
+        });
+        logger.info(`ResetDailyClaims | Daily claims have been reset! Updated ${chalk.green(updated.count)} entries!`);
     }
 }

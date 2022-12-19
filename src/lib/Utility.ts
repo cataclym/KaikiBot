@@ -4,6 +4,7 @@ import { ActivityType, ChannelType, ColorResolvable, GuildMember, HexColorString
 import fetch from "node-fetch";
 import Constants from "../struct/Constants";
 import { TKaikiColor } from "./Types/TColor";
+import { RegexpType } from "./Types/TCustom";
 
 export default class Utility {
     static toggledTernary(value: boolean) {
@@ -187,5 +188,9 @@ Executed ${chalk.blueBright(command?.id ?? "N/A")} | "${chalk.yellow(message.con
                 image: null,
             };
         }
+    }
+
+    static isRegex(value: unknown): value is RegexpType {
+        return (value as RegexpType).match !== undefined;
     }
 }

@@ -8,7 +8,6 @@ import {
     MessageCreateOptions,
     StickerResolvable,
 } from "discord.js";
-import { parsePlaceHolders } from "./functions";
 
 interface SendMessageData {
     channel: bigint | null,
@@ -63,7 +62,7 @@ export default class GreetHandler {
 
     static async createAndParseWelcomeLeaveMessage(data: SendMessageData, guildMember: GuildMember): Promise<MessageCreateOptions> {
         if (!data.embed) return GreetHandler.emptyMessageOptions(guildMember.guild);
-        return JSON.parse(await parsePlaceHolders(data.embed, guildMember));
+        return JSON.parse(await GreetHandler.parsePlaceHolders(data.embed, guildMember));
     }
 
     static async sendWelcomeLeaveMessage(data: SendMessageData, guildMember: GuildMember): Promise<Message | void> {
@@ -84,6 +83,19 @@ export default class GreetHandler {
                 }
                 return m;
             });
+    }
+
+    private static async parsePlaceHolders(input: string, guildMember: GuildMember): Promise<string> {
+
+        const lowercase = input.toLowerCase();
+
+        if (lowercase.includes("%guild%")) {
+            input = input.replace(/%guild%/ig, guildMember.guild.name);
+        }
+        if (lowercase.includes("%member%")) {
+            input = input.replace(/%member%/ig, guildMember.user.tag);
+        }
+        return input;
     }
 }
 
