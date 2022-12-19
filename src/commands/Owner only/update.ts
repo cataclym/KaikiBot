@@ -67,7 +67,7 @@ export default class UpdateCommand extends KaikiCommand {
 
         const collector = msg.createMessageComponentCollector({
             filter: (i) => i.user.id === message.author.id,
-            time: 120000,
+            time: Constants.MAGIC_NUMBERS.CMDS.OWNER_ONLY.UPDATE.TIMEOUT,
         });
 
         collector.on("collect", async (i) => {

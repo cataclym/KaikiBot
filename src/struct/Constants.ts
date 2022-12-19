@@ -196,7 +196,7 @@ export default class Constants {
             GAMBLING: {
                 SLOTS: {
                     EDIT_AFTER_1_SEC: 1000,
-                    // * Almost one second.
+                    // * Almost two seconds.
                     EDIT_AFTER_2_SEC: 2100,
                 },
                 CUR_TRS: {
@@ -242,6 +242,7 @@ export default class Constants {
                 },
                 UPDATE: {
                     DESC_STR_LIMIT: 4048,
+                    TIMEOUT: 300000,
                 },
                 BOT_CONFIG: {
                     DAILY_AMOUNT: 250,
