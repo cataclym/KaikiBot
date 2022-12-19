@@ -1,4 +1,3 @@
-import { AkairoMessage } from "discord-akairo";
 import { EmbedBuilder, Message, PermissionsBitField } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import { dadbotCheck, excludeCommand } from "../../lib/SlashCommands/functions";
@@ -12,24 +11,10 @@ export default class ExcludeCommand extends KaikiCommand {
             userPermissions: [],
             channel: "guild",
             slashEphemeral: true,
+            slashDefaultMemberPermissions: null,
             slash: true,
             lock: "guild",
         });
-    }
-
-    public async execSlash(message: AkairoMessage<"cached">) {
-
-        if (!dadbotCheck(message)) {
-            return message.reply({
-                embeds: [
-                    new EmbedBuilder()
-                        .setTitle("Dad-bot is not enabled")
-                        .withErrorColor(message.guild),
-                ],
-            });
-        }
-
-        return excludeCommand(message as unknown as Message<true>, this.client);
     }
 
     public async exec(message: Message<true>): Promise<Message> {
