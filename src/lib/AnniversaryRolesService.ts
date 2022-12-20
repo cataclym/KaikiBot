@@ -8,19 +8,19 @@ import Constants from "../struct/Constants";
 import KaikiAkairoClient from "./Kaiki/KaikiAkairoClient";
 
 export default class AnniversaryRolesService {
-    readonly client: KaikiAkairoClient;
+    readonly client: KaikiAkairoClient<true>;
     readonly orm: PrismaClient;
     listUsersCakeDay: string[] = [];
     listUserJoinedAt: string[] = [];
 
-    constructor(client: KaikiAkairoClient) {
+    constructor(client: KaikiAkairoClient<true>) {
         this.client = client;
         this.orm = client.orm;
 
-        (async () => await this.BirthdayService())();
+        (async () => await this.birthdayService())();
     }
 
-    async BirthdayService(): Promise<void> {
+    async birthdayService(): Promise<void> {
 
         const enabledGuilds = await this.getEnabledGuilds();
         logger.info(`AnniversaryRolesService | Checking ${chalk.green(enabledGuilds.length)} guilds`);

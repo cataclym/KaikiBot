@@ -7,7 +7,7 @@ export default class KaikiListener extends Listener {
         throw new Error("Method not implemented.");
     }
 
-    client: KaikiAkairoClient;
+    client: KaikiAkairoClient<true>;
 
     constructor(id: string, options: ListenerOptions) {
         super(id, options);

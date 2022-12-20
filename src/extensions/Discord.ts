@@ -1,4 +1,4 @@
-import { EmbedBuilder, Guild, GuildMember, Message } from "discord.js";
+import { ColorResolvable, EmbedBuilder, Guild, GuildMember, Message } from "discord.js";
 import KaikiAkairoClient from "../lib/Kaiki/KaikiAkairoClient";
 import Constants from "../struct/Constants";
 
@@ -8,19 +8,19 @@ declare module "discord.js" {
     export interface Guild {
         isDadBotEnabled(message?: Message): boolean;
 
-        client: KaikiAkairoClient;
+        client: KaikiAkairoClient<true>;
     }
 
     export interface GuildMember {
         hasExcludedRole(member?: GuildMember): boolean;
 
-        client: KaikiAkairoClient;
+        client: KaikiAkairoClient<true>;
     }
 
     export interface Message {
         getMemberColorAsync(member?: GuildMember): Promise<ColorResolvable>;
 
-        client: KaikiAkairoClient;
+        client: KaikiAkairoClient<true>;
     }
 
     export interface EmbedBuilder {
@@ -30,7 +30,7 @@ declare module "discord.js" {
     }
 
     export interface ButtonInteraction {
-        client: KaikiAkairoClient;
+        client: KaikiAkairoClient<true>;
     }
 
 }
@@ -70,7 +70,7 @@ EmbedBuilder.prototype.withErrorColor = function(messageOrGuild?: Message | Guil
         }
 
         else {
-            return this.setColor((messageOrGuild.client as KaikiAkairoClient).guildsDb.get(messageOrGuild.id, "ErrorColor", Constants.errorColor));
+            return this.setColor(messageOrGuild.client.guildsDb.get(messageOrGuild.id, "ErrorColor", Constants.errorColor));
         }
     }
 

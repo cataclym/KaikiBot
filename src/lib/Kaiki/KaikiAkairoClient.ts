@@ -1,8 +1,8 @@
-import { PrismaClient } from "@prisma/client";
+import { type PrismaClient } from "@prisma/client";
 import chalk from "chalk";
 import { execSync } from "child_process";
-import { AkairoClient, CommandHandler, InhibitorHandler, ListenerHandler } from "discord-akairo";
-import { ClientApplication, ClientUser, GatewayIntentBits, Guild, Partials, User } from "discord.js";
+import { AkairoClient, CommandHandler, CommandHandlerOptions, InhibitorHandler, ListenerHandler } from "discord-akairo";
+import { GatewayIntentBits, Guild, Partials, User } from "discord.js";
 import logger from "loglevel";
 import { Pool } from "mysql2/promise";
 import { join } from "path";
@@ -12,44 +12,29 @@ import Database from "../../struct/db/Database";
 import DatabaseProvider from "../../struct/db/DatabaseProvider";
 import AnniversaryRolesService from "../AnniversaryRolesService";
 import HentaiService from "../Hentai/HentaiService";
-import IPackageJSON from "../Interfaces/IPackageJSON";
+import PackageJSON from "../Interfaces/PackageJSON";
 import { MoneyService } from "../Money/MoneyService";
 import Utility from "../Utility";
 import KaikiCommandHandler from "./KaikiCommandHandler";
 
-export default class KaikiAkairoClient<Ready extends boolean = boolean> extends AkairoClient {
-
-    // The following was added to avoid errors with discord.js v14.x -->
-    get readyAt(): Date {
-        return super.readyAt || new Date();
-    }
-
-    public readyTimestamp: number;
-    token: string;
-
-    get uptime(): number {
-        return super.uptime || 0;
-    }
-
-    user: ClientUser;
-    // <--
+export default class KaikiAkairoClient<Ready extends true> extends AkairoClient<Ready> {
 
     public anniversaryService: AnniversaryRolesService;
-    public application: ClientApplication;
     public botSettings: DatabaseProvider;
     public cache: KaikiCache;
-    public commandHandler: CommandHandler;
     public connection: () => Pool;
     public dadBotChannels: DatabaseProvider;
     public guildsDb: DatabaseProvider;
-    public inhibitorHandler: InhibitorHandler;
-    public listenerHandler: ListenerHandler;
+    public readonly commandHandler: CommandHandler;
+    public readonly inhibitorHandler: InhibitorHandler;
+    public readonly listenerHandler: ListenerHandler;
     public money: MoneyService;
     public orm: PrismaClient;
     public db: Database;
     public owner: User;
-    public package: IPackageJSON;
-    public HentaiService: HentaiService;
+    public package: PackageJSON;
+    public hentaiService: HentaiService;
+    private readonly filterArray: string[];
 
     constructor() {
         super({
@@ -76,12 +61,11 @@ export default class KaikiAkairoClient<Ready extends boolean = boolean> extends 
 
         this.initializeDatabase();
 
-        const dir = join(__dirname, "..", "..", "commands", "Interactions");
-
-        const filterArray: string[] = [];
-
+        // Load command paths into filter if KawaiiAPI key is missing.
+        this.filterArray = [];
         if (!process.env.KAWAIIKEY || process.env.KAWAIIKEY === "[YOUR_OPTIONAL_KAWAII_KEY]") {
-            filterArray.push(`${dir}/run.js`, `${dir}/peek.js`, `${dir}/pout.js`, `${dir}/lick.js`);
+            const dir = join(__dirname, "..", "..", "commands", "Interactions");
+            this.filterArray.push(`${dir}/run.js`, `${dir}/peek.js`, `${dir}/pout.js`, `${dir}/lick.js`);
         }
 
         // Check if 'neofetch' is available
@@ -89,32 +73,11 @@ export default class KaikiAkairoClient<Ready extends boolean = boolean> extends 
             execSync("command -v neofetch >/dev/null 2>&1");
         }
         catch {
-            filterArray.push(join(__dirname, "..", "..", "commands", "Fun", "neofetch.js"));
+            this.filterArray.push(join(__dirname, "..", "..", "commands", "Fun", "neofetch.js"));
             logger.warn("Neofetch wasn't detected! Neofetch command will be disabled.");
         }
 
-        this.commandHandler = new KaikiCommandHandler(this, {
-            allowMention: true,
-            automateCategories: true,
-            blockBots: true,
-            blockClient: true,
-            commandUtil: true,
-            defaultCooldown: 1000,
-            directory: join(__dirname, "../../commands"),
-            fetchMembers: true,
-            handleEdits: false,
-            loadFilter: (module) => {
-                return !filterArray.includes(module);
-            },
-            prefix: ({ guild }: { guild: Guild | null }) => {
-                if (!guild) {
-                    return String(process.env.PREFIX);
-                }
-                return String(this.guildsDb.get(guild.id, "Prefix", process.env.PREFIX));
-            },
-            autoRegisterSlashCommands: true,
-        });
-
+        this.commandHandler = new KaikiCommandHandler(this, this.commandHandlerOptions);
         this.listenerHandler = new ListenerHandler(this, { directory: join(__dirname, "../../listeners") });
         this.inhibitorHandler = new InhibitorHandler(this, { directory: join(__dirname, "../../inhibitors") });
 
@@ -126,9 +89,10 @@ export default class KaikiAkairoClient<Ready extends boolean = boolean> extends 
         void this.inhibitorHandler.loadAll();
         void this.listenerHandler.loadAll();
         void this.commandHandler.loadAll();
+
     }
 
-    private async dailyResetTimer(client: KaikiAkairoClient): Promise<void> {
+    private async dailyResetTimer(client: KaikiAkairoClient<true>): Promise<void> {
         setTimeout(async () => {
 
             // Loop this
@@ -138,12 +102,12 @@ export default class KaikiAkairoClient<Ready extends boolean = boolean> extends 
             await this.resetDailyClaims();
 
             // Check for "birthdays"
-            await this.anniversaryService.BirthdayService();
+            await this.anniversaryService.birthdayService();
 
         }, Utility.timeToMidnight());
     }
 
-    public async initializeServices(client?: KaikiAkairoClient) {
+    public async initializeServices(client?: KaikiAkairoClient<Ready>) {
 
         if (!client) client = this;
 
@@ -153,7 +117,7 @@ export default class KaikiAkairoClient<Ready extends boolean = boolean> extends 
         await this.dailyResetTimer(client);
         logger.info("AnniversaryRolesService | Service initiated");
 
-        this.HentaiService = new HentaiService();
+        this.hentaiService = new HentaiService();
         logger.info("HentaiService | Service initiated");
 
         void this.presenceLoop();
@@ -220,4 +184,26 @@ export default class KaikiAkairoClient<Ready extends boolean = boolean> extends 
         });
         logger.info(`ResetDailyClaims | Daily claims have been reset! Updated ${chalk.green(updated.count)} entries!`);
     }
+
+    private commandHandlerOptions: CommandHandlerOptions = {
+        allowMention: true,
+        automateCategories: true,
+        blockBots: true,
+        blockClient: true,
+        commandUtil: true,
+        defaultCooldown: 1000,
+        directory: join(__dirname, "../../commands"),
+        fetchMembers: true,
+        handleEdits: false,
+        loadFilter: (module) => {
+            return !this.filterArray.includes(module);
+        },
+        prefix: ({ guild }: { guild: Guild | null }) => {
+            if (!guild) {
+                return String(process.env.PREFIX);
+            }
+            return String(this.guildsDb.get(guild.id, "Prefix", process.env.PREFIX));
+        },
+        autoRegisterSlashCommands: true,
+    };
 }

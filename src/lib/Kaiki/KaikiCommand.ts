@@ -1,16 +1,15 @@
 import { Command } from "discord-akairo";
-import { IKaikiCommandOptions } from "../Interfaces/IKaikiCommandOptions";
+import { KaikiCommandOptions } from "../Interfaces/KaikiCommandOptions";
 import KaikiAkairoClient from "./KaikiAkairoClient";
 
 export default class KaikiCommand extends Command {
     readonly usage?: string | string[];
-    client: KaikiAkairoClient;
+    client: KaikiAkairoClient<true>;
     subCategory?: string | undefined;
 
-    constructor(id: string, options: IKaikiCommandOptions | undefined) {
+    constructor(id: string, options: KaikiCommandOptions | undefined) {
         super(id, options);
         this.usage = options?.usage;
         this.subCategory = options?.subCategory;
     }
 }
-

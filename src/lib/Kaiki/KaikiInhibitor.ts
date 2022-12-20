@@ -5,7 +5,7 @@ import KaikiAkairoClient from "./KaikiAkairoClient";
 import KaikiCommand from "./KaikiCommand";
 
 export default class KaikiInhibitor extends Inhibitor {
-    client: KaikiAkairoClient;
+    client: KaikiAkairoClient<true>;
 
     constructor(id: string, options?: InhibitorOptions) {
         super(id, options);

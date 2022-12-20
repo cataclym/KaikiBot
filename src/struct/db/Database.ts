@@ -4,7 +4,7 @@ import { ConnectionOptions, createPool, FieldPacket, Pool } from "mysql2/promise
 import KaikiAkairoClient from "../../lib/Kaiki/KaikiAkairoClient";
 
 export default class Database {
-    constructor(client: KaikiAkairoClient) {
+    constructor(client: KaikiAkairoClient<true>) {
         this._client = client;
     }
 
@@ -28,7 +28,7 @@ export default class Database {
         };
     }
 
-    private _client: KaikiAkairoClient;
+    private _client: KaikiAkairoClient<true>;
     public orm: PrismaClient;
     private _mySQLConnection: Pool;
 

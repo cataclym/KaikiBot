@@ -5,9 +5,9 @@ import logger from "loglevel";
 import KaikiAkairoClient from "../lib/Kaiki/KaikiAkairoClient";
 
 export default class BotContainer {
-    private readonly client: KaikiAkairoClient;
+    private readonly client: KaikiAkairoClient<true>;
 
-    constructor(client: KaikiAkairoClient) {
+    constructor(client: KaikiAkairoClient<true>) {
         this.client = client;
 
         if (!process.env) {
@@ -27,7 +27,26 @@ export default class BotContainer {
         }
 
         void this.loadPackageJSON();
+    }
 
+    private async loadPackageJSON() {
+        if (!process.env.npm_package_json) {
+            this.client.package = await fs.readFile("package.json")
+                .then(file => JSON.parse(file.toString()));
+        }
+
+        else {
+            this.client.package = await fs.readFile(process.env.npm_package_json)
+                .then(file => JSON.parse(file.toString()));
+        }
+    }
+
+    private static noBotOwner() {
+        logger.error("No bot owner found! Double check your bot application in Discord's developer panel.");
+        process.exit(1);
+    }
+
+    public async init() {
         this.client.login(process.env.CLIENT_TOKEN)
             .then(async () => {
                 if (!this.client.user) {
@@ -75,22 +94,6 @@ export default class BotContainer {
                     });
                 }
             });
-    }
 
-    private async loadPackageJSON() {
-        if (!process.env.npm_package_json) {
-            this.client.package = await fs.readFile("package.json")
-                .then(file => JSON.parse(file.toString()));
-        }
-
-        else {
-            this.client.package = await fs.readFile(process.env.npm_package_json)
-                .then(file => JSON.parse(file.toString()));
-        }
-    }
-
-    private static noBotOwner() {
-        logger.error("No bot owner found! Double check your bot application in Discord's developer panel.");
-        process.exit(1);
     }
 }

@@ -11,10 +11,10 @@ export class Migrations {
     private readonly currentFolder: string;
     public migrationClasses: Collection<string, Migration>;
     public db: Pool;
-    private readonly _client: KaikiAkairoClient;
+    private readonly _client: KaikiAkairoClient<true>;
     private _count: number;
 
-    constructor(db: Pool, client: KaikiAkairoClient) {
+    constructor(db: Pool, client: KaikiAkairoClient<true>) {
         this.currentFolder = Path.join(__dirname, "./scripts");
         this.migrationClasses = new Collection();
         this.db = db;
@@ -106,7 +106,7 @@ type MigrationConstructionData = {
     hash?: string;
     name: string,
     version: string,
-    migration: (client: KaikiAkairoClient) => Promise<number> | number;
+    migration: (client: KaikiAkairoClient<true>) => Promise<number> | number;
 
 }
 
@@ -115,7 +115,7 @@ export class Migration {
     public version: string;
     public hash?: string;
     public migrationId: string;
-    public migration: (client: KaikiAkairoClient) => Promise<number> | number;
+    public migration: (client: KaikiAkairoClient<true>) => Promise<number> | number;
 
     constructor(data: MigrationConstructionData) {
         this.migration = data.migration;

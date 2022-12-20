@@ -10,7 +10,8 @@ class KaikiProgram {
         await startLogger();
         process.on("unhandledRejection", async (reason: Error, promise) => logger.warn("Unhandled Rejection at:", promise));
 
-        new BotContainer(new KaikiAkairoClient());
+        const bot = new BotContainer(new KaikiAkairoClient());
+        await bot.init();
     }
 }
 

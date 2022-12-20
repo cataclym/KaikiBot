@@ -7,12 +7,12 @@ export function dadbotCheck(message: AkairoMessage | Message) {
     return !!message.guild?.isDadBotEnabled();
 }
 
-async function getOrCreateDadbotRole(message: AkairoMessage<"cached"> | Message<true>, client: KaikiAkairoClient) {
+async function getOrCreateDadbotRole(message: AkairoMessage<"cached"> | Message<true>, client: KaikiAkairoClient<true>) {
     const db = await client.db.getOrCreateGuild(message.guildId);
     return message.guild?.roles.cache.get(String(db.ExcludeRole));
 }
 
-export async function excludeCommand(message: Message<true>, client: KaikiAkairoClient) {
+export async function excludeCommand(message: Message<true>, client: KaikiAkairoClient<true>) {
     const embeds = [];
     let excludedRole = await getOrCreateDadbotRole(message, client);
 
