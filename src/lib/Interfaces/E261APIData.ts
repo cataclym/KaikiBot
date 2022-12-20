@@ -102,6 +102,6 @@ export interface Tags {
     meta: string[];
 }
 
-export interface ResponseEAPI {
+export default interface E261APIData {
     posts: Post[];
 }

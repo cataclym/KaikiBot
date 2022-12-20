@@ -15,7 +15,7 @@ export interface Engines {
     npm: string;
 }
 
-export default interface IPackageJSON {
+export default interface PackageJSON {
     name: string;
     version: string;
     main: string;

@@ -1,6 +1,6 @@
 import { CommandOptions } from "discord-akairo";
 
-export interface IKaikiCommandOptions extends CommandOptions {
+export interface KaikiCommandOptions extends CommandOptions {
     usage?: string | string[],
     subCategory?: string,
 }

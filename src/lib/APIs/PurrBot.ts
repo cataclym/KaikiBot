@@ -1,6 +1,6 @@
 import { EmbedBuilder, GuildMember, Message } from "discord.js";
 import { hexColorTable } from "../Color";
-import { EndpointData } from "../Interfaces/IAPIData";
+import InteractionsImageData from "../Interfaces/InteractionsImageData";
 import { processAPIRequest } from "./APIProcessor";
 
 type EndpointSignatures = "bite"
@@ -8,7 +8,7 @@ type EndpointSignatures = "bite"
     | "feed";
 
 const endPoints: {
-    [str in EndpointSignatures]: EndpointData
+    [str in EndpointSignatures]: InteractionsImageData
 } = {
     "bite": {
         action: "just bit",

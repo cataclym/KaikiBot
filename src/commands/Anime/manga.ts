@@ -2,7 +2,7 @@ import { EmbedBuilder, Message } from "discord.js";
 import fetch from "node-fetch";
 
 import { handleError, handleResponse, mangaQuery } from "../../lib/APIs/AnilistGraphQL";
-import { IMangaRes } from "../../lib/Interfaces/IMangaRes";
+import MangaData from "../../lib/Interfaces/MangaData";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 import Utility from "../../lib/Utility";
@@ -46,7 +46,7 @@ export default class MangaCommand extends KaikiCommand {
             };
 
         return await fetch(url, options).then(handleResponse)
-            .then((response: IMangaRes) => {
+            .then((response: MangaData) => {
                 const {
                     coverImage,
                     title,

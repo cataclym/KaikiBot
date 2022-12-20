@@ -20,7 +20,7 @@ export default class HentaiBombCommand extends KaikiCommand {
 
     public async exec(message: Message, { category }: { category: HentaiTypes | null }): Promise<Message | Message[]> {
 
-        const megaResponse = (await this.client.HentaiService.grabHentai(category ?? HentaiService.hentaiArray[Math.floor(Math.random() * HentaiService.hentaiArray.length)], "bomb"))
+        const megaResponse = (await this.client.hentaiService.grabHentai(category ?? HentaiService.hentaiArray[Math.floor(Math.random() * HentaiService.hentaiArray.length)], "bomb"))
             .splice(0, 5);
 
         return message.channel.send({ content: megaResponse.join("\n") });

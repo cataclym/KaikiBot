@@ -1,6 +1,6 @@
 import { EmbedBuilder, GuildMember, Message } from "discord.js";
 import { hexColorTable } from "../Color";
-import { EndpointData } from "../Interfaces/IAPIData";
+import InteractionsImageData from "../Interfaces/InteractionsImageData";
 import { processAPIRequest } from "./APIProcessor";
 
 type APIs = "bonk"
@@ -19,7 +19,7 @@ type APIs = "bonk"
     | "slap";
 
 const WaifuData: {
-    [str in APIs]: EndpointData
+    [str in APIs]: InteractionsImageData
 } = {
     "waifu": {
         action: false,

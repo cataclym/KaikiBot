@@ -1,6 +1,6 @@
 import { EmbedBuilder, GuildMember, Message } from "discord.js";
 import { hexColorTable } from "../Color";
-import { EndpointData } from "../Interfaces/IAPIData";
+import InteractionsImageData from "../Interfaces/InteractionsImageData";
 import { processAPIRequest } from "./APIProcessor";
 
 type EndpointSignatures = "run"
@@ -11,7 +11,7 @@ type EndpointSignatures = "run"
 const token = process.env.KAWAIIKEY;
 
 const endPoints: {
-    [str in EndpointSignatures]: EndpointData
+    [str in EndpointSignatures]: InteractionsImageData
 } = {
     "run": {
         action: "is running away!!",

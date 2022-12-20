@@ -1,6 +1,6 @@
 import { ColorResolvable } from "discord.js";
 
-export interface EndpointData {
+export default interface InteractionsImageData {
     action: string | boolean,
     color: ColorResolvable | string,
     append?: string,

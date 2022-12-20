@@ -23,7 +23,7 @@ export default class EAPICommand extends KaikiCommand {
     }
 
     public async exec(message: Message, { tags }: { tags: string | null }): Promise<Message> {
-        const post = await this.client.HentaiService.DapiGrabber(tags?.split("+").map(tag => tag.replace(" ", "_")) ?? null, DAPI.E621);
+        const post = await this.client.hentaiService.DapiGrabber(tags?.split("+").map(tag => tag.replace(" ", "_")) ?? null, DAPI.E621);
         if (post) {
 
             const emb = new EmbedBuilder()

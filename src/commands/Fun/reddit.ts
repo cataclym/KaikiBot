@@ -1,6 +1,6 @@
 import { ChannelType, EmbedBuilder, Message, TextChannel } from "discord.js";
 import fetch from "node-fetch";
-import { PurpleData, RedditData } from "../../lib/Interfaces/IRedditAPI";
+import RedditAPIData, { PurpleData } from "../../lib/Interfaces/RedditAPIData";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
@@ -31,7 +31,7 @@ export default class RedditCommand extends KaikiCommand {
         if (!promise.ok) return message.channel.send({ embeds: [await KaikiEmbeds.noDataReceived(message)] });
 
         return promise.json()
-            .then((json: RedditData | RedditData[]) => Array.isArray(json)
+            .then((json: RedditAPIData | RedditAPIData[]) => Array.isArray(json)
                 ? json[0]?.data?.children.map((t) => t.data)
                 : json?.data?.children.map((t) => t.data))
             .then((data) => postRandomTitle(data[Math.floor(Math.random() * data.length)]));

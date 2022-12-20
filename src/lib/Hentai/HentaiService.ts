@@ -2,7 +2,7 @@ import logger from "loglevel";
 import fetch from "node-fetch";
 import KaikiUtil from "../../lib/Kaiki/KaikiUtil";
 import Constants from "../../struct/Constants";
-import { Post, ResponseEAPI } from "../Interfaces/IDapi";
+import E261APIData, { Post } from "../Interfaces/E261APIData";
 
 export enum DAPI {
     E621,
@@ -84,7 +84,7 @@ export default class HentaiService {
                 throw new Error(`Error: Fetch didnt return successful Status code\n${r.status} ${r.statusText}`);
             }
 
-            const json = <ResponseEAPI> await r.json()
+            const json = <E261APIData> await r.json()
                 .catch((err) => logger.error(err));
 
             if (Array.isArray(json)) {

@@ -1,7 +1,7 @@
 import { Command } from "discord-akairo";
 import { EmbedBuilder, Message } from "discord.js";
 import fetch from "node-fetch";
-import { RedditData } from "../../lib/Interfaces/IRedditAPI";
+import RedditAPIData from "../../lib/Interfaces/RedditAPIData";
 import Utility from "../../lib/Utility";
 import Constants from "../../struct/Constants";
 
@@ -15,16 +15,16 @@ export default class DadJokeCommand extends Command {
         });
     }
 
-    private async LoadAndReturnDadJoke() {
+    private async loadAndReturnDadJoke() {
         return await fetch("https://www.reddit.com/r/dadjokes.json?limit=1000&?sort=top&t=all")
             .then(res => res.json())
-            .then((json: RedditData) => json.data.children.map(t => t.data))
+            .then((json: RedditAPIData) => json.data.children.map(t => t.data))
             .then((data) => data[Math.floor(Math.random() * data.length) + 1]);
     }
 
     public async exec(message: Message): Promise<Message | void> {
 
-        const randomRedditPost = await this.LoadAndReturnDadJoke();
+        const randomRedditPost = await this.loadAndReturnDadJoke();
 
         if (!randomRedditPost.title || !randomRedditPost.selftext) {
             return;

@@ -20,6 +20,6 @@ export default class HentaiCommand extends KaikiCommand {
 
     public async exec(message: Message, { category }: { category: HentaiTypes }): Promise<void | Message> {
 
-        return message.channel.send(await this.client.HentaiService.grabHentai(category || HentaiService.hentaiArray[Math.floor(Math.random() * HentaiService.hentaiArray.length)], "single"));
+        return message.channel.send(await this.client.hentaiService.grabHentai(category || HentaiService.hentaiArray[Math.floor(Math.random() * HentaiService.hentaiArray.length)], "single"));
     }
 }

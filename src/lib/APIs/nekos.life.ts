@@ -1,12 +1,12 @@
 import { EmbedBuilder, GuildMember, Message } from "discord.js";
 import { hexColorTable } from "../Color";
-import { EndpointData } from "../Interfaces/IAPIData";
+import InteractionsImageData from "../Interfaces/InteractionsImageData";
 import { processAPIRequest } from "./APIProcessor";
 
 type APIs = "spank";
 
 const nekosData: {
-    [str in APIs]: EndpointData
+    [str in APIs]: InteractionsImageData
 } = {
     "spank": {
         action: "spanked",

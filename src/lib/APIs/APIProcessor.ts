@@ -1,9 +1,9 @@
 import { EmbedBuilder, GuildMember, Message } from "discord.js";
 import fetch from "node-fetch";
-import { EndpointData } from "../Interfaces/IAPIData";
+import InteractionsImageData from "../Interfaces/InteractionsImageData";
 import KaikiUtil from "../Kaiki/KaikiUtil";
 
-export async function processAPIRequest(message: Message, site: string, data: EndpointData, jsonProperty: string, mention?: GuildMember | null) {
+export async function processAPIRequest(message: Message, site: string, data: InteractionsImageData, jsonProperty: string, mention?: GuildMember | null) {
 
     const { action, color, append, appendable } = data;
     const result = (await KaikiUtil.handleToJSON(await (await fetch(site)).json()))[jsonProperty];

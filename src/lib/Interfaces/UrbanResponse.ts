@@ -1,4 +1,4 @@
-export interface List {
+export interface UrbanResponse {
     definition: string;
     permalink: string;
     thumbs_up: number;
@@ -13,6 +13,6 @@ export interface List {
 }
 
 export interface RootObject {
-    list: List[];
+    list: UrbanResponse[];
 }
 
