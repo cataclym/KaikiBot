@@ -1,4 +1,4 @@
-export interface AnimeData {
+export default interface AnimeData {
     data: Data;
 }
 
