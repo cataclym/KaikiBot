@@ -36,21 +36,31 @@ export default class GoogleSearchCommand extends KaikiCommand {
 
     public async exec(message: Message, { search }: { search: string }): Promise<Message> {
 
-        const link = `https://www.google.com/search?${new URLSearchParams({ q: search })}&hl=en&gl=us`;
+        const link = `https://www.google.com/search?${new URLSearchParams({ q: search })}&safe=on&lr=lang_eng&hl=en&ie=utf-8&oe=utf-8`;
         const result = await fetch(link, this.options)
             .then(async reeee => parse(await reeee.text()));
 
         const parsedResults: ParsedResult[] = [];
 
-        for (const res of result.querySelectorAll("div.g")) {
+        for (const res of result.querySelectorAll("div.g > div")) {
             const title = res.querySelector("div.yuRUbf > a > h3")?.innerText;
             if (!title) continue;
 
             parsedResults.push({
                 title,
                 url: res.querySelector("div.yuRUbf > a")?.rawAttributes.href,
-                description: res.querySelector("div > div > div.IsZvec > div > span")?.innerText
-                    || res.querySelector("div > div > div.IsZvec > div")?.innerText
+                description: (() => {
+
+                    const spans = res.querySelectorAll("span")
+                        .map(div => div.innerText)
+                        .filter(Boolean);
+
+                    return spans.length > 1
+                        ? spans.slice(1)
+                        : spans;
+
+                })()
+                    .join("\n")
                     || "N/A",
             });
         }
