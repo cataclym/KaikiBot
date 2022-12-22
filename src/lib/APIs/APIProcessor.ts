@@ -8,10 +8,10 @@ export async function processAPIRequest(message: Message, site: string, data: In
     const { action, color, append, appendable } = data;
     const result = (await KaikiUtil.handleToJSON(await (await fetch(site)).json()))[jsonProperty];
     const embed = new EmbedBuilder({
-        color: Number(color),
         image: { url: result },
         footer: { icon_url: (mention?.user || message.author).displayAvatarURL(), text: message.author.tag },
-    });
+    })
+        .setColor(color);
 
     if (mention && action) {
         embed.setDescription(`${message.author.username} ${action} ${mention.user.username} ${append ?? ""}`);
