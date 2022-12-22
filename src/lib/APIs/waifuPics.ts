@@ -85,7 +85,7 @@ const WaifuData: {
     },
 };
 
-export default async function sendWaifuPics(message: Message, API: APIs, mention?: GuildMember | null): Promise<EmbedBuilder> {
+export default async function getWaifuPics(message: Message, API: APIs, mention?: GuildMember | null): Promise<EmbedBuilder> {
 
     return processAPIRequest(message, `https://api.waifu.pics/sfw/${API}`, WaifuData[API], "url", mention);
 

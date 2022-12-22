@@ -1,5 +1,5 @@
 import { GuildMember, Message } from "discord.js";
-import sendWaifuPics from "../../lib/APIs/waifuPics";
+import getWaifuPics from "../../lib/APIs/waifuPics";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 
@@ -21,6 +21,6 @@ export default class Yeet extends KaikiCommand {
     }
 
     public async exec(message: Message, { mention }: { mention: GuildMember | null }): Promise<Message> {
-        return message.channel.send({ embeds: [await sendWaifuPics(message, "yeet", mention)] });
+        return message.channel.send({ embeds: [await getWaifuPics(message, "yeet", mention)] });
     }
 }

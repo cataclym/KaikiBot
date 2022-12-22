@@ -1,5 +1,5 @@
 import { Message } from "discord.js";
-import sendWaifuPics from "../../lib/APIs/waifuPics";
+import getWaifuPics from "../../lib/APIs/waifuPics";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 
@@ -14,6 +14,6 @@ export default class Waifu extends KaikiCommand {
     }
 
     public async exec(message: Message): Promise<Message> {
-        return message.channel.send({ embeds: [await sendWaifuPics(message, "waifu")] });
+        return message.channel.send({ embeds: [await getWaifuPics(message, "waifu")] });
     }
 }

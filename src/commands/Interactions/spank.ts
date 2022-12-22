@@ -1,5 +1,5 @@
 import { GuildMember, Message } from "discord.js";
-import sendNekosPics from "../../lib/APIs/nekos.life";
+import getNekosPics from "../../lib/APIs/nekos.life";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 
@@ -22,6 +22,6 @@ export default class SpankCommand extends KaikiCommand {
     }
 
     public async exec(message: Message, { mention }: { mention: GuildMember | null }): Promise<Message> {
-        return message.channel.send({ embeds: [await sendNekosPics(message, "spank", mention)] });
+        return message.channel.send({ embeds: [await getNekosPics(message, "spank", mention)] });
     }
 }
