@@ -30,7 +30,7 @@ export default class MyRoleSubIcon extends KaikiCommand {
                         if (message.attachments.first()) {
                             return message.attachments.first();
                         }
-                    }, "emoji", MyRoleSubIcon.resetWords, Constants.EMOTE_REGEX, Constants.IMAGE_REGEX),
+                    }, "emoji", MyRoleSubIcon.resetWords, Constants.emoteRegex, Constants.imageRegex),
                     otherwise: (m: Message) => ({
                         embeds: [
                             new EmbedBuilder()
@@ -53,7 +53,7 @@ export default class MyRoleSubIcon extends KaikiCommand {
 
         else if (Utility.isRegex(icon)) {
 
-            if (Constants.EMOTE_REGEX.exec(icon.match[0])) {
+            if (Constants.emoteRegex.exec(icon.match[0])) {
                 const emoji = icon.match[0].toString().split(":");
 
                 if (emoji.length < 3) return message.channel.send({ embeds: [KaikiEmbeds.genericArgumentError(message)] });

@@ -32,10 +32,10 @@ export default class ServerInfoCommand extends KaikiCommand {
                     value: message.client.users.cache.get(guild.ownerId)?.tag ?? guild.ownerId,
                     inline: true,
                 },
-                { name: "Created At", value: time(guild?.createdAt), inline: true },
-                { name: "Members", value: String(guild?.memberCount), inline: true },
-                { name: "Roles", value: String(guild?.roles.cache.size), inline: true },
-                { name: "Emotes", value: String(guild?.emojis.cache.size), inline: true },
+                { name: "Created At", value: time(guild.createdAt), inline: true },
+                { name: "Members", value: String(guild.memberCount), inline: true },
+                { name: "Roles", value: String(guild.roles.cache.size), inline: true },
+                { name: "Emotes", value: String(guild.emojis.cache.size), inline: true },
                 { name: "MFA level", value: String(guild.mfaLevel), inline: true },
                 {
                     name: "Channels",
@@ -47,7 +47,7 @@ News: **${guild?.channels.cache.filter((channel) => channel.type === ChannelType
                 { name: "Maximum video-channel users", value: String(guild.maxVideoChannelUsers), inline: false },
                 {
                     name: "Features", value: guild?.features.length
-                        ? guild?.features.map(f => Constants.GuildFeatures[f] || f).sort().join("\n")
+                        ? guild?.features.map(f => Constants.guildFeatures[f] || f).sort().join("\n")
                         : "None", inline: false,
                 },
             ],

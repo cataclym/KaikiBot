@@ -9,6 +9,7 @@ export type SeparatedEmoteReactTypes = {
 };
 
 export type TheseDoNotYetExist = "APPLICATION_COMMAND_PERMISSIONS_V2"
+    | "AUTO_MODERATION"
     | "BOOSTING_TIERS_EXPERIMENT_MEDIUM_GUILD"
     | "MEMBER_PROFILES"
     | "NEW_THREAD_PERMISSIONS"

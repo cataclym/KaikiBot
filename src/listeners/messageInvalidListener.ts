@@ -29,7 +29,7 @@ export default class MessageInvalidListener extends KaikiListener {
         const botName = message.client.user.username.toLowerCase().split(" ");
 
         if (new RegExp(botName.join("|")).test(message.content.toLowerCase())
-            && new RegExp(Constants.BadWords.join("|")).test(message.content.toLowerCase())) {
+            && new RegExp(Constants.badWord.join("|")).test(message.content.toLowerCase())) {
 
             // Absolute randomness
             if (Math.floor(Math.random() * 10) < 7) {

@@ -43,7 +43,7 @@ export default class InfoCommand extends KaikiCommand {
                         "emoji",
                         "guildMessage",
                         (message, content) => emojis.find(content),
-                        Constants.EMOTE_REGEX,
+                        Constants.emoteRegex,
                         (message) => message.stickers,
                         (_, _phrase) => _phrase.length <= 0
                             ? ""
@@ -86,7 +86,7 @@ export default class InfoCommand extends KaikiCommand {
                         },
                         {
                             name: "Type",
-                            value: Constants.ChannelTypes[ChannelType[obj.type] as keyof typeof ChannelType],
+                            value: Constants.channelTypes[ChannelType[obj.type] as keyof typeof ChannelType],
                         },
                         {
                             name: "User limit",
@@ -121,7 +121,7 @@ export default class InfoCommand extends KaikiCommand {
                         },
                         {
                             name: "Type",
-                            value: Constants.ChannelTypes[ChannelType[obj.type] as keyof typeof ChannelType],
+                            value: Constants.channelTypes[ChannelType[obj.type] as keyof typeof ChannelType],
                         },
                         {
                             name: "NSFW",
@@ -149,7 +149,7 @@ export default class InfoCommand extends KaikiCommand {
                         },
                         {
                             name: "Type",
-                            value: Constants.ChannelTypes[ChannelType[obj.type] as keyof typeof ChannelType],
+                            value: Constants.channelTypes[ChannelType[obj.type] as keyof typeof ChannelType],
                         },
                         {
                             name: "Children", value: String(obj.children.cache.size),
@@ -174,7 +174,7 @@ export default class InfoCommand extends KaikiCommand {
                     .addFields([
                         {
                             name: "Type",
-                            value: Constants.ChannelTypes[ChannelType[obj.type] as keyof typeof ChannelType],
+                            value: Constants.channelTypes[ChannelType[obj.type] as keyof typeof ChannelType],
                         },
                         {
                             name: "ID",
@@ -233,7 +233,7 @@ export default class InfoCommand extends KaikiCommand {
                     .addFields([
                         {
                             name: "Flags",
-                            value: uFlags.map(flag => Constants.Flags[flag]).join("\n"),
+                            value: uFlags.map(flag => Constants.flags[flag]).join("\n"),
                             inline: true,
                         },
                     ]);

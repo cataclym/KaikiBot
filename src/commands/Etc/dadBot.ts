@@ -21,7 +21,7 @@ export default class DadBot extends KaikiCommand {
 
                 if (message.content.includes("||")) return false;
 
-                for (const item of Constants.DadBotArray) {
+                for (const item of Constants.dadBotArray) {
 
                     const r = new RegExp(`(^|\\s|$)(?<statement>(?<prefix>${item})\\s*(?<nickname>.*)$)`, "mi");
                     if (r.test(message.content)) {

@@ -21,7 +21,7 @@ export default class AddEmoteCommand extends KaikiCommand {
             args: [
                 {
                     id: "url",
-                    type: Argument.union(Constants.IMAGE_REGEX, Constants.EMOTE_REGEX, (m: Message) => {
+                    type: Argument.union(Constants.imageRegex, Constants.emoteRegex, (m: Message) => {
                         if (m.attachments.first()) {
                             return m.attachments.first();
                         }

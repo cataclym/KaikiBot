@@ -71,20 +71,20 @@ export default class AnniversaryRolesService {
     }
 
     async handleGuildRoles(guild: Guild): Promise<Role[] | unknown[]> {
-        if (!guild.roles.cache.some(r => r.name === Constants.AnniversaryStrings.ROLE_JOIN)) {
+        if (!guild.roles.cache.some(r => r.name === Constants.anniversaryStrings.ROLE_JOIN)) {
             guild.roles.create({
-                name: Constants.AnniversaryStrings.ROLE_JOIN,
+                name: Constants.anniversaryStrings.ROLE_JOIN,
                 reason: "Role didn't exist yet",
             }).catch(err => logger.error(err));
         }
-        if (!guild.roles.cache.some(r => r.name === Constants.AnniversaryStrings.ROLE_CREATED)) {
+        if (!guild.roles.cache.some(r => r.name === Constants.anniversaryStrings.ROLE_CREATED)) {
             guild.roles.create({
-                name: Constants.AnniversaryStrings.ROLE_CREATED,
+                name: Constants.anniversaryStrings.ROLE_CREATED,
                 reason: "Role didn't exist yet",
             }).catch(err => logger.error(err));
         }
-        const AnniversaryRoleJ = guild.roles.cache.find(r => r.name === Constants.AnniversaryStrings.ROLE_JOIN);
-        const AnniversaryRoleC = guild.roles.cache.find(r => r.name === Constants.AnniversaryStrings.ROLE_CREATED);
+        const AnniversaryRoleJ = guild.roles.cache.find(r => r.name === Constants.anniversaryStrings.ROLE_JOIN);
+        const AnniversaryRoleC = guild.roles.cache.find(r => r.name === Constants.anniversaryStrings.ROLE_CREATED);
 
         return [AnniversaryRoleC, AnniversaryRoleJ];
     }

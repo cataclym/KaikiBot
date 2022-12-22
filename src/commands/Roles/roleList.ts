@@ -16,33 +16,35 @@ export default class RoleListCommand extends KaikiCommand {
 
     public async exec(message: Message<true>): Promise<Message> {
 
-        const roleArray = [...(message.guild as Guild).roles.cache.values()],
-            data: Role[] = roleArray
-                .sort((a: Role, b: Role) => b.position - a.position || (b.id as unknown as number) - (a.id as unknown as number)),
-            pages: EmbedBuilder[] = [];
-
+        const roleArray = [...(message.guild as Guild).roles.cache.values()];
+        const pages: EmbedBuilder[] = [];
         const { ROLES_PR_PAGE } = Constants.MAGIC_NUMBERS.CMDS.ROLES.ROLE_LIST;
+        const data = roleArray
+            .sort((a: Role, b: Role) => b.position - a.position || Number(b.id) - Number(a.id))
+            .map(role => role.name);
 
         if (data) {
             for (let i = ROLES_PR_PAGE, p = 0; p < data.length; i = i + ROLES_PR_PAGE, p = p + ROLES_PR_PAGE) {
 
+                const currentPageRoles = data.slice(p, i);
+
                 const dEmbed = new EmbedBuilder()
-                    .setTitle(`Role list (${roleArray.length})`)
+                    .setTitle(`Role list (${data.length})`)
                     .setAuthor({ name: message.guild.name })
                     .addFields({
-                        name: "\u200B",
-                        value: data
-                            .slice(p, i - (ROLES_PR_PAGE / 2))
+                        name: `Column ${((pages.length + 1) * 2) - 1}`,
+                        value: currentPageRoles
+                            .slice(0, ROLES_PR_PAGE / 2)
                             .join("\n"),
                         inline: true,
                     })
                     .withOkColor(message);
 
-                if (data.slice(p, i).length > (ROLES_PR_PAGE / 2)) {
+                if (currentPageRoles.length > (ROLES_PR_PAGE / 2)) {
                     dEmbed.addFields({
-                        name: "\u200B",
-                        value: data
-                            .slice(p + (ROLES_PR_PAGE / 2), i)
+                        name: `Column ${(pages.length + 1) * 2}`,
+                        value: currentPageRoles
+                            .slice(ROLES_PR_PAGE / 2, ROLES_PR_PAGE)
                             .join("\n"),
                         inline: true,
                     });

@@ -160,7 +160,7 @@ export default class KaikiAkairoClient<Ready extends true> extends AkairoClient<
 
         if (db && db.Activity && db.ActivityType) {
 
-            const acType = Constants.ActivityTypes[db.ActivityType];
+            const acType = Constants.activityTypes[db.ActivityType];
 
             this.user.setPresence({
                 activities: [

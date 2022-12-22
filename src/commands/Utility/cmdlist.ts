@@ -103,7 +103,7 @@ export default class CommandsList extends KaikiCommand {
                 embed.addFields([
                     {
                         name: `${_category.id} [${_category.filter(c => !!c.aliases.length).size}]`,
-                        value: `${Constants.Categories[_category.id]}`,
+                        value: `${Constants.categories[_category.id]}`,
                         inline: true,
                     },
                 ]);

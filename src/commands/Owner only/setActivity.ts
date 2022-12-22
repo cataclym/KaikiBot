@@ -50,7 +50,7 @@ export default class SetActivityCommand extends KaikiCommand {
     }: { type: keyof typeof BotSettings_ActivityType, name: string }) {
 
         return Promise.all([
-            message.client.user?.setActivity({ type: Constants.ActivityTypes[type], name: name }),
+            message.client.user?.setActivity({ type: Constants.activityTypes[type], name: name }),
             this.client.botSettings.set("1", "Activity", name),
             this.client.botSettings.set("1", "ActivityType", type),
             message.channel.send({

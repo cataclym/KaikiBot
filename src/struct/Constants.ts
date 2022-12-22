@@ -6,23 +6,24 @@ import { TheseDoNotYetExist } from "../lib/Types/TCustom";
 
 export default class Constants {
 
-    static DadBotArray = ["i'm ", "im ", "i am ", "i’m "];
+    static dadBotArray = ["i'm ", "im ", "i am ", "i’m "];
 
-    static BadWords = ["shit", "fuck", "stop", "dont", "kill", "don't", "don`t", "fucking", "shut", "shutup", "shuttup", "trash", "bad", "hate", "stupid", "dumb", "suck", "sucks"];
+    static badWord = ["shit", "fuck", "stop", "dont", "kill", "don't", "don`t", "fucking", "shut", "shutup", "shuttup", "trash", "bad", "hate", "stupid", "dumb", "suck", "sucks"];
 
-    static AnniversaryStrings = {
+    static anniversaryStrings = {
         ROLE_JOIN: "Join Anniversary",
         ROLE_CREATED: "Cake Day",
     };
 
     // Credit to https://github.com/Snitt/emojibotten/blob/master/commands/management/emoji.js
-    static EMOTE_REGEX = /<(a?)((!?\d+)|(:.+?:\d+))>/g;
-    static IMAGE_REGEX = /(http(s?):)([/|.\w\s-])*\.(?:jpg|gif|png|jpeg)/gi;
+    static emoteRegex = /<(a?)((!?\d+)|(:.+?:\d+))>/g;
+    static imageRegex = /(http(s?):)([/|.\w\s-])*\.(?:jpg|gif|png|jpeg)/gi;
 
-    static GuildFeatures: { [index in GuildFeature]: string } & { [index in TheseDoNotYetExist]: string } = {
-        APPLICATION_COMMAND_PERMISSIONS_V2: "Application permissions v2",
-        ANIMATED_ICON: "Animated icon",
+    static guildFeatures: { [index in GuildFeature]: string } & { [index in TheseDoNotYetExist]: string } = {
         ANIMATED_BANNER: "Animated banner",
+        ANIMATED_ICON: "Animated icon",
+        APPLICATION_COMMAND_PERMISSIONS_V2: "Application permissions v2",
+        AUTO_MODERATION: "Auto moderation",
         BANNER: "Banner",
         BOOSTING_TIERS_EXPERIMENT_MEDIUM_GUILD: "Experimental boosting tiers",
         COMMUNITY: "Community",
@@ -45,8 +46,8 @@ export default class Constants {
         RELAY_ENABLED: "Enabled relay",
         ROLE_ICONS: "Role icons",
         TEXT_IN_VOICE_ENABLED: "Text in voice",
-        THREE_DAY_THREAD_ARCHIVE: "Three-day thread archives",
         THREADS_ENABLED: "Threads enabled",
+        THREE_DAY_THREAD_ARCHIVE: "Three-day thread archives",
         TICKETED_EVENTS_ENABLED: "Ticketed events enabled",
         VANITY_URL: "Vanity URL",
         VERIFIED: "Verified",
@@ -54,7 +55,7 @@ export default class Constants {
         WELCOME_SCREEN_ENABLED: "Welcome screen enabled",
     };
 
-    static Categories: { [category: string]: string } = {
+    static categories: { [category: string]: string } = {
         Administration: "For server admins. Manage bans and channels.",
         Anime: "Search anime, manga and quotes.",
         Emotes: "Steal or create entirely new emotes",
@@ -69,7 +70,7 @@ export default class Constants {
         Utility: "Info, color, search, ping and much more.",
     };
 
-    static ChannelTypes: { [type in keyof typeof ChannelType]: string } = {
+    static channelTypes: { [type in keyof typeof ChannelType]: string } = {
         GuildText: "Text",
         GuildNews: "News",
         GuildCategory: "Category",
@@ -88,7 +89,7 @@ export default class Constants {
         GuildDirectory: "GuildDirectory",
     };
 
-    static Flags: { [index in UserFlagsString]: string } = {
+    static flags: { [index in UserFlagsString]: string } = {
         Staff: "Discord Employee 👨‍💼",
         Partner: "Partnered Server Owner ❤️",
         Hypesquad: "HypeSquad Events Member 🎊",
@@ -107,7 +108,7 @@ export default class Constants {
         Quarantined: "Quarantined/Disabled user ☣",
     };
 
-    static ActivityTypes: { [index in BotSettings_ActivityType]: Exclude<ActivityType, ActivityType.Custom> } = {
+    static activityTypes: { [index in BotSettings_ActivityType]: Exclude<ActivityType, ActivityType.Custom> } = {
         PLAYING: 0,
         STREAMING: 1,
         LISTENING: 2,
