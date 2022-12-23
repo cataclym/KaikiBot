@@ -2,7 +2,7 @@
 
 import { BotSettings_ActivityType } from "@prisma/client";
 import { ActivityType, ChannelType, GuildFeature, RGBTuple, UserFlagsString } from "discord.js";
-import { TheseDoNotYetExist } from "../lib/Types/TCustom";
+import { TheseDoNotYetExist } from "../lib/Types/Miscellaneous";
 
 export default class Constants {
 

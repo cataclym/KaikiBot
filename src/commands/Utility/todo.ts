@@ -2,7 +2,7 @@ import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, EmbedBuilder, Messa
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import { ButtonAdd } from "../../lib/Todo/Buttons/Add";
 import { ButtonRemove } from "../../lib/Todo/Buttons/Remove";
-import { Todo } from "../../lib/Todo/Common";
+import { Todo } from "../../lib/Todo/Todo";
 
 export default class TodoCommand extends KaikiCommand {
     constructor() {
@@ -84,7 +84,7 @@ export default class TodoCommand extends KaikiCommand {
 
         else {
 
-            const reminderArray = Todo.ReminderArray(todoArray);
+            const reminderArray = Todo.reminderArray(todoArray);
             if (page >= pages.length) page = 0;
 
             for (let index = 10, p = 0; p < reminderArray.length; index += 10, p += 10) {

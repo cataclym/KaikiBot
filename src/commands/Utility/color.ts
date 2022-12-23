@@ -3,7 +3,7 @@ import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
 import { AttachmentBuilder, EmbedBuilder, Message, resolveColor } from "discord.js";
 import { hexColorTable, imgFromColor } from "../../lib/Color";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-import { TKaikiColor } from "../../lib/Types/TColor";
+import { KaikiColor } from "../../lib/Types/KaikiColor";
 import Utility from "../../lib/Utility";
 import Constants from "../../struct/Constants";
 
@@ -31,7 +31,7 @@ export default class ColorCommand extends KaikiCommand {
         });
     }
 
-    public async exec(message: Message, { color, list }: { color: TKaikiColor, list: boolean }): Promise<Message> {
+    public async exec(message: Message, { color, list }: { color: KaikiColor, list: boolean }): Promise<Message> {
 
         if (list) {
             const colorList = Object.keys(hexColorTable),

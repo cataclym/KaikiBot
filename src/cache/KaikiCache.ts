@@ -1,15 +1,15 @@
 import pkg from "@prisma/client";
 import { Collection, Message, Snowflake } from "discord.js";
 import { Pool, ResultSetHeader, RowDataPacket } from "mysql2/promise";
-import { RespType } from "../lib/Types/TCustom.js";
+import { RespType } from "../lib/Types/Miscellaneous";
 import Utility from "../lib/Utility";
 import Constants from "../struct/Constants";
 
-export type TEmoteStringTypes = "has_space" | "no_space";
-export type TEmoteTrigger = string;
-export type TGuildString = Snowflake;
-export type TTriggerString = string;
-export type TEmoteReactCache = Map<TGuildString, Map<TEmoteStringTypes, Map<TEmoteTrigger, TTriggerString>>>;
+export type EmoteStringTypes = "has_space" | "no_space";
+export type EmoteTrigger = string;
+export type GuildString = Snowflake;
+export type TriggerString = string;
+export type EmoteReactCache = Map<GuildString, Map<EmoteStringTypes, Map<EmoteTrigger, TriggerString>>>;
 
 type PartitionResult = [[string, bigint][], [string, bigint][]];
 
@@ -17,27 +17,23 @@ export default class KaikiCache {
 
     public animeQuoteCache: Collection<string, RespType>;
     public cmdStatsCache: Collection<string, number>;
-    public emoteReactCache: TEmoteReactCache;
+    public emoteReactCache: EmoteReactCache;
     public dailyProvider: MySQLDailyProvider;
-    private readonly connection: () => Pool;
-    private orm: pkg.PrismaClient;
 
     constructor(orm: pkg.PrismaClient, connection: () => Pool) {
-        this.connection = connection;
-        this.orm = orm;
         this.animeQuoteCache = new Collection<string, RespType>();
         this.cmdStatsCache = new Collection<string, number>();
-        this.dailyProvider = new MySQLDailyProvider(this.connection);
-        this.emoteReactCache = new Map<TGuildString, Map<TEmoteStringTypes, Map<TEmoteTrigger, TTriggerString>>>();
+        this.dailyProvider = new MySQLDailyProvider(connection);
+        this.emoteReactCache = new Map<GuildString, Map<EmoteStringTypes, Map<EmoteTrigger, TriggerString>>>();
 
-        (async () => await this.init())();
+        (async () => await this.init(orm))();
     }
 
-    public init = async () => setInterval(async () => {
+    public init = async (orm: pkg.PrismaClient) => setInterval(async () => {
         if (!Object.entries(this.cmdStatsCache).length) return;
 
         const requests = Object.entries(this.cmdStatsCache)
-            .map(([command, amount]) => this.orm.commandStats
+            .map(([command, amount]) => orm.commandStats
                 .upsert({
                     where: {
                         CommandAlias: command,
@@ -53,7 +49,7 @@ export default class KaikiCache {
                     },
                 }));
 
-        await this.orm.$transaction(requests);
+        await orm.$transaction(requests);
 
         this.cmdStatsCache = new Collection<string, number>();
     }, Constants.MAGIC_NUMBERS.CACHE.FIFTEEN_MINUTES_MS);
@@ -109,7 +105,7 @@ export default class KaikiCache {
         return KaikiCache.emoteReactLoop(message, matches, emotes);
     }
 
-    public static async emoteReactLoop(message: Message, matches: RegExpMatchArray, wordObj: Map<TEmoteStringTypes, Map<TEmoteTrigger, TTriggerString>>) {
+    public static async emoteReactLoop(message: Message, matches: RegExpMatchArray, wordObj: Map<EmoteStringTypes, Map<EmoteTrigger, TriggerString>>) {
         for (const word of matches) {
             const emote = wordObj.get("no_space")?.get(word) || wordObj.get("has_space")?.get(word);
             if (!message.guild?.emojis.cache.has(emote as Snowflake) || !emote) continue;

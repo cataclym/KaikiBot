@@ -22,7 +22,7 @@ import * as emojis from "node-emoji";
 
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
-import { RegexpType } from "../../lib/Types/TCustom";
+import { RegexpType } from "../../lib/Types/Miscellaneous";
 import Utility from "../../lib/Utility";
 import Constants from "../../struct/Constants";
 

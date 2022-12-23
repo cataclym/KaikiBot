@@ -3,7 +3,7 @@ import { imgFromColor } from "../../lib/Color";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 import { rolePermissionCheck } from "../../lib/Roles";
-import { TKaikiColor } from "../../lib/Types/TColor";
+import { KaikiColor } from "../../lib/Types/KaikiColor";
 import Utility from "../../lib/Utility";
 
 export default class RoleColorCommand extends KaikiCommand {
@@ -30,7 +30,7 @@ export default class RoleColorCommand extends KaikiCommand {
     public async exec(message: Message<true>, {
         role,
         clr,
-    }: { role: Role | undefined, clr: TKaikiColor | null }) {
+    }: { role: Role | undefined, clr: KaikiColor | null }) {
 
         const { member } = message;
 

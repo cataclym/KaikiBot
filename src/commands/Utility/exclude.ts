@@ -1,6 +1,6 @@
 import { EmbedBuilder, Message, PermissionsBitField } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-import { dadbotCheck, excludeCommand } from "../../lib/SlashCommands/functions";
+import SlashCommandsLib from "../../lib/SlashCommands/SlashCommandsLib";
 
 export default class ExcludeCommand extends KaikiCommand {
     constructor() {
@@ -19,7 +19,7 @@ export default class ExcludeCommand extends KaikiCommand {
 
     public async exec(message: Message<true>): Promise<Message> {
 
-        if (!dadbotCheck(message)) {
+        if (!SlashCommandsLib.dadbotCheck(message)) {
             return message.reply({
                 embeds: [
                     new EmbedBuilder()
@@ -29,6 +29,6 @@ export default class ExcludeCommand extends KaikiCommand {
             });
         }
 
-        return excludeCommand(message, this.client);
+        return SlashCommandsLib.excludeCommand(message, this.client);
     }
 }

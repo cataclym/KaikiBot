@@ -3,8 +3,8 @@ import { Command, Listener } from "discord-akairo";
 import { ActivityType, ChannelType, ColorResolvable, GuildMember, HexColorString, Message } from "discord.js";
 import fetch from "node-fetch";
 import Constants from "../struct/Constants";
-import { TKaikiColor } from "./Types/TColor";
-import { RegexpType } from "./Types/TCustom";
+import { KaikiColor } from "./Types/KaikiColor";
+import { RegexpType } from "./Types/Miscellaneous";
 
 export default class Utility {
     static toggledTernary(value: boolean) {
@@ -130,7 +130,7 @@ Executed ${chalk.blueBright(command?.id ?? "N/A")} | "${chalk.yellow(message.con
     }
 
     // Credits to https://www.html-code-generator.com/javascript/color-converter-script
-    static HEXtoRGB(hex: string): TKaikiColor {
+    static HEXtoRGB(hex: string): KaikiColor {
         hex = hex.replace(/#/g, "");
         if (hex.length === 3) {
             // WTF is this
@@ -154,7 +154,7 @@ Executed ${chalk.blueBright(command?.id ?? "N/A")} | "${chalk.yellow(message.con
         }
     }
 
-    static RGBtoHEX(color: TKaikiColor): HexColorString {
+    static RGBtoHEX(color: KaikiColor): HexColorString {
         const string = Object.values(color).map((n: number) => n.toString(16)).join("");
         return `#${string}`;
     }

@@ -2,7 +2,7 @@ import { PrefixSupplier } from "discord-akairo";
 import { EmbedBuilder, Message, PermissionsBitField } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
-import { excludeData } from "../../lib/SlashCommands/data";
+import SlashCommandsLib from "../../lib/SlashCommands/SlashCommandsLib";
 
 export default class DadBotConfigCommand extends KaikiCommand {
     constructor() {
@@ -31,7 +31,7 @@ export default class DadBotConfigCommand extends KaikiCommand {
             case ("true"): {
                 if (!isEnabled) {
                     await message.client.guildsDb.set(message.guildId, "DadBot", true);
-                    await message.guild?.commands.create(excludeData);
+                    await message.guild?.commands.create(SlashCommandsLib.excludeData);
 
                     embed
                         .setTitle(`Dad-bot has been enabled in ${message.guild?.name}!`)

@@ -2,7 +2,7 @@ import { EmbedBuilder, Message, PermissionsBitField, resolveColor } from "discor
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
-import { TKaikiColor } from "../../lib/Types/TColor";
+import { KaikiColor } from "../../lib/Types/KaikiColor";
 
 export default class ErrorColorConfigCommand extends KaikiCommand {
     constructor() {
@@ -19,7 +19,7 @@ export default class ErrorColorConfigCommand extends KaikiCommand {
         });
     }
 
-    public async exec(message: Message<true>, { value }: { value: TKaikiColor }): Promise<Message> {
+    public async exec(message: Message<true>, { value }: { value: KaikiColor }): Promise<Message> {
         const guildID = message.guild.id;
 
         const intValue = resolveColor([value.r, value.g, value.b]);

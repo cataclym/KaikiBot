@@ -10,7 +10,7 @@ import {
     TextInputBuilder,
 } from "discord.js";
 import Constants from "../../../struct/Constants";
-import { Todo } from "../Common";
+import { Todo } from "../Todo";
 
 export class ButtonAdd {
 
@@ -65,7 +65,7 @@ export class ButtonAdd {
                     components: [],
                 });
 
-                const reminderArray = Todo.ReminderArray(todoArray);
+                const reminderArray = Todo.reminderArray(todoArray);
                 const pages: EmbedBuilder[] = [];
 
                 for (let index = 10, p = 0; p < reminderArray.length; index += 10, p += 10) {

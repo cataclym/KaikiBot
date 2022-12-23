@@ -1,5 +1,5 @@
 import { EmbedBuilder, Message } from "discord.js";
-import { RespType } from "../Types/TCustom";
+import { RespType } from "../Types/Miscellaneous";
 
 export async function sendQuote(resp: RespType, message: Message): Promise<Message> {
 
