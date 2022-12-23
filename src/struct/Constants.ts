@@ -117,58 +117,25 @@ export default class Constants {
     };
 
     static readonly MAGIC_NUMBERS = Object.freeze({
-        COMMON: {
-            NAME_LIMIT: 32,
-        },
         CACHE: {
             FIFTEEN_MINUTES_MS: 900000,
         },
-        LIB: {
-            KAIKI: {
-                KAIKI_ARGS: {
-                    MAX_COLOR_VALUE: 0xFFFFFF,
-                    // eslint-disable-next-line @typescript-eslint/no-loss-of-precision
-                    MAX_INT: 0x7FFFFFFFFFFFFFFF,
-                    // ABSOLUTE ZERO IN BINARY
-                    MIN_INT: 0b0,
-                },
-                PRESENCE_UPDATE_TIMEOUT: 300000,
-            },
-            HENTAI: {
-                HENTAI_SERVICE: {
-                    FULL_CACHE_SIZE: 200,
-                    MEDIUM_CACHE_SIZE: 50,
-                    HTTP_REQUESTS: {
-                        OK: 200,
-                        SERVICE_UNAVAILABLE: 503,
-                        TOO_MANY_REQUESTS: 429,
-                        BAD_GATEWAY: 502,
-                    },
-                },
-            },
-            MONEY: {
-                MONEY_SERVICE: {
-                    BIGINT_ZERO: 0n,
-                },
-            },
-            GAMES: {
-                TTT: {
-                    MSG_DEL_TIMEOUT: 4500,
-                },
-            },
-            UTILITY: {
-                // [R,G,B]
-                ERR_CLR: [255, 0, 0] as RGBTuple,
-                OK_CLR: [0, 255, 0] as RGBTuple,
-                HRS_DAY: 24,
-            },
-        },
         CMDS: {
             ANIME: {},
-            MODERATION: {
-                CLEAR: {
-                    DELETE_TIMEOUT: 1500,
+            EMOTES: {
+                ADD_EMOTE: {
+                    NAME_MAX_LENGTH: 32,
                 },
+                DELETE_EMOTE: {
+                    DELETE_DELAY: 3500,
+                },
+
+                EMOTE_COUNT: {
+                    MIN_PR_PAGE: 25,
+                    MAX_PR_PAGE: 50,
+                },
+                MAX_FILESIZE: 25600,
+                MAX_WIDTH_HEIGHT: 128,
             },
             ETC: {
                 BOT_MENTION: {
@@ -177,42 +144,6 @@ export default class Constants {
                 DAD_BOT: {
                     DADBOT_NICK_LENGTH: 32,
                     DADBOT_MAX_LENGTH: 256,
-                },
-            },
-            EMOTES: {
-                MAX_WIDTH_HEIGHT: 128,
-                MAX_FILESIZE: 25600,
-
-                EMOTE_COUNT: {
-                    MIN_PR_PAGE: 25,
-                    MAX_PR_PAGE: 50,
-                },
-                DELETE_EMOTE: {
-                    DELETE_DELAY: 3500,
-                },
-                ADD_EMOTE: {
-                    NAME_MAX_LENGTH: 32,
-                },
-            },
-            GAMBLING: {
-                SLOTS: {
-                    EDIT_AFTER_1_SEC: 1000,
-                    // * Almost two seconds.
-                    EDIT_AFTER_2_SEC: 2100,
-                },
-                CUR_TRS: {
-                    BIGINT_ZERO: 0n,
-                    TRANS_PR_PAGE: 15,
-                },
-                BET_ROLL: {
-                    TWO_TIMES_ROLL: 66,
-                    FOUR_TIMES_ROLL: 90,
-                    TEN_TIMES_ROLL: 100,
-                },
-            },
-            SERVER_SETTINGS: {
-                EMOTES: {
-                    EMOTE_TRIGGERS_PR_PAGE: 15,
                 },
             },
             FUN: {
@@ -226,6 +157,44 @@ export default class Constants {
                     NSFW_DEL_TIMEOUT: 7500,
                 },
             },
+            GAMBLING: {
+                BET_ROLL: {
+                    TWO_TIMES_ROLL: 66,
+                    FOUR_TIMES_ROLL: 90,
+                    TEN_TIMES_ROLL: 100,
+                },
+                CUR_TRS: {
+                    BIGINT_ZERO: 0n,
+                    TRANS_PR_PAGE: 15,
+                },
+                SLOTS: {
+                    EDIT_AFTER_1_SEC: 1000,
+                    // * Almost two seconds.
+                    EDIT_AFTER_2_SEC: 2100,
+                },
+            },
+            MODERATION: {
+                CLEAR: {
+                    DELETE_TIMEOUT: 1500,
+                },
+            },
+            OWNER_ONLY: {
+                BOT_CONFIG: {
+                    DAILY_AMOUNT: 250,
+                    DEFAULT_CUR_CODE: 128180,
+                },
+                EVAL: {
+                    MAX_STRING: 1990,
+                    MAX_ERROR_STRING: 1960,
+                },
+                SQL: {
+                    MESSAGE_LIMIT_JSON: 1960,
+                },
+                UPDATE: {
+                    DESC_STR_LIMIT: 4048,
+                    TIMEOUT: 300000,
+                },
+            },
             ROLES: {
                 IN_ROLE: {
                     ROLES_PR_PAGE: 40,
@@ -237,33 +206,27 @@ export default class Constants {
                     ROLE_PR_PAGE: 20,
                 },
             },
-            OWNER_ONLY: {
-                SQL: {
-                    MESSAGE_LIMIT_JSON: 1960,
-                },
-                UPDATE: {
-                    DESC_STR_LIMIT: 4048,
-                    TIMEOUT: 300000,
-                },
-                BOT_CONFIG: {
-                    DAILY_AMOUNT: 250,
-                    DEFAULT_CUR_CODE: 128180,
-                },
-                EVAL: {
-                    MAX_STRING: 1990,
-                    MAX_ERROR_STRING: 1960,
+            SERVER_SETTINGS: {
+                EMOTES: {
+                    EMOTE_TRIGGERS_PR_PAGE: 15,
                 },
             },
             UTILITY: {
-                TODO: {
-                    INPUT_MAX_LENGTH: 204,
-                },
                 COLOR: {
                     CLR_NAMES_PR_PAGE: 15,
                 },
+                SERVER_LIST: {
+                    GUILDS_PER_PAGE: 15,
+                },
+                TODO: {
+                    INPUT_MAX_LENGTH: 204,
+                },
+
             },
         },
-
+        COMMON: {
+            NAME_LIMIT: 32,
+        },
         EMBED_LIMITS: {
             AUTHOR_NAME: 256,
             DESCRIPTION: 4096,
@@ -275,6 +238,47 @@ export default class Constants {
                 TEXT: 2048,
             },
             TITLE: 256,
+        },
+
+        LIB: {
+            GAMES: {
+                TTT: {
+                    MSG_DEL_TIMEOUT: 4500,
+                },
+            },
+            HENTAI: {
+                HENTAI_SERVICE: {
+                    FULL_CACHE_SIZE: 200,
+                    HTTP_REQUESTS: {
+                        BAD_GATEWAY: 502,
+                        OK: 200,
+                        SERVICE_UNAVAILABLE: 503,
+                        TOO_MANY_REQUESTS: 429,
+                    },
+                    MEDIUM_CACHE_SIZE: 50,
+                },
+            },
+            KAIKI: {
+                KAIKI_ARGS: {
+                    MAX_COLOR_VALUE: 0xFFFFFF,
+                    // eslint-disable-next-line @typescript-eslint/no-loss-of-precision
+                    MAX_INT: 0x7FFFFFFFFFFFFFFF,
+                    // ABSOLUTE ZERO IN BINARY
+                    MIN_INT: 0b0,
+                },
+                PRESENCE_UPDATE_TIMEOUT: 300000,
+            },
+            MONEY: {
+                MONEY_SERVICE: {
+                    BIGINT_ZERO: 0n,
+                },
+            },
+            UTILITY: {
+                // [R,G,B]
+                ERR_CLR: [255, 0, 0] as RGBTuple,
+                HRS_DAY: 24,
+                OK_CLR: [0, 255, 0] as RGBTuple,
+            },
         },
     });
 
