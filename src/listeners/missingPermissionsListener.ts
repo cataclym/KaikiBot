@@ -1,5 +1,5 @@
 import { Command } from "discord-akairo";
-import { ChannelType, EmbedBuilder, Message } from "discord.js";
+import { ChannelType, EmbedBuilder, Message, MessageCreateOptions } from "discord.js";
 import logger from "loglevel";
 import KaikiListener from "../lib/Kaiki/KaikiListener";
 import Utility from "../lib/Utility";
@@ -25,7 +25,8 @@ export default class MissingPermissionsListener extends KaikiListener {
             : this.client.cache.cmdStatsCache.set(command.id, 1);
 
         if (message.channel.type !== ChannelType.DM) {
-            await message.channel.send({
+
+            const messageOptions: MessageCreateOptions = {
                 embeds:
                     [
                         new EmbedBuilder({
@@ -35,7 +36,13 @@ export default class MissingPermissionsListener extends KaikiListener {
                         })
                             .withErrorColor(message),
                     ],
-            });
+            };
+
+            if (message.interaction) {
+                Object.assign(messageOptions, { ephemeral: true });
+            }
+
+            await message.reply(messageOptions);
         }
     }
 }

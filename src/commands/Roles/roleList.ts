@@ -24,7 +24,7 @@ export default class RoleListCommand extends KaikiCommand {
             .map(role => role.name);
 
         if (data) {
-            for (let i = ROLES_PR_PAGE, p = 0; p < data.length; i = i + ROLES_PR_PAGE, p = p + ROLES_PR_PAGE) {
+            for (let i = ROLES_PR_PAGE, p = 0; p < data.length; i += ROLES_PR_PAGE, p += ROLES_PR_PAGE) {
 
                 const currentPageRoles = data.slice(p, i);
 
