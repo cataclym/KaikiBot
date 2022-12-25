@@ -11,6 +11,7 @@ import Constants from "../../struct/Constants";
 import Database from "../../struct/db/Database";
 import DatabaseProvider from "../../struct/db/DatabaseProvider";
 import AnniversaryRolesService from "../AnniversaryRolesService";
+import WaifuIm from "../APIs/waifu.im";
 import HentaiService from "../Hentai/HentaiService";
 import PackageJSON from "../Interfaces/PackageJSON";
 import { MoneyService } from "../Money/MoneyService";
@@ -34,6 +35,7 @@ export default class KaikiAkairoClient<Ready extends true> extends AkairoClient<
     public owner: User;
     public package: PackageJSON;
     public hentaiService: HentaiService;
+    public ImageAPIs: { waifuIm: WaifuIm, };
     private readonly filterArray: string[];
 
     constructor() {
@@ -90,6 +92,9 @@ export default class KaikiAkairoClient<Ready extends true> extends AkairoClient<
         void this.listenerHandler.loadAll();
         void this.commandHandler.loadAll();
 
+        this.ImageAPIs = {
+            waifuIm: new WaifuIm(Constants.ImageAPI.WaifuIm),
+        };
     }
 
     private async dailyResetTimer(client: KaikiAkairoClient<true>): Promise<void> {

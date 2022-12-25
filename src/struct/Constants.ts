@@ -2,6 +2,7 @@
 
 import { BotSettings_ActivityType } from "@prisma/client";
 import { ActivityType, ChannelType, GuildFeature, RGBTuple, UserFlagsString } from "discord.js";
+import { hexColorTable } from "../lib/Color";
 import { TheseDoNotYetExist } from "../lib/Types/Miscellaneous";
 
 export default class Constants {
@@ -285,4 +286,21 @@ export default class Constants {
     static readonly errorColor = Constants.MAGIC_NUMBERS.LIB.UTILITY.ERR_CLR;
 
     static readonly okColor = Constants.MAGIC_NUMBERS.LIB.UTILITY.OK_CLR;
+
+    static ImageAPI = {
+        WaifuIm: {
+            endPointData: {
+                "uniform": {
+                    action: "",
+                    color: hexColorTable["lightskyblue"],
+                },
+                "maid": {
+                    action: "",
+                    color: hexColorTable["lightskyblue"],
+                },
+            },
+            objectIndex: ["images", "0", "url"],
+            url: (string: string) => `https://api.waifu.im/search/?included_tags=${string}`,
+        },
+    };
 }

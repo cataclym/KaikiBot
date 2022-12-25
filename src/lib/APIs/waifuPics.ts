@@ -1,7 +1,7 @@
 import { EmbedBuilder, GuildMember, Message } from "discord.js";
 import { hexColorTable } from "../Color";
 import InteractionsImageData from "../Interfaces/InteractionsImageData";
-import { processAPIRequest } from "./APIProcessor";
+import APIProcessor from "./APIProcessor";
 
 type APIs = "bonk"
     | "cry"
@@ -87,7 +87,7 @@ const WaifuData: {
 
 export default async function getWaifuPics(message: Message, API: APIs, mention?: GuildMember | null): Promise<EmbedBuilder> {
 
-    return processAPIRequest(message, `https://api.waifu.pics/sfw/${API}`, WaifuData[API], "url", mention);
+    return APIProcessor.processAPIRequest(message, `https://api.waifu.pics/sfw/${API}`, WaifuData[API], "url", mention);
 
 }
 

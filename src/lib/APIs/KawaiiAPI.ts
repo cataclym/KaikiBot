@@ -1,7 +1,7 @@
 import { EmbedBuilder, GuildMember, Message } from "discord.js";
 import { hexColorTable } from "../Color";
 import InteractionsImageData from "../Interfaces/InteractionsImageData";
-import { processAPIRequest } from "./APIProcessor";
+import APIProcessor from "./APIProcessor";
 
 type EndpointSignatures = "run"
     | "peek"
@@ -44,5 +44,5 @@ export default async function getKawaiiResponseEmbed(message: Message, endpoint:
         return;
     }
 
-    return processAPIRequest(message, `https://kawaii.red/api/gif/${endpoint}/token=${token}`, endPoints[endpoint], "response", mention);
+    return APIProcessor.processAPIRequest(message, `https://kawaii.red/api/gif/${endpoint}/token=${token}`, endPoints[endpoint], "response", mention);
 }
