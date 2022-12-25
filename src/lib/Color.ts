@@ -1,4 +1,4 @@
-import { ColorResolvable } from "discord.js";
+import { HexColorString } from "discord.js";
 import sharp from "sharp";
 import Constants from "../struct/Constants";
 import { KaikiColor } from "./Types/KaikiColor";
@@ -6,7 +6,6 @@ import { KaikiColor } from "./Types/KaikiColor";
 export const colorTable: {
     [index: string]: string
 } = {
-    "transparent": "rgba(0,0,0,0)",
     "aliceblue": "rgba(240,248,255,1)",
     "antiquewhite": "rgba(250,235,215,1)",
     "aqua": "rgba(0,255,255,1)",
@@ -32,8 +31,8 @@ export const colorTable: {
     "darkcyan": "rgba(0,139,139,1)",
     "darkgoldenrod": "rgba(184,134,11,1)",
     "darkgray": "rgba(169,169,169,1)",
-    "darkgrey": "rgba(169,169,169,1)",
     "darkgreen": "rgba(0,100,0,1)",
+    "darkgrey": "rgba(169,169,169,1)",
     "darkkhaki": "rgba(189,183,107,1)",
     "darkmagenta": "rgba(139,0,139,1)",
     "darkolivegreen": "rgba(85,107,47,1)",
@@ -61,9 +60,9 @@ export const colorTable: {
     "gold": "rgba(255,215,0,1)",
     "goldenrod": "rgba(218,165,32,1)",
     "gray": "rgba(128,128,128,1)",
-    "grey": "rgba(128,128,128,1)",
     "green": "rgba(0,128,0,1)",
     "greenyellow": "rgba(173,255,47,1)",
+    "grey": "rgba(128,128,128,1)",
     "honeydew": "rgba(240,255,240,1)",
     "hotpink": "rgba(255,105,180,1)",
     "indianred": "rgba(205,92,92,1)",
@@ -79,8 +78,8 @@ export const colorTable: {
     "lightcyan": "rgba(224,255,255,1)",
     "lightgoldenrodyellow": "rgba(250,250,210,1)",
     "lightgray": "rgba(211,211,211,1)",
-    "lightgrey": "rgba(211,211,211,1)",
     "lightgreen": "rgba(144,238,144,1)",
+    "lightgrey": "rgba(211,211,211,1)",
     "lightpink": "rgba(255,182,193,1)",
     "lightsalmon": "rgba(255,160,122,1)",
     "lightseagreen": "rgba(32,178,170,1)",
@@ -148,6 +147,7 @@ export const colorTable: {
     "teal": "rgba(0,128,128,1)",
     "thistle": "rgba(216,191,216,1)",
     "tomato": "rgba(255,99,71,1)",
+    "transparent": "rgba(0,0,0,0)",
     "turquoise": "rgba(64,224,208,1)",
     "violet": "rgba(238,130,238,1)",
     "wheat": "rgba(245,222,179,1)",
@@ -171,8 +171,10 @@ export async function imgFromColor(color: KaikiColor, size = Constants.MAGIC_NUM
 }
 
 export const hexColorTable: {
-    [index: string]: ColorResolvable
+    [index: string]: HexColorString
 } = {
+    "aliceblue": "#f0f8ff",
+    "antiquewhite": "#faebd7",
     "aqua": "#00ffff",
     "aquamarine": "#7fffd4",
     "azure": "#f0ffff",
@@ -196,8 +198,8 @@ export const hexColorTable: {
     "darkcyan": "#008b8b",
     "darkgoldenrod": "#b8860b",
     "darkgray": "#a9a9a9",
-    "darkgrey": "#a9a9a9",
     "darkgreen": "#006400",
+    "darkgrey": "#a9a9a9",
     "darkkhaki": "#bdb76b",
     "darkmagenta": "#8b008b",
     "darkolivegreen": "#556b2f",
@@ -225,9 +227,9 @@ export const hexColorTable: {
     "gold": "#ffd700",
     "goldenrod": "#daa520",
     "gray": "#808080",
-    "grey": "#808080",
     "green": "#008000",
     "greenyellow": "#adff2f",
+    "grey": "#808080",
     "honeydew": "#f0fff0",
     "hotpink": "#ff69b4",
     "indianred": "#cd5c5c",
@@ -243,8 +245,8 @@ export const hexColorTable: {
     "lightcyan": "#e0ffff",
     "lightgoldenrodyellow": "#fafad2",
     "lightgray": "#d3d3d3",
-    "lightgrey": "#d3d3d3",
     "lightgreen": "#90ee90",
+    "lightgrey": "#d3d3d3",
     "lightpink": "#ffb6c1",
     "lightsalmon": "#ffa07a",
     "lightseagreen": "#20b2aa",
@@ -312,6 +314,7 @@ export const hexColorTable: {
     "teal": "#008080",
     "thistle": "#d8bfd8",
     "tomato": "#ff6347",
+    "transparent": "#000000",
     "turquoise": "#40e0d0",
     "violet": "#ee82ee",
     "wheat": "#f5deb3",
@@ -319,8 +322,5 @@ export const hexColorTable: {
     "whitesmoke": "#f5f5f5",
     "yellow": "#ffff00",
     "yellowgreen": "#9acd32",
-    "transparent": "#000000",
-    "aliceblue": "#f0f8ff",
-    "antiquewhite": "#faebd7",
 };
 

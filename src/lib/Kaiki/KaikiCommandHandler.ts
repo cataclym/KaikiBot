@@ -8,8 +8,8 @@ export default class KaikiCommandHandler extends CommandHandler {
         super(client, options);
 
         this.argumentTypes = {
-            [KaikiArgumentsTypes.ArgumentTypes.kaiki_money]: KaikiArgumentsTypes.kaiki_money,
-            [KaikiArgumentsTypes.ArgumentTypes.kaiki_color]: KaikiArgumentsTypes.kaiki_color,
+            [KaikiArgumentsTypes.argumentTypes.kaiki_money]: KaikiArgumentsTypes.kaikiMoneyArgument,
+            [KaikiArgumentsTypes.argumentTypes.kaiki_color]: KaikiArgumentsTypes.kaikiColorArgument,
         };
 
         this.resolver.addTypes(this.argumentTypes);

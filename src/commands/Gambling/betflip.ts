@@ -16,7 +16,7 @@ export default class BetflipCommands extends KaikiCommand {
             args: [
                 {
                     id: "number",
-                    type: KaikiArgumentsTypes.KaikiMoneyArgument,
+                    type: KaikiArgumentsTypes.moneyArgument,
                     otherwise: (m) => ({
                         embeds: [
                             new EmbedBuilder()

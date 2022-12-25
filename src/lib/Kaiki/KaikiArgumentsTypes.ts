@@ -5,11 +5,8 @@ import { hexColorTable } from "../Color";
 import Utility from "../Utility";
 
 export default class KaikiArgumentsTypes {
-    static get GetCurrency(): (message: Message) => Promise<bigint> {
-        return this._GetCurrency;
-    }
 
-    static ArgumentTypes = {
+    static argumentTypes = {
         kaiki_color: "kaiki_color",
         kaiki_money: "kaiki_money",
     };
@@ -22,7 +19,7 @@ export default class KaikiArgumentsTypes {
         return int;
     };
 
-    static kaiki_color = (message: Message, phrase: string) => {
+    static kaikiColorArgument = (message: Message, phrase: string) => {
         if (!phrase) return null;
         const hexColorString = phrase.replace("#", "");
 
@@ -39,7 +36,7 @@ export default class KaikiArgumentsTypes {
 
     private static MAX_INT = Constants.MAGIC_NUMBERS.LIB.KAIKI.KAIKI_ARGS.MAX_INT;
 
-    static kaiki_money = async (message: Message, phrase: string) => {
+    static kaikiMoneyArgument = async (message: Message, phrase: string) => {
         if (!phrase) return null;
 
         const input = phrase.trim().toUpperCase().replace("K", "000");
@@ -47,15 +44,15 @@ export default class KaikiArgumentsTypes {
         const int = KaikiArgumentsTypes.checkInt(input);
         if (!int) {
             switch (input) {
-                case "ALL": {
-                    return await KaikiArgumentsTypes.GetCurrency(message);
-                }
-                case "HALF": {
-                    return (await KaikiArgumentsTypes.GetCurrency(message)) / BigInt(2);
-                }
-                case "MAX": {
+                case "ALL":
+                    return await KaikiArgumentsTypes.getCurrency(message);
+
+                case "HALF":
+                    return (await KaikiArgumentsTypes.getCurrency(message)) / BigInt(2);
+
+                case "MAX":
                     return KaikiArgumentsTypes.MAX_INT;
-                }
+
             }
             return null;
         }
@@ -71,7 +68,7 @@ export default class KaikiArgumentsTypes {
             });
     };
 
-    static KaikiMoneyArgument = Argument.range("bigint", 0, KaikiArgumentsTypes.MAX_INT);
+    static moneyArgument = Argument.range("bigint", 0, KaikiArgumentsTypes.MAX_INT);
 
-    private static _GetCurrency = async (message: Message) => await message.client.money.Get(message.author.id);
+    private static getCurrency = async (message: Message) => await message.client.money.Get(message.author.id);
 }
