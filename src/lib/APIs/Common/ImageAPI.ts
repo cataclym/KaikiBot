@@ -1,28 +1,29 @@
-import { Message } from "discord.js";
-import InteractionsImageData from "src/lib/Interfaces/InteractionsImageData";
+import { GuildMember, Message } from "discord.js";
 import APIProcessor from "../APIProcessor";
+import { ImageAPIEndPointTypes, ImageAPIOptions } from "./Types";
 
-export type GenericAliasString<T> = T;
-export type GenericEndPointType = { [index in GenericAliasString<string>]: InteractionsImageData };
+export default class ImageAPI<FullEndpointType extends string> {
+    readonly objectIndex: string | string[];
+    readonly endPoints: ImageAPIEndPointTypes<FullEndpointType>;
+    readonly token: string | undefined;
+    readonly url: (endPoint: FullEndpointType) => string;
 
-export default class ImageAPI<FullEndpointType extends GenericEndPointType> {
-    private readonly objectIndex: string | string[];
-    private readonly endPoints: FullEndpointType;
-    private readonly token: string | undefined;
-    private readonly url: (endPoint: string) => string;
-
-    constructor(imageAPIData: {
-        endPointData: FullEndpointType, url: (endPoint: string) => string, objectIndex: string | string[], token?: string | undefined;
-    }) {
+    constructor(imageAPIData: ImageAPIOptions<FullEndpointType>) {
         this.endPoints = imageAPIData.endPointData;
         this.token = imageAPIData.token;
         this.url = imageAPIData.url;
         this.objectIndex = imageAPIData.objectIndex;
     }
 
-    public async sendImageAPIRequest(message: Message, endPoint: keyof FullEndpointType) {
+    public async sendImageAPIRequest(message: Message, endPoint: FullEndpointType, mention?: GuildMember | null) {
         return message.channel.send({
-            embeds: [await APIProcessor.processImageAPIRequest(message, this.url(endPoint as string), this.endPoints[endPoint], this.objectIndex)],
+            embeds: [
+                await APIProcessor.processImageAPIRequest(message,
+                    this.url(endPoint),
+                    this.endPoints[endPoint],
+                    this.objectIndex,
+                    mention),
+            ],
         });
     }
 }

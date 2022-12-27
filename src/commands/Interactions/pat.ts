@@ -1,5 +1,4 @@
 import { GuildMember, Message } from "discord.js";
-import getWaifuPics from "../../lib/APIs/waifuPics";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 
@@ -21,6 +20,6 @@ export default class PatCommand extends KaikiCommand {
     }
 
     public async exec(message: Message, { mention }: { mention: GuildMember | null }): Promise<Message> {
-        return message.channel.send({ embeds: [await getWaifuPics(message, "pat", mention)] });
+        return this.client.imageAPIs.WaifuPics.sendImageAPIRequest(message, "pat", mention);
     }
 }

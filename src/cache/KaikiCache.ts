@@ -91,21 +91,27 @@ export default class KaikiCache {
 
         if (!emotes) return;
 
-        const matches = Array.from(emotes?.get("has_space")?.keys() || [])
-            .filter(k => messageContent.match(new RegExp(k.toLowerCase(), "g")));
+        const iterables = emotes?.get("has_space")?.keys();
+
+        if (!iterables) return;
+
+        const properMatches = Array.from(iterables).filter(k => {
+            if (!k) return false;
+            messageContent.match(new RegExp(k.toLowerCase(), "g"));
+        });
 
         for (const word of messageContent.split(" ")) {
             if (emotes?.get("no_space")?.has(word)) {
-                matches.push(word);
+                properMatches.push(word);
             }
         }
 
-        if (!matches.length) return;
+        if (!properMatches.length) return;
 
-        return KaikiCache.emoteReactLoop(message, matches, emotes);
+        return KaikiCache.emoteReactLoop(message, properMatches, emotes);
     }
 
-    public static async emoteReactLoop(message: Message, matches: RegExpMatchArray, wordObj: Map<EmoteStringTypes, Map<EmoteTrigger, TriggerString>>) {
+    public static async emoteReactLoop(message: Message, matches: string[], wordObj: Map<EmoteStringTypes, Map<EmoteTrigger, TriggerString>>) {
         for (const word of matches) {
             const emote = wordObj.get("no_space")?.get(word) || wordObj.get("has_space")?.get(word);
             if (!message.guild?.emojis.cache.has(emote as Snowflake) || !emote) continue;

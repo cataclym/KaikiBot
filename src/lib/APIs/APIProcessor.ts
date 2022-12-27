@@ -25,7 +25,12 @@ export default class APIProcessor {
         return embed;
     }
 
-    static async processImageAPIRequest(message: Message, site: string, data: InteractionsImageData, jsonProperty: string | string[]) {
+    static async processImageAPIRequest(message: Message,
+        site: string,
+        data: InteractionsImageData,
+        jsonProperty: string | string[],
+        mention?: GuildMember | null) {
+
         const { color } = data;
         const result = (await KaikiUtil.handleToJSON(await (await fetch(site)).json()));
 

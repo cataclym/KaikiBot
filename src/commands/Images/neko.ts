@@ -1,5 +1,4 @@
 import { Message } from "discord.js";
-import getWaifuPics from "../../lib/APIs/waifuPics";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 
@@ -14,6 +13,6 @@ export default class Neko extends KaikiCommand {
     }
 
     public async exec(message: Message): Promise<Message> {
-        return message.channel.send({ embeds: [await getWaifuPics(message, "neko")] });
+        return this.client.imageAPIs.WaifuPics.sendImageAPIRequest(message, "neko");
     }
 }

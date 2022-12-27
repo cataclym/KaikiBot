@@ -22,7 +22,7 @@
     "@prisma/client": "^4.4.0",
     "@types/gifsicle": "^5.2.0",
     "@types/json-schema": "^7.0.11",
-    "@types/node": "^18.11.0",
+    "@types/node": "^18.11.18",
     "@types/node-emoji": "^1.8.1",
     "@types/node-fetch": "^2.6.2",
     "@types/sharp": "^0.29.5",
@@ -43,7 +43,7 @@
     "node-fetch": "^2.6.6",
     "node-html-parser": "^5.2.0",
     "sharp": "^0.30.2",
-    "typescript": "^4.6.2",
+    "typescript": "^4.9.4",
     "utf-8-validate": "^5.0.8",
     "zlib-sync": "^0.1.7"
   },
