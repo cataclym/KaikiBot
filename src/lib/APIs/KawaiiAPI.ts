@@ -44,5 +44,5 @@ export default async function getKawaiiResponseEmbed(message: Message, endpoint:
         return;
     }
 
-    return APIProcessor.processAPIRequest(message, `https://kawaii.red/api/gif/${endpoint}/token=${token}`, endPoints[endpoint], "response", mention);
+    return APIProcessor.processImageAPIRequest(message, `https://kawaii.red/api/gif/${endpoint}/token=${token}`, endPoints[endpoint], "response", mention);
 }

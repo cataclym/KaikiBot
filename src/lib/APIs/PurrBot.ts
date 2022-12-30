@@ -29,6 +29,6 @@ const endPoints: {
 };
 
 export default async function getPurrBotResponseEmbed(message: Message, endpoint: EndpointSignatures, mention?: GuildMember | null): Promise<EmbedBuilder> {
-    return APIProcessor.processAPIRequest(message, `https://purrbot.site/api/img/sfw/${endpoint}/gif`, endPoints[endpoint], "link", mention);
+    return APIProcessor.processImageAPIRequest(message, `https://purrbot.site/api/img/sfw/${endpoint}/gif`, endPoints[endpoint], "link", mention);
 }
 

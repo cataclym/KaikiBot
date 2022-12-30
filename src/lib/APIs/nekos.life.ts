@@ -17,6 +17,6 @@ const nekosData: {
 
 export default async function getNekosPics(message: Message, API: APIs, mention?: GuildMember | null): Promise<EmbedBuilder> {
 
-    return APIProcessor.processAPIRequest(message, `https://nekos.life/api/v2/img/${API}`, nekosData[API], "url", mention);
+    return APIProcessor.processImageAPIRequest(message, `https://nekos.life/api/v2/img/${API}`, nekosData[API], "url", mention);
 }
 

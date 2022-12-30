@@ -20,6 +20,6 @@ export default class Bully extends KaikiCommand {
     }
 
     public async exec(message: Message, { mention }: { mention: GuildMember | null }): Promise<Message> {
-        return this.client.imageAPIs.WaifuPics.sendImageAPIRequest(message, "bulli", mention);
+        return this.client.imageAPIs.WaifuPics.sendImageAPIRequest(message, "bully", mention);
     }
 }
