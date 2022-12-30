@@ -1,7 +1,5 @@
 import { Message } from "discord.js";
-import getKawaiiResponseEmbed from "../../lib/APIs/KawaiiAPI";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-
 
 export default class Pout extends KaikiCommand {
     constructor() {
@@ -15,8 +13,6 @@ export default class Pout extends KaikiCommand {
 
     public async exec(message: Message): Promise<Message | void> {
 
-        const embed = await getKawaiiResponseEmbed(message, "pout");
-
-        if (embed) return message.channel.send({ embeds: [embed] });
+        return this.client.imageAPIs.KawaiiAPI.sendImageAPIRequest(message, "pout");
     }
 }

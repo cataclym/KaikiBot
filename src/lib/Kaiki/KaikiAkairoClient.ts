@@ -11,6 +11,8 @@ import Constants from "../../struct/Constants";
 import Database from "../../struct/db/Database";
 import DatabaseProvider from "../../struct/db/DatabaseProvider";
 import AnniversaryRolesService from "../AnniversaryRolesService";
+import KawaiiAPI from "../APIs/KawaiiAPI";
+import NekosLife from "../APIs/nekos.life";
 import WaifuIm from "../APIs/waifu.im";
 import WaifuPics from "../APIs/WaifuPics";
 import HentaiService from "../Hentai/HentaiService";
@@ -36,7 +38,12 @@ export default class KaikiAkairoClient<Ready extends true> extends AkairoClient<
     public owner: User;
     public package: PackageJSON;
     public hentaiService: HentaiService;
-    public imageAPIs: { WaifuPics: WaifuPics, WaifuIm: WaifuIm };
+    public imageAPIs: {
+        KawaiiAPI: KawaiiAPI,
+        NekosLife: NekosLife,
+        WaifuIm: WaifuIm,
+        WaifuPics: WaifuPics
+    };
     private readonly filterArray: string[];
 
     constructor() {
@@ -94,8 +101,10 @@ export default class KaikiAkairoClient<Ready extends true> extends AkairoClient<
         void this.commandHandler.loadAll();
 
         this.imageAPIs = {
+            NekosLife: new NekosLife(),
             WaifuIm: new WaifuIm(),
             WaifuPics: new WaifuPics(),
+            KawaiiAPI: new KawaiiAPI(),
         };
     }
 
