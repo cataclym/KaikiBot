@@ -3,6 +3,7 @@ import { Message } from "discord.js";
 import Constants from "../../struct/Constants";
 import { hexColorTable } from "../Color";
 import Utility from "../Utility";
+import KaikiUtil from "./KaikiUtil";
 
 export default class KaikiArgumentsTypes {
 
@@ -22,6 +23,8 @@ export default class KaikiArgumentsTypes {
     static kaikiColorArgument = (message: Message, phrase: string) => {
         if (!phrase) return null;
         const hexColorString = phrase.replace("#", "");
+
+        if (!KaikiUtil.hasKey(hexColorTable, hexColorString)) return null;
 
         const color = parseInt(hexColorString, 16);
         if (color < 0
