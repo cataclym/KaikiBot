@@ -1,4 +1,5 @@
 import { EmbedBuilder, Message, PermissionsBitField, resolveColor } from "discord.js";
+import KaikiArgumentsTypes from "../../lib/Kaiki/KaikiArgumentsTypes";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
@@ -12,7 +13,7 @@ export default class ErrorColorConfigCommand extends KaikiCommand {
             args: [
                 {
                     id: "value",
-                    type: "kaiki_color",
+                    type: KaikiArgumentsTypes.kaikiColorArgument,
                     otherwise: (m: Message) => ({ embeds: [KaikiEmbeds.genericArgumentError(m)] }),
                 },
             ],

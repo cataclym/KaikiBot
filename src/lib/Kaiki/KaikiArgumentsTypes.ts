@@ -24,17 +24,17 @@ export default class KaikiArgumentsTypes {
         if (!phrase) return null;
         const hexColorString = phrase.replace("#", "");
 
-        if (!KaikiUtil.hasKey(hexColorTable, hexColorString)) return null;
-
         const color = parseInt(hexColorString, 16);
         if (color < 0
             || color > Constants.MAGIC_NUMBERS.LIB.KAIKI.KAIKI_ARGS.MAX_COLOR_VALUE
             || isNaN(color)
-            && !hexColorTable[hexColorString]) {
+            && !KaikiUtil.hasKey(hexColorTable, hexColorString)) {
             return null;
         }
 
-        return Utility.HEXtoRGB(String(hexColorTable[hexColorString] ?? hexColorString));
+        return Utility.HEXtoRGB(String(KaikiUtil.hasKey(hexColorTable, hexColorString)
+            ? hexColorTable[hexColorString]
+            : hexColorString));
     };
 
     private static MAX_INT = Constants.MAGIC_NUMBERS.LIB.KAIKI.KAIKI_ARGS.MAX_INT;

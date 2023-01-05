@@ -2,6 +2,7 @@ import { PrefixSupplier } from "discord-akairo";
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
 import { AttachmentBuilder, EmbedBuilder, Message, resolveColor } from "discord.js";
 import { ColorNames, hexColorTable, imgFromColor } from "../../lib/Color";
+import KaikiArgumentsTypes from "../../lib/Kaiki/KaikiArgumentsTypes";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import { KaikiColor } from "../../lib/Types/KaikiColor";
 import Utility from "../../lib/Utility";
@@ -23,7 +24,7 @@ export default class ColorCommand extends KaikiCommand {
                 {
                     id: "color",
                     match: "rest",
-                    type: "kaiki_color",
+                    type: KaikiArgumentsTypes.kaikiColorArgument,
                     default: null,
                 },
             ],

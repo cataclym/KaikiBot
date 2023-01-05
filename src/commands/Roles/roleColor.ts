@@ -1,5 +1,6 @@
 import { AttachmentBuilder, EmbedBuilder, Message, PermissionsBitField, resolveColor, Role } from "discord.js";
 import { imgFromColor } from "../../lib/Color";
+import KaikiArgumentsTypes from "../../lib/Kaiki/KaikiArgumentsTypes";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 import { rolePermissionCheck } from "../../lib/Roles";
@@ -20,7 +21,7 @@ export default class RoleColorCommand extends KaikiCommand {
                 },
                 {
                     id: "clr",
-                    type: "kaiki_color",
+                    type: KaikiArgumentsTypes.kaikiColorArgument,
                     default: null,
                 },
             ],
