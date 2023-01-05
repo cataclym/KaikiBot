@@ -2,6 +2,7 @@ import { Argument } from "discord-akairo";
 import { ColorResolvable, EmbedBuilder, Message, PermissionsBitField } from "discord.js";
 import { hexColorTable } from "../../lib/Color";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+import KaikiUtil from "../../lib/Kaiki/KaikiUtil";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 import Roles from "../../lib/Roles";
 
@@ -13,7 +14,11 @@ export default class MyRoleSubCommandColor extends KaikiCommand {
             args: [
                 {
                     id: "color",
-                    type: Argument.union((_, phrase) => hexColorTable[phrase.toLowerCase()], "color"),
+                    type: Argument.union((_, phrase) => {
+                        phrase = phrase.toLowerCase();
+                        if (!KaikiUtil.hasKey(hexColorTable, phrase)) return;
+                        return hexColorTable[phrase];
+                    }, "color"),
                     otherwise: (m: Message) => ({
                         embeds: [
                             new EmbedBuilder()

@@ -1,7 +1,4 @@
 import { GuildMember, Message } from "discord.js";
-
-
-import getPurrBotResponseEmbed from "../../lib/APIs/PurrBot";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 export default class Bite extends KaikiCommand {
@@ -22,8 +19,6 @@ export default class Bite extends KaikiCommand {
     }
 
     public async exec(message: Message, { mention }: { mention: GuildMember | null }): Promise<Message> {
-        return message.channel.send({
-            embeds: [await getPurrBotResponseEmbed(message, "bite", mention)],
-        });
+        return this.client.imageAPIs.PurrBot.sendImageAPIRequest(message, "bite", mention);
     }
 }

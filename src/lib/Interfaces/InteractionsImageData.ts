@@ -4,5 +4,5 @@ export default interface InteractionsImageData {
     action: string | boolean,
     color: ColorResolvable,
     append?: string,
-    appendable?: true
+    appendable?: boolean
 }

@@ -11,6 +11,12 @@ import Constants from "../../struct/Constants";
 import Database from "../../struct/db/Database";
 import DatabaseProvider from "../../struct/db/DatabaseProvider";
 import AnniversaryRolesService from "../AnniversaryRolesService";
+import KawaiiAPI from "../APIs/KawaiiAPI";
+import NekosLife from "../APIs/nekos.life";
+import NekosAPI from "../APIs/NekosAPI";
+import PurrBot from "../APIs/PurrBot";
+import WaifuIm from "../APIs/waifu.im";
+import WaifuPics from "../APIs/WaifuPics";
 import HentaiService from "../Hentai/HentaiService";
 import PackageJSON from "../Interfaces/PackageJSON";
 import { MoneyService } from "../Money/MoneyService";
@@ -34,6 +40,14 @@ export default class KaikiAkairoClient<Ready extends true> extends AkairoClient<
     public owner: User;
     public package: PackageJSON;
     public hentaiService: HentaiService;
+    public imageAPIs: {
+        NekosAPI: NekosAPI;
+        PurrBot: PurrBot;
+        KawaiiAPI: KawaiiAPI,
+        NekosLife: NekosLife,
+        WaifuIm: WaifuIm,
+        WaifuPics: WaifuPics
+    };
     private readonly filterArray: string[];
 
     constructor() {
@@ -90,6 +104,14 @@ export default class KaikiAkairoClient<Ready extends true> extends AkairoClient<
         void this.listenerHandler.loadAll();
         void this.commandHandler.loadAll();
 
+        this.imageAPIs = {
+            KawaiiAPI: new KawaiiAPI(),
+            NekosAPI: new NekosAPI(),
+            NekosLife: new NekosLife(),
+            PurrBot: new PurrBot(),
+            WaifuIm: new WaifuIm(),
+            WaifuPics: new WaifuPics(),
+        };
     }
 
     private async dailyResetTimer(client: KaikiAkairoClient<true>): Promise<void> {

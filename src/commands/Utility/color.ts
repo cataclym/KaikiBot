@@ -1,7 +1,7 @@
 import { PrefixSupplier } from "discord-akairo";
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
 import { AttachmentBuilder, EmbedBuilder, Message, resolveColor } from "discord.js";
-import { hexColorTable, imgFromColor } from "../../lib/Color";
+import { ColorNames, hexColorTable, imgFromColor } from "../../lib/Color";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import { KaikiColor } from "../../lib/Types/KaikiColor";
 import Utility from "../../lib/Utility";
@@ -35,7 +35,7 @@ export default class ColorCommand extends KaikiCommand {
 
         if (list) {
             const colorList = Object.keys(hexColorTable),
-                embedColor = hexColorTable[(colorList[Math.floor(Math.random() * colorList.length)])],
+                embedColor = hexColorTable[(colorList[Math.floor(Math.random() * colorList.length)]) as keyof ColorNames],
                 pages: EmbedBuilder[] = [];
 
             for (let index = Number(Constants.MAGIC_NUMBERS.CMDS.UTILITY.COLOR.CLR_NAMES_PR_PAGE), p = 0;

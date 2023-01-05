@@ -12,7 +12,7 @@ export default class Award extends KaikiCommand {
             args: [
                 {
                     id: "amount",
-                    type: KaikiArgumentsTypes.KaikiMoneyArgument,
+                    type: KaikiArgumentsTypes.moneyArgument,
                     otherwise: (m: Message) => ({
                         embeds: [
                             new EmbedBuilder({

@@ -1,6 +1,4 @@
 import { GuildMember, Message } from "discord.js";
-
-import getKawaiiResponseEmbed from "../../lib/APIs/KawaiiAPI";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 export default class Lick extends KaikiCommand {
@@ -22,8 +20,6 @@ export default class Lick extends KaikiCommand {
 
     public async exec(message: Message, { mention }: { mention: GuildMember | null }): Promise<void | Message> {
 
-        const embed = await getKawaiiResponseEmbed(message, "lick", mention);
-
-        if (embed) return message.channel.send({ embeds: [embed] });
+        return this.client.imageAPIs.KawaiiAPI.sendImageAPIRequest(message, "lick", mention);
     }
 }

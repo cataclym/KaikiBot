@@ -4,14 +4,14 @@ import APIProcessor from "./APIProcessor";
 import ImageAPI from "./Common/ImageAPI";
 import { ImageAPIOptions } from "./Common/Types";
 
-type APIs = "spank";
+type EndPoints = "catgirl";
 
-export default class NekosLife extends ImageAPI<APIs> {
-    constructor(data: ImageAPIOptions<"spank"> = NekosLife.data) {
+export default class NekosAPI extends ImageAPI<EndPoints> {
+    constructor(data: ImageAPIOptions<EndPoints> = NekosAPI.data) {
         super(data);
     }
 
-    public async sendImageAPIRequest<T extends APIs>(message: Message, endPoint: T, mention?: GuildMember | null) {
+    public async sendImageAPIRequest<T extends EndPoints>(message: Message, endPoint: T, mention?: GuildMember | null) {
 
         return message.channel.send({
             embeds: [
@@ -24,15 +24,14 @@ export default class NekosLife extends ImageAPI<APIs> {
         });
     }
 
-    static data: ImageAPIOptions<APIs> = {
+    static data: ImageAPIOptions<EndPoints> = {
         endPointData: {
-            "spank": {
-                action: "spanked",
-                color: hexColorTable["peachpuff"],
-                append: "🍑👋",
+            "catgirl": {
+                color: hexColorTable["lightgoldenrodyellow"],
+                action: false,
             },
         },
-        url: (endPoint: APIs) => `https://nekos.life/api/v2/img/${endPoint}`,
-        objectIndex: "url",
+        objectIndex: ["data", "0", "url"],
+        url: endPoint => `https://nekos.nekidev.com/api/image?categories=${endPoint}&?nsfw=sfw`,
     };
 }

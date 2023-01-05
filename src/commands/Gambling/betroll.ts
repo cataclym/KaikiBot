@@ -12,7 +12,7 @@ export default class BetRollCommand extends KaikiCommand {
             args: [
                 {
                     id: "number",
-                    type: KaikiArgumentsTypes.KaikiMoneyArgument,
+                    type: KaikiArgumentsTypes.moneyArgument,
                     otherwise: (m) => ({
                         embeds: [
                             new EmbedBuilder()

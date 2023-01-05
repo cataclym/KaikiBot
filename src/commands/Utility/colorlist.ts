@@ -2,6 +2,7 @@ import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
 import { AttachmentBuilder, ColorResolvable, EmbedBuilder, Message, MessageCreateOptions } from "discord.js";
 import { colorTable, hexColorTable, imgFromColor } from "../../lib/Color";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+import KaikiUtil from "../../lib/Kaiki/KaikiUtil";
 import Utility from "../../lib/Utility";
 
 export default class ColorListCommand extends KaikiCommand {
@@ -24,9 +25,9 @@ export default class ColorListCommand extends KaikiCommand {
         for (const color in colorTable) {
             const random = `${Math.random()}`;
 
-            const clr = Utility.HEXtoRGB(String(hexColorTable[color]));
+            if (!KaikiUtil.hasKey(hexColorTable, color)) return;
 
-            if (!clr) return;
+            const clr = Utility.HEXtoRGB(String(hexColorTable[color]));
 
             embeds.push(new EmbedBuilder()
                 .addFields([
