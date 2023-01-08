@@ -16,7 +16,7 @@
     "Prisma",
     "MySQL"
   ],
-  "author": "Cataclym <ole.kh@hotmail.com>",
+  "author": "Cata <cata@libernets.org>",
   "license": "MIT",
   "dependencies": {
     "@prisma/client": "^4.4.0",
