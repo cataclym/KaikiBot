@@ -30,7 +30,6 @@ export default class AddEmoteCommand extends KaikiCommand {
                 },
                 {
                     id: "name",
-                    // I forgot why this was a thing
                     type: Argument.union((m: Message, phrase) => {
                         if (!!m.attachments.first() && phrase) {
                             return phrase;

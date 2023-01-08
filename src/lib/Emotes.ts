@@ -74,14 +74,13 @@ export default class Emotes {
 
     // Takes a URL and a directory+filename and saves to that directory with that
     // file name.
-    static async saveFile(url: string, saveAs: fs.PathLike): Promise<void> {
+    static async saveFile(url: string, saveAs: string): Promise<void> {
         if (fs.existsSync(saveAs)) {
             return;
         }
         else {
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
-            await execFile("curl", [url, "-o", saveAs]);
+
+            await Emotes.execFile("curl", [url, "-o", saveAs]);
             return Promise.resolve();
         }
     }
