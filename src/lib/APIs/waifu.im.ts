@@ -9,11 +9,11 @@ export default class WaifuIm extends ImageAPI<EndPointSignatures> {
         super(imageAPIData);
     }
 
-    public async sendImageAPIRequest<T extends EndPointSignatures>(message: Message, endPoint: T, mention?: GuildMember | null) {
+    public async sendImageAPIRequest<T extends EndPointSignatures>(message: Message, endPoint: T, mention?: GuildMember | null, nsfw = false) {
         return message.channel.send({
             embeds: [
                 await APIProcessor.processImageAPIRequest(message,
-                    this.url(endPoint),
+                    this.url(endPoint, nsfw),
                     this.endPoints[endPoint],
                     this.objectIndex,
                     mention),
@@ -31,12 +31,27 @@ export default class WaifuIm extends ImageAPI<EndPointSignatures> {
                 action: "",
                 color: hexColorTable["lightskyblue"],
             },
+            "selfies": {
+                action: "",
+                color: hexColorTable["lightskyblue"],
+            },
+            "marin-kitagawa": {
+                action: "",
+                color: hexColorTable["lightskyblue"],
+            },
+            "ero": {
+                action: "",
+                color: hexColorTable["hotpink"],
+            },
         },
         objectIndex: ["images", "0", "url"],
-        url: (string: string) => `https://api.waifu.im/search/?included_tags=${string}&is_nsfw=false`,
+        url: (string: string, nsfw = false) => `https://api.waifu.im/search/?included_tags=${string}&is_nsfw=${nsfw}`,
     };
 
 }
 
 type EndPointSignatures = "uniform"
-    | "maid";
+    | "maid"
+    | "selfies"
+    | "marin-kitagawa"
+    | "ero";
