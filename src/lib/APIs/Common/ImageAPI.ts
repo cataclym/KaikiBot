@@ -4,7 +4,7 @@ export default class ImageAPI<FullEndpointType extends string> {
     readonly objectIndex: string | string[];
     readonly endPoints: ImageAPIEndPointTypes<FullEndpointType>;
     readonly token: string | undefined;
-    readonly url: (endPoint: FullEndpointType) => string;
+    readonly url: (endPoint: FullEndpointType, nsfw?: boolean) => string;
 
     constructor(imageAPIData: ImageAPIOptions<FullEndpointType>) {
         this.endPoints = imageAPIData.endPointData;
