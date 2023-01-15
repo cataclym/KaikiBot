@@ -18,7 +18,10 @@ export default class ServerList extends KaikiCommand {
         const { GUILDS_PER_PAGE } = Constants.MAGIC_NUMBERS.CMDS.UTILITY.SERVER_LIST;
         const pages = [];
         const embed = new EmbedBuilder()
+            .setDescription("Server list")
+            .setTitle(`Total Servers: ${this.client.guilds.cache.size}`)
             .withOkColor(message);
+
 
         for (let from = 0, to = GUILDS_PER_PAGE, guilds = [...this.client.guilds.cache.values()];
             from <= guilds.length;
@@ -28,7 +31,6 @@ export default class ServerList extends KaikiCommand {
                 .slice(from, to);
 
             const emb = EmbedBuilder.from(embed)
-                .setDescription("Server list");
 
             currentPageGuilds.forEach(guild => {
                 emb.addFields({
