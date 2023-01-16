@@ -9,13 +9,11 @@ export default class DadBot extends KaikiCommand {
         super("dadbot", {
             channel: "guild",
             editable: false,
-            condition: (message: Message) => {
-
-                if (message.author.bot) return false;
+            condition: (message: Message<true>) => {
 
                 if (!message.member) return false;
 
-                if (!message.guild?.isDadBotEnabled()) return false;
+                if (!message.guild.isDadBotEnabled()) return false;
 
                 if (message.member.hasExcludedRole()) return false;
 
@@ -50,7 +48,7 @@ export default class DadBot extends KaikiCommand {
 
         if (!nick || !message.member) return;
 
-        message.channel.send({
+        await message.channel.send({
             content: `Hi, ${nick}`,
             allowedMentions: {},
         });

@@ -147,6 +147,6 @@ export default class ConfigCommand extends KaikiCommand {
                 timeout: db.ByeTimeout,
             }, message.member));
         }
-        return sendPaginatedMessage(message, pages, {});
+        return sendPaginatedMessage(message, pages, { owner: message.author });
     }
 }
