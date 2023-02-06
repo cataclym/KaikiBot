@@ -1,7 +1,6 @@
 import cp from "child_process";
 import { Message } from "discord.js";
 import fs from "fs";
-import gifsicle from "gifsicle";
 import fetch from "node-fetch";
 import sharp from "sharp";
 import util from "util";
@@ -21,31 +20,11 @@ export default class Emotes {
     // It will first try 128x128 then recursively call itself to 64 then 32 if size
     // is not below 256kb.
     static async resizeImage(file: string, type: string, imgSize: number, msg?: Message | undefined): Promise<string | Buffer> {
-        if (type === "gif") {
-            // msg is only present on the first call and not recursively.
-            if (msg) {
-                msg.channel.send("Processing...");
-            }
-            // This one is broken! Not sure how to fix... // with some effort this "works".
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
-            await execFile(gifsicle, ["--resize-fit-width", imgSize, "-o", file, file]);
-
-            const fileSize = await Emotes.getFilesizeInBytes(file);
-            if (fileSize > Constants.MAGIC_NUMBERS.CMDS.EMOTES.MAX_FILESIZE) {
-                return Promise.resolve(this.resizeImage(file, type, imgSize / 2));
-            }
-            else {
-                return Promise.resolve(file);
-            }
-        }
-        else {
-            return Promise.resolve(
-                await sharp(file)
-                    .resize(Constants.MAGIC_NUMBERS.CMDS.EMOTES.MAX_WIDTH_HEIGHT, Constants.MAGIC_NUMBERS.CMDS.EMOTES.MAX_WIDTH_HEIGHT)
-                    .toBuffer(),
-            );
-        }
+        return Promise.resolve(
+            await sharp(file)
+                .resize(Constants.MAGIC_NUMBERS.CMDS.EMOTES.MAX_WIDTH_HEIGHT, Constants.MAGIC_NUMBERS.CMDS.EMOTES.MAX_WIDTH_HEIGHT)
+                .toBuffer(),
+        );
     }
 
     static getFilesizeInBytes(filename: fs.PathLike): Promise<number> {
