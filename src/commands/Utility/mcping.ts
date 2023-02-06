@@ -31,7 +31,9 @@ export default class MinecraftPingCommand extends KaikiCommand {
 
         if (result.online) {
 
-            const attachment = result?.icon?.length ? new AttachmentBuilder(Buffer.from(result.icon.slice(result.icon.indexOf(",")), "base64"), { name: "icon.png" }) : undefined;
+            const attachment = result?.icon?.length
+                ? new AttachmentBuilder(Buffer.from(result.icon.slice(result.icon.indexOf(",")), "base64"), { name: "icon.png" })
+                : undefined;
 
             const embed = new EmbedBuilder()
                 .setTitle("Ping! Server is online")

@@ -1,7 +1,7 @@
 import { Argument } from "discord-akairo";
 import { Attachment, Message, PermissionsBitField } from "discord.js";
-import sizeOf from "image-size";
 import Emotes from "../../lib/Emotes";
+import ArgumentError from "../../lib/Errors/ArgumentError";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
@@ -22,8 +22,9 @@ export default class AddEmoteCommand extends KaikiCommand {
                 {
                     id: "url",
                     type: Argument.union(Constants.imageRegex, Constants.emoteRegex, (m: Message) => {
-                        if (m.attachments.first()) {
-                            return m.attachments.first();
+                        const first = m.attachments.first();
+                        if (first && first.contentType && first.contentType.slice(0, first.contentType.indexOf("/")) === "image") {
+                            return first;
                         }
                     }),
                     otherwise: (m: Message) => ({ embeds: [KaikiEmbeds.genericArgumentError(m)] }),
@@ -46,54 +47,70 @@ export default class AddEmoteCommand extends KaikiCommand {
         name,
     }: { url: { match: RegExpMatchArray, matches: [][] } | Attachment, name: string | null | undefined }): Promise<Message | void> {
 
-        let emote, urlMatch;
+        let emoteUrl, urlMatch, type;
 
-        if (!(url instanceof Attachment)) {
+        // Attached image
+        if (url instanceof Attachment) {
+            emoteUrl = url.url || url.proxyURL;
+            name = name || url.name?.slice(0, url.name.lastIndexOf("."));
+
+            type = url.contentType
+                ? url.contentType.slice(url.contentType.indexOf("/") + 1)
+                : "png";
+        }
+
+        else {
             urlMatch = url.match[0].toString();
 
             if (urlMatch.startsWith("<") && urlMatch.endsWith(">")) {
 
                 const emoteID = urlMatch.match(/\d+/g);
 
-                if (emoteID) {
-                    emote = `https://cdn.discordapp.com/emojis/${emoteID.toString()}.${urlMatch.indexOf("a") === 1 ? "gif" : "png"}`;
-                    name = name ?? urlMatch.slice(2, urlMatch.lastIndexOf(":")).replace(":", "");
-                }
+                type = urlMatch.indexOf("a") === 1 ? "gif" : "png";
+
+                if (!emoteID) return;
+
+                // Construct emote url - If it has '<a:...'  at the beginning, then it's a gif format.
+                emoteUrl = `https://cdn.discordapp.com/emojis/${emoteID.toString()}.${type}`;
+
+                // Get emote name from emote construction <:name:snowflake>
+                name = name ?? urlMatch.slice(2, urlMatch.lastIndexOf(":")).replace(":", "");
             }
             else {
-                emote = urlMatch;
+
+                if (!name) throw new ArgumentError("Missing name argument.");
+
+                emoteUrl = urlMatch;
+                type = urlMatch.slice(urlMatch.lastIndexOf(".") + 1);
             }
         }
-        else {
-            emote = url.url || url.proxyURL;
-            name = name || url.name?.slice(0, url.name.lastIndexOf("."));
-        }
 
-        if (!emote) return;
+        if (!emoteUrl || !name) return;
 
         const msNow = Date.now().toString();
-        const file = Emotes.getFileOut(msNow);
+        const filePath = Emotes.filePath(msNow);
 
-        name = Utility.trim(name || msNow, Constants.MAGIC_NUMBERS.CMDS.EMOTES.ADD_EMOTE.NAME_MAX_LENGTH).replace(/ /g, "_");
-        await Emotes.saveFile(emote, file);
+        name = Utility.trim(name, Constants.MAGIC_NUMBERS.CMDS.EMOTES.ADD_EMOTE.NAME_MAX_LENGTH)
+            .replace(/ /g, "_");
 
-        // Example output: { width: 240, height: 240, type: 'gif' }
-        const imgDimensions = sizeOf(file),
-            fileSize = await Emotes.getFilesizeInBytes(file);
+        await Emotes.fetchEmote(emoteUrl, filePath);
 
-        // Had to add filesizeCheck
-        if ((imgDimensions.width && imgDimensions.height)
-            && imgDimensions.width <= Constants.MAGIC_NUMBERS.CMDS.EMOTES.MAX_WIDTH_HEIGHT
-            && imgDimensions.height <= Constants.MAGIC_NUMBERS.CMDS.EMOTES.MAX_WIDTH_HEIGHT
-            && fileSize <= Constants.MAGIC_NUMBERS.CMDS.EMOTES.MAX_FILESIZE) {
+        const fileSize = await Emotes.getFilesizeInBytes(filePath);
 
-            await Emotes.saveEmoji(message, emote, name);
+        // Adds emoteUrl if size is ok
+        if (fileSize <= Constants.MAGIC_NUMBERS.CMDS.EMOTES.MAX_FILESIZE) {
+            await Emotes.saveEmoji(message, emoteUrl, name);
+            return await Emotes.deleteImage(filePath);
         }
 
-        else if (imgDimensions.type) {
-            const img = await Emotes.resizeImage(file, imgDimensions.type, 128, message);
+        else if (!type) {
+            return Emotes.deleteImage(filePath);
+        }
+
+        else {
+            const img = await Emotes.resizeImage(filePath, type, 128, message);
             await Emotes.saveEmoji(message, img, name);
+            return await Emotes.deleteImage(filePath);
         }
-        await Emotes.deleteImage(file);
     }
 }

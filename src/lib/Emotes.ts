@@ -1,7 +1,8 @@
 import cp from "child_process";
-import { GuildEmoji, Message } from "discord.js";
+import { Message } from "discord.js";
 import fs from "fs";
 import gifsicle from "gifsicle";
+import fetch from "node-fetch";
 import sharp from "sharp";
 import util from "util";
 import Constants from "../struct/Constants";
@@ -53,34 +54,37 @@ export default class Emotes {
         return Promise.resolve(fileSizeInBytes);
     }
 
-    static async saveEmoji(message: Message, file: string | Buffer, name: string): Promise<Message | void> {
-        return message.guild?.emojis
-            .create({ attachment: file, name })
-            .then((emoji: GuildEmoji) => {
-                message.channel.send(`Successfully uploaded **${name}** ${emoji}.`);
-                return Promise.resolve();
-            })
-            .catch((e: GuildEmoji) => {
-                message.channel.send(`Unable to create emoji: ${e}`);
-                return Promise.resolve();
-            });
-    }
+    static async saveEmoji(message: Message, file: string | Buffer, name: string): Promise<Message> {
+        const promise = await message.guild?.emojis.create({ attachment: file, name });
 
-    // Takes a message and returns the output location for saved files
-    static getFileOut(name: string): string {
-        // Need to check for file extensions
-        return `./images${name}`;
-    }
-
-    // Takes a URL and a directory+filename and saves to that directory with that
-    // file name.
-    static async saveFile(url: string, saveAs: string): Promise<void> {
-        if (fs.existsSync(saveAs)) {
-            return;
+        if (promise) {
+            return Promise.resolve(message.channel.send(`Successfully uploaded **${name}** ${promise}.`));
         }
-        else {
 
-            await Emotes.execFile("curl", [url, "-o", saveAs]);
+        else {
+            return Promise.resolve(message.channel.send(`Unable to create emoji: ${name}`));
+        }
+    }
+
+    // Takes a name and returns the output location for the saved file
+    static filePath(name: string): string {
+        // Makes file hidden
+        return `./.images${name}`;
+    }
+
+    // Takes a URL and a path+filename and saves it..
+    static async fetchEmote(url: string, saveAs: string) {
+        if (fs.existsSync(saveAs)) {
+            return Promise.reject();
+        }
+
+        else {
+            const file = await fetch(url);
+
+            if (!file.ok || !file.body) return Promise.reject();
+
+            fs.writeFileSync(saveAs, await file.buffer());
+
             return Promise.resolve();
         }
     }
