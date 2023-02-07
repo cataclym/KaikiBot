@@ -20,11 +20,17 @@ export default class Emotes {
     // It will first try 128x128 then recursively call itself to 64 then 32 if size
     // is not below 256kb.
     static async resizeImage(file: string, type: string, imgSize: number, msg?: Message | undefined): Promise<string | Buffer> {
-        return Promise.resolve(
-            await sharp(file)
-                .resize(Constants.MAGIC_NUMBERS.CMDS.EMOTES.MAX_WIDTH_HEIGHT, Constants.MAGIC_NUMBERS.CMDS.EMOTES.MAX_WIDTH_HEIGHT)
-                .toBuffer(),
-        );
+
+        const bool = type === "gif";
+
+        const sharpFile = await sharp(file, { animated: bool });
+
+        return Promise.resolve(sharpFile
+            .resize(Constants.MAGIC_NUMBERS.CMDS.EMOTES.MAX_WIDTH_HEIGHT, Constants.MAGIC_NUMBERS.CMDS.EMOTES.MAX_WIDTH_HEIGHT, {
+                fit: "contain",
+                background: { r: 0, g: 0, b: 0, alpha: 0 },
+            })
+            .toBuffer());
     }
 
     static getFilesizeInBytes(filename: fs.PathLike): Promise<number> {
