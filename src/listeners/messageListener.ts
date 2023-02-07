@@ -18,6 +18,7 @@ export default class MessageListener extends KaikiListener {
         if (!message.client.cache.emoteReactCache.has(message.guildId)) {
             await KaikiCache.populateERCache(message);
         }
+
         await Emotes.countEmotes(message);
     }
 }

@@ -1,15 +1,12 @@
-import cp from "child_process";
 import { Message } from "discord.js";
 import fs from "fs";
 import fetch from "node-fetch";
 import sharp from "sharp";
-import util from "util";
 import Constants from "../struct/Constants";
 
 export default class Emotes {
 
-    static execFile = util.promisify(cp.execFile);
-
+    // Deletes files at filepath
     static async deleteImage(file: fs.PathLike): Promise<void> {
         fs.unlink(file, err => {
             if (err) throw err;
@@ -17,16 +14,15 @@ export default class Emotes {
         });
     }
 
-    // It will first try 128x128 then recursively call itself to 64 then 32 if size
-    // is not below 256kb.
-    static async resizeImage(file: string, type: string, imgSize: number, msg?: Message | undefined): Promise<string | Buffer> {
+    // Resizes images, including gifs - returns them in buffer format
+    static async resizeImage(file: string, type: string, imgSize?: number): Promise<string | Buffer> {
 
         const bool = type === "gif";
 
         const sharpFile = await sharp(file, { animated: bool });
 
         return Promise.resolve(sharpFile
-            .resize(Constants.MAGIC_NUMBERS.CMDS.EMOTES.MAX_WIDTH_HEIGHT, Constants.MAGIC_NUMBERS.CMDS.EMOTES.MAX_WIDTH_HEIGHT, {
+            .resize(imgSize || Constants.MAGIC_NUMBERS.CMDS.EMOTES.MAX_WIDTH_HEIGHT, imgSize || Constants.MAGIC_NUMBERS.CMDS.EMOTES.MAX_WIDTH_HEIGHT, {
                 fit: "contain",
                 background: { r: 0, g: 0, b: 0, alpha: 0 },
             })
@@ -35,8 +31,7 @@ export default class Emotes {
 
     static getFilesizeInBytes(filename: fs.PathLike): Promise<number> {
         const stats = fs.statSync(filename);
-        const fileSizeInBytes = stats.size;
-        return Promise.resolve(fileSizeInBytes);
+        return Promise.resolve(stats.size);
     }
 
     static async saveEmoji(message: Message, file: string | Buffer, name: string): Promise<Message> {
@@ -75,35 +70,39 @@ export default class Emotes {
     }
 
     static async countEmotes(message: Message): Promise<void> {
-        if (message.guild) {
-            const { guild } = message,
-                emotes = message.content.match(/<?(a)?:.+?:\d+>/g);
-            if (emotes) {
-                const ids = emotes.toString().match(/\d+/g);
-                if (ids) {
-                    const request = ids.map(item => {
-                        const emote = guild.emojis.cache.get(item);
-                        if (emote) {
-                            return message.client.orm.emojiStats.upsert({
-                                where: {
-                                    EmojiId: BigInt(emote.id),
-                                },
-                                create: {
-                                    EmojiId: BigInt(emote.id),
-                                    Count: BigInt(1),
-                                    GuildId: BigInt(guild.id),
-                                },
-                                update: {
-                                    Count: {
-                                        increment: 1n,
-                                    },
-                                },
-                            });
-                        }
-                    }).filter(<T>(n?: T): n is T => Boolean(n));
-                    await message.client.orm.$transaction(request);
-                }
+        if (!message.guild) return;
+
+        const { guild } = message,
+            emotes = message.content.match(/<?(a)?:.+?:\d+>/g);
+
+        if (!emotes) return;
+
+        const ids = emotes.toString().match(/\d+/g);
+
+        if (!ids) return;
+
+        const request = ids.map(item => {
+            const emote = guild.emojis.cache.get(item);
+
+            if (emote) {
+                return message.client.orm.emojiStats.upsert({
+                    where: {
+                        EmojiId: BigInt(emote.id),
+                    },
+                    create: {
+                        EmojiId: BigInt(emote.id),
+                        Count: BigInt(1),
+                        GuildId: BigInt(guild.id),
+                    },
+                    update: {
+                        Count: {
+                            increment: 1n,
+                        },
+                    },
+                });
             }
-        }
+        }).filter(<T>(n?: T): n is T => Boolean(n));
+
+        await message.client.orm.$transaction(request);
     }
 }
