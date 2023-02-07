@@ -1,7 +1,10 @@
 import logger from "loglevel";
 // Here we define our query as a multi-line string
 // Storing it in a separate .graphql/.gql file is also possible
-export const aniQuery = `
+
+export default class AnilistGraphQL {
+
+    static aniQuery = `
 query ($page: Int, $perPage: Int, $search: String, $type: MediaType) {
           Page(page: $page, perPage: $perPage) {
             media(search: $search, type: $type) {
@@ -61,7 +64,7 @@ query ($page: Int, $perPage: Int, $search: String, $type: MediaType) {
         }
 `;
 
-export const mangaQuery = `
+    static mangaQuery = `
 query ($page: Int, $perPage: Int, $search: String, $type: MediaType) {
           Page(page: $page, perPage: $perPage) {
             media(search: $search, type: $type) {
@@ -116,14 +119,15 @@ query ($page: Int, $perPage: Int, $search: String, $type: MediaType) {
         }
 `;
 
-export function handleResponse(response: { json: () => Promise<any>; ok: any; }) {
-    return response.json().then((json) => {
-        return response.ok
-            ? json
-            : Promise.reject(json);
-    });
-}
+    static handleResponse(response: { json: () => Promise<any>; ok: any; }) {
+        return response.json().then((json) => {
+            return response.ok
+                ? json
+                : Promise.reject(json);
+        });
+    }
 
-export function handleError(error: any) {
-    logger.error(error);
+    static handleError(error: any) {
+        logger.error(error);
+    }
 }

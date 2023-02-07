@@ -1,7 +1,7 @@
 import { EmbedBuilder, Message } from "discord.js";
 import fetch from "node-fetch";
 
-import { handleError, handleResponse, mangaQuery } from "../../lib/APIs/AnilistGraphQL";
+import AnilistGraphQL from "../../lib/APIs/AnilistGraphQL";
 import MangaData from "../../lib/Interfaces/MangaData";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
@@ -35,7 +35,7 @@ export default class MangaCommand extends KaikiCommand {
                     "Accept": "application/json",
                 },
                 body: JSON.stringify({
-                    query: mangaQuery,
+                    query: AnilistGraphQL.mangaQuery,
                     variables: {
                         search: manga,
                         page: 1,
@@ -45,7 +45,7 @@ export default class MangaCommand extends KaikiCommand {
                 }),
             };
 
-        return await fetch(url, options).then(handleResponse)
+        return await fetch(url, options).then(AnilistGraphQL.handleResponse)
             .then((response: MangaData) => {
                 const {
                     coverImage,
@@ -89,7 +89,7 @@ export default class MangaCommand extends KaikiCommand {
                     ],
                 });
             })
-            .catch(handleError);
+            .catch(AnilistGraphQL.handleError);
     }
 }
 

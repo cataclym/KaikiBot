@@ -1,7 +1,6 @@
 import { EmbedBuilder, Message } from "discord.js";
 import fetch from "node-fetch";
-
-import { aniQuery, handleError, handleResponse } from "../../lib/APIs/AnilistGraphQL";
+import AnilistGraphQL from "src/lib/APIs/AnilistGraphQL";
 import AnimeData from "../../lib/Interfaces/AnimeData";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
@@ -35,7 +34,7 @@ export default class AnimeCommand extends KaikiCommand {
                     "Accept": "application/json",
                 },
                 body: JSON.stringify({
-                    query: aniQuery,
+                    query: AnilistGraphQL.aniQuery,
                     variables: {
                         search: anime,
                         page: 1,
@@ -45,7 +44,8 @@ export default class AnimeCommand extends KaikiCommand {
                 }),
             };
 
-        return await fetch(url, options).then(handleResponse)
+        return await fetch(url, options)
+            .then(AnilistGraphQL.handleResponse)
             .then((response: AnimeData) => {
 
                 const {
@@ -91,7 +91,7 @@ export default class AnimeCommand extends KaikiCommand {
                     ],
                 });
             })
-            .catch(handleError);
+            .catch(AnilistGraphQL.handleError);
     }
 }
 
