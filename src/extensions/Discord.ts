@@ -66,11 +66,20 @@ EmbedBuilder.prototype.withErrorColor = function(messageOrGuild?: Message | Guil
     if (messageOrGuild) {
 
         if (messageOrGuild instanceof Message && messageOrGuild.inGuild()) {
-            return this.setColor(messageOrGuild.client.guildsDb.get(messageOrGuild.guildId, "ErrorColor", Constants.errorColor));
+
+            const color = messageOrGuild.client.guildsDb.get(messageOrGuild.guildId, "ErrorColor", Constants.errorColor);
+
+            return this.setColor(Array.isArray(color)
+                ? color
+                : Number(color));
         }
 
         else {
-            return this.setColor(messageOrGuild.client.guildsDb.get(messageOrGuild.id, "ErrorColor", Constants.errorColor));
+            const color = messageOrGuild.client.guildsDb.get(messageOrGuild.id, "ErrorColor", Constants.errorColor);
+
+            return this.setColor(Array.isArray(color)
+                ? color
+                : Number(color));
         }
     }
 
@@ -82,11 +91,19 @@ EmbedBuilder.prototype.withOkColor = function(messageOrGuild?: Message | Guild) 
     if (messageOrGuild) {
 
         if (messageOrGuild instanceof Message && messageOrGuild.inGuild()) {
-            return this.setColor(messageOrGuild.client.guildsDb.get(messageOrGuild.guildId, "OkColor", Constants.okColor));
+            const color = messageOrGuild.client.guildsDb.get(messageOrGuild.guildId, "OkColor", Constants.okColor);
+
+            return this.setColor(Array.isArray(color)
+                ? color
+                : Number(color));
         }
 
         else {
-            return this.setColor(messageOrGuild.client.guildsDb.get(messageOrGuild.id, "OkColor", Constants.okColor));
+            const color = messageOrGuild.client.guildsDb.get(messageOrGuild.id, "OkColor", Constants.okColor);
+
+            return this.setColor(Array.isArray(color)
+                ? color
+                : Number(color));
         }
     }
 
