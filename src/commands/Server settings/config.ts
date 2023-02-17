@@ -134,14 +134,14 @@ export default class ConfigCommand extends KaikiCommand {
         const pages: MessageCreateOptions[] = [firstPage];
 
         if (db.WelcomeMessage) {
-            pages.push(await GreetHandler.createAndParseWelcomeLeaveMessage({
+            pages.push(await GreetHandler.createAndParseGreetMsg({
                 embed: db.WelcomeMessage || null,
                 channel: db.WelcomeChannel,
                 timeout: db.WelcomeTimeout,
             }, message.member));
         }
         if (db.ByeMessage) {
-            pages.push(await GreetHandler.createAndParseWelcomeLeaveMessage({
+            pages.push(await GreetHandler.createAndParseGreetMsg({
                 embed: db.ByeMessage || null,
                 channel: db.ByeChannel,
                 timeout: db.ByeTimeout,

@@ -6,6 +6,7 @@ import {
     GuildMember,
     Message,
     MessageCreateOptions,
+    PermissionsBitField,
     StickerResolvable,
 } from "discord.js";
 
@@ -60,20 +61,25 @@ export default class GreetHandler {
         }
     }
 
-    static async createAndParseWelcomeLeaveMessage(data: SendMessageData, guildMember: GuildMember): Promise<MessageCreateOptions> {
+    static async createAndParseGreetMsg(data: SendMessageData, guildMember: GuildMember): Promise<MessageCreateOptions> {
         if (!data.embed) return GreetHandler.emptyMessageOptions(guildMember.guild);
         return JSON.parse(await GreetHandler.parsePlaceHolders(data.embed, guildMember));
     }
 
     static async sendWelcomeLeaveMessage(data: SendMessageData, guildMember: GuildMember): Promise<Message | void> {
+
         if (!data.channel || !data.embed) return;
 
         const channel = guildMember.guild.channels.cache.get(String(data.channel))
             ?? await guildMember.guild.client.channels.fetch(String(data.channel), { cache: true });
 
-        if (channel && channel.type !== ChannelType.GuildText && channel.type !== ChannelType.GuildNews || channel?.type !== ChannelType.GuildText) return;
+        if (!channel) return;
 
-        const parsedMessageOptions = await GreetHandler.createAndParseWelcomeLeaveMessage(<SendMessageData>data, guildMember);
+        if (channel.type !== ChannelType.GuildText && channel.type !== ChannelType.GuildNews) return;
+
+        if (!channel.permissionsFor(guildMember.client.user)?.has(PermissionsBitField.Flags.SendMessages)) return;
+
+        const parsedMessageOptions = await GreetHandler.createAndParseGreetMsg(<SendMessageData>data, guildMember);
 
         return channel.send(parsedMessageOptions)
             .then((m) => {
