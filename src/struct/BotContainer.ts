@@ -1,6 +1,6 @@
+import fs from "fs/promises";
 import chalk from "chalk";
 import { EmbedBuilder, Team } from "discord.js";
-import fs from "fs/promises";
 import logger from "loglevel";
 import KaikiAkairoClient from "../lib/Kaiki/KaikiAkairoClient";
 

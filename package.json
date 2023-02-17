@@ -46,6 +46,8 @@
     "@typescript-eslint/parser": "^5.50.0",
     "auto-changelog": "^2.4.0",
     "eslint": "^8.33.0",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-import-resolver-typescript": "^3.5.3",
     "prisma": "^4.9.0"
   },
   "description": "Discord bot built with Discord-Akairo and MySQL2",

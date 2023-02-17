@@ -1,11 +1,11 @@
+import { execSync } from "child_process";
+import { join } from "path";
 import { type PrismaClient } from "@prisma/client";
 import chalk from "chalk";
-import { execSync } from "child_process";
 import { AkairoClient, CommandHandler, CommandHandlerOptions, InhibitorHandler, ListenerHandler } from "discord-akairo";
 import { GatewayIntentBits, Guild, Partials, User } from "discord.js";
 import logger from "loglevel";
 import { Pool } from "mysql2/promise";
-import { join } from "path";
 import KaikiCache from "../../cache/KaikiCache";
 import Constants from "../../struct/Constants";
 import Database from "../../struct/db/Database";

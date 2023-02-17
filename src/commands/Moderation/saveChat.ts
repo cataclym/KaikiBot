@@ -1,5 +1,5 @@
-import { Collection, Message, MessageReaction, PermissionsBitField } from "discord.js";
 import fs from "fs";
+import { Collection, Message, MessageReaction, PermissionsBitField } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 import KaikiEmbeds from "../../lib/KaikiEmbeds";

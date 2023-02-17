@@ -1,9 +1,9 @@
 import { execSync } from "child_process";
-
+import * as process from "process";
 import { version as akairoVersion } from "discord-akairo";
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
 import { ChannelType, EmbedBuilder, Message, time, version } from "discord.js";
-import * as process from "process";
+
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 export default class StatsCommand extends KaikiCommand {

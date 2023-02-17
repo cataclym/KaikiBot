@@ -1,7 +1,7 @@
+import querystring from "querystring";
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
 import { EmbedBuilder, Message } from "discord.js";
 import fetch from "node-fetch";
-import querystring from "querystring";
 import { UrbanResponse } from "../../lib/Interfaces/UrbanResponse";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiUtil from "../../lib/Kaiki/KaikiUtil";

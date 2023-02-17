@@ -1,8 +1,8 @@
+import querystring from "querystring";
 import { EmbedBuilder, Message } from "discord.js";
 
 import fetch from "node-fetch";
 import { parse } from "node-html-parser";
-import querystring from "querystring";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
