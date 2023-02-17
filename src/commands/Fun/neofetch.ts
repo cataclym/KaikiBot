@@ -63,7 +63,7 @@ export default class NeofetchCommand extends KaikiCommand {
                 if (error || stderr) {
                     return logger.error(error);
                 }
-                return message.channel.send(await Utility.codeblock(stdout.replace(/```/g, "\u0300`\u0300`\u0300`\u0300")));
+                return message.channel.send(await Utility.codeblock("\u00AD" + stdout.replace(/```/g, "\u0300`\u0300`\u0300`\u0300")));
             });
         }
     }
