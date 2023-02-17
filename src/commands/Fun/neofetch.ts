@@ -1,12 +1,10 @@
-/* eslint-disable no-useless-escape */
 import { exec } from "child_process";
+import * as process from "process";
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
 import { EmbedBuilder, Message } from "discord.js";
 import logger from "loglevel";
-import * as process from "process";
 import { distros } from "../../lib/distros.json";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-
 import Utility from "../../lib/Utility";
 import Constants from "../../struct/Constants";
 
@@ -21,7 +19,14 @@ export default class NeofetchCommand extends KaikiCommand {
             args: [
                 {
                     id: "os",
-                    type: distros,
+                    type: (_, phrase) => distros.find(str => {
+
+                        const k = str.toLowerCase();
+
+                        return phrase
+                            .toLowerCase()
+                            .startsWith(k.slice(0, Math.max(phrase.length - 1, 1)));
+                    }),
                     default: null,
                 },
                 {
@@ -32,17 +37,6 @@ export default class NeofetchCommand extends KaikiCommand {
             ],
         });
     }
-
-    static colors = [
-        "30",
-        "31",
-        "32",
-        "33",
-        "34",
-        "35",
-        "36",
-        "37",
-    ];
 
     public async exec(message: Message, { os, list }: { os: string | null, list: boolean }): Promise<Message | void> {
 
@@ -59,11 +53,11 @@ export default class NeofetchCommand extends KaikiCommand {
         }
 
         else {
-            let cmd = `neofetch -L --ascii_distro ${os}|sed 's/\x1B\[[0-9;\?]*[a-zA-Z]//g'`;
+            let cmd = `neofetch -L --ascii_distro ${os}|sed 's/\x1B\\[[0-9;?]*[a-zA-Z]//g'`;
 
             const { platform } = process;
 
-            if (!os && platform !== "win32") cmd = "neofetch -L | sed 's/\x1B\[[0-9;\?]*[a-zA-Z]//g'";
+            if (!os && platform !== "win32") cmd = "neofetch -L | sed 's/\x1B\\[[0-9;\\?]*[a-zA-Z]//g'";
 
             exec(cmd, async (error, stdout, stderr) => {
                 if (error || stderr) {
