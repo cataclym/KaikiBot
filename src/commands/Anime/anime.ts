@@ -1,6 +1,6 @@
 import { EmbedBuilder, Message } from "discord.js";
 import fetch from "node-fetch";
-import AnilistGraphQL from "src/lib/APIs/AnilistGraphQL";
+import AnilistGraphQL from "../../lib/APIs/AnilistGraphQL";
 import AnimeData from "../../lib/Interfaces/AnimeData";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
