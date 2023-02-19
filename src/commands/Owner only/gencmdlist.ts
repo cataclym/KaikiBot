@@ -18,14 +18,21 @@ export default class GenCmdListCommand extends KaikiCommand {
 
         return message.channel.send({
             files: [
-                new AttachmentBuilder(Buffer.from(JSON.stringify(list.map((value) => {
-                    return [value[0], value[1].map((v: KaikiCommand) => new GeneratedCommand(v))];
-                }), (key, value) =>
-                    typeof value === "bigint"
-                        ? value.toString()
-                        : value,
-                4,
-                ), "utf-8"), { name: "cmdlist.json" }),
+                new AttachmentBuilder(Buffer.from(JSON
+                    .stringify(list
+                        .map((value) => {
+                            // Category ID, Command[]
+                            return [
+                                value[0], value[1]
+                                    .filter(v => !!v.aliases.length)
+                                    .map((v: KaikiCommand) => new GeneratedCommand(v)),
+                            ];
+                        }), (key, value) =>
+                        typeof value === "bigint"
+                            ? value.toString()
+                            : value,
+                    4,
+                    ), "utf-8"), { name: "cmdlist.json" }),
             ],
         });
     }
