@@ -21,6 +21,9 @@
   "dependencies": {
     "@notenoughupdates/discord-akairo": "^10.0.2-dev.1665278616.f608444",
     "@prisma/client": "^4.9.0",
+    "@types/node-emoji": "^1.8.2",
+    "@types/node-fetch": "^2.6.2",
+    "@types/sharp": "^0.31.1",
     "bufferutil": "^4.0.6",
     "chalk": "^4.1.2",
     "discord-akairo": "node_modules/@notenoughupdates/discord-akairo",
@@ -39,9 +42,6 @@
     "zlib-sync": "^0.1.8"
   },
   "devDependencies": {
-    "@types/node-emoji": "^1.8.2",
-    "@types/node-fetch": "^2.6.2",
-    "@types/sharp": "^0.31.1",
     "@typescript-eslint/eslint-plugin": "^5.50.0",
     "@typescript-eslint/parser": "^5.50.0",
     "auto-changelog": "^2.4.0",

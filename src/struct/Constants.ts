@@ -2,7 +2,6 @@
 
 import { BotSettings_ActivityType } from "@prisma/client";
 import { ActivityType, ChannelType, GuildFeature, RGBTuple, UserFlagsString } from "discord.js";
-import { TheseDoNotYetExist } from "../lib/Types/Miscellaneous";
 
 export default class Constants {
 
@@ -19,13 +18,12 @@ export default class Constants {
     static emoteRegex = /<(a?)((!?\d+)|(:.+?:\d+))>/g;
     static imageRegex = /(http(s?):)([/|.\w\s-])*\.(?:jpg|gif|png|jpeg)/gi;
 
-    static guildFeatures: { [index in GuildFeature]: string } & { [index in TheseDoNotYetExist]: string } = {
+    static guildFeatures: { [index in GuildFeature]: string } = {
         ANIMATED_BANNER: "Animated banner",
         ANIMATED_ICON: "Animated icon",
         APPLICATION_COMMAND_PERMISSIONS_V2: "Application permissions v2",
         AUTO_MODERATION: "Auto moderation",
         BANNER: "Banner",
-        BOOSTING_TIERS_EXPERIMENT_MEDIUM_GUILD: "Experimental boosting tiers",
         COMMUNITY: "Community",
         CREATOR_MONETIZABLE_PROVISIONAL: "Creator monetization enabled",
         CREATOR_STORE_PAGE: "Creator store page",
@@ -37,12 +35,10 @@ export default class Constants {
         INVITES_DISABLED: "Disabled invites",
         INVITE_SPLASH: "Invite splash",
         LINKED_TO_HUB: "Linked to student hub",
-        MEMBER_PROFILES: "Member profiles",
         MEMBER_VERIFICATION_GATE_ENABLED: "Member verification enabled",
         MONETIZATION_ENABLED: "Monetization enabled",
         MORE_STICKERS: "More stickers",
         NEWS: "News",
-        NEW_THREAD_PERMISSIONS: "New thread permissions",
         PARTNERED: "Partnered",
         PREVIEW_ENABLED: "Preview enabled",
         PRIVATE_THREADS: "Private threads",
@@ -50,9 +46,6 @@ export default class Constants {
         ROLE_ICONS: "Role icons",
         ROLE_SUBSCRIPTIONS_AVAILABLE_FOR_PURCHASE: "Role subscription available",
         ROLE_SUBSCRIPTIONS_ENABLED: "Role subscription enabled",
-        TEXT_IN_VOICE_ENABLED: "Text in voice",
-        THREADS_ENABLED: "Threads enabled",
-        THREE_DAY_THREAD_ARCHIVE: "Three-day thread archives",
         TICKETED_EVENTS_ENABLED: "Ticketed events enabled",
         VANITY_URL: "Vanity URL",
         VERIFIED: "Verified",
@@ -96,7 +89,7 @@ export default class Constants {
     };
 
     static flags: { [index in UserFlagsString]: string } = {
-        ActiveDeveloper: "Acrive developer",
+        ActiveDeveloper: "Active developer",
         BotHTTPInteractions: "Bot interactions",
         BugHunterLevel1: "Bug Hunter (Level 1) 🐛",
         BugHunterLevel2: "Bug Hunter (Level 2) 🐛",
