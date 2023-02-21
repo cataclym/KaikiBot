@@ -89,7 +89,7 @@ export default class Constants {
     };
 
     static flags: { [index in UserFlagsString]: string } = {
-        ActiveDeveloper: "Acrive developer",
+        ActiveDeveloper: "Active developer",
         BotHTTPInteractions: "Bot interactions",
         BugHunterLevel1: "Bug Hunter (Level 1) 🐛",
         BugHunterLevel2: "Bug Hunter (Level 2) 🐛",
