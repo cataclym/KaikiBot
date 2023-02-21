@@ -43,7 +43,12 @@ export default class CommandsList extends KaikiCommand {
         });
     }
 
+    static ignoredCategories = ["default", "Etc"];
+
     public async exec(message: Message, { category }: { category: Category<string, KaikiCommand> }) {
+
+        const filteredCategories = this.handler.categories
+            .filter(cat => !CommandsList.ignoredCategories.includes(cat.id));
 
         // Return commands in the provided category
         if (category) {
@@ -57,7 +62,7 @@ export default class CommandsList extends KaikiCommand {
             const component = new ActionRowBuilder<SelectMenuBuilder>()
                 .setComponents(new StringSelectMenuBuilder()
                     .setCustomId(timestamp)
-                    .setOptions(this.handler.categories
+                    .setOptions(filteredCategories
                         .map(cat => new StringSelectMenuOptionBuilder({
                             value: cat.id,
                             label: cat.id,
@@ -69,10 +74,7 @@ export default class CommandsList extends KaikiCommand {
             const embed = await this.categoriesEmbed(message, (this.handler.prefix as PrefixSupplier)(message));
 
             // Add every category as embed fields
-            // Skipping default and Etc categories
-            for (const cat of this.handler.categories.values()) {
-                if (["default", "Etc"].includes(cat.id)) continue;
-
+            for (const [, cat] of filteredCategories) {
                 embed.addFields([
                     {
                         name: `${cat.id} [${cat.filter(c => !!c.aliases.length).size}]`,
@@ -82,12 +84,12 @@ export default class CommandsList extends KaikiCommand {
                 ]);
             }
 
-            await message.channel.send({
+            const interactionMessage = await message.channel.send({
                 embeds: [embed],
                 components: [component],
             });
 
-            return this.handleComponentReply(message, timestamp, embed);
+            return this.handleComponentReply(interactionMessage, message.author.id, timestamp, embed);
         }
     }
 
@@ -96,7 +98,7 @@ export default class CommandsList extends KaikiCommand {
         const emb = new EmbedBuilder()
             .setTitle(`Commands in ${category.id}`)
             .setDescription(category
-                .filter(cmd => !(cmd.subCategory !== undefined))
+                .filter(cmd => cmd.subCategory === undefined)
                 .filter(cmd => cmd.aliases.length > 0)
                 .map(cmd => `[\`${cmd.aliases
                     .sort((a, b) => b.length - a.length
@@ -150,20 +152,40 @@ export default class CommandsList extends KaikiCommand {
         },
     });
 
-    private handleComponentReply(message: Message, timestamp: string, emb: EmbedBuilder) {
+    private async handleComponentReply(message: Message, userId: string, timestamp: string, emb: EmbedBuilder) {
 
-        const collector = message.createMessageComponentCollector({
-            time: 120000,
+        const promise = await message.awaitMessageComponent({
+            time: 60000,
             componentType: ComponentType.StringSelect,
-            filter: (f) => f.customId === timestamp,
-        });
+            filter: i => {
+                i.deferUpdate();
+                return i.customId === timestamp
+                    && i.user.id === userId;
+            },
+        })
+            .catch(async () => {
+                await message.edit({
+                    components: [],
+                });
+            });
 
-        collector.once("collect", interaction => {
-            const filtered = this.handler.categories
-                .find(c => c.id === interaction.values[0])
-                ?.filter((cmd: KaikiCommand) => cmd.subCategory !== undefined);
+        if (promise) {
+            const category = this.handler.categories
+                .find(c => c.id === promise.values[0]);
 
-            if (!filtered) throw new ArgumentError("Provided category couldn't be found!");
+            if (!category) throw new ArgumentError("Provided category couldn't be found!");
+
+            const filtered = category
+                .filter((cmd: KaikiCommand) => cmd.subCategory !== undefined);
+
+            emb.setTitle(category.id)
+                .setDescription(category
+                    .filter((cmd: KaikiCommand) => cmd.subCategory === undefined)
+                    .filter(cmd => cmd.aliases.length > 0)
+                    .map(cmd => `[\`${cmd.aliases
+                        .sort((a, b) => b.length - a.length
+                            || a.localeCompare(b)).join("`, `")}\`]`)
+                    .join("\n") || "Empty");
 
             emb.setFields([]);
 
@@ -183,15 +205,10 @@ export default class CommandsList extends KaikiCommand {
                     ]);
                 });
 
-            interaction.update({
+            await message.edit({
                 embeds: [emb],
-            });
-        });
-
-        collector.once("end", interactions => {
-            interactions.last()?.update({
                 components: [],
             });
-        });
+        }
     }
 }

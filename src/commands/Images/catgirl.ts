@@ -5,7 +5,7 @@ export default class Catgirl extends KaikiCommand {
     constructor() {
         super("catgirl", {
             aliases: ["catgirl"],
-            description: "Spawn a shinobu picture",
+            description: "Spawn a catgirl picture",
             usage: [""],
             cooldown: 1000,
             typing: true,
