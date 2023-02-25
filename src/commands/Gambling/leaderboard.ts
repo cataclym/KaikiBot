@@ -17,9 +17,10 @@ export default class LeaderboardCommand extends KaikiCommand {
             guildOnlyEntries = (await this.client.orm.discordUsers.findMany({}))
                 .filter(e => message.guild?.members.cache.get(String(e.UserId)))
                 .sort((e, o) => Number(o.Amount) - Number(e.Amount))
-                .map(e => ({
+                .map((e, i) => ({
                     user: String(e.UserId),
                     str: `${e.Amount} ${currencySymbol}`,
+                    index: i,
                 })),
             embed = new EmbedBuilder()
                 .setTitle("Server currency leaderboard")
@@ -33,7 +34,7 @@ export default class LeaderboardCommand extends KaikiCommand {
 
                 guildOnlyEntries.slice(p, i).forEach((e) => {
                     emb.addFields({
-                        name: message.guild?.members.cache.get(e.user)?.user.tag ?? e.user,
+                        name: `#${e.index + 1} ${message.guild?.members.cache.get(e.user)?.user.tag ?? e.user}`,
                         value: e.str,
                         inline: true,
                     });
