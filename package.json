@@ -36,6 +36,7 @@
     "node-emoji": "^1.11.0",
     "node-fetch": "^2.6.7",
     "node-html-parser": "^6.1.4",
+    "prisma": "^4.9.0",
     "sharp": "^0.31.3",
     "typescript": "^4.9.5",
     "utf-8-validate": "^6.0.2",
@@ -47,8 +48,7 @@
     "auto-changelog": "^2.4.0",
     "eslint": "^8.33.0",
     "eslint-plugin-import": "^2.27.5",
-    "eslint-import-resolver-typescript": "^3.5.3",
-    "prisma": "^4.9.0"
+    "eslint-import-resolver-typescript": "^3.5.3"
   },
   "description": "Discord bot built with Discord-Akairo and MySQL2",
   "repository": {

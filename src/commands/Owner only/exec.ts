@@ -18,7 +18,6 @@ export default class ExecCommand extends KaikiCommand {
                 },
             ],
         });
-
     }
 
     public async exec(message: Message, { command }: { command: string }): Promise<ChildProcess> {

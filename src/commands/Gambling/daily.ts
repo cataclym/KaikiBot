@@ -21,6 +21,18 @@ export default class ClaimDailyCommand extends KaikiCommand {
 
         const amount = this.client.botSettings.get("1", "DailyAmount", 250);
 
+        if (!(await this.client.orm.discordUsers.findUnique({
+            where: {
+                UserId: BigInt(message.author.id),
+            },
+        }))) {
+            await this.client.orm.discordUsers.create({
+                data: {
+                    UserId: BigInt(message.author.id),
+                },
+            });
+        }
+
         if (!await this.client.cache.dailyProvider.checkClaimed(message.author.id)) {
 
             await this.client.cache.dailyProvider.setClaimed(message.author.id);
