@@ -1,29 +1,22 @@
 import { execSync } from "child_process";
-import { Argument, PrefixSupplier } from "discord-akairo";
+import { ApplyOptions } from "@sapphire/decorators";
 import { EmbedBuilder, Message, PermissionResolvable, PermissionsBitField } from "discord.js";
+import { KaikiCommandOptions } from "../../lib/Interfaces/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
+@ApplyOptions<KaikiCommandOptions>({
+    name: "help",
+    aliases: ["h"],
+    description: "Shows command info",
+    usage: "ping",
+    subCategory: "Info",
+})
 export default class HelpCommand extends KaikiCommand {
-    constructor() {
-        super("help", {
-            aliases: ["help", "h"],
-            description: "Shows command info",
-            usage: "ping",
-            args: [
-                {
-                    id: "command",
-                    type: Argument.union("commandAlias", "string"),
-                },
-            ],
-            subCategory: "Info",
-        });
-    }
-
-    public async exec(message: Message, args: { command: KaikiCommand | string } | Record<string, never>): Promise<Message> {
+    public async messageRun(message: Message, args) {
 
         const { name, repository, version } = this.client.package;
 
-        const prefix = (this.handler.prefix as PrefixSupplier)(message),
+        const prefix = this.client.fetchPrefix(message),
             command = args?.command,
             embed = new EmbedBuilder()
                 .withOkColor(message);

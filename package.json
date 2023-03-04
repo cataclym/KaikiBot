@@ -1,6 +1,6 @@
 {
   "name": "kaikideishubot",
-  "version": "5.6.3",
+  "version": "0.0.1",
   "main": "./dist/index.js",
   "scripts": {
     "start": "node -r dotenv/config dist/index.js --color",
@@ -19,14 +19,15 @@
   "author": "Cata <cata@libernets.org>",
   "license": "MIT",
   "dependencies": {
-    "@notenoughupdates/discord-akairo": "^10.0.2-dev.1665278616.f608444",
     "@prisma/client": "^4.9.0",
+    "@sapphire/decorators": "^6.0.0",
+    "@sapphire/framework": "^4.2.0",
+    "@sapphire/shapeshift": "^3.8.1",
     "@types/node-emoji": "^1.8.2",
     "@types/node-fetch": "^2.6.2",
     "@types/sharp": "^0.31.1",
     "bufferutil": "^4.0.6",
     "chalk": "^4.1.2",
-    "discord-akairo": "node_modules/@notenoughupdates/discord-akairo",
     "discord-js-button-pagination-ts": "^4.1.2",
     "discord.js": "^14.7.1",
     "dotenv": "^16.0.3",
@@ -47,10 +48,10 @@
     "@typescript-eslint/parser": "^5.50.0",
     "auto-changelog": "^2.4.0",
     "eslint": "^8.33.0",
-    "eslint-plugin-import": "^2.27.5",
-    "eslint-import-resolver-typescript": "^3.5.3"
+    "eslint-import-resolver-typescript": "^3.5.3",
+    "eslint-plugin-import": "^2.27.5"
   },
-  "description": "Discord bot built with Discord-Akairo and MySQL2",
+  "description": "Discord bot built with Sapphire, Prisma and MySQL2",
   "repository": {
     "type": "git",
     "url": "https://gitlab.com/cataclym/KaikiDeishuBot.git"

@@ -1,8 +1,8 @@
 import { execSync } from "child_process";
 import { join } from "path";
 import { type PrismaClient } from "@prisma/client";
+import { SapphireClient } from "@sapphire/framework";
 import chalk from "chalk";
-import { AkairoClient, CommandHandler, CommandHandlerOptions, InhibitorHandler, ListenerHandler } from "discord-akairo";
 import { GatewayIntentBits, Guild, Partials, User } from "discord.js";
 import logger from "loglevel";
 import { Pool } from "mysql2/promise";
@@ -22,9 +22,8 @@ import HentaiService from "../Hentai/HentaiService";
 import PackageJSON from "../Interfaces/PackageJSON";
 import { MoneyService } from "../Money/MoneyService";
 import Utility from "../Utility";
-import KaikiCommandHandler from "./KaikiCommandHandler";
 
-export default class KaikiAkairoClient<Ready extends true> extends AkairoClient<Ready> {
+export default class KaikiAkairoClient<Ready extends true> extends SapphireClient<Ready> {
 
     public anniversaryService: AnniversaryRolesService;
     public botSettings: DatabaseProvider;
@@ -32,17 +31,12 @@ export default class KaikiAkairoClient<Ready extends true> extends AkairoClient<
     public connection: () => Pool;
     public dadBotChannels: DatabaseProvider;
     public guildsDb: DatabaseProvider;
-    public readonly commandHandler: CommandHandler;
-    public readonly inhibitorHandler: InhibitorHandler;
-    public readonly listenerHandler: ListenerHandler;
     public money: MoneyService;
     public orm: PrismaClient;
     public db: Database;
     public owner: User;
     public package: PackageJSON;
     public hentaiService: HentaiService;
-    public imageAPIs: ClientImageAPIs;
-    private readonly filterArray: string[];
 
     constructor() {
         super({
@@ -65,48 +59,31 @@ export default class KaikiAkairoClient<Ready extends true> extends AkairoClient<
             ],
             partials: [Partials.Reaction, Partials.Channel, Partials.GuildMember],
             shards: "auto",
+            loadMessageCommandListeners: true,
+            defaultCooldown: {
+                delay: 1000,
+            },
+            defaultPrefix: process.env.PREFIX,
+            caseInsensitiveCommands: true,
         });
-
         this.initializeDatabase();
-
-        // Load command paths into filter if KawaiiAPI key is missing.
-        this.filterArray = [];
-        if (!process.env.KAWAIIKEY || process.env.KAWAIIKEY === "[YOUR_OPTIONAL_KAWAII_KEY]") {
-            const dir = join(__dirname, "..", "..", "commands", "Interactions");
-            this.filterArray.push(`${dir}/run.js`, `${dir}/peek.js`, `${dir}/pout.js`, `${dir}/lick.js`);
-        }
-
-        // Check if 'neofetch' is available
-        try {
-            execSync("command -v neofetch >/dev/null 2>&1");
-        }
-        catch {
-            this.filterArray.push(join(__dirname, "..", "..", "commands", "Fun", "neofetch.js"));
-            logger.warn("Neofetch wasn't detected! Neofetch command will be disabled.");
-        }
-
-        this.commandHandler = new KaikiCommandHandler(this, this.commandHandlerOptions);
-        this.listenerHandler = new ListenerHandler(this, { directory: join(__dirname, "../../listeners") });
-        this.inhibitorHandler = new InhibitorHandler(this, { directory: join(__dirname, "../../inhibitors") });
-
-        this.listenerHandler.setEmitters({ commandHandler: this.commandHandler });
-
-        this.commandHandler.useListenerHandler(this.listenerHandler);
-        this.commandHandler.useInhibitorHandler(this.inhibitorHandler);
-
-        void this.inhibitorHandler.loadAll();
-        void this.listenerHandler.loadAll();
-        void this.commandHandler.loadAll();
-
-        this.imageAPIs = {
-            KawaiiAPI: new KawaiiAPI(),
-            NekosAPI: new NekosAPI(),
-            NekosLife: new NekosLife(),
-            PurrBot: new PurrBot(),
-            WaifuIm: new WaifuIm(),
-            WaifuPics: new WaifuPics(),
-        };
     }
+
+    public imageAPIs: ClientImageAPIs = {
+        KawaiiAPI: new KawaiiAPI(),
+        NekosAPI: new NekosAPI(),
+        NekosLife: new NekosLife(),
+        PurrBot: new PurrBot(),
+        WaifuIm: new WaifuIm(),
+        WaifuPics: new WaifuPics(),
+    };
+
+    public fetchPrefix = async ({ guild }: { guild: Guild | null }) => {
+        if (!guild) {
+            return String(process.env.PREFIX);
+        }
+        return String(this.guildsDb.get(guild.id, "Prefix", process.env.PREFIX));
+    };
 
     private async dailyResetTimer(): Promise<void> {
         setTimeout(async () => {
@@ -200,25 +177,20 @@ export default class KaikiAkairoClient<Ready extends true> extends AkairoClient<
         logger.info(`ResetDailyClaims | Daily claims have been reset! Updated ${chalk.green(updated.count)} entries!`);
     }
 
-    private commandHandlerOptions: CommandHandlerOptions = {
-        allowMention: true,
-        automateCategories: true,
-        blockBots: true,
-        blockClient: true,
-        commandUtil: true,
-        defaultCooldown: 1000,
-        directory: join(__dirname, "../../commands"),
-        fetchMembers: true,
-        handleEdits: false,
-        loadFilter: (module) => {
-            return !this.filterArray.includes(module);
-        },
-        prefix: ({ guild }: { guild: Guild | null }) => {
-            if (!guild) {
-                return String(process.env.PREFIX);
-            }
-            return String(this.guildsDb.get(guild.id, "Prefix", process.env.PREFIX));
-        },
-        autoRegisterSlashCommands: true,
-    };
+    private filterOptionalCommands() {
+        const filterArray = [];
+        if (!process.env.KAWAIIKEY || process.env.KAWAIIKEY === "[YOUR_OPTIONAL_KAWAII_KEY]") {
+            const dir = join(__dirname, "..", "..", "commands", "Interactions");
+            filterArray.push(`${dir}/run.js`, `${dir}/peek.js`, `${dir}/pout.js`, `${dir}/lick.js`);
+        }
+
+        // Check if 'neofetch' is available
+        try {
+            execSync("command -v neofetch >/dev/null 2>&1");
+        }
+        catch {
+            filterArray.push(join(__dirname, "..", "..", "commands", "Fun", "neofetch.js"));
+            logger.warn("Neofetch wasn't detected! Neofetch command will be disabled.");
+        }
+    }
 }

@@ -1,4 +1,3 @@
-import { Argument } from "discord-akairo";
 import { Message } from "discord.js";
 import Constants from "../../struct/Constants";
 import { hexColorTable } from "../Color";
@@ -71,7 +70,7 @@ export default class KaikiArgumentsTypes {
             });
     };
 
-    static moneyArgument = Argument.range("bigint", 0, KaikiArgumentsTypes.MAX_INT);
+    // static moneyArgument = Argument.range("bigint", 0, KaikiArgumentsTypes.MAX_INT);
 
     private static getCurrency = async (message: Message) => await message.client.money.Get(message.author.id);
 }
