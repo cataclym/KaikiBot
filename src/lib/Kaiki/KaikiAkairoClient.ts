@@ -11,6 +11,7 @@ import Constants from "../../struct/Constants";
 import Database from "../../struct/db/Database";
 import DatabaseProvider from "../../struct/db/DatabaseProvider";
 import AnniversaryRolesService from "../AnniversaryRolesService";
+import { ClientImageAPIs } from "../APIs/Common/Types";
 import KawaiiAPI from "../APIs/KawaiiAPI";
 import NekosLife from "../APIs/nekos.life";
 import NekosAPI from "../APIs/NekosAPI";
@@ -40,14 +41,7 @@ export default class KaikiAkairoClient<Ready extends true> extends AkairoClient<
     public owner: User;
     public package: PackageJSON;
     public hentaiService: HentaiService;
-    public imageAPIs: {
-        NekosAPI: NekosAPI;
-        PurrBot: PurrBot;
-        KawaiiAPI: KawaiiAPI,
-        NekosLife: NekosLife,
-        WaifuIm: WaifuIm,
-        WaifuPics: WaifuPics
-    };
+    public imageAPIs: ClientImageAPIs;
     private readonly filterArray: string[];
 
     constructor() {
@@ -114,11 +108,11 @@ export default class KaikiAkairoClient<Ready extends true> extends AkairoClient<
         };
     }
 
-    private async dailyResetTimer(client: KaikiAkairoClient<true>): Promise<void> {
+    private async dailyResetTimer(): Promise<void> {
         setTimeout(async () => {
 
             // Loop this
-            await this.dailyResetTimer(client);
+            await this.dailyResetTimer();
 
             // Reset daily currency claims
             await this.resetDailyClaims();
@@ -129,14 +123,12 @@ export default class KaikiAkairoClient<Ready extends true> extends AkairoClient<
         }, Utility.timeToMidnight());
     }
 
-    public async initializeServices(client?: KaikiAkairoClient<Ready>) {
+    public async initializeServices() {
 
-        if (!client) client = this;
-
-        this.anniversaryService = new AnniversaryRolesService(client);
+        this.anniversaryService = new AnniversaryRolesService(this);
 
         // This will execute at midnight
-        await this.dailyResetTimer(client);
+        await this.dailyResetTimer();
         logger.info("AnniversaryRolesService | Service initiated");
 
         this.hentaiService = new HentaiService();
@@ -163,6 +155,7 @@ export default class KaikiAkairoClient<Ready extends true> extends AkairoClient<
                 this.dadBotChannels.init().then(() => logger.info(`${chalk.green("READY")} - DadBot channel provider`));
 
                 this.cache = new KaikiCache(this.orm, this.connection);
+                this.cache.populateImageAPICache(this.imageAPIs);
                 this.money = new MoneyService(this.orm);
             });
     }
