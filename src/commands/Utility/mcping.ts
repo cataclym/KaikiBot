@@ -1,30 +1,25 @@
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args } from "@sapphire/framework";
 import { AttachmentBuilder, EmbedBuilder, Message } from "discord.js";
 import fetch from "node-fetch";
+import { KaikiCommandOptions } from "../../lib/Interfaces/KaikiCommandOptions";
 import { ServerOffline, ServerOnline } from "../../lib/Interfaces/mcsrvstatAPIData";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-
-import KaikiEmbeds from "../../lib/KaikiEmbeds";
 import Utility from "../../lib/Utility";
 
+@ApplyOptions<KaikiCommandOptions>({
+    name: "mcping",
+    aliases: ["mcp"],
+    description: "Ping a minecraft server address to see if it is online",
+    usage: "2b2t.org",
+    typing: true,
+    subCategory: "Info",
+})
 export default class MinecraftPingCommand extends KaikiCommand {
-    constructor() {
-        super("mcping", {
-            aliases: ["mcping"],
-            description: "",
-            usage: "",
-            args: [
-                {
-                    id: "term",
-                    match: "rest",
-                    otherwise: (msg: Message) => ({ embeds: [KaikiEmbeds.genericArgumentError(msg)] }),
-                },
-            ],
-            typing: true,
-            subCategory: "Info",
-        });
-    }
 
-    public async exec(message: Message, { term }: { term: string }): Promise<Message> {
+    public async exec(message: Message, args: Args): Promise<Message> {
+
+        const term = await args.pick("string");
 
         const result: ServerOffline | ServerOnline = await fetch(`https://api.mcsrvstat.us/2/${term}`)
             .then(response => response.json() as Promise<ServerOffline | ServerOnline>);

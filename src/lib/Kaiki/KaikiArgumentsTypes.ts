@@ -1,10 +1,44 @@
+import { Args, Argument, ArgumentContext, container } from "@sapphire/framework";
 import { Message } from "discord.js";
 import Constants from "../../struct/Constants";
 import { hexColorTable } from "../Color";
 import Utility from "../Utility";
+import KaikiCommand from "./KaikiCommand";
 import KaikiUtil from "./KaikiUtil";
 
+type CommandArgumentContext = ArgumentContext<KaikiCommand>
+
+export class CommandArgument extends Argument<KaikiCommand> {
+    public async run(parameter: string, context: CommandArgumentContext) {
+        const commands = container.stores.get("commands");
+        const command = commands.get(parameter.toLowerCase());
+
+        if (!command) {
+            return this.error({
+                parameter,
+                context,
+            });
+        }
+        return this.ok(command as KaikiCommand);
+    }
+}
+
 export default class KaikiArgumentsTypes {
+
+    public static CommandArg = Args.make<KaikiCommand>((parameter, context) => {
+        const commands = container.stores.get("commands");
+        const command = commands.get(parameter.toLowerCase());
+
+        if (!command) {
+            return Args.error({
+                argument: context.argument,
+                parameter,
+                context,
+            });
+        }
+        return Args.ok(command as KaikiCommand);
+    });
+
 
     static argumentTypes = {
         kaiki_color: "kaiki_color",

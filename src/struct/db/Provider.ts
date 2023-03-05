@@ -1,4 +1,3 @@
-import { AkairoError } from "discord-akairo";
 import { Collection } from "discord.js";
 
 export class Provider {
@@ -18,7 +17,7 @@ export class Provider {
      * @returns {any}
      */
     init() {
-        throw new AkairoError("NOT_IMPLEMENTED", this.constructor.name, "init");
+        throw new Error("NOT_IMPLEMENTED");
     }
 
     /**
@@ -30,7 +29,7 @@ export class Provider {
      * @returns {any}
      */
     get(id: string, key: string, defaultValue?: any): any {
-        throw new AkairoError("NOT_IMPLEMENTED", this.constructor.name, "get");
+        throw new Error("NOT_IMPLEMENTED");
     }
 
     /**
@@ -42,7 +41,7 @@ export class Provider {
      * @returns {any}
      */
     set(id: string, key: string, value: any) {
-        throw new AkairoError("NOT_IMPLEMENTED", this.constructor.name, "set");
+        throw new Error("NOT_IMPLEMENTED");
     }
 
     /**
@@ -53,7 +52,7 @@ export class Provider {
      * @returns {any}
      */
     delete(id: string, key: string) {
-        throw new AkairoError("NOT_IMPLEMENTED", this.constructor.name, "delete");
+        throw new Error("NOT_IMPLEMENTED");
     }
 
     /**
@@ -63,7 +62,7 @@ export class Provider {
      * @returns {any}
      */
     clear(id: string) {
-        throw new AkairoError("NOT_IMPLEMENTED", this.constructor.name, "clear");
+        throw new Error("NOT_IMPLEMENTED");
     }
 }
 
