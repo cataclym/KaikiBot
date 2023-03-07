@@ -3,11 +3,11 @@
 # Secret Detection customization: https://docs.gitlab.com/ee/user/application_security/secret_detection/#customizing-settings
 # Note that environment variables can be set in several places
 # See https://docs.gitlab.com/ee/ci/variables/#cicd-variable-precedence
-image: node:16
-before_script:
-  - npm install
-build:
-  script:
-    - npm run build
-stages:
-  - test
+#image: node:16
+#before_script:
+#  - npm install
+#build:
+#  script:
+#    - npm run build
+#stages:
+#  - test

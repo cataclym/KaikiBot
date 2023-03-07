@@ -1,24 +1,20 @@
-import { EmbedBuilder, Message, User } from "discord.js";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args } from "@sapphire/framework";
+import { EmbedBuilder, Message } from "discord.js";
+import { KaikiCommandOptions } from "../../lib/Interfaces/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
-
+@ApplyOptions<KaikiCommandOptions>({
+    name: "avatar",
+    aliases: ["av"],
+    description: "Shows a mentioned person's avatar.",
+    usage: "@dreb",
+})
 export default class AvatarCommand extends KaikiCommand {
-    constructor() {
-        super("avatar", {
-            aliases: ["avatar", "av"],
-            description: "Shows a mentioned person's avatar.",
-            usage: "@dreb",
-            args: [
-                {
-                    id: "user",
-                    type: "user",
-                    default: (message: Message) => message.author,
-                },
-            ],
-        });
-    }
 
-    public async exec(message: Message, { user }: { user: User }): Promise<Message> {
+    public async messageRun(message: Message, args: Args): Promise<Message> {
+
+        const user = await args.pick("user");
 
         const av = user.displayAvatarURL({ size: 4096 }),
             jpeg = user.displayAvatarURL({ size: 4096, extension: "jpg" }),

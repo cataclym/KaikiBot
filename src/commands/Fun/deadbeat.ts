@@ -1,28 +1,22 @@
+import { ApplyOptions } from "@sapphire/decorators";
 import Discord, { Message, User } from "discord.js";
 import sharp from "sharp";
+import images from "../../data/images.json";
+import { KaikiCommandOptions } from "../../lib/Interfaces/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-import Utility from "../../lib/Utility.js";
+import Utility from "../../lib/Utility";
 
+@ApplyOptions<KaikiCommandOptions>({
+    name: "deadbeat",
+    aliases: ["dead"],
+    description: "Just try it",
+    usage: ["@dreb"],
+    typing: true,
+    cooldownDelay: 8000,
+})
 export default class DeadbeatCommand extends KaikiCommand {
     // I should host this on GitLab
-    private backgroundUrl = "https://cdn.discordapp.com/attachments/717045059215687691/763459004352954368/deadbeats.jpg";
-
-    constructor() {
-        super("deadbeat", {
-            aliases: ["dead", "deadbeat"],
-            description: "Just try it",
-            usage: "@dreb",
-            cooldown: 8000,
-            typing: true,
-            args: [
-                {
-                    id: "member",
-                    type: "member",
-                    default: (message: Message) => message.author,
-                },
-            ],
-        });
-    }
+    private backgroundUrl = images.fun.commands.deadbeat;
 
     public async exec(message: Message, { member }: { member: User }) {
 

@@ -1,19 +1,20 @@
-import { Command } from "discord-akairo";
+import { ApplyOptions } from "@sapphire/decorators";
 import { EmbedBuilder, Message } from "discord.js";
 import fetch from "node-fetch";
+import { KaikiCommandOptions } from "../../lib/Interfaces/KaikiCommandOptions";
 import RedditAPIData from "../../lib/Interfaces/RedditAPIData";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import Utility from "../../lib/Utility";
 import Constants from "../../struct/Constants";
 
-export default class DadJokeCommand extends Command {
-    constructor() {
-        super("dadjoke", {
-            cooldown: 8000,
-            typing: true,
-            aliases: ["dadjoke", "dadjokes"],
-            description: "Returns a dadjoke.",
-        });
-    }
+@ApplyOptions<KaikiCommandOptions>({
+    name: "dadjoke",
+    aliases: ["dadjokes"],
+    description: "Returns a dadjoke.",
+    typing: true,
+    cooldownDelay: 8000,
+})
+export default class DadJokeCommand extends KaikiCommand {
 
     private async loadAndReturnDadJoke() {
         return await fetch("https://www.reddit.com/r/dadjokes.json?limit=1000&?sort=top&t=all")
@@ -22,7 +23,7 @@ export default class DadJokeCommand extends Command {
             .then((data) => data[Math.floor(Math.random() * data.length) + 1]);
     }
 
-    public async exec(message: Message): Promise<Message | void> {
+    public async messageRun(message: Message): Promise<Message | void> {
 
         const randomRedditPost = await this.loadAndReturnDadJoke();
 

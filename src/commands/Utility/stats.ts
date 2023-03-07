@@ -1,21 +1,21 @@
 import { execSync } from "child_process";
 import * as process from "process";
-import { version as akairoVersion } from "discord-akairo";
+import { ApplyOptions } from "@sapphire/decorators";
+import { version as sapphireVersion } from "@sapphire/framework";
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
 import { ChannelType, EmbedBuilder, Message, time, version } from "discord.js";
+import { KaikiCommandOptions } from "../../lib/Interfaces/KaikiCommandOptions";
 
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
+@ApplyOptions<KaikiCommandOptions>({
+    aliases: ["stats"],
+    description: "Statistics and information",
+    subCategory: "Info",
+})
 export default class StatsCommand extends KaikiCommand {
-    constructor() {
-        super("stats", {
-            aliases: ["stats"],
-            description: "Statistics and information",
-            subCategory: "Info",
-        });
-    }
 
-    public async exec(message: Message) {
+    public async messageRun(message: Message) {
 
         const packageJSON = this.client.package;
         const { cache } = this.client.guilds;
@@ -58,8 +58,8 @@ export default class StatsCommand extends KaikiCommand {
                         inline: true,
                     },
                     {
-                        name: "Discord-Akairo framework (Fork by TanzaniteBot)",
-                        value: `[Discord-Akairo (forked)](https://github.com/TanzaniteBot/discord-akairo 'github') v${akairoVersion}`,
+                        name: "@Sapphire/framework",
+                        value: `[sapphirejs (forked)](https://www.sapphirejs.dev/ 'sapphirejs website') v${sapphireVersion}`,
                         inline: true,
                     },
                     {

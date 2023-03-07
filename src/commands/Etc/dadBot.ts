@@ -1,50 +1,20 @@
+import { ApplyOptions } from "@sapphire/decorators";
 import { Message } from "discord.js";
 import logger from "loglevel";
+import { KaikiCommandOptions } from "../../lib/Interfaces/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import Constants from "../../struct/Constants";
 
-// dad bot
+@ApplyOptions<KaikiCommandOptions>({
+    preconditions: ["GuildOnly"],
+})
 export default class DadBot extends KaikiCommand {
-    constructor() {
-        super("dadbot", {
-            channel: "guild",
-            editable: false,
-            condition: (message: Message<true>) => {
 
-                if (!message.member) return false;
+    public static nickname = new Map<string, string>();
 
-                if (!message.guild.isDadBotEnabled()) return false;
+    public async messageRun(message: Message<true>) {
 
-                if (message.member.hasExcludedRole()) return false;
-
-                if (message.content.includes("||")) return false;
-
-                for (const item of Constants.dadBotArray) {
-
-                    const r = new RegExp(`(^|\\s|$)(?<statement>(?<prefix>${item})\\s*(?<nickname>.*)$)`, "mi");
-                    if (r.test(message.content)) {
-
-                        let match = message.content.match(r)?.groups?.nickname;
-                        if (!match) continue;
-
-                        const splits = match.split(new RegExp(`${item}`, "mig"));
-                        if (splits.length > 1) match = splits.reduce((a, b) => a.length <= b.length && a.length > 0 ? a : b);
-
-                        if (match.length && match.length <= (process.env.DADBOT_MAX_LENGTH || Constants.MAGIC_NUMBERS.CMDS.ETC.DAD_BOT.DADBOT_MAX_LENGTH)) {
-                            if (!this.nickname.has(message.member.id)) this.nickname.set(message.member.id, match);
-                        }
-                    }
-                }
-                return this.nickname.has(message.member.id);
-            },
-        });
-    }
-
-    private nickname = new Map<string, string>();
-
-    public async exec(message: Message<true>) {
-
-        const nick = this.nickname.get(message.author.id);
+        const nick = DadBot.nickname.get(message.author.id);
 
         if (!nick || !message.member) return;
 
@@ -84,6 +54,6 @@ export default class DadBot extends KaikiCommand {
             },
         });
 
-        return this.nickname.delete(message.author.id);
+        return DadBot.nickname.delete(message.author.id);
     }
 }

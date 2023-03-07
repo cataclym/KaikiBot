@@ -1,4 +1,4 @@
-import { Args, Argument, ArgumentContext, container } from "@sapphire/framework";
+import { Args, container } from "@sapphire/framework";
 import { Message } from "discord.js";
 import Constants from "../../struct/Constants";
 import { hexColorTable } from "../Color";
@@ -6,37 +6,90 @@ import Utility from "../Utility";
 import KaikiCommand from "./KaikiCommand";
 import KaikiUtil from "./KaikiUtil";
 
-type CommandArgumentContext = ArgumentContext<KaikiCommand>
-
-export class CommandArgument extends Argument<KaikiCommand> {
-    public async run(parameter: string, context: CommandArgumentContext) {
-        const commands = container.stores.get("commands");
-        const command = commands.get(parameter.toLowerCase());
-
-        if (!command) {
-            return this.error({
-                parameter,
-                context,
-            });
-        }
-        return this.ok(command as KaikiCommand);
-    }
-}
-
 export default class KaikiArgumentsTypes {
 
-    public static CommandArg = Args.make<KaikiCommand>((parameter, context) => {
-        const commands = container.stores.get("commands");
-        const command = commands.get(parameter.toLowerCase());
+    public static commandIArgument = Args.make<KaikiCommand>(async (parameter, context) => {
+        const result = container.stores.get("commands")
+            .find(k => {
+                const name = k.name.toLowerCase();
 
-        if (!command) {
+                return parameter
+                    .toLowerCase()
+                    .startsWith(name.slice(0, Math.max(parameter.length - 1, 1)));
+            });
+
+        if (!result) {
             return Args.error({
                 argument: context.argument,
                 parameter,
                 context,
             });
         }
-        return Args.ok(command as KaikiCommand);
+        return Args.ok(result as KaikiCommand);
+    });
+
+    public static categoryIArgument = Args.make<string>(async (parameter, context) => {
+        const result = container.stores.get("commands")
+            .categories.find(k => {
+
+                k = k.toLowerCase();
+
+                return parameter
+                    .toLowerCase()
+                    .startsWith(k.slice(0, Math.max(parameter.length - 1, 1)));
+            });
+
+        if (!result) {
+            return Args.error({
+                argument: context.argument,
+                parameter,
+                context,
+            });
+        }
+
+        return Args.ok(result);
+    });
+
+    public static urlEmoteAttachmentIArgument = Args.make<string>(async (parameter, context) => {
+
+        if (context.message.attachments.size) {
+            const url = context.message.attachments.first()?.url;
+            if (url) return Args.ok(url);
+        }
+
+        const imageMatches = parameter.match(Constants.imageRegex);
+
+        if (imageMatches) {
+            return Args.ok(imageMatches[0].toString());
+        }
+
+        const emoteMatches = parameter.match(Constants.emoteRegex);
+
+        if (emoteMatches) {
+            const urlMatch = emoteMatches[0].toString();
+
+            if (urlMatch.startsWith("<") && urlMatch.endsWith(">")) {
+
+                const emoteID = urlMatch.match(/\d+/g);
+
+                const type = urlMatch.indexOf("a") === 1 ? "gif" : "png";
+
+                if (emoteID) {
+                    // Construct emote url - If it has '<a:...'  at the beginning, then it's a gif format.
+                    const emoteUrl = `https://cdn.discordapp.com/emojis/${emoteID.toString()}.${type}`;
+
+                    return Args.ok(emoteUrl);
+                }
+
+                // Get emote name from emote construction <:name:snowflake>
+                // name = name ?? urlMatch.slice(2, urlMatch.lastIndexOf(":")).replace(":", "");
+            }
+        }
+        return Args.error({
+            context,
+            argument: context.argument,
+            parameter,
+        });
     });
 
 

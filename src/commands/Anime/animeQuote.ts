@@ -1,21 +1,20 @@
+import { ApplyOptions } from "@sapphire/decorators";
 import { Message } from "discord.js";
 import logger from "loglevel";
 import fetch from "node-fetch";
 import { sendQuote } from "../../lib/APIs/animeQuote";
+import { KaikiCommandOptions } from "../../lib/Interfaces/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import { RespType } from "../../lib/Types/Miscellaneous";
 
+@ApplyOptions<KaikiCommandOptions>({
+    name: "animequote",
+    aliases: ["aq"],
+    description: "Shows a random anime quote...",
+    typing: true,
+})
 export default class AnimeQuoteCommand extends KaikiCommand {
-    constructor() {
-        super("animequote", {
-            aliases: ["animequote", "aq"],
-            description: "Shows a random anime quote...",
-            usage: "",
-            typing: true,
-        });
-    }
-
-    public async exec(message: Message): Promise<Message | void> {
+    public async messageRun(message: Message): Promise<Message | void> {
 
         const { animeQuoteCache } = this.client.cache;
 

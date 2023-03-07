@@ -1,4 +1,5 @@
-import { Argument, Category, PrefixSupplier } from "discord-akairo";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args } from "@sapphire/framework";
 import {
     ActionRowBuilder,
     ComponentType,
@@ -8,54 +9,31 @@ import {
     StringSelectMenuBuilder,
     StringSelectMenuOptionBuilder,
 } from "discord.js";
-
 import images from "../../data/images.json";
 import ArgumentError from "../../lib/Errors/ArgumentError";
+import { KaikiCommandOptions } from "../../lib/Interfaces/KaikiCommandOptions";
+import KaikiArgumentsTypes from "../../lib/Kaiki/KaikiArgumentsTypes";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-import KaikiEmbeds from "../../lib/KaikiEmbeds";
 import Constants from "../../struct/Constants";
 
+@ApplyOptions<KaikiCommandOptions>({
+    name: "commands",
+    aliases: ["cmds", "cmdlist"],
+    description: "Shows categories, or commands if provided with a category.",
+    usage: ["", "admin"],
+})
 export default class CommandsList extends KaikiCommand {
-    constructor() {
-        super("cmdlist", {
-            aliases: ["commands", "cmds", "cmdlist"],
-            description: "Shows categories, or commands if provided with a category.",
-            usage: ["", "admin"],
-            args: [
-                {
-                    id: "category",
-                    type: Argument.union((_, phrase) => {
-                        return this.handler.categories.find((__, k) => {
-
-                            k = k.toLowerCase();
-
-                            return phrase
-                                .toLowerCase()
-                                .startsWith(k.slice(0, Math.max(phrase.length - 1, 1)));
-                        });
-                    }, (_, _phrase) => _phrase.length <= 0
-                        ? ""
-                        : undefined),
-                    otherwise: (msg: Message) => ({ embeds: [KaikiEmbeds.genericArgumentError(msg)] }),
-
-                },
-            ],
-        });
-    }
 
     static ignoredCategories = ["default", "Etc"];
 
-    public async exec(message: Message, { category }: { category: Category<string, KaikiCommand> }) {
+    public async exec(message: Message, args: Args) {
 
-        const filteredCategories = this.handler.categories
-            .filter(cat => !CommandsList.ignoredCategories.includes(cat.id));
+        const filteredCategories = this.store.categories
+            .filter(cat => !CommandsList.ignoredCategories.includes(cat));
 
-        // Return commands in the provided category
-        if (category) {
-            return this.categoryReply(message, category);
-        }
+        const category = await args.pick(KaikiArgumentsTypes.categoryIArgument);
 
-        else {
+        if (args.finished) {
 
             const timestamp = Date.now().toString();
 
@@ -64,21 +42,21 @@ export default class CommandsList extends KaikiCommand {
                     .setCustomId(timestamp)
                     .setOptions(filteredCategories
                         .map(cat => new StringSelectMenuOptionBuilder({
-                            value: cat.id,
-                            label: cat.id,
-                            description: cat.id,
+                            value: cat,
+                            label: cat,
+                            description: cat,
                         })),
                     ),
                 );
 
-            const embed = await this.categoriesEmbed(message, (this.handler.prefix as PrefixSupplier)(message));
+            const embed = await this.categoriesEmbed(message, await this.client.fetchPrefix(message));
 
             // Add every category as embed fields
-            for (const [, cat] of filteredCategories) {
+            for (const cat of filteredCategories) {
                 embed.addFields([
                     {
-                        name: `${cat.id} [${cat.filter(c => !!c.aliases.length).size}]`,
-                        value: `${Constants.categories[cat.id] || "N/A"}`,
+                        name: `${cat} [${this.store.filter(cmd => cmd.category === cat).size}]`,
+                        value: `${Constants.categories[cat] || "N/A"}`,
                         inline: true,
                     },
                 ]);
@@ -91,22 +69,28 @@ export default class CommandsList extends KaikiCommand {
 
             return this.handleComponentReply(interactionMessage, message.author.id, timestamp, embed);
         }
+
+        // Return commands in the provided category
+        if (category) {
+            return this.categoryReply(message, category);
+        }
     }
 
-    private categoryReply(message: Message, category: Category<string, KaikiCommand>) {
+    private categoryReply(message: Message, category: string) {
+
+        const cmds = this.store.filter(c => c.category === category);
 
         const emb = new EmbedBuilder()
-            .setTitle(`Commands in ${category.id}`)
-            .setDescription(category
+            .setTitle(`Commands in ${category}`)
+            .setDescription(cmds
                 .filter(cmd => cmd.subCategory === undefined)
-                .filter(cmd => cmd.aliases.length > 0)
-                .map(cmd => `[\`${cmd.aliases
+                .map(cmd => `[\`${Array.from(cmd.aliases)
                     .sort((a, b) => b.length - a.length
                         || a.localeCompare(b)).join("`, `")}\`]`)
                 .join("\n") || "Empty")
             .withOkColor(message);
 
-        const filtered = category.filter(cmd => cmd.subCategory !== undefined);
+        const filtered = cmds.filter(cmd => cmd.subCategory !== undefined);
 
         [...new Set(filtered.map(value => value.subCategory))]
             .forEach(cmd => {
@@ -116,7 +100,7 @@ export default class CommandsList extends KaikiCommand {
                         name: cmd,
                         value: Array.from(filtered.filter(c => c.subCategory === cmd).values())
                             .sort()
-                            .map(command => `[\`${command.aliases
+                            .map(command => `[\`${Array.from(command.aliases)
                                 .sort((a, b) => b.length - a.length
                                     || a.localeCompare(b)).join("`, `")}\`]`)
                             .join("\n") || "Empty", inline: true,
@@ -170,19 +154,20 @@ export default class CommandsList extends KaikiCommand {
             });
 
         if (promise) {
-            const category = this.handler.categories
-                .find(c => c.id === promise.values[0]);
+            const category = this.store.categories
+                .find(c => c === promise.values[0]);
 
             if (!category) throw new ArgumentError("Provided category couldn't be found!");
 
-            const filtered = category
-                .filter((cmd: KaikiCommand) => cmd.subCategory !== undefined);
+            const cmds = this.store.filter(c => c.category === category);
 
-            emb.setTitle(category.id)
-                .setDescription(category
-                    .filter((cmd: KaikiCommand) => cmd.subCategory === undefined)
-                    .filter(cmd => cmd.aliases.length > 0)
-                    .map(cmd => `[\`${cmd.aliases
+            const filtered = cmds
+                .filter(cmd => cmd.subCategory !== undefined);
+
+            emb.setTitle(category)
+                .setDescription(cmds
+                    .filter(cmd => cmd.subCategory === undefined)
+                    .map(cmd => `[\`${Array.from(cmd.aliases)
                         .sort((a, b) => b.length - a.length
                             || a.localeCompare(b)).join("`, `")}\`]`)
                     .join("\n") || "Empty");
@@ -197,7 +182,7 @@ export default class CommandsList extends KaikiCommand {
                             name: cmd,
                             value: Array.from(filtered.filter((c: KaikiCommand) => c.subCategory === cmd).values())
                                 .sort()
-                                .map(command => `[\`${command.aliases
+                                .map(command => `[\`${Array.from(command.aliases)
                                     .sort((a, b) => b.length - a.length
                                         || a.localeCompare(b)).join("`, `")}\`]`)
                                 .join("\n") || "Empty", inline: true,

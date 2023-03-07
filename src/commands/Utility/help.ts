@@ -56,7 +56,7 @@ export default class HelpCommand extends KaikiCommand {
             return message.channel.send({ embeds: [embed] });
         }
 
-        const command = await args.pick(KaikiArgumentsTypes.CommandArg)
+        const command = await args.pick(KaikiArgumentsTypes.commandIArgument)
             .catch(() => undefined);
 
         if (command) {

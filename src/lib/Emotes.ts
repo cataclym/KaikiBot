@@ -15,9 +15,9 @@ export default class Emotes {
     }
 
     // Resizes images, including gifs - returns them in buffer format
-    static async resizeImage(file: string, type: string, imgSize?: number): Promise<string | Buffer> {
+    static async resizeImage(file: string, imgSize?: number): Promise<string | Buffer> {
 
-        const bool = type === "gif";
+        const bool = file.endsWith("gif");
 
         const sharpFile = await sharp(file, { animated: bool });
 

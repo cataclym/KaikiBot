@@ -1,30 +1,25 @@
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args } from "@sapphire/framework";
 import { EmbedBuilder, Message } from "discord.js";
 import fetch from "node-fetch";
 import AnilistGraphQL from "../../lib/APIs/AnilistGraphQL";
 import AnimeData from "../../lib/Interfaces/AnimeData";
+import { KaikiCommandOptions } from "../../lib/Interfaces/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-import KaikiEmbeds from "../../lib/KaikiEmbeds";
 import Utility from "../../lib/Utility";
 import Constants from "../../struct/Constants";
 
+@ApplyOptions<KaikiCommandOptions>({
+    name: "anime",
+    aliases: [""],
+    description: "Shows the first result of a query to Anilist",
+    usage: "Tsukimonogatari",
+    typing: true,
+})
 export default class AnimeCommand extends KaikiCommand {
-    constructor() {
-        super("anime", {
-            aliases: ["anime"],
-            description: "Shows the first result of a query to Anilist",
-            usage: "Tsukimonogatari",
-            args: [
-                {
-                    id: "anime",
-                    type: "string",
-                    match: "content",
-                    otherwise: (m) => ({ embeds: [KaikiEmbeds.genericArgumentError(m)] }),
-                },
-            ],
-        });
-    }
+    public async messageRun(message: Message<true>, args: Args) {
 
-    public async exec(message: Message<true>, { anime }: { anime: string }): Promise<Message | void> {
+        const anime = await args.rest("string");
 
         const url = "https://graphql.anilist.co",
             options = {
