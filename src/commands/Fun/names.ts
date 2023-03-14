@@ -1,42 +1,28 @@
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args } from "@sapphire/framework";
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
 import { EmbedBuilder, Message, User } from "discord.js";
+import { KaikiCommandOptions } from "../../lib/Interfaces/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import Constants from "../../struct/Constants";
 
-
+@ApplyOptions<KaikiCommandOptions>({
+    name: "names",
+    aliases: ["name"],
+    description: "Returns yours or mentioned user's daddy nicknames. Delete your nicknames with 'delete' argument.",
+    usage: ["@dreb", "delete"],
+})
 export default class NamesCommand extends KaikiCommand {
-    constructor() {
-        super("names", {
-            aliases: ["name", "names"],
-            description: "Returns yours or mentioned user's daddy nicknames. Delete your nicknames with 'delete' argument.",
-            usage: ["@dreb", "delete"],
-        });
-    }
-
-    * args(): Generator<{ index: 0; type: "user" } | { type: (message: Message, phrase: string) => Promise<boolean> }, { method: unknown; unionUser: unknown }> {
-        const method = yield {
-            // TODO: figure out type of phrase
-            type: async (message: Message, phrase: string) => {
-                return (["remove", "rem", "delete", "del"].includes(phrase));
-            },
-        };
-        const unionUser = yield {
-            index: 0,
-            type: "user",
-        };
-
-        return { unionUser, method };
-    }
-
     private static baseEmbed = (message: Message, unionUser: User) => new EmbedBuilder()
         .setTitle(`${unionUser.username}'s past names`)
         .setThumbnail(unionUser.displayAvatarURL())
         .withOkColor(message);
 
-    public async exec(message: Message, {
-        method,
-        unionUser,
-    }: { method: boolean, unionUser: User }): Promise<Message | void> {
+    public async messageRun(message: Message, args: Args): Promise<Message | void> {
+
+        const unionUser = await args.pick("user").catch(() => message.author);
+
+        const method = await args.pick(this.argument);
 
         if (method) {
             let deleted;
@@ -70,10 +56,6 @@ export default class NamesCommand extends KaikiCommand {
                         .withOkColor(message),
                 ],
             });
-        }
-
-        if (!unionUser) {
-            unionUser = message.author;
         }
 
         let nicknames;
@@ -120,4 +102,14 @@ export default class NamesCommand extends KaikiCommand {
 
         return sendPaginatedMessage(message, pages, { owner: message.author });
     }
+
+    private argument = Args.make<string>((parameter, context) => {
+        if (["remove", "rem", "delete", "del"].includes(parameter)) {
+            return Args.ok(parameter);
+        }
+        return Args.error({
+            argument: context.argument,
+            parameter,
+        });
+    });
 }

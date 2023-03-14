@@ -1,13 +1,26 @@
 import { exec } from "child_process";
+import * as os from "os";
 import * as process from "process";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args } from "@sapphire/framework";
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
 import { EmbedBuilder, Message } from "discord.js";
 import logger from "loglevel";
 import { distros } from "../../lib/distros.json";
+import { KaikiCommandOptions } from "../../lib/Interfaces/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import Utility from "../../lib/Utility";
 import Constants from "../../struct/Constants";
 
+@ApplyOptions<KaikiCommandOptions>({
+    name: "neofetch",
+    aliases: ["neo"],
+    description: "Displays neofetch ascii art. Provide argument 'list' to get a list of all supported distros.",
+    usage: ["", "opensuse", "list"],
+    cooldownDelay: 2000,
+    typing: true,
+    flags: ["list"],
+})
 export default class NeofetchCommand extends KaikiCommand {
     constructor() {
         super("neofetch", {
@@ -38,7 +51,11 @@ export default class NeofetchCommand extends KaikiCommand {
         });
     }
 
-    public async exec(message: Message, { os, list }: { os: string | null, list: boolean }): Promise<Message | void> {
+    public async messageRun(message: Message, args: Args) {
+
+        const list = args.getFlags("list");
+
+        const await args.rest();
 
         if (list) {
             const pages: EmbedBuilder[] = [];

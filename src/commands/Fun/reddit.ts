@@ -1,5 +1,8 @@
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args } from "@sapphire/framework";
 import { ChannelType, EmbedBuilder, Message, TextChannel } from "discord.js";
 import fetch from "node-fetch";
+import { KaikiCommandOptions } from "../../lib/Interfaces/KaikiCommandOptions";
 import RedditAPIData, { PurpleData } from "../../lib/Interfaces/RedditAPIData";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
@@ -7,24 +10,17 @@ import KaikiEmbeds from "../../lib/KaikiEmbeds";
 import Utility from "../../lib/Utility";
 import Constants from "../../struct/Constants";
 
+@ApplyOptions<KaikiCommandOptions>({
+    name: "reddit",
+    description: "Returns a random reddit post, from a specified subreddit.",
+    usage: ["anime"],
+    typing: true,
+})
 export default class RedditCommand extends KaikiCommand {
-    constructor() {
-        super("reddit", {
-            aliases: ["reddit"],
-            typing: true,
-            description: "Returns a random reddit post, from a specified subreddit.",
-            usage: "anime",
-            args: [
-                {
-                    id: "sub",
-                    match: "rest",
-                    default: "anime",
-                },
-            ],
-        });
-    }
 
-    public async exec(message: Message, { sub }: { sub: string }): Promise<Message | NodeJS.Timeout> {
+    public async messageRun(message: Message, args: Args): Promise<Message | NodeJS.Timeout> {
+
+        const sub = await args.rest("string");
 
         const promise = await fetch(`https://www.reddit.com/r/${sub}/random/.json`);
 
