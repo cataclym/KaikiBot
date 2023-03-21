@@ -1,18 +1,17 @@
+import { ApplyOptions } from "@sapphire/decorators";
 import { Message } from "discord.js";
+import { KaikiCommandOptions } from "../../lib/Interfaces/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
+@ApplyOptions<KaikiCommandOptions>({
+    name: "catgirl",
+    description: "Spawn a catgirl picture",
+    usage: [""],
+    typing: true,
+    cooldownDelay: 1000,
+})
 export default class Catgirl extends KaikiCommand {
-    constructor() {
-        super("catgirl", {
-            aliases: ["catgirl"],
-            description: "Spawn a catgirl picture",
-            usage: [""],
-            cooldown: 1000,
-            typing: true,
-        });
-    }
-
-    public async exec(message: Message): Promise<Message> {
+    public async messageRun(message: Message): Promise<Message> {
         return this.client.imageAPIs.NekosAPI.sendImageAPIRequest(message, "catgirl");
     }
 }

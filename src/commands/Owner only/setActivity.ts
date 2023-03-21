@@ -1,53 +1,32 @@
-import { BotSettings_ActivityType } from "@prisma/client";
-import { FailureData } from "discord-akairo";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args } from "@sapphire/framework";
 import { EmbedBuilder, Message } from "discord.js";
+import { KaikiCommandOptions } from "../../lib/Interfaces/KaikiCommandOptions";
+import KaikiArgumentsTypes from "../../lib/Kaiki/KaikiArgumentsTypes";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-import KaikiEmbeds from "../../lib/KaikiEmbeds";
 import Constants from "../../struct/Constants";
 
+export type ValidActivities = "PLAYING"
+    | "STREAMING"
+    | "LISTENING"
+    | "WATCHING"
+    | "COMPETING";
+
+@ApplyOptions<KaikiCommandOptions>({
+    name: "setavatar",
+    aliases: ["setav"],
+    description: "Assigns the bot a new avatar.",
+    usage: ["https://discord.com/media/someplace/somepicture.png"],
+    preconditions: ["OwnerOnly"],
+})
 export default class SetActivityCommand extends KaikiCommand {
-    static validTypes = ["PLAYING", "STREAMING", "LISTENING", "WATCHING", "COMPETING"];
+    static validActivities: ValidActivities[] = ["PLAYING", "STREAMING", "LISTENING", "WATCHING", "COMPETING"];
 
-    constructor() {
-        super("setactivity", {
-            aliases: ["setactivity", "setac"],
-            description: "Set the bot's activity.",
-            usage: ["<type> <Activity>", "playing with Dreb"],
-            ownerOnly: true,
-            args: [
-                {
-                    id: "type",
-                    type: (m, p) => {
-                        if (!p) return null;
-                        p = p.toUpperCase();
-                        if (SetActivityCommand.validTypes.includes(p)) return p;
-                        return null;
-                    },
-                    otherwise: (msg: Message, _: FailureData) => this.typeErrorEmbed(msg, _),
-                },
-                {
-                    id: "name",
-                    type: "string",
-                    match: "restContent",
-                    otherwise: (m: Message) => ({ embeds: [KaikiEmbeds.genericArgumentError(m)] }),
-                },
-            ],
-        });
-    }
+    public async messageRun(message: Message, args: Args) {
 
-    typeErrorEmbed = (msg: Message, _: FailureData) => ({
-        embeds: [
-            new EmbedBuilder()
-                .setDescription(`\`${_.phrase}\` is not an status type`)
-                .addFields({ name: "Valid types", value: SetActivityCommand.validTypes.join("\n") })
-                .withErrorColor(msg),
-        ],
-    });
+        const type = await args.pick(KaikiArgumentsTypes.activityTypeArgument);
 
-    public async exec(message: Message, {
-        type,
-        name,
-    }: { type: keyof typeof BotSettings_ActivityType, name: string }) {
+        const name = await args.rest("string");
 
         return Promise.all([
             message.client.user?.setActivity({ type: Constants.activityTypes[type], name: name }),

@@ -1,24 +1,19 @@
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args } from "@sapphire/framework";
 import { EmbedBuilder, Message } from "discord.js";
+import { KaikiCommandOptions } from "../../lib/Interfaces/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
+@ApplyOptions<KaikiCommandOptions>({
+    name: "setdaily",
+    aliases: ["dailyset"],
+    description: "Sets the daily currency allowance amount. Set to 0 to disable.",
+    preconditions: ["OwnerOnly"],
+})
 export default class SetDailyCommand extends KaikiCommand {
-    constructor() {
-        super("setdaily", {
-            aliases: ["setdaily", "dailyset"],
-            description: "Sets the daily currency allowance amount. Set to 0 to disable.",
-            usage: "",
-            ownerOnly: true,
-            args: [
-                {
-                    id: "arg",
-                    type: "integer",
-                    default: 0,
-                },
-            ],
-        });
-    }
+    public async messageRun(message: Message<true>, args: Args): Promise<Message> {
 
-    public async exec(message: Message<true>, { arg }: { arg: number }): Promise<Message> {
+        const arg = await args.rest("integer").catch(() => 0);
 
         const isEnabled = this.client.botSettings.get("1", "DailyEnabled", false);
 

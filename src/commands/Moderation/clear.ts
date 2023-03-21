@@ -1,48 +1,43 @@
-import { EmbedBuilder, Message, PermissionsBitField } from "discord.js";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args } from "@sapphire/framework";
+import { EmbedBuilder, Message } from "discord.js";
+import { KaikiCommandOptions } from "../../lib/Interfaces/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import Constants from "../../struct/Constants";
 
-
+@ApplyOptions<KaikiCommandOptions>({
+    name: "clear",
+    aliases: ["prune"],
+    description: "Clears up to 100 messages in the current channel.",
+    usage: ["69"],
+    requiredUserPermissions: ["ManageMessages"],
+    requiredClientPermissions: ["ManageMessages"],
+    preconditions: ["GuildOnly"],
+    cooldownDelay: 60000,
+})
 export default class ClearCommand extends KaikiCommand {
-    constructor() {
-        super("clear", {
-            aliases: ["clear", "prune"],
-            userPermissions: PermissionsBitField.Flags.ManageMessages,
-            clientPermissions: PermissionsBitField.Flags.ManageMessages,
-            channel: "guild",
-            description: "Clears up to 100 messages in the current channel.",
-            usage: "69",
-            args: [
-                {
-                    id: "int",
-                    type: "integer",
-                    default: 0,
-                },
-            ],
-            cooldown: 60000,
-        });
-    }
 
-    public async exec(message: Message<true>, { int }: { int: number }): Promise<void> {
+    private static maxAgeMs = 14 * 24 * 60 * 60 * 1000;
 
-        if (int > 100) {
-            int = 100;
-        }
+    public async messageRun(message: Message<true>, args: Args) {
+
+        const int = await args.rest("number", { maximum: 99, minimum: 1 });
 
         const channels = await message.channel.messages.fetch({ limit: int + 1 });
-        const maxAgeMs = 14 * 24 * 60 * 60 * 1000;
         const dateNow = Date.now();
 
         // Filter all messages that are newer than 14 days old
         const bulkDeletable = channels
-            .filter(c => (dateNow - c.createdAt.getTime()) < maxAgeMs);
+            .filter(c => (dateNow - c.createdAt.getTime()) < ClearCommand.maxAgeMs);
 
         const manualDelete = channels
-            .filter(c => (dateNow - c.createdAt.getTime()) > maxAgeMs);
+            .filter(c => (dateNow - c.createdAt.getTime()) > ClearCommand.maxAgeMs);
 
-        await message.channel.bulkDelete(bulkDeletable);
+        if (bulkDeletable.size) {
+            await message.channel.bulkDelete(bulkDeletable);
+        }
 
-        message.channel.send({
+        await message.channel.send({
             embeds: [
                 new EmbedBuilder()
                     .setDescription(`Deleting **${int}** messages...!`)

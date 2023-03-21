@@ -1,17 +1,16 @@
+import { ApplyOptions } from "@sapphire/decorators";
 import { EmbedBuilder, Message } from "discord.js";
+import { KaikiCommandOptions } from "../../lib/Interfaces/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
+@ApplyOptions<KaikiCommandOptions>({
+    name: "daily",
+    description: "Claim your daily currency allowance",
+})
 export default class ClaimDailyCommand extends KaikiCommand {
-    constructor() {
-        super("daily", {
-            aliases: ["daily"],
-            description: "Claim your daily currency allowance",
-            usage: "",
-        });
-    }
 
-    public async exec(message: Message): Promise<Message> {
+    public async messageRun(message: Message) {
 
         const enabled = this.client.botSettings.get("1", "DailyEnabled", false);
 

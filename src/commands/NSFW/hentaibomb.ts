@@ -1,24 +1,20 @@
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args } from "@sapphire/framework";
 import { Message } from "discord.js";
-import HentaiService, { HentaiTypes } from "../../lib/Hentai/HentaiService";
+import HentaiService from "../../lib/Hentai/HentaiService";
+import { KaikiCommandOptions } from "../../lib/Interfaces/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
+@ApplyOptions<KaikiCommandOptions>({
+    name: "hentaibomb",
+    aliases: ["hb"],
+    description: "Posts 5 NSFW images, using the waifu.pics API",
+    usage: ["waifu", "neko", "femboy", "blowjob"],
+})
 export default class HentaiBombCommand extends KaikiCommand {
-    constructor() {
-        super("hentaibomb", {
-            aliases: ["hentaibomb", "hb"],
-            description: "Posts 5 NSFW images, using the waifu.pics API",
-            usage: HentaiService.hentaiArray,
-            args: [
-                {
-                    id: "category",
-                    type: HentaiService.hentaiArray,
-                    default: null,
-                },
-            ],
-        });
-    }
+    public async messageRun(message: Message, args: Args): Promise<Message | Message[]> {
 
-    public async exec(message: Message, { category }: { category: HentaiTypes | null }): Promise<Message | Message[]> {
+        const category = await args.rest("kaikiHentaiTypes").catch(() => null);
 
         const megaResponse = (await this.client.hentaiService.grabHentai(category ?? HentaiService.hentaiArray[Math.floor(Math.random() * HentaiService.hentaiArray.length)], "bomb"))
             .splice(0, 5);

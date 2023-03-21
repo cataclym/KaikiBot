@@ -1,7 +1,8 @@
-import { Precondition } from "@sapphire/framework";
+import { MessageCommand, Precondition } from "@sapphire/framework";
 import { Message } from "discord.js";
 import DadBot from "../../commands/Etc/dadBot";
 import Constants from "../../struct/Constants";
+import KaikiAkairoClient from "./KaikiAkairoClient";
 
 export class DadBotPrecondition extends Precondition {
     public override async messageRun(message: Message<true>) {
@@ -33,5 +34,23 @@ export class DadBotPrecondition extends Precondition {
 
         if (DadBot.nickname.has(message.member.id)) return this.ok();
         return this.error();
+    }
+}
+
+export class OwnerOnlyPrecondition extends Precondition {
+    public override async messageRun(message: Message, command: MessageCommand, context: Precondition.Context) {
+        return this.checkOwner(message.author.id);
+    }
+
+    private async checkOwner(id: string) {
+        return (this.container.client as KaikiAkairoClient<true>).owner.id === id
+            ? this.ok()
+            : this.error({ message: "Only the bot owner can use this command!" });
+    }
+}
+
+declare module "@sapphire/framework" {
+    interface Preconditions {
+        OwnerOnly: never;
     }
 }

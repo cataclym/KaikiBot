@@ -1,23 +1,19 @@
-import { EmbedBuilder, Message, User } from "discord.js";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args } from "@sapphire/framework";
+import { EmbedBuilder, Message } from "discord.js";
+import { KaikiCommandOptions } from "../../lib/Interfaces/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
+@ApplyOptions<KaikiCommandOptions>({
+    name: "cash",
+    aliases: ["currency", "cur", "$", "£", "¥", "€"],
+    description: "Shows specified user's current balance. If no user is specified, shows your balance",
+})
 export default class Cash extends KaikiCommand {
-    constructor() {
-        super("cash", {
-            aliases: ["cash", "currency", "cur", "$", "¥", "£", "€"],
-            description: "Shows specified user's current balance. If no user is specified, shows your balance",
-            usage: "",
-            args: [
-                {
-                    id: "user",
-                    type: "user",
-                    default: (m: Message) => m.author,
-                },
-            ],
-        });
-    }
+    public async messageRun(msg: Message, args: Args): Promise<void> {
 
-    public async exec(msg: Message, { user }: { user: User }): Promise<void> {
+        const user = await args.rest("user").catch(() => msg.author);
+
         const moneh = await this.client.money.Get(user.id);
         await msg.channel.send({
             embeds: [

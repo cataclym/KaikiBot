@@ -1,25 +1,17 @@
-import { GuildMember, Message } from "discord.js";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args } from "@sapphire/framework";
+import { Message } from "discord.js";
+import { KaikiCommandOptions } from "../../lib/Interfaces/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
-
+@ApplyOptions<KaikiCommandOptions>({
+    name: "nom",
+    description: "Nom someone, cus you're hungry",
+    usage: ["", "@dreb"],
+    typing: true,
+})
 export default class NomCommand extends KaikiCommand {
-    constructor() {
-        super("nom", {
-            aliases: ["nom"],
-            description: "Nom someone, cus you're hungry",
-            usage: ["", "@dreb"],
-            typing: true,
-            args: [
-                {
-                    id: "mention",
-                    type: "member",
-                    default: null,
-                },
-            ],
-        });
-    }
-
-    public async exec(message: Message, { mention }: { mention: GuildMember | null }): Promise<Message> {
-        return this.client.imageAPIs.WaifuPics.sendImageAPIRequest(message, "nom", mention);
+    public async messageRun(message: Message, args: Args): Promise<Message> {
+        return this.client.imageAPIs.WaifuPics.sendImageAPIRequest(message, "nom", await args.rest("member").catch(() => null));
     }
 }

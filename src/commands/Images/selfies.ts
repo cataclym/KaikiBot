@@ -1,17 +1,16 @@
+import { ApplyOptions } from "@sapphire/decorators";
 import { Message } from "discord.js";
+import { KaikiCommandOptions } from "../../lib/Interfaces/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
+@ApplyOptions<KaikiCommandOptions>({
+    name: "selfies",
+    description: "Returns anime girl selfies",
+    usage: [""],
+    typing: true,
+})
 export default class Selfies extends KaikiCommand {
-    constructor() {
-        super("selfies", {
-            aliases: ["selfies"],
-            description: "Returns anime girl selfies",
-            usage: [""],
-            typing: true,
-        });
-    }
-
-    public async exec(message: Message): Promise<Message> {
+    public async messageRun(message: Message): Promise<Message> {
         return this.client.imageAPIs.WaifuIm.sendImageAPIRequest(message, "selfies");
     }
 }

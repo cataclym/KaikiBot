@@ -2,23 +2,23 @@ import { execFile, execSync } from "child_process";
 import path from "path";
 import util from "util";
 import { ActionRowBuilder, ButtonBuilder, EmbedBuilder, Message } from "discord.js";
+import { ApplyOptions } from "@sapphire/decorators";
+import { KaikiCommandOptions } from "../../lib/Interfaces/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import Utility from "../../lib/Utility";
 import Constants from "../../struct/Constants";
 
 const exec = util.promisify(execFile);
 
+@ApplyOptions<KaikiCommandOptions>({
+    name: "update",
+    description: "",
+    preconditions: ["OwnerOnly"],
+})
 export default class UpdateCommand extends KaikiCommand {
-    constructor() {
-        super("update", {
-            aliases: ["update"],
-            ownerOnly: true,
-        });
-    }
-
     static externalPath = (file: string) => path.join(__dirname, "..", "..", "..", "external", file);
 
-    public async exec(message: Message): Promise<void | Message<boolean>> {
+    public async messageRun(message: Message): Promise<void | Message<boolean>> {
 
         const update = await exec(UpdateCommand.externalPath("update.sh"));
 

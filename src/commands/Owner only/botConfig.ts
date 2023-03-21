@@ -1,11 +1,12 @@
-import { FailureData } from "discord-akairo";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args, MessageCommand, MessageCommandContext } from "@sapphire/framework";
+import { SubcommandOptions } from "@sapphire/plugin-subcommands";
 import { ActivityType, EmbedBuilder, Message } from "discord.js";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-import KaikiEmbeds from "../../lib/KaikiEmbeds";
 import Utility from "../../lib/Utility";
 import Constants from "../../struct/Constants";
 import { BotConfig } from "../../struct/db/Database";
-import SetActivityCommand from "./setActivity";
+import SetActivityCommand, { ValidActivities } from "./setActivity";
 
 enum ValidEnum {
     ACTIVITY = "activity",
@@ -16,129 +17,158 @@ enum ValidEnum {
     DAILYAMOUNT = "dailyAmount"
 }
 
-type ValidTypes = "activity"
-    | "activityType"
-    | "currencyname"
-    | "currencysymbol"
-    | "dailyEnabled"
-    | "dailyAmount";
+type ValidTypes = ["activity", "activityType", "currencyname", "currencysymbol", "dailyEnabled", "dailyAmount"];
 
+@ApplyOptions<SubcommandOptions>({
+    name: "botconfig",
+    aliases: ["bc"],
+    description: "Change various bot configurations. Run without arguments to see current settings.",
+    preconditions: ["OwnerOnly"],
+    subcommands: [
+        {
+            name: "activity",
+            messageRun: "activityRun",
+        },
+        {
+            name: "activityType",
+            messageRun: "activityTypeRun",
+        },
+        {
+            name: "currencyname",
+            messageRun: "currencynameRun",
+        },
+        {
+            name: "currencysymbol",
+            messageRun: "currencysymbolRun",
+        },
+        {
+            name: "dailyEnabled",
+            messageRun: "dailyEnabledRun",
+        },
+        {
+            name: "dailyAmount",
+            messageRun: "dailyAmountRun",
+        },
+    ],
+})
 export default class BotConfigCommand extends KaikiCommand {
-    private static _validTypes: ValidTypes[] = [
-        "activity",
-        "activityType",
-        "currencyname",
-        "currencysymbol",
-        "dailyEnabled",
-        "dailyAmount",
-    ];
 
-    constructor() {
-        super("botconfig", {
-            aliases: ["botconfig", "bc"],
-            description: "Change various bot configurations. Run without arguments to see current settings.",
-            usage: ["<setting> <value>", "currencyname Europe Dollars"],
-            ownerOnly: true,
-            args: [
-                {
-                    id: "type",
-                    type: BotConfigCommand._validTypes,
-                    otherwise: async (msg: Message, _: FailureData) => {
-                        if (_.phrase.length) {
-                            return ({
-                                embeds: [
-                                    new EmbedBuilder()
-                                        .setDescription(`\`${_.phrase}\` is not a valid setting`)
-                                        .addFields([
-                                            {
-                                                name: "Valid settings",
-                                                value: BotConfigCommand._validTypes.join("\n"),
-                                            },
-                                        ])
-                                        .withErrorColor(msg),
-                                ],
-                            });
-                        }
-                        else {
-                            return {
-                                embeds: [
-                                    new EmbedBuilder()
-                                        .addFields([
-                                            {
-                                                name: "Bot config",
-                                                value: await Utility.codeblock(JSON
-                                                    .stringify(new BotConfig(await this.client.connection().query("SELECT * FROM BotSettings")), null, 4), "xl"),
-                                            },
-                                        ])
-                                        .withOkColor(msg),
-                                ],
-                            };
-                        }
-                    },
-                },
-                {
-                    id: "value",
-                    type: "string",
-                    match: "restContent",
-                    otherwise: (m: Message) => ({ embeds: [KaikiEmbeds.genericArgumentError(m)] }),
-                },
+    public async messageRun(message: Message, args: Args, context: MessageCommand.RunContext) {
+        return message.channel.send({
+            embeds: [
+                new EmbedBuilder()
+                    .addFields([
+                        {
+                            name: "Bot config",
+                            value: await Utility.codeblock(JSON
+                                .stringify(new BotConfig(await this.client.connection().query("SELECT * FROM BotSettings")), null, 4), "json"),
+                        },
+                    ])
+                    .withOkColor(message),
             ],
         });
     }
 
-    public async exec(message: Message, { type, value }: { type: ValidTypes, value: string }): Promise<Message> {
 
-        const client = this.client;
-        let oldValue;
+    // TODO: Remember to test this out / Fix moving args over from subcommand / Calling the command correctly.
+    public async activityRun(message: Message, args: Args, context: MessageCommandContext) {
+        return this.setActivityCommand().messageRun?.call(this, message, args, context);
+    }
 
-        switch (type) {
-            case ValidEnum.ACTIVITY:
-                oldValue = await this.client.botSettings.get("1", "Activity", "N/A");
-                await this.handler.findCommand("setactivity")
-                    .exec(message, {
-                        type: await this.client.botSettings.get("1", "ActivityType", "PLAYING"),
-                        name: value,
-                    });
-                break;
-            case ValidEnum.ACTIVITYTYPE:
-                value = value.toUpperCase();
-                if (SetActivityCommand.validTypes.includes(value)) {
-                    oldValue = await this.client.botSettings.get("1", "ActivityType", SetActivityCommand.validTypes[ActivityType.Playing]);
-                    await this.handler.findCommand("setactivity")
-                        .exec(message, {
-                            name: await this.client.botSettings.get("1", "Activity", "N/A"),
-                            type: value,
-                        });
-                }
-                break;
-            case ValidEnum.CURRENCYNAME:
-                oldValue = await client.botSettings.get("1", "CurrencyName", "Yen");
-                await client.botSettings.set("1", "CurrencyName", String(value));
-                client.money.currencyName = value;
-                break;
-            case ValidEnum.CURRENCYSYMBOL:
-                oldValue = await client.botSettings.get("1", "CurrencySymbol", Constants.MAGIC_NUMBERS.CMDS.OWNER_ONLY.BOT_CONFIG.DEFAULT_CUR_CODE);
-                await client.botSettings.set("1", "CurrencySymbol", value.codePointAt(0));
-                client.money.currencySymbol = value;
-                break;
-            case ValidEnum.DAILYAMOUNT:
-                oldValue = await client.botSettings.get("1", "DailyAmount", Constants.MAGIC_NUMBERS.CMDS.OWNER_ONLY.BOT_CONFIG.DAILY_AMOUNT);
-                await client.botSettings.set("1", "DailyAmount", value);
-                break;
-            case ValidEnum.DAILYENABLED:
-                oldValue = await client.botSettings.get("1", "DailyEnabled", false);
-                await client.botSettings.set("1", "DailyEnabled", value);
-                break;
+    public async activityTypeRun(message: Message, args: Args, context: MessageCommandContext) {
+        return this.setActivityCommand().messageRun?.call(this, message, args, context);
+    }
+
+    public async currencynameRun(message: Message, args: Args) {
+        const value = await args.rest("string");
+
+        const oldValue = <string> await this.client.botSettings.get("1", "CurrencyName", "Yen");
+        await this.client.botSettings.set("1", "CurrencyName", value);
+        this.client.money.currencyName = value;
+
+        return BotConfigCommand.sendEmbed(message, oldValue, value);
+    }
+
+    public async currencysymbolRun(message: Message, args: Args) {
+        // Grab only the first letter
+        const value = (await args.rest("string"))[0];
+
+        const oldValue = <string> await this.client.botSettings.get("1", "CurrencySymbol", Constants.MAGIC_NUMBERS.CMDS.OWNER_ONLY.BOT_CONFIG.DEFAULT_CUR_CODE);
+        await this.client.botSettings.set("1", "CurrencySymbol", value.codePointAt(0));
+        this.client.money.currencySymbol = value;
+
+        return BotConfigCommand.sendEmbed(message, oldValue, value);
+    }
+
+    public async dailyEnabledRun(message: Message, args: Args) {
+        const value = await args.rest(BotConfigCommand.booleanArgument);
+
+        const oldValue = <boolean> await this.client.botSettings.get("1", "DailyEnabled", false);
+        await this.client.botSettings.set("1", "DailyEnabled", value);
+
+        return BotConfigCommand.sendEmbed(message, String(oldValue), String(value));
+    }
+
+    public async dailyAmountRun(message: Message, args: Args) {
+        const value = await args.rest("number");
+
+        const oldValue = <number> await this.client.botSettings.get("1", "DailyAmount", Constants.MAGIC_NUMBERS.CMDS.OWNER_ONLY.BOT_CONFIG.DAILY_AMOUNT);
+        await this.client.botSettings.set("1", "DailyAmount", value);
+
+        return BotConfigCommand.sendEmbed(message, String(oldValue), String(value));
+    }
+
+    private static booleanArgument = Args.make<boolean>((parameter, context) => {
+        const value = parameter.toLowerCase();
+
+        switch (value) {
+            case "false" :
+            case "disable" :
+            case "0" :
+                return Args.ok(false);
+
+            case "true" :
+            case "enable" :
+            case "1" :
+                return Args.ok(true);
+
             default:
-                throw new Error("Invalid bot-configuration provided!");
+                return Args.error({
+                    argument: context.argument,
+                    parameter,
+                    message: "Value must be of: true, false, enable, disable, 0, 1",
+                });
+        }
+    });
+
+    private static activityTypeArgument = Args.make<ValidActivities>((parameter, context) => {
+
+        const str = parameter.toUpperCase();
+
+        if (BotConfigCommand.assertType(str)) {
+            return Args.ok(str);
         }
 
-        if (oldValue == null || value == null) {
-            return message.channel.send({
-                embeds: [await KaikiEmbeds.errorMessage(message, "An invalid configuration was provided.")],
-            });
-        }
+        return Args.error({
+            argument: context.argument,
+            parameter,
+            message: `The provided argument doesn't match a valid activity type.
+Valid types are: \`${SetActivityCommand.validActivities.join("`, `")}\``,
+        });
+    });
 
+    private static assertType = ((str: string): str is ValidActivities => {
+        return SetActivityCommand.validActivities.includes(str as ValidActivities);
+    });
+
+    private setActivityCommand = () => {
+        const cmd = this.store.get("setactivity");
+        if (cmd) return cmd;
+        // TODO: Make this safer
+        throw new Error();
+    };
+
+    private static sendEmbed = (message: Message, oldValue: string, newValue: string) => {
         return message.channel.send({
             embeds: [
                 new EmbedBuilder()
@@ -150,11 +180,11 @@ export default class BotConfigCommand extends KaikiCommand {
                         },
                         {
                             name: "New value",
-                            value: value,
+                            value: newValue,
                         },
                     ])
                     .withOkColor(message),
             ],
         });
-    }
+    };
 }

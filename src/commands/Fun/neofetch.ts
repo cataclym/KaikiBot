@@ -1,5 +1,4 @@
 import { exec } from "child_process";
-import * as os from "os";
 import * as process from "process";
 import { ApplyOptions } from "@sapphire/decorators";
 import { Args } from "@sapphire/framework";
@@ -22,40 +21,31 @@ import Constants from "../../struct/Constants";
     flags: ["list"],
 })
 export default class NeofetchCommand extends KaikiCommand {
-    constructor() {
-        super("neofetch", {
-            aliases: ["neofetch", "neo"],
-            description: "Displays neofetch ascii art. Provide argument 'list' to get a list of all supported distros.",
-            usage: ["", "opensuse", "list"],
-            cooldown: 2000,
-            typing: true,
-            args: [
-                {
-                    id: "os",
-                    type: (_, phrase) => distros.find(str => {
 
-                        const k = str.toLowerCase();
+    private static neofetchArgument = Args.make<string>((parameter) => {
 
-                        return phrase
-                            .toLowerCase()
-                            .startsWith(k.slice(0, Math.max(phrase.length - 1, 1)));
-                    }),
-                    default: null,
-                },
-                {
-                    id: "list",
-                    flag: ["list"],
-                    match: "flag",
-                },
-            ],
+        const success = distros.find(str => {
+
+            const k = str.toLowerCase();
+
+            return parameter
+                .toLowerCase()
+                .startsWith(k.slice(0, Math.max(parameter.length - 1, 1)));
         });
-    }
+
+        if (!success) {
+            return Args.ok("");
+        }
+
+        return Args.ok(success);
+
+    });
 
     public async messageRun(message: Message, args: Args) {
 
         const list = args.getFlags("list");
 
-        const await args.rest();
+        const os = await args.rest(NeofetchCommand.neofetchArgument);
 
         if (list) {
             const pages: EmbedBuilder[] = [];

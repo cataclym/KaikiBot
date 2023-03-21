@@ -1,37 +1,25 @@
 import { time } from "@discordjs/builders";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args } from "@sapphire/framework";
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
-import { EmbedBuilder, Message, User } from "discord.js";
+import { EmbedBuilder, Message } from "discord.js";
+import { KaikiCommandOptions } from "../../lib/Interfaces/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 import Constants from "../../struct/Constants";
 
+@ApplyOptions<KaikiCommandOptions>({
+    name: "currencytransactions",
+    aliases: ["curtrs"],
+    description: "Shows your currency transactions. Bot owner can see other people's transactions.",
+    usage: ["", "7", "10 @drev"],
+})
 export default class CurrencyTransactionsCommand extends KaikiCommand {
-    constructor() {
-        super("currencytransactions", {
-            aliases: ["currencytransactions", "curtrs"],
-            description: "Shows your currency transactions. Bot owner can see other people's transactions.",
-            usage: ["", "7", "10 @drev"],
-            args: [
-                {
-                    id: "optionalPage",
-                    type: "number",
-                    default: 1,
-                    unordered: true,
-                },
-                {
-                    id: "optionalUser",
-                    type: "user",
-                    default: (m: Message) => m.author,
-                    unordered: true,
-                },
-            ],
-        });
-    }
 
-    public async exec(message: Message, {
-        optionalPage,
-        optionalUser,
-    }: { optionalUser: User, optionalPage: number }) {
+    public async messageRun(message: Message, args: Args) {
+
+        let optionalPage = await args.pick("number").catch(() => 1);
+        const optionalUser = await args.rest("user").catch(() => message.author);
 
         if (optionalPage <= 0 || !Number.isSafeInteger(optionalPage)) {
             optionalPage = 1;

@@ -1,36 +1,27 @@
-import { Argument } from "discord-akairo";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args } from "@sapphire/framework";
 import { EmbedBuilder, Message } from "discord.js";
+import { KaikiCommandOptions } from "../../lib/Interfaces/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
-import KaikiEmbeds from "../../lib/KaikiEmbeds";
-
-
+@ApplyOptions<KaikiCommandOptions>({
+    name: "deregister",
+    aliases: ["dereg"],
+    description: "Deregister a command, until bot restarts.",
+    preconditions: ["OwnerOnly"],
+})
 export default class Deregister extends KaikiCommand {
-    constructor() {
-        super("deregister", {
-            aliases: ["deregister", "dereg"],
-            description: "Deregister a command, until bot restarts.",
-            ownerOnly: true,
-            args: [
-                {
-                    index: 0,
-                    id: "command",
-                    type: Argument.union("command", "commandAlias"),
-                    otherwise: (msg: Message) => ({ embeds: [KaikiEmbeds.genericArgumentError(msg)] }),
-                },
-            ],
-        });
-    }
+    public async messageRun(message: Message, args: Args) {
 
-    public async exec(message: Message, { command }: { command: KaikiCommand }) {
+        const cmd = await args.rest("command");
 
-        await this.handler.deregister(command);
+        const unloaded = await this.store.unload(cmd);
 
         return message.channel.send({
             embeds: [
                 new EmbedBuilder()
                     .setTitle("Command has been deregistered.")
-                    .setDescription(`\`${command.id}\` is now fully disabled.`)
+                    .setDescription(`\`${unloaded.name}\` is now disabled.`)
                     .withOkColor(message),
             ],
         });

@@ -1,43 +1,20 @@
-import { EmbedBuilder, Message, User } from "discord.js";
-import KaikiArgumentsTypes from "../../lib/Kaiki/KaikiArgumentsTypes";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args } from "@sapphire/framework";
+import { EmbedBuilder, Message } from "discord.js";
+import { KaikiCommandOptions } from "../../lib/Interfaces/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
+@ApplyOptions<KaikiCommandOptions>({
+    name: "give",
+    description: "Gives money to another user",
+    usage: ["50 @Cata"],
+})
 export default class Give extends KaikiCommand {
-    constructor() {
-        super("give", {
-            aliases: ["give"],
-            description: "Gives money to another user",
-            usage: "50 @Cata",
-            args: [
-                {
-                    id: "amount",
-                    type: KaikiArgumentsTypes.moneyArgument,
-                    otherwise: (m: Message) => ({
-                        embeds: [
-                            new EmbedBuilder({
-                                title: "Invalid amount. It must be a number",
-                            })
-                                .withOkColor(m),
-                        ],
-                    }),
-                },
-                {
-                    id: "user",
-                    type: "user",
-                    otherwise: (m: Message) => ({
-                        embeds: [
-                            new EmbedBuilder({
-                                title: "Can't find this user. Try again.",
-                            })
-                                .withOkColor(m),
-                        ],
-                    }),
-                },
-            ],
-        });
-    }
+    public async messageRun(msg: Message, args: Args) {
 
-    public async exec(msg: Message, { amount, user }: { amount: bigint, user: User }): Promise<void> {
+        const amount = await args.pick("kaikiMoney");
+        const user = await args.rest("user");
+
         if (user.id === msg.author.id) {
             await msg.channel.send(`You can't give yourself ${this.client.money.currencySymbol}`);
             return;

@@ -1,37 +1,26 @@
-import { AttachmentBuilder, EmbedBuilder, Message, PermissionsBitField, resolveColor, Role } from "discord.js";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args } from "@sapphire/framework";
+import { AttachmentBuilder, EmbedBuilder, Message, PermissionsBitField, resolveColor } from "discord.js";
 import { imgFromColor } from "../../lib/Color";
-import KaikiArgumentsTypes from "../../lib/Kaiki/KaikiArgumentsTypes";
+import { KaikiCommandOptions } from "../../lib/Interfaces/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 import { rolePermissionCheck } from "../../lib/Roles";
-import { KaikiColor } from "../../lib/Types/KaikiColor";
 import Utility from "../../lib/Utility";
 
+@ApplyOptions<KaikiCommandOptions>({
+    name: "rolecolor",
+    aliases: ["roleclr", "rclr"],
+    description: "Sets or displays the color of a given role, or your highest role.",
+    usage: ["@Gamer ff00ff"],
+    preconditions: ["GuildOnly"],
+})
 export default class RoleColorCommand extends KaikiCommand {
-    constructor() {
-        super("rolecolor", {
-            aliases: ["rolecolor", "roleclr", "rclr"],
-            description: "Sets or displays the color of a given role, or your highest role.",
-            usage: "@Gamer ff00ff",
-            channel: "guild",
-            args: [
-                {
-                    id: "role",
-                    type: "role",
-                },
-                {
-                    id: "clr",
-                    type: KaikiArgumentsTypes.kaikiColorArgument,
-                    default: null,
-                },
-            ],
-        });
-    }
+    public async messageRun(message: Message<true>, args: Args) {
 
-    public async exec(message: Message<true>, {
-        role,
-        clr,
-    }: { role: Role | undefined, clr: KaikiColor | null }) {
+        const role = await args.pick("role");
+
+        const clr = await args.rest()
 
         const { member } = message;
 

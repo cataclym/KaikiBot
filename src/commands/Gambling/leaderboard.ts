@@ -1,18 +1,17 @@
+import { ApplyOptions } from "@sapphire/decorators";
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
 import { EmbedBuilder, Message } from "discord.js";
+import { KaikiCommandOptions } from "../../lib/Interfaces/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
+@ApplyOptions<KaikiCommandOptions>({
+    name: "leaderboard",
+    aliases: ["lb"],
+    description: "Shows currency leaderboard for the current server.",
+    preconditions: ["GuildOnly"],
+})
 export default class LeaderboardCommand extends KaikiCommand {
-    constructor() {
-        super("leaderboard", {
-            aliases: ["leaderboard", "lb"],
-            description: "Shows currency leaderboard for the current server.",
-            usage: "",
-            channel: "guild",
-        });
-    }
-
-    public async exec(message: Message): Promise<Message> {
+    public async messageRun(message: Message): Promise<Message> {
         const { currencySymbol } = this.client.money,
             guildOnlyEntries = (await this.client.orm.discordUsers.findMany({}))
                 .filter(e => message.guild?.members.cache.get(String(e.UserId)))

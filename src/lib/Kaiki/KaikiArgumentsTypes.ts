@@ -1,15 +1,16 @@
-import { Args, container } from "@sapphire/framework";
+import { Args, Argument, container } from "@sapphire/framework";
 import { Message } from "discord.js";
+import SetActivityCommand, { ValidActivities } from "../../commands/Owner only/setActivity";
 import Constants from "../../struct/Constants";
 import { hexColorTable } from "../Color";
+import { HentaiTypes } from "../Hentai/HentaiService";
 import Utility from "../Utility";
 import KaikiCommand from "./KaikiCommand";
 import KaikiUtil from "./KaikiUtil";
 
-export default class KaikiArgumentsTypes {
-
-    public static commandIArgument = Args.make<KaikiCommand>(async (parameter, context) => {
-        const result = container.stores.get("commands")
+export class CommandArgument extends Argument<KaikiCommand> {
+    public run(parameter: string, context: Argument.Context<KaikiCommand>): Argument.AwaitableResult<KaikiCommand> {
+        const result = <KaikiCommand>container.stores.get("commands")
             .find(k => {
                 const name = k.name.toLowerCase();
 
@@ -19,16 +20,18 @@ export default class KaikiArgumentsTypes {
             });
 
         if (!result) {
-            return Args.error({
-                argument: context.argument,
+            return this.error({
+                message: "The provided argument could not be resolved to a command.",
                 parameter,
                 context,
             });
         }
-        return Args.ok(result as KaikiCommand);
-    });
+        return this.ok(result);
+    }
+}
 
-    public static categoryIArgument = Args.make<string>(async (parameter, context) => {
+export class CategoryArgument extends Argument<string> {
+    public run(parameter: string, context: Argument.Context<string>): Argument.AwaitableResult<string> {
         const result = container.stores.get("commands")
             .categories.find(k => {
 
@@ -40,14 +43,102 @@ export default class KaikiArgumentsTypes {
             });
 
         if (!result) {
-            return Args.error({
-                argument: context.argument,
+            return this.error({
                 parameter,
                 context,
+                message: "The provided argument could not be resolved to a category.",
             });
         }
 
-        return Args.ok(result);
+        return this.ok(result);
+    }
+}
+
+export class KaikiMoneyArgument extends Argument<bigint> {
+    public async run(parameter: string, context: Argument.Context<bigint>) {
+        if (!parameter) return this.error({ context, parameter: parameter });
+
+        const input = parameter.trim().toUpperCase().replace("K", "000");
+
+        const int = KaikiArgumentsTypes.checkInt(input);
+
+        if (!int) {
+            switch (input) {
+                case "ALL":
+                    return this.ok(await KaikiArgumentsTypes.getCurrency(context.message));
+
+                case "HALF":
+                    return this.ok(await KaikiArgumentsTypes.getCurrency(context.message) / BigInt(2));
+
+                case "MAX":
+                    return this.ok(BigInt(Constants.MAGIC_NUMBERS.LIB.KAIKI.KAIKI_ARGS.MAX_INT));
+
+            }
+            return this.error({ context, parameter });
+        }
+
+        return context.message.client.money.Get(context.message.author.id)
+            .then(money => {
+                if (int <= money) {
+                    return this.ok(BigInt(int));
+                }
+                else {
+                    return this.error({ context, parameter });
+                }
+            });
+    }
+}
+
+export class KaikiCoinFlipArgument extends Argument<string> {
+
+    static coinArgs: { [i: string]: string } = {
+        "heads": "heads",
+        "head": "heads",
+        "h": "heads",
+        "tails": "tails",
+        "tail": "tails",
+        "t": "tails",
+    };
+
+    public run(parameter: string, context: Argument.Context<string>): Argument.AwaitableResult<string> {
+
+        if (Object.keys(KaikiCoinFlipArgument.coinArgs).includes(parameter)) {
+            return this.ok(KaikiCoinFlipArgument.coinArgs[parameter]);
+        }
+        return this.error({ parameter, message: "The provided argument could not be resolved to a coin side." });
+    }
+}
+
+export class KaikiHentaiTypesArgument extends Argument<string> {
+    private static hentaiArray = ["waifu", "neko", "femboy", "blowjob"];
+
+    public run(parameter: string) {
+        return KaikiHentaiTypesArgument.hentaiArray.includes(parameter)
+            ? this.ok(parameter)
+            : this.error({ parameter, message: "The provided argument could not be resolved to a hentai category." });
+    }
+}
+
+export default class KaikiArgumentsTypes {
+
+    public static activityTypeArgument = Args.make<ValidActivities>((parameter, context) => {
+
+        const str = parameter.toUpperCase();
+
+        if (KaikiArgumentsTypes.assertType(str)) {
+            return Args.ok(str);
+        }
+
+        return Args.error({
+            argument: context.argument,
+            parameter,
+            message: `The provided argument doesn't match a valid activity type.
+Valid types are: \`${SetActivityCommand.validActivities.join("`, `")}\``,
+        });
+    });
+
+    private static assertType = ((str: string): str is ValidActivities => {
+        return SetActivityCommand.validActivities.includes(str as ValidActivities);
     });
 
     public static urlEmoteAttachmentIArgument = Args.make<string>(async (parameter, context) => {
@@ -123,41 +214,17 @@ export default class KaikiArgumentsTypes {
             : hexColorString));
     };
 
-    private static MAX_INT = Constants.MAGIC_NUMBERS.LIB.KAIKI.KAIKI_ARGS.MAX_INT;
-
-    static kaikiMoneyArgument = async (message: Message, phrase: string) => {
-        if (!phrase) return null;
-
-        const input = phrase.trim().toUpperCase().replace("K", "000");
-
-        const int = KaikiArgumentsTypes.checkInt(input);
-        if (!int) {
-            switch (input) {
-                case "ALL":
-                    return await KaikiArgumentsTypes.getCurrency(message);
-
-                case "HALF":
-                    return (await KaikiArgumentsTypes.getCurrency(message)) / BigInt(2);
-
-                case "MAX":
-                    return KaikiArgumentsTypes.MAX_INT;
-
-            }
-            return null;
-        }
-
-        return message.client.money.Get(message.author.id)
-            .then(money => {
-                if (int <= money) {
-                    return int;
-                }
-                else {
-                    return false;
-                }
-            });
-    };
-
     // static moneyArgument = Argument.range("bigint", 0, KaikiArgumentsTypes.MAX_INT);
 
-    private static getCurrency = async (message: Message) => await message.client.money.Get(message.author.id);
+    static getCurrency = async (message: Message) => await message.client.money.Get(message.author.id);
+}
+
+declare module "@sapphire/framework" {
+    interface ArgType {
+        category: string;
+        command: KaikiCommand;
+        kaikiCoin: string;
+        kaikiMoney: bigint;
+        kaikiHentaiTypes: HentaiTypes;
+    }
 }

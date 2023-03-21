@@ -1,31 +1,27 @@
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args } from "@sapphire/framework";
 import { ActionRowBuilder, ButtonBuilder, ComponentType, EmbedBuilder, GuildMember, Message } from "discord.js";
 
 import TicTacToe from "../../lib/Games/TTT";
+import { KaikiCommandOptions } from "../../lib/Interfaces/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
+@ApplyOptions<KaikiCommandOptions>({
+    name: "tictactoe",
+    aliases: ["ttt"],
+    description: "Starts a TicTacToe game, where you play against an @mentioned person.",
+    usage: ["@Dreb"],
+    preconditions: ["GuildOnly"],
+})
 export default class TicTacToeCommand extends KaikiCommand {
-    constructor() {
-        super("tictactoe", {
-            aliases: ["tictactoe", "ttt"],
-            channel: "guild",
-            description: "Starts a TicTacToe game, where you play against an @mentioned person.",
-            usage: "@Dreb",
-            args: [
-                {
-                    id: "player2",
-                    type: "member",
-                    otherwise: (m: Message) => ({ embeds: [KaikiEmbeds.genericArgumentError(m)] }),
-                },
-            ],
-        });
-    }
+    public async messageRun(message: Message, args: Args) {
 
-    public async exec(message: Message, { player2 }: { player2: GuildMember }) {
+        const playerTwo = await args.rest("member");
 
         if (!message.member) return;
 
-        if (player2.id === message.member.id || player2.user.bot) {
+        if (playerTwo.id === message.member.id || playerTwo.user.bot) {
             return message.channel.send({ embeds: [await KaikiEmbeds.errorMessage(message, "You can't play against yourself or a bot!")] });
         }
 
@@ -56,13 +52,13 @@ export default class TicTacToeCommand extends KaikiCommand {
         acceptMessage.awaitMessageComponent({
             filter: (m) => {
                 m.deferUpdate();
-                return m.user.id === player2.id;
+                return m.user.id === playerTwo.id;
             }, componentType: ComponentType.Button, time: 20000,
         })
             .then(async (interaction) => {
 
                 if (interaction.customId === "1") {
-                    new TicTacToe(message.member as GuildMember, player2, message);
+                    new TicTacToe(message.member as GuildMember, playerTwo, message);
                     acceptMessage.delete();
                 }
 
@@ -70,7 +66,7 @@ export default class TicTacToeCommand extends KaikiCommand {
                     await message.reply({
                         embeds: [
                             new EmbedBuilder()
-                                .setDescription(`${player2.user.tag} has declined your Tic-Tac-Toe challenge`)
+                                .setDescription(`${playerTwo.user.tag} has declined your Tic-Tac-Toe challenge`)
                                 .withErrorColor(message),
                         ],
                     });

@@ -1,17 +1,16 @@
+import { ApplyOptions } from "@sapphire/decorators";
 import { EmbedBuilder, Message } from "discord.js";
+import { KaikiCommandOptions } from "../../lib/Interfaces/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
+@ApplyOptions<KaikiCommandOptions>({
+    name: "economy",
+    aliases: ["eco"],
+    description: "Displays overall currency statistics.",
+    preconditions: ["GuildOnly"],
+})
 export default class EconomyCommand extends KaikiCommand {
-    constructor() {
-        super("economy", {
-            aliases: ["economy", "eco"],
-            description: "Displays overall currency statistics.",
-            usage: "",
-            channel: "guild",
-        });
-    }
-
-    public async exec(message: Message): Promise<Message> {
+    public async messageRun(message: Message): Promise<Message> {
         const { currencySymbol } = this.client.money,
             usersDb = await this.client.orm.discordUsers.findMany({
                 select: {

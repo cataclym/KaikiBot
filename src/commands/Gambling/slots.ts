@@ -1,32 +1,22 @@
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args } from "@sapphire/framework";
 import { EmbedBuilder, Message } from "discord.js";
 import Gambling from "../../lib/Gambling/Gambling";
-import KaikiArgumentsTypes from "../../lib/Kaiki/KaikiArgumentsTypes";
+import { KaikiCommandOptions } from "../../lib/Interfaces/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import Constants from "../../struct/Constants";
 
+@ApplyOptions<KaikiCommandOptions>({
+    name: "Slots",
+    aliases: ["slots", "slot"],
+    description: "Bet a certain amount in the slot machine.",
+    usage: ["69"],
+})
 export default class SlotsCommand extends KaikiCommand {
-    constructor() {
-        super("Slots", {
-            aliases: ["slots", "slot"],
-            description: "Bet a certain amount in the slot machine.",
-            usage: "69",
-            args: [
-                {
-                    id: "amount",
-                    type: KaikiArgumentsTypes.moneyArgument,
-                    otherwise: (m: Message) => ({
-                        embeds: [
-                            new EmbedBuilder()
-                                .setTitle("Invalid amount. It must be a number")
-                                .withOkColor(m),
-                        ],
-                    }),
-                },
-            ],
-        });
-    }
 
-    public async exec(message: Message, { amount }: { amount: bigint }): Promise<void> {
+    public async messageRun(message: Message, args: Args): Promise<void> {
+
+        const amount = await args.rest("kaikiMoney");
 
         if (amount < 2) {
             await message.channel.send({

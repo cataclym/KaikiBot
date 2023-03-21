@@ -1,28 +1,22 @@
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args } from "@sapphire/framework";
 import { EmbedBuilder, Message } from "discord.js";
 import { DAPI } from "../../lib/Hentai/HentaiService";
+import { KaikiCommandOptions } from "../../lib/Interfaces/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 import Utility from "../../lib/Utility";
 
+@ApplyOptions<KaikiCommandOptions>({
+    name: "e621",
+    description: "e621 :hahaa:",
+    typing: true,
+})
 export default class EAPICommand extends KaikiCommand {
-    constructor() {
-        super("e621", {
-            aliases: ["e621"],
-            description: "e621 :hahaa:",
-            typing: true,
-            args: [
-                {
-                    id: "tags",
-                    match: "rest",
-                    type: "string",
-                    default: null,
-                },
-            ],
-        });
-    }
+    public async messageRun(message: Message, args: Args): Promise<Message> {
 
-    public async exec(message: Message, { tags }: { tags: string | null }): Promise<Message> {
+        const tags = await args.pick("string");
+
         const post = await this.client.hentaiService.DapiGrabber(tags?.split("+").map(tag => tag.replace(" ", "_")) ?? null, DAPI.E621);
         if (post) {
 

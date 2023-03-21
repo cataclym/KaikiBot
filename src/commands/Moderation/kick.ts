@@ -1,40 +1,23 @@
-import { EmbedBuilder, Guild, GuildMember, Message, PermissionsBitField } from "discord.js";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args } from "@sapphire/framework";
+import { EmbedBuilder, Guild, GuildMember, Message } from "discord.js";
+import { KaikiCommandOptions } from "../../lib/Interfaces/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
-
+@ApplyOptions<KaikiCommandOptions>({
+    name: "kick",
+    aliases: ["k"],
+    description: "Kicks a user by ID or name with an optional message.",
+    usage: ["<@some Guy> Your behaviour is harmful."],
+    requiredUserPermissions: ["KickMembers"],
+    requiredClientPermissions: ["KickMembers"],
+    preconditions: ["GuildOnly"],
+})
 export default class KickCommand extends KaikiCommand {
-    constructor() {
-        super("kick", {
-            aliases: ["kick", "k"],
-            userPermissions: PermissionsBitField.Flags.KickMembers,
-            clientPermissions: PermissionsBitField.Flags.KickMembers,
-            description: "Kicks a user by ID or name with an optional message.",
-            usage: "<@some Guy> Your behaviour is harmful.",
-            channel: "guild",
-            args: [
-                {
-                    id: "member",
-                    type: "member",
-                    otherwise: (m: Message) => ({
-                        embeds: [
-                            new EmbedBuilder({
-                                description: "Can't find this user.",
-                            })
-                                .withErrorColor(m),
-                        ],
-                    }),
-                },
-                {
-                    id: "reason",
-                    type: "string",
-                    match: "restContent",
-                    default: "kicked",
-                },
-            ],
-        });
-    }
+    public async messageRun(message: Message, args: Args): Promise<Message> {
 
-    public async exec(message: Message, { member, reason }: { member: GuildMember, reason: string }): Promise<Message> {
+        const member = await args.pick("member");
+        const reason = await args.rest("string").catch(() => "Kicked");
 
         const guild = message.guild as Guild;
         const guildClientMember = guild.members.me as GuildMember;
