@@ -1,20 +1,18 @@
+import { ApplyOptions } from "@sapphire/decorators";
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
 import { EmbedBuilder, Guild, Message, Role } from "discord.js";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import Constants from "../../struct/Constants";
 
-
+@ApplyOptions<KaikiCommandOptions>({
+    name: "rolelist",
+    aliases: ["roles"],
+    description: "Lists all roles",
+    preconditions: ["GuildOnly"],
+})
 export default class RoleListCommand extends KaikiCommand {
-    constructor() {
-        super("rolelist", {
-            aliases: ["rolelist", "roles"],
-            description: "Lists all roles",
-            usage: "",
-            channel: "guild",
-        });
-    }
-
-    public async exec(message: Message<true>): Promise<Message> {
+    public async messageRun(message: Message<true>): Promise<Message> {
 
         const roleArray = [...(message.guild as Guild).roles.cache.values()];
         const pages: EmbedBuilder[] = [];

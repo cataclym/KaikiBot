@@ -1,7 +1,7 @@
 import { ApplyOptions } from "@sapphire/decorators";
 import { Args, MessageCommand, MessageCommandContext } from "@sapphire/framework";
-import { SubcommandOptions } from "@sapphire/plugin-subcommands";
-import { ActivityType, EmbedBuilder, Message } from "discord.js";
+import { EmbedBuilder, Message } from "discord.js";
+import { KaikiSubCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiSubCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import Utility from "../../lib/Utility";
 import Constants from "../../struct/Constants";
@@ -19,10 +19,11 @@ enum ValidEnum {
 
 type ValidTypes = ["activity", "activityType", "currencyname", "currencysymbol", "dailyEnabled", "dailyAmount"];
 
-@ApplyOptions<SubcommandOptions>({
+@ApplyOptions<KaikiSubCommandOptions>({
     name: "botconfig",
     aliases: ["bc"],
     description: "Change various bot configurations. Run without arguments to see current settings.",
+    usage: ["<setting> <value>", "currencyname Europe Dollars"],
     preconditions: ["OwnerOnly"],
     subcommands: [
         {

@@ -19,7 +19,7 @@ import PurrBot from "../APIs/PurrBot";
 import WaifuIm from "../APIs/waifu.im";
 import WaifuPics from "../APIs/WaifuPics";
 import HentaiService from "../Hentai/HentaiService";
-import PackageJSON from "../Interfaces/PackageJSON";
+import PackageJSON from "../Interfaces/Common/PackageJSON";
 import { MoneyService } from "../Money/MoneyService";
 import Utility from "../Utility";
 

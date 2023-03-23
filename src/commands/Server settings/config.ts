@@ -1,152 +1,80 @@
-import { BlockedCategories, Guilds } from "@prisma/client";
-import { Argument, Flag } from "discord-akairo";
-import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
-import { EmbedBuilder, Message, MessageCreateOptions, PermissionsBitField } from "discord.js";
-import { BlockedCategoriesEnum } from "../../lib/Enums/blockedCategoriesEnum";
-import GreetHandler from "../../lib/GreetHandler";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args } from "@sapphire/framework";
+import { Message } from "discord.js";
+import { KaikiSubCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiSubCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-import Utility from "../../lib/Utility";
+import Config from "../../lib/ServerConfig/Config";
 
+@ApplyOptions<KaikiSubCommandOptions>({
+    name: "config",
+    aliases: ["configure", "conf"],
+    description: "Configure or display guild specific settings. Will always respond to default prefix regardless of server prefix.",
+    usage: ["", "dadbot enable", "anniversary enable", "prefix !", "okcolor <hex>", "errorcolor <hex>"],
+    requiredUserPermissions: ["ManageMessages"],
+    preconditions: ["GuildOnly"],
+    subcommands: [
+        // Dadbot
+        {
+            name: "dadbot",
+            messageRun: "dadbotRun",
+        },
+        {
+            name: "dad",
+            messageRun: "dadbotRun",
+        },
+        // Anniversaryroles
+        {
+            name: "anniversary",
+            messageRun: "anniversaryRun",
+        },
+        {
+            name: "anniversaryroles",
+            messageRun: "anniversaryRun",
+        },
+        {
+            name: "roles",
+            messageRun: "anniversaryRun",
+        },
+        // Prefix
+        {
+            name: "prefix",
+            messageRun: "prefixRun",
+        },
+        // okColor
+        {
+            name: "okcolor",
+            messageRun: "okcolorRun",
+        },
+        // errorColor
+        {
+            name: "errorcolor",
+            messageRun: "errorcolorRun",
+        },
+    ],
+})
 export default class ConfigCommand extends KaikiCommand {
-    constructor() {
-        super("config", {
-            aliases: ["config", "configure", "conf"],
-            channel: "guild",
-            description: "Configure or display guild specific settings. Will always respond to default prefix regardless of server prefix.",
-            usage: ["", "dadbot enable", "anniversary enable", "prefix !", "okcolor <hex>", "errorcolor <hex>"],
-            userPermissions: PermissionsBitField.Flags.ManageMessages,
-            * args() {
-                const method = yield {
-                    type: [
-                        ["config-dadbot", "dadbot", "dad"],
-                        ["config-anniversary", "anniversary", "roles", "anniversaryroles"],
-                        ["config-prefix", "prefix"],
-                        ["config-okcolor", "okcolor"],
-                        ["config-errorcolor", "errorcolor"],
-                    ],
-                };
-                if (!Argument.isFailure(method)) {
-                    return Flag.continue(method as string);
-                }
-                return {};
-            },
-        });
+    public async messageRun(message: Message<true>): Promise<Message> {
+        return Config.messageRun(message);
     }
 
-    public async exec(message: Message<true>): Promise<Message> {
+    public dadbotRun(message: Message<true>, args: Args) {
+        return Config.dadbotRun(message, args);
+    }
 
-        if (!message.member) return message;
+    public async anniversaryRun(message: Message<true>, args: Args) {
+        return Config.anniversaryRun(message, args);
+    }
 
-        let db = await this.client.orm.guilds.findUnique({
-            where: { Id: BigInt(message.guildId) },
-            include: { BlockedCategories: true },
-        });
+    public async prefixRun(message: Message<true>, args: Args) {
+        return Config.prefixRun(message, args);
+    }
 
-        if (!db) {
-            const g = await this.client.db.getOrCreateGuild(BigInt(message.guildId));
-            const blockedCategoriesObj: { BlockedCategories: BlockedCategories[] } = { BlockedCategories: [] };
-            Object.assign(g, blockedCategoriesObj);
-            db = g as (Guilds & { BlockedCategories: BlockedCategories[] });
-        }
+    public async okcolorRun(message: Message<true>, args: Args) {
+        return Config.okcolorRun(message, args);
 
-        // Is this okay?
-        const { Anniversary, DadBot, Prefix, ErrorColor, OkColor, WelcomeChannel, ByeChannel } = db;
+    }
 
-        const categories = db.BlockedCategories
-            .map(e => BlockedCategoriesEnum[e.CategoryTarget])
-            .filter(Boolean);
-
-        const firstPage: MessageCreateOptions = {
-            content: undefined,
-            components: [],
-            embeds: [
-                new EmbedBuilder()
-                    .addFields([
-                        {
-                            name: "Dad-bot",
-                            value: Utility.toggledTernary(DadBot),
-                            inline: true,
-                        },
-                        {
-                            name: "Anniversary-Roles",
-                            value: Utility.toggledTernary(Anniversary),
-                            inline: true,
-                        },
-                        {
-                            name: "Guild prefix",
-                            value: Prefix === process.env.PREFIX
-                                ? `\`${process.env.PREFIX}\` (Default)`
-                                : `\`${Prefix}\``,
-                            inline: true,
-                        },
-                        {
-                            name: "Embed ok color",
-                            value: Number(OkColor).toString(16),
-                            inline: true,
-                        },
-                        {
-                            name: "Embed error color",
-                            value: Number(ErrorColor).toString(16),
-                            inline: true,
-                        },
-                        {
-                            name: "\u200B", value: "\u200B",
-                            inline: true,
-                        },
-                        {
-                            name: "Welcome message",
-                            value: Utility.toggledTernary(!!WelcomeChannel),
-                            inline: true,
-                        },
-                        {
-                            name: "Goodbye message",
-                            value: Utility.toggledTernary(!!ByeChannel),
-                            inline: true,
-                        },
-                        {
-                            name: "\u200B", value: "\u200B",
-                            inline: true,
-                        },
-                        {
-                            name: "Sticky roles",
-                            value: Utility.toggledTernary(await this.client.guildsDb.get(message.guildId, "StickyRoles", false)),
-                            inline: false,
-                        },
-                    ])
-                    .withOkColor(message)
-                    .data,
-            ],
-        };
-
-        if (categories.length && firstPage.embeds) {
-            firstPage.embeds = [
-                EmbedBuilder.from(firstPage.embeds[0])
-                    .addFields([
-                        {
-                            name: "Disabled categories",
-                            value: categories.join("\n"),
-                            inline: false,
-                        },
-                    ]),
-            ];
-        }
-
-        const pages: MessageCreateOptions[] = [firstPage];
-
-        if (db.WelcomeMessage) {
-            pages.push(await GreetHandler.createAndParseGreetMsg({
-                embed: db.WelcomeMessage || null,
-                channel: db.WelcomeChannel,
-                timeout: db.WelcomeTimeout,
-            }, message.member));
-        }
-        if (db.ByeMessage) {
-            pages.push(await GreetHandler.createAndParseGreetMsg({
-                embed: db.ByeMessage || null,
-                channel: db.ByeChannel,
-                timeout: db.ByeTimeout,
-            }, message.member));
-        }
-        return sendPaginatedMessage(message, pages, { owner: message.author });
+    public async errorcolorRun(message: Message<true>, args: Args) {
+        return Config.errorcolorRun(message, args);
     }
 }

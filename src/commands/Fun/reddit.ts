@@ -2,8 +2,8 @@ import { ApplyOptions } from "@sapphire/decorators";
 import { Args } from "@sapphire/framework";
 import { ChannelType, EmbedBuilder, Message, TextChannel } from "discord.js";
 import fetch from "node-fetch";
-import { KaikiCommandOptions } from "../../lib/Interfaces/KaikiCommandOptions";
-import RedditAPIData, { PurpleData } from "../../lib/Interfaces/RedditAPIData";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
+import RedditAPIData, { PurpleData } from "../../lib/Interfaces/Common/RedditAPIData";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 import KaikiEmbeds from "../../lib/KaikiEmbeds";

@@ -4,9 +4,85 @@ import SetActivityCommand, { ValidActivities } from "../../commands/Owner only/s
 import Constants from "../../struct/Constants";
 import { hexColorTable } from "../Color";
 import { HentaiTypes } from "../Hentai/HentaiService";
+import { KaikiColor } from "../Types/KaikiColor";
 import Utility from "../Utility";
 import KaikiCommand from "./KaikiCommand";
 import KaikiUtil from "./KaikiUtil";
+
+export class EmoteImageArgument extends Argument<string> {
+    public async run(parameter: string, context: Argument.Context<string>) {
+
+        if (!parameter) {
+            return this.error({
+                parameter,
+            });
+        }
+
+        if (context.message.attachments.size) {
+            const attachment = context.message.attachments.first();
+
+            if (attachment) {
+                return this.ok(attachment.url);
+            }
+
+            return this.error({
+                parameter,
+            });
+        }
+
+        const emoji = await context.args.pick("emoji").catch(() => undefined);
+
+        // TODO: TEST IF THIS WORKS FOR ALL EMOTES
+        if (emoji) {
+            return this.ok(`https://cdn.discordapp.com/emojis/${emoji.id}.${emoji.animated ? "gif" : "png"}`);
+        }
+
+        const url = await context.args.pick("url").catch(() => undefined);
+
+        // TODO: TEST IF THIS WORKS AT ALL
+        if (url) {
+            return this.ok(url.href);
+        }
+
+        return this.error({
+            parameter,
+        });
+    }
+}
+
+export class ColorArgument extends Argument<KaikiColor> {
+    public run(parameter: string, context: Argument.Context<KaikiColor>): Argument.AwaitableResult<KaikiColor> {
+
+        if (!parameter) {
+            return this.error({
+                parameter,
+            });
+        }
+
+        const hexInteger = parseInt(parameter);
+
+        if (!isNaN(hexInteger)) {
+            return this.ok(Utility.HEXtoRGB(hexInteger.toString(16)));
+        }
+
+        const hexColorString = parameter.replace("#", "");
+
+        const color = parseInt(hexColorString, 16);
+
+        if (color < 0
+            || color > Constants.MAGIC_NUMBERS.LIB.KAIKI.KAIKI_ARGS.MAX_COLOR_VALUE
+            || isNaN(color)
+            && !KaikiUtil.hasKey(hexColorTable, hexColorString)) {
+            return this.error({
+                parameter,
+            });
+        }
+
+        return this.ok(Utility.HEXtoRGB(String(KaikiUtil.hasKey(hexColorTable, hexColorString)
+            ? hexColorTable[hexColorString]
+            : hexColorString)));
+    }
+}
 
 export class CommandArgument extends Argument<KaikiCommand> {
     public run(parameter: string, context: Argument.Context<KaikiCommand>): Argument.AwaitableResult<KaikiCommand> {
@@ -223,6 +299,8 @@ declare module "@sapphire/framework" {
     interface ArgType {
         category: string;
         command: KaikiCommand;
+        color: KaikiColor;
+        emoteImage: string;
         kaikiCoin: string;
         kaikiMoney: bigint;
         kaikiHentaiTypes: HentaiTypes;

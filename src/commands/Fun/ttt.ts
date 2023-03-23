@@ -3,7 +3,7 @@ import { Args } from "@sapphire/framework";
 import { ActionRowBuilder, ButtonBuilder, ComponentType, EmbedBuilder, GuildMember, Message } from "discord.js";
 
 import TicTacToe from "../../lib/Games/TTT";
-import { KaikiCommandOptions } from "../../lib/Interfaces/KaikiCommandOptions";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 

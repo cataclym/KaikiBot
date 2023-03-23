@@ -50,7 +50,9 @@
     "auto-changelog": "^2.4.0",
     "eslint": "^8.33.0",
     "eslint-import-resolver-typescript": "^3.5.3",
-    "eslint-plugin-import": "^2.27.5"
+    "eslint-plugin-import": "^2.27.5",
+    "prettier": "^2.8.6",
+    "prettier-eslint": "^15.0.1"
   },
   "description": "Discord bot built with Sapphire, Prisma and MySQL2",
   "repository": {

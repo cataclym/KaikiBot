@@ -4,7 +4,7 @@ import { ApplyOptions } from "@sapphire/decorators";
 import { version as sapphireVersion } from "@sapphire/framework";
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
 import { ChannelType, EmbedBuilder, Message, time, version } from "discord.js";
-import { KaikiCommandOptions } from "../../lib/Interfaces/KaikiCommandOptions";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 

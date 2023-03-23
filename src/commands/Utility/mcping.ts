@@ -2,8 +2,8 @@ import { ApplyOptions } from "@sapphire/decorators";
 import { Args } from "@sapphire/framework";
 import { AttachmentBuilder, EmbedBuilder, Message } from "discord.js";
 import fetch from "node-fetch";
-import { KaikiCommandOptions } from "../../lib/Interfaces/KaikiCommandOptions";
-import { ServerOffline, ServerOnline } from "../../lib/Interfaces/mcsrvstatAPIData";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
+import { ServerOffline, ServerOnline } from "../../lib/Interfaces/Common/mcsrvstatAPIData";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import Utility from "../../lib/Utility";
 

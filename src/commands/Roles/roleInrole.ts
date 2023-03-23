@@ -1,32 +1,25 @@
-import { Argument } from "discord-akairo";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args } from "@sapphire/framework";
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
-import { EmbedBuilder, GuildMember, Message, Role } from "discord.js";
+import { EmbedBuilder, GuildMember, Message } from "discord.js";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-import KaikiEmbeds from "../../lib/KaikiEmbeds";
 import Constants from "../../struct/Constants";
 
-
+@ApplyOptions<KaikiCommandOptions>({
+    name: "inrole",
+    description: "Lists all users in role",
+    preconditions: ["GuildOnly"],
+})
 export default class RoleInRoleCommand extends KaikiCommand {
-    constructor() {
-        super("inrole", {
-            aliases: ["inrole"],
-            description: "Lists all users in role",
-            usage: "",
-            channel: "guild",
-            args: [
-                {
-                    id: "role",
-                    type: Argument.union("role", (m, p) => p?.length
-                        ? undefined
-                        : m.member?.roles.highest),
-                    match: "content",
-                    otherwise: (m) => ({ embeds: [KaikiEmbeds.roleArgumentError(m)] }),
-                },
-            ],
-        });
-    }
+    public async messageRun(message: Message<true>, args: Args): Promise<Message> {
 
-    public async exec(message: Message<true>, { role }: { role: Role }): Promise<Message> {
+        if (!message.member) throw new Error();
+
+        const role = args.finished
+            ? message.member.roles.highest
+            : await args.rest("role");
+
 
         const data = [...role.members.values()]
             .sort((a: GuildMember, b: GuildMember) => b.roles.highest.position - a.roles.highest.position

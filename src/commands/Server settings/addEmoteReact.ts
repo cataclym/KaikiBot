@@ -1,57 +1,39 @@
-import { EmbedBuilder, GuildEmoji, Message, PermissionsBitField } from "discord.js";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args } from "@sapphire/framework";
+import { EmbedBuilder, Message } from "discord.js";
 import KaikiCache from "../../cache/KaikiCache";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
+@ApplyOptions<KaikiCommandOptions>({
+    name: "addemotereact",
+    aliases: ["emotereact", "aer"],
+    description: "Add triggers for the bot to react with emojis/emotes to. Use quotes for triggers with spaces.",
+    usage: ["red :red:", "anime :weeaboosgetout:"],
+    requiredUserPermissions: ["ManageEmojisAndStickers"],
+    requiredClientPermissions: ["AddReactions"],
+    preconditions: ["GuildOnly"],
+})
 export default class EmoteReactCommand extends KaikiCommand {
-    constructor() {
-        super("addemotereact", {
-            aliases: ["addemotereact", "emotereact", "aer"],
-            userPermissions: PermissionsBitField.Flags.ManageEmojisAndStickers,
-            clientPermissions: PermissionsBitField.Flags.AddReactions,
-            channel: "guild",
-            description: "Add triggers for the bot to react with emojis/emotes to. Use quotes for triggers with spaces.",
-            usage: ["red :red:", "anime :weeaboosgetout:"],
-            args: [
-                {
-                    id: "trigger",
-                    type: "string",
-                    otherwise: (m: Message) => ({ embeds: [KaikiEmbeds.genericArgumentError(m)] }),
-                },
-                {
-                    id: "emoji",
-                    type: "emoji",
-                    otherwise: (m: Message) => ({ embeds: [KaikiEmbeds.genericArgumentError(m)] }),
-                },
-            ],
-        });
-    }
+    public async messageRun(message: Message<true>, args: Args): Promise<Message> {
 
-    public async exec(message: Message<true>, {
-        trigger,
-        emoji,
-    }: { trigger: string, emoji: GuildEmoji }): Promise<Message> {
+        const trigger = (await args.pick("string")).toLowerCase();
+        const emoji = await args.rest("emoji");
+        const emojiUrl = `https://cdn.discordapp.com/emojis/${emoji.id}.${emoji.animated ? "gif" : "png"}`;
 
-        trigger = trigger.toLowerCase();
+        if (!emoji.id) throw new Error("");
 
         await this.client.orm.emojiReactions.create({
             data: {
                 Guilds: {
-                    connectOrCreate: {
-                        where: {
-                            Id: BigInt(message.guildId),
-                        },
-                        create: {
-                            Id: BigInt(message.guildId),
-                            Prefix: process.env.PREFIX || ";",
-                        },
+                    connect: {
+                        Id: BigInt(message.guildId),
                     },
                 },
                 EmojiId: BigInt(emoji.id),
                 TriggerString: trigger,
             },
         });
-
 
         if (!this.client.cache.emoteReactCache.get(message.guildId)) await KaikiCache.populateERCache(message);
 
@@ -68,7 +50,7 @@ export default class EmoteReactCommand extends KaikiCommand {
                 new EmbedBuilder()
                     .setTitle("New emoji trigger added")
                     .setDescription(`Typing \`${trigger}\` will force me to react with ${emoji}...`)
-                    .setThumbnail(emoji.url)
+                    .setThumbnail(emojiUrl)
                     .withOkColor(message),
             ],
         });

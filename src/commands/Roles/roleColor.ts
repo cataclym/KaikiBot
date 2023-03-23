@@ -2,7 +2,7 @@ import { ApplyOptions } from "@sapphire/decorators";
 import { Args } from "@sapphire/framework";
 import { AttachmentBuilder, EmbedBuilder, Message, PermissionsBitField, resolveColor } from "discord.js";
 import { imgFromColor } from "../../lib/Color";
-import { KaikiCommandOptions } from "../../lib/Interfaces/KaikiCommandOptions";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";
 import { rolePermissionCheck } from "../../lib/Roles";
@@ -18,18 +18,19 @@ import Utility from "../../lib/Utility";
 export default class RoleColorCommand extends KaikiCommand {
     public async messageRun(message: Message<true>, args: Args) {
 
-        const role = await args.pick("role");
-
-        const clr = await args.rest()
-
         const { member } = message;
 
+        if (!member) throw new Error();
+
+        const role = args.finished
+            ? member.roles.highest
+            : await args.pick("role");
+
+        const clr = args.finished
+            ? undefined
+            : await args.pick("color");
+
         if (!clr) {
-
-            if (!message.member) return;
-
-            if (!role) role = message.member.roles.highest;
-
             const attachment = new AttachmentBuilder(await imgFromColor(Utility.HEXtoRGB(role.hexColor)), { name: "color.png" });
             return message.channel.send({
                 files: [attachment],
@@ -43,8 +44,6 @@ export default class RoleColorCommand extends KaikiCommand {
                 ],
             });
         }
-
-        if (!role) return message.channel.send({ embeds: [KaikiEmbeds.genericArgumentError(message)] });
 
         const { hexColor } = role,
             attachment = new AttachmentBuilder(await imgFromColor(clr), { name: "color.png" });

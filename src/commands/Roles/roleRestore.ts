@@ -1,36 +1,24 @@
-import { EmbedBuilder, GuildMember, Message, PermissionsBitField } from "discord.js";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args } from "@sapphire/framework";
+import { EmbedBuilder, Message } from "discord.js";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-
 import { restoreUserRoles } from "../../lib/Roles";
 import Utility from "../../lib/Utility";
 import Constants from "../../struct/Constants";
 
+@ApplyOptions<KaikiCommandOptions>({
+    name: "restore",
+    description: "Restores roles for a user who has previously left the server.",
+    usage: ["@dreb"],
+    requiredUserPermissions: ["Administrator"],
+    requiredClientPermissions: ["ManageRoles"],
+    preconditions: ["GuildOnly"],
+})
 export default class RestoreUserRoles extends KaikiCommand {
-    constructor() {
-        super("restore", {
-            aliases: ["restore"],
-            userPermissions: PermissionsBitField.Flags.Administrator,
-            clientPermissions: PermissionsBitField.Flags.ManageRoles,
-            description: "Restores roles for a user who has previously left the server.",
-            usage: "@dreb",
-            channel: "guild",
-            args: [
-                {
-                    id: "member",
-                    type: "member",
-                    otherwise: (m) => ({
-                        embeds: [
-                            new EmbedBuilder()
-                                .setDescription("Please provide a valid member")
-                                .withErrorColor(m),
-                        ],
-                    }),
-                },
-            ],
-        });
-    }
+    public async messageRun(message: Message, args: Args): Promise<Message | void> {
 
-    public async exec(message: Message, { member }: { member: GuildMember }): Promise<Message | void> {
+        const member = await args.rest("member");
 
         const result = await restoreUserRoles(member);
 

@@ -1,48 +1,36 @@
-import { PrefixSupplier } from "discord-akairo";
-import { EmbedBuilder, GuildMember, Message, PermissionsBitField, Role } from "discord.js";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args } from "@sapphire/framework";
+import { EmbedBuilder, GuildMember, Message } from "discord.js";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 // Rewrite of Miyano's setuserrole command
 // https://github.com/PlatinumFT/Miyano-v2
 // Thanks Plat.
 
+@ApplyOptions<KaikiCommandOptions>({
+    name: "setuserrole",
+    aliases: ["sur"],
+    description: "Assigns a role to a user. Provide the command again to remove the role.",
+    usage: ["@Platinum [role]"],
+    requiredUserPermissions: ["ManageRoles"],
+    requiredClientPermissions: ["ManageRoles"],
+    preconditions: ["GuildOnly"],
+})
 export default class SetUserRoleCommand extends KaikiCommand {
-    constructor() {
-        super("setuserrole", {
-            aliases: ["setuserrole", "sur"],
-            description: "Assigns a role to a user. Provide the command again to remove the role.",
-            usage: "@Platinum [role]",
-            clientPermissions: PermissionsBitField.Flags.ManageRoles,
-            userPermissions: PermissionsBitField.Flags.ManageRoles,
-            prefix: (msg: Message) => {
-                const p = (this.handler.prefix as PrefixSupplier)(msg);
-                return [p as string, ";"];
-            },
-            channel: "guild",
-            args: [
-                {
-                    id: "member",
-                    type: "member",
-                    otherwise: "Please specify a user to add!",
-                },
-                {
-                    id: "role",
-                    type: "role",
-                    otherwise: "Please specify a role to add!",
-                },
-            ],
-        });
-    }
 
-    embedFail = async (message: Message<boolean>, text: string) => new EmbedBuilder()
+    private embedFail = async (message: Message<boolean>, text: string) => new EmbedBuilder()
         .setDescription(text)
         .withErrorColor(message);
 
-    embedSuccess = async (message: Message<boolean>, text: string) => new EmbedBuilder()
+    private embedSuccess = async (message: Message<boolean>, text: string) => new EmbedBuilder()
         .setDescription(text)
         .withOkColor(message);
 
-    public async exec(message: Message<true>, { member, role }: { member: GuildMember, role: Role }): Promise<Message> {
+    public async messageRun(message: Message<true>, args: Args): Promise<Message> {
+
+        const member = await args.pick("member");
+        const role = await args.rest("role");
 
         const botRole = message.guild?.members.me?.roles.highest,
             isPosition = botRole?.comparePositionTo(role);

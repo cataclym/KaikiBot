@@ -2,7 +2,7 @@ import logger from "loglevel";
 import fetch from "node-fetch";
 import KaikiUtil from "../../lib/Kaiki/KaikiUtil";
 import Constants from "../../struct/Constants";
-import E261APIData, { Post } from "../Interfaces/E261APIData";
+import E261APIData, { Post } from "../Interfaces/Common/E261APIData";
 
 export enum DAPI {
     E621,

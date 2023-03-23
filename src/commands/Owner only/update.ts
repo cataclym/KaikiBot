@@ -3,7 +3,7 @@ import path from "path";
 import util from "util";
 import { ActionRowBuilder, ButtonBuilder, EmbedBuilder, Message } from "discord.js";
 import { ApplyOptions } from "@sapphire/decorators";
-import { KaikiCommandOptions } from "../../lib/Interfaces/KaikiCommandOptions";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import Utility from "../../lib/Utility";
 import Constants from "../../struct/Constants";

@@ -3,7 +3,7 @@ import { Args } from "@sapphire/framework";
 import { AttachmentBuilder, Message } from "discord.js";
 import sharp from "sharp";
 import images from "../../data/images.json";
-import { KaikiCommandOptions } from "../../lib/Interfaces/KaikiCommandOptions";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import Utility from "../../lib/Utility";
 
