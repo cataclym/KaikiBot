@@ -1,19 +1,18 @@
-import { PrefixSupplier } from "discord-akairo";
+import { ApplyOptions } from "@sapphire/decorators";
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
 import { EmbedBuilder, Message } from "discord.js";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import Constants from "../../struct/Constants";
 
+@ApplyOptions<KaikiCommandOptions>({
+    name: "listreacts",
+    aliases: ["ler"],
+    description: "List emotereact triggers.",
+    usage: [""],
+    preconditions: ["GuildOnly"],
+})
 export default class RemoveEmoteReactCommand extends KaikiCommand {
-    constructor() {
-        super("listreacts", {
-            aliases: ["listreacts", "ler"],
-            channel: "guild",
-            description: "List emotereact triggers.",
-            usage: [""],
-        });
-    }
-
     public async exec(message: Message<true>): Promise<Message> {
 
         const db = await this.client.orm.emojiReactions.findMany({ where: { GuildId: BigInt(message.guildId) } }),
@@ -24,7 +23,7 @@ export default class RemoveEmoteReactCommand extends KaikiCommand {
                 embeds: [
                     new EmbedBuilder()
                         .setTitle("No triggers")
-                        .setDescription(`Add triggers with ${(this.handler.prefix as PrefixSupplier)(message)}aer`)
+                        .setDescription(`Add triggers with ${(await message.client.fetchPrefix(message))}aer`)
                         .withErrorColor(message),
                 ],
             });

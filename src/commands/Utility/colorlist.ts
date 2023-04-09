@@ -1,22 +1,20 @@
+import { ApplyOptions } from "@sapphire/decorators";
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
 import { AttachmentBuilder, ColorResolvable, EmbedBuilder, Message, MessageCreateOptions } from "discord.js";
 import { colorTable, hexColorTable, imgFromColor } from "../../lib/Color";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiUtil from "../../lib/Kaiki/KaikiUtil";
 import Utility from "../../lib/Utility";
 
+@ApplyOptions<KaikiCommandOptions>({
+    name: "colorlist",
+    aliases: ["colors", "clrs"],
+    description: "Shows a list of all supported color names for the bot",
+    typing: true,
+})
 export default class ColorListCommand extends KaikiCommand {
-    constructor() {
-        super("colorlist", {
-            aliases: ["colorlist", "colors", "clrs"],
-            description: "Shows a list of all supported color names for the bot",
-            typing: true,
-            usage: "",
-            subCategory: "Color",
-        });
-    }
-
-    public async exec(message: Message) {
+    public async messageRun(message: Message) {
 
         let embeds: EmbedBuilder[] = [];
         let attachments: AttachmentBuilder[] = [];

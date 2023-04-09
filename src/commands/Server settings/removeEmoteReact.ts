@@ -1,26 +1,21 @@
-import { EmbedBuilder, Message, PermissionsBitField } from "discord.js";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args } from "@sapphire/framework";
+import { EmbedBuilder, Message } from "discord.js";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
-
+@ApplyOptions<KaikiCommandOptions>({
+    name: "removereact",
+    aliases: ["rer"],
+    description: "Remove emotereact triggers.",
+    usage: ["anime"],
+    requiredUserPermissions: ["ManageEmojisAndStickers"],
+    preconditions: ["GuildOnly"],
+})
 export default class RemoveEmoteReactCommand extends KaikiCommand {
-    constructor() {
-        super("removereact", {
-            aliases: ["removereact", "rer"],
-            userPermissions: PermissionsBitField.Flags.ManageEmojisAndStickers,
-            channel: "guild",
-            description: "Remove emotereact triggers.",
-            usage: ["anime"],
-            args: [
-                {
-                    id: "trigger",
-                    type: "string",
-                    match: "rest",
-                },
-            ],
-        });
-    }
+    public async messageRun(message: Message<true>, args: Args): Promise<Message> {
 
-    public async exec(message: Message<true>, { trigger }: { trigger: string }): Promise<Message> {
+        const trigger = await args.rest("string");
 
         const db = await this.client.orm.emojiReactions.findFirst({
             where: {

@@ -1,4 +1,4 @@
-export enum BlockedCategoriesEnum {
+export enum CategoriesEnum {
     Administration = 0,
     Anime,
     Emotes,
@@ -7,8 +7,9 @@ export enum BlockedCategoriesEnum {
     Moderation,
     NSFW,
     "Owner only",
-    Reactions,
     Roles,
     "Server settings",
     Utility,
+    Images,
+    Interactions
 }

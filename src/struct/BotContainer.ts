@@ -71,8 +71,6 @@ export default class BotContainer {
                     this.client.owner = owner;
                 }
 
-                this.client.ownerID = this.client.owner.id;
-
                 logger.info(`Bot account: ${chalk.greenBright(this.client.user.tag)}`);
                 logger.info(`Bot owner: ${chalk.greenBright(this.client.owner.tag)}`);
 

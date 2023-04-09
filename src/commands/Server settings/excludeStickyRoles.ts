@@ -1,5 +1,8 @@
 import { ExcludedStickyRoles, Guilds } from "@prisma/client";
-import { Collection, EmbedBuilder, Message, PermissionsBitField, Role, Snowflake } from "discord.js";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args } from "@sapphire/framework";
+import { EmbedBuilder, Message } from "discord.js";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 class UncachedObject {
@@ -10,24 +13,19 @@ class UncachedObject {
     }
 }
 
+@ApplyOptions<KaikiCommandOptions>({
+    name: "excludestickyroles",
+    aliases: ["estickyroles", "estickyrole", "esrole"],
+    description: `Exclude or include a role from stickyroles. Provide no parameter to show a list of excluded roles.
+    If someone who had one or more excluded roles, re-joins this server, they wont get any excluded roles.`,
+    usage: ["", "@excludedRole @anotherRole"],
+    requiredUserPermissions: ["ManageGuild"],
+    preconditions: ["GuildOnly"],
+})
 export default class ExcludeStickyRolesCommand extends KaikiCommand {
-    constructor() {
-        super("excludestickyroles", {
-            aliases: ["excludestickyroles", "estickyroles", "estickyrole", "esrole"],
-            userPermissions: PermissionsBitField.Flags.ManageGuild,
-            channel: "guild",
-            description: "Exclude or include a role from stickyroles. Provide no parameter to show a list of excluded roles.\nIf someone who had one or more excluded roles, re-joins this server, they wont get any excluded roles.",
-            usage: ["", "@excludedRole @anotherRole"],
-            args: [
-                {
-                    id: "roles",
-                    type: "roles",
-                },
-            ],
-        });
-    }
+    public async messageRun(message: Message<true>, args: Args) {
 
-    public async exec(message: Message<true>, { roles }: { roles: Collection<Snowflake, Role> }) {
+        const roles = await args.repeat("role").catch(() => undefined);
 
         const bigIntGuildId = BigInt(message.guildId);
         let guildDb = await this.client.orm.guilds.findUnique({
@@ -67,7 +65,7 @@ export default class ExcludeStickyRolesCommand extends KaikiCommand {
         const GuildId = BigInt(message.guildId), enabledRoles: bigint[] = [],
             excludedRoles: { GuildId: bigint, RoleId: bigint }[] = [];
 
-        for (const [, role] of roles) {
+        for (const role of roles) {
 
             if (guildDb?.ExcludedStickyRoles.find(c => String(c.GuildId) === role.id)) {
                 enabledRoles.push(BigInt(role.id));

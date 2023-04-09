@@ -1,21 +1,18 @@
-import { Message, PermissionsBitField } from "discord.js";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Message } from "discord.js";
 import GreetHandler from "../../lib/GreetHandler";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
-
+@ApplyOptions<KaikiCommandOptions>({
+    name: "welcometest",
+    description: "Tests welcome message as it would appear for new members.",
+    requiredUserPermissions: ["ManageGuild"],
+    preconditions: ["GuildOnly"],
+})
 export default class WelcomeTestCommand extends KaikiCommand {
-    constructor() {
-        super("welcometest", {
-            aliases: ["welcometest"],
-            description: "Tests welcome message as it would appear for new members.",
-            userPermissions: PermissionsBitField.Flags.ManageGuild,
-            channel: "guild",
-            usage: "",
-            subCategory: "Welcome",
-        });
-    }
+    public async messageRun(message: Message<true>): Promise<void> {
 
-    public async exec(message: Message<true>): Promise<void> {
         const db = await this.client.db.getOrCreateGuild(BigInt(message.guildId));
 
         const welcomeData = {

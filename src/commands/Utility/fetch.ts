@@ -1,48 +1,24 @@
 import { time } from "@discordjs/builders";
-import { Argument } from "discord-akairo";
-import { EmbedBuilder, Message, Snowflake, User } from "discord.js";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args } from "@sapphire/framework";
+import { EmbedBuilder, Message } from "discord.js";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import Constants from "../../struct/Constants";
 
-
+@ApplyOptions<KaikiCommandOptions>({
+    name: "fetch",
+    aliases: ["fu"],
+    description: "Fetches a discord user, shows relevant information. 30sec cooldown.",
+    usage: ["<id>"],
+    cooldownDelay: 30000,
+})
 export default class FetchUserCommand extends KaikiCommand {
-    constructor() {
-        super("fetch", {
-            cooldown: 30000,
-            aliases: ["fu", "fetch"],
-            description: "Fetches a discord user, shows relevant information. 30sec cooldown.",
-            usage: "<id>",
-            args: [
-                {
-                    id: "userObject",
-                    type: Argument.union("user", async (message: Message, phrase: string) => {
-                        try {
-                            const u = await message.client.users.fetch(phrase as Snowflake);
-                            if (u) return u;
-                        }
-                        catch {
-                            return;
-                        }
-                    }),
-                    otherwise: (m) => ({
-                        embeds: [
-                            new EmbedBuilder()
-                                .setDescription("No user found")
-                                .withErrorColor(m),
-                        ],
-                    }),
-                },
-            ],
-        });
-    }
+    public async messageRun(message: Message, args: Args): Promise<Message | void> {
 
-    public async exec(message: Message, { userObject }: { userObject: User }): Promise<Message | void> {
+        const userObject = await args.rest("user");
 
-        const userinfo = this.handler.modules.get("uinfo");
-
-        if (message.guild?.members.cache.has(userObject.id) && userinfo) {
-            return this.handler.runCommand(message, userinfo, await userinfo.parse(message, userObject.id));
-        }
+        // TODO: Add uinfo somehow. And check argument parsing uncached users.
 
         const userFlags = userObject.flags ? userObject.flags.toArray() : [],
             embed = new EmbedBuilder()

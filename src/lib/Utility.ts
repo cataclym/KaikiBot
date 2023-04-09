@@ -1,5 +1,4 @@
 import chalk from "chalk";
-import { Command, Listener } from "discord-akairo";
 import { ActivityType, ChannelType, ColorResolvable, GuildMember, HexColorString, Message } from "discord.js";
 import fetch from "node-fetch";
 import Constants from "../struct/Constants";

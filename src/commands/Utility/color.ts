@@ -1,38 +1,28 @@
-import { PrefixSupplier } from "discord-akairo";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args } from "@sapphire/framework";
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
 import { AttachmentBuilder, EmbedBuilder, Message, resolveColor } from "discord.js";
 import { ColorNames, hexColorTable, imgFromColor } from "../../lib/Color";
-import KaikiArgumentsTypes from "../../lib/Kaiki/KaikiArgumentsTypes";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-import { KaikiColor } from "../../lib/Types/KaikiColor";
 import Utility from "../../lib/Utility";
 import Constants from "../../struct/Constants";
 
+@ApplyOptions<KaikiCommandOptions>({
+    name: "color",
+    aliases: ["clr"],
+    description: "Returns a representation of a color string, or shows list of available color names to use.",
+    usage: ["#ff00ff", "list"],
+    typing: true,
+    flags: ["list", "--list"],
+    subCategory: "Color",
+})
 export default class ColorCommand extends KaikiCommand {
-    constructor() {
-        super("color", {
-            aliases: ["color", "clr"],
-            description: "Returns a representation of a color string, or shows list of available color names to use.",
-            usage: ["#ff00ff", "list"],
-            typing: true,
-            args: [
-                {
-                    id: "list",
-                    flag: "list",
-                    match: "flag",
-                },
-                {
-                    id: "color",
-                    match: "rest",
-                    type: KaikiArgumentsTypes.kaikiColorArgument,
-                    default: null,
-                },
-            ],
-            subCategory: "Color",
-        });
-    }
+    public async messageRun(message: Message, args: Args): Promise<Message> {
 
-    public async exec(message: Message, { color, list }: { color: KaikiColor, list: boolean }): Promise<Message> {
+        const list = args.getFlags("list", "--list");
+
+        const color = await args.rest("color").catch(() => null);
 
         if (list) {
             const colorList = Object.keys(hexColorTable),
@@ -47,7 +37,7 @@ export default class ColorCommand extends KaikiCommand {
                     title: "List of all available color names",
                     description: colorList.slice(p, index).join("\n"),
                     color: Number(embedColor),
-                    footer: { text: `Try ${(this.handler.prefix as PrefixSupplier)(message)}colorlist for a visual representation of the color list` },
+                    footer: { text: `Try ${await this.client.fetchPrefix(message)}colorlist for a visual representation of the color list` },
                 }));
             }
 

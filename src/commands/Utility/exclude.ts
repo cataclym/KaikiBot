@@ -1,25 +1,41 @@
-import { EmbedBuilder, Message, PermissionsBitField } from "discord.js";
+import { ApplyOptions } from "@sapphire/decorators";
+import { ChatInputCommand, Command } from "@sapphire/framework";
+import { EmbedBuilder, Message } from "discord.js";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import SlashCommandsLib from "../../lib/SlashCommands/SlashCommandsLib";
 
+@ApplyOptions<KaikiCommandOptions>({
+    name: "exclude",
+    aliases: ["excl", "e"],
+    description:
+        "Excludes you from being targeted by dad-bot. Execute command again to reverse this action.",
+    requiredClientPermissions: ["ManageRoles"],
+    preconditions: ["GuildOnly"],
+})
 export default class ExcludeCommand extends KaikiCommand {
-    constructor() {
-        super("exclude", {
-            description: "Excludes you from being targeted by dad-bot. Execute command again to reverse this action.",
-            aliases: ["exclude", "e", "excl"],
-            clientPermissions: PermissionsBitField.Flags.ManageRoles,
-            userPermissions: [],
-            channel: "guild",
-            slashEphemeral: true,
-            slashDefaultMemberPermissions: null,
-            slash: true,
-            lock: "guild",
-        });
+
+    public override registerApplicationCommands(registry: ChatInputCommand.Registry) {
+        registry.registerChatInputCommand((builder) =>
+            builder
+                .setName("exclude")
+                .setDescription(
+                    "Excludes you from being targeted by dad-bot. Execute command again to reverse this action.",
+                ),
+        );
     }
 
-    public async exec(message: Message<true>): Promise<Message> {
+    public async messageRun(message: Message<true>) {
+        return this.runMessageInteraction(message);
+    }
 
-        if (!SlashCommandsLib.dadbotCheck(message)) {
+    public async chatInputRun(interaction: Command.ChatInputCommandInteraction<"cached">) {
+        return this.runMessageInteraction(interaction);
+    }
+
+
+    private runMessageInteraction(message: Message<true> | Command.ChatInputCommandInteraction<"cached">) {
+        if (!SlashCommandsLib.dadbotCheck(message.guild)) {
             return message.reply({
                 embeds: [
                     new EmbedBuilder()
@@ -29,6 +45,6 @@ export default class ExcludeCommand extends KaikiCommand {
             });
         }
 
-        return SlashCommandsLib.excludeCommand(message, this.client);
+        return SlashCommandsLib.excludeCommand(message);
     }
 }

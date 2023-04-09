@@ -3,7 +3,7 @@ import { Args, UserError } from "@sapphire/framework";
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
 import { EmbedBuilder, Guild, Message, MessageCreateOptions, PermissionsBitField } from "discord.js";
 import SlashCommandsLib from "../../lib/SlashCommands/SlashCommandsLib";
-import { BlockedCategoriesEnum } from "../Enums/blockedCategoriesEnum";
+import { CategoriesEnum } from "../Enums/categoriesEnum";
 import GreetHandler from "../GreetHandler";
 import Utility from "../Utility";
 
@@ -158,7 +158,7 @@ export default class Config {
         const { Anniversary, DadBot, Prefix, ErrorColor, OkColor, WelcomeChannel, ByeChannel } = db;
 
         const categories = db.BlockedCategories
-            .map(e => BlockedCategoriesEnum[e.CategoryTarget])
+            .map(e => CategoriesEnum[e.CategoryTarget])
             .filter(Boolean);
 
         const firstPage: MessageCreateOptions = {

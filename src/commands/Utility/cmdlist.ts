@@ -12,7 +12,6 @@ import {
 import images from "../../data/images.json";
 import ArgumentError from "../../lib/Errors/ArgumentError";
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
-import KaikiArgumentsTypes from "../../lib/Kaiki/KaikiArgumentsTypes";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import Constants from "../../struct/Constants";
 
@@ -31,7 +30,7 @@ export default class CommandsList extends KaikiCommand {
         const filteredCategories = this.store.categories
             .filter(cat => !CommandsList.ignoredCategories.includes(cat));
 
-        const category = await args.pick(KaikiArgumentsTypes.categoryIArgument);
+        const category = await args.pick("category");
 
         if (args.finished) {
 

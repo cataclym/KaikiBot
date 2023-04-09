@@ -3,11 +3,29 @@ import { Message } from "discord.js";
 import SetActivityCommand, { ValidActivities } from "../../commands/Owner only/setActivity";
 import Constants from "../../struct/Constants";
 import { hexColorTable } from "../Color";
+import { JSONToMessageOptions } from "../GreetHandler";
 import { HentaiTypes } from "../Hentai/HentaiService";
 import { KaikiColor } from "../Types/KaikiColor";
+import { Categories } from "../Types/Miscellaneous";
 import Utility from "../Utility";
 import KaikiCommand from "./KaikiCommand";
 import KaikiUtil from "./KaikiUtil";
+
+export class WelcomeGoodbyeMessageArgument extends Argument<JSONToMessageOptions> {
+    public async run(parameter: string, context: Argument.Context<JSONToMessageOptions>) {
+        try {
+            const json = JSON.parse(parameter);
+
+            const messageOptions = new JSONToMessageOptions(json);
+
+            if (messageOptions) return this.ok(messageOptions);
+            return this.error({ parameter });
+        }
+        catch {
+            return this.error({ parameter });
+        }
+    }
+}
 
 export class EmoteImageArgument extends Argument<string> {
     public async run(parameter: string, context: Argument.Context<string>) {
@@ -297,12 +315,13 @@ Valid types are: \`${SetActivityCommand.validActivities.join("`, `")}\``,
 
 declare module "@sapphire/framework" {
     interface ArgType {
-        category: string;
+        category: Categories;
         command: KaikiCommand;
         color: KaikiColor;
         emoteImage: string;
         kaikiCoin: string;
         kaikiMoney: bigint;
         kaikiHentaiTypes: HentaiTypes;
+        welcomeGoodbyeMessage: JSONToMessageOptions;
     }
 }
