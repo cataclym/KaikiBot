@@ -106,6 +106,12 @@ export default class Constants {
         TeamPseudoUser: "Team User 🏁",
         VerifiedBot: "Verified Bot ☑️",
         VerifiedDeveloper: "Early Verified Developer ✅",
+        MFASMS: "MFASMS",
+        PremiumPromoDismissed: "Premium promotion disabled",
+        HasUnreadUrgentMessages: "Unread urgent messages",
+        DisablePremium: "Disabled premium",
+        Collaborator: "Collaborator",
+        RestrictedCollaborator: "Restricted Collaborator",
     };
 
     static activityTypes: { [index in BotSettings_ActivityType]: Exclude<ActivityType, ActivityType.Custom> } = {
