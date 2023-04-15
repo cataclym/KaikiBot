@@ -9,6 +9,7 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
     name: "hentai",
     description: "Fetches hentai images from Booru boards",
     typing: true,
+    nsfw: true,
 })
 export default class HentaiCommand extends KaikiCommand {
     public async messageRun(message: Message, args: Args): Promise<void | Message> {

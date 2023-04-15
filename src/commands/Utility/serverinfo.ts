@@ -1,26 +1,23 @@
 import { time } from "@discordjs/builders";
-import { ChannelType, EmbedBuilder, Guild, Message } from "discord.js";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args } from "@sapphire/framework";
+import { ChannelType, EmbedBuilder, Message } from "discord.js";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-
 import Constants from "../../struct/Constants";
 
+@ApplyOptions<KaikiCommandOptions>({
+    name: "serverinfo",
+    aliases: ["sinfo"],
+    description: "Shows information about the current server.",
+    subCategory: "Info",
+})
 export default class ServerInfoCommand extends KaikiCommand {
-    constructor() {
-        super("serverinfo", {
-            aliases: ["serverinfo", "sinfo"],
-            description: "Shows information about the current server.",
-            args: [
-                {
-                    id: "guild",
-                    type: "guild",
-                    default: (message: Message) => message.guild,
-                },
-            ],
-            subCategory: "Info",
-        });
-    }
+    public async messageRun(message: Message, args: Args): Promise<Message> {
 
-    public async exec(message: Message, { guild }: { guild: Guild }): Promise<Message> {
+        const guild = message.inGuild()
+            ? await args.pick("guild").catch(() => message.guild)
+            : await args.pick("guild");
 
         const emb = new EmbedBuilder({
             thumbnail: { url: <string>guild.iconURL({ extension: "png", size: 2048 }) },

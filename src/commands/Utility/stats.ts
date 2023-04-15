@@ -74,13 +74,13 @@ export default class StatsCommand extends KaikiCommand {
                     },
                 ])
                 .setAuthor({
-                    name: "© 2022 @Cata#2702",
+                    name: "© 2023 @Cata#2702",
                     iconURL: message.client.user.displayAvatarURL(),
                     url: packageJSON.repository.url,
                 })
                 .withOkColor(message),
         ];
 
-        return sendPaginatedMessage(message, pages, {});
+        return sendPaginatedMessage(message, pages, { owner: message.author });
     }
 }

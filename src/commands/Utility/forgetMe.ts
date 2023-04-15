@@ -1,17 +1,14 @@
+import { ApplyOptions } from "@sapphire/decorators";
 import { ActionRowBuilder, ButtonBuilder, EmbedBuilder, InteractionCollector, Message } from "discord.js";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
-
+@ApplyOptions<KaikiCommandOptions>({
+    name: "forgetme",
+    description: "Deletes all information about you in the database",
+})
 export default class ForgetMeCommand extends KaikiCommand {
-    constructor() {
-        super("forgetme", {
-            aliases: ["forgetme"],
-            description: "Deletes all information about you in the database",
-            usage: "",
-        });
-    }
-
-    public async exec(message: Message): Promise<void> {
+    public async messageRun(message: Message): Promise<void> {
 
         const deleteMsg = await message.channel.send({
             embeds: [

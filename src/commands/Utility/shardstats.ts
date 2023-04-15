@@ -1,4 +1,6 @@
+import { ApplyOptions } from "@sapphire/decorators";
 import { Message } from "discord.js";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import Utility from "../../lib/Utility";
 
@@ -11,17 +13,16 @@ enum ShardStats {
     "DISCONNECTED",
 }
 
-export default class ShardStatisticsCommand extends KaikiCommand {
-    constructor() {
-        super("shardstats", {
-            aliases: ["shards", "shardstats"],
-            description: "Displays the states of all shards",
-            channel: "guild",
-            subCategory: "Info",
-        });
-    }
+@ApplyOptions<KaikiCommandOptions>({
+    name: "shardstats",
+    aliases: ["shards"],
+    description: "Displays the states of all shards",
+    preconditions: ["GuildOnly"],
+    subCategory: "Info",
 
-    public async exec(message: Message<true>) {
+})
+export default class ShardStatisticsCommand extends KaikiCommand {
+    public async messageRun(message: Message<true>) {
 
         const { ws } = message.client;
 

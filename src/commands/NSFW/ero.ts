@@ -8,6 +8,7 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
     description: "Returns a nsfw ero picture",
     usage: [""],
     typing: true,
+    nsfw: true,
 })
 export default class Ero extends KaikiCommand {
     public async messageRun(message: Message): Promise<Message> {

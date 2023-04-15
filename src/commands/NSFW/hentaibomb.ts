@@ -10,6 +10,7 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
     aliases: ["hb"],
     description: "Posts 5 NSFW images, using the waifu.pics API",
     usage: ["waifu", "neko", "femboy", "blowjob"],
+    nsfw: true,
 })
 export default class HentaiBombCommand extends KaikiCommand {
     public async messageRun(message: Message, args: Args): Promise<Message | Message[]> {

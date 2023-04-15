@@ -11,6 +11,7 @@ import Utility from "../../lib/Utility";
     name: "e621",
     description: "e621 :hahaa:",
     typing: true,
+    nsfw: true,
 })
 export default class EAPICommand extends KaikiCommand {
     public async messageRun(message: Message, args: Args): Promise<Message> {

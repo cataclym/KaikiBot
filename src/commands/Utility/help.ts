@@ -3,7 +3,6 @@ import { ApplyOptions } from "@sapphire/decorators";
 import { Args } from "@sapphire/framework";
 import { EmbedBuilder, Message } from "discord.js";
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
-import KaikiArgumentsTypes from "../../lib/Kaiki/KaikiArgumentsTypes";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 @ApplyOptions<KaikiCommandOptions>({
@@ -56,7 +55,7 @@ export default class HelpCommand extends KaikiCommand {
             return message.channel.send({ embeds: [embed] });
         }
 
-        const command = await args.pick(KaikiArgumentsTypes.commandIArgument)
+        const command = await args.pick("command")
             .catch(() => undefined);
 
         if (command) {

@@ -1,5 +1,5 @@
 import { Args, Argument, container } from "@sapphire/framework";
-import { Message } from "discord.js";
+import { Guild, Message } from "discord.js";
 import SetActivityCommand, { ValidActivities } from "../../commands/Owner only/setActivity";
 import Constants from "../../struct/Constants";
 import { hexColorTable } from "../Color";
@@ -10,6 +10,16 @@ import { Categories } from "../Types/Miscellaneous";
 import Utility from "../Utility";
 import KaikiCommand from "./KaikiCommand";
 import KaikiUtil from "./KaikiUtil";
+
+export class GuildArgument extends Argument<Guild> {
+    public async run(parameter: string, context: Argument.Context<Guild>) {
+        const guild = context.message.client.guilds.cache.find(g => g.name.toLowerCase() === parameter.toLowerCase() || g.id === parameter);
+
+        if (guild) return this.ok(guild);
+
+        return this.error({ parameter });
+    }
+}
 
 export class WelcomeGoodbyeMessageArgument extends Argument<JSONToMessageOptions> {
     public async run(parameter: string, context: Argument.Context<JSONToMessageOptions>) {
@@ -316,12 +326,13 @@ Valid types are: \`${SetActivityCommand.validActivities.join("`, `")}\``,
 declare module "@sapphire/framework" {
     interface ArgType {
         category: Categories;
-        command: KaikiCommand;
         color: KaikiColor;
+        command: KaikiCommand;
         emoteImage: string;
+        guild: Guild;
         kaikiCoin: string;
-        kaikiMoney: bigint;
         kaikiHentaiTypes: HentaiTypes;
+        kaikiMoney: bigint;
         welcomeGoodbyeMessage: JSONToMessageOptions;
     }
 }

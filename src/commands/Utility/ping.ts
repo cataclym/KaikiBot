@@ -1,17 +1,14 @@
-import { Command } from "@sapphire/framework";
+import { ApplyOptions } from "@sapphire/decorators";
 import { EmbedBuilder, Message } from "discord.js";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
+@ApplyOptions<KaikiCommandOptions>({
+    name: "ping",
+    aliases: ["p"],
+    description: "Ping the bot and websocket to see if there are latency issues.",
+})
 export default class PingCommand extends KaikiCommand {
-    public constructor(context: Command.Context, options: Command.Options) {
-        super(context, {
-            ...options,
-            name: "ping",
-            aliases: ["p", "pong"],
-            description: "Ping the bot and websocket to see if there are latency issues.",
-        });
-    }
-
     public async messageRun(message: Message) {
 
         const initialMsg = await message.channel.send("Pinging...!"),

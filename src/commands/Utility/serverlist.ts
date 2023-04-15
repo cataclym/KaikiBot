@@ -1,19 +1,22 @@
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args } from "@sapphire/framework";
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
-import { EmbedBuilder, Message, PermissionsBitField } from "discord.js";
+import { EmbedBuilder, Message } from "discord.js";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import Constants from "../../struct/Constants";
 
+@ApplyOptions<KaikiCommandOptions>({
+    name: "serverlist",
+    aliases: ["listservers"],
+    description: "Lists all servers the bot is in. 15 servers per page.",
+    usage: ["", "7"],
+    requiredClientPermissions: ["SendMessages"],
+})
 export default class ServerList extends KaikiCommand {
-    constructor() {
-        super("serverlist", {
-            aliases: ["serverlist", "listservers"],
-            description: "Lists all servers the bot is in. 15 servers per page.",
-            clientPermissions: PermissionsBitField.Flags.SendMessages,
-            usage: ["", "7"],
-        });
-    }
+    public async messageRun(message: Message, args: Args) {
 
-    public async exec(message: Message) {
+        const startPage = await args.pick("number").catch(() => 0);
 
         const { GUILDS_PER_PAGE } = Constants.MAGIC_NUMBERS.CMDS.UTILITY.SERVER_LIST;
         const pages = [];
@@ -30,7 +33,7 @@ export default class ServerList extends KaikiCommand {
             const currentPageGuilds = guilds
                 .slice(from, to);
 
-            const emb = EmbedBuilder.from(embed)
+            const emb = EmbedBuilder.from(embed);
 
             currentPageGuilds.forEach(guild => {
                 emb.addFields({
@@ -43,6 +46,6 @@ export default class ServerList extends KaikiCommand {
             pages.push(emb);
         }
 
-        return sendPaginatedMessage(message, pages, { owner: message.author });
+        return sendPaginatedMessage(message, pages, { owner: message.author }, startPage);
     }
 }
