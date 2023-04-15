@@ -1,18 +1,17 @@
+import { ApplyOptions } from "@sapphire/decorators";
+import { ListenerOptions } from "@sapphire/framework";
 import chalk from "chalk";
-import { Listener } from "discord-akairo";
+import { Snowflake } from "discord.js";
 import logger from "loglevel";
+import KaikiListener from "../lib/Kaiki/KaikiListener";
 
-export default class ShardReadyListener extends Listener {
-    constructor() {
-        super("shardReady", {
-            event: "shardReady",
-            emitter: "client",
-        });
-    }
+@ApplyOptions<ListenerOptions>({
+    event: "shardReady",
+})
+export default class ShardReadyListener extends KaikiListener {
 
     // Emitted when a shard turns ready.
-
-    public async exec(id: number, unavailableGuilds?: Set<string>): Promise<void> {
+    public async run(id: number, unavailableGuilds?: Set<Snowflake>): Promise<void> {
         const arr = [`shardReady | Shard: ${chalk.green(id)}`];
         if (unavailableGuilds?.size) {
             arr.push("Unavailable guilds:");

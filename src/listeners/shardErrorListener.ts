@@ -1,20 +1,16 @@
+import { ApplyOptions } from "@sapphire/decorators";
+import { ListenerOptions } from "@sapphire/framework";
 import chalk from "chalk";
-import { Listener } from "discord-akairo";
 import logger from "loglevel";
+import KaikiListener from "../lib/Kaiki/KaikiListener";
 
-export default class ShardErrorListener extends Listener {
-    constructor() {
-        super("shardError", {
-            event: "shardError",
-            emitter: "client",
-        });
-    }
+@ApplyOptions<ListenerOptions>({
+    event: "shardError",
+})
+export default class ShardErrorListener extends KaikiListener {
 
     // Emitted whenever a shard's WebSocket encounters a connection error.
-
-    public async exec(error: Error, id: number): Promise<void> {
-
+    public async run(error: Error, id: number): Promise<void> {
         logger.error(`shardError | Shard: ${chalk.redBright(id)} \n${error.stack || error}`);
-
     }
 }

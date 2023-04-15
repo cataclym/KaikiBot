@@ -23,7 +23,7 @@ export default class DadBot extends KaikiCommand {
             allowedMentions: {},
         });
 
-        if (nick.length <= (process.env.DADBOT_NICKNAME_LENGTH || Constants.MAGIC_NUMBERS.CMDS.ETC.DAD_BOT.DADBOT_NICK_LENGTH)) {
+        if (nick.length <= parseInt(process.env.DADBOT_NICKNAME_LENGTH || String(Constants.MAGIC_NUMBERS.CMDS.ETC.DAD_BOT.DADBOT_NICK_LENGTH))) {
             const user = message.author;
             const position = message.guild.members.me?.roles.highest.comparePositionTo(message.member.roles.highest);
 

@@ -34,6 +34,6 @@ export class BlockedCategoriesPrecondition extends AllFlowsPrecondition {
         if (isBlocked.isErr()) return this.ok();
 
         // Guild was found, therefore it is banned.
-        return this.error({ identifier: "GuildNotInBanList" });
+        return this.error({ identifier: "BlockedCategory" });
     }
 }

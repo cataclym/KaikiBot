@@ -1,17 +1,16 @@
+import { ApplyOptions } from "@sapphire/decorators";
+import { ListenerOptions } from "@sapphire/framework";
 import { Message } from "discord.js";
 import KaikiCache from "../cache/KaikiCache";
 import Emotes from "../lib/Emotes";
 import KaikiListener from "../lib/Kaiki/KaikiListener";
 
-export default class MessageListener extends KaikiListener {
-    constructor() {
-        super("message", {
-            event: "messageCreate",
-            emitter: "client",
-        });
-    }
+@ApplyOptions<ListenerOptions>({
+    event: "messageCreate",
+})
 
-    public async exec(message: Message): Promise<void> {
+export default class MessageListener extends KaikiListener {
+    public async run(message: Message): Promise<void> {
 
         if (message.webhookId || message.author.bot || !message.inGuild()) return;
 

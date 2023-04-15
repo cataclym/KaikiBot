@@ -1,17 +1,15 @@
-import { Listener } from "discord-akairo";
+import { ApplyOptions } from "@sapphire/decorators";
+import { ListenerOptions } from "@sapphire/framework";
 import logger from "loglevel";
+import KaikiListener from "../lib/Kaiki/KaikiListener";
 
-export default class WarnListener extends Listener {
-    constructor() {
-        super("warn", {
-            event: "warn",
-            emitter: "client",
-        });
-    }
+@ApplyOptions<ListenerOptions>({
+    event: "warn",
+})
+export default class WarnListener extends KaikiListener {
 
     // Emitted for general warnings.
-
-    public async exec(info: string): Promise<void> {
+    public async run(info: string): Promise<void> {
 
         logger.warn(`warn | ${info}`);
     }

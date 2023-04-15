@@ -106,14 +106,20 @@ export default class Constants {
         TeamPseudoUser: "Team User 🏁",
         VerifiedBot: "Verified Bot ☑️",
         VerifiedDeveloper: "Early Verified Developer ✅",
+        MFASMS: "MFASMS",
+        PremiumPromoDismissed: "Premium promotion disabled",
+        HasUnreadUrgentMessages: "Unread urgent messages",
+        DisablePremium: "Disabled premium",
+        Collaborator: "Collaborator",
+        RestrictedCollaborator: "Restricted Collaborator",
     };
 
     static activityTypes: { [index in BotSettings_ActivityType]: Exclude<ActivityType, ActivityType.Custom> } = {
-        PLAYING: 0,
-        STREAMING: 1,
-        LISTENING: 2,
-        WATCHING: 3,
-        COMPETING: 4,
+        PLAYING: ActivityType.Playing,
+        STREAMING: ActivityType.Streaming,
+        LISTENING: ActivityType.Listening,
+        WATCHING: ActivityType.Watching,
+        COMPETING: ActivityType.Competing,
     };
 
     static readonly MAGIC_NUMBERS = Object.freeze({

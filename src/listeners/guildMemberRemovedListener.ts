@@ -1,16 +1,14 @@
+import { ApplyOptions } from "@sapphire/decorators";
+import { ListenerOptions } from "@sapphire/framework";
 import { GuildMember } from "discord.js";
 import GreetHandler from "../lib/GreetHandler";
 import KaikiListener from "../lib/Kaiki/KaikiListener";
 
+@ApplyOptions<ListenerOptions>({
+    event: "guildMemberRemove",
+})
 export default class GuildMemberRemovedListener extends KaikiListener {
-    constructor() {
-        super("guildMemberRemove", {
-            event: "guildMemberRemove",
-            emitter: "client",
-        });
-    }
-
-    public async exec(member: GuildMember): Promise<void> {
+    public async run(member: GuildMember): Promise<void> {
 
         await GreetHandler.handleGoodbyeMessage(member);
 

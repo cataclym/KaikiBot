@@ -1,4 +1,4 @@
-import { Command } from "discord-akairo";
+import { Command } from "@sapphire/framework";
 import { Message } from "discord.js";
 import logger from "loglevel";
 import KaikiListener from "../lib/Kaiki/KaikiListener";
