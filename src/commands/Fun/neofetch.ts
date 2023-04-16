@@ -1,10 +1,10 @@
-import { exec } from "child_process";
-import * as process from "process";
 import { ApplyOptions } from "@sapphire/decorators";
 import { Args } from "@sapphire/framework";
+import { exec } from "child_process";
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
 import { EmbedBuilder, Message } from "discord.js";
 import logger from "loglevel";
+import * as process from "process";
 import { distros } from "../../lib/distros.json";
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";

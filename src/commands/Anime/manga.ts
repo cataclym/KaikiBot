@@ -4,8 +4,8 @@ import { EmbedBuilder, Message } from "discord.js";
 import fetch from "node-fetch";
 
 import AnilistGraphQL from "../../lib/APIs/AnilistGraphQL";
-import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import MangaData from "../../lib/Interfaces/Common/MangaData";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import Utility from "../../lib/Utility";
 import Constants from "../../struct/Constants";

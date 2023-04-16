@@ -1,9 +1,9 @@
-import querystring from "querystring";
 import { ApplyOptions } from "@sapphire/decorators";
 import { EmbedBuilder, Message } from "discord.js";
 
 import fetch from "node-fetch";
 import { parse } from "node-html-parser";
+import querystring from "querystring";
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/KaikiEmbeds";

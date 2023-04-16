@@ -1,9 +1,9 @@
-import querystring from "querystring";
 import { ApplyOptions } from "@sapphire/decorators";
 import { Args } from "@sapphire/framework";
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
 import { EmbedBuilder, Message } from "discord.js";
 import fetch from "node-fetch";
+import querystring from "querystring";
 import { UrbanResponse } from "../../lib/Interfaces/Common/UrbanResponse";
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";

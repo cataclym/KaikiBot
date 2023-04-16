@@ -1,5 +1,5 @@
-import fs from "fs";
 import { Message } from "discord.js";
+import fs from "fs";
 import fetch from "node-fetch";
 import sharp from "sharp";
 import Constants from "../struct/Constants";
