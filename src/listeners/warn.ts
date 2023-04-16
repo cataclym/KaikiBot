@@ -6,7 +6,7 @@ import KaikiListener from "../lib/Kaiki/KaikiListener";
 @ApplyOptions<ListenerOptions>({
     event: "warn",
 })
-export default class WarnListener extends KaikiListener {
+export default class Warn extends KaikiListener {
 
     // Emitted for general warnings.
     public async run(info: string): Promise<void> {

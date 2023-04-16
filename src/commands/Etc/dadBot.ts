@@ -6,7 +6,7 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import Constants from "../../struct/Constants";
 
 @ApplyOptions<KaikiCommandOptions>({
-    preconditions: ["GuildOnly"],
+    preconditions: ["GuildOnly", "DadBot"],
 })
 export default class DadBot extends KaikiCommand {
 

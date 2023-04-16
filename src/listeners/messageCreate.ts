@@ -8,8 +8,7 @@ import KaikiListener from "../lib/Kaiki/KaikiListener";
 @ApplyOptions<ListenerOptions>({
     event: "messageCreate",
 })
-
-export default class MessageListener extends KaikiListener {
+export default class MessageCreate extends KaikiListener {
     public async run(message: Message): Promise<void> {
 
         if (message.webhookId || message.author.bot || !message.inGuild()) return;

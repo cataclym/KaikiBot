@@ -8,7 +8,7 @@ import KaikiListener from "../lib/Kaiki/KaikiListener";
 @ApplyOptions<ListenerOptions>({
     event: "shardReady",
 })
-export default class ShardReadyListener extends KaikiListener {
+export default class ShardReady extends KaikiListener {
 
     // Emitted when a shard turns ready.
     public async run(id: number, unavailableGuilds?: Set<Snowflake>): Promise<void> {

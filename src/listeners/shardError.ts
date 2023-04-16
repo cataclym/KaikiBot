@@ -7,7 +7,7 @@ import KaikiListener from "../lib/Kaiki/KaikiListener";
 @ApplyOptions<ListenerOptions>({
     event: "shardError",
 })
-export default class ShardErrorListener extends KaikiListener {
+export default class ShardError extends KaikiListener {
 
     // Emitted whenever a shard's WebSocket encounters a connection error.
     public async run(error: Error, id: number): Promise<void> {

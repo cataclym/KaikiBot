@@ -1,4 +1,3 @@
-import chalk from "chalk";
 import { ActivityType, ChannelType, ColorResolvable, GuildMember, HexColorString, Message } from "discord.js";
 import fetch from "node-fetch";
 import Constants from "../struct/Constants";
@@ -79,16 +78,16 @@ export default class Utility {
         return `\`\`\`${language ?? ""}\n${code}\`\`\``;
     }
 
-    static async listenerLog(message: Message, listener: Listener,
-        logger: (...msg: any[]) => void, command?: Command, extra = ""): Promise<void> {
-
-        logger(`${chalk.blueBright(listener.id)} | ${chalk.blueBright(Date.now() - message.createdTimestamp)}ms
-${message.channel.type !== ChannelType.DM
-        ? `Guild: ${chalk.blueBright(message.guild?.name ?? "N/A")} [${chalk.blueBright(message.guild?.id ?? "N/A")}]\nChannel: #${chalk.blueBright(message.channel.name)} [${chalk.blueBright(message.channel.id)}]`
-        : `DMChannel: [${chalk.blueBright(message.author.dmChannel?.id)}]`}
-User: ${chalk.blueBright(message.author.username)} [${chalk.blueBright(message.author.id)}]
-Executed ${chalk.blueBright(command?.id ?? "N/A")} | "${chalk.yellow(message.content.substring(0, 100))}"\n${extra}`);
-    }
+    //     static async listenerLog(message: Message, listener: Listener,
+    //         logger: (...msg: any[]) => void, command?: Command, extra = ""): Promise<void> {
+    //
+    //         logger(`${chalk.blueBright(listener.id)} | ${chalk.blueBright(Date.now() - message.createdTimestamp)}ms
+    // ${message.channel.type !== ChannelType.DM
+    //         ? `Guild: ${chalk.blueBright(message.guild?.name ?? "N/A")} [${chalk.blueBright(message.guild?.id ?? "N/A")}]\nChannel: #${chalk.blueBright(message.channel.name)} [${chalk.blueBright(message.channel.id)}]`
+    //         : `DMChannel: [${chalk.blueBright(message.author.dmChannel?.id)}]`}
+    // User: ${chalk.blueBright(message.author.username)} [${chalk.blueBright(message.author.id)}]
+    // Executed ${chalk.blueBright(command?.id ?? "N/A")} | "${chalk.yellow(message.content.substring(0, 100))}"\n${extra}`);
+    //     }
 
     // Credit to https://futurestud.io/tutorials/split-an-array-into-smaller-array-chunks-in-javascript-and-node-js
     /**

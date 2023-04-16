@@ -7,7 +7,7 @@ import KaikiListener from "../lib/Kaiki/KaikiListener";
     event: "ready",
     once: true,
 })
-export default class ReadyListener extends KaikiListener {
+export default class Ready extends KaikiListener {
     public async run(): Promise<void> {
         this.client.initializeServices()
             .then(() => logger.info("DailyResetTimer | Service initiated"));

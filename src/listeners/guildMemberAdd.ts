@@ -8,7 +8,7 @@ import { handleStickyRoles } from "../lib/Roles";
 @ApplyOptions<ListenerOptions>({
     event: "guildMemberAdd",
 })
-export default class GuildMemberAddListener extends KaikiListener {
+export default class GuildMemberAdd extends KaikiListener {
     public async run(member: GuildMember): Promise<void> {
         await this.client.anniversaryService.checkAnniversaryMember(member);
         await GreetHandler.handleGreetMessage(member);

@@ -1,6 +1,8 @@
-import { AllFlowsPrecondition, Piece, Result } from "@sapphire/framework";
+import { AllFlowsPrecondition, Command, Piece, Result } from "@sapphire/framework";
 import { ChatInputCommandInteraction, ContextMenuCommandInteraction, Message } from "discord.js";
+import { CategoriesEnum } from "../lib/Enums/categoriesEnum";
 import KaikiAkairoClient from "../lib/Kaiki/KaikiAkairoClient";
+import { Categories } from "../lib/Types/Miscellaneous";
 
 export class BlockedCategoriesPrecondition extends AllFlowsPrecondition {
 
@@ -11,23 +13,28 @@ export class BlockedCategoriesPrecondition extends AllFlowsPrecondition {
         });
     }
 
-    public override chatInputRun(interaction: ChatInputCommandInteraction) {
-        return this.checkBlockedCategories(interaction);
+    public override chatInputRun(interaction: ChatInputCommandInteraction, cmd: Command) {
+        return this.checkBlockedCategories(interaction, cmd);
     }
 
-    public override contextMenuRun(interaction: ContextMenuCommandInteraction) {
-        return this.checkBlockedCategories(interaction);
+    public override contextMenuRun(interaction: ContextMenuCommandInteraction, cmd: Command) {
+        return this.checkBlockedCategories(interaction, cmd);
     }
 
-    public override messageRun(message: Message) {
-        return this.checkBlockedCategories(message);
+    public override messageRun(message: Message, cmd: Command) {
+        return this.checkBlockedCategories(message, cmd);
     }
 
-    private async checkBlockedCategories(messageOrInteraction: Message | ContextMenuCommandInteraction | ChatInputCommandInteraction) {
-        if (messageOrInteraction.guildId === null) return this.ok();
+    private async checkBlockedCategories(messageOrInteraction: Message | ContextMenuCommandInteraction | ChatInputCommandInteraction, cmd: Command) {
+        if (messageOrInteraction.guildId === null || !cmd.category) return this.ok();
 
         const isBlocked = await Result.fromAsync(
-            (messageOrInteraction.client as KaikiAkairoClient<true>).orm.blockedCategories.findFirstOrThrow({ where: { GuildId: BigInt(messageOrInteraction.guildId) } }),
+            (messageOrInteraction.client as KaikiAkairoClient<true>).orm.blockedCategories.findFirstOrThrow({
+                where: {
+                    GuildId: BigInt(messageOrInteraction.guildId),
+                    CategoryTarget: CategoriesEnum[cmd.category as Categories],
+                },
+            }),
         );
 
         // SQL query failed, therefore no guild was found, therefore the guild is not banned.

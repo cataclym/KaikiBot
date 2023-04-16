@@ -26,7 +26,7 @@ export class DadBotPrecondition extends Precondition {
                 const splits = match.split(new RegExp(`${item}`, "mig"));
                 if (splits.length > 1) match = splits.reduce((a, b) => a.length <= b.length && a.length > 0 ? a : b);
 
-                if (match.length && match.length <= (process.env.DADBOT_MAX_LENGTH || Constants.MAGIC_NUMBERS.CMDS.ETC.DAD_BOT.DADBOT_MAX_LENGTH)) {
+                if (match.length && match.length <= parseInt(process.env.DADBOT_NICKNAME_LENGTH || String(Constants.MAGIC_NUMBERS.CMDS.ETC.DAD_BOT.DADBOT_NICK_LENGTH))) {
                     if (!DadBot.nickname.has(message.member.id)) DadBot.nickname.set(message.member.id, match);
                 }
             }
@@ -51,6 +51,7 @@ export class OwnerOnlyPrecondition extends Precondition {
 
 declare module "@sapphire/framework" {
     interface Preconditions {
+        DadBot: never;
         OwnerOnly: never;
     }
 }

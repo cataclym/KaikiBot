@@ -7,7 +7,7 @@ import KaikiListener from "../lib/Kaiki/KaikiListener";
 @ApplyOptions<ListenerOptions>({
     event: "shardResume",
 })
-export default class ShardResumeListener extends KaikiListener {
+export default class ShardResume extends KaikiListener {
 
     // Emitted when a shard resumes successfully.
     public async run(id: number, replayedEvents: number): Promise<void> {

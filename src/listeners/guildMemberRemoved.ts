@@ -7,13 +7,13 @@ import KaikiListener from "../lib/Kaiki/KaikiListener";
 @ApplyOptions<ListenerOptions>({
     event: "guildMemberRemove",
 })
-export default class GuildMemberRemovedListener extends KaikiListener {
+export default class GuildMemberRemoved extends KaikiListener {
     public async run(member: GuildMember): Promise<void> {
 
         await GreetHandler.handleGoodbyeMessage(member);
 
-        const GuildId = BigInt(member.guild.id);
-        const MemberId = BigInt(member.id);
+        const guildId = BigInt(member.guild.id);
+        const memberId = BigInt(member.id);
 
         const leaveRoles = member.roles.cache.map(role => {
             return this.client.orm.leaveRoles.create({
@@ -22,13 +22,13 @@ export default class GuildMemberRemovedListener extends KaikiListener {
                     GuildUsers: {
                         connectOrCreate: {
                             create: {
-                                UserId: MemberId,
-                                GuildId: GuildId,
+                                UserId: memberId,
+                                GuildId: guildId,
                             },
                             where: {
                                 UserId_GuildId: {
-                                    UserId: MemberId,
-                                    GuildId: GuildId,
+                                    UserId: memberId,
+                                    GuildId: guildId,
                                 },
                             },
                         },

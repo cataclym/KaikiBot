@@ -7,7 +7,7 @@ import KaikiListener from "../lib/Kaiki/KaikiListener";
 @ApplyOptions<ListenerOptions>({
     event: "shardReconnecting",
 })
-export default class ShardReconnectingListener extends KaikiListener {
+export default class ShardReconnecting extends KaikiListener {
 
     // Emitted when a shard is attempting to reconnect or re-identify.
     public async run(id: number): Promise<void> {
