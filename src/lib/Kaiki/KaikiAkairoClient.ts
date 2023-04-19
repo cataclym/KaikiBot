@@ -2,9 +2,8 @@ import { execSync } from "child_process";
 import { join } from "path";
 import { type PrismaClient } from "@prisma/client";
 import { SapphireClient } from "@sapphire/framework";
-import chalk from "chalk";
+import * as colorette from "colorette";
 import { GatewayIntentBits, Guild, Partials, User } from "discord.js";
-import logger from "loglevel";
 import { Pool } from "mysql2/promise";
 import KaikiCache from "../../cache/KaikiCache";
 import Constants from "../../struct/Constants";
@@ -28,7 +27,7 @@ export default class KaikiAkairoClient<Ready extends true> extends SapphireClien
     public anniversaryService: AnniversaryRolesService;
     public botSettings: DatabaseProvider;
     public cache: KaikiCache;
-    public connection: () => Pool;
+    public connection: Pool;
     public dadBotChannels: DatabaseProvider;
     public guildsDb: DatabaseProvider;
     public money: MoneyService;
@@ -66,7 +65,11 @@ export default class KaikiAkairoClient<Ready extends true> extends SapphireClien
             defaultPrefix: process.env.PREFIX,
             caseInsensitiveCommands: true,
         });
-        void this.initializeDatabase();
+
+        // Not using logger here. Because it resets multiline color
+        console.log(colorette.green(Constants.KaikiBotASCII));
+
+        (async () => await this.initializeDatabase())();
     }
 
     public imageAPIs: ClientImageAPIs = {
@@ -106,10 +109,10 @@ export default class KaikiAkairoClient<Ready extends true> extends SapphireClien
 
         // This will execute at midnight
         await this.dailyResetTimer();
-        logger.info("AnniversaryRolesService | Service initiated");
+        this.logger.info("AnniversaryRolesService | Service initiated");
 
         this.hentaiService = new HentaiService();
-        logger.info("HentaiService | Service initiated");
+        this.logger.info("HentaiService | Service initiated");
 
         void this.presenceLoop();
     }
@@ -120,16 +123,16 @@ export default class KaikiAkairoClient<Ready extends true> extends SapphireClien
         await this.db.init()
             .then((obj) => {
                 this.orm = obj.orm;
-                this.connection = () => obj.mySQLConnection;
+                this.connection = obj.mySQLConnection;
 
                 this.botSettings = new DatabaseProvider(this.connection, "BotSettings", { idColumn: "Id" }, false);
-                this.botSettings.init().then(() => logger.info(`${chalk.green("READY")} - Bot settings provider`));
+                this.botSettings.init().then(() => this.logger.info(`${colorette.green("READY")} - Bot settings provider`));
 
                 this.guildsDb = new DatabaseProvider(this.connection, "Guilds", { idColumn: "Id" });
-                this.guildsDb.init().then(() => logger.info(`${chalk.green("READY")} - Guild provider`));
+                this.guildsDb.init().then(() => this.logger.info(`${colorette.green("READY")} - Guild provider`));
 
                 this.dadBotChannels = new DatabaseProvider(this.connection, "DadBotChannels", { idColumn: "ChannelId" });
-                this.dadBotChannels.init().then(() => logger.info(`${chalk.green("READY")} - DadBot channel provider`));
+                this.dadBotChannels.init().then(() => this.logger.info(`${colorette.green("READY")} - DadBot channel provider`));
 
                 this.cache = new KaikiCache(this.orm, this.connection);
                 this.cache.populateImageAPICache(this.imageAPIs);
@@ -174,7 +177,7 @@ export default class KaikiAkairoClient<Ready extends true> extends SapphireClien
                 ClaimedDaily: false,
             },
         });
-        logger.info(`ResetDailyClaims | Daily claims have been reset! Updated ${chalk.green(updated.count)} entries!`);
+        this.logger.info(`ResetDailyClaims | Daily claims have been reset! Updated ${colorette.green(updated.count)} entries!`);
     }
 
     private filterOptionalCommands() {
@@ -190,7 +193,7 @@ export default class KaikiAkairoClient<Ready extends true> extends SapphireClien
         }
         catch {
             filterArray.push(join(__dirname, "..", "..", "commands", "Fun", "neofetch.js"));
-            logger.warn("Neofetch wasn't detected! Neofetch command will be disabled.");
+            this.logger.warn("Neofetch wasn't detected! Neofetch command will be disabled.");
         }
     }
 }

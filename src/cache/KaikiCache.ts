@@ -22,7 +22,7 @@ export default class KaikiCache {
     public dailyProvider: MySQLDailyProvider;
     public imageAPICache: Map<APIs, Map<string, Record<string, any>>>;
 
-    constructor(orm: pkg.PrismaClient, connection: () => Pool) {
+    constructor(orm: pkg.PrismaClient, connection: Pool) {
         this.animeQuoteCache = new Collection<string, RespType>();
         this.cmdStatsCache = new Map<string, number>();
         this.dailyProvider = new MySQLDailyProvider(connection);
@@ -135,20 +135,20 @@ export default class KaikiCache {
 }
 
 class MySQLDailyProvider {
-    private connection: () => Pool;
+    private connection: Pool;
 
-    constructor(connection: () => Pool) {
+    constructor(connection: Pool) {
         this.connection = connection;
     }
 
     async checkClaimed(id: string) {
-        const [rows] = await this.connection().query<RowDataPacket[]>("SELECT ClaimedDaily FROM DiscordUsers WHERE UserId = ?", [BigInt(id)]);
+        const [rows] = await this.connection.query<RowDataPacket[]>("SELECT ClaimedDaily FROM DiscordUsers WHERE UserId = ?", [BigInt(id)]);
         return rows[0]?.ClaimedDaily ?? true;
     }
 
     // Sets claimed status to true
     async setClaimed(id: string) {
-        return this.connection().query<ResultSetHeader>("UPDATE DiscordUsers SET ClaimedDaily = ? WHERE UserId = ?", [true, BigInt(id)])
+        return this.connection.query<ResultSetHeader>("UPDATE DiscordUsers SET ClaimedDaily = ? WHERE UserId = ?", [true, BigInt(id)])
             .then(([result]) => result.changedRows
                 ? result.changedRows > 0
                 : false)

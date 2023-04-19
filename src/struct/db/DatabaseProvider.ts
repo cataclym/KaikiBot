@@ -3,35 +3,35 @@ import { Pool, RowDataPacket } from "mysql2/promise";
 import { Provider, ProviderOptions } from "./Provider";
 
 export default class DatabaseProvider extends Provider {
-    private _db: () => Pool;
-    private readonly _tableName: string;
-    private readonly _idColumn: string;
-    private readonly _dataColumn?: string;
+    private db: Pool;
+    private readonly tableName: string;
+    private readonly idColumn: string;
+    private readonly dataColumn?: string;
     public items: Collection<string, any>;
-    private readonly _bigInt: boolean;
+    private readonly bigInt: boolean;
 
-    constructor(db: () => Pool, tableName: string, options?: ProviderOptions, bigint?: boolean) {
+    constructor(db: Pool, tableName: string, options?: ProviderOptions, bigint?: boolean) {
         super();
         this.items = new Collection();
-        this._db = db;
-        this._tableName = tableName;
-        this._idColumn = options?.idColumn ?? "Id";
-        this._dataColumn = options?.dataColumn;
-        this._bigInt = bigint ?? true;
+        this.db = db;
+        this.tableName = tableName;
+        this.idColumn = options?.idColumn ?? "Id";
+        this.dataColumn = options?.dataColumn;
+        this.bigInt = bigint ?? true;
     }
 
     async init(): Promise<void> {
-        const [rows] = <RowDataPacket[][]> await this._db().query(
+        const [rows] = <RowDataPacket[][]> await this.db.query(
             `SELECT *
-             FROM ${this._tableName}`,
+             FROM ${this.tableName}`,
         );
 
         for (const row of rows) {
-            if (this._bigInt) {
-                this.items.set(row[this._idColumn], this._dataColumn ? JSON.parse(row[this._dataColumn]) : row);
+            if (this.bigInt) {
+                this.items.set(row[this.idColumn], this.dataColumn ? JSON.parse(row[this.dataColumn]) : row);
             }
             else {
-                this.items.set(String(row[this._idColumn]), this._dataColumn ? JSON.parse(row[this._dataColumn]) : row);
+                this.items.set(String(row[this.idColumn]), this.dataColumn ? JSON.parse(row[this.dataColumn]) : row);
             }
         }
     }
@@ -52,23 +52,23 @@ export default class DatabaseProvider extends Provider {
         data[key] = value;
         this.items.set(id, data);
 
-        if (this._dataColumn) {
-            return this._db().execute(exists
-                ? `UPDATE ${this._tableName}
-                   SET ${this._dataColumn} = ?
-                   WHERE ${this._idColumn} = ?`
-                : `INSERT INTO ${this._tableName} (${this._idColumn}, ${this._dataColumn})
+        if (this.dataColumn) {
+            return this.db.execute(exists
+                ? `UPDATE ${this.tableName}
+                   SET ${this.dataColumn} = ?
+                   WHERE ${this.idColumn} = ?`
+                : `INSERT INTO ${this.tableName} (${this.idColumn}, ${this.dataColumn})
                    VALUES (?, ?)`, exists
                 ? [data[key], id]
                 : [id, data[key]],
             );
         }
 
-        return this._db().execute(exists
-            ? `UPDATE ${this._tableName}
+        return this.db.execute(exists
+            ? `UPDATE ${this.tableName}
                SET ${key} = ?
-               WHERE ${this._idColumn} = ?`
-            : `INSERT INTO ${this._tableName} (${this._idColumn}, ${key})
+               WHERE ${this.idColumn} = ?`
+            : `INSERT INTO ${this.tableName} (${this.idColumn}, ${key})
                VALUES (?, ?)`, exists
             ? [data[key], id]
             : [id, data[key]],
@@ -79,18 +79,18 @@ export default class DatabaseProvider extends Provider {
         const data = this.items.get(id) || {};
         delete data[key];
 
-        if (this._dataColumn) {
-            return this._db().execute(`UPDATE ${this._tableName}
-                                       SET ${this._dataColumn} = $value
-                                       WHERE ${this._idColumn} = $id`, {
+        if (this.dataColumn) {
+            return this.db.execute(`UPDATE ${this.tableName}
+                                    SET ${this.dataColumn} = $value
+                                    WHERE ${this.idColumn} = $id`, {
                 $id: id,
                 $value: JSON.stringify(data),
             });
         }
 
-        return this._db().execute(`UPDATE ${this._tableName}
-                                   SET ${key} = $value
-                                   WHERE ${this._idColumn} = $id`, {
+        return this.db.execute(`UPDATE ${this.tableName}
+                                SET ${key} = $value
+                                WHERE ${this.idColumn} = $id`, {
             $id: id,
             $value: null,
         });
@@ -98,8 +98,8 @@ export default class DatabaseProvider extends Provider {
 
     clear(id: string) {
         this.items.delete(id);
-        return this._db().execute(`DELETE
-                                   FROM ${this._tableName}
-                                   WHERE ${this._idColumn} = $id`, { $id: id });
+        return this.db.execute(`DELETE
+                                FROM ${this.tableName}
+                                WHERE ${this.idColumn} = $id`, { $id: id });
     }
 }

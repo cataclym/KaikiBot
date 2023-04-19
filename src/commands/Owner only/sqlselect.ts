@@ -18,7 +18,7 @@ export default class SetNameCommand extends KaikiCommand {
 
         const str = await args.rest("string");
 
-        const res = await this.client.connection().query<RowDataPacket[]>(str);
+        const res = await this.client.connection.query<RowDataPacket[]>(str);
 
         return message.channel.send(await Utility.codeblock(Utility.trim(JSON.stringify(res[0], null, 4), Constants.MAGIC_NUMBERS.CMDS.OWNER_ONLY.SQL.MESSAGE_LIMIT_JSON), "json"));
     }
