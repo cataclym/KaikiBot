@@ -14,7 +14,7 @@ export default class AvatarCommand extends KaikiCommand {
 
     public async messageRun(message: Message, args: Args): Promise<Message> {
 
-        const user = await args.pick("user");
+        const user = await args.pick("user").catch(() => message.author);
 
         const av = user.displayAvatarURL({ size: 4096 }),
             jpeg = user.displayAvatarURL({ size: 4096, extension: "jpg" }),

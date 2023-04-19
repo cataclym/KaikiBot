@@ -38,7 +38,9 @@ export default class ExcludeStickyRolesCommand extends KaikiCommand {
         });
 
         if (!guildDb) {
-            guildDb = await this.client.db.getOrCreateGuild(bigIntGuildId) as (Guilds & { ExcludedStickyRoles: ExcludedStickyRoles[] });
+            guildDb = await this.client.db.getOrCreateGuild(bigIntGuildId) as (Guilds & {
+                ExcludedStickyRoles: ExcludedStickyRoles[]
+            });
             guildDb["ExcludedStickyRoles"] = [];
         }
 

@@ -1,14 +1,13 @@
 import { ApplyOptions } from "@sapphire/decorators";
-import { ListenerOptions } from "@sapphire/framework";
+import { Listener, ListenerOptions } from "@sapphire/framework";
 import chalk from "chalk";
 import { Snowflake } from "discord.js";
 import logger from "loglevel";
-import KaikiListener from "../lib/Kaiki/KaikiListener";
 
 @ApplyOptions<ListenerOptions>({
     event: "shardReady",
 })
-export default class ShardReady extends KaikiListener {
+export default class ShardReady extends Listener {
 
     // Emitted when a shard turns ready.
     public async run(id: number, unavailableGuilds?: Set<Snowflake>): Promise<void> {

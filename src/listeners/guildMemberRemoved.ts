@@ -1,13 +1,13 @@
 import { ApplyOptions } from "@sapphire/decorators";
-import { ListenerOptions } from "@sapphire/framework";
+import { Listener, ListenerOptions } from "@sapphire/framework";
 import { GuildMember } from "discord.js";
 import GreetHandler from "../lib/GreetHandler";
-import KaikiListener from "../lib/Kaiki/KaikiListener";
+import type KaikiAkairoClient from "../lib/Kaiki/KaikiAkairoClient";
 
 @ApplyOptions<ListenerOptions>({
     event: "guildMemberRemove",
 })
-export default class GuildMemberRemoved extends KaikiListener {
+export default class GuildMemberRemoved extends Listener {
     public async run(member: GuildMember): Promise<void> {
 
         await GreetHandler.handleGoodbyeMessage(member);
@@ -15,8 +15,10 @@ export default class GuildMemberRemoved extends KaikiListener {
         const guildId = BigInt(member.guild.id);
         const memberId = BigInt(member.id);
 
+        const client = this.container.client as KaikiAkairoClient<true>;
+
         const leaveRoles = member.roles.cache.map(role => {
-            return this.client.orm.leaveRoles.create({
+            return client.orm.leaveRoles.create({
                 data: {
                     RoleId: BigInt(role.id),
                     GuildUsers: {
@@ -36,6 +38,6 @@ export default class GuildMemberRemoved extends KaikiListener {
                 },
             });
         });
-        await this.client.orm.$transaction(leaveRoles);
+        await client.orm.$transaction(leaveRoles);
     }
 }

@@ -15,7 +15,7 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 })
 export default class DeleteChannelCommand extends KaikiCommand {
 
-    public async messageRun(m: Message, args: Args) {
+    public async messageRun(m: Message<true>, args: Args) {
 
         const channels = await args.repeat("guildChannel");
 
@@ -26,6 +26,9 @@ export default class DeleteChannelCommand extends KaikiCommand {
                 const c = await chan.delete();
                 deletedChannels.push(`#${c.name} [${c.id}]`);
             }));
+
+        // Don't send message if current channel was deleted
+        if (channels.includes(m.channel)) return;
 
         return m.channel.send({
             embeds: [

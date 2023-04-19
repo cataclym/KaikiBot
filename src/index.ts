@@ -1,16 +1,15 @@
-import chalk from "chalk";
-import logger from "loglevel";
-import { extensionHook } from "./extensions/Discord";
+import { container } from "@sapphire/framework";
+import "@sapphire/plugin-logger/register";
+import * as colorette from "colorette";
+import "./extensions/Discord";
 import KaikiAkairoClient from "./lib/Kaiki/KaikiAkairoClient";
 import BotContainer from "./struct/BotContainer";
-import { startLogger } from "./struct/logging";
 
 class KaikiProgram {
     constructor() {
         (async () => {
-            await startLogger();
-            logger.info("\n" +
-                chalk.green(
+            container.logger.info("\n" +
+                colorette.green(
                     "__/\\\\\\________/\\\\\\___________________________________________/\\\\\\\\\\\\\\\\\\\\\\\\\\_______________________________        \n" +
                     " _\\/\\\\\\_____/\\\\\\//________________________/\\\\\\_______________\\/\\\\\\/////////\\\\\\_____________________________       \n" +
                     "  _\\/\\\\\\__/\\\\\\//_____________________/\\\\\\_\\/\\\\\\__________/\\\\\\_\\/\\\\\\_______\\/\\\\\\___________________/\\\\\\______      \n" +
@@ -25,8 +24,7 @@ class KaikiProgram {
     }
 
     async init() {
-        extensionHook();
-        process.on("unhandledRejection", async (reason: Error, promise) => logger.warn("Unhandled Rejection at:", promise));
+        process.on("unhandledRejection", async (reason: Error, promise) => container.logger.warn("Unhandled Rejection at:", promise));
 
         const bot = new BotContainer(new KaikiAkairoClient());
         await bot.init();

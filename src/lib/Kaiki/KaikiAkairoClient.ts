@@ -1,11 +1,11 @@
+import { execSync } from "child_process";
+import { join } from "path";
 import { type PrismaClient } from "@prisma/client";
 import { SapphireClient } from "@sapphire/framework";
 import chalk from "chalk";
-import { execSync } from "child_process";
 import { GatewayIntentBits, Guild, Partials, User } from "discord.js";
 import logger from "loglevel";
 import { Pool } from "mysql2/promise";
-import { join } from "path";
 import KaikiCache from "../../cache/KaikiCache";
 import Constants from "../../struct/Constants";
 import Database from "../../struct/db/Database";
@@ -66,7 +66,7 @@ export default class KaikiAkairoClient<Ready extends true> extends SapphireClien
             defaultPrefix: process.env.PREFIX,
             caseInsensitiveCommands: true,
         });
-        this.initializeDatabase();
+        void this.initializeDatabase();
     }
 
     public imageAPIs: ClientImageAPIs = {
@@ -114,10 +114,10 @@ export default class KaikiAkairoClient<Ready extends true> extends SapphireClien
         void this.presenceLoop();
     }
 
-    private initializeDatabase() {
+    private async initializeDatabase() {
         this.db = new Database(this);
 
-        this.db.init()
+        await this.db.init()
             .then((obj) => {
                 this.orm = obj.orm;
                 this.connection = () => obj.mySQLConnection;

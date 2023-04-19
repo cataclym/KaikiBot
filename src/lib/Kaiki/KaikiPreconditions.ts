@@ -1,5 +1,5 @@
-import { MessageCommand, Precondition } from "@sapphire/framework";
-import { Message } from "discord.js";
+import { AllFlowsPrecondition, Precondition } from "@sapphire/framework";
+import { CommandInteraction, ContextMenuCommandInteraction, Message } from "discord.js";
 import DadBot from "../../commands/Etc/dadBot";
 import Constants from "../../struct/Constants";
 import KaikiAkairoClient from "./KaikiAkairoClient";
@@ -37,9 +37,17 @@ export class DadBotPrecondition extends Precondition {
     }
 }
 
-export class OwnerOnlyPrecondition extends Precondition {
-    public override async messageRun(message: Message, command: MessageCommand, context: Precondition.Context) {
+export class UserPrecondition extends AllFlowsPrecondition {
+    public override async messageRun(message: Message) {
         return this.checkOwner(message.author.id);
+    }
+
+    public override chatInputRun(interaction: CommandInteraction) {
+        return this.checkOwner(interaction.user.id);
+    }
+
+    public override contextMenuRun(interaction: ContextMenuCommandInteraction) {
+        return this.checkOwner(interaction.user.id);
     }
 
     private async checkOwner(id: string) {

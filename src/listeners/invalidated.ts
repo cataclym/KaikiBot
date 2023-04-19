@@ -1,12 +1,11 @@
 import { ApplyOptions } from "@sapphire/decorators";
-import { ListenerOptions } from "@sapphire/framework";
+import { Listener, ListenerOptions } from "@sapphire/framework";
 import logger from "loglevel";
-import KaikiListener from "../lib/Kaiki/KaikiListener";
 
 @ApplyOptions<ListenerOptions>({
     event: "invalidated",
 })
-export default class InvalidatedListener extends KaikiListener {
+export default class InvalidatedListener extends Listener {
 
     // Emitted when the client's session becomes invalidated.
     public async run(): Promise<never> {

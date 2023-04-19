@@ -29,7 +29,9 @@ export default class ExcludeDadbotChannelCommand extends KaikiCommand {
         });
 
         if (!guildDb) {
-            guildDb = await this.client.db.getOrCreateGuild(bigIntGuildId) as (Guilds & { DadBotChannels: DadBotChannels[] });
+            guildDb = await this.client.db.getOrCreateGuild(bigIntGuildId) as (Guilds & {
+                DadBotChannels: DadBotChannels[]
+            });
             guildDb["DadBotChannels"] = [];
         }
 

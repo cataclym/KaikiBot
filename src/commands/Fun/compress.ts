@@ -15,7 +15,7 @@ export default class CompressCommand extends KaikiCommand {
 
     public async messageRun(message: Message, args: Args) {
 
-        const user = await args.pick("user");
+        const user = await args.pick("user").catch(() => message.author);
 
         const avatar = await (await fetch(user.displayAvatarURL({
             size: 32,

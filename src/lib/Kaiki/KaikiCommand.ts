@@ -9,5 +9,6 @@ export default class KaikiCommand extends Command<Args, CommandOptions> {
     constructor(context: Command.Context, options: KaikiCommandOptions) {
         super(context, options);
         this.usage = options?.usage;
+        this.client = this.container.client as KaikiAkairoClient<true>;
     }
 }

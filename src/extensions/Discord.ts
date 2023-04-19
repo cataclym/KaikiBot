@@ -2,8 +2,6 @@ import { ColorResolvable, EmbedBuilder, Guild, GuildMember, Message } from "disc
 import KaikiAkairoClient from "../lib/Kaiki/KaikiAkairoClient";
 import Constants from "../struct/Constants";
 
-export const extensionHook = () => null;
-
 declare module "discord.js" {
     export interface Guild {
         isDadBotEnabled(message?: Message): boolean;

@@ -19,7 +19,6 @@ enum ShardStats {
     description: "Displays the states of all shards",
     preconditions: ["GuildOnly"],
     subCategory: "Info",
-
 })
 export default class ShardStatisticsCommand extends KaikiCommand {
     public async messageRun(message: Message<true>) {
