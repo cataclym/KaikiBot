@@ -10,7 +10,7 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
     description: "Tests goodbye message as it would appear when triggered.",
     requiredUserPermissions: ["ManageGuild"],
     preconditions: ["GuildOnly"],
-    subCategory: "Goodbye",
+    minorCategory: "Goodbye",
 })
 export default class GoodbyeTestTestCommand extends KaikiCommand {
     public async messageRun(message: Message<true>): Promise<void> {

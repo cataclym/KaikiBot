@@ -13,7 +13,7 @@ import Utility from "../../lib/Utility";
     description: "Ping a minecraft server address to see if it is online",
     usage: "2b2t.org",
     typing: true,
-    subCategory: "Info",
+    minorCategory: "Info",
 })
 export default class MinecraftPingCommand extends KaikiCommand {
 

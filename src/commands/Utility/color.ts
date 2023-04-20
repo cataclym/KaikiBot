@@ -15,7 +15,7 @@ import Constants from "../../struct/Constants";
     usage: ["#ff00ff", "list"],
     typing: true,
     flags: ["list", "--list"],
-    subCategory: "Color",
+    minorCategory: "Color",
 })
 export default class ColorCommand extends KaikiCommand {
     public async messageRun(message: Message, args: Args): Promise<Message> {

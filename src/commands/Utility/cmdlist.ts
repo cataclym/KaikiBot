@@ -2,6 +2,7 @@ import { ApplyOptions } from "@sapphire/decorators";
 import { Args } from "@sapphire/framework";
 import {
     ActionRowBuilder,
+    Collection,
     ComponentType,
     EmbedBuilder,
     Message,
@@ -25,12 +26,10 @@ export default class CommandsList extends KaikiCommand {
 
     static ignoredCategories = ["default", "Etc"];
 
-    public async exec(message: Message, args: Args) {
+    public async messageRun(message: Message, args: Args) {
 
         const filteredCategories = this.store.categories
             .filter(cat => !CommandsList.ignoredCategories.includes(cat));
-
-        const category = await args.pick("category");
 
         if (args.finished) {
 
@@ -69,6 +68,8 @@ export default class CommandsList extends KaikiCommand {
             return this.handleComponentReply(interactionMessage, message.author.id, timestamp, embed);
         }
 
+        const category = await args.pick("category");
+
         // Return commands in the provided category
         if (category) {
             return this.categoryReply(message, category);
@@ -77,31 +78,43 @@ export default class CommandsList extends KaikiCommand {
 
     private categoryReply(message: Message, category: string) {
 
-        const cmds = this.store.filter(c => c.category === category);
+        const cmds = this.store.filter(c => c.category === category) as Collection<string, KaikiCommand>;
 
         const emb = new EmbedBuilder()
             .setTitle(`Commands in ${category}`)
             .setDescription(cmds
-                .filter(cmd => cmd.subCategory === undefined)
-                .map(cmd => `[\`${Array.from(cmd.aliases)
-                    .sort((a, b) => b.length - a.length
-                        || a.localeCompare(b)).join("`, `")}\`]`)
+                .filter(cmd => cmd.minorCategory === undefined)
+                .map(cmd => {
+                    const arr = Array.from(cmd.aliases);
+                    arr.unshift(cmd.name);
+
+                    return `[\`${arr
+                        .sort((a, b) => b.length - a.length
+                            || a.localeCompare(b)).join("`, `")}\`]`;
+                })
                 .join("\n") || "Empty")
             .withOkColor(message);
 
-        const filtered = cmds.filter(cmd => cmd.subCategory !== undefined);
+        const filtered = cmds.filter(cmd => cmd.minorCategory !== undefined);
 
-        [...new Set(filtered.map(value => value.subCategory))]
+        [...new Set(filtered.map(value => value.minorCategory))]
             .forEach(cmd => {
+
                 if (!cmd) return;
+
                 emb.addFields([
                     {
                         name: cmd,
-                        value: Array.from(filtered.filter(c => c.subCategory === cmd).values())
+                        value: Array.from(filtered.filter(c => c.minorCategory === cmd).values())
                             .sort()
-                            .map(command => `[\`${Array.from(command.aliases)
-                                .sort((a, b) => b.length - a.length
-                                    || a.localeCompare(b)).join("`, `")}\`]`)
+                            .map(command => {
+                                const arr = Array.from(command.aliases);
+                                arr.unshift(command.name);
+
+                                return `[\`${arr
+                                    .sort((a, b) => b.length - a.length
+                                        || a.localeCompare(b)).join("`, `")}\`]`;
+                            })
                             .join("\n") || "Empty", inline: true,
                     },
                 ]);
@@ -129,6 +142,7 @@ export default class CommandsList extends KaikiCommand {
         },
         footer: {
             text: message.author.tag,
+            // Todo Move ID to constants
             iconURL: (message.client.users.cache.get("140788173885276160")
                 || (await message.client.users.fetch("140788173885276160", { cache: true })))
                 .displayAvatarURL(),

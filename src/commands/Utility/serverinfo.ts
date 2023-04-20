@@ -10,7 +10,7 @@ import Constants from "../../struct/Constants";
     name: "serverinfo",
     aliases: ["sinfo"],
     description: "Shows information about the current server.",
-    subCategory: "Info",
+    minorCategory: "Info",
 })
 export default class ServerInfoCommand extends KaikiCommand {
     public async messageRun(message: Message, args: Args): Promise<Message> {

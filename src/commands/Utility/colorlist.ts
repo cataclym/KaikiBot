@@ -12,6 +12,7 @@ import Utility from "../../lib/Utility";
     aliases: ["colors", "clrs"],
     description: "Shows a list of all supported color names for the bot",
     typing: true,
+    minorCategory: "Color",
 })
 export default class ColorListCommand extends KaikiCommand {
     public async messageRun(message: Message) {

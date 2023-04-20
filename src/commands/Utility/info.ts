@@ -24,7 +24,7 @@ import Constants from "../../struct/Constants";
     usage: ["#channel", "@member", "@role", ":coolCustomEmoji:", "messageID"],
     preconditions: ["GuildOnly"],
     typing: true,
-    subCategory: "info",
+    minorCategory: "Info",
 })
 export default class InfoCommand extends KaikiCommand {
     // constructor() {

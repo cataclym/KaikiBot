@@ -11,7 +11,7 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
     usage: ["", "#leave-channel"],
     requiredUserPermissions: ["ManageGuild"],
     preconditions: ["GuildOnly"],
-    subCategory: "Goodbye",
+    minorCategory: "Goodbye",
 })
 export default class GoodbyeConfigCommand extends KaikiCommand {
     public async messageRun(message: Message<true>, args: Args): Promise<Message> {

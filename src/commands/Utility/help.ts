@@ -10,17 +10,18 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
     aliases: ["h"],
     description: "Shows command info",
     usage: "ping",
-    subCategory: "Info",
+    minorCategory: "Info",
 })
 export default class HelpCommand extends KaikiCommand {
     public async messageRun(message: Message, args: Args) {
 
         const { name, repository, version } = this.client.package,
-            prefix = this.client.fetchPrefix(message),
+            prefix = await this.client.fetchPrefix(message),
             embed = new EmbedBuilder()
                 .withOkColor(message);
 
         if (args.finished) {
+
             const avatarURL = this.client.owner.displayAvatarURL();
 
             embed.setTitle(`${message.client.user?.username} help page`)

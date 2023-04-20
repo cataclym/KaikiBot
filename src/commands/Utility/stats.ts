@@ -11,7 +11,7 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 @ApplyOptions<KaikiCommandOptions>({
     aliases: ["stats"],
     description: "Statistics and information",
-    subCategory: "Info",
+    minorCategory: "Info",
 })
 export default class StatsCommand extends KaikiCommand {
 
