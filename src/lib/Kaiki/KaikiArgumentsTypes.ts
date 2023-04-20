@@ -4,7 +4,6 @@ import SetActivityCommand, { ValidActivities } from "../../commands/Owner only/s
 import Constants from "../../struct/Constants";
 import { hexColorTable } from "../Color";
 import { JSONToMessageOptions } from "../GreetHandler";
-import { KaikiColor } from "../Types/KaikiColor";
 import Utility from "../Utility";
 import KaikiUtil from "./KaikiUtil";
 
@@ -72,40 +71,6 @@ export class EmoteImageArgument extends Argument<string> {
         return this.error({
             parameter,
         });
-    }
-}
-
-export class ColorArgument extends Argument<KaikiColor> {
-    public run(parameter: string, context: Argument.Context<KaikiColor>): Argument.AwaitableResult<KaikiColor> {
-
-        if (!parameter) {
-            return this.error({
-                parameter,
-            });
-        }
-
-        const hexInteger = parseInt(parameter);
-
-        if (!isNaN(hexInteger)) {
-            return this.ok(Utility.HEXtoRGB(hexInteger.toString(16)));
-        }
-
-        const hexColorString = parameter.replace("#", "");
-
-        const color = parseInt(hexColorString, 16);
-
-        if (color < 0
-            || color > Constants.MAGIC_NUMBERS.LIB.KAIKI.KAIKI_ARGS.MAX_COLOR_VALUE
-            || isNaN(color)
-            && !KaikiUtil.hasKey(hexColorTable, hexColorString)) {
-            return this.error({
-                parameter,
-            });
-        }
-
-        return this.ok(Utility.HEXtoRGB(String(KaikiUtil.hasKey(hexColorTable, hexColorString)
-            ? hexColorTable[hexColorString]
-            : hexColorString)));
     }
 }
 
