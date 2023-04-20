@@ -1,14 +1,11 @@
-import { Args, Argument, container } from "@sapphire/framework";
+import { Args, Argument } from "@sapphire/framework";
 import { Guild, Message } from "discord.js";
 import SetActivityCommand, { ValidActivities } from "../../commands/Owner only/setActivity";
 import Constants from "../../struct/Constants";
 import { hexColorTable } from "../Color";
 import { JSONToMessageOptions } from "../GreetHandler";
-import { HentaiTypes } from "../Hentai/HentaiService";
 import { KaikiColor } from "../Types/KaikiColor";
-import { Categories } from "../Types/Miscellaneous";
 import Utility from "../Utility";
-import KaikiCommand from "./KaikiCommand";
 import KaikiUtil from "./KaikiUtil";
 
 export class GuildArgument extends Argument<Guild> {
@@ -112,51 +109,6 @@ export class ColorArgument extends Argument<KaikiColor> {
     }
 }
 
-export class CommandArgument extends Argument<KaikiCommand> {
-    public run(parameter: string, context: Argument.Context<KaikiCommand>): Argument.AwaitableResult<KaikiCommand> {
-        const result = <KaikiCommand>container.stores.get("commands")
-            .find(k => {
-                const name = k.name.toLowerCase();
-
-                return parameter
-                    .toLowerCase()
-                    .startsWith(name.slice(0, Math.max(parameter.length - 1, 1)));
-            });
-
-        if (!result) {
-            return this.error({
-                message: "The provided argument could not be resolved to a command.",
-                parameter,
-                context,
-            });
-        }
-        return this.ok(result);
-    }
-}
-
-export class CategoryArgument extends Argument<string> {
-    public run(parameter: string, context: Argument.Context<string>): Argument.AwaitableResult<string> {
-        const result = container.stores.get("commands")
-            .categories.find(k => {
-
-                k = k.toLowerCase();
-
-                return parameter
-                    .toLowerCase()
-                    .startsWith(k.slice(0, Math.max(parameter.length - 1, 1)));
-            });
-
-        if (!result) {
-            return this.error({
-                parameter,
-                context,
-                message: "The provided argument could not be resolved to a category.",
-            });
-        }
-
-        return this.ok(result);
-    }
-}
 
 export class KaikiMoneyArgument extends Argument<bigint> {
     public async run(parameter: string, context: Argument.Context<bigint>) {
@@ -321,18 +273,4 @@ Valid types are: \`${SetActivityCommand.validActivities.join("`, `")}\``,
     // static moneyArgument = Argument.range("bigint", 0, KaikiArgumentsTypes.MAX_INT);
 
     static getCurrency = async (message: Message) => await message.client.money.Get(message.author.id);
-}
-
-declare module "@sapphire/framework" {
-    interface ArgType {
-        category: Categories;
-        color: KaikiColor;
-        command: KaikiCommand;
-        emoteImage: string;
-        guild: Guild;
-        kaikiCoin: string;
-        kaikiHentaiTypes: HentaiTypes;
-        kaikiMoney: bigint;
-        welcomeGoodbyeMessage: JSONToMessageOptions;
-    }
 }

@@ -21,9 +21,3 @@ export class OwnerOnly extends AllFlowsPrecondition {
             : this.error({ message: "Only the bot owner can use this command!" });
     }
 }
-
-declare module "@sapphire/framework" {
-    interface Preconditions {
-        OwnerOnly: never;
-    }
-}

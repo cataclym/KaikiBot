@@ -1,6 +1,7 @@
 import { container } from "@sapphire/pieces";
 import "@sapphire/plugin-logger/register";
 import "./extensions/Discord";
+import "./extensions/Sapphire";
 import KaikiAkairoClient from "./lib/Kaiki/KaikiAkairoClient";
 import BotContainer from "./struct/BotContainer";
 

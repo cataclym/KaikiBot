@@ -35,9 +35,3 @@ export class DadBot extends Precondition {
         return this.error();
     }
 }
-
-declare module "@sapphire/framework" {
-    interface Preconditions {
-        DadBot: never;
-    }
-}
