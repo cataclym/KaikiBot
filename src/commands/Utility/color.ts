@@ -1,7 +1,7 @@
 import { ApplyOptions } from "@sapphire/decorators";
 import { Args } from "@sapphire/framework";
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
-import { AttachmentBuilder, EmbedBuilder, Message, resolveColor } from "discord.js";
+import { AttachmentBuilder, EmbedBuilder, Message } from "discord.js";
 import { ColorNames, hexColorTable, imgFromColor } from "../../lib/Color";
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
@@ -21,8 +21,6 @@ export default class ColorCommand extends KaikiCommand {
     public async messageRun(message: Message, args: Args): Promise<Message> {
 
         const list = args.getFlags("list", "--list");
-
-        const color = await args.rest("color").catch(() => null);
 
         if (list) {
             const colorList = Object.keys(hexColorTable),
@@ -44,17 +42,22 @@ export default class ColorCommand extends KaikiCommand {
             return sendPaginatedMessage(message, pages, {});
         }
 
-        if (color === null) {
-            return message.channel.send({
-                embeds: [
-                    new EmbedBuilder()
-                        .setTitle("Please provide a valid hex-color or color name")
-                        .withErrorColor(message),
-                ],
-            });
-        }
-        const colorInt = resolveColor([color.r, color.g, color.b]);
-        const colorString = `Hex: **${Utility.RGBtoHEX(color)}** [${colorInt}]\nRed: **${color.r}**\nGreen: **${color.g}**\nBlue: **${color.b}**\n`;
+        const color = await args.rest("color");
+
+        // if (color === null) {
+        //     return message.channel.send({
+        //         embeds: [
+        //             new EmbedBuilder()
+        //                 .setTitle("Please provide a valid hex-color or color name")
+        //                 .withErrorColor(message),
+        //         ],
+        //     });
+        // }
+
+        const hex = Utility.RGBtoHEX(color);
+        const colorInt = parseInt(hex.replace("#", ""), 16);
+
+        const colorString = `Hex: **${hex}** [${colorInt}]\nRed: **${color.r}**\nGreen: **${color.g}**\nBlue: **${color.b}**\n`;
         const attachment = new AttachmentBuilder(await imgFromColor(color), { name: "color.jpg" });
         const embed = new EmbedBuilder({
             description: colorString,

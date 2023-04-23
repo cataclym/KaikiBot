@@ -3,38 +3,31 @@ import { hexColorTable } from "../lib/Color";
 import KaikiUtil from "../lib/Kaiki/KaikiUtil";
 import { KaikiColor } from "../lib/Types/KaikiColor";
 import Utility from "../lib/Utility";
-import Constants from "../struct/Constants";
 
 export class ColorArgument extends Argument<KaikiColor> {
+    private message = "Please provide a valid hex-color or a color name!";
+
+    private hexRegex = /^#?[0-9A-F]{6}$/i;
+
     public run(parameter: string, context: Argument.Context<KaikiColor>): Argument.AwaitableResult<KaikiColor> {
 
-        if (!parameter) {
-            return this.error({
-                parameter,
-            });
+        // Uncommented for being unnecessary, but still cool to have.
+        // const hexInteger = parseInt(parameter);
+        //
+        // if (!isNaN(hexInteger)) {
+        //     return this.ok(Utility.HEXtoRGB(hexInteger.toString(16).toUpperCase()));
+        // }
+
+        if (this.hexRegex.test(parameter)) {
+            return this.ok(Utility.HEXtoRGB(parameter));
         }
 
-        const hexInteger = parseInt(parameter);
+        if (KaikiUtil.hasKey(hexColorTable, parameter)) return this.ok(Utility.HEXtoRGB(hexColorTable[parameter]));
 
-        if (!isNaN(hexInteger)) {
-            return this.ok(Utility.HEXtoRGB(hexInteger.toString(16)));
-        }
-
-        const hexColorString = parameter.replace("#", "");
-
-        const color = parseInt(hexColorString, 16);
-
-        if (color < 0
-            || color > Constants.MAGIC_NUMBERS.LIB.KAIKI.KAIKI_ARGS.MAX_COLOR_VALUE
-            || isNaN(color)
-            && !KaikiUtil.hasKey(hexColorTable, hexColorString)) {
-            return this.error({
-                parameter,
-            });
-        }
-
-        return this.ok(Utility.HEXtoRGB(String(KaikiUtil.hasKey(hexColorTable, hexColorString)
-            ? hexColorTable[hexColorString]
-            : hexColorString)));
+        return this.error({
+            parameter,
+            message: this.message,
+            context,
+        });
     }
 }

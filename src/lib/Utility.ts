@@ -153,7 +153,9 @@ export default class Utility {
     }
 
     static RGBtoHEX(color: KaikiColor): HexColorString {
-        const string = Object.values(color).map((n: number) => n.toString(16)).join("");
+        const string = Object.values(color).map((n: number) => n
+            ? n.toString(16)
+            : "00").join("");
         return `#${string}`;
     }
 
