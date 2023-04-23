@@ -1,10 +1,10 @@
 import { PrismaClient } from "@prisma/client";
 import { ActivityType } from "discord.js";
 import { ConnectionOptions, createPool, FieldPacket, Pool } from "mysql2/promise";
-import KaikiAkairoClient from "../../lib/Kaiki/KaikiAkairoClient";
+import KaikiSapphireClient from "../../lib/Kaiki/KaikiSapphireClient";
 
 export default class Database {
-    constructor(client: KaikiAkairoClient<true>) {
+    constructor(client: KaikiSapphireClient<true>) {
         this._client = client;
     }
 
@@ -28,7 +28,7 @@ export default class Database {
         };
     }
 
-    private _client: KaikiAkairoClient<true>;
+    private _client: KaikiSapphireClient<true>;
     public orm: PrismaClient;
     private _mySQLConnection: Pool;
 

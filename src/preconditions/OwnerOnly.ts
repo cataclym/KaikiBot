@@ -1,6 +1,6 @@
 import { AllFlowsPrecondition } from "@sapphire/framework";
 import { CommandInteraction, ContextMenuCommandInteraction, Message } from "discord.js";
-import KaikiAkairoClient from "../lib/Kaiki/KaikiAkairoClient";
+import KaikiSapphireClient from "../lib/Kaiki/KaikiSapphireClient";
 
 export class OwnerOnly extends AllFlowsPrecondition {
     public override messageRun(message: Message) {
@@ -16,7 +16,7 @@ export class OwnerOnly extends AllFlowsPrecondition {
     }
 
     private async checkOwner(id: string) {
-        return (this.container.client as KaikiAkairoClient<true>).owner.id === id
+        return (this.container.client as KaikiSapphireClient<true>).owner.id === id
             ? this.ok()
             : this.error({ message: "Only the bot owner can use this command!" });
     }

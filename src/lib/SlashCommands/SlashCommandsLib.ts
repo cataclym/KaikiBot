@@ -1,6 +1,6 @@
 import { Command } from "@sapphire/framework";
 import { ApplicationCommandDataResolvable, EmbedBuilder, Guild, Message } from "discord.js";
-import KaikiAkairoClient from "../Kaiki/KaikiAkairoClient";
+import KaikiSapphireClient from "../Kaiki/KaikiSapphireClient";
 import KaikiEmbeds from "../KaikiEmbeds";
 
 export default class SlashCommandsLib {
@@ -16,7 +16,7 @@ export default class SlashCommandsLib {
             : message.guild)?.isDadBotEnabled();
     }
 
-    public static async getOrCreateDadbotRole(guild: Guild, client: KaikiAkairoClient<true>) {
+    public static async getOrCreateDadbotRole(guild: Guild, client: KaikiSapphireClient<true>) {
         const db = await client.db.getOrCreateGuild(guild.id);
         return guild.roles.cache.get(String(db.ExcludeRole));
     }
@@ -26,7 +26,7 @@ export default class SlashCommandsLib {
         const { guild } = messageOrInteraction;
 
         const embeds = [];
-        let excludedRole = await SlashCommandsLib.getOrCreateDadbotRole(guild, messageOrInteraction.client as KaikiAkairoClient<true>);
+        let excludedRole = await SlashCommandsLib.getOrCreateDadbotRole(guild, messageOrInteraction.client as KaikiSapphireClient<true>);
 
         if (!excludedRole) {
             excludedRole = await guild.roles.create({

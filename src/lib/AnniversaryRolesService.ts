@@ -5,15 +5,15 @@ import chalk from "chalk";
 import { Guild, GuildMember, PermissionsBitField, Role } from "discord.js";
 import logger from "loglevel";
 import Constants from "../struct/Constants";
-import KaikiAkairoClient from "./Kaiki/KaikiAkairoClient";
+import KaikiSapphireClient from "./Kaiki/KaikiSapphireClient";
 
 export default class AnniversaryRolesService {
-    readonly client: KaikiAkairoClient<true>;
+    readonly client: KaikiSapphireClient<true>;
     readonly orm: PrismaClient;
     listUsersCakeDay: string[] = [];
     listUserJoinedAt: string[] = [];
 
-    constructor(client: KaikiAkairoClient<true>) {
+    constructor(client: KaikiSapphireClient<true>) {
         this.client = client;
         this.orm = client.orm;
 

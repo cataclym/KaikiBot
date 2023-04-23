@@ -1,24 +1,24 @@
 import { ColorResolvable, EmbedBuilder, Guild, GuildMember, Message } from "discord.js";
-import KaikiAkairoClient from "../lib/Kaiki/KaikiAkairoClient";
+import KaikiSapphireClient from "../lib/Kaiki/KaikiSapphireClient";
 import Constants from "../struct/Constants";
 
 declare module "discord.js" {
     export interface Guild {
         isDadBotEnabled(message?: Message): boolean;
 
-        client: KaikiAkairoClient<true>;
+        client: KaikiSapphireClient<true>;
     }
 
     export interface GuildMember {
         hasExcludedRole(member?: GuildMember): boolean;
 
-        client: KaikiAkairoClient<true>;
+        client: KaikiSapphireClient<true>;
     }
 
     export interface Message {
         getMemberColorAsync(member?: GuildMember): Promise<ColorResolvable>;
 
-        client: KaikiAkairoClient<true>;
+        client: KaikiSapphireClient<true>;
     }
 
     export interface EmbedBuilder {
@@ -28,7 +28,7 @@ declare module "discord.js" {
     }
 
     export interface ButtonInteraction {
-        client: KaikiAkairoClient<true>;
+        client: KaikiSapphireClient<true>;
     }
 
 }

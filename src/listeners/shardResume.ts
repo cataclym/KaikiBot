@@ -2,7 +2,7 @@ import { ApplyOptions } from "@sapphire/decorators";
 import { Listener, ListenerOptions } from "@sapphire/framework";
 import chalk from "chalk";
 import logger from "loglevel";
-import type KaikiAkairoClient from "../lib/Kaiki/KaikiAkairoClient";
+import type KaikiSapphireClient from "../lib/Kaiki/KaikiSapphireClient";
 
 @ApplyOptions<ListenerOptions>({
     event: "shardResume",
@@ -14,6 +14,6 @@ export default class ShardResume extends Listener {
 
         logger.info(`shardResume | Shard: ${chalk.green(id)} \nReplayed ${chalk.green(replayedEvents)} events.`);
 
-        await (this.container.client as KaikiAkairoClient<true>).setPresence();
+        await (this.container.client as KaikiSapphireClient<true>).setPresence();
     }
 }

@@ -2,12 +2,12 @@ import fs from "fs/promises";
 import chalk from "chalk";
 import { EmbedBuilder, Team } from "discord.js";
 import logger from "loglevel";
-import KaikiAkairoClient from "../lib/Kaiki/KaikiAkairoClient";
+import KaikiSapphireClient from "../lib/Kaiki/KaikiSapphireClient";
 
 export default class BotContainer {
-    private readonly client: KaikiAkairoClient<true>;
+    private readonly client: KaikiSapphireClient<true>;
 
-    constructor(client: KaikiAkairoClient<true>) {
+    constructor(client: KaikiSapphireClient<true>) {
         this.client = client;
 
         if (!process.env) {

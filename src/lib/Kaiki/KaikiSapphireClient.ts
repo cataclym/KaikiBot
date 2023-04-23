@@ -22,7 +22,7 @@ import PackageJSON from "../Interfaces/Common/PackageJSON";
 import { MoneyService } from "../Money/MoneyService";
 import Utility from "../Utility";
 
-export default class KaikiAkairoClient<Ready extends true> extends SapphireClient<Ready> {
+export default class KaikiSapphireClient<Ready extends true> extends SapphireClient<Ready> {
 
     public anniversaryService: AnniversaryRolesService;
     public botSettings: DatabaseProvider;
@@ -59,6 +59,7 @@ export default class KaikiAkairoClient<Ready extends true> extends SapphireClien
             partials: [Partials.Reaction, Partials.Channel, Partials.GuildMember],
             shards: "auto",
             loadMessageCommandListeners: true,
+            loadDefaultErrorListeners: true,
             defaultCooldown: {
                 delay: 1000,
             },
@@ -143,7 +144,7 @@ export default class KaikiAkairoClient<Ready extends true> extends SapphireClien
     private async presenceLoop(): Promise<NodeJS.Timer> {
         await this.setPresence();
 
-        return setInterval(((scope: KaikiAkairoClient<Ready>) => {
+        return setInterval(((scope: KaikiSapphireClient<Ready>) => {
             return async () => {
                 await scope.setPresence();
             };

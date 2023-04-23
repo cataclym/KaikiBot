@@ -1,7 +1,7 @@
 import { AllFlowsPrecondition, Command, Piece, Result } from "@sapphire/framework";
 import { ChatInputCommandInteraction, ContextMenuCommandInteraction, Message } from "discord.js";
 import { CategoriesEnum } from "../lib/Enums/categoriesEnum";
-import KaikiAkairoClient from "../lib/Kaiki/KaikiAkairoClient";
+import KaikiSapphireClient from "../lib/Kaiki/KaikiSapphireClient";
 import { Categories } from "../lib/Types/Miscellaneous";
 
 export class BlockedCategoriesPrecondition extends AllFlowsPrecondition {
@@ -29,7 +29,7 @@ export class BlockedCategoriesPrecondition extends AllFlowsPrecondition {
         if (messageOrInteraction.guildId === null || !cmd.category) return this.ok();
 
         const isBlocked = await Result.fromAsync(
-            (messageOrInteraction.client as KaikiAkairoClient<true>).orm.blockedCategories.findFirstOrThrow({
+            (messageOrInteraction.client as KaikiSapphireClient<true>).orm.blockedCategories.findFirstOrThrow({
                 where: {
                     GuildId: BigInt(messageOrInteraction.guildId),
                     CategoryTarget: CategoriesEnum[cmd.category as Categories],

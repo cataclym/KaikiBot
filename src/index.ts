@@ -2,14 +2,14 @@ import { container } from "@sapphire/pieces";
 import "@sapphire/plugin-logger/register";
 import "./extensions/Discord";
 import "./extensions/Sapphire";
-import KaikiAkairoClient from "./lib/Kaiki/KaikiAkairoClient";
+import KaikiSapphireClient from "./lib/Kaiki/KaikiSapphireClient";
 import BotContainer from "./struct/BotContainer";
 
 class KaikiProgram {
     async init() {
         process.on("unhandledRejection", async (reason: Error, promise) => container.logger.warn("Unhandled Rejection at:", promise));
 
-        const bot = new BotContainer(new KaikiAkairoClient());
+        const bot = new BotContainer(new KaikiSapphireClient());
         await bot.init();
     }
 }
