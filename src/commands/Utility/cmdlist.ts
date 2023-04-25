@@ -77,8 +77,9 @@ export default class CommandsList extends KaikiCommand {
         }
     }
 
-    private mapCommands(commands: Collection<string, KaikiCommand>) {
-        return commands.map(cmd => {
+    private mapCommands = (commands: Collection<string, KaikiCommand>) => commands
+        .sort((a, b) => a.name.localeCompare(b.name))
+        .map(cmd => {
             const arr = Array.from(cmd.aliases)
                 .filter(Boolean);
             arr.unshift(cmd.name);
@@ -88,9 +89,7 @@ export default class CommandsList extends KaikiCommand {
                 : `[\`${arr.sort((a, b) => b.length - a.length
                     || a.localeCompare(b)).join("`, `")}\`]`;
         })
-            .join("\n");
-
-    }
+        .join("\n");
 
     private categoryReply(message: Message, category: string) {
 
