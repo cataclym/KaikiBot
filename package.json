@@ -1,6 +1,6 @@
 {
   "name": "kaikideishubot",
-  "version": "6.0.2-0",
+  "version": "6.0.0-2",
   "main": "./dist/index.js",
   "scripts": {
     "start": "node -r dotenv/config dist/index.js --color",
@@ -55,7 +55,7 @@
   "description": "Discord bot built with Sapphire, Prisma and MySQL2",
   "repository": {
     "type": "git",
-    "url": "https://gitlab.com/cataclym/KaikiDeishuBot.git"
+    "url": "https://gitlab.com/catadev/KaikiDeishuBot.git"
   },
   "engines": {
     "node": ">=16.16.0",
