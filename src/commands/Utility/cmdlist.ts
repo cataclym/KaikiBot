@@ -39,6 +39,7 @@ export default class CommandsList extends KaikiCommand {
                 .setComponents(new StringSelectMenuBuilder()
                     .setCustomId(timestamp)
                     .setOptions(filteredCategories
+                        .sort()
                         .map(cat => new StringSelectMenuOptionBuilder({
                             value: cat,
                             label: cat,
@@ -78,11 +79,13 @@ export default class CommandsList extends KaikiCommand {
 
     private mapCommands(commands: Collection<string, KaikiCommand>) {
         return commands.map(cmd => {
-            const arr = Array.from(cmd.aliases);
+            const arr = Array.from(cmd.aliases)
+                .filter(Boolean);
             arr.unshift(cmd.name);
 
-            return `[\`${arr
-                .sort((a, b) => b.length - a.length
+            return arr.length === 1
+                ? `[\`${arr.join()}\`]`
+                : `[\`${arr.sort((a, b) => b.length - a.length
                     || a.localeCompare(b)).join("`, `")}\`]`;
         })
             .join("\n");
@@ -136,7 +139,6 @@ export default class CommandsList extends KaikiCommand {
         },
         footer: {
             text: message.author.tag,
-            // Todo Move ID to constants
             iconURL: (message.client.users.cache.get(Constants.authorId)
                 || (await message.client.users.fetch(Constants.authorId, { cache: true })))
                 .displayAvatarURL(),
