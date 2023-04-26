@@ -1,7 +1,7 @@
 import { ApplyOptions } from "@sapphire/decorators";
 import { Args } from "@sapphire/framework";
 import { Message } from "discord.js";
-import Emotes from "../../lib/Emotes";
+import Emotes from "../../lib/Emotes/Emotes";
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiArgumentsTypes from "../../lib/Kaiki/KaikiArgumentsTypes";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";

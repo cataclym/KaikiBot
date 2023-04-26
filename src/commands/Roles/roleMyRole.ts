@@ -3,7 +3,7 @@ import { Args } from "@sapphire/framework";
 import { EmbedBuilder, GuildPremiumTier, Message } from "discord.js";
 import { KaikiSubCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiSubCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-import KaikiEmbeds from "../../lib/KaikiEmbeds";
+import KaikiEmbeds from "../../lib/Kaiki/KaikiEmbeds";
 import Roles, { rolePermissionCheck } from "../../lib/Roles";
 import Utility from "../../lib/Utility";
 import Constants from "../../struct/Constants";

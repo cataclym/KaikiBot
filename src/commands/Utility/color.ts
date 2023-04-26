@@ -2,9 +2,10 @@ import { ApplyOptions } from "@sapphire/decorators";
 import { Args } from "@sapphire/framework";
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
 import { AttachmentBuilder, EmbedBuilder, Message } from "discord.js";
-import { ColorNames, hexColorTable, imgFromColor } from "../../lib/Color";
+import { imgFromColor } from "../../lib/Color";
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+import { ColorNames } from "../../lib/Types/KaikiColor";
 import Utility from "../../lib/Utility";
 import Constants from "../../struct/Constants";
 
@@ -23,8 +24,8 @@ export default class ColorCommand extends KaikiCommand {
         const list = args.getFlags("list", "--list");
 
         if (list) {
-            const colorList = Object.keys(hexColorTable),
-                embedColor = hexColorTable[(colorList[Math.floor(Math.random() * colorList.length)]) as keyof ColorNames],
+            const colorList = Object.keys(Constants.hexColorTable),
+                embedColor = Constants.hexColorTable[(colorList[Math.floor(Math.random() * colorList.length)]) as keyof ColorNames],
                 pages: EmbedBuilder[] = [];
 
             for (let index = Number(Constants.MAGIC_NUMBERS.CMDS.UTILITY.COLOR.CLR_NAMES_PR_PAGE), p = 0;

@@ -4,7 +4,7 @@ import { AttachmentBuilder, EmbedBuilder, Message, PermissionsBitField, resolveC
 import { imgFromColor } from "../../lib/Color";
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-import KaikiEmbeds from "../../lib/KaikiEmbeds";
+import KaikiEmbeds from "../../lib/Kaiki/KaikiEmbeds";
 import { rolePermissionCheck } from "../../lib/Roles";
 import Utility from "../../lib/Utility";
 

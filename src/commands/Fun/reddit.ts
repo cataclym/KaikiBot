@@ -6,7 +6,7 @@ import RedditAPIData, { PurpleData } from "../../lib/Interfaces/Common/RedditAPI
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
-import KaikiEmbeds from "../../lib/KaikiEmbeds";
+import KaikiEmbeds from "../../lib/Kaiki/KaikiEmbeds";
 import Utility from "../../lib/Utility";
 import Constants from "../../struct/Constants";
 

@@ -2,7 +2,7 @@ import fs from "fs";
 import { Message } from "discord.js";
 import fetch from "node-fetch";
 import sharp from "sharp";
-import Constants from "../struct/Constants";
+import Constants from "../../struct/Constants";
 
 export default class Emotes {
 

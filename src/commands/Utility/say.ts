@@ -4,7 +4,7 @@ import { ChannelType, Message, PermissionsBitField } from "discord.js";
 import { JSONToMessageOptions } from "../../lib/GreetHandler";
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-import KaikiEmbeds from "../../lib/KaikiEmbeds";
+import KaikiEmbeds from "../../lib/Kaiki/KaikiEmbeds";
 
 @ApplyOptions<KaikiCommandOptions>({
     name: "say",

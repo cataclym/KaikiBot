@@ -2,7 +2,6 @@ import { Args, Argument } from "@sapphire/framework";
 import { Guild, Message } from "discord.js";
 import SetActivityCommand, { ValidActivities } from "../../commands/Owner only/setActivity";
 import Constants from "../../struct/Constants";
-import { hexColorTable } from "../Color";
 import { JSONToMessageOptions } from "../GreetHandler";
 import Utility from "../Utility";
 import KaikiUtil from "./KaikiUtil";
@@ -226,12 +225,12 @@ Valid types are: \`${SetActivityCommand.validActivities.join("`, `")}\``,
         if (color < 0
             || color > Constants.MAGIC_NUMBERS.LIB.KAIKI.KAIKI_ARGS.MAX_COLOR_VALUE
             || isNaN(color)
-            && !KaikiUtil.hasKey(hexColorTable, hexColorString)) {
+            && !KaikiUtil.hasKey(Constants.hexColorTable, hexColorString)) {
             return null;
         }
 
-        return Utility.HEXtoRGB(String(KaikiUtil.hasKey(hexColorTable, hexColorString)
-            ? hexColorTable[hexColorString]
+        return Utility.HEXtoRGB(String(KaikiUtil.hasKey(Constants.hexColorTable, hexColorString)
+            ? Constants.hexColorTable[hexColorString]
             : hexColorString));
     };
 

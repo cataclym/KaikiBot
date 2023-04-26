@@ -1,5 +1,5 @@
 import { GuildMember, Message } from "discord.js";
-import { hexColorTable } from "../Color";
+import Constants from "../../struct/Constants";
 import APIProcessor from "./APIProcessor";
 import ImageAPI from "./Common/ImageAPI";
 import type { ImageAPIOptions } from "./Common/Types";
@@ -25,23 +25,23 @@ export default class WaifuIm extends ImageAPI<EndPointSignatures> {
         endPointData: {
             "uniform": {
                 action: "",
-                color: hexColorTable["lightskyblue"],
+                color: Constants.hexColorTable["lightskyblue"],
             },
             "maid": {
                 action: "",
-                color: hexColorTable["lightskyblue"],
+                color: Constants.hexColorTable["lightskyblue"],
             },
             "selfies": {
                 action: "",
-                color: hexColorTable["lightskyblue"],
+                color: Constants.hexColorTable["lightskyblue"],
             },
             "marin-kitagawa": {
                 action: "",
-                color: hexColorTable["lightskyblue"],
+                color: Constants.hexColorTable["lightskyblue"],
             },
             "ero": {
                 action: "",
-                color: hexColorTable["hotpink"],
+                color: Constants.hexColorTable["hotpink"],
             },
         },
         objectIndex: ["images", "0", "url"],

@@ -2,7 +2,7 @@ import { ApplyOptions } from "@sapphire/decorators";
 import { EmbedBuilder, Message } from "discord.js";
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-import KaikiEmbeds from "../../lib/KaikiEmbeds";
+import KaikiEmbeds from "../../lib/Kaiki/KaikiEmbeds";
 
 @ApplyOptions<KaikiCommandOptions>({
     name: "daily",

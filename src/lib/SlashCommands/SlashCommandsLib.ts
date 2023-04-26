@@ -1,7 +1,7 @@
 import { Command } from "@sapphire/framework";
 import { ApplicationCommandDataResolvable, EmbedBuilder, Guild, Message } from "discord.js";
+import KaikiEmbeds from "../Kaiki/KaikiEmbeds";
 import KaikiSapphireClient from "../Kaiki/KaikiSapphireClient";
-import KaikiEmbeds from "../KaikiEmbeds";
 
 export default class SlashCommandsLib {
 

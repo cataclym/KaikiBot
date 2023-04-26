@@ -5,7 +5,7 @@ import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
 import { EmbedBuilder, Message } from "discord.js";
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-import KaikiEmbeds from "../../lib/KaikiEmbeds";
+import KaikiEmbeds from "../../lib/Kaiki/KaikiEmbeds";
 import Constants from "../../struct/Constants";
 
 @ApplyOptions<KaikiCommandOptions>({

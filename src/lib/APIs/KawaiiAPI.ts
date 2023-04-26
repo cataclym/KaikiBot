@@ -1,5 +1,5 @@
 import { GuildMember, Message } from "discord.js";
-import { hexColorTable } from "../Color";
+import Constants from "../../struct/Constants";
 import APIProcessor from "./APIProcessor";
 import ImageAPI from "./Common/ImageAPI";
 import { ImageAPIOptions } from "./Common/Types";
@@ -37,24 +37,24 @@ export default class KawaiiAPI extends ImageAPI<EndPointSignatures> {
         endPointData: {
             "run": {
                 action: "is running away!!",
-                color: hexColorTable["chartreuse"],
+                color: Constants.hexColorTable["chartreuse"],
                 appendable: true,
             },
             "peek": {
                 action: "peeks",
-                color: hexColorTable["papayawhip"],
+                color: Constants.hexColorTable["papayawhip"],
                 append: "👀",
                 appendable: true,
             },
             "pout": {
                 action: "pouts",
-                color: hexColorTable["darkseagreen"],
+                color: Constants.hexColorTable["darkseagreen"],
                 append: "😒",
                 appendable: true,
             },
             "lick": {
                 action: "licked",
-                color: hexColorTable["mediumpurple"],
+                color: Constants.hexColorTable["mediumpurple"],
                 append: "😛",
                 appendable: true,
             },

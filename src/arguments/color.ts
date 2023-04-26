@@ -1,8 +1,8 @@
 import { Argument } from "@sapphire/framework";
-import { hexColorTable } from "../lib/Color";
 import KaikiUtil from "../lib/Kaiki/KaikiUtil";
 import { KaikiColor } from "../lib/Types/KaikiColor";
 import Utility from "../lib/Utility";
+import Constants from "../struct/Constants";
 
 export class ColorArgument extends Argument<KaikiColor> {
     private message = "Please provide a valid hex-color or a color name!";
@@ -22,7 +22,7 @@ export class ColorArgument extends Argument<KaikiColor> {
             return this.ok(Utility.HEXtoRGB(parameter));
         }
 
-        if (KaikiUtil.hasKey(hexColorTable, parameter)) return this.ok(Utility.HEXtoRGB(hexColorTable[parameter]));
+        if (KaikiUtil.hasKey(Constants.hexColorTable, parameter)) return this.ok(Utility.HEXtoRGB(Constants.hexColorTable[parameter]));
 
         return this.error({
             parameter,

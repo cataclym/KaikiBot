@@ -2,7 +2,7 @@ import { ApplyOptions } from "@sapphire/decorators";
 import { Listener, ListenerOptions } from "@sapphire/framework";
 import { Message } from "discord.js";
 import KaikiCache from "../cache/KaikiCache";
-import Emotes from "../lib/Emotes";
+import Emotes from "../lib/Emotes/Emotes";
 
 @ApplyOptions<ListenerOptions>({
     event: "messageCreate",

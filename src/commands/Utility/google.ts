@@ -5,7 +5,7 @@ import fetch from "node-fetch";
 import { parse } from "node-html-parser";
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-import KaikiEmbeds from "../../lib/KaikiEmbeds";
+import KaikiEmbeds from "../../lib/Kaiki/KaikiEmbeds";
 
 type ParsedResult = {
     title: string,
