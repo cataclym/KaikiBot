@@ -1,8 +1,13 @@
 import { ColorResolvable, EmbedBuilder, Guild, GuildMember, Message } from "discord.js";
+import KaikiClientInterface from "../lib/Kaiki/KaikiClientInterface";
 import KaikiSapphireClient from "../lib/Kaiki/KaikiSapphireClient";
 import Constants from "../struct/Constants";
 
 declare module "discord.js" {
+    interface Client extends KaikiClientInterface {
+        id: string | null;
+    }
+
     export interface Guild {
         isDadBotEnabled(message?: Message): boolean;
 

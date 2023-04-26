@@ -2,6 +2,7 @@ import { ApplyOptions } from "@sapphire/decorators";
 import { Listener, ListenerOptions } from "@sapphire/framework";
 import { Message } from "discord.js";
 import KaikiCache from "../cache/KaikiCache";
+import { DadBot } from "../lib/DadBot";
 import Emotes from "../lib/Emotes/Emotes";
 
 @ApplyOptions<ListenerOptions>({
@@ -16,6 +17,6 @@ export default class MessageCreate extends Listener {
             await KaikiCache.populateERCache(message);
         }
 
-        await Emotes.countEmotes(message);
+        await Promise.all([DadBot.run(message), Emotes.countEmotes(message)]);
     }
 }

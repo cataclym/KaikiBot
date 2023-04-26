@@ -21,8 +21,10 @@ import HentaiService from "../Hentai/HentaiService";
 import PackageJSON from "../Interfaces/Common/PackageJSON";
 import { MoneyService } from "../Money/MoneyService";
 import Utility from "../Utility";
+import KaikiClientInterface from "./KaikiClientInterface";
 
-export default class KaikiSapphireClient<Ready extends true> extends SapphireClient<Ready> {
+
+export default class KaikiSapphireClient<Ready extends true> extends SapphireClient<Ready> implements KaikiClientInterface {
 
     public anniversaryService: AnniversaryRolesService;
     public botSettings: DatabaseProvider;
@@ -144,7 +146,7 @@ export default class KaikiSapphireClient<Ready extends true> extends SapphireCli
     private async presenceLoop(): Promise<NodeJS.Timer> {
         await this.setPresence();
 
-        return setInterval(((scope: KaikiSapphireClient<Ready>) => {
+        return setInterval(((scope: KaikiSapphireClient<true>) => {
             return async () => {
                 await scope.setPresence();
             };
@@ -158,7 +160,7 @@ export default class KaikiSapphireClient<Ready extends true> extends SapphireCli
 
             const acType = Constants.activityTypes[db.ActivityType];
 
-            this.user.setPresence({
+            this.user?.setPresence({
                 activities: [
                     {
                         name: db.Activity,

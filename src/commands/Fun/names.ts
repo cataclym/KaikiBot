@@ -22,7 +22,7 @@ export default class NamesCommand extends KaikiCommand {
 
         const unionUser = await args.pick("user").catch(() => message.author);
 
-        const method = await args.pick(this.argument);
+        const method = await args.pick(this.argument).catch(() => null);
 
         if (method) {
             let deleted;

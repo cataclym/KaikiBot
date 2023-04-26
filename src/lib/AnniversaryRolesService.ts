@@ -1,7 +1,5 @@
 import { PrismaClient } from "@prisma/client";
 import chalk from "chalk";
-
-
 import { Guild, GuildMember, PermissionsBitField, Role } from "discord.js";
 import logger from "loglevel";
 import Constants from "../struct/Constants";
@@ -29,10 +27,10 @@ export default class AnniversaryRolesService {
     }
 
     private static async dateObject() {
-        const d = new Date();
-        const Month = d.getMonth();
-        const Day = d.getDate();
-        return { Month, Day };
+        const date = new Date();
+        const month = date.getMonth();
+        const day = date.getDate();
+        return { Month: month, Day: day };
     }
 
     async checkBirthdayOnAdd(guild: Guild): Promise<void> {

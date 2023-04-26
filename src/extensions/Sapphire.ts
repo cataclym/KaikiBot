@@ -8,7 +8,6 @@ import { Categories } from "../lib/Types/Miscellaneous";
 declare module "@sapphire/framework" {
     interface Preconditions {
         OwnerOnly: never;
-        DadBot: never;
     }
 
     interface ArgType {
