@@ -1,10 +1,8 @@
-import { time } from "@discordjs/builders";
 import { ApplyOptions } from "@sapphire/decorators";
-import { Args } from "@sapphire/framework";
-import { EmbedBuilder, Message } from "discord.js";
+import { Args, MessageCommandContext, Resolvers, UserError } from "@sapphire/framework";
+import { Message } from "discord.js";
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-import Constants from "../../struct/Constants";
 
 @ApplyOptions<KaikiCommandOptions>({
     name: "fetch",
@@ -14,42 +12,25 @@ import Constants from "../../struct/Constants";
     cooldownDelay: 30000,
 })
 export default class FetchUserCommand extends KaikiCommand {
-    public async messageRun(message: Message, args: Args): Promise<Message | void> {
+    public async messageRun(message: Message, args: Args, ctx: MessageCommandContext): Promise<Message | unknown> {
 
-        const userObject = await args.rest("user");
+        args.save();
 
-        // TODO: Add uinfo somehow. And check argument parsing uncached users.
+        const possibleUser = await args.pick("string");
 
-        const userFlags = userObject.flags ? userObject.flags.toArray() : [],
-            embed = new EmbedBuilder()
-                .setDescription(userObject.username)
-                .setThumbnail(userObject.displayAvatarURL({ size: 4096 }))
-                .setTitle(userObject.tag)
-                .addFields([
-                    { name: "ID", value: userObject.id, inline: true },
-                    { name: "Account date", value: time(userObject.createdAt), inline: true },
-                ])
-                .withOkColor(message);
+        const result = await Resolvers.resolveUser(possibleUser);
 
-        if (userFlags.length) {
-            embed.addFields([
-                {
-                    name: "Flags",
-                    value: userFlags.map((flag) => Constants.flags[flag]).join("\n"),
-                    inline: true,
-                },
-            ]);
-        }
-        if (userObject.bot) {
-            embed.addFields([
-                {
-                    name: "Bot",
-                    value: "✅",
-                    inline: true,
-                },
-            ]);
+        args.restore();
+
+        if (result.isErr()) {
+            return new UserError({
+                identifier: "fetchNoUserFound",
+                message: "Provided argument doesn't seem to be a valid user ID.",
+                context: ctx,
+            });
         }
 
-        return message.channel.send({ embeds: [embed] });
+        const infoCmd = this.store.resolve("info");
+        return infoCmd.messageRun!(message, args, ctx);
     }
 }

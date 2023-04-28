@@ -1,12 +1,5 @@
 import { ApplyOptions } from "@sapphire/decorators";
-import {
-    ArgumentError,
-    Events,
-    Listener,
-    ListenerOptions,
-    MessageCommandDeniedPayload,
-    UserError,
-} from "@sapphire/framework";
+import { Events, Listener, ListenerOptions, MessageCommandDeniedPayload, UserError } from "@sapphire/framework";
 import { EmbedBuilder, MessageCreateOptions } from "discord.js";
 
 @ApplyOptions<ListenerOptions>({
@@ -18,23 +11,21 @@ export default class MessageCommandError extends Listener {
 
     public async run(error: UserError, payload: MessageCommandDeniedPayload): Promise<void> {
 
-        if (error instanceof ArgumentError) {
-            const messageOptions: MessageCreateOptions = {
-                embeds:
-                    [
-                        new EmbedBuilder({
-                            title: "Argument error",
-                            description: error.message,
-                        })
-                            .withErrorColor(payload.message),
-                    ],
-            };
+        const messageOptions: MessageCreateOptions = {
+            embeds:
+                [
+                    new EmbedBuilder({
+                        title: "Argument error",
+                        description: error.message,
+                    })
+                        .withErrorColor(payload.message),
+                ],
+        };
 
-            if (payload.message.interaction) {
-                Object.assign(messageOptions, { ephemeral: true });
-            }
-
-            await payload.message.reply(messageOptions);
+        if (payload.message.interaction) {
+            Object.assign(messageOptions, { ephemeral: true });
         }
+
+        await payload.message.reply(messageOptions);
     }
 }

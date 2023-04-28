@@ -1,7 +1,7 @@
 import { execSync } from "child_process";
 import { join } from "path";
 import { type PrismaClient } from "@prisma/client";
-import { SapphireClient } from "@sapphire/framework";
+import { LogLevel, SapphireClient } from "@sapphire/framework";
 import * as colorette from "colorette";
 import { GatewayIntentBits, Guild, Partials, User } from "discord.js";
 import { Pool } from "mysql2/promise";
@@ -22,7 +22,6 @@ import PackageJSON from "../Interfaces/Common/PackageJSON";
 import { MoneyService } from "../Money/MoneyService";
 import Utility from "../Utility";
 import KaikiClientInterface from "./KaikiClientInterface";
-
 
 export default class KaikiSapphireClient<Ready extends true> extends SapphireClient<Ready> implements KaikiClientInterface {
 
@@ -67,6 +66,9 @@ export default class KaikiSapphireClient<Ready extends true> extends SapphireCli
             },
             defaultPrefix: process.env.PREFIX,
             caseInsensitiveCommands: true,
+            logger: {
+                level: LogLevel.Debug,
+            },
         });
 
         // Not using logger here. Because it resets multiline color
