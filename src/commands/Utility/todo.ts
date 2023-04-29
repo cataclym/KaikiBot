@@ -42,7 +42,7 @@ export default class TodoCommand extends KaikiCommand {
                 .setStyle(4),
             );
 
-        const row2 = new ActionRowBuilder<ButtonBuilder>()
+        const rowTwo = new ActionRowBuilder<ButtonBuilder>()
             .addComponents(
                 new ButtonBuilder()
                     .setCustomId(`${currentTime}Backward`)
@@ -76,6 +76,7 @@ export default class TodoCommand extends KaikiCommand {
         const pages: EmbedBuilder[] = [];
 
         if (!todoArray.length) {
+            row.components[1].setDisabled();
             sentMsg = await message.channel.send({
                 embeds: [emb.setDescription("Your list is empty.")],
                 components: [row],
@@ -100,7 +101,7 @@ export default class TodoCommand extends KaikiCommand {
                 embeds: [pages[page]],
                 // Only show arrows if necessary
                 components: todoArray.length > 10
-                    ? [row, row2]
+                    ? [row, rowTwo]
                     : [row],
             });
         }
