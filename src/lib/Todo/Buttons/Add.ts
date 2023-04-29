@@ -44,14 +44,27 @@ export class ButtonAdd {
 
         buttonInteraction.client.on(Events.InteractionCreate, async interaction => {
             if (!interaction.isModalSubmit()) return;
+
+            const uId = BigInt(interaction.user.id);
+
             if (interaction.customId !== `${currentTime}AddModal`) {
                 return;
             }
+
             else {
                 const entry = await buttonInteraction.client.orm.todos.create({
                     data: {
                         String: interaction.fields.getTextInputValue(`${currentTime}text1`).trim(),
-                        UserId: BigInt(interaction.user.id),
+                        DiscordUsers: {
+                            connectOrCreate: {
+                                create: {
+                                    UserId: uId,
+                                },
+                                where: {
+                                    UserId: uId,
+                                },
+                            },
+                        },
                     },
                 });
 
