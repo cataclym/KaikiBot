@@ -1,6 +1,6 @@
 import { time } from "@discordjs/builders";
 import { ApplyOptions } from "@sapphire/decorators";
-import { Args, EmojiObject } from "@sapphire/framework";
+import { Args, EmojiObject, UserError } from "@sapphire/framework";
 import {
     CategoryChannel,
     ChannelType,
@@ -473,7 +473,10 @@ export default class InfoCommand extends KaikiCommand {
 
         if (!obj.id) {
             // Todo: It should return ArgumentError sometime
-            return;
+            throw new UserError({
+                identifier: "DefaultEmoji",
+                message: "The given argument is a default emoji.",
+            });
         }
 
         const id = obj.id;
