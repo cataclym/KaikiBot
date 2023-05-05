@@ -1,7 +1,6 @@
 import process from "process";
 import { ApplyOptions } from "@sapphire/decorators";
 import { ActionRowBuilder, ButtonBuilder, EmbedBuilder, InteractionCollector, Message } from "discord.js";
-import logger from "loglevel";
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
@@ -61,7 +60,7 @@ export default class KillBotProcess extends KaikiCommand {
 
             await deleteMsg.delete();
 
-            logger.warn("Shutting down");
+            this.container.logger.warn("Shutting down");
             // Disconnects the client connection
             this.client.destroy();
             // Exits process with SIGINT

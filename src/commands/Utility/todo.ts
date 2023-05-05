@@ -125,7 +125,7 @@ export default class TodoCommand extends KaikiCommand {
 
                 case `${currentTime}Add`:
                     messageComponentCollector.stop();
-                    await ButtonAdd.Add(buttonInteraction, currentTime, todoArray, sentMsg);
+                    await ButtonAdd.add(buttonInteraction, currentTime, todoArray, sentMsg);
                     break;
 
                 case `${currentTime}Backward`:

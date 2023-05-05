@@ -1,6 +1,5 @@
 import { ApplyOptions } from "@sapphire/decorators";
 import { Message } from "discord.js";
-import logger from "loglevel";
 import fetch from "node-fetch";
 import { sendQuote } from "../../lib/APIs/animeQuote";
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
@@ -21,7 +20,7 @@ export default class AnimeQuoteCommand extends KaikiCommand {
         const resp = <RespType> await fetch("https://animechan.vercel.app/api/random")
             .then(response => response.json())
             .catch((reason) => {
-                logger.warn(`Animequote received no data: ${reason}\n`);
+                this.container.logger.warn(`Animequote received no data: ${reason}\n`);
 
                 const random = animeQuoteCache.random();
                 if (random) {

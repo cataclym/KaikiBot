@@ -21,4 +21,8 @@ declare module "@sapphire/framework" {
         kaikiMoney: bigint;
         welcomeGoodbyeMessage: JSONToMessageOptions;
     }
+
+    interface SapphireClient {
+        initializeServices(): Promise<void>;
+    }
 }

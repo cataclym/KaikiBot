@@ -1,6 +1,7 @@
-import logger from "loglevel";
 // Here we define our query as a multi-line string
 // Storing it in a separate .graphql/.gql file is also possible
+
+import { container } from "@sapphire/pieces";
 
 export default class AnilistGraphQL {
 
@@ -128,6 +129,6 @@ query ($page: Int, $perPage: Int, $search: String, $type: MediaType) {
     }
 
     static handleError(error: any) {
-        logger.error(error);
+        container.logger.error(error);
     }
 }

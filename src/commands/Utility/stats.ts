@@ -7,6 +7,7 @@ import { ChannelType, EmbedBuilder, Message, time, version } from "discord.js";
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+import Constants from "../../struct/Constants";
 
 @ApplyOptions<KaikiCommandOptions>({
     aliases: ["stats"],
@@ -24,7 +25,7 @@ export default class StatsCommand extends KaikiCommand {
                 .setAuthor({
                     name: `${packageJSON.name} v${packageJSON.version}-${execSync("git rev-parse --short HEAD").toString()}`,
                     iconURL: message.client.user.displayAvatarURL(),
-                    url: packageJSON.repository.url,
+                    url: Constants.LINKS.REPO_URL,
                 })
                 .setDescription("Detailed statistics")
                 .addFields([

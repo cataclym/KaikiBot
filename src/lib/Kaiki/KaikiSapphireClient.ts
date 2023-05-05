@@ -1,5 +1,4 @@
 import { execSync } from "child_process";
-import { join } from "path";
 import { type PrismaClient } from "@prisma/client";
 import { LogLevel, SapphireClient } from "@sapphire/framework";
 import * as colorette from "colorette";
@@ -10,7 +9,7 @@ import Constants from "../../struct/Constants";
 import Database from "../../struct/db/Database";
 import DatabaseProvider from "../../struct/db/DatabaseProvider";
 import AnniversaryRolesService from "../AnniversaryRolesService";
-import { ClientImageAPIs } from "../APIs/Common/Types";
+import type { ClientImageAPIs } from "../APIs/Common/Types";
 import KawaiiAPI from "../APIs/KawaiiAPI";
 import NekosLife from "../APIs/nekos.life";
 import NekosAPI from "../APIs/NekosAPI";
@@ -18,7 +17,7 @@ import PurrBot from "../APIs/PurrBot";
 import WaifuIm from "../APIs/waifu.im";
 import WaifuPics from "../APIs/WaifuPics";
 import HentaiService from "../Hentai/HentaiService";
-import PackageJSON from "../Interfaces/Common/PackageJSON";
+import type PackageJSON from "../Interfaces/Common/PackageJSON";
 import { MoneyService } from "../Money/MoneyService";
 import Utility from "../Utility";
 import KaikiClientInterface from "./KaikiClientInterface";
@@ -185,11 +184,14 @@ export default class KaikiSapphireClient<Ready extends true> extends SapphireCli
         this.logger.info(`ResetDailyClaims | Daily claims have been reset! Updated ${colorette.green(updated.count)} entries!`);
     }
 
-    private filterOptionalCommands() {
-        const filterArray = [];
+    async filterOptionalCommands() {
+        const commandStore = this.stores.get("commands");
+
         if (!process.env.KAWAIIKEY || process.env.KAWAIIKEY === "[YOUR_OPTIONAL_KAWAII_KEY]") {
-            const dir = join(__dirname, "..", "..", "commands", "Interactions");
-            filterArray.push(`${dir}/run.js`, `${dir}/peek.js`, `${dir}/pout.js`, `${dir}/lick.js`);
+            for (const entry of ["run", "peek", "pout", "lick"]) {
+                await commandStore.unload(entry);
+            }
+            this.logger.warn("No Kawaii key provided. Kawaii API commands will be disabled.");
         }
 
         // Check if 'neofetch' is available
@@ -197,7 +199,7 @@ export default class KaikiSapphireClient<Ready extends true> extends SapphireCli
             execSync("command -v neofetch >/dev/null 2>&1");
         }
         catch {
-            filterArray.push(join(__dirname, "..", "..", "commands", "Fun", "neofetch.js"));
+            await commandStore.unload("neofetch");
             this.logger.warn("Neofetch wasn't detected! Neofetch command will be disabled.");
         }
     }

@@ -1,4 +1,4 @@
-import logger from "loglevel";
+import { container } from "@sapphire/pieces";
 import fetch from "node-fetch";
 import KaikiUtil from "../../lib/Kaiki/KaikiUtil";
 import Constants from "../../struct/Constants";
@@ -85,7 +85,7 @@ export default class HentaiService {
             }
 
             const json = <E261APIData> await r.json()
-                .catch((err) => logger.error(err));
+                .catch((err) => container.logger.error(err));
 
             if (Array.isArray(json)) {
                 json.posts.forEach((p) => (this.imageCache)[p.id] = p);

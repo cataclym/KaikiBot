@@ -2,7 +2,6 @@ import { ApplyOptions } from "@sapphire/decorators";
 import { Listener, ListenerOptions } from "@sapphire/framework";
 import chalk from "chalk";
 import { Snowflake } from "discord.js";
-import logger from "loglevel";
 
 @ApplyOptions<ListenerOptions>({
     event: "shardReady",
@@ -18,6 +17,6 @@ export default class ShardReady extends Listener {
                 arr.push(`${v1}: ${v2}`);
             });
         }
-        logger.info(arr.join("\n"));
+        this.container.logger.info(arr.join("\n"));
     }
 }

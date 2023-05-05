@@ -14,7 +14,7 @@ import { Todo } from "../Todo";
 
 export class ButtonAdd {
 
-    private static TodoModal = (currentTime: number) => new ModalBuilder()
+    private static todoModal = (currentTime: number) => new ModalBuilder()
         .setTitle("Add a TODO item")
         .setCustomId(`${currentTime}AddModal`)
         .addComponents(new ActionRowBuilder<ModalActionRowComponentBuilder>()
@@ -34,13 +34,13 @@ export class ButtonAdd {
         .withOkColor(message);
 
 
-    static async Add(buttonInteraction: ButtonInteraction,
+    static async add(buttonInteraction: ButtonInteraction,
         currentTime: number,
         todoArray: Todos[],
         sentMsg: Message,
     ) {
 
-        await buttonInteraction.showModal(this.TodoModal(currentTime));
+        await buttonInteraction.showModal(this.todoModal(currentTime));
 
         buttonInteraction.client.on(Events.InteractionCreate, async interaction => {
             if (!interaction.isModalSubmit()) return;

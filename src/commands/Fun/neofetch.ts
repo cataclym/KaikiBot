@@ -4,7 +4,6 @@ import { ApplyOptions } from "@sapphire/decorators";
 import { Args } from "@sapphire/framework";
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
 import { EmbedBuilder, Message } from "discord.js";
-import logger from "loglevel";
 import { distros } from "../../lib/distros.json";
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
@@ -68,7 +67,7 @@ export default class NeofetchCommand extends KaikiCommand {
 
             exec(cmd, async (error, stdout, stderr) => {
                 if (error || stderr) {
-                    return logger.error(error);
+                    return this.container.logger.error(error);
                 }
                 return message.channel.send(await Utility.codeblock("\u00AD" + stdout.replace(/```/g, "\u0300`\u0300`\u0300`\u0300")));
             });
