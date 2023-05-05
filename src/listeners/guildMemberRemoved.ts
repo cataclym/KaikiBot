@@ -2,7 +2,6 @@ import { ApplyOptions } from "@sapphire/decorators";
 import { Listener, ListenerOptions } from "@sapphire/framework";
 import { GuildMember } from "discord.js";
 import GreetHandler from "../lib/GreetHandler";
-import type KaikiSapphireClient from "../lib/Kaiki/KaikiSapphireClient";
 
 @ApplyOptions<ListenerOptions>({
     event: "guildMemberRemove",
@@ -15,7 +14,7 @@ export default class GuildMemberRemoved extends Listener {
         const guildId = BigInt(member.guild.id);
         const memberId = BigInt(member.id);
 
-        const client = this.container.client as KaikiSapphireClient<true>;
+        const { client } = this.container;
 
         const leaveRoles = member.roles.cache.map(role => {
             return client.orm.leaveRoles.create({
