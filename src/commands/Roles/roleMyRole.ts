@@ -109,7 +109,7 @@ export default class MyRoleCommand extends KaikiCommand {
             return message.channel.send({ embeds: [await KaikiEmbeds.embedFail(message, "This role is higher than me, I cannot edit this role!")] });
         }
 
-        const hex = Utility.RGBtoHEX(color);
+        const hex = Utility.convertRGBToHex(color);
 
         const oldHex = myRole.hexColor;
         await myRole.setColor(hex);

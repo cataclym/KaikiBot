@@ -44,18 +44,7 @@ export default class ColorCommand extends KaikiCommand {
         }
 
         const color = await args.rest("color");
-
-        // if (color === null) {
-        //     return message.channel.send({
-        //         embeds: [
-        //             new EmbedBuilder()
-        //                 .setTitle("Please provide a valid hex-color or color name")
-        //                 .withErrorColor(message),
-        //         ],
-        //     });
-        // }
-
-        const hex = Utility.RGBtoHEX(color);
+        const hex = Utility.convertRGBToHex(color);
         const colorInt = parseInt(hex.replace("#", ""), 16);
 
         const colorString = `Hex: **${hex}** [${colorInt}]\nRed: **${color.r}**\nGreen: **${color.g}**\nBlue: **${color.b}**\n`;

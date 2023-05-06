@@ -1,8 +1,9 @@
 import { BlockedCategories, Guilds } from "@prisma/client";
 import { Args, UserError } from "@sapphire/framework";
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
-import { EmbedBuilder, Guild, Message, MessageCreateOptions, PermissionsBitField } from "discord.js";
+import { AttachmentBuilder, EmbedBuilder, Guild, Message, MessageCreateOptions, PermissionsBitField } from "discord.js";
 import SlashCommandsLib from "../../lib/SlashCommands/SlashCommandsLib";
+import { imgFromColor } from "../Color";
 import { CategoriesEnum } from "../Enums/categoriesEnum";
 import GreetHandler from "../GreetHandler";
 import Utility from "../Utility";
@@ -130,6 +131,7 @@ export default class Config {
         });
     }
 
+    // Todo finish config
     static async okcolorRun(message: Message<true>, args: Args) {
         return Promise.resolve(undefined);
     }
@@ -161,11 +163,25 @@ export default class Config {
             .map(e => CategoriesEnum[e.CategoryTarget])
             .filter(Boolean);
 
+        const base = new EmbedBuilder()
+            .withOkColor(message)
+            .data;
+
+        const realOkColor = Utility.convertHexToRGB(OkColor.toString(16));
+        const realErrorColor = Utility.convertHexToRGB(ErrorColor.toString(16));
+
+        const okColorAttachment = new AttachmentBuilder(await imgFromColor(realOkColor), { name: "okColorImg.jpg" });
+        const errorColorAttachment = new AttachmentBuilder(await imgFromColor(realErrorColor), { name: "errorColorImg.jpg" });
+
+        const hexOkColor = Utility.convertRGBToHex(realOkColor);
+        const hexErrorColor = Utility.convertRGBToHex(realErrorColor);
+
         const firstPage: MessageCreateOptions = {
             content: undefined,
             components: [],
+            files: [okColorAttachment, errorColorAttachment],
             embeds: [
-                new EmbedBuilder()
+                new EmbedBuilder(base)
                     .addFields([
                         {
                             name: "Dad-bot",
@@ -182,16 +198,6 @@ export default class Config {
                             value: Prefix === process.env.PREFIX
                                 ? `\`${process.env.PREFIX}\` (Default)`
                                 : `\`${Prefix}\``,
-                            inline: true,
-                        },
-                        {
-                            name: "Embed ok color",
-                            value: Number(OkColor).toString(16),
-                            inline: true,
-                        },
-                        {
-                            name: "Embed error color",
-                            value: Number(ErrorColor).toString(16),
                             inline: true,
                         },
                         {
@@ -218,8 +224,23 @@ export default class Config {
                             inline: false,
                         },
                     ])
-                    .withOkColor(message)
                     .data,
+                new EmbedBuilder(base)
+                    .setImage("attachment://okColorImg.jpg")
+                    .setFields({
+                        name: "Embed ok color",
+                        value: hexOkColor,
+                        inline: true,
+                    })
+                    .setColor(hexOkColor),
+                new EmbedBuilder(base)
+                    .setImage("attachment://errorColorImg.jpg")
+                    .setFields({
+                        name: "Embed error color",
+                        value: hexErrorColor,
+                        inline: true,
+                    })
+                    .setColor(hexErrorColor),
             ],
         };
 

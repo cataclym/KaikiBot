@@ -128,35 +128,19 @@ export default class Utility {
     }
 
     // Credits to https://www.html-code-generator.com/javascript/color-converter-script
-    static HEXtoRGB(hex: string): KaikiColor {
+    static convertHexToRGB(hex: string): KaikiColor {
         hex = hex.replace(/#/g, "");
-        if (hex.length === 3) {
-            // WTF is this
-            // eslint-disable-next-line @typescript-eslint/no-shadow
-            hex = hex.split("").map((hex) => {
-                return hex + hex;
-            }).join("");
-        }
-        // validate hex format
-        const result = /^([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})[\da-z]{0}$/i.exec(hex);
-        if (result) {
-            const red = parseInt(result[1], 16);
-            const green = parseInt(result[2], 16);
-            const blue = parseInt(result[3], 16);
 
-            return { r: red, g: green, b: blue };
-        }
-        else {
-            // Return black.
-            return { r: 0, g: 0, b: 0 };
-        }
+        const arrBuff = new ArrayBuffer(4);
+        const vw = new DataView(arrBuff);
+        vw.setUint32(0, parseInt(hex, 16), false);
+        const arrByte = new Uint8Array(arrBuff);
+
+        return { r: arrByte[1], g: arrByte[2], b: arrByte[3] };
     }
 
-    static RGBtoHEX(color: KaikiColor): HexColorString {
-        const string = Object.values(color).map((n: number) => n
-            ? n.toString(16)
-            : "00").join("");
-        return `#${string}`;
+    static convertRGBToHex({ r, g, b }: KaikiColor): HexColorString {
+        return `#${(1 << 24 | r << 16 | g << 8 | b).toString(16).slice(1)}`;
     }
 
     static getMemberPresence(obj: GuildMember) {

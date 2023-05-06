@@ -19,10 +19,10 @@ export class ColorArgument extends Argument<KaikiColor> {
         // }
 
         if (this.hexRegex.test(parameter)) {
-            return this.ok(Utility.HEXtoRGB(parameter));
+            return this.ok(Utility.convertHexToRGB(parameter));
         }
 
-        if (KaikiUtil.hasKey(Constants.hexColorTable, parameter)) return this.ok(Utility.HEXtoRGB(Constants.hexColorTable[parameter]));
+        if (KaikiUtil.hasKey(Constants.hexColorTable, parameter)) return this.ok(Utility.convertHexToRGB(Constants.hexColorTable[parameter]));
 
         return this.error({
             parameter,

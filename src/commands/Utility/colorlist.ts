@@ -27,7 +27,7 @@ export default class ColorListCommand extends KaikiCommand {
 
             if (!KaikiUtil.hasKey(Constants.hexColorTable, color)) return;
 
-            const clr = Utility.HEXtoRGB(String(Constants.hexColorTable[color]));
+            const clr = Utility.convertHexToRGB(String(Constants.hexColorTable[color]));
 
             embeds.push(new EmbedBuilder()
                 .addFields([

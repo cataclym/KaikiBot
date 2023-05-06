@@ -229,7 +229,7 @@ Valid types are: \`${SetActivityCommand.validActivities.join("`, `")}\``,
             return null;
         }
 
-        return Utility.HEXtoRGB(String(KaikiUtil.hasKey(Constants.hexColorTable, hexColorString)
+        return Utility.convertHexToRGB(String(KaikiUtil.hasKey(Constants.hexColorTable, hexColorString)
             ? Constants.hexColorTable[hexColorString]
             : hexColorString));
     };
