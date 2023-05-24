@@ -1,4 +1,4 @@
-import { ActivityType, ChannelType, ColorResolvable, GuildMember, HexColorString, Message } from "discord.js";
+import { ActivityType, ColorResolvable, GuildMember, HexColorString, Message } from "discord.js";
 import fetch from "node-fetch";
 import Constants from "../struct/Constants";
 import { KaikiColor } from "./Types/KaikiColor";
@@ -11,8 +11,9 @@ export default class Utility {
             : "Disabled";
     }
 
+    // Returns message member's displaycolor if it exists, otherwise black.
     static async getMemberColorAsync(message: Message): Promise<ColorResolvable> {
-        return <ColorResolvable>message?.member?.displayColor || "#f47fff";
+        return <ColorResolvable>message?.member?.displayColor || "#000000";
     }
 
     static timeToMidnight(): number {
@@ -149,29 +150,34 @@ export default class Utility {
             return { name, type, state, emoji, assets };
         });
 
-        const presence = activities?.find(psnc => psnc.type !== ActivityType.Custom) || activities?.shift();
-
-        if (!activities || !presence) {
+        if (!activities) {
             return null;
         }
 
-        else if (presence.assets) {
-            const image = presence.assets?.largeImageURL() || presence.assets?.smallImageURL();
+        const presence = activities.find(psnc => psnc.assets)
+            || activities.find(psnc => psnc.type !== ActivityType.Custom)
+            || activities.shift();
 
-            return {
-                name: `${presence.type !== ActivityType.Custom ? String(presence.type).toLocaleLowerCase() : presence.emoji || ""} ${presence.name} - ${presence.state}`,
-                value: `${presence.assets.largeText}\n${presence.assets.smallText}`,
-                image: image,
-            };
+        if (!presence) {
+            return null;
         }
 
-        else {
-            return {
-                name: `${presence.type !== ActivityType.Custom ? String(presence.type).toLocaleLowerCase() : presence.emoji || ""} ${presence.name}`,
-                value: presence.state || "N/A",
-                image: null,
-            };
-        }
+        const type = ActivityType[presence.type];
+
+        const image = presence.assets?.largeImageURL() || presence.assets?.smallImageURL();
+
+        return {
+            name: presence.name,
+            state: presence.state,
+            type,
+            emoji: presence.emoji?.url,
+            value: {
+                large: presence.assets?.largeText,
+                small: presence.assets?.smallText,
+                details: presence.assets?.activity.details,
+            },
+            image: image,
+        };
     }
 
     static isRegex(value: unknown): value is RegexpType {

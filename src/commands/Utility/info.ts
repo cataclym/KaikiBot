@@ -75,12 +75,15 @@ export default class InfoCommand extends KaikiCommand {
 
     public async messageRun(message: Message<true>, args: Args) {
 
-        const obj = await Promise.resolve(args.pick("member")
-            .catch(async () => args.pick("user"))
-            .catch(async () => args.pick("guildChannel"))
-            .catch(async () => args.pick("role"))
-            .catch(async () => args.pick("emoji"))
-            .catch(async () => args.pick("message")));
+
+        const obj = args.finished
+            ? message.member || message.author
+            : await Promise.resolve(args.pick("member")
+                .catch(async () => args.pick("user"))
+                .catch(async () => args.pick("guildChannel"))
+                .catch(async () => args.pick("role"))
+                .catch(async () => args.pick("emoji"))
+                .catch(async () => args.pick("message")));
 
         let emb: EmbedBuilder[] = [];
 
@@ -168,13 +171,20 @@ export default class InfoCommand extends KaikiCommand {
 
             if (presence) {
                 emb[1] = new EmbedBuilder()
-                    .withOkColor(message);
+                    .withOkColor(message)
+                    .setTitle(presence.type)
+                    .setDescription([presence.name, presence.state, presence.value.large, presence.value.small, presence.value.details]
+                        .filter(Boolean)
+                        .join("\n"));
 
-                emb[1]
-                    .addFields({ name: presence.name, value: presence.value });
                 if (presence.image) {
                     emb[1]
-                        .setThumbnail(presence.image);
+                        .setImage(presence.image);
+                }
+
+                if (presence.emoji) {
+                    emb[1]
+                        .setThumbnail(presence.emoji);
                 }
             }
         }
