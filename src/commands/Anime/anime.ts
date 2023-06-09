@@ -2,12 +2,11 @@ import { ApplyOptions } from "@sapphire/decorators";
 import { Args } from "@sapphire/framework";
 import { EmbedBuilder, Message } from "discord.js";
 import fetch from "node-fetch";
+import CommonEmbed from "../../lib/Anime/CommonEmbed";
 import AnilistGraphQL from "../../lib/APIs/AnilistGraphQL";
 import AnimeData from "../../lib/Interfaces/Common/AnimeData";
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-import Utility from "../../lib/Utility";
-import Constants from "../../struct/Constants";
 
 @ApplyOptions<KaikiCommandOptions>({
     name: "anime",
@@ -65,14 +64,7 @@ export default class AnimeCommand extends KaikiCommand {
 
                 return message.channel.send({
                     embeds: [
-                        new EmbedBuilder()
-                            .setImage(coverImage.large)
-                            .setTitle(title.english && title.romaji
-                                ? `${title.english} / ${title.romaji}`
-                                : title.english || title.romaji)
-                            .setURL(siteUrl)
-                            .setDescription(Utility.stripHtml(Utility.trim(description, Constants.MAGIC_NUMBERS.EMBED_LIMITS.DESCRIPTION)))
-                            .withOkColor(message),
+                        CommonEmbed.createEmbed(coverImage, title, siteUrl, description, message),
                         new EmbedBuilder()
                             .addFields([
                                 { name: "Format", value: format, inline: true },

@@ -17,19 +17,16 @@ export default class AnimeQuoteCommand extends KaikiCommand {
 
         const { animeQuoteCache } = this.client.cache;
 
-        const resp = <RespType> await fetch("https://animechan.vercel.app/api/random")
-            .then(response => response.json())
-            .catch((reason) => {
-                this.container.logger.warn(`Animequote received no data: ${reason}\n`);
+        const resp = await fetch("http://animechan.melosh.space/random");
 
-                const random = animeQuoteCache.random();
-                if (random) {
-                    return sendQuote(random, message);
-                }
-            });
+        if (!resp.ok) {
+            this.container.logger.warn(`Animequote received no data: ${resp.statusText}`);
+        }
 
-        if (!animeQuoteCache.has(resp.character)) animeQuoteCache.set(resp.character, resp);
+        const response = <RespType> await resp.json();
 
-        return sendQuote(resp, message);
+        if (!animeQuoteCache.has(response.character)) animeQuoteCache.set(response.character, response);
+
+        return sendQuote(response, message);
     }
 }

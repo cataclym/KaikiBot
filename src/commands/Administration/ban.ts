@@ -17,8 +17,17 @@ export default class BanCommand extends KaikiCommand {
 
     public async messageRun(message: Message<true>, args: Args) {
 
-        const user = await args.pick("user");
-        const reason = await args.rest("string");
+        // Using both user and member to be able to user username as well as ids.
+        const user = await Promise.resolve(args.pick("user")
+            .catch(async () => args.pick("member")));
+
+        // Default ban string
+        const reason = await args.rest("string")
+            .catch(() => `Banned by ${message.author.username} [${message.author.id}]`);
+
+        const username = user instanceof User
+            ? user.username
+            : user.user.username;
 
         const guild = message.guild,
             guildClientMember = guild.members.me;
@@ -26,8 +35,9 @@ export default class BanCommand extends KaikiCommand {
         const successBan = new EmbedBuilder({
             title: "Banned user",
             fields: [
-                { name: "Username", value: user.username },
+                { name: "Username", value: username },
                 { name: "ID", value: user.id, inline: true },
+                { name: "Reason", value: reason, inline: true },
             ],
         })
             .withOkColor(message);
@@ -40,7 +50,7 @@ export default class BanCommand extends KaikiCommand {
             return message.channel.send({ embeds: [successBan] });
         }
 
-        // Check if member is bannable
+        // Check if member is ban-able
         if (message.author.id !== message.guild?.ownerId &&
             (message.member as GuildMember).roles.highest.position <= guildMember.roles.highest.position) {
 
@@ -81,7 +91,7 @@ export default class BanCommand extends KaikiCommand {
                 // ignored
             }
         })
-            .catch((err) => console.log(err));
+            .catch((err) => this.client.logger.error(err));
 
         return message.channel.send({ embeds: [successBan] });
     }

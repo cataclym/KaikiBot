@@ -39,7 +39,7 @@ export interface Media {
 
 export interface CoverImage {
     large: string;
-    color: string;
+    color: null | string;
 }
 
 export interface EndDateClass {
@@ -63,7 +63,7 @@ export interface Node {
 
 export interface Title {
     romaji: string;
-    english: string;
+    english: null | string;
 }
 
 export interface Trailer {

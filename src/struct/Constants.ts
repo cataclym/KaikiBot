@@ -610,8 +610,8 @@ export default class Constants {
             "yellow": "#ffff00",
             "yellowgreen": "#9acd32",
         };
-    static readonly LINKS: {
-        REPO_URL: "https://gitlab.com/catadev/KaikiDeishuBot.git";
-        GUIDE: "https://gitlab.com/catadev/KaikiDeishuBot/-/blob/master/GUIDE.md"
-    };
+    static readonly LINKS = Object.freeze({
+        REPO_URL: "https://gitlab.com/catadev/KaikiDeishuBot.git",
+        GUIDE: "https://gitlab.com/catadev/KaikiDeishuBot/-/blob/master/GUIDE.md",
+    });
 }
