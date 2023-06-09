@@ -33,7 +33,7 @@ export default class LeaderboardCommand extends KaikiCommand {
 
                 guildOnlyEntries.slice(p, i).forEach((e) => {
                     emb.addFields({
-                        name: `#${e.index + 1} ${message.guild?.members.cache.get(e.user)?.user.tag ?? e.user}`,
+                        name: `#${e.index + 1} ${message.guild?.members.cache.get(e.user)?.user.username ?? e.user}`,
                         value: e.str,
                         inline: true,
                     });

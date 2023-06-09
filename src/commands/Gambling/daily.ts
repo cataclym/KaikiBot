@@ -40,7 +40,7 @@ export default class ClaimDailyCommand extends KaikiCommand {
             return message.channel.send({
                 embeds: [
                     new EmbedBuilder()
-                        .setDescription(`**${message.author.tag}**, You've just claimed your daily allowance!\n**${amount}** ${this.client.money.currencyName} ${this.client.money.currencySymbol}`)
+                        .setDescription(`**${message.author.username}**, You've just claimed your daily allowance!\n**${amount}** ${this.client.money.currencyName} ${this.client.money.currencySymbol}`)
                         .withOkColor(message),
                 ],
             });
@@ -50,7 +50,7 @@ export default class ClaimDailyCommand extends KaikiCommand {
             return message.channel.send({
                 embeds: [
                     new EmbedBuilder()
-                        .setDescription(`**${message.author.tag}**, You've already claimed your daily allowance!!`)
+                        .setDescription(`**${message.author.username}**, You've already claimed your daily allowance!!`)
                         .withErrorColor(message),
                 ],
             });

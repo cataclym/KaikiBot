@@ -1,6 +1,6 @@
-import { execSync } from "child_process";
 import { ApplyOptions } from "@sapphire/decorators";
 import { Args } from "@sapphire/framework";
+import { execSync } from "child_process";
 import { EmbedBuilder, Message } from "discord.js";
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
@@ -112,7 +112,7 @@ export default class HelpCommand extends KaikiCommand {
             return message.channel.send({
                 embeds: [
                     new EmbedBuilder({
-                        description: `**${message.author.tag}** Command \`${args.next()}\` not found.`,
+                        description: `**${message.author.username}** Command \`${args.next()}\` not found.`,
                     })
                         .withErrorColor(message),
                 ],

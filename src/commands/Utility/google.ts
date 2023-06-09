@@ -1,8 +1,8 @@
-import querystring from "querystring";
 import { ApplyOptions } from "@sapphire/decorators";
 import { EmbedBuilder, Message } from "discord.js";
 import fetch from "node-fetch";
 import { parse } from "node-html-parser";
+import querystring from "querystring";
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/Kaiki/KaikiEmbeds";
@@ -44,22 +44,22 @@ export default class GoogleSearchCommand extends KaikiCommand {
                 url: res.querySelector("div.yuRUbf > a")?.rawAttributes.href,
                 description: (() => {
 
-                    const spans = res.querySelectorAll("span")
-                        .map(div => div.innerText)
-                        .filter(Boolean);
+                        const spans = res.querySelectorAll("span")
+                            .map(div => div.innerText)
+                            .filter(Boolean);
 
-                    return spans.length > 1
-                        ? spans.slice(1)
-                        : spans;
+                        return spans.length > 1
+                            ? spans.slice(1)
+                            : spans;
 
-                })()
-                    .join("\n")
+                    })()
+                        .join("\n")
                     || "N/A",
             });
         }
 
         if (!parsedResults.length) {
-            return message.channel.send({ embeds: [await KaikiEmbeds.errorMessage(message, `**${message.author.tag}** No results found`)] });
+            return message.channel.send({ embeds: [await KaikiEmbeds.errorMessage(message, `**${message.author.username}** No results found`)] });
         }
 
         return message.channel.send({

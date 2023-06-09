@@ -23,7 +23,7 @@ export default class AvatarCommand extends KaikiCommand {
 
         const embeds = [
             new EmbedBuilder({
-                title: user.tag,
+                title: user.username,
                 fields: [
                     {
                         name: "Links",

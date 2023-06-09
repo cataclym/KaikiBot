@@ -20,7 +20,7 @@ export default class Give extends KaikiCommand {
             return;
         }
 
-        const success = await this.client.money.TryTake(msg.author.id, amount, `Given money to ${user.tag} [${user.id}]`);
+        const success = await this.client.money.TryTake(msg.author.id, amount, `Given money to ${user.username} [${user.id}]`);
         if (!success) {
             await msg.channel.send({
                 embeds: [
@@ -32,7 +32,7 @@ export default class Give extends KaikiCommand {
             return;
         }
 
-        await this.client.money.Add(user.id, amount, `Gift from ${msg.author.tag} [${msg.author.id}]`);
+        await this.client.money.Add(user.id, amount, `Gift from ${msg.author.username} [${msg.author.id}]`);
         await msg.channel.send({
             embeds: [
                 new EmbedBuilder()

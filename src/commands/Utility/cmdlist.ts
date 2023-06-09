@@ -137,7 +137,7 @@ export default class CommandsList extends KaikiCommand {
             url: images.utility.commands.notebook,
         },
         footer: {
-            text: message.author.tag,
+            text: message.author.username,
             iconURL: (message.client.users.cache.get(Constants.authorId)
                 || (await message.client.users.fetch(Constants.authorId, { cache: true })))
                 .displayAvatarURL(),

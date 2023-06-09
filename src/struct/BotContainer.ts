@@ -1,4 +1,5 @@
 import fs from "fs/promises";
+import process from "process";
 import { container } from "@sapphire/pieces";
 import * as colorette from "colorette";
 import { EmbedBuilder, Team } from "discord.js";
@@ -68,11 +69,11 @@ export default class BotContainer {
                     this.client.owner = owner;
                 }
 
-                this.client.logger.info(`Bot account: ${colorette.greenBright(this.client.user.tag)}`);
-                this.client.logger.info(`Bot owner: ${colorette.greenBright(this.client.owner.tag)}`);
+                this.client.logger.info(`Bot account: ${colorette.greenBright(this.client.user.username)}`);
+                this.client.logger.info(`Bot owner: ${colorette.greenBright(this.client.owner.username)}`);
 
                 // Let bot owner know when bot goes online.
-                if (this.client.user && ["Tsukihi Araragi#3589", "Kaiki Deishū#9185"].includes(this.client.user.tag)) {
+                if (this.client.user && this.client.owner.id === process.env.OWNER) {
                     // Inconspicuous emotes haha
                     const emoji = ["✨", "♥️", "✅", "🇹🇼"][Math.floor(Math.random() * 4)];
                     await this.client.owner.send({

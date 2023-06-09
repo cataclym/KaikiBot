@@ -99,7 +99,7 @@ export default class GreetHandler {
             input = input.replace(/%guild%/ig, guildMember.guild.name);
         }
         if (lowercase.includes("%member%")) {
-            input = input.replace(/%member%/ig, guildMember.user.tag);
+            input = input.replace(/%member%/ig, guildMember.user.username);
         }
         return input;
     }

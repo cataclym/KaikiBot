@@ -1,7 +1,7 @@
-import fs from "fs";
 import { ApplyOptions } from "@sapphire/decorators";
 import { Args } from "@sapphire/framework";
 import { Collection, Message, MessageReaction } from "discord.js";
+import fs from "fs";
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
@@ -22,7 +22,7 @@ export default class SaveChatCommand extends KaikiCommand {
         const collection = await message.channel.messages.fetch({ limit: amount, before: message.id });
 
         const attachment = Buffer.from((collection as Collection<string, Message<boolean>>).map((m: Message<true | false>) => {
-            return `${m.createdAt.toTimeString().slice(0, 8)} ${m.createdAt.toDateString()} - ${m.author.tag}: ${m.content} ${(m.attachments ? m.attachments.map(a => a.url).join("\n") : "")}`;
+            return `${m.createdAt.toTimeString().slice(0, 8)} ${m.createdAt.toDateString()} - ${m.author.username}: ${m.content} ${(m.attachments ? m.attachments.map(a => a.url).join("\n") : "")}`;
         })
             .reverse()
             .join("\n"));

@@ -28,7 +28,7 @@ export default class TicTacToeCommand extends KaikiCommand {
         const acceptMessage = await message.channel.send({
             embeds: [
                 new EmbedBuilder()
-                    .setDescription(`Do you wanna participate in a game of Tic-Tac-Toe against ${message.author.tag}?`)
+                    .setDescription(`Do you wanna participate in a game of Tic-Tac-Toe against ${message.author.username}?`)
                     .setFooter({ text: "Timeout in 20 seconds" })
                     .withOkColor(message),
             ],
@@ -66,7 +66,7 @@ export default class TicTacToeCommand extends KaikiCommand {
                     await message.reply({
                         embeds: [
                             new EmbedBuilder()
-                                .setDescription(`${playerTwo.user.tag} has declined your Tic-Tac-Toe challenge`)
+                                .setDescription(`${playerTwo.user.username} has declined your Tic-Tac-Toe challenge`)
                                 .withErrorColor(message),
                         ],
                     });

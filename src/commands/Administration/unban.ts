@@ -26,7 +26,7 @@ export default class UnbanCommand extends KaikiCommand {
             return message.channel.send({
                 embeds: [
                     new EmbedBuilder({
-                        description: `Unbanned ${user.tag}.`,
+                        description: `Unbanned ${user.username}.`,
                     })
                         .withOkColor(message),
                 ],
@@ -37,7 +37,7 @@ export default class UnbanCommand extends KaikiCommand {
             return message.channel.send({
                 embeds: [
                     new EmbedBuilder({
-                        description: `\`${user.tag}\` is not banned.`,
+                        description: `\`${user.username}\` is not banned.`,
                     })
                         .withErrorColor(message),
                 ],

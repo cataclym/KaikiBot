@@ -129,7 +129,7 @@ export default class InfoCommand extends KaikiCommand {
             : obj;
 
         emb[0]
-            .setTitle(`Info about user: ${user.tag}`)
+            .setTitle(`Info about user: ${user.username}`)
             .setThumbnail(user.displayAvatarURL())
             .addFields([
                 { name: "ID", value: obj.id, inline: true },
@@ -274,7 +274,7 @@ export default class InfoCommand extends KaikiCommand {
                         .addFields([
                             {
                                 name: "Author",
-                                value: message.guild.members.cache.get(obj.ownerId)?.user.tag || obj.ownerId,
+                                value: message.guild.members.cache.get(obj.ownerId)?.user.username || obj.ownerId,
                             },
                         ]);
 
@@ -343,16 +343,6 @@ export default class InfoCommand extends KaikiCommand {
                         value: obj.url,
                     },
                 ]);
-
-
-            if (obj.parent) {
-                emb[0].addFields([
-                    {
-                        name: "Parent",
-                        value: `${obj.parent.name} [${obj.parentId}]`,
-                    },
-                ]);
-            }
         }
 
         // Generic GuildChannel. Probably unnecessary, however it is required for the interpreter...
@@ -461,7 +451,7 @@ export default class InfoCommand extends KaikiCommand {
                     value: time(obj.createdAt),
                 },
                 {
-                    name: "Author", value: obj.author.tag, inline: true,
+                    name: "Author", value: obj.author.username, inline: true,
                 },
                 {
                     name: "Link",

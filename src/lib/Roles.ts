@@ -40,7 +40,7 @@ export async function handleStickyRoles(member: GuildMember) {
     }
 
     else if (result.success) {
-        this.container.logger.info(`stickyRoles | Re-added roles to ${chalk.blueBright(member.user.tag)} [${chalk.blueBright(member.id)}]`);
+        this.container.logger.info(`stickyRoles | Re-added roles to ${chalk.blueBright(member.user.username)} [${chalk.blueBright(member.id)}]`);
     }
 
     else {

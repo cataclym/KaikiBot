@@ -26,7 +26,7 @@ export default class ServerInfoCommand extends KaikiCommand {
             fields: [
                 {
                     name: "Owner",
-                    value: message.client.users.cache.get(guild.ownerId)?.tag ?? guild.ownerId,
+                    value: message.client.users.cache.get(guild.ownerId)?.username ?? guild.ownerId,
                     inline: true,
                 },
                 { name: "Created At", value: time(guild.createdAt), inline: true },

@@ -95,7 +95,8 @@ export default class HentaiService {
 
             else {
                 const res = await fetch(url);
-                return JSON.parse(res.body?.toString()).posts;
+                if (!res.body) return;
+                return JSON.parse(res.body.toString()).posts;
             }
         }
     }

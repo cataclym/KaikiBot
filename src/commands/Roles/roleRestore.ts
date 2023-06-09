@@ -30,7 +30,7 @@ export default class RestoreUserRoles extends KaikiCommand {
             return message.channel.send({
                 embeds: [
                     new EmbedBuilder()
-                        .setDescription(`Restored roles of \`${member.user.tag}\` [${member.id}]`)
+                        .setDescription(`Restored roles of \`${member.user.username}\` [${member.id}]`)
                         .addFields({
                             name: "Roles added",
                             value: Utility.trim(result.roles.join("\n"), Constants.MAGIC_NUMBERS.EMBED_LIMITS.FIELD.VALUE),
