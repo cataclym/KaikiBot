@@ -12,7 +12,7 @@ const timer = (ms: number) => new Promise(res => setTimeout(res, ms));
     name: "deleteemote",
     aliases: ["de"],
     description: "Deletes one or multiple emotes/emoji. Multiple emotes take longer, to avoid ratelimits. Keep a space between all emotes you wish to delete.",
-    usage: "<:NadekoSip:>",
+    usage: ":NadekoSip:",
     requiredUserPermissions: ["ManageEmojisAndStickers"],
     requiredClientPermissions: ["ManageEmojisAndStickers"],
     preconditions: ["GuildOnly"],

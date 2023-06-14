@@ -1,6 +1,6 @@
+import { execSync } from "child_process";
 import { ApplyOptions } from "@sapphire/decorators";
 import { Args } from "@sapphire/framework";
-import { execSync } from "child_process";
 import { EmbedBuilder, Message } from "discord.js";
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
@@ -76,13 +76,18 @@ export default class HelpCommand extends KaikiCommand {
                 || this.client.options.defaultCooldown?.delay
                 || 0;
 
-            embed.setTitle(`${prefix}${command.name}`)
-                .setDescription(command.description || "Command is missing description.")
-                .addFields([
+            if (aliases.length) {
+                embed.addFields([
                     {
                         name: "**Aliases**",
                         value: `\`${aliases}\``,
                     },
+                ]);
+            }
+
+            embed.setTitle(`${prefix}${command.name}`)
+                .setDescription(command.description || "Command is missing description.")
+                .addFields([
                     {
                         name: "**Usage**",
                         value: commandUsage,
@@ -95,11 +100,11 @@ export default class HelpCommand extends KaikiCommand {
                 ])
                 .setFooter({ text: command.category || "N/A" });
 
-            if (command.preconditions) {
+            if (command.options.requiredUserPermissions) {
                 embed.addFields([
                     {
                         name: "Requires",
-                        value: command.preconditions.entries.join(),
+                        value: command.options.requiredUserPermissions.toString(),
                         inline: false,
                     },
                 ]);
