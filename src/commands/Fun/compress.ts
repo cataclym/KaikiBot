@@ -1,6 +1,6 @@
 import { ApplyOptions } from "@sapphire/decorators";
-import { Args } from "@sapphire/framework";
-import { AttachmentBuilder, EmbedBuilder, Message } from "discord.js";
+import { Args, UserError } from "@sapphire/framework";
+import { AttachmentBuilder, EmbedBuilder, GuildMember, Message } from "discord.js";
 import fetch from "node-fetch";
 import sharp from "sharp";
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
@@ -15,9 +15,18 @@ export default class CompressCommand extends KaikiCommand {
 
     public async messageRun(message: Message, args: Args) {
 
-        const user = await args.pick("user").catch(() => message.author);
+        const member = <GuildMember> await args.pick("member")
+            .catch(() => {
+                if (args.finished) {
+                    return message.member;
+                }
+                throw new UserError({
+                    identifier: "NoMemberProvided",
+                    message: "Couldn't find a server member with that name.",
+                });
+            });
 
-        const avatar = await (await fetch(user.displayAvatarURL({
+        const avatar = await (await fetch(member.displayAvatarURL({
             size: 32,
             extension: "jpg",
         }))).buffer();
