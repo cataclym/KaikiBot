@@ -1,5 +1,5 @@
 import { ApplyOptions } from "@sapphire/decorators";
-import { Args } from "@sapphire/framework";
+import { Args, UserError } from "@sapphire/framework";
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
 import { EmbedBuilder, Guild, Message } from "discord.js";
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
@@ -11,17 +11,23 @@ import Constants from "../../struct/Constants";
     name: "emotecount",
     aliases: ["emojicount", "ec"],
     description: "Shows amount of times each emote has been used",
-    usage: ["", "-s", "--small"],
+    usage: ["", "--s", "--small"],
     preconditions: ["GuildOnly"],
-    flags: ["-s", "--small"],
+    flags: ["s", "small"],
     cooldownDelay: 15000,
 })
 export default class EmoteCount extends KaikiCommand {
     public async messageRun(message: Message<true>, args: Args): Promise<Message | void> {
 
-        const isSmall = args.getFlags("-s", "--small");
+        if (!message.guild.emojis.cache.size) {
+            throw new UserError({
+                identifier: "NoGuildEmojis",
+                message: "There are no emojis in this server.",
+            });
+        }
 
-        const data: string[] = [];
+        const isSmall = args.getFlags("s", "small");
+
         const pages: EmbedBuilder[] = [];
         let guildDB = await this.client.orm.guilds.findUnique({
             where: {
@@ -38,34 +44,33 @@ export default class EmoteCount extends KaikiCommand {
         }
 
         const baseEmbed = new EmbedBuilder()
-                .setTitle("Emote count")
-                .setAuthor({ name: (message.guild as Guild).name })
-                .withOkColor(message),
+            .setTitle("Emote count")
+            .setAuthor({ name: (message.guild as Guild).name })
+            .withOkColor(message);
 
-            emoteDataPair = guildDB?.EmojiStats
-                .sort((a, b) => Number(b.Count) - Number(a.Count)) || [];
+        const map = message.guild.emojis.cache.map(guildEmoji => {
+            const emoteData = guildDB?.EmojiStats.find(e => String(e.EmojiId) === guildEmoji.id);
+            return Object.assign(guildEmoji, emoteData || { Count: 0 });
+        })
+            .sort(({ Count: b }, { Count: a }) => (a < b) ? -1 : ((a > b) ? 1 : 0));
 
-        for (const { EmojiId, Count } of emoteDataPair) {
 
-            const Emote = (message.guild as Guild).emojis.cache.get(String(EmojiId));
+        const data = map
+            .map(guildEmoji => {
 
-            if (!Emote) continue;
+                if (isSmall) {
+                    return `${guildEmoji} \`${guildEmoji.Count || 0}\` `;
+                }
 
-            if (isSmall) {
-                data.push(`${Emote} \`${Count}\` `);
-            }
-
-            else {
-                data.push(`\`${Count}\` ${Emote} | ${Emote.name}`);
-            }
-        }
+                return `\`${guildEmoji.Count || 0}\` ${guildEmoji} | ${guildEmoji.name}`;
+            });
 
         if (isSmall) {
             for (let i = Constants.MAGIC_NUMBERS.CMDS.EMOTES.EMOTE_COUNT.MAX_PR_PAGE, p = 0;
                 p < data.length;
                 i += Constants.MAGIC_NUMBERS.CMDS.EMOTES.EMOTE_COUNT.MAX_PR_PAGE, p += Constants.MAGIC_NUMBERS.CMDS.EMOTES.EMOTE_COUNT.MAX_PR_PAGE) {
 
-                pages.push(new EmbedBuilder(baseEmbed.data)
+                pages.push(EmbedBuilder.from(baseEmbed)
                     .setDescription(Utility.trim(data.slice(p, i).join(""), Constants.MAGIC_NUMBERS.EMBED_LIMITS.DESCRIPTION)),
                 );
             }
@@ -76,7 +81,7 @@ export default class EmoteCount extends KaikiCommand {
                 p < data.length;
                 i += Constants.MAGIC_NUMBERS.CMDS.EMOTES.EMOTE_COUNT.MIN_PR_PAGE, p += Constants.MAGIC_NUMBERS.CMDS.EMOTES.EMOTE_COUNT.MIN_PR_PAGE) {
 
-                pages.push(new EmbedBuilder(baseEmbed.data)
+                pages.push(EmbedBuilder.from(baseEmbed)
                     .setDescription(Utility.trim(data.slice(p, i).join("\n"), Constants.MAGIC_NUMBERS.EMBED_LIMITS.DESCRIPTION)),
                 );
             }

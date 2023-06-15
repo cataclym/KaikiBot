@@ -68,7 +68,7 @@ export default class DeleteEmoteCommand extends KaikiCommand {
                 embeds: [
                     new EmbedBuilder()
                         .setTitle("Success!")
-                        .setDescription(`Deleted:\n${Utility.trim(emotes.map(e => `:${e.name}: (${e.id})`).join("\n"), Constants.MAGIC_NUMBERS.EMBED_LIMITS.DESCRIPTION)}`)
+                        .setDescription(`Deleted:\n${Utility.trim(emotes.map(e => `:${e.name}: [\`${e.id}\`]`).join("\n"), Constants.MAGIC_NUMBERS.EMBED_LIMITS.DESCRIPTION)}`)
                         .withOkColor(message),
                 ],
             });

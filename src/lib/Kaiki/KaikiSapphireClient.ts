@@ -68,6 +68,7 @@ export default class KaikiSapphireClient<Ready extends true> extends SapphireCli
             logger: {
                 level: LogLevel.Debug,
             },
+            typing: true,
         });
 
         // Not using logger here. Because it resets multiline color
