@@ -10,6 +10,7 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
     name: "compress",
     description: "Compresses given member's avatar...",
     usage: ["@dreb"],
+    preconditions: ["GuildOnly"],
 })
 export default class CompressCommand extends KaikiCommand {
 

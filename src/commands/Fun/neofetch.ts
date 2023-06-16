@@ -13,8 +13,8 @@ import Constants from "../../struct/Constants";
 @ApplyOptions<KaikiCommandOptions>({
     name: "neofetch",
     aliases: ["neo"],
-    description: "Displays neofetch ascii art. Provide argument 'list' to get a list of all supported distros.",
-    usage: ["", "opensuse", "list"],
+    description: "Displays neofetch ascii art. Provide argument '--list' to get a list of all supported distros.",
+    usage: ["", "opensuse", "--list"],
     cooldownDelay: 2000,
     typing: true,
     flags: ["list"],
@@ -44,7 +44,7 @@ export default class NeofetchCommand extends KaikiCommand {
 
         const list = args.getFlags("list");
 
-        const os = await args.rest(NeofetchCommand.neofetchArgument);
+        const os = await args.rest(NeofetchCommand.neofetchArgument).catch(() => undefined);
 
         if (list) {
             const pages: EmbedBuilder[] = [];

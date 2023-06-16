@@ -1,7 +1,7 @@
 import { ApplyOptions } from "@sapphire/decorators";
-import { Args } from "@sapphire/framework";
+import { Args, UserError } from "@sapphire/framework";
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
-import { EmbedBuilder, Message, User } from "discord.js";
+import { EmbedBuilder, GuildMember, Message } from "discord.js";
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import Constants from "../../struct/Constants";
@@ -11,16 +11,26 @@ import Constants from "../../struct/Constants";
     aliases: ["name"],
     description: "Returns yours or mentioned user's daddy nicknames. Delete your nicknames with 'delete' argument.",
     usage: ["@dreb", "delete"],
+    preconditions: ["GuildOnly"],
 })
 export default class NamesCommand extends KaikiCommand {
-    private static baseEmbed = (message: Message, unionUser: User) => new EmbedBuilder()
-        .setTitle(`${unionUser.username}'s past names`)
-        .setThumbnail(unionUser.displayAvatarURL())
+    private static baseEmbed = (message: Message, member: GuildMember) => new EmbedBuilder()
+        .setTitle(`${member.user.username}'s past names`)
+        .setThumbnail(member.displayAvatarURL())
         .withOkColor(message);
 
     public async messageRun(message: Message, args: Args): Promise<Message | void> {
 
-        const unionUser = await args.pick("user").catch(() => message.author);
+        const member = <GuildMember> await args.pick("member")
+            .catch(() => {
+                if (args.finished) {
+                    return message.member;
+                }
+                throw new UserError({
+                    identifier: "NoMemberProvided",
+                    message: "Couldn't find a server member with that name.",
+                });
+            });
 
         const method = await args.pick(this.argument).catch(() => null);
 
@@ -37,6 +47,7 @@ export default class NamesCommand extends KaikiCommand {
                     },
                 });
             }
+
             else {
                 deleted = await this.client.orm.userNicknames.deleteMany({
                     where: {
@@ -46,6 +57,7 @@ export default class NamesCommand extends KaikiCommand {
                     },
                 });
             }
+
             return message.channel.send({
                 embeds: [
                     new EmbedBuilder()
@@ -60,11 +72,12 @@ export default class NamesCommand extends KaikiCommand {
 
         let nicknames;
         const pages: EmbedBuilder[] = [];
+
         if (message.inGuild()) {
             const db = await this.client.orm.userNicknames.findMany({
                 where: {
                     GuildUsers: {
-                        UserId: BigInt(unionUser.id),
+                        UserId: BigInt(member.id),
                         GuildId: BigInt(message.guildId),
                     },
                 },
@@ -73,10 +86,12 @@ export default class NamesCommand extends KaikiCommand {
             if (db.length) {
                 nicknames = db.map(name => name.Nickname);
             }
+
             else {
                 nicknames = ["Empty"];
             }
         }
+
         else {
             const db = await this.client.orm.userNicknames.findMany({
                 where: {
@@ -85,9 +100,11 @@ export default class NamesCommand extends KaikiCommand {
                     },
                 },
             });
+
             if (db.length) {
                 nicknames = db.map(name => name.Nickname);
             }
+
             else {
                 nicknames = ["Empty"];
             }
@@ -96,7 +113,7 @@ export default class NamesCommand extends KaikiCommand {
         for (let i = Constants.MAGIC_NUMBERS.CMDS.FUN.NAMES.NAMES_PR_PAGE, p = 0;
             p < nicknames.length;
             i += Constants.MAGIC_NUMBERS.CMDS.FUN.NAMES.NAMES_PR_PAGE, p += Constants.MAGIC_NUMBERS.CMDS.FUN.NAMES.NAMES_PR_PAGE) {
-            pages.push(NamesCommand.baseEmbed(message, unionUser)
+            pages.push(NamesCommand.baseEmbed(message, member)
                 .setDescription(nicknames.slice(p, i).join(", ")));
         }
 
