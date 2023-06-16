@@ -73,62 +73,6 @@ export class EmoteImageArgument extends Argument<string> {
     }
 }
 
-
-export class KaikiMoneyArgument extends Argument<bigint> {
-    public async run(parameter: string, context: Argument.Context<bigint>) {
-        if (!parameter) return this.error({ context, parameter: parameter });
-
-        const input = parameter.trim().toUpperCase().replace("K", "000");
-
-        const int = KaikiArgumentsTypes.checkInt(input);
-
-        if (!int) {
-            switch (input) {
-                case "ALL":
-                    return this.ok(await KaikiArgumentsTypes.getCurrency(context.message));
-
-                case "HALF":
-                    return this.ok(await KaikiArgumentsTypes.getCurrency(context.message) / BigInt(2));
-
-                case "MAX":
-                    return this.ok(BigInt(Constants.MAGIC_NUMBERS.LIB.KAIKI.KAIKI_ARGS.MAX_INT));
-
-            }
-            return this.error({ context, parameter });
-        }
-
-        return context.message.client.money.Get(context.message.author.id)
-            .then(money => {
-                if (int <= money) {
-                    return this.ok(BigInt(int));
-                }
-                else {
-                    return this.error({ context, parameter });
-                }
-            });
-    }
-}
-
-export class KaikiCoinFlipArgument extends Argument<string> {
-
-    static coinArgs: { [i: string]: string } = {
-        "heads": "heads",
-        "head": "heads",
-        "h": "heads",
-        "tails": "tails",
-        "tail": "tails",
-        "t": "tails",
-    };
-
-    public run(parameter: string, context: Argument.Context<string>): Argument.AwaitableResult<string> {
-
-        if (Object.keys(KaikiCoinFlipArgument.coinArgs).includes(parameter)) {
-            return this.ok(KaikiCoinFlipArgument.coinArgs[parameter]);
-        }
-        return this.error({ parameter, message: "The provided argument could not be resolved to a coin side." });
-    }
-}
-
 export class KaikiHentaiTypesArgument extends Argument<string> {
     private static hentaiArray = ["waifu", "neko", "femboy", "blowjob"];
 
@@ -213,7 +157,7 @@ Valid types are: \`${SetActivityCommand.validActivities.join("`, `")}\``,
         const int = parseInt(phrase);
 
         if (!int) return null;
-        if (int > Constants.MAGIC_NUMBERS.LIB.KAIKI.KAIKI_ARGS.MIN_INT) return null;
+        if (int < Constants.MAGIC_NUMBERS.LIB.KAIKI.KAIKI_ARGS.MIN_INT) return null;
         return int;
     };
 

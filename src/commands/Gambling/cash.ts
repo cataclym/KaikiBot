@@ -12,7 +12,9 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 export default class Cash extends KaikiCommand {
     public async messageRun(msg: Message, args: Args): Promise<void> {
 
-        const user = await args.rest("user").catch(() => msg.author);
+        const user = await args.rest("user")
+            .catch(async () => (await args.rest("member")).user)
+            .catch(() => msg.author);
 
         const moneh = await this.client.money.Get(user.id);
         await msg.channel.send({

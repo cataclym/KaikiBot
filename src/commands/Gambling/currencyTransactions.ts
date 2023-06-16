@@ -1,6 +1,6 @@
 import { time } from "@discordjs/builders";
 import { ApplyOptions } from "@sapphire/decorators";
-import { Args } from "@sapphire/framework";
+import { Args, UserError } from "@sapphire/framework";
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
 import { EmbedBuilder, Message } from "discord.js";
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
@@ -18,17 +18,58 @@ export default class CurrencyTransactionsCommand extends KaikiCommand {
 
     public async messageRun(message: Message, args: Args) {
 
-        let optionalPage = await args.pick("number").catch(() => 1);
-        const optionalUser = await args.rest("user").catch(() => message.author);
+        const firstArg = await Promise.resolve(args.pick("number")
+            .catch(async () => args.pick("member")
+                .then(async (m) => m.user))
+            .catch(async () => {
+                if (args.finished) {
+                    return message.author;
+                }
+                throw new UserError({
+                    identifier: "IncorrectArgs",
+                    message: "Your arguments didn't resolve to a number or a member.",
+                });
+            }));
 
-        if (optionalPage <= 0 || !Number.isSafeInteger(optionalPage)) {
-            optionalPage = 1;
+        const secondArg = await Promise.resolve(args.pick("member")
+            .then(async (m) => m.user))
+            .catch(async () => {
+                if (args.finished) {
+                    return null;
+                }
+                throw new UserError({
+                    identifier: "IncorrectArgs",
+                    message: "Your arguments didn't resolve to a member.",
+                });
+            });
+
+        let page = 1;
+        let user = message.author;
+
+        if (typeof firstArg === "number") {
+            if (Number.isSafeInteger(firstArg)) {
+                page = firstArg;
+            }
+            else {
+                throw new UserError({
+                    message: "Provide a valid number.",
+                    identifier: "UnsafeInteger",
+                });
+            }
+        }
+
+        else {
+            user = firstArg;
+        }
+
+        if (secondArg) {
+            user = secondArg;
         }
 
         const db = (await this.client.orm.currencyTransactions.findMany({
             where: {
-                UserId: (optionalUser.id !== message.author.id && message.author.id === message.client.owner.id)
-                    ? BigInt(optionalUser.id)
+                UserId: (user.id !== message.author.id && message.author.id === message.client.owner.id)
+                    ? BigInt(user.id)
                     : BigInt(message.author.id),
             },
         })).sort((a, b) => b.DateAdded.getTime() - a.DateAdded.getTime());
@@ -45,6 +86,7 @@ export default class CurrencyTransactionsCommand extends KaikiCommand {
             p < db.length;
             i += Constants.MAGIC_NUMBERS.CMDS.GAMBLING.CUR_TRS.TRANS_PR_PAGE, p += Constants.MAGIC_NUMBERS.CMDS.GAMBLING.CUR_TRS.TRANS_PR_PAGE) {
             pages.push(CurrencyTransactionsCommand.baseEmbed(message)
+                .setTitle(`Showing ${user.username}'s currency transactions`)
                 .setDescription(
                     db.slice(p, i)
                         .map(row =>
@@ -56,7 +98,7 @@ export default class CurrencyTransactionsCommand extends KaikiCommand {
                 ),
             );
         }
-        return sendPaginatedMessage(message, pages, {}, optionalPage - 1);
+        return sendPaginatedMessage(message, pages, {}, page - 1);
 
     }
 
