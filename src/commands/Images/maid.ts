@@ -10,7 +10,7 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
     typing: true,
 })
 export default class Maid extends KaikiCommand {
-    public async exec(message: Message) {
+    public async messageRun(message: Message) {
         return this.client.imageAPIs.WaifuIm.sendImageAPIRequest(message, "maid");
     }
 }

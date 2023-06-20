@@ -5,6 +5,7 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 @ApplyOptions<KaikiCommandOptions>({
     name: "selfies",
+    aliases: ["selfie"],
     description: "Returns anime girl selfies",
     usage: [""],
     typing: true,
