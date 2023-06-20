@@ -29,7 +29,7 @@ export class KaikiMoneyArgument extends Argument<bigint> {
             });
         }
 
-        return context.message.client.money.Get(context.message.author.id)
+        return context.message.client.money.get(context.message.author.id)
             .then(money => {
                 if (int <= money) {
                     return this.ok(BigInt(int));

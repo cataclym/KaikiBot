@@ -19,7 +19,7 @@ export default class BetflipCommands extends KaikiCommand {
         const number = await args.pick("kaikiMoney");
         const coin = await args.rest("kaikiCoin");
 
-        const success = await this.client.money.TryTake(message.author.id, number, "Betflip gamble");
+        const success = await this.client.money.tryTake(message.author.id, number, "Betflip gamble");
 
         if (!success) {
             return await message.channel.send({
@@ -42,7 +42,7 @@ export default class BetflipCommands extends KaikiCommand {
 
         if (coin === coinFlipped) {
             const amountWon = BigInt(Math.round(parseInt(number.toString()) * 1.95));
-            await this.client.money.Add(message.author.id, amountWon, "Betflip won x1.95");
+            await this.client.money.add(message.author.id, amountWon, "Betflip won x1.95");
 
             return message.channel.send({
                 embeds: [

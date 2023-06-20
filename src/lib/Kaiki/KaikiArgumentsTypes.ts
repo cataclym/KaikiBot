@@ -180,5 +180,5 @@ Valid types are: \`${SetActivityCommand.validActivities.join("`, `")}\``,
 
     // static moneyArgument = Argument.range("bigint", 0, KaikiArgumentsTypes.MAX_INT);
 
-    static getCurrency = async (message: Message) => await message.client.money.Get(message.author.id);
+    static getCurrency = async (message: Message) => await message.client.money.get(message.author.id);
 }

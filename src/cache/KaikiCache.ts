@@ -141,7 +141,7 @@ class MySQLDailyProvider {
         this.connection = connection;
     }
 
-    async checkClaimed(id: string) {
+    async hasClaimedDaily(id: string) {
         const [rows] = await this.connection.query<RowDataPacket[]>("SELECT ClaimedDaily FROM DiscordUsers WHERE UserId = ?", [BigInt(id)]);
         return rows[0]?.ClaimedDaily ?? true;
     }

@@ -4,20 +4,20 @@ import Constants from "../../struct/Constants";
 export class MoneyService {
     currencyName: string;
     currencySymbol: string;
-    private _orm: PrismaClient;
+    private orm: PrismaClient;
 
     constructor(connection: PrismaClient) {
-        this._orm = connection;
+        this.orm = connection;
         (async () => {
-            const repo = await this._orm.botSettings.findFirst();
+            const repo = await this.orm.botSettings.findFirst();
             if (!repo) throw new Error("Missing row in BotSettings table!");
             this.currencyName = repo.CurrencyName;
             this.currencySymbol = String.fromCodePoint(repo.CurrencySymbol);
         })();
     }
 
-    async Get(id: string): Promise<bigint> {
-        const query = await this._orm.discordUsers.findFirst({
+    async get(id: string): Promise<bigint> {
+        const query = await this.orm.discordUsers.findFirst({
             select: { Amount: true },
             where: { UserId: BigInt(id) },
         });
@@ -25,11 +25,11 @@ export class MoneyService {
         if (query) {
             return query.Amount;
         }
-        await this._orm.discordUsers.create({ data: { UserId: BigInt(id) } });
+        await this.orm.discordUsers.create({ data: { UserId: BigInt(id) } });
         return Constants.MAGIC_NUMBERS.LIB.MONEY.MONEY_SERVICE.BIGINT_ZERO;
     }
 
-    async Add(id: string, amount: bigint, reason: string): Promise<bigint> {
+    async add(id: string, amount: bigint, reason: string): Promise<bigint> {
         if (amount <= 0) {
             throw new Error("Amount must be greater than 0");
         }
@@ -38,7 +38,7 @@ export class MoneyService {
 
         this.lazyCreateCurrencyTransactions(bIntId, amount, reason);
 
-        const query = await this._orm.discordUsers.upsert({
+        const query = await this.orm.discordUsers.upsert({
             where: { UserId: bIntId },
             update: { Amount: { increment: amount } },
             create: { UserId: bIntId, Amount: amount },
@@ -46,20 +46,20 @@ export class MoneyService {
         return query.Amount;
     }
 
-    async TryTake(id: string, amount: bigint, reason: string): Promise<boolean> {
+    async tryTake(id: string, amount: bigint, reason: string): Promise<boolean> {
         if (amount <= 0) {
             throw new Error("Amount must be greater than 0");
         }
 
         const bIntId = BigInt(id);
-        const currentAmount = await this._orm.discordUsers.findFirst({
+        const currentAmount = await this.orm.discordUsers.findFirst({
             select: { Amount: true },
             where: { UserId: bIntId },
         });
 
         if (currentAmount && currentAmount.Amount >= amount) {
             this.lazyCreateCurrencyTransactions(bIntId, -amount, reason);
-            await this._orm.discordUsers.update({
+            await this.orm.discordUsers.update({
                 where: {
                     UserId: bIntId,
                 },
@@ -71,7 +71,7 @@ export class MoneyService {
         }
         else if (!currentAmount) {
             this.lazyCreateCurrencyTransactions(bIntId, amount, reason);
-            await this._orm.discordUsers.create({
+            await this.orm.discordUsers.create({
                 data: { UserId: bIntId },
             });
         }
@@ -80,7 +80,7 @@ export class MoneyService {
 
     lazyCreateCurrencyTransactions(id: bigint, amount: bigint, reason: string) {
         return setTimeout(async () => {
-            await this._orm.currencyTransactions.create({
+            await this.orm.currencyTransactions.create({
                 data: {
                     UserId: id,
                     Amount: amount,

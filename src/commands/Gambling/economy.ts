@@ -23,6 +23,8 @@ export default class EconomyCommand extends KaikiCommand {
             totalUsersSum += Amount;
         }
 
+        const avgSum = totalUsersSum / BigInt(usersDb.length);
+
         const embeds = [
             new EmbedBuilder()
                 .setTitle("Economy stats")
@@ -30,6 +32,10 @@ export default class EconomyCommand extends KaikiCommand {
                     {
                         name: "Total currency owned by users",
                         value: `${totalUsersSum} ${currencySymbol}`,
+                    },
+                    {
+                        name: "Average amount per user",
+                        value: `${avgSum} ${currencySymbol}`,
                     },
                 ])
                 .withOkColor(message),

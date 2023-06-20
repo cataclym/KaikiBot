@@ -16,7 +16,7 @@ export default class Take extends KaikiCommand {
         const amount = await args.pick("kaikiMoney");
         const user = await args.rest("user");
 
-        const success = await this.client.money.TryTake(user.id, amount, "-");
+        const success = await this.client.money.tryTake(user.id, amount, "-");
         if (!success) {
             await msg.channel.send({
                 embeds: [

@@ -16,7 +16,7 @@ export default class Cash extends KaikiCommand {
             .catch(async () => (await args.rest("member")).user)
             .catch(() => msg.author);
 
-        const moneh = await this.client.money.Get(user.id);
+        const moneh = await this.client.money.get(user.id);
         await msg.channel.send({
             embeds: [
                 new EmbedBuilder()
