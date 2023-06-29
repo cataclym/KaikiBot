@@ -1,7 +1,7 @@
+import fs from "fs";
 import { ApplyOptions } from "@sapphire/decorators";
 import { Args } from "@sapphire/framework";
 import { Collection, Message, MessageReaction } from "discord.js";
-import fs from "fs";
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 

@@ -11,7 +11,7 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
     typing: true,
 })
 export default class Bonk extends KaikiCommand {
-    public async exec(message: Message, args: Args): Promise<Message> {
+    public async messageRun(message: Message, args: Args): Promise<Message> {
         return this.client.imageAPIs.WaifuPics.sendImageAPIRequest(message, "bonk", await args.rest("member").catch(() => null));
     }
 }

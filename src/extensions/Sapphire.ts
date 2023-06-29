@@ -17,7 +17,7 @@ declare module "@sapphire/framework" {
         emoteImage: string;
         guild: Guild;
         kaikiCoin: string;
-        kaikiHentaiTypes: HentaiTypes;
+        kaikiHentai: HentaiTypes;
         kaikiMoney: bigint;
         welcomeGoodbyeMessage: JSONToMessageOptions;
     }

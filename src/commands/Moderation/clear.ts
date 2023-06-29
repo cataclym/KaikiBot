@@ -8,12 +8,13 @@ import Constants from "../../struct/Constants";
 @ApplyOptions<KaikiCommandOptions>({
     name: "clear",
     aliases: ["prune"],
-    description: "Clears up to 100 messages in the current channel.",
+    description: "Clears up to 100 messages in the current channel. Minimum 2.",
     usage: ["69"],
     requiredUserPermissions: ["ManageMessages"],
     requiredClientPermissions: ["ManageMessages"],
     preconditions: ["GuildOnly"],
     cooldownDelay: 60000,
+    typing: true,
 })
 export default class ClearCommand extends KaikiCommand {
 
@@ -21,9 +22,9 @@ export default class ClearCommand extends KaikiCommand {
 
     public async messageRun(message: Message<true>, args: Args) {
 
-        const int = await args.rest("number", { maximum: 99, minimum: 1 });
+        const int = await args.rest("number", { maximum: 100, minimum: 2 });
 
-        const channels = await message.channel.messages.fetch({ limit: int + 1 });
+        const channels = await message.channel.messages.fetch({ limit: int });
         const dateNow = Date.now();
 
         // Filter all messages that are newer than 14 days old

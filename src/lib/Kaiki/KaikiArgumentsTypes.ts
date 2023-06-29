@@ -73,15 +73,6 @@ export class EmoteImageArgument extends Argument<string> {
     }
 }
 
-export class KaikiHentaiTypesArgument extends Argument<string> {
-    private static hentaiArray = ["waifu", "neko", "femboy", "blowjob"];
-
-    public run(parameter: string) {
-        return KaikiHentaiTypesArgument.hentaiArray.includes(parameter)
-            ? this.ok(parameter)
-            : this.error({ parameter, message: "The provided argument could not be resolved to a hentai category." });
-    }
-}
 
 export default class KaikiArgumentsTypes {
 
