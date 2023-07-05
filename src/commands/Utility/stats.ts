@@ -60,7 +60,7 @@ export default class StatsCommand extends KaikiCommand {
                     },
                     {
                         name: "@Sapphire/framework",
-                        value: `[sapphirejs (forked)](https://www.sapphirejs.dev/ 'sapphirejs website') v${sapphireVersion}`,
+                        value: `[sapphirejs](https://www.sapphirejs.dev/ 'sapphirejs website') v${sapphireVersion}`,
                         inline: true,
                     },
                     {

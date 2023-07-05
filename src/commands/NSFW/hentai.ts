@@ -15,7 +15,6 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 export default class HentaiCommand extends KaikiCommand {
     public async messageRun(message: Message, args: Args): Promise<void | Message> {
 
-
         const category = await args.pick("kaikiHentai")
             .catch(() => {
                 if (args.finished) {
