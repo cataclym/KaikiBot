@@ -1,6 +1,5 @@
 import { Args, Argument } from "@sapphire/framework";
 import { Guild, Message } from "discord.js";
-import SetActivityCommand, { ValidActivities } from "../../commands/Owner only/setActivity";
 import Constants from "../../struct/Constants";
 import { JSONToMessageOptions } from "../GreetHandler";
 import Utility from "../Utility";
@@ -76,25 +75,6 @@ export class EmoteImageArgument extends Argument<string> {
 
 export default class KaikiArgumentsTypes {
 
-    public static activityTypeArgument = Args.make<ValidActivities>((parameter, context) => {
-
-        const str = parameter.toUpperCase();
-
-        if (KaikiArgumentsTypes.assertType(str)) {
-            return Args.ok(str);
-        }
-
-        return Args.error({
-            argument: context.argument,
-            parameter,
-            message: `The provided argument doesn't match a valid activity type.
-Valid types are: \`${SetActivityCommand.validActivities.join("`, `")}\``,
-        });
-    });
-
-    private static assertType = ((str: string): str is ValidActivities => {
-        return SetActivityCommand.validActivities.includes(str as ValidActivities);
-    });
 
     public static urlEmoteAttachmentIArgument = Args.make<string>(async (parameter, context) => {
 

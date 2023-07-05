@@ -1,4 +1,5 @@
 import { Guild } from "discord.js";
+import { ValidActivities } from "../commands/Owner only/setActivity";
 import { JSONToMessageOptions } from "../lib/GreetHandler";
 import { HentaiTypes } from "../lib/Hentai/HentaiService";
 import KaikiCommand from "../lib/Kaiki/KaikiCommand";
@@ -11,6 +12,7 @@ declare module "@sapphire/framework" {
     }
 
     interface ArgType {
+        activityType: ValidActivities;
         category: Categories;
         color: KaikiColor;
         command: KaikiCommand;

@@ -2,7 +2,6 @@ import { ApplyOptions } from "@sapphire/decorators";
 import { Args } from "@sapphire/framework";
 import { EmbedBuilder, Message } from "discord.js";
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
-import KaikiArgumentsTypes from "../../lib/Kaiki/KaikiArgumentsTypes";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import Constants from "../../struct/Constants";
 
@@ -13,18 +12,17 @@ export type ValidActivities = "PLAYING"
     | "COMPETING";
 
 @ApplyOptions<KaikiCommandOptions>({
-    name: "setavatar",
-    aliases: ["setav"],
-    description: "Assigns the bot a new avatar.",
-    usage: ["https://discord.com/media/someplace/somepicture.png"],
+    name: "setactivity",
+    aliases: ["setac"],
+    description: "Set the bot's activity.\n",
+    usage: ["<type> <Activity>", "Playing with Dreb"],
     preconditions: ["OwnerOnly"],
 })
 export default class SetActivityCommand extends KaikiCommand {
-    static validActivities: ValidActivities[] = ["PLAYING", "STREAMING", "LISTENING", "WATCHING", "COMPETING"];
 
     public async messageRun(message: Message, args: Args) {
 
-        const type = await args.pick(KaikiArgumentsTypes.activityTypeArgument);
+        const type = await args.pick("activityType");
 
         const name = await args.rest("string");
 

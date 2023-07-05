@@ -1,12 +1,12 @@
 import { ApplyOptions } from "@sapphire/decorators";
-import { Args, MessageCommand, MessageCommandContext } from "@sapphire/framework";
+import { Args } from "@sapphire/framework";
+import { container } from "@sapphire/pieces";
+import { Subcommand } from "@sapphire/plugin-subcommands";
 import { EmbedBuilder, Message } from "discord.js";
 import { KaikiSubCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiSubCommandOptions";
-import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import Utility from "../../lib/Utility";
 import Constants from "../../struct/Constants";
 import { BotConfig } from "../../struct/db/Database";
-import SetActivityCommand, { ValidActivities } from "./setActivity";
 
 enum ValidEnum {
     ACTIVITY = "activity",
@@ -27,12 +27,17 @@ type ValidTypes = ["activity", "activityType", "currencyname", "currencysymbol",
     preconditions: ["OwnerOnly"],
     subcommands: [
         {
+            name: "show",
+            messageRun: "showRun",
+            default: true,
+        },
+        {
             name: "activity",
             messageRun: "activityRun",
         },
         {
-            name: "activityType",
-            messageRun: "activityTypeRun",
+            name: "activitytype",
+            messageRun: "activitytypeRun",
         },
         {
             name: "currencyname",
@@ -52,9 +57,11 @@ type ValidTypes = ["activity", "activityType", "currencyname", "currencysymbol",
         },
     ],
 })
-export default class BotConfigCommand extends KaikiCommand {
+export default class BotConfigCommand extends Subcommand {
 
-    public async messageRun(message: Message, args: Args, context: MessageCommand.RunContext) {
+    private client = container.client;
+
+    public async showRun(message: Message) {
         return message.channel.send({
             embeds: [
                 new EmbedBuilder()
@@ -70,14 +77,29 @@ export default class BotConfigCommand extends KaikiCommand {
         });
     }
 
-
     // TODO: Remember to test this out / Fix moving args over from subcommand / Calling the command correctly.
-    public async activityRun(message: Message, args: Args, context: MessageCommandContext) {
-        return this.setActivityCommand().messageRun?.call(this, message, args, context);
+    public async activityRun(message: Message, args: Args) {
+        const name = await args.rest("string");
+        const oldActivity = this.client.botSettings.get("1", "Activity", null);
+
+        message.client.user.setActivity({ name: name });
+        this.client.botSettings.set("1", "Activity", name);
+
+        return BotConfigCommand.sendEmbed(message, oldActivity, name);
     }
 
-    public async activityTypeRun(message: Message, args: Args, context: MessageCommandContext) {
-        return this.setActivityCommand().messageRun?.call(this, message, args, context);
+    public async activitytypeRun(message: Message, args: Args) {
+        const type = await args.pick("activityType");
+        const activity = this.client.botSettings.get("1", "Activity", null);
+        const oldActivityType = this.client.botSettings.get("1", "ActivityType", null);
+
+        if (activity) {
+            message.client.user.setActivity({ type: Constants.activityTypes[type] });
+        }
+
+        this.client.botSettings.set("1", "ActivityType", type);
+
+        return BotConfigCommand.sendEmbed(message, oldActivityType, type);
     }
 
     public async currencynameRun(message: Message, args: Args) {
@@ -92,7 +114,7 @@ export default class BotConfigCommand extends KaikiCommand {
 
     public async currencysymbolRun(message: Message, args: Args) {
         // Grab only the first letter
-        const value = (await args.rest("string"))[0];
+        const value = await args.rest("string");
 
         const oldValue = <string> await this.client.botSettings.get("1", "CurrencySymbol", Constants.MAGIC_NUMBERS.CMDS.OWNER_ONLY.BOT_CONFIG.DEFAULT_CUR_CODE);
         await this.client.botSettings.set("1", "CurrencySymbol", value.codePointAt(0));
@@ -141,33 +163,6 @@ export default class BotConfigCommand extends KaikiCommand {
                 });
         }
     });
-
-    private static activityTypeArgument = Args.make<ValidActivities>((parameter, context) => {
-
-        const str = parameter.toUpperCase();
-
-        if (BotConfigCommand.assertType(str)) {
-            return Args.ok(str);
-        }
-
-        return Args.error({
-            argument: context.argument,
-            parameter,
-            message: `The provided argument doesn't match a valid activity type.
-Valid types are: \`${SetActivityCommand.validActivities.join("`, `")}\``,
-        });
-    });
-
-    private static assertType = ((str: string): str is ValidActivities => {
-        return SetActivityCommand.validActivities.includes(str as ValidActivities);
-    });
-
-    private setActivityCommand = () => {
-        const cmd = this.store.get("setactivity");
-        if (cmd) return cmd;
-        // TODO: Make this safer
-        throw new Error();
-    };
 
     private static sendEmbed = (message: Message, oldValue: string, newValue: string) => {
         return message.channel.send({
