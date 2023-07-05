@@ -1,5 +1,5 @@
 import { ApplyOptions } from "@sapphire/decorators";
-import { Listener, ListenerOptions } from "@sapphire/framework";
+import { Events, Listener, ListenerOptions } from "@sapphire/framework";
 import { EmbedBuilder, Message } from "discord.js";
 import KaikiCache from "../cache/KaikiCache";
 import { DadBot } from "../lib/DadBot";
@@ -7,9 +7,9 @@ import Emotes from "../lib/Emotes/Emotes";
 import Utility from "../lib/Utility";
 
 @ApplyOptions<ListenerOptions>({
-    event: "MessageCreate",
+    event: Events.NonPrefixedMessage,
 })
-export default class MessageCreate extends Listener {
+export default class NonPrefixedMessage extends Listener {
     public async run(message: Message) {
 
         if (message.inGuild()) {
@@ -38,10 +38,10 @@ export default class MessageCreate extends Listener {
         if (message.author === message.client.owner) return;
 
         let attachmentLinks = "";
-        message.client.logger.info(`Message | DM from ${message.author.tag} [${message.author.id}]`);
+        message.client.logger.info(`Message | DM from ${message.author.username} [${message.author.id}]`);
 
         const embed = new EmbedBuilder({
-            author: { name: `${message.author.tag} [${message.author.id}]` },
+            author: { name: `${message.author.username} [${message.author.id}]` },
             description: Utility.trim(message.content, 2048),
         })
             .withOkColor();
