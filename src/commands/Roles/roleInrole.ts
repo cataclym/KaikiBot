@@ -40,26 +40,11 @@ export default class RoleInRoleCommand extends KaikiCommand {
                     emb = new EmbedBuilder()
                         .setTitle(`Users in ${role.name} (${data.length})`)
                         .setAuthor({ name: message.guild.name })
-                        .addFields({
-                            name: "•",
-                            value: currentPageUsers
-                                .slice(0, 20)
-                                .map(u => `${u.user} - ${u.user.username}`)
-                                .join("\n"),
-                            inline: true,
-                        })
+                        .setDescription(currentPageUsers
+                            .map(member => `${member.user.username} [\`${member.id}\`]`)
+                            .join("\n"))
                         .withOkColor(message);
 
-                if (currentPageUsers.length > (ROLES_PR_PAGE / 2)) {
-                    emb.addFields({
-                        name: "•",
-                        value: currentPageUsers
-                            .slice(ROLES_PR_PAGE / 2, ROLES_PR_PAGE)
-                            .map(u => `${u.user} - ${u.user.username}`)
-                            .join("\n"),
-                        inline: true,
-                    });
-                }
                 pages.push(emb);
             }
             return sendPaginatedMessage(message, pages, {});

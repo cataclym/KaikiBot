@@ -1,8 +1,8 @@
 import { ApplyOptions } from "@sapphire/decorators";
 import { Args } from "@sapphire/framework";
+import { Subcommand } from "@sapphire/plugin-subcommands";
 import { EmbedBuilder, GuildPremiumTier, Message } from "discord.js";
 import { KaikiSubCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiSubCommandOptions";
-import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/Kaiki/KaikiEmbeds";
 import Roles, { rolePermissionCheck } from "../../lib/Roles";
 import Utility from "../../lib/Utility";
@@ -16,6 +16,11 @@ import Constants from "../../struct/Constants";
     requiredClientPermissions: ["ManageRoles"],
     preconditions: ["GuildOnly"],
     subcommands: [
+        {
+            name: "show",
+            messageRun: "defaultRun",
+            default: true,
+        },
         {
             name: "name",
             messageRun: "nameRun",
@@ -42,8 +47,8 @@ import Constants from "../../struct/Constants";
         },
     ],
 })
-export default class MyRoleCommand extends KaikiCommand {
-    public async messageRun(message: Message<true>): Promise<Message> {
+export default class MyRoleCommand extends Subcommand {
+    public async defaultRun(message: Message<true>): Promise<Message> {
 
         const myRole = await Roles.getRole(message);
 
@@ -117,7 +122,7 @@ export default class MyRoleCommand extends KaikiCommand {
         return message.channel.send({
             embeds: [
                 new EmbedBuilder()
-                    .setDescription(`You have changed \`${myRole.name}\`'s color from \`${oldHex}\` to \`${color}\`!`)
+                    .setDescription(`You have changed \`${myRole.name}\`'s color from \`${oldHex}\` to \`${hex}\`!`)
                     .setColor(hex),
             ],
         });
@@ -133,7 +138,25 @@ export default class MyRoleCommand extends KaikiCommand {
             });
         }
 
-        if (!args.finished) {
+        if (args.finished) {
+
+            const myRole = await Roles.getRole(message);
+
+            if (!myRole) return message.channel.send({ embeds: [await KaikiEmbeds.embedFail(message)] });
+
+            if (await rolePermissionCheck(message, myRole)) {
+                myRole.setIcon(null);
+                return message.channel.send({
+                    embeds: [
+                        new EmbedBuilder()
+                            .setDescription("Role-icon has been reset!")
+                            .withOkColor(message),
+                    ],
+                });
+            }
+        }
+
+        else {
             const icon = await args.rest("emoteImage");
 
             const myRole = await Roles.getRole(message);
@@ -161,20 +184,6 @@ export default class MyRoleCommand extends KaikiCommand {
                         .withOkColor(message),
                 ],
             });
-        }
-
-        else {
-            const myRole = await Roles.getRole(message);
-            if (myRole && await rolePermissionCheck(message, myRole)) {
-                myRole.setIcon(null);
-                return message.channel.send({
-                    embeds: [
-                        new EmbedBuilder()
-                            .setDescription("Role-icon has been reset!")
-                            .withOkColor(message),
-                    ],
-                });
-            }
         }
     }
 }

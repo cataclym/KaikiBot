@@ -32,7 +32,7 @@ export default class ListUserRoles extends KaikiCommand {
             const { ROLE_PR_PAGE } = Constants.MAGIC_NUMBERS.CMDS.ROLES.USER_ROLES;
 
             const mapped = db
-                    .map((table) => `${message.guild?.members.cache.get(String(table.UserId)) || table.UserId}: ${message.guild?.roles.cache.get(String(table.UserRole)) || table.UserRole}`)
+                    .map((table) => `${message.guild?.members.cache.get(String(table.UserId)) || table.UserId} [\`${message.guild?.roles.cache.get(String(table.UserRole)) || table.UserRole}\`]`)
                     .sort(),
                 pages: EmbedBuilder[] = [];
 

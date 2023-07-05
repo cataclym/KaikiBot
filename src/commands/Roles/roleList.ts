@@ -18,36 +18,22 @@ export default class RoleListCommand extends KaikiCommand {
         const pages: EmbedBuilder[] = [];
         const { ROLES_PR_PAGE } = Constants.MAGIC_NUMBERS.CMDS.ROLES.ROLE_LIST;
         const data = roleArray
-            .sort((a: Role, b: Role) => b.position - a.position || Number(b.id) - Number(a.id))
-            .map(role => role.name);
+            .sort((a: Role, b: Role) => b.position - a.position || Number(b.id) - Number(a.id));
 
         if (data) {
             for (let i = ROLES_PR_PAGE, p = 0; p < data.length; i += ROLES_PR_PAGE, p += ROLES_PR_PAGE) {
 
                 const currentPageRoles = data.slice(p, i);
 
-                const dEmbed = new EmbedBuilder()
+                const embedBuilder = new EmbedBuilder()
                     .setTitle(`Role list (${data.length})`)
                     .setAuthor({ name: message.guild.name })
-                    .addFields({
-                        name: `Column ${((pages.length + 1) * 2) - 1}`,
-                        value: currentPageRoles
-                            .slice(0, ROLES_PR_PAGE / 2)
-                            .join("\n"),
-                        inline: true,
-                    })
+                    .setDescription(currentPageRoles
+                        .map(role => `${role.name} [\`${role.id}\`]`)
+                        .join("\n"))
                     .withOkColor(message);
 
-                if (currentPageRoles.length > (ROLES_PR_PAGE / 2)) {
-                    dEmbed.addFields({
-                        name: `Column ${(pages.length + 1) * 2}`,
-                        value: currentPageRoles
-                            .slice(ROLES_PR_PAGE / 2, ROLES_PR_PAGE)
-                            .join("\n"),
-                        inline: true,
-                    });
-                }
-                pages.push(dEmbed);
+                pages.push(embedBuilder);
             }
         }
         return sendPaginatedMessage(message, pages, {});
