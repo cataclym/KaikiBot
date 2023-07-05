@@ -13,7 +13,7 @@ import Constants from "../../struct/Constants";
     preconditions: ["GuildOnly"],
 })
 export default class RemoveEmoteReactCommand extends KaikiCommand {
-    public async exec(message: Message<true>): Promise<Message> {
+    public async messageRun(message: Message<true>): Promise<Message> {
 
         const db = await this.client.orm.emojiReactions.findMany({ where: { GuildId: BigInt(message.guildId) } }),
             pages: EmbedBuilder[] = [];

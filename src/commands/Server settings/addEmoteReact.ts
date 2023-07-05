@@ -23,17 +23,38 @@ export default class EmoteReactCommand extends KaikiCommand {
 
         if (!emoji.id) throw new Error("");
 
-        await this.client.orm.emojiReactions.create({
-            data: {
-                Guilds: {
-                    connect: {
-                        Id: BigInt(message.guildId),
-                    },
-                },
-                EmojiId: BigInt(emoji.id),
+        const possibleTrigger = await this.client.orm.emojiReactions.findFirst({
+            where: {
+                GuildId: BigInt(message.guildId),
                 TriggerString: trigger,
             },
         });
+
+        if (possibleTrigger) {
+            await this.client.orm.emojiReactions.update({
+                where: {
+                    Id: possibleTrigger.Id,
+                },
+                data: {
+                    EmojiId: BigInt(emoji.id),
+                    TriggerString: trigger,
+                },
+            });
+        }
+
+        else {
+            await this.client.orm.emojiReactions.create({
+                data: {
+                    Guilds: {
+                        connect: {
+                            Id: BigInt(message.guildId),
+                        },
+                    },
+                    EmojiId: BigInt(emoji.id),
+                    TriggerString: trigger,
+                },
+            });
+        }
 
         if (!this.client.cache.emoteReactCache.get(message.guildId)) await KaikiCache.populateERCache(message);
 
@@ -49,7 +70,7 @@ export default class EmoteReactCommand extends KaikiCommand {
             embeds: [
                 new EmbedBuilder()
                     .setTitle("New emoji trigger added")
-                    .setDescription(`Typing \`${trigger}\` will force me to react with ${emoji}...`)
+                    .setDescription(`Typing \`${trigger}\` will force me to react with :${emoji.name}:...`)
                     .setThumbnail(emojiUrl)
                     .withOkColor(message),
             ],
