@@ -7,8 +7,12 @@ import {
     Message,
     MessageCreateOptions,
     PermissionsBitField,
-    StickerResolvable,
+    StickerResolvable, userMention,
 } from "discord.js";
+
+interface MemberMessage extends Message<true> {
+    member: GuildMember
+}
 
 interface SendMessageData {
     channel: bigint | null,
@@ -17,6 +21,24 @@ interface SendMessageData {
 }
 
 export default class GreetHandler {
+
+    private replacements: Map<string, (m: GuildMember) => string> = new Map();
+    private readonly guildMember: GuildMember;
+
+    constructor(guildMember: GuildMember) {
+        this.replacements.set("%guild%", m => m.guild.name);
+        this.replacements.set("%guild.name%", m => m.guild.name);
+        this.replacements.set("%guild.id%", m => m.guild.id);
+        this.replacements.set("%guild.icon%", m => m.guild.iconURL() || "N/A");
+        this.replacements.set("%member%", m => m.user.username);
+        this.replacements.set("%member.name%", m => m.user.username);
+        this.replacements.set("%member.id%", m => m.id);
+        this.replacements.set("%member.mention%", m => userMention(m.id));
+        this.replacements.set("%member.avatar%", m => m.user.avatarURL() || "N/A");
+
+        this.guildMember = guildMember;
+    }
+
     static jsonErrorMessage = (m: Message) => ({
         embeds: [
             new EmbedBuilder()
@@ -35,54 +57,66 @@ export default class GreetHandler {
         ],
     });
 
-    static async handleGreetMessage(guildMember: GuildMember): Promise<Message | void> {
+    async handleGreetMessage() {
 
-        const db = await guildMember.client.db.getOrCreateGuild(BigInt(guildMember.guild.id));
+        const db = await this.guildMember.client.db.getOrCreateGuild(BigInt(this.guildMember.guild.id));
 
-        if (db.WelcomeChannel) {
-            return GreetHandler.sendWelcomeLeaveMessage({
-                channel: db.WelcomeChannel,
-                embed: db.WelcomeMessage,
-                timeout: db.WelcomeTimeout,
-            }, guildMember);
+        if (!db.WelcomeChannel) {
+            return
         }
+
+        return this.sendWelcomeLeaveMessage({
+            channel: db.WelcomeChannel,
+            embed: db.WelcomeMessage,
+            timeout: db.WelcomeTimeout,
+        });
     }
 
-    static async handleGoodbyeMessage(guildMember: GuildMember): Promise<Message | void> {
+    async handleGoodbyeMessage() {
 
-        const db = await guildMember.client.db.getOrCreateGuild(BigInt(guildMember.guild.id));
+        const db = await this.guildMember.client.db.getOrCreateGuild(BigInt(this.guildMember.guild.id));
 
-        if (db.ByeChannel) {
-            return GreetHandler.sendWelcomeLeaveMessage({
-                channel: db.ByeChannel,
-                embed: db.ByeMessage,
-                timeout: db.ByeTimeout,
-            }, guildMember);
+        if (!db.ByeChannel) {
+            return;
         }
+
+        return this.sendWelcomeLeaveMessage({
+            channel: db.ByeChannel,
+            embed: db.ByeMessage,
+            timeout: db.ByeTimeout,
+        });
     }
 
-    static async createAndParseGreetMsg(data: SendMessageData, guildMember: GuildMember): Promise<MessageCreateOptions> {
-        if (!data.embed) return GreetHandler.emptyMessageOptions(guildMember.guild);
-        return JSON.parse(await GreetHandler.parsePlaceHolders(data.embed, guildMember));
+    async createAndParseGreetMsg(data: SendMessageData): Promise<MessageCreateOptions> {
+        if (!data.embed) {
+            return GreetHandler.emptyMessageOptions(this.guildMember.guild);
+        }
+        const messageOptions: MessageCreateOptions = JSON.parse(await this.parsePlaceHolders(data.embed));
+
+        if (!messageOptions.embeds?.every(object => !!Object.keys(object).length)) {
+            messageOptions.embeds = undefined;
+        }
+
+        return messageOptions;
     }
 
-    static async sendWelcomeLeaveMessage(data: SendMessageData, guildMember: GuildMember): Promise<Message | void> {
+    async sendWelcomeLeaveMessage(data: SendMessageData) {
 
-        if (!data.channel || !data.embed) return;
+        if (!data.channel || !data.embed) return false;
 
-        const channel = guildMember.guild.channels.cache.get(String(data.channel))
-            ?? await guildMember.guild.client.channels.fetch(String(data.channel), { cache: true });
+        const channel = this.guildMember.guild.channels.cache.get(String(data.channel))
+            ?? await this.guildMember.guild.client.channels.fetch(String(data.channel), { cache: true });
 
-        if (!channel) return;
+        if (!channel) return false;
 
-        if (channel.type !== ChannelType.GuildText && channel.type !== ChannelType.GuildNews) return;
+        if (channel.type !== ChannelType.GuildText && channel.type !== ChannelType.GuildNews) return false;
 
-        if (!channel.permissionsFor(guildMember.client.user)?.has(PermissionsBitField.Flags.SendMessages)) return;
+        if (!channel.permissionsFor(this.guildMember.client.user)?.has(PermissionsBitField.Flags.SendMessages)) return false;
 
-        const parsedMessageOptions = await GreetHandler.createAndParseGreetMsg(<SendMessageData>data, guildMember);
+        const parsedMessageOptions = await this.createAndParseGreetMsg(<SendMessageData>data);
 
         return channel.send(parsedMessageOptions)
-            .then((m) => {
+            .then(m => {
                 if (data.timeout) {
                     setTimeout(() => m.delete(), data.timeout * 1000);
                     return m;
@@ -91,17 +125,22 @@ export default class GreetHandler {
             });
     }
 
-    private static async parsePlaceHolders(input: string, guildMember: GuildMember): Promise<string> {
+    private async parsePlaceHolders(input: string) {
 
         const lowercase = input.toLowerCase();
 
-        if (lowercase.includes("%guild%")) {
-            input = input.replace(/%guild%/ig, guildMember.guild.name);
-        }
-        if (lowercase.includes("%member%")) {
-            input = input.replace(/%member%/ig, guildMember.user.username);
+        for (const [key, value] of this.replacements) {
+            if (lowercase.includes(key)) {
+                const regex = new RegExp(key, "ig");
+                input = input.replace(regex, value(this.guildMember));
+            }
         }
         return input;
+    }
+
+    static assertMessageMember(message: Message<true>): message is MemberMessage {
+        if (message.member) return true;
+        return false;
     }
 }
 
@@ -110,23 +149,24 @@ export type IJSONToMessageOptions = MessageCreateOptions & {
 }
 
 export class JSONToMessageOptions implements MessageCreateOptions {
-    constructor(any: IJSONToMessageOptions) {
-        this.incomingEmbed = any.embeds;
-        this.content = any.content;
-        this.stickers = any.stickers;
-
-        this.embeds = this.incomingEmbed?.map((e) => {
-
-            if (e.color && !Number.isInteger(e.color)) {
-                e.color = parseInt(String(e.color).replace(/#/g, ""), 16);
-            }
-
-            return EmbedBuilder.from(e);
-        });
-    }
-
-    incomingEmbed?: APIEmbed[] | undefined = [];
     embeds: EmbedBuilder[] | undefined;
     content?: string | undefined;
     stickers?: StickerResolvable[] | undefined;
+
+    constructor(any: IJSONToMessageOptions) {
+        this.content = any.content;
+        this.stickers = any.stickers;
+
+        this.embeds = any.embeds
+            ? any.embeds.map((e: APIEmbed) => {
+
+                if (e.color && !Number.isInteger(e.color)) {
+                    e.color = parseInt(String(e.color).replace(/#/g, ""), 16);
+                }
+
+                return EmbedBuilder.from(e);
+            })
+            : undefined;
+    }
+
 }

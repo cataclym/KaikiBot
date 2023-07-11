@@ -67,7 +67,7 @@ export class Provider {
 }
 
 export type ProviderOptions = {
-    idColumn: string | "id";
+    idColumn: string | "Id";
     dataColumn?: string;
 }
 

@@ -9,7 +9,8 @@ import GreetHandler from "../lib/GreetHandler";
 export default class GuildMemberRemoved extends Listener {
     public async run(member: GuildMember): Promise<void> {
 
-        await GreetHandler.handleGoodbyeMessage(member);
+        const greetHandler = new GreetHandler(member);
+        await greetHandler.handleGoodbyeMessage();
 
         const guildId = BigInt(member.guild.id);
         const memberId = BigInt(member.id);

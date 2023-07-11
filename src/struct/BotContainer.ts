@@ -25,6 +25,7 @@ export default class BotContainer {
         }
 
         void this.loadPackageJSON();
+
     }
 
     private async loadPackageJSON() {
@@ -39,7 +40,7 @@ export default class BotContainer {
         }
     }
 
-    private static noBotOwner() {
+    private static noBotOwner(): never {
         container.logger.error("No bot owner found! Double check your bot application in Discord's developer panel.");
         process.exit(1);
     }

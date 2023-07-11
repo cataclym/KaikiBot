@@ -25,6 +25,8 @@ export default class GoodbyeTestTestCommand extends KaikiCommand {
 
         if (!message.member) return;
 
-        await GreetHandler.sendWelcomeLeaveMessage(welcomeData, message.member);
+        const greetHandler = new GreetHandler(message.member);
+
+        await greetHandler.sendWelcomeLeaveMessage(welcomeData);
     }
 }

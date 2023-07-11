@@ -153,7 +153,7 @@ export default class Config {
             const g = await message.client.db.getOrCreateGuild(BigInt(message.guildId));
             const blockedCategoriesObj: { BlockedCategories: BlockedCategories[] } = { BlockedCategories: [] };
             Object.assign(g, blockedCategoriesObj);
-            db = g as (Guilds & { BlockedCategories: BlockedCategories[] });
+            db = g as Guilds & { BlockedCategories: BlockedCategories[] };
         }
 
         // Is this okay?
@@ -259,19 +259,22 @@ export default class Config {
 
         const pages: MessageCreateOptions[] = [firstPage];
 
+        const greetHandler = new GreetHandler(message.member);
+
         if (db.WelcomeMessage) {
-            pages.push(await GreetHandler.createAndParseGreetMsg({
+            pages.push(await greetHandler.createAndParseGreetMsg({
                 embed: db.WelcomeMessage || null,
                 channel: db.WelcomeChannel,
                 timeout: db.WelcomeTimeout,
-            }, message.member));
+            }));
         }
+
         if (db.ByeMessage) {
-            pages.push(await GreetHandler.createAndParseGreetMsg({
+            pages.push(await greetHandler.createAndParseGreetMsg({
                 embed: db.ByeMessage || null,
                 channel: db.ByeChannel,
                 timeout: db.ByeTimeout,
-            }, message.member));
+            }));
         }
         return sendPaginatedMessage(message, pages, { owner: message.author });
     }

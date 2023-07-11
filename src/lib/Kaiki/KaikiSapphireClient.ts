@@ -1,4 +1,5 @@
 import { execSync } from "child_process";
+import process from "process";
 import { type PrismaClient } from "@prisma/client";
 import { LogLevel, SapphireClient } from "@sapphire/framework";
 import * as colorette from "colorette";
@@ -74,7 +75,8 @@ export default class KaikiSapphireClient<Ready extends true> extends SapphireCli
         // Not using logger here. Because it resets multiline color
         console.log(colorette.green(Constants.KaikiBotASCII));
 
-        (async () => await this.initializeDatabase())();
+        (async () => await this.initializeDatabase())()
+            .catch(() => process.exit(1))
     }
 
     public imageAPIs: ClientImageAPIs = {
@@ -125,24 +127,29 @@ export default class KaikiSapphireClient<Ready extends true> extends SapphireCli
     private async initializeDatabase() {
         this.db = new Database(this);
 
-        await this.db.init()
-            .then((obj) => {
-                this.orm = obj.orm;
-                this.connection = obj.mySQLConnection;
+        const database = await this.db.init();
 
-                this.botSettings = new DatabaseProvider(this.connection, "BotSettings", { idColumn: "Id" }, false);
-                this.botSettings.init().then(() => this.logger.info(`${colorette.green("READY")} - Bot settings provider`));
+        this.orm = database.orm;
+        this.connection = database.mySQLConnection;
 
-                this.guildsDb = new DatabaseProvider(this.connection, "Guilds", { idColumn: "Id" });
-                this.guildsDb.init().then(() => this.logger.info(`${colorette.green("READY")} - Guild provider`));
+        this.botSettings = new DatabaseProvider(this.connection, "BotSettings", { idColumn: "Id" }, false);
+        this.botSettings.init()
+            .then(() => this.logger.info(`${colorette.green("READY")} - Bot settings provider`))
+            .catch(() => process.exit(1));
 
-                this.dadBotChannels = new DatabaseProvider(this.connection, "DadBotChannels", { idColumn: "ChannelId" });
-                this.dadBotChannels.init().then(() => this.logger.info(`${colorette.green("READY")} - DadBot channel provider`));
+        this.guildsDb = new DatabaseProvider(this.connection, "Guilds", { idColumn: "Id" });
+        this.guildsDb.init()
+            .then(() => this.logger.info(`${colorette.green("READY")} - Guild provider`))
+            .catch(() => process.exit(1));
 
-                this.cache = new KaikiCache(this.orm, this.connection);
-                this.cache.populateImageAPICache(this.imageAPIs);
-                this.money = new MoneyService(this.orm);
-            });
+        this.dadBotChannels = new DatabaseProvider(this.connection, "DadBotChannels", { idColumn: "ChannelId" });
+        this.dadBotChannels.init()
+            .then(() => this.logger.info(`${colorette.green("READY")} - DadBot channel provider`))
+            .catch(() => process.exit(1));
+
+        this.cache = new KaikiCache(this.orm, this.connection);
+        this.cache.populateImageAPICache(this.imageAPIs);
+        this.money = new MoneyService(this.orm);
     }
 
     private async presenceLoop(): Promise<NodeJS.Timer> {

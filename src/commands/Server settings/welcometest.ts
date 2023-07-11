@@ -1,5 +1,5 @@
 import { ApplyOptions } from "@sapphire/decorators";
-import { Message } from "discord.js";
+import {EmbedBuilder, Message} from "discord.js";
 import GreetHandler from "../../lib/GreetHandler";
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
@@ -11,7 +11,7 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
     preconditions: ["GuildOnly"],
 })
 export default class WelcomeTestCommand extends KaikiCommand {
-    public async messageRun(message: Message<true>): Promise<void> {
+    public async messageRun(message: Message<true>) {
 
         const db = await this.client.db.getOrCreateGuild(BigInt(message.guildId));
 
@@ -21,8 +21,21 @@ export default class WelcomeTestCommand extends KaikiCommand {
             timeout: db.WelcomeTimeout,
         };
 
-        if (!message.member) return;
+        if (!GreetHandler.assertMessageMember(message)) return;
 
-        await GreetHandler.sendWelcomeLeaveMessage(welcomeData, message.member);
+        const greetHandler = new GreetHandler(message.member);
+        const result = await greetHandler.sendWelcomeLeaveMessage(welcomeData);
+
+        return message.channel.send({
+            embeds: [
+                result
+                    ? new EmbedBuilder()
+                        .setTitle("Message sent successfully!")
+                        .withOkColor(message)
+                    : new EmbedBuilder()
+                        .setTitle("Message was not sent successfully!")
+                        .withErrorColor(message),
+            ],
+        })
     }
 }

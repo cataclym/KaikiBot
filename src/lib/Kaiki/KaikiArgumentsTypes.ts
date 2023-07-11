@@ -15,22 +15,6 @@ export class GuildArgument extends Argument<Guild> {
     }
 }
 
-export class WelcomeGoodbyeMessageArgument extends Argument<JSONToMessageOptions> {
-    public async run(parameter: string, context: Argument.Context<JSONToMessageOptions>) {
-        try {
-            const json = JSON.parse(parameter);
-
-            const messageOptions = new JSONToMessageOptions(json);
-
-            if (messageOptions) return this.ok(messageOptions);
-            return this.error({ parameter });
-        }
-        catch {
-            return this.error({ parameter });
-        }
-    }
-}
-
 export class EmoteImageArgument extends Argument<string> {
     public async run(parameter: string, context: Argument.Context<string>) {
 

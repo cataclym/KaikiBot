@@ -10,6 +10,7 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
     description: "Set message to display when someone joins the guild. Provide either text, or valid JSON from the [embed creator](https://embed.kaikibot.xyz)",
     requiredUserPermissions: ["ManageGuild"],
     preconditions: ["GuildOnly"],
+    quotes: [],
 })
 export default class WelcomeMessageCommand extends KaikiCommand {
     public async messageRun(message: Message, args: Args): Promise<Message> {
