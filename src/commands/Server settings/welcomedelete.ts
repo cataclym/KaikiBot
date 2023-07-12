@@ -11,6 +11,7 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
     usage: ["10"],
     requiredUserPermissions: ["ManageGuild"],
     preconditions: ["GuildOnly"],
+    minorCategory: "Welcome",
 })
 export default class WelcomeDeleteCommand extends KaikiCommand {
     public async messageRun(message: Message<true>, args: Args): Promise<Message> {

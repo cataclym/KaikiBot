@@ -1,10 +1,10 @@
 import { time } from "@discordjs/builders";
 import { ApplyOptions } from "@sapphire/decorators";
 import { Args } from "@sapphire/framework";
-import { ChannelType, EmbedBuilder, Message } from "discord.js";
+import {ChannelType, EmbedBuilder, GuildFeature, Message} from "discord.js";
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-import Constants from "../../struct/Constants";
+import Constants, {UndocumentedFeatures} from "../../struct/Constants";
 
 @ApplyOptions<KaikiCommandOptions>({
     name: "serverinfo",
@@ -36,15 +36,15 @@ export default class ServerInfoCommand extends KaikiCommand {
                 { name: "MFA level", value: String(guild.mfaLevel), inline: true },
                 {
                     name: "Channels",
-                    value: `Text: **${guild.channels.cache.filter((channel) => channel.type === ChannelType.GuildText).size}**
-Voice: **${guild.channels.cache.filter((channel) => channel.type === ChannelType.GuildVoice).size}**
-News: **${guild.channels.cache.filter((channel) => channel.type === ChannelType.GuildNews).size}**`,
+                    value: `Text: **${guild.channels.cache.filter(channel => channel.type === ChannelType.GuildText).size}**
+Voice: **${guild.channels.cache.filter(channel => channel.type === ChannelType.GuildVoice).size}**
+News: **${guild.channels.cache.filter(channel => channel.type === ChannelType.GuildNews).size}**`,
                     inline: true,
                 },
                 { name: "Maximum video-channel users", value: String(guild.maxVideoChannelUsers), inline: false },
                 {
                     name: "Features", value: guild.features.length
-                        ? guild.features.map(f => Constants.guildFeatures[f] || f).sort().join("\n")
+                        ? guild.features.map((f: GuildFeature & UndocumentedFeatures) => Constants.guildFeatures[f] || f).sort().join("\n")
                         : "None", inline: false,
                 },
             ],

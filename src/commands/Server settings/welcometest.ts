@@ -9,6 +9,7 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
     description: "Tests welcome message as it would appear for new members.",
     requiredUserPermissions: ["ManageGuild"],
     preconditions: ["GuildOnly"],
+    minorCategory: "Welcome",
 })
 export default class WelcomeTestCommand extends KaikiCommand {
     public async messageRun(message: Message<true>) {

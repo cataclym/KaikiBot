@@ -33,9 +33,9 @@ export default class SayCommand extends KaikiCommand {
             return message.channel.send({ embeds: [await KaikiEmbeds.errorMessage(message, `You do not have \`MANAGE_MESSAGES\` in ${targetChannel}`)] });
         }
 
-        return targetChannel.send(typeof argMessage !== "object"
-            ? { content: argMessage }
-            : new JSONToMessageOptions(argMessage));
+        return targetChannel.send(typeof argMessage === "object"
+            ? new JSONToMessageOptions(argMessage)
+            : { content: argMessage });
     }
 }
 

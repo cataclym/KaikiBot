@@ -11,6 +11,7 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
     requiredUserPermissions: ["ManageGuild"],
     preconditions: ["GuildOnly"],
     minorCategory: "Goodbye",
+    quotes: [],
 })
 export default class ByeMessageCommand extends KaikiCommand {
     public async messageRun(message: Message, args: Args): Promise<Message> {
