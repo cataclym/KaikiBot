@@ -69,11 +69,7 @@ export default class KaikiCache {
 
         message.client.cache.emoteReactCache.set(message.guildId, new Map([["has_space", new Map()], ["no_space", new Map()]]));
 
-        if (!emoteReacts.length) {
-            return;
-        }
-
-        else {
+        if (emoteReacts.length) {
             const [space, noSpace]: PartitionResult = Utility.partition(emoteReacts, ([k]) => k.includes(" "));
 
             for (const [key, value] of space) {
