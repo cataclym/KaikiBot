@@ -1,11 +1,12 @@
 import { ApplyOptions } from "@sapphire/decorators";
-import { Events, Listener, ListenerOptions, MessageCommandDeniedPayload, UserError } from "@sapphire/framework";
+import { Listener, ListenerOptions, MessageCommandDeniedPayload, UserError } from "@sapphire/framework";
+import { SubcommandPluginEvents } from "@sapphire/plugin-subcommands";
 import ArgumentErrorRun from "../lib/Errors/ArgumentErrorRun";
 
 @ApplyOptions<ListenerOptions>({
-    event: Events.MessageCommandError,
+    event: SubcommandPluginEvents.MessageSubcommandError,
 })
-export default class MessageCommandError extends Listener {
+export default class MessageSubCommandError extends Listener {
 
     // Ran when precondition check blocks a command
 

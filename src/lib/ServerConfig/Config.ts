@@ -1,12 +1,21 @@
 import { BlockedCategories, Guilds } from "@prisma/client";
 import { Args, UserError } from "@sapphire/framework";
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
-import { AttachmentBuilder, EmbedBuilder, Guild, Message, MessageCreateOptions, PermissionsBitField } from "discord.js";
+import {
+    AttachmentBuilder,
+    EmbedBuilder,
+    Guild,
+    Message,
+    MessageCreateOptions,
+    PermissionsBitField,
+    resolveColor
+} from "discord.js";
 import SlashCommandsLib from "../../lib/SlashCommands/SlashCommandsLib";
 import { imgFromColor } from "../Color";
 import { CategoriesEnum } from "../Enums/categoriesEnum";
 import GreetHandler from "../GreetHandler";
 import Utility from "../Utility";
+import KaikiUtil from "../Kaiki/KaikiUtil";
 
 export default class Config {
     static async dadbotRun(message: Message<true>, args: Args) {
@@ -21,7 +30,13 @@ export default class Config {
         const dadBotEnabled: boolean = message.client.guildsDb.get(message.guildId, "DadBot", false);
 
         if (booleanArgument) {
-            if (!dadBotEnabled) {
+            if (dadBotEnabled) {
+                embed
+                    .setTitle("Already enabled")
+                    .setDescription("You have already **enabled** dad-bot in this server.")
+                    .withErrorColor(message);
+            }
+            else {
                 await message.client.guildsDb.set(message.guildId, "DadBot", true);
                 await message.guild?.commands.create(SlashCommandsLib.excludeData);
 
@@ -29,40 +44,30 @@ export default class Config {
                     .setTitle(`Dad-bot has been enabled in ${message.guild?.name}!`)
                     .setDescription(`Individual users can still disable dad-bot on themselves with \`${await message.client.fetchPrefix(message)}exclude\`.`);
             }
-
-            else {
-                embed
-                    .setTitle("Already enabled")
-                    .setDescription("You have already **enabled** dad-bot in this server.")
-                    .withErrorColor(message);
-            }
         }
 
+        else if (dadBotEnabled) {
+            await message.client.guildsDb.set(message.guildId, "DadBot", false);
+
+            const cmd = message.guild?.commands.cache.find(c => c.name === "exclude");
+
+            if (cmd) {
+                await message.guild?.commands.delete(cmd.id);
+            }
+
+            embed.setTitle(`Dad-bot has been disabled in ${message.guild?.name}!`);
+        }
         else {
-            if (dadBotEnabled) {
-                await message.client.guildsDb.set(message.guildId, "DadBot", false);
-
-                const cmd = message.guild?.commands.cache.find(c => c.name === "exclude");
-
-                if (cmd) {
-                    await message.guild?.commands.delete(cmd.id);
-                }
-
-                embed.setTitle(`Dad-bot has been disabled in ${message.guild?.name}!`);
-            }
-
-            else {
-                embed
-                    .setTitle("Already disabled")
-                    .setDescription("You have already **disabled** dad-bot in this server.")
-                    .withErrorColor(message);
-            }
-
-            return message.channel.send({
-                embeds: [embed],
-            });
+            embed
+                .setTitle("Already disabled")
+                .setDescription("You have already **disabled** dad-bot in this server.")
+                .withErrorColor(message);
         }
+        return message.channel.send({
+            embeds: [embed],
+        });
     }
+
 
     private static checkSubcommandUserPermission(message: Message, permission: bigint) {
         if (!(message.member && message.member.permissions.has(permission))) {
@@ -110,7 +115,7 @@ export default class Config {
     }
 
     static async prefixRun(message: Message<true>, args: Args) {
-        const value = args.rest("string");
+        const value = await args.rest("string");
 
         this.checkSubcommandUserPermission(message, PermissionsBitField.Flags.Administrator);
 
@@ -133,12 +138,43 @@ export default class Config {
 
     // Todo finish config
     static async okcolorRun(message: Message<true>, args: Args) {
-        return Promise.resolve(undefined);
+        const color = await args.rest("kaikiColor");
+
+        const intValue = resolveColor([color.r, color.g, color.b]);
+
+        const hex = Utility.convertRGBToHex(color);
+
+        await message.client.guildsDb.set(message.guildId, "OkColor", intValue);
+
+        return message.channel.send({
+            embeds: [
+                new EmbedBuilder()
+                    .setTitle("Success!")
+                    .setDescription(`OkColor has been set to ${hex} [\`${intValue}\`]`)
+                    .withOkColor(message),
+            ],
+        })
     }
 
     static async errorcolorRun(message: Message<true>, args: Args) {
-        return Promise.resolve(undefined);
+        const color = await args.rest("kaikiColor");
+
+        const intValue = resolveColor([color.r, color.g, color.b]);
+
+        const hex = Utility.convertRGBToHex(color);
+
+        await message.client.guildsDb.set(message.guildId, "ErrorColor", intValue);
+
+        return message.channel.send({
+            embeds: [
+                new EmbedBuilder()
+                    .setTitle("Success!")
+                    .setDescription(`ErrorColor has been set to ${hex} [\`${intValue}\`]`)
+                    .withErrorColor(message),
+            ],
+        })
     }
+
 
     static async messageRun(message: Message<true>) {
 

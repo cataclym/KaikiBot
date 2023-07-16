@@ -3,9 +3,8 @@ import KaikiUtil from "../lib/Kaiki/KaikiUtil";
 import { KaikiColor } from "../lib/Types/KaikiColor";
 import Utility from "../lib/Utility";
 import Constants from "../struct/Constants";
-import {Message} from "discord.js";
 
-export class ColorArgument extends Argument<KaikiColor> {
+export class KaikiColorArgument extends Argument<KaikiColor> {
     private message = "Please provide a valid hex-color or a color name!";
 
     private hexRegex = /^#?[0-9A-F]{6}$/i;

@@ -2,6 +2,7 @@ import { execSync } from "child_process";
 import { ApplyOptions } from "@sapphire/decorators";
 import { Args } from "@sapphire/framework";
 import { EmbedBuilder, Message } from "discord.js";
+import { Subcommand } from "@sapphire/plugin-subcommands";
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
@@ -63,9 +64,13 @@ export default class HelpCommand extends KaikiCommand {
 
             const aliases = Array.from(command.aliases).sort((a, b) => b.length - a.length || a.localeCompare(b)).join("`, `");
 
-            const commandUsage = command.usage
-                ? Array.isArray(command.usage)
-                    ? command.usage
+            const extractedCommandUsage = command instanceof Subcommand
+                ? command.options.usage
+                : command.usage;
+
+            const commandUsage = extractedCommandUsage
+                ? Array.isArray(extractedCommandUsage)
+                    ? extractedCommandUsage
                         .sort((a, b) => b.length - a.length || a.localeCompare(b))
                         .map(u => `${prefix}${command.name} ${u}`)
                         .join("\n")
