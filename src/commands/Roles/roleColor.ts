@@ -28,7 +28,7 @@ export default class RoleColorCommand extends KaikiCommand {
 
         const clr = args.finished
             ? undefined
-            : await args.pick("color");
+            : await args.pick("kaikiColor");
 
         if (!clr) {
             const attachment = new AttachmentBuilder(await imgFromColor(Utility.convertHexToRGB(role.hexColor)), { name: "color.png" });

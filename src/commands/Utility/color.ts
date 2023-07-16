@@ -43,7 +43,7 @@ export default class ColorCommand extends KaikiCommand {
             return sendPaginatedMessage(message, pages, {});
         }
 
-        const color = await args.rest("color");
+        const color = await args.rest("kaikiColor");
         const hex = Utility.convertRGBToHex(color);
         const colorInt = parseInt(hex.replace("#", ""), 16);
 

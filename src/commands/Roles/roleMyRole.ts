@@ -7,6 +7,7 @@ import KaikiEmbeds from "../../lib/Kaiki/KaikiEmbeds";
 import Roles, { rolePermissionCheck } from "../../lib/Roles";
 import Utility from "../../lib/Utility";
 import Constants from "../../struct/Constants";
+import KaikiArgumentsTypes from "../../lib/Kaiki/KaikiArgumentsTypes";
 
 @ApplyOptions<KaikiSubCommandOptions>({
     name: "myrole",
@@ -101,7 +102,7 @@ export default class MyRoleCommand extends Subcommand {
 
     public async colorRun(message: Message<true>, args: Args) {
 
-        const color = await args.rest("color");
+        const color = await args.rest("kaikiColor");
 
         const myRole = await Roles.getRole(message);
 
@@ -157,7 +158,7 @@ export default class MyRoleCommand extends Subcommand {
         }
 
         else {
-            const icon = await args.rest("emoteImage");
+            const icon = await args.rest(KaikiArgumentsTypes.emoteImageArgument);
 
             const myRole = await Roles.getRole(message);
 

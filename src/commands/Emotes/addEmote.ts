@@ -20,28 +20,6 @@ import Constants from "../../struct/Constants";
 })
 export default class AddEmoteCommand extends KaikiCommand {
 
-    // args: [
-    //     {
-    //         id: "url",
-    //         type: Argument.union(Constants.imageRegex, Constants.emoteRegex, (m: Message) => {
-    //             const first = m.attachments.first();
-    //             if (first && first.contentType && first.contentType.slice(0, first.contentType.indexOf("/")) === "image") {
-    //                 return first;
-    //             }
-    //         }),
-    //         otherwise: (m: Message) => ({ embeds: [KaikiEmbeds.genericArgumentError(m)] }),
-    //     },
-    //     {
-    //         id: "name",
-    //         type: Argument.union((m: Message, phrase) => {
-    //             if (!!m.attachments.first() && phrase) {
-    //                 return phrase;
-    //             }
-    //         }, "string"),
-    //         match: "rest",
-    //     },
-    // ];
-
     public async messageRun(message: Message, args: Args) {
 
         // Create custom type for url

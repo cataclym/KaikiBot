@@ -14,11 +14,10 @@ declare module "@sapphire/framework" {
     interface ArgType {
         activityType: ValidActivities;
         category: Categories;
-        color: KaikiColor;
         command: KaikiCommand;
-        emoteImage: string;
         guild: Guild;
         kaikiCoin: string;
+        kaikiColor: KaikiColor;
         kaikiHentai: HentaiTypes;
         kaikiMoney: bigint;
         welcomeGoodbyeMessage: JSONToMessageOptions;
