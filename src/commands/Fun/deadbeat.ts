@@ -2,7 +2,7 @@ import { ApplyOptions } from "@sapphire/decorators";
 import { Args, UserError } from "@sapphire/framework";
 import { AttachmentBuilder, cleanContent, GuildMember, Message } from "discord.js";
 import sharp from "sharp";
-import images from "../../data/images.json";
+import Images from "../../data/images.json";
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import Utility from "../../lib/Utility";
@@ -18,7 +18,7 @@ import Utility from "../../lib/Utility";
 })
 export default class DeadbeatCommand extends KaikiCommand {
 
-    private backgroundUrl = images.fun.commands.deadbeat;
+    private backgroundUrl = Images.fun.commands.deadbeat;
 
     public async messageRun(message: Message, args: Args) {
 

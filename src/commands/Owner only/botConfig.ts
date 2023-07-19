@@ -1,8 +1,9 @@
 import { ApplyOptions } from "@sapphire/decorators";
-import { Args } from "@sapphire/framework";
+import { Args, ArgumentError, MessageCommandContext, UserError } from "@sapphire/framework";
 import { container } from "@sapphire/pieces";
 import { Subcommand } from "@sapphire/plugin-subcommands";
-import { EmbedBuilder, Message } from "discord.js";
+import { EmbedBuilder, formatEmoji, Message, parseEmoji, resolvePartialEmoji } from "discord.js";
+import { hasEmoji } from "node-emoji";
 import { KaikiSubCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiSubCommandOptions";
 import Utility from "../../lib/Utility";
 import Constants from "../../struct/Constants";
@@ -103,28 +104,35 @@ export default class BotConfigCommand extends Subcommand {
     }
 
     public async currencynameRun(message: Message, args: Args) {
+
         const value = await args.rest("string");
 
-        const oldValue = <string> await this.client.botSettings.get("1", "CurrencyName", "Yen");
-        await this.client.botSettings.set("1", "CurrencyName", value);
+        const [oldValue] = await Promise.all([
+            this.client.botSettings.get("1", "CurrencyName", Constants.DEFAULTS.BOT_CONFIG.CUR_NAME),
+            this.client.botSettings.set("1", "CurrencyName", value),
+        ]);
+
         this.client.money.currencyName = value;
 
         return BotConfigCommand.sendEmbed(message, oldValue, value);
     }
 
     public async currencysymbolRun(message: Message, args: Args) {
-        // Grab only the first letter
+
         const value = await args.rest("string");
 
-        const oldValue = <string> await this.client.botSettings.get("1", "CurrencySymbol", Constants.MAGIC_NUMBERS.CMDS.OWNER_ONLY.BOT_CONFIG.DEFAULT_CUR_CODE);
-        await this.client.botSettings.set("1", "CurrencySymbol", value.codePointAt(0));
+        const [oldValue] = await Promise.all([
+            this.client.botSettings.get("1", "CurrencySymbol", Constants.DEFAULTS.BOT_CONFIG.CUR_SYMBOL),
+            this.client.botSettings.set("1", "CurrencySymbol", value),
+        ]);
+
         this.client.money.currencySymbol = value;
 
         return BotConfigCommand.sendEmbed(message, oldValue, value);
     }
 
     public async dailyEnabledRun(message: Message, args: Args) {
-        const value = await args.rest(BotConfigCommand.booleanArgument);
+        const value = await args.rest("boolean");
 
         const oldValue = <boolean> await this.client.botSettings.get("1", "DailyEnabled", false);
         await this.client.botSettings.set("1", "DailyEnabled", value);
@@ -140,29 +148,6 @@ export default class BotConfigCommand extends Subcommand {
 
         return BotConfigCommand.sendEmbed(message, String(oldValue), String(value));
     }
-
-    private static booleanArgument = Args.make<boolean>((parameter, context) => {
-        const value = parameter.toLowerCase();
-
-        switch (value) {
-            case "false" :
-            case "disable" :
-            case "0" :
-                return Args.ok(false);
-
-            case "true" :
-            case "enable" :
-            case "1" :
-                return Args.ok(true);
-
-            default:
-                return Args.error({
-                    argument: context.argument,
-                    parameter,
-                    message: "Value must be of: true, false, enable, disable, 0, 1",
-                });
-        }
-    });
 
     private static sendEmbed = (message: Message, oldValue: string, newValue: string) => {
         return message.channel.send({

@@ -14,7 +14,8 @@
   },
   "fun": {
     "commands": {
-      "deadbeat": "https://gitlab.com/cataclym/kaikibot-assets/-/raw/main/images/fun/deadbeats.jpg"
+      "deadbeat": "https://gitlab.com/cataclym/kaikibot-assets/-/raw/main/images/fun/deadbeats.jpg",
+      "simp": "https://gitlab.com/catadev/kaikibot-assets/-/raw/main/images/fun/simp.jpg"
     }
   }
 }

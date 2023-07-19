@@ -5,14 +5,15 @@ export class MoneyService {
     currencyName: string;
     currencySymbol: string;
     private orm: PrismaClient;
-
     constructor(connection: PrismaClient) {
         this.orm = connection;
         (async () => {
-            const repo = await this.orm.botSettings.findFirst();
-            if (!repo) throw new Error("Missing row in BotSettings table!");
-            this.currencyName = repo.CurrencyName;
-            this.currencySymbol = String.fromCodePoint(repo.CurrencySymbol);
+            const botSettings = await this.orm.botSettings.findFirst();
+
+            if (!botSettings) throw new Error("Missing row in BotSettings table!");
+
+            this.currencyName = botSettings.CurrencyName;
+            this.currencySymbol = botSettings.CurrencySymbol;
         })();
     }
 

@@ -1,12 +1,13 @@
 import * as buffer from "buffer";
 import { ApplyOptions } from "@sapphire/decorators";
-import { AttachmentBuilder, cleanContent, GuildMember, Message } from "discord.js";
+import { AttachmentBuilder, GuildMember, Message } from "discord.js";
 import { Args, UserError } from "@sapphire/framework";
 import fetch from "node-fetch";
 import sharp from "sharp";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import Utility from "../../lib/Utility";
+import Images from "../../data/images.json";
 
 @ApplyOptions<KaikiCommandOptions>({
     name: "simp",
@@ -16,7 +17,7 @@ import Utility from "../../lib/Utility";
 })
 export default class SimpCommand extends KaikiCommand {
 
-    private backgroundUrl = "https://gitlab.com/catadev/kaikibot-assets/-/raw/main/images/fun/simp.jpg";
+    private backgroundUrl = Images.fun.commands.simp;
     private async background() {
         return Utility.loadImage(this.backgroundUrl);
     }

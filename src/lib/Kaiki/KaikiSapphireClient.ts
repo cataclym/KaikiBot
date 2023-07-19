@@ -135,17 +135,17 @@ export default class KaikiSapphireClient<Ready extends true> extends SapphireCli
         this.botSettings = new DatabaseProvider(this.connection, "BotSettings", { idColumn: "Id" }, false);
         this.botSettings.init()
             .then(() => this.logger.info(`${colorette.green("READY")} - Bot settings provider`))
-            .catch(() => process.exit(1));
+            .catch(e => this.dbRejected(e));
 
         this.guildsDb = new DatabaseProvider(this.connection, "Guilds", { idColumn: "Id" });
         this.guildsDb.init()
             .then(() => this.logger.info(`${colorette.green("READY")} - Guild provider`))
-            .catch(() => process.exit(1));
+            .catch(e => this.dbRejected(e));
 
         this.dadBotChannels = new DatabaseProvider(this.connection, "DadBotChannels", { idColumn: "ChannelId" });
         this.dadBotChannels.init()
             .then(() => this.logger.info(`${colorette.green("READY")} - DadBot channel provider`))
-            .catch(() => process.exit(1));
+            .catch(e => this.dbRejected(e));
 
         this.cache = new KaikiCache(this.orm, this.connection);
         this.cache.populateImageAPICache(this.imageAPIs);
@@ -210,5 +210,10 @@ export default class KaikiSapphireClient<Ready extends true> extends SapphireCli
             await commandStore.unload("neofetch");
             this.logger.warn("Neofetch wasn't detected! Neofetch command will be disabled.");
         }
+    }
+
+    private dbRejected(e: any) {
+        this.logger.fatal("Failed to connect to database using MySQL2.", e);
+        process.exit(1);
     }
 }

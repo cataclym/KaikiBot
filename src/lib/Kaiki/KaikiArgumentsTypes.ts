@@ -31,7 +31,9 @@ export default class KaikiArgumentsTypes {
 
                 const emoteID = urlMatch.match(/\d+/g);
 
-                const type = urlMatch.indexOf("a") === 1 ? "gif" : "png";
+                const type = urlMatch.indexOf("a") === 1
+                    ? "gif"
+                    : "png";
 
                 if (emoteID) {
                     // Construct emote url - If it has '<a:...'  at the beginning, then it's a gif format.

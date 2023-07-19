@@ -91,20 +91,25 @@ export enum UndocumentedFeatures {
 
 export default class Constants {
 
-    static dadBotArray = ["i'm ", "im ", "i am ", "i’m "];
+    static readonly dadBotArray = ["i'm ", "im ", "i am ", "i’m "];
 
-    static badWord = ["shit", "fuck", "stop", "dont", "kill", "don't", "don`t", "fucking", "shut", "shutup", "shuttup", "trash", "bad", "hate", "stupid", "dumb", "suck", "sucks"];
-
-    static anniversaryStrings = {
+    static readonly anniversaryStrings = Object.freeze({
         ROLE_JOIN: "Join Anniversary",
         ROLE_CREATED: "Cake Day",
-    };
+    });
+
+    static readonly DEFAULTS = Object.freeze({
+        BOT_CONFIG: {
+            CUR_NAME: "Yen",
+            CUR_SYMBOL: "💴",
+        },
+    });
 
     // Credit to https://github.com/Snitt/emojibotten/blob/master/commands/management/emoji.js
-    static emoteRegex = /<(a?)((!?\d+)|(:.+?:\d+))>/g;
-    static imageRegex = /(http(s?):)([/|.\w\s-])*\.(?:jpg|gif|png|jpeg)/gi;
+    static readonly emoteRegex = /<(a?)((!?\d+)|(:.+?:\d+))>/g;
+    static readonly imageRegex = /(http(s?):)([/|.\w\s-])*\.(?:jpg|gif|png|jpeg)/gi;
 
-    static guildFeatures: { [index in UndocumentedFeatures]: string } & { [index in GuildFeature]: string } = {
+    static readonly guildFeatures: { [index in UndocumentedFeatures]: string } & { [index in GuildFeature]: string } = Object.freeze({
         ACTIVITIES_ALPHA: "",
         ACTIVITIES_EMPLOYEE: "",
         ACTIVITIES_INTERNAL_DEV: "",
@@ -219,9 +224,9 @@ export default class Constants {
         VOICE_CHANNEL_EFFECTS: "Given to guilds previously in the `2022-06_voice_channel_effects` experiment overrides",
         VOICE_IN_THREADS: "Voice in threads",
         WELCOME_SCREEN_ENABLED: "Welcome screen enabled",
-    };
+    });
 
-    static categories: { [category: string]: string } = {
+    static readonly categories: { [category: string]: string } = Object.freeze({
         Administration: "For server admins. Manage bans and channels.",
         Anime: "Search anime, manga and quotes.",
         Emotes: "Steal or create new emotes",
@@ -235,9 +240,9 @@ export default class Constants {
         Roles: "Create, edit and manage server roles, personal roles and more",
         "Server settings": "Configure the bot for your server",
         Utility: "Info, color, search, ping and much more.",
-    };
+    });
 
-    static channelTypes: { [type in keyof typeof ChannelType]: string } = {
+    static readonly channelTypes: { [type in keyof typeof ChannelType]: string } = Object.freeze({
         AnnouncementThread: "AnnouncementThread",
         DM: "DM",
         GroupDM: "GroupDM",
@@ -254,9 +259,9 @@ export default class Constants {
         GuildVoice: "Voice",
         PrivateThread: "PrivateThread",
         PublicThread: "PublicThread",
-    };
+    });
 
-    static flags: { [index in UserFlagsString]: string } = {
+    static readonly flags: { [index in UserFlagsString]: string } = Object.freeze({
         ActiveDeveloper: "Active developer",
         BotHTTPInteractions: "Bot interactions",
         BugHunterLevel1: "Bug Hunter (Level 1) 🐛",
@@ -280,15 +285,15 @@ export default class Constants {
         DisablePremium: "Disabled premium",
         Collaborator: "Collaborator",
         RestrictedCollaborator: "Restricted Collaborator",
-    };
+    });
 
-    static activityTypes: { [index in BotSettings_ActivityType]: Exclude<ActivityType, ActivityType.Custom> } = {
+    static readonly activityTypes: { [index in BotSettings_ActivityType]: Exclude<ActivityType, ActivityType.Custom> } = Object.freeze({
         PLAYING: ActivityType.Playing,
         STREAMING: ActivityType.Streaming,
         LISTENING: ActivityType.Listening,
         WATCHING: ActivityType.Watching,
         COMPETING: ActivityType.Competing,
-    };
+    });
 
     static readonly MAGIC_NUMBERS = Object.freeze({
         CACHE: {
@@ -355,7 +360,6 @@ export default class Constants {
             OWNER_ONLY: {
                 BOT_CONFIG: {
                     DAILY_AMOUNT: 250,
-                    DEFAULT_CUR_CODE: 128180,
                 },
                 EVAL: {
                     MAX_STRING: 1990,
@@ -472,7 +476,7 @@ export default class Constants {
 
     static readonly authorId = "140788173885276160";
 
-    static readonly colorTable: { [index in keyof ColorNames]: KaikiRGBA } = {
+    static readonly colorTable: { [index in keyof ColorNames]: KaikiRGBA } = Object.freeze({
         "aliceblue": "rgba(240,248,255,1)",
         "antiquewhite": "rgba(250,235,215,1)",
         "aqua": "rgba(0,255,255,1)",
@@ -622,11 +626,11 @@ export default class Constants {
         "whitesmoke": "rgba(245,245,245,1)",
         "yellow": "rgba(255,255,0,1)",
         "yellowgreen": "rgba(154,205,50,1)",
-    };
+    });
 
     static readonly hexColorTable: {
         [index in keyof ColorNames]: HexColorString
-    } = {
+    } = Object.freeze({
             "aliceblue": "#f0f8ff",
             "antiquewhite": "#faebd7",
             "aqua": "#00ffff",
@@ -776,7 +780,8 @@ export default class Constants {
             "whitesmoke": "#f5f5f5",
             "yellow": "#ffff00",
             "yellowgreen": "#9acd32",
-        };
+        });
+
     static readonly LINKS = Object.freeze({
         REPO_URL: "https://gitlab.com/catadev/KaikiDeishuBot.git",
         GUIDE: "https://gitlab.com/catadev/KaikiDeishuBot/-/blob/master/GUIDE.md",

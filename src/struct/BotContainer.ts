@@ -25,7 +25,6 @@ export default class BotContainer {
         }
 
         void this.loadPackageJSON();
-
     }
 
     private async loadPackageJSON() {
@@ -93,6 +92,5 @@ export default class BotContainer {
 
                 await this.client.filterOptionalCommands();
             });
-
     }
 }
