@@ -237,10 +237,6 @@ export default class Config {
                             inline: true,
                         },
                         {
-                            name: "\u200B", value: "\u200B",
-                            inline: true,
-                        },
-                        {
                             name: "Welcome message",
                             value: Utility.toggledTernary(!!WelcomeChannel),
                             inline: true,
@@ -251,13 +247,9 @@ export default class Config {
                             inline: true,
                         },
                         {
-                            name: "\u200B", value: "\u200B",
-                            inline: true,
-                        },
-                        {
                             name: "Sticky roles",
                             value: Utility.toggledTernary(await message.client.guildsDb.get(message.guildId, "StickyRoles", false)),
-                            inline: false,
+                            inline: true,
                         },
                     ])
                     .data,

@@ -5,18 +5,10 @@ import { EmbedBuilder, Message } from "discord.js";
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
-class UncachedObject {
-    public name: string;
-
-    constructor(data: string) {
-        this.name = data;
-    }
-}
-
 @ApplyOptions<KaikiCommandOptions>({
     name: "excludestickyroles",
     aliases: ["estickyroles", "estickyrole", "esrole"],
-    description: `Exclude or include a role from stickyroles. Provide no parameter to show a list of excluded roles.
+    description: `Exclude or include one or multiple roles from stickyroles. Provide no parameter to show a list of excluded roles.
     If someone who had one or more excluded roles, re-joins this server, they wont get any excluded roles.`,
     usage: ["", "@excludedRole @anotherRole"],
     requiredUserPermissions: ["ManageGuild"],
@@ -38,9 +30,9 @@ export default class ExcludeStickyRolesCommand extends KaikiCommand {
         });
 
         if (!guildDb) {
-            guildDb = await this.client.db.getOrCreateGuild(bigIntGuildId) as (Guilds & {
+            guildDb = await this.client.db.getOrCreateGuild(bigIntGuildId) as Guilds & {
                 ExcludedStickyRoles: ExcludedStickyRoles[]
-            });
+            };
             guildDb["ExcludedStickyRoles"] = [];
         }
 
@@ -51,14 +43,20 @@ export default class ExcludeStickyRolesCommand extends KaikiCommand {
         if (!roles) {
             return message.channel.send({
                 embeds: [
-                    embed.setDescription((guildDb?.ExcludedStickyRoles ?? [])
-                        .map(k => message.guild.roles.cache.get(String(k.RoleId)) ?? new UncachedObject(String(k.RoleId)))
-                        .sort((a, b) => {
-                            return a.name < b.name
-                                ? -1
-                                : 1;
+                    embed.setDescription(guildDb?.ExcludedStickyRoles.length
+                        ? guildDb.ExcludedStickyRoles.map(k => {
+                            const role = message.guild.roles.cache.get(String(k.RoleId));
+
+                            return role
+                                ? `${role.name} [${role.id}]`
+                                : String(k.RoleId);
                         })
-                        .join("\n").trim() ?? "No roles excluded")
+                            .sort((a, b) =>
+                                a < b
+                                    ? -1
+                                    : 1)
+                            .join("\n").trim()
+                        : "No roles excluded")
                         .withOkColor(message),
                 ],
             });
@@ -69,7 +67,7 @@ export default class ExcludeStickyRolesCommand extends KaikiCommand {
 
         for (const role of roles) {
 
-            if (guildDb?.ExcludedStickyRoles.find(c => String(c.GuildId) === role.id)) {
+            if (guildDb?.ExcludedStickyRoles.find(c => String(c.RoleId) === role.id)) {
                 enabledRoles.push(BigInt(role.id));
             }
 
@@ -90,7 +88,13 @@ export default class ExcludeStickyRolesCommand extends KaikiCommand {
                 {
                     name: "Excluded",
                     value: excludedRoles
-                        .map(k => message.guild.channels.cache.get(String(k.RoleId)) ?? String(k.RoleId))
+                        .map(k => {
+                            const role = message.guild.roles.cache.get(String(k.RoleId));
+
+                            return role
+                                ? `${role.name} [${role.id}]`
+                                : String(k.RoleId);
+                        })
                         .join("\n"),
                 },
             ]);
@@ -109,7 +113,13 @@ export default class ExcludeStickyRolesCommand extends KaikiCommand {
                 {
                     name: "Un-excluded",
                     value: enabledRoles
-                        .map(k => message.guild.channels.cache.get(String(k)) ?? String(k))
+                        .map(k => {
+                            const role = message.guild.roles.cache.get(String(k));
+
+                            return role
+                                ? `${role.name} [${role.id}]`
+                                : String(k);
+                        })
                         .join("\n"),
                 },
             ]);
