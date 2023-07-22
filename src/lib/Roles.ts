@@ -1,6 +1,5 @@
 import chalk from "chalk";
 import { GuildMember, Message, Role } from "discord.js";
-import logger from "loglevel";
 
 type GenericArrayFilter = <T>(x: T | undefined) => x is T;
 
@@ -41,11 +40,11 @@ export async function handleStickyRoles(member: GuildMember) {
     }
 
     else if (result.success) {
-        logger.info(`stickyRoles | Re-added roles to ${chalk.blueBright(member.user.tag)} [${chalk.blueBright(member.id)}]`);
+        this.container.logger.info(`stickyRoles | Re-added roles to ${chalk.blueBright(member.user.username)} [${chalk.blueBright(member.id)}]`);
     }
 
     else {
-        logger.warn(`stickyRoles | Bot cannot add roles due to role-hierarchy!! ${chalk.blueBright(member.guild.name)} [${chalk.blueBright(member.guild.id)}]`);
+        this.container.logger.warn(`stickyRoles | Bot cannot add roles due to role-hierarchy!! ${chalk.blueBright(member.guild.name)} [${chalk.blueBright(member.guild.id)}]`);
     }
 }
 

@@ -1,37 +1,32 @@
+import { ApplyOptions } from "@sapphire/decorators";
 import { Message } from "discord.js";
-import logger from "loglevel";
 import fetch from "node-fetch";
 import { sendQuote } from "../../lib/APIs/animeQuote";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import { RespType } from "../../lib/Types/Miscellaneous";
 
+@ApplyOptions<KaikiCommandOptions>({
+    name: "animequote",
+    aliases: ["aq"],
+    description: "Shows a random anime quote...",
+    typing: true,
+})
 export default class AnimeQuoteCommand extends KaikiCommand {
-    constructor() {
-        super("animequote", {
-            aliases: ["animequote", "aq"],
-            description: "Shows a random anime quote...",
-            usage: "",
-            typing: true,
-        });
-    }
-
-    public async exec(message: Message): Promise<Message | void> {
+    public async messageRun(message: Message): Promise<Message | void> {
 
         const { animeQuoteCache } = this.client.cache;
 
-        const resp = <RespType> await fetch("https://animechan.vercel.app/api/random")
-            .then(response => response.json())
-            .catch((reason) => {
-                logger.warn(`Animequote received no data: ${reason}\n`);
+        const resp = await fetch("http://animechan.melosh.space/random");
 
-                const random = animeQuoteCache.random();
-                if (random) {
-                    return sendQuote(random, message);
-                }
-            });
+        if (!resp.ok) {
+            this.container.logger.warn(`Animequote received no data: ${resp.statusText}`);
+        }
 
-        if (!animeQuoteCache.has(resp.character)) animeQuoteCache.set(resp.character, resp);
+        const response = <RespType> await resp.json();
 
-        return sendQuote(resp, message);
+        if (!animeQuoteCache.has(response.character)) animeQuoteCache.set(response.character, response);
+
+        return sendQuote(response, message);
     }
 }

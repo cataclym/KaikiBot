@@ -1,5 +1,5 @@
 import { GuildMember, Message } from "discord.js";
-import { hexColorTable } from "../Color";
+import Constants from "../../struct/Constants";
 import APIProcessor from "./APIProcessor";
 import ImageAPI from "./Common/ImageAPI";
 import { ImageAPIOptions } from "./Common/Types";
@@ -28,7 +28,7 @@ export default class NekosLife extends ImageAPI<APIs> {
         endPointData: {
             "spank": {
                 action: "spanked",
-                color: hexColorTable["peachpuff"],
+                color: Constants.hexColorTable["peachpuff"],
                 append: "🍑👋",
             },
         },

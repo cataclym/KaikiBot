@@ -1,17 +1,19 @@
 import fs from "fs/promises";
-import chalk from "chalk";
+import process from "process";
+import { container } from "@sapphire/pieces";
+import * as colorette from "colorette";
 import { EmbedBuilder, Team } from "discord.js";
-import logger from "loglevel";
-import KaikiAkairoClient from "../lib/Kaiki/KaikiAkairoClient";
+import type KaikiSapphireClient from "../lib/Kaiki/KaikiSapphireClient";
+import Constants from "./Constants";
 
 export default class BotContainer {
-    private readonly client: KaikiAkairoClient<true>;
+    private readonly client: KaikiSapphireClient<true>;
 
-    constructor(client: KaikiAkairoClient<true>) {
+    constructor(client: KaikiSapphireClient<true>) {
         this.client = client;
 
         if (!process.env) {
-            throw new Error("Missing .env file. Please double-check the guide! (https://gitlab.com/cataclym/KaikiDeishuBot/-/blob/master/GUIDE.md)");
+            throw new Error(`Missing .env file. Please double-check the guide! (${Constants.LINKS.GUIDE})`);
         }
 
         if (!process.env.PREFIX || process.env.PREFIX === "[YOUR_PREFIX]") {
@@ -20,10 +22,6 @@ export default class BotContainer {
 
         if (!process.env.DATABASE_URL) {
             throw new Error("Missing DATABASE_URL! Set a valid url in .env");
-        }
-
-        if (!process.env.KAWAIIKEY || process.env.KAWAIIKEY === "[YOUR_OPTIONAL_KAWAII_KEY]") {
-            logger.warn("Kawaii API dependant commands have been disabled. Provide a token in .env to re-enable.");
         }
 
         void this.loadPackageJSON();
@@ -41,8 +39,8 @@ export default class BotContainer {
         }
     }
 
-    private static noBotOwner() {
-        logger.error("No bot owner found! Double check your bot application in Discord's developer panel.");
+    private static noBotOwner(): never {
+        container.logger.error("No bot owner found! Double check your bot application in Discord's developer panel.");
         process.exit(1);
     }
 
@@ -71,13 +69,11 @@ export default class BotContainer {
                     this.client.owner = owner;
                 }
 
-                this.client.ownerID = this.client.owner.id;
-
-                logger.info(`Bot account: ${chalk.greenBright(this.client.user.tag)}`);
-                logger.info(`Bot owner: ${chalk.greenBright(this.client.owner.tag)}`);
+                this.client.logger.info(`Bot account: ${colorette.greenBright(this.client.user.username)}`);
+                this.client.logger.info(`Bot owner: ${colorette.greenBright(this.client.owner.username)}`);
 
                 // Let bot owner know when bot goes online.
-                if (this.client.user && ["Tsukihi Araragi#3589", "Kaiki Deishū#9185"].includes(this.client.user.tag)) {
+                if (this.client.user && this.client.owner.id === process.env.OWNER) {
                     // Inconspicuous emotes haha
                     const emoji = ["✨", "♥️", "✅", "🇹🇼"][Math.floor(Math.random() * 4)];
                     await this.client.owner.send({
@@ -93,7 +89,8 @@ export default class BotContainer {
                             ],
                     });
                 }
-            });
 
+                await this.client.filterOptionalCommands();
+            });
     }
 }

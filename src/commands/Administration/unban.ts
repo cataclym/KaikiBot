@@ -1,46 +1,32 @@
-import { Argument, Command } from "discord-akairo";
-import { Snowflake } from "discord-api-types/globals";
-import { EmbedBuilder, Message, PermissionsBitField, User } from "discord.js";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args } from "@sapphire/framework";
+import { EmbedBuilder, Message } from "discord.js";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
-export default class UnbanCommand extends Command {
-    constructor() {
-        super("unban", {
-            aliases: ["unban", "ub"],
-            userPermissions: PermissionsBitField.Flags.BanMembers,
-            clientPermissions: PermissionsBitField.Flags.BanMembers,
-            channel: "guild",
-            args: [
-                {
-                    id: "user",
-                    type: Argument.union("member", "user", async (_, phrase) => {
-                        const u = await this.client.users.fetch(phrase as Snowflake);
-                        return u || null;
-                    }),
-                    otherwise: (m: Message) => ({
-                        embeds: [
-                            new EmbedBuilder({
-                                description: "Can't find this user.",
-                            })
-                                .withErrorColor(m),
-                        ],
-                    }),
-                },
-            ],
-        });
-    }
+@ApplyOptions<KaikiCommandOptions>({
+    name: "unban",
+    aliases: ["ub"],
+    description: "",
+    requiredUserPermissions: ["BanMembers"],
+    requiredClientPermissions: ["BanMembers"],
+    preconditions: ["GuildOnly"],
+})
+export default class UnbanCommand extends KaikiCommand {
+    public async messageRun(message: Message, args: Args): Promise<Message> {
 
-    public async exec(message: Message, { user }: { user: User }): Promise<Message> {
+        const user = await args.pick("user");
 
-        const bans = (message.guild?.bans.cache.size
+        const bans = message.guild?.bans.cache.size
             ? message.guild?.bans.cache
-            : await message.guild?.bans.fetch({ cache: true }));
+            : await message.guild?.bans.fetch({ cache: true });
 
         if (bans?.find((u) => u.user.id === user.id)) {
             await message.guild?.members.unban(user);
             return message.channel.send({
                 embeds: [
                     new EmbedBuilder({
-                        description: `Unbanned ${user.tag}.`,
+                        description: `Unbanned ${user.username}.`,
                     })
                         .withOkColor(message),
                 ],
@@ -51,7 +37,7 @@ export default class UnbanCommand extends Command {
             return message.channel.send({
                 embeds: [
                     new EmbedBuilder({
-                        description: `\`${user.tag}\` is not banned.`,
+                        description: `\`${user.username}\` is not banned.`,
                     })
                         .withErrorColor(message),
                 ],

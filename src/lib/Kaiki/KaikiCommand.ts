@@ -1,15 +1,16 @@
-import { Command } from "discord-akairo";
-import { KaikiCommandOptions } from "../Interfaces/KaikiCommandOptions";
-import KaikiAkairoClient from "./KaikiAkairoClient";
+import { Args, Command, CommandOptions } from "@sapphire/framework";
+import { KaikiCommandOptions } from "../Interfaces/Kaiki/KaikiCommandOptions";
+import type KaikiSapphireClient from "./KaikiSapphireClient";
 
-export default class KaikiCommand extends Command {
+export default class KaikiCommand extends Command<Args, CommandOptions> {
     readonly usage?: string | string[];
-    client: KaikiAkairoClient<true>;
-    subCategory?: string | undefined;
+    client: KaikiSapphireClient<true>;
+    minorCategory: string | undefined;
 
-    constructor(id: string, options: KaikiCommandOptions | undefined) {
-        super(id, options);
+    constructor(context: Command.Context, options: KaikiCommandOptions) {
+        super(context, options);
+        this.minorCategory = options.minorCategory;
         this.usage = options?.usage;
-        this.subCategory = options?.subCategory;
+        this.client = this.container.client as KaikiSapphireClient<true>;
     }
 }

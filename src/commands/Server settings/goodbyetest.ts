@@ -1,21 +1,19 @@
-import { Message, PermissionsBitField } from "discord.js";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Message } from "discord.js";
 import GreetHandler from "../../lib/GreetHandler";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
-
+@ApplyOptions<KaikiCommandOptions>({
+    name: "goodbyetest",
+    aliases: ["byetest"],
+    description: "Tests goodbye message as it would appear when triggered.",
+    requiredUserPermissions: ["ManageGuild"],
+    preconditions: ["GuildOnly"],
+    minorCategory: "Goodbye",
+})
 export default class GoodbyeTestTestCommand extends KaikiCommand {
-    constructor() {
-        super("goodbyetest", {
-            aliases: ["goodbyetest", "byetest"],
-            description: "Tests goodbye message as it would appear when triggered.",
-            userPermissions: PermissionsBitField.Flags.ManageGuild,
-            channel: "guild",
-            usage: "",
-            subCategory: "Goodbye",
-        });
-    }
-
-    public async exec(message: Message<true>): Promise<void> {
+    public async messageRun(message: Message<true>): Promise<void> {
 
         const db = await this.client.db.getOrCreateGuild(BigInt(message.guildId));
 
@@ -27,6 +25,8 @@ export default class GoodbyeTestTestCommand extends KaikiCommand {
 
         if (!message.member) return;
 
-        await GreetHandler.sendWelcomeLeaveMessage(welcomeData, message.member);
+        const greetHandler = new GreetHandler(message.member);
+
+        await greetHandler.sendWelcomeLeaveMessage(welcomeData);
     }
 }

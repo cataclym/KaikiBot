@@ -1,34 +1,15 @@
-import chalk from "chalk";
-import logger from "loglevel";
-import { extensionHook } from "./extensions/Discord";
-import KaikiAkairoClient from "./lib/Kaiki/KaikiAkairoClient";
+import { container } from "@sapphire/pieces";
+import "@sapphire/plugin-logger/register";
+import "./extensions/Discord";
+import "./extensions/Sapphire";
+import KaikiSapphireClient from "./lib/Kaiki/KaikiSapphireClient";
 import BotContainer from "./struct/BotContainer";
-import { startLogger } from "./struct/logging";
 
 class KaikiProgram {
-    constructor() {
-        (async () => {
-            await startLogger();
-            logger.info("\n" +
-                chalk.green(
-                    "__/\\\\\\________/\\\\\\___________________________________________/\\\\\\\\\\\\\\\\\\\\\\\\\\_______________________________        \n" +
-                    " _\\/\\\\\\_____/\\\\\\//________________________/\\\\\\_______________\\/\\\\\\/////////\\\\\\_____________________________       \n" +
-                    "  _\\/\\\\\\__/\\\\\\//_____________________/\\\\\\_\\/\\\\\\__________/\\\\\\_\\/\\\\\\_______\\/\\\\\\___________________/\\\\\\______      \n" +
-                    "   _\\/\\\\\\\\\\\\//\\\\\\______/\\\\\\\\\\\\\\\\\\____\\///__\\/\\\\\\\\\\\\\\\\____\\///__\\/\\\\\\\\\\\\\\\\\\\\\\\\\\\\______/\\\\\\\\\\_____/\\\\\\\\\\\\\\\\\\\\\\_     \n" +
-                    "    _\\/\\\\\\//_\\//\\\\\\____\\////////\\\\\\____/\\\\\\_\\/\\\\\\////\\\\\\___/\\\\\\_\\/\\\\\\/////////\\\\\\___/\\\\\\///\\\\\\__\\////\\\\\\////__    \n" +
-                    "     _\\/\\\\\\____\\//\\\\\\_____/\\\\\\\\\\\\\\\\\\\\__\\/\\\\\\_\\/\\\\\\\\\\\\\\\\/___\\/\\\\\\_\\/\\\\\\_______\\/\\\\\\__/\\\\\\__\\//\\\\\\____\\/\\\\\\______   \n" +
-                    "      _\\/\\\\\\_____\\//\\\\\\___/\\\\\\/////\\\\\\__\\/\\\\\\_\\/\\\\\\///\\\\\\___\\/\\\\\\_\\/\\\\\\_______\\/\\\\\\_\\//\\\\\\__/\\\\\\_____\\/\\\\\\_/\\\\__  \n" +
-                    "       _\\/\\\\\\______\\//\\\\\\_\\//\\\\\\\\\\\\\\\\/\\\\_\\/\\\\\\_\\/\\\\\\_\\///\\\\\\_\\/\\\\\\_\\/\\\\\\\\\\\\\\\\\\\\\\\\\\/___\\///\\\\\\\\\\/______\\//\\\\\\\\\\___ \n" +
-                    "        _\\///________\\///___\\////////\\//__\\///__\\///____\\///__\\///__\\/////////////_______\\/////_________\\/////____"),
-            );
-        })();
-    }
-
     async init() {
-        extensionHook();
-        process.on("unhandledRejection", async (reason: Error, promise) => logger.warn("Unhandled Rejection at:", promise));
+        process.on("unhandledRejection", async (reason: Error, promise) => container.logger.warn(reason, promise));
 
-        const bot = new BotContainer(new KaikiAkairoClient());
+        const bot = new BotContainer(new KaikiSapphireClient());
         await bot.init();
     }
 }

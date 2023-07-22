@@ -1,6 +1,4 @@
-import chalk from "chalk";
-import { Command, Listener } from "discord-akairo";
-import { ActivityType, ChannelType, ColorResolvable, GuildMember, HexColorString, Message } from "discord.js";
+import { ActivityType, ColorResolvable, GuildMember, HexColorString, Message } from "discord.js";
 import fetch from "node-fetch";
 import Constants from "../struct/Constants";
 import { KaikiColor } from "./Types/KaikiColor";
@@ -13,8 +11,9 @@ export default class Utility {
             : "Disabled";
     }
 
+    // Returns message member's displaycolor if it exists, otherwise black.
     static async getMemberColorAsync(message: Message): Promise<ColorResolvable> {
-        return <ColorResolvable>message?.member?.displayColor || "#f47fff";
+        return <ColorResolvable>message?.member?.displayColor || "#000000";
     }
 
     static timeToMidnight(): number {
@@ -80,16 +79,16 @@ export default class Utility {
         return `\`\`\`${language ?? ""}\n${code}\`\`\``;
     }
 
-    static async listenerLog(message: Message, listener: Listener,
-        logger: (...msg: any[]) => void, command?: Command, extra = ""): Promise<void> {
-
-        logger(`${chalk.blueBright(listener.id)} | ${chalk.blueBright(Date.now() - message.createdTimestamp)}ms
-${message.channel.type !== ChannelType.DM
-        ? `Guild: ${chalk.blueBright(message.guild?.name ?? "N/A")} [${chalk.blueBright(message.guild?.id ?? "N/A")}]\nChannel: #${chalk.blueBright(message.channel.name)} [${chalk.blueBright(message.channel.id)}]`
-        : `DMChannel: [${chalk.blueBright(message.author.dmChannel?.id)}]`}
-User: ${chalk.blueBright(message.author.username)} [${chalk.blueBright(message.author.id)}]
-Executed ${chalk.blueBright(command?.id ?? "N/A")} | "${chalk.yellow(message.content.substring(0, 100))}"\n${extra}`);
-    }
+    //     static async listenerLog(message: Message, listener: Listener,
+    //         logger: (...msg: any[]) => void, command?: Command, extra = ""): Promise<void> {
+    //
+    //         logger(`${chalk.blueBright(listener.id)} | ${chalk.blueBright(Date.now() - message.createdTimestamp)}ms
+    // ${message.channel.type !== ChannelType.DM
+    //         ? `Guild: ${chalk.blueBright(message.guild?.name ?? "N/A")} [${chalk.blueBright(message.guild?.id ?? "N/A")}]\nChannel: #${chalk.blueBright(message.channel.name)} [${chalk.blueBright(message.channel.id)}]`
+    //         : `DMChannel: [${chalk.blueBright(message.author.dmChannel?.id)}]`}
+    // User: ${chalk.blueBright(message.author.username)} [${chalk.blueBright(message.author.id)}]
+    // Executed ${chalk.blueBright(command?.id ?? "N/A")} | "${chalk.yellow(message.content.substring(0, 100))}"\n${extra}`);
+    //     }
 
     // Credit to https://futurestud.io/tutorials/split-an-array-into-smaller-array-chunks-in-javascript-and-node-js
     /**
@@ -130,33 +129,19 @@ Executed ${chalk.blueBright(command?.id ?? "N/A")} | "${chalk.yellow(message.con
     }
 
     // Credits to https://www.html-code-generator.com/javascript/color-converter-script
-    static HEXtoRGB(hex: string): KaikiColor {
+    static convertHexToRGB(hex: string): KaikiColor {
         hex = hex.replace(/#/g, "");
-        if (hex.length === 3) {
-            // WTF is this
-            // eslint-disable-next-line @typescript-eslint/no-shadow
-            hex = hex.split("").map((hex) => {
-                return hex + hex;
-            }).join("");
-        }
-        // validate hex format
-        const result = /^([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})[\da-z]{0}$/i.exec(hex);
-        if (result) {
-            const red = parseInt(result[1], 16);
-            const green = parseInt(result[2], 16);
-            const blue = parseInt(result[3], 16);
 
-            return { r: red, g: green, b: blue };
-        }
-        else {
-            // Return black.
-            return { r: 0, g: 0, b: 0 };
-        }
+        const arrBuff = new ArrayBuffer(4);
+        const vw = new DataView(arrBuff);
+        vw.setUint32(0, parseInt(hex, 16), false);
+        const arrByte = new Uint8Array(arrBuff);
+
+        return { r: arrByte[1], g: arrByte[2], b: arrByte[3] };
     }
 
-    static RGBtoHEX(color: KaikiColor): HexColorString {
-        const string = Object.values(color).map((n: number) => n.toString(16)).join("");
-        return `#${string}`;
+    static convertRGBToHex({ r, g, b }: KaikiColor): HexColorString {
+        return `#${(1 << 24 | r << 16 | g << 8 | b).toString(16).slice(1)}`;
     }
 
     static getMemberPresence(obj: GuildMember) {
@@ -165,29 +150,34 @@ Executed ${chalk.blueBright(command?.id ?? "N/A")} | "${chalk.yellow(message.con
             return { name, type, state, emoji, assets };
         });
 
-        const presence = activities?.find(psnc => psnc.type !== ActivityType.Custom) || activities?.shift();
-
-        if (!activities || !presence) {
+        if (!activities) {
             return null;
         }
 
-        else if (presence.assets) {
-            const image = presence.assets?.largeImageURL() || presence.assets?.smallImageURL();
+        const presence = activities.find(psnc => psnc.assets)
+            || activities.find(psnc => psnc.type !== ActivityType.Custom)
+            || activities.shift();
 
-            return {
-                name: `${presence.type !== ActivityType.Custom ? String(presence.type).toLocaleLowerCase() : presence.emoji || ""} ${presence.name} - ${presence.state}`,
-                value: `${presence.assets.largeText}\n${presence.assets.smallText}`,
-                image: image,
-            };
+        if (!presence) {
+            return null;
         }
 
-        else {
-            return {
-                name: `${presence.type !== ActivityType.Custom ? String(presence.type).toLocaleLowerCase() : presence.emoji || ""} ${presence.name}`,
-                value: presence.state || "N/A",
-                image: null,
-            };
-        }
+        const type = ActivityType[presence.type];
+
+        const image = presence.assets?.largeImageURL() || presence.assets?.smallImageURL();
+
+        return {
+            name: presence.name,
+            state: presence.state,
+            type,
+            emoji: presence.emoji?.url,
+            value: {
+                large: presence.assets?.largeText,
+                small: presence.assets?.smallText,
+                details: presence.assets?.activity.details,
+            },
+            image: image,
+        };
     }
 
     static isRegex(value: unknown): value is RegexpType {

@@ -1,40 +1,25 @@
-import { EmbedBuilder, GuildMember, Message, PermissionsBitField, Role } from "discord.js";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args } from "@sapphire/framework";
+import { EmbedBuilder, Message } from "discord.js";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-import KaikiEmbeds from "../../lib/KaikiEmbeds";
+import KaikiEmbeds from "../../lib/Kaiki/KaikiEmbeds";
 import { rolePermissionCheck } from "../../lib/Roles";
 
+@ApplyOptions<KaikiCommandOptions>({
+    name: "setrole",
+    aliases: ["sr"],
+    description: "Gives a role to a user. The role you specify has to be lower in the role hierarchy than your highest role.",
+    usage: ["@Dreb Gamer"],
+    requiredUserPermissions: ["ManageRoles"],
+    requiredClientPermissions: ["ManageRoles"],
+    preconditions: ["GuildOnly"],
+})
 export default class RoleAssignCommand extends KaikiCommand {
-    constructor() {
-        super("setrole", {
-            aliases: ["setrole", "sr"],
-            description: "Gives a role to a user. The role you specify has to be lower in the role hierarchy than your highest role.",
-            usage: "@Dreb Gamer",
-            clientPermissions: PermissionsBitField.Flags.ManageRoles,
-            userPermissions: PermissionsBitField.Flags.ManageRoles,
-            channel: "guild",
-            args: [
-                {
-                    id: "member",
-                    type: "member",
-                    otherwise: (m: Message) => ({
-                        embeds: [
-                            new EmbedBuilder({
-                                title: "Can't find this user. Try again.",
-                            })
-                                .withErrorColor(m),
-                        ],
-                    }),
-                },
-                {
-                    id: "role",
-                    type: "role",
-                    otherwise: (m: Message) => ({ embeds: [KaikiEmbeds.roleArgumentError(m)] }),
-                },
-            ],
-        });
-    }
+    public async messageRun(message: Message<true>, args: Args): Promise<Message> {
 
-    public async exec(message: Message<true>, { member, role }: { member: GuildMember, role: Role }): Promise<Message> {
+        const member = await args.pick("member");
+        const role = await args.rest("role");
 
         if (await rolePermissionCheck(message, role)) {
             if (!member.roles.cache.has(role.id)) {

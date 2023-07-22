@@ -1,74 +1,70 @@
-import { EmbedBuilder, GuildTextBasedChannel, Message, PermissionsBitField } from "discord.js";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args } from "@sapphire/framework";
+import { EmbedBuilder, Message } from "discord.js";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
-
+@ApplyOptions<KaikiCommandOptions>({
+    name: "welcometoggle",
+    aliases: ["welcome"],
+    description: "Toggles welcome messages. Bot defaults to current channel if no channel is provided.",
+    usage: ["", "#welcome-channel"],
+    requiredUserPermissions: ["ManageGuild"],
+    preconditions: ["GuildOnly"],
+    minorCategory: "Welcome",
+})
 export default class WelcomeToggleCommand extends KaikiCommand {
-    constructor() {
-        super("welcometoggle", {
-            aliases: ["welcometoggle", "welcome"],
-            userPermissions: PermissionsBitField.Flags.ManageGuild,
-            channel: "guild",
-            description: "Toggles welcome messages. Bot defaults to current channel if no channel is provided.",
-            usage: ["", "#welcome-channel"],
-            args: [
-                {
-                    id: "channel",
-                    type: "textChannel",
-                },
-            ],
-            subCategory: "Welcome",
-        });
-    }
+    public async messageRun(message: Message<true>, args: Args): Promise<Message> {
 
-    public async exec(message: Message<true>, { channel }: { channel: GuildTextBasedChannel | null }): Promise<Message> {
+        const channel = await args.rest("guildTextChannel").catch(() => message.channel);
 
         const embed = new EmbedBuilder()
             .withOkColor(message);
 
         const guildTable = await this.client.db.getOrCreateGuild(BigInt(message.guildId));
 
-        channel = channel || message.channel;
-
         const bigIntChannelId = BigInt(channel.id);
 
-        switch (guildTable.WelcomeChannel) {
-            case undefined:
-            case null: {
-                await this.client.orm.guilds.update({
-                    where: {
-                        Id: BigInt(message.guildId),
-                    },
-                    data: {
-                        WelcomeChannel: bigIntChannelId,
-                    },
-                });
-                embed.setDescription(`Enabled welcome message in ${channel.name}`);
-                break;
-            }
-            case bigIntChannelId: {
-                await this.client.orm.guilds.update({
-                    where: {
-                        Id: BigInt(message.guildId),
-                    },
-                    data: {
-                        WelcomeChannel: null,
-                    },
-                });
-                embed.setDescription("Disabled welcome message");
-                break;
-            }
-            default: {
-                await this.client.orm.guilds.update({
-                    where: {
-                        Id: BigInt(message.guildId),
-                    },
-                    data: {
-                        WelcomeChannel: bigIntChannelId,
-                    },
-                });
-                embed.setDescription(`Set welcome message to ${channel.name}`);
-                break;
-            }
+        if (guildTable.WelcomeChannel === undefined || guildTable.WelcomeChannel === null) {
+
+            await this.client.orm.guilds.update({
+                where: {
+                    Id: BigInt(message.guildId),
+                },
+                data: {
+                    WelcomeChannel: bigIntChannelId,
+                },
+            });
+            embed.setDescription(`Enabled welcome message in ${channel.name}`);
+
+        }
+
+        else if (guildTable.WelcomeChannel === bigIntChannelId) {
+
+            await this.client.orm.guilds.update({
+                where: {
+                    Id: BigInt(message.guildId),
+                },
+                data: {
+                    WelcomeChannel: null,
+                },
+            });
+            embed.setDescription("Disabled welcome message");
+
+        }
+
+        else {
+
+            await this.client.orm.guilds.update({
+                where: {
+                    Id: BigInt(message.guildId),
+                },
+                data: {
+                    WelcomeChannel: bigIntChannelId,
+                },
+            });
+            embed.setDescription(`Set welcome message to ${channel.name}`);
+
         }
 
         return message.channel.send({

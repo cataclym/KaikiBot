@@ -21,7 +21,7 @@ model BotSettings {
   Activity       String?                   @db.VarChar(255)
   ActivityType   BotSettings_ActivityType?
   CurrencyName   String                    @default("Yen") @db.VarChar(255)
-  CurrencySymbol Int                       @default(128180)
+  CurrencySymbol String                    @default("💴") @db.VarChar(255)
   DailyEnabled   Boolean                   @default(false)
   DailyAmount    BigInt                    @default(250)
 }

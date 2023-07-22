@@ -1,24 +1,18 @@
-import { PrefixSupplier } from "discord-akairo";
+import { ApplyOptions } from "@sapphire/decorators";
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
 import { EmbedBuilder, Message } from "discord.js";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import Constants from "../../struct/Constants";
 
+@ApplyOptions<KaikiCommandOptions>({
+    name: "listuserroles",
+    aliases: ["lur"],
+    description: "List all custom user roles.",
+    preconditions: ["GuildOnly"],
+})
 export default class ListUserRoles extends KaikiCommand {
-    constructor() {
-        super("listuserroles", {
-            aliases: ["listuserroles", "lur"],
-            description: "List all custom assigned roles.",
-            usage: "",
-            prefix: (msg: Message) => {
-                const p = (this.handler.prefix as PrefixSupplier)(msg);
-                return [p as string, ";"];
-            },
-            channel: "guild",
-        });
-    }
-
-    public async exec(message: Message<true>): Promise<Message> {
+    public async messageRun(message: Message<true>): Promise<Message> {
 
         const db = await this.client.orm.guildUsers.findMany({
             where: {
@@ -38,7 +32,7 @@ export default class ListUserRoles extends KaikiCommand {
             const { ROLE_PR_PAGE } = Constants.MAGIC_NUMBERS.CMDS.ROLES.USER_ROLES;
 
             const mapped = db
-                    .map((table) => `${message.guild?.members.cache.get(String(table.UserId)) || table.UserId}: ${message.guild?.roles.cache.get(String(table.UserRole)) || table.UserRole}`)
+                    .map((table) => `${message.guild?.members.cache.get(String(table.UserId)) || table.UserId} [\`${message.guild?.roles.cache.get(String(table.UserRole)) || table.UserRole}\`]`)
                     .sort(),
                 pages: EmbedBuilder[] = [];
 

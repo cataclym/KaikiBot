@@ -1,17 +1,15 @@
+import { ApplyOptions } from "@sapphire/decorators";
 import { EmbedBuilder, Message } from "discord.js";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
-
+@ApplyOptions<KaikiCommandOptions>({
+    name: "invite",
+    aliases: ["inv"],
+    description: "Get a link to invite the bot to your server.",
+})
 export default class InviteCommand extends KaikiCommand {
-    constructor() {
-        super("invite", {
-            aliases: ["invite", "inv"],
-            description: "Get a link to invite the bot to your server.",
-            usage: "",
-        });
-    }
-
-    public async exec(message: Message): Promise<Message> {
+    public async messageRun(message: Message): Promise<Message> {
         return message.channel.send({
             embeds: [
                 new EmbedBuilder({

@@ -1,44 +1,50 @@
 import { exec } from "child_process";
 import * as process from "process";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args } from "@sapphire/framework";
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
 import { EmbedBuilder, Message } from "discord.js";
-import logger from "loglevel";
 import { distros } from "../../lib/distros.json";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import Utility from "../../lib/Utility";
 import Constants from "../../struct/Constants";
 
+@ApplyOptions<KaikiCommandOptions>({
+    name: "neofetch",
+    aliases: ["neo"],
+    description: "Displays neofetch ascii art. Provide argument '--list' to get a list of all supported distros.",
+    usage: ["", "opensuse", "--list"],
+    cooldownDelay: 2000,
+    typing: true,
+    flags: ["list"],
+})
 export default class NeofetchCommand extends KaikiCommand {
-    constructor() {
-        super("neofetch", {
-            aliases: ["neofetch", "neo"],
-            description: "Displays neofetch ascii art. Provide argument 'list' to get a list of all supported distros.",
-            usage: ["", "opensuse", "list"],
-            cooldown: 2000,
-            typing: true,
-            args: [
-                {
-                    id: "os",
-                    type: (_, phrase) => distros.find(str => {
 
-                        const k = str.toLowerCase();
+    private static neofetchArgument = Args.make<string>((parameter) => {
 
-                        return phrase
-                            .toLowerCase()
-                            .startsWith(k.slice(0, Math.max(phrase.length - 1, 1)));
-                    }),
-                    default: null,
-                },
-                {
-                    id: "list",
-                    flag: ["list"],
-                    match: "flag",
-                },
-            ],
+        const success = distros.find(str => {
+
+            const k = str.toLowerCase();
+
+            return parameter
+                .toLowerCase()
+                .startsWith(k.slice(0, Math.max(parameter.length - 1, 1)));
         });
-    }
 
-    public async exec(message: Message, { os, list }: { os: string | null, list: boolean }): Promise<Message | void> {
+        if (!success) {
+            return Args.ok("");
+        }
+
+        return Args.ok(success);
+
+    });
+
+    public async messageRun(message: Message, args: Args) {
+
+        const list = args.getFlags("list");
+
+        const os = await args.rest(NeofetchCommand.neofetchArgument).catch(() => undefined);
 
         if (list) {
             const pages: EmbedBuilder[] = [];
@@ -61,7 +67,7 @@ export default class NeofetchCommand extends KaikiCommand {
 
             exec(cmd, async (error, stdout, stderr) => {
                 if (error || stderr) {
-                    return logger.error(error);
+                    return this.container.logger.error(error);
                 }
                 return message.channel.send(await Utility.codeblock("\u00AD" + stdout.replace(/```/g, "\u0300`\u0300`\u0300`\u0300")));
             });

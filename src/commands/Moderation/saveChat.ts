@@ -1,35 +1,28 @@
 import fs from "fs";
-import { Collection, Message, MessageReaction, PermissionsBitField } from "discord.js";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args } from "@sapphire/framework";
+import { Collection, Message, MessageReaction } from "discord.js";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
-import KaikiEmbeds from "../../lib/KaikiEmbeds";
+@ApplyOptions<KaikiCommandOptions>({
+    name: "savechat",
+    description: "Saves a number of messages, and sends it to you.",
+    usage: ["100"],
+    requiredUserPermissions: ["ManageMessages"],
+    preconditions: ["GuildOnly"],
+})
 
 export default class SaveChatCommand extends KaikiCommand {
-    constructor() {
-        super("savechat", {
-            aliases: ["savechat"],
-            description: "Saves a number of messages, and sends it to you.",
-            usage: "100",
-            userPermissions: PermissionsBitField.Flags.ManageMessages,
-            channel: "guild",
-            args: [
-                {
-                    id: "amount",
-                    type: "integer",
-                    otherwise: (msg: Message) => ({ embeds: [KaikiEmbeds.genericArgumentError(msg)] }),
-                },
-            ],
-        });
-    }
 
-    public async exec(message: Message, { amount }: { amount: number }): Promise<MessageReaction> {
+    public async messageRun(message: Message, args: Args): Promise<MessageReaction> {
 
-        if (amount > 100) amount = 100;
+        const amount = await args.pick("number", { maximum: 100, minimum: 1 });
 
         const collection = await message.channel.messages.fetch({ limit: amount, before: message.id });
 
         const attachment = Buffer.from((collection as Collection<string, Message<boolean>>).map((m: Message<true | false>) => {
-            return `${m.createdAt.toTimeString().slice(0, 8)} ${m.createdAt.toDateString()} - ${m.author.tag}: ${m.content} ${(m.attachments ? m.attachments.map(a => a.url).join("\n") : "")}`;
+            return `${m.createdAt.toTimeString().slice(0, 8)} ${m.createdAt.toDateString()} - ${m.author.username}: ${m.content} ${(m.attachments ? m.attachments.map(a => a.url).join("\n") : "")}`;
         })
             .reverse()
             .join("\n"));

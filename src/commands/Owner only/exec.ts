@@ -1,26 +1,22 @@
-import { ChildProcess, exec } from "child_process";
+import { exec } from "child_process";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args } from "@sapphire/framework";
 import { EmbedBuilder, Message } from "discord.js";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import Utility from "../../lib/Utility";
 import Constants from "../../struct/Constants";
 
+@ApplyOptions<KaikiCommandOptions>({
+    name: "exec",
+    description: "Use with caution",
+    preconditions: ["OwnerOnly"],
+    typing: true,
+})
 export default class ExecCommand extends KaikiCommand {
-    constructor() {
-        super("exec", {
-            aliases: ["exec"],
-            ownerOnly: true,
-            typing: true,
-            args: [
-                {
-                    id: "command",
-                    type: "string",
-                    match: "restContent",
-                },
-            ],
-        });
-    }
+    public async messageRun(message: Message, args: Args) {
 
-    public async exec(message: Message, { command }: { command: string }): Promise<ChildProcess> {
+        const command = await args.rest("string");
 
         return exec(command, async (e, stdout) => {
 

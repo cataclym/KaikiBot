@@ -1,26 +1,30 @@
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args, UserError } from "@sapphire/framework";
 import { AttachmentBuilder, EmbedBuilder, GuildMember, Message } from "discord.js";
 import fetch from "node-fetch";
 import sharp from "sharp";
-import KaikiCommand from "../../lib/Kaiki/KaikiCommand.js";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
-
+@ApplyOptions<KaikiCommandOptions>({
+    name: "stretch",
+    description: "Stretches given member's avatar",
+    usage: ["@dreb"],
+    preconditions: ["GuildOnly"],
+})
 export default class SquishCommand extends KaikiCommand {
-    constructor() {
-        super("stretch", {
-            aliases: ["stretch"],
-            description: "Stretches given member's avatar",
-            usage: "@dreb",
-            args: [
-                {
-                    id: "member",
-                    type: "member",
-                    default: (message: Message) => message.member,
-                },
-            ],
-        });
-    }
+    public async messageRun(message: Message, args: Args): Promise<Message> {
 
-    public async exec(message: Message, { member }: { member: GuildMember }): Promise<Message> {
+        const member = <GuildMember> await args.pick("member")
+            .catch(() => {
+                if (args.finished) {
+                    return message.member;
+                }
+                throw new UserError({
+                    identifier: "NoMemberProvided",
+                    message: "Couldn't find a server member with that name.",
+                });
+            });
 
         const avatar = await (await fetch(member
             .displayAvatarURL({
@@ -37,8 +41,8 @@ export default class SquishCommand extends KaikiCommand {
         const embed = new EmbedBuilder({
             title: "Stretched avatar...",
             image: { url: "attachment://Stretched.jpg" },
-            color: member.displayColor,
-        });
+        })
+            .withOkColor(message);
 
         return message.channel.send({ files: [attachment], embeds: [embed] });
     }

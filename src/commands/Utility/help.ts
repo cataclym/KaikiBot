@@ -1,49 +1,98 @@
 import { execSync } from "child_process";
-import { Argument, PrefixSupplier } from "discord-akairo";
-import { EmbedBuilder, Message, PermissionResolvable, PermissionsBitField } from "discord.js";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args } from "@sapphire/framework";
+import { EmbedBuilder, Message } from "discord.js";
+import { Subcommand } from "@sapphire/plugin-subcommands";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
+@ApplyOptions<KaikiCommandOptions>({
+    name: "help",
+    aliases: ["h"],
+    description: "Shows command info",
+    usage: "ping",
+    minorCategory: "Info",
+})
 export default class HelpCommand extends KaikiCommand {
-    constructor() {
-        super("help", {
-            aliases: ["help", "h"],
-            description: "Shows command info",
-            usage: "ping",
-            args: [
-                {
-                    id: "command",
-                    type: Argument.union("commandAlias", "string"),
-                },
-            ],
-            subCategory: "Info",
-        });
-    }
+    public async messageRun(message: Message, args: Args) {
 
-    public async exec(message: Message, args: { command: KaikiCommand | string } | Record<string, never>): Promise<Message> {
-
-        const { name, repository, version } = this.client.package;
-
-        const prefix = (this.handler.prefix as PrefixSupplier)(message),
-            command = args?.command,
+        const { name, repository, version } = this.client.package,
+            prefix = await this.client.fetchPrefix(message),
             embed = new EmbedBuilder()
                 .withOkColor(message);
 
-        if (command instanceof KaikiCommand) {
+        if (args.finished) {
 
-            const aliases = command.aliases.sort((a, b) => b.length - a.length || a.localeCompare(b)).join("`, `");
-            const commandUsage = command.usage
-                ? Array.isArray(command.usage)
-                    ? command.usage.sort((a, b) => b.length - a.length || a.localeCompare(b)).map(u => `${prefix}${command.id} ${u}`).join("\n")
-                    : `${prefix}${command.id} ${command.usage}`
-                : `${prefix}${command.id}`;
+            const avatarURL = this.client.owner.displayAvatarURL();
 
-            embed.setTitle(`${prefix}${command.id}`)
-                .setDescription(command.description || "Command is missing description.")
+            embed.setTitle(`${message.client.user?.username} help page`)
+                .setDescription(`Current prefix: \`${prefix}\``)
                 .addFields([
+                    {
+                        name: "📋 Category list",
+                        value: `\`${prefix}cmds\` returns a complete list of command categories.`,
+                        inline: false,
+                    },
+                    {
+                        name: "🗒️ Command list",
+                        value: `\`${prefix}cmds <category>\` returns a complete list of commands in the given category.`,
+                        inline: false,
+                    },
+                    {
+                        name: "🔍 Command Info",
+                        value: `\`${prefix}help [command]\` to get more help. Example: \`${prefix}help ping\``,
+                        inline: false,
+                    },
+                ])
+                .setAuthor({
+                    name: `${name} v${version}-${execSync("git rev-parse --short HEAD").toString()}`,
+                    iconURL: message.author.displayAvatarURL(),
+                    url: repository.url,
+                })
+                .setFooter({
+                    text: "Made by Cata <3",
+                    iconURL: avatarURL,
+                });
+
+            return message.channel.send({ embeds: [embed] });
+        }
+
+        const command = await args.pick("command")
+            .catch(() => undefined);
+
+        if (command) {
+
+            const aliases = Array.from(command.aliases).sort((a, b) => b.length - a.length || a.localeCompare(b)).join("`, `");
+
+            const extractedCommandUsage = command instanceof Subcommand
+                ? command.options.usage
+                : command.usage;
+
+            const commandUsage = extractedCommandUsage
+                ? Array.isArray(extractedCommandUsage)
+                    ? extractedCommandUsage
+                        .sort((a, b) => b.length - a.length || a.localeCompare(b))
+                        .map(u => `${prefix}${command.name} ${u}`)
+                        .join("\n")
+                    : `${prefix}${command.name} ${command.usage}`
+                : `${prefix}${command.name}`;
+
+            const cooldown = command.options.cooldownDelay
+                || this.client.options.defaultCooldown?.delay
+                || 0;
+
+            if (aliases.length) {
+                embed.addFields([
                     {
                         name: "**Aliases**",
                         value: `\`${aliases}\``,
                     },
+                ]);
+            }
+
+            embed.setTitle(`${prefix}${command.name}`)
+                .setDescription(command.description || "Command is missing description.")
+                .addFields([
                     {
                         name: "**Usage**",
                         value: commandUsage,
@@ -51,16 +100,16 @@ export default class HelpCommand extends KaikiCommand {
                     },
                     {
                         name: "Cooldown",
-                        value: `${(command.cooldown || this.handler.defaultCooldown) / 1000}s`,
+                        value: `${(cooldown) / 1000}s`,
                     },
                 ])
-                .setFooter({ text: command.categoryID });
+                .setFooter({ text: command.category || "N/A" });
 
-            if (command.userPermissions) {
+            if (command.options.requiredUserPermissions) {
                 embed.addFields([
                     {
                         name: "Requires",
-                        value: new PermissionsBitField(command.userPermissions as PermissionResolvable).toArray().join(),
+                        value: command.options.requiredUserPermissions.toString(),
                         inline: false,
                     },
                 ]);
@@ -69,49 +118,16 @@ export default class HelpCommand extends KaikiCommand {
             return message.channel.send({ embeds: [embed] });
         }
 
-        else if (typeof command === "string") {
+        else {
             return message.channel.send({
                 embeds: [
                     new EmbedBuilder({
-                        description: `**${message.author.tag}** Command \`${command}\` not found.`,
+                        description: `**${message.author.username}** Command \`${args.next()}\` not found.`,
                     })
                         .withErrorColor(message),
                 ],
             });
         }
-
-        const avatarURL = this.client.owner.displayAvatarURL();
-
-        embed.setTitle(`${message.client.user?.username} help page`)
-            .setDescription(`Current prefix: \`${prefix}\``)
-            .addFields([
-                {
-                    name: "📋 Category list",
-                    value: `\`${prefix}cmds\` returns a complete list of command categories.`,
-                    inline: false,
-                },
-                {
-                    name: "🗒️ Command list",
-                    value: `\`${prefix}cmds <category>\` returns a complete list of commands in the given category.`,
-                    inline: false,
-                },
-                {
-                    name: "🔍 Command Info",
-                    value: `\`${prefix}help [command]\` to get more help. Example: \`${prefix}help ping\``,
-                    inline: false,
-                },
-            ])
-            .setAuthor({
-                name: `${name} v${version}-${execSync("git rev-parse --short HEAD").toString()}`,
-                iconURL: message.author.displayAvatarURL(),
-                url: repository.url,
-            })
-            .setFooter({
-                text: "Made by Cata <3",
-                iconURL: avatarURL,
-            });
-
-        return message.channel.send({ embeds: [embed] });
     }
 }
 

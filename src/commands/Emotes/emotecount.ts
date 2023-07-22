@@ -1,31 +1,33 @@
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args, UserError } from "@sapphire/framework";
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
 import { EmbedBuilder, Guild, Message } from "discord.js";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-
 import Utility from "../../lib/Utility";
 import Constants from "../../struct/Constants";
 
+@ApplyOptions<KaikiCommandOptions>({
+    name: "emotecount",
+    aliases: ["emojicount", "ec"],
+    description: "Shows amount of times each emote has been used",
+    usage: ["", "--s", "--small"],
+    preconditions: ["GuildOnly"],
+    flags: ["s", "small"],
+    cooldownDelay: 15000,
+})
 export default class EmoteCount extends KaikiCommand {
-    constructor() {
-        super("emotecount", {
-            cooldown: 15000,
-            aliases: ["emotecount", "emojicount", "ec"],
-            description: "Shows amount of times each emote has been used",
-            usage: ["", "-s", "--small"],
-            channel: "guild",
-            args: [
-                {
-                    id: "flag",
-                    flag: ["--small", "-s"],
-                    match: "flag",
-                },
-            ],
-        });
-    }
+    public async messageRun(message: Message<true>, args: Args): Promise<Message | void> {
 
-    public async exec(message: Message<true>, { flag }: { flag: boolean }): Promise<Message | void> {
+        if (!message.guild.emojis.cache.size) {
+            throw new UserError({
+                identifier: "NoGuildEmojis",
+                message: "There are no emojis in this server.",
+            });
+        }
 
-        const data: string[] = [];
+        const isSmall = args.getFlags("s", "small");
+
         const pages: EmbedBuilder[] = [];
         let guildDB = await this.client.orm.guilds.findUnique({
             where: {
@@ -42,46 +44,45 @@ export default class EmoteCount extends KaikiCommand {
         }
 
         const baseEmbed = new EmbedBuilder()
-                .setTitle("Emote count")
-                .setAuthor({ name: (message.guild as Guild).name })
-                .withOkColor(message),
+            .setTitle("Emote count")
+            .setAuthor({ name: (message.guild as Guild).name })
+            .withOkColor(message);
 
-            emoteDataPair = guildDB?.EmojiStats
-                .sort((a, b) => Number(b.Count) - Number(a.Count)) || [];
+        const map = message.guild.emojis.cache.map(guildEmoji => {
+            const emoteData = guildDB?.EmojiStats.find(e => String(e.EmojiId) === guildEmoji.id);
+            return Object.assign(guildEmoji, emoteData || { Count: 0 });
+        })
+            .sort(({ Count: b }, { Count: a }) => (a < b) ? -1 : ((a > b) ? 1 : 0));
 
-        for (const { EmojiId, Count } of emoteDataPair) {
 
-            const Emote = (message.guild as Guild).emojis.cache.get(String(EmojiId));
+        const data = map
+            .map(guildEmoji => {
 
-            if (!Emote) continue;
+                if (isSmall) {
+                    return `${guildEmoji} \`${guildEmoji.Count || 0}\` `;
+                }
 
-            if (!flag) {
-                data.push(`\`${Count}\` ${Emote} | ${Emote.name}`);
-            }
+                return `\`${guildEmoji.Count || 0}\` ${guildEmoji} | ${guildEmoji.name}`;
+            });
 
-            else {
-                data.push(`${Emote} \`${Count}\` `);
-            }
-        }
-
-        if (!flag) {
-            for (let i = Constants.MAGIC_NUMBERS.CMDS.EMOTES.EMOTE_COUNT.MIN_PR_PAGE, p = 0;
+        if (isSmall) {
+            for (let i = Constants.MAGIC_NUMBERS.CMDS.EMOTES.EMOTE_COUNT.MAX_PR_PAGE, p = 0;
                 p < data.length;
-                i += Constants.MAGIC_NUMBERS.CMDS.EMOTES.EMOTE_COUNT.MIN_PR_PAGE, p += Constants.MAGIC_NUMBERS.CMDS.EMOTES.EMOTE_COUNT.MIN_PR_PAGE) {
+                i += Constants.MAGIC_NUMBERS.CMDS.EMOTES.EMOTE_COUNT.MAX_PR_PAGE, p += Constants.MAGIC_NUMBERS.CMDS.EMOTES.EMOTE_COUNT.MAX_PR_PAGE) {
 
-                pages.push(new EmbedBuilder(baseEmbed.data)
-                    .setDescription(Utility.trim(data.slice(p, i).join("\n"), Constants.MAGIC_NUMBERS.EMBED_LIMITS.DESCRIPTION)),
+                pages.push(EmbedBuilder.from(baseEmbed)
+                    .setDescription(Utility.trim(data.slice(p, i).join(""), Constants.MAGIC_NUMBERS.EMBED_LIMITS.DESCRIPTION)),
                 );
             }
         }
 
         else {
-            for (let i = Constants.MAGIC_NUMBERS.CMDS.EMOTES.EMOTE_COUNT.MAX_PR_PAGE, p = 0;
+            for (let i = Constants.MAGIC_NUMBERS.CMDS.EMOTES.EMOTE_COUNT.MIN_PR_PAGE, p = 0;
                 p < data.length;
-                i += Constants.MAGIC_NUMBERS.CMDS.EMOTES.EMOTE_COUNT.MAX_PR_PAGE, p += Constants.MAGIC_NUMBERS.CMDS.EMOTES.EMOTE_COUNT.MAX_PR_PAGE) {
+                i += Constants.MAGIC_NUMBERS.CMDS.EMOTES.EMOTE_COUNT.MIN_PR_PAGE, p += Constants.MAGIC_NUMBERS.CMDS.EMOTES.EMOTE_COUNT.MIN_PR_PAGE) {
 
-                pages.push(new EmbedBuilder(baseEmbed.data)
-                    .setDescription(Utility.trim(data.slice(p, i).join(""), Constants.MAGIC_NUMBERS.EMBED_LIMITS.DESCRIPTION)),
+                pages.push(EmbedBuilder.from(baseEmbed)
+                    .setDescription(Utility.trim(data.slice(p, i).join("\n"), Constants.MAGIC_NUMBERS.EMBED_LIMITS.DESCRIPTION)),
                 );
             }
         }

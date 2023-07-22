@@ -1,25 +1,18 @@
-import { GuildMember, Message } from "discord.js";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args } from "@sapphire/framework";
+import { Message } from "discord.js";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
+@ApplyOptions<KaikiCommandOptions>({
+    name: "lick",
+    description: "Lick someone... I guess...?",
+    usage: ["", "@dreb"],
+    typing: true,
+})
 export default class Lick extends KaikiCommand {
-    constructor() {
-        super("lick", {
-            aliases: ["lick"],
-            description: "Lick someone... I guess...?",
-            usage: ["", "@dreb"],
-            typing: true,
-            args: [
-                {
-                    id: "mention",
-                    type: "member",
-                    default: null,
-                },
-            ],
-        });
-    }
+    public async messageRun(message: Message, args: Args): Promise<void | Message> {
 
-    public async exec(message: Message, { mention }: { mention: GuildMember | null }): Promise<void | Message> {
-
-        return this.client.imageAPIs.KawaiiAPI.sendImageAPIRequest(message, "lick", mention);
+        return this.client.imageAPIs.KawaiiAPI.sendImageAPIRequest(message, "lick", await args.rest("member").catch(() => null));
     }
 }

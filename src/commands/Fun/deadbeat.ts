@@ -1,30 +1,37 @@
-import Discord, { Message, User } from "discord.js";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args, UserError } from "@sapphire/framework";
+import { AttachmentBuilder, cleanContent, GuildMember, Message } from "discord.js";
 import sharp from "sharp";
+import Images from "../../data/images.json";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-import Utility from "../../lib/Utility.js";
+import Utility from "../../lib/Utility";
 
+@ApplyOptions<KaikiCommandOptions>({
+    name: "deadbeat",
+    aliases: ["dead"],
+    description: "Just try it",
+    usage: ["@dreb"],
+    typing: true,
+    cooldownDelay: 8000,
+    preconditions: ["GuildOnly"],
+})
 export default class DeadbeatCommand extends KaikiCommand {
-    // I should host this on GitLab
-    private backgroundUrl = "https://cdn.discordapp.com/attachments/717045059215687691/763459004352954368/deadbeats.jpg";
 
-    constructor() {
-        super("deadbeat", {
-            aliases: ["dead", "deadbeat"],
-            description: "Just try it",
-            usage: "@dreb",
-            cooldown: 8000,
-            typing: true,
-            args: [
-                {
-                    id: "member",
-                    type: "member",
-                    default: (message: Message) => message.author,
-                },
-            ],
-        });
-    }
+    private backgroundUrl = Images.fun.commands.deadbeat;
 
-    public async exec(message: Message, { member }: { member: User }) {
+    public async messageRun(message: Message, args: Args) {
+
+        const member = <GuildMember> await args.pick("member")
+            .catch(() => {
+                if (args.finished) {
+                    return message.member;
+                }
+                throw new UserError({
+                    identifier: "NoMemberProvided",
+                    message: "Couldn't find a server member with that name.",
+                });
+            });
 
         const buffer = await Utility.loadImage(member.displayAvatarURL({ extension: "jpg", size: 128 }));
 
@@ -35,8 +42,11 @@ export default class DeadbeatCommand extends KaikiCommand {
         const image = sharp(await this.background())
             .composite([{ input: modified, top: 88, left: 570 }]);
 
-        const attachment = new Discord.AttachmentBuilder(image, { name: "deadBeats.jpg" });
-        await message.channel.send({ content: `Deadbeat 👉 ${member}!`, files: [attachment] });
+        const attachment = new AttachmentBuilder(image, { name: "deadBeats.jpg" });
+        await message.channel.send({
+            content: cleanContent(`Deadbeat 👉 ${member}!`, message.channel),
+            files: [attachment],
+        });
     }
 
     private async background() {

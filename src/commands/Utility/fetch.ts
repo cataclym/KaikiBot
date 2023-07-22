@@ -1,79 +1,36 @@
-import { time } from "@discordjs/builders";
-import { Argument } from "discord-akairo";
-import { EmbedBuilder, Message, Snowflake, User } from "discord.js";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args, MessageCommandContext, Resolvers, UserError } from "@sapphire/framework";
+import { Message } from "discord.js";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-import Constants from "../../struct/Constants";
 
-
+@ApplyOptions<KaikiCommandOptions>({
+    name: "fetch",
+    aliases: ["fu"],
+    description: "Fetches a discord user, shows relevant information. 30sec cooldown.",
+    usage: ["<id>"],
+    cooldownDelay: 30000,
+})
 export default class FetchUserCommand extends KaikiCommand {
-    constructor() {
-        super("fetch", {
-            cooldown: 30000,
-            aliases: ["fu", "fetch"],
-            description: "Fetches a discord user, shows relevant information. 30sec cooldown.",
-            usage: "<id>",
-            args: [
-                {
-                    id: "userObject",
-                    type: Argument.union("user", async (message: Message, phrase: string) => {
-                        try {
-                            const u = await message.client.users.fetch(phrase as Snowflake);
-                            if (u) return u;
-                        }
-                        catch {
-                            return;
-                        }
-                    }),
-                    otherwise: (m) => ({
-                        embeds: [
-                            new EmbedBuilder()
-                                .setDescription("No user found")
-                                .withErrorColor(m),
-                        ],
-                    }),
-                },
-            ],
-        });
-    }
+    public async messageRun(message: Message, args: Args, ctx: MessageCommandContext): Promise<Message | unknown> {
 
-    public async exec(message: Message, { userObject }: { userObject: User }): Promise<Message | void> {
+        args.save();
 
-        const userinfo = this.handler.modules.get("uinfo");
+        const possibleUser = await args.pick("string");
 
-        if (message.guild?.members.cache.has(userObject.id) && userinfo) {
-            return this.handler.runCommand(message, userinfo, await userinfo.parse(message, userObject.id));
+        const result = await Resolvers.resolveUser(possibleUser);
+
+        args.restore();
+
+        if (result.isErr()) {
+            return new UserError({
+                identifier: "fetchNoUserFound",
+                message: "Provided argument doesn't seem to be a valid user ID.",
+                context: ctx,
+            });
         }
 
-        const userFlags = userObject.flags ? userObject.flags.toArray() : [],
-            embed = new EmbedBuilder()
-                .setDescription(userObject.username)
-                .setThumbnail(userObject.displayAvatarURL({ size: 4096 }))
-                .setTitle(userObject.tag)
-                .addFields([
-                    { name: "ID", value: userObject.id, inline: true },
-                    { name: "Account date", value: time(userObject.createdAt), inline: true },
-                ])
-                .withOkColor(message);
-
-        if (userFlags.length) {
-            embed.addFields([
-                {
-                    name: "Flags",
-                    value: userFlags.map((flag) => Constants.flags[flag]).join("\n"),
-                    inline: true,
-                },
-            ]);
-        }
-        if (userObject.bot) {
-            embed.addFields([
-                {
-                    name: "Bot",
-                    value: "✅",
-                    inline: true,
-                },
-            ]);
-        }
-
-        return message.channel.send({ embeds: [embed] });
+        const infoCmd = this.store.resolve("info");
+        return infoCmd.messageRun!(message, args, ctx);
     }
 }

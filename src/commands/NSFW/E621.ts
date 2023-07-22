@@ -1,33 +1,28 @@
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args } from "@sapphire/framework";
 import { EmbedBuilder, Message } from "discord.js";
 import { DAPI } from "../../lib/Hentai/HentaiService";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-
-import KaikiEmbeds from "../../lib/KaikiEmbeds";
+import KaikiEmbeds from "../../lib/Kaiki/KaikiEmbeds";
 import Utility from "../../lib/Utility";
 
+@ApplyOptions<KaikiCommandOptions>({
+    name: "e621",
+    description: "e621 :hahaa:",
+    typing: true,
+    nsfw: true,
+})
 export default class EAPICommand extends KaikiCommand {
-    constructor() {
-        super("e621", {
-            aliases: ["e621"],
-            description: "e621 :hahaa:",
-            typing: true,
-            args: [
-                {
-                    id: "tags",
-                    match: "rest",
-                    type: "string",
-                    default: null,
-                },
-            ],
-        });
-    }
+    public async messageRun(message: Message, args: Args): Promise<Message> {
 
-    public async exec(message: Message, { tags }: { tags: string | null }): Promise<Message> {
-        const post = await this.client.hentaiService.DapiGrabber(tags?.split("+").map(tag => tag.replace(" ", "_")) ?? null, DAPI.E621);
+        const tags = await args.pick("string").catch(() => undefined);
+
+        const post = await this.client.hentaiService.apiGrabber(tags ? tags?.split("+").map(tag => tag.replace(" ", "_")) : null, DAPI.E621);
         if (post) {
 
             const emb = new EmbedBuilder()
-                .setAuthor({ name: post.tags.artist.join(", ") })
+                .setAuthor({ name: post.tags.artist.join(", ") || "N/A" })
                 .setDescription(Utility.trim(`**Tags**: ${post.tags.general.join(",")}`, 2048))
                 .setImage(post.file.url || post.preview.url || post.sample.url || post.sources[0])
                 .withOkColor(message);

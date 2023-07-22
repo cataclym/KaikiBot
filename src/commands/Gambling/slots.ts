@@ -1,32 +1,22 @@
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args } from "@sapphire/framework";
 import { EmbedBuilder, Message } from "discord.js";
 import Gambling from "../../lib/Gambling/Gambling";
-import KaikiArgumentsTypes from "../../lib/Kaiki/KaikiArgumentsTypes";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import Constants from "../../struct/Constants";
 
+@ApplyOptions<KaikiCommandOptions>({
+    name: "Slots",
+    aliases: ["slots", "slot"],
+    description: "Bet a certain amount in the slot machine.",
+    usage: ["69"],
+})
 export default class SlotsCommand extends KaikiCommand {
-    constructor() {
-        super("Slots", {
-            aliases: ["slots", "slot"],
-            description: "Bet a certain amount in the slot machine.",
-            usage: "69",
-            args: [
-                {
-                    id: "amount",
-                    type: KaikiArgumentsTypes.moneyArgument,
-                    otherwise: (m: Message) => ({
-                        embeds: [
-                            new EmbedBuilder()
-                                .setTitle("Invalid amount. It must be a number")
-                                .withOkColor(m),
-                        ],
-                    }),
-                },
-            ],
-        });
-    }
 
-    public async exec(message: Message, { amount }: { amount: bigint }): Promise<void> {
+    public async messageRun(message: Message, args: Args): Promise<void> {
+
+        const amount = await args.rest("kaikiMoney");
 
         if (amount < 2) {
             await message.channel.send({
@@ -39,7 +29,7 @@ export default class SlotsCommand extends KaikiCommand {
             return;
         }
 
-        const success = await this.client.money.TryTake(message.author.id, amount, "Slots gamble");
+        const success = await this.client.money.tryTake(message.author.id, amount, "Slots gamble");
 
         if (!success) {
             await message.channel.send({
@@ -57,7 +47,7 @@ export default class SlotsCommand extends KaikiCommand {
         // Check if all three indexes are the same before we check if there are 2 similar ones
         if (result.numbers.every((val, i, arr) => val === arr[0])) {
             const winAmount = amount * 30n;
-            await this.client.money.Add(message.author.id, winAmount, "Slots won x30");
+            await this.client.money.add(message.author.id, winAmount, "Slots won x30");
             result.string += `\n\nYou won ${winAmount} ${this.client.money.currencySymbol}!`;
         }
 
@@ -67,7 +57,7 @@ export default class SlotsCommand extends KaikiCommand {
             if (arr.includes(r)) return true;
         })) {
             const winAmount = amount * 10n;
-            await this.client.money.Add(message.author.id, winAmount, "Slots won x10");
+            await this.client.money.add(message.author.id, winAmount, "Slots won x10");
             result.string += `\n\nYou won **${winAmount}** ${this.client.money.currencySymbol}!`;
         }
 

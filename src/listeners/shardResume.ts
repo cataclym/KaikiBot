@@ -1,0 +1,18 @@
+import { ApplyOptions } from "@sapphire/decorators";
+import { Events, Listener, ListenerOptions } from "@sapphire/framework";
+import chalk from "chalk";
+import type KaikiSapphireClient from "../lib/Kaiki/KaikiSapphireClient";
+
+@ApplyOptions<ListenerOptions>({
+    event: Events.ShardResume,
+})
+export default class ShardResume extends Listener {
+
+    // Emitted when a shard resumes successfully.
+    public async run(id: number, replayedEvents: number): Promise<void> {
+
+        this.container.logger.info(`shardResume | Shard: ${chalk.green(id)} \nReplayed ${chalk.green(replayedEvents)} events.`);
+
+        await (this.container.client as KaikiSapphireClient<true>).setPresence();
+    }
+}

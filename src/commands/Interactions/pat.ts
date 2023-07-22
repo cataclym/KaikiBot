@@ -1,25 +1,17 @@
-import { GuildMember, Message } from "discord.js";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args } from "@sapphire/framework";
+import { Message } from "discord.js";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
-
+@ApplyOptions<KaikiCommandOptions>({
+    name: "pat",
+    description: "Pat a cat! Or a guildmember...",
+    usage: ["", "@dreb"],
+    typing: true,
+})
 export default class PatCommand extends KaikiCommand {
-    constructor() {
-        super("pat", {
-            aliases: ["pat"],
-            description: "Pat a cat!\nOr a guildmember...",
-            usage: ["", "@dreb"],
-            typing: true,
-            args: [
-                {
-                    id: "mention",
-                    type: "member",
-                    default: null,
-                },
-            ],
-        });
-    }
-
-    public async exec(message: Message, { mention }: { mention: GuildMember | null }): Promise<Message> {
-        return this.client.imageAPIs.WaifuPics.sendImageAPIRequest(message, "pat", mention);
+    public async messageRun(message: Message, args: Args): Promise<Message> {
+        return this.client.imageAPIs.WaifuPics.sendImageAPIRequest(message, "pat", await args.rest("member").catch(() => null));
     }
 }

@@ -1,28 +1,22 @@
-import { EmbedBuilder, Message, PermissionsBitField } from "discord.js";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args } from "@sapphire/framework";
+import { EmbedBuilder, Message } from "discord.js";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
-import KaikiEmbeds from "../../lib/KaikiEmbeds";
-
+@ApplyOptions<KaikiCommandOptions>({
+    name: "welcomedelete",
+    aliases: ["welcomedel"],
+    description: "Set the time it takes for welcome messages to be deleted by the bot",
+    usage: ["10"],
+    requiredUserPermissions: ["ManageGuild"],
+    preconditions: ["GuildOnly"],
+    minorCategory: "Welcome",
+})
 export default class WelcomeDeleteCommand extends KaikiCommand {
-    constructor() {
-        super("welcomedelete", {
-            aliases: ["welcomedelete", "welcomedel"],
-            userPermissions: PermissionsBitField.Flags.ManageGuild,
-            channel: "guild",
-            description: "Set the time it takes for welcome messages to be deleted by the bot",
-            usage: ["10"],
-            args: [
-                {
-                    id: "time",
-                    type: "number",
-                    otherwise: (m) => ({ embeds: [KaikiEmbeds.genericArgumentError(m)] }),
-                },
-            ],
-            subCategory: "Welcome",
-        });
-    }
+    public async messageRun(message: Message<true>, args: Args): Promise<Message> {
 
-    public async exec(message: Message<true>, { time }: { time: number | null }): Promise<Message> {
+        const time = await args.rest("number").catch(() => null);
 
         await this.client.orm.guilds.update({
             where: {

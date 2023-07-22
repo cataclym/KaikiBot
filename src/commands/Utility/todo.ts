@@ -1,25 +1,21 @@
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args } from "@sapphire/framework";
 import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, EmbedBuilder, Message } from "discord.js";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import { ButtonAdd } from "../../lib/Todo/Buttons/Add";
 import { ButtonRemove } from "../../lib/Todo/Buttons/Remove";
 import { Todo } from "../../lib/Todo/Todo";
 
+@ApplyOptions<KaikiCommandOptions>({
+    name: "todo",
+    aliases: ["note"],
+    description: "A personal todo list. The items are limited to 204 characters. Intended for small notes.",
+})
 export default class TodoCommand extends KaikiCommand {
-    constructor() {
-        super("todo", {
-            aliases: ["todo", "note"],
-            description: "A personal todo list. The items are limited to 204 characters. Intended for small notes.",
-            args: [
-                {
-                    id: "page",
-                    type: "integer",
-                    default: 1,
-                },
-            ],
-        });
-    }
+    public async messageRun(message: Message<true>, args: Args) {
 
-    public async exec(message: Message<true>, { page }: { page: number }) {
+        let page = await args.pick("number").catch(() => 1);
 
         const currentTime = Date.now();
 
@@ -110,9 +106,11 @@ export default class TodoCommand extends KaikiCommand {
 
         const messageComponentCollector = sentMsg.createMessageComponentCollector({
             filter: (i) => {
+
                 if (buttonArray.includes(i.customId) && message.author.id === i.user.id) {
                     return true;
                 }
+
                 else {
                     i.deferUpdate();
                     return false;
@@ -124,38 +122,38 @@ export default class TodoCommand extends KaikiCommand {
         messageComponentCollector.on("collect", async (buttonInteraction: ButtonInteraction) => {
 
             switch (buttonInteraction.customId) {
-                case `${currentTime}Add`: {
+
+                case `${currentTime}Add`:
                     messageComponentCollector.stop();
-                    await ButtonAdd.Add(buttonInteraction, currentTime, todoArray, sentMsg);
+                    await ButtonAdd.add(buttonInteraction, currentTime, todoArray, sentMsg);
                     break;
-                }
-                case `${currentTime}Backward`: {
+
+                case `${currentTime}Backward`:
                     await buttonInteraction.deferUpdate();
                     page = page > 0 ? --page : pages.length - 1;
                     await updateMsg();
                     break;
-                }
-                case `${currentTime}Clear`: {
+
+                case `${currentTime}Clear`:
                     await sentMsg.edit({
                         components: [],
                     });
                     messageComponentCollector.stop();
                     break;
-                }
-                case `${currentTime}Forward`: {
+
+                case `${currentTime}Forward`:
                     await buttonInteraction.deferUpdate();
                     page = page + 1 < pages.length ? ++page : 0;
                     await updateMsg();
                     break;
-                }
-                case `${currentTime}Remove`: {
+
+                case `${currentTime}Remove`:
                     messageComponentCollector.stop();
                     await ButtonRemove.Remove(buttonInteraction, currentTime, todoArray, sentMsg);
                     break;
-                }
-                default: {
+
+                default:
                     break;
-                }
             }
         });
 

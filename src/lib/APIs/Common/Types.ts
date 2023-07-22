@@ -1,4 +1,4 @@
-import InteractionsImageData from "../../Interfaces/InteractionsImageData";
+import InteractionsImageData from "../../Interfaces/Common/InteractionsImageData";
 import KawaiiAPI from "../KawaiiAPI";
 import NekosLife from "../nekos.life";
 import NekosAPI from "../NekosAPI";

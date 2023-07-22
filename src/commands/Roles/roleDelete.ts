@@ -1,47 +1,37 @@
-import { Collection, EmbedBuilder, Message, PermissionsBitField, Role } from "discord.js";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args } from "@sapphire/framework";
+import { EmbedBuilder, Message } from "discord.js";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-import KaikiEmbeds from "../../lib/KaikiEmbeds";
-
 import { rolePermissionCheck } from "../../lib/Roles";
 
-
+@ApplyOptions<KaikiCommandOptions>({
+    name: "roledelete",
+    aliases: ["deleterole", "dr"],
+    description: "Deletes one or more roles",
+    usage: ["@gamers @streamers @weebs"],
+    requiredUserPermissions: ["ManageRoles"],
+    requiredClientPermissions: ["ManageRoles"],
+    preconditions: ["GuildOnly"],
+})
 export default class RoleDeleteCommand extends KaikiCommand {
-    constructor() {
-        super("roledelete", {
-            aliases: ["roledelete", "deleterole", "dr"],
-            clientPermissions: PermissionsBitField.Flags.ManageRoles,
-            userPermissions: PermissionsBitField.Flags.ManageRoles,
-            description: "Deletes one or more roles",
-            usage: "@gamers @streamers @weebs",
-            channel: "guild",
-            args: [
-                {
-                    id: "roles",
-                    type: "roles",
-                    match: "separate",
-                    otherwise: (m) => ({ embeds: [KaikiEmbeds.roleArgumentError(m)] }),
-                },
-            ],
-        });
-    }
+    public async messageRun(message: Message<true>, args: Args): Promise<Message> {
 
-    public async exec(message: Message<true>, { roles }: { roles: Collection<string, Role>[] }): Promise<Message> {
+        const roles = await args.repeat("role");
 
         const deletedRoles: string[] = [];
         const otherRoles: string[] = [];
 
-        for await (const collection of roles) {
+        for await (const role of roles) {
 
-            const r = collection.map(_r => _r)[0];
+            if (await rolePermissionCheck(message, role)) {
 
-            if (await rolePermissionCheck(message, r)) {
-
-                r.delete().catch(() => otherRoles.push(r.name));
-                deletedRoles.push(r.name);
+                role.delete().catch(() => otherRoles.push(role.name));
+                deletedRoles.push(role.name);
             }
 
             else {
-                otherRoles.push(r.name);
+                otherRoles.push(role.name);
             }
         }
 

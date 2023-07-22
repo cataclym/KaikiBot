@@ -1,33 +1,22 @@
 import { DadBotChannels, Guilds } from "@prisma/client";
-import {
-    Collection,
-    EmbedBuilder,
-    GuildChannel,
-    Message,
-    PermissionsBitField,
-    Snowflake,
-    TextChannel,
-} from "discord.js";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args } from "@sapphire/framework";
+import { EmbedBuilder, GuildChannel, Message } from "discord.js";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
+@ApplyOptions<KaikiCommandOptions>({
+    name: "excludechannel",
+    aliases: ["excludechnl", "echnl"],
+    description: "Exclude or include, one or more, channels from dadbot. Provide no parameter to show a list of excluded channels. ",
+    usage: ["", "#channel"],
+    requiredUserPermissions: ["ManageChannels"],
+    preconditions: ["GuildOnly"],
+})
 export default class ExcludeDadbotChannelCommand extends KaikiCommand {
-    constructor() {
-        super("excludechannel", {
-            aliases: ["excludechannel", "excludechnl", "echnl"],
-            userPermissions: PermissionsBitField.Flags.ManageChannels,
-            channel: "guild",
-            description: "Exclude or include a channel from dadbot. Provide no parameter to show a list of excluded channels. ",
-            usage: ["", "#channel"],
-            args: [
-                {
-                    id: "channels",
-                    type: "textChannels",
-                },
-            ],
-        });
-    }
+    public async messageRun(message: Message<true>, args: Args): Promise<Message> {
 
-    public async exec(message: Message<true>, { channels }: { channels: Collection<Snowflake, TextChannel> | undefined }): Promise<Message> {
+        const channels = await args.repeat("guildChannel").catch(() => undefined);
 
         const bigIntGuildId = BigInt(message.guildId);
         let guildDb = await this.client.orm.guilds.findUnique({
@@ -40,7 +29,9 @@ export default class ExcludeDadbotChannelCommand extends KaikiCommand {
         });
 
         if (!guildDb) {
-            guildDb = await this.client.db.getOrCreateGuild(bigIntGuildId) as (Guilds & { DadBotChannels: DadBotChannels[] });
+            guildDb = await this.client.db.getOrCreateGuild(bigIntGuildId) as (Guilds & {
+                DadBotChannels: DadBotChannels[]
+            });
             guildDb["DadBotChannels"] = [];
         }
 
@@ -65,10 +56,11 @@ export default class ExcludeDadbotChannelCommand extends KaikiCommand {
             });
         }
 
-        const GuildId = BigInt(message.guildId), enabledChannels: bigint[] = [],
+        const guildId = BigInt(message.guildId),
+            enabledChannels: bigint[] = [],
             excludedChannels: { GuildId: bigint, ChannelId: bigint }[] = [];
 
-        for (const [id] of channels) {
+        for (const { id } of channels) {
 
             if (guildDb.DadBotChannels.find(c => String(c.ChannelId) === id)) {
                 enabledChannels.push(BigInt(id));
@@ -76,7 +68,7 @@ export default class ExcludeDadbotChannelCommand extends KaikiCommand {
 
             else {
                 excludedChannels.push({
-                    GuildId,
+                    GuildId: guildId,
                     ChannelId: BigInt(id),
                 });
             }

@@ -1,41 +1,36 @@
 import querystring from "querystring";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args } from "@sapphire/framework";
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
 import { EmbedBuilder, Message } from "discord.js";
 import fetch from "node-fetch";
-import { UrbanResponse } from "../../lib/Interfaces/UrbanResponse";
+import { UrbanResponse } from "../../lib/Interfaces/Common/UrbanResponse";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiUtil from "../../lib/Kaiki/KaikiUtil";
-import KaikiEmbeds from "../../lib/KaikiEmbeds";
 import Utility from "../../lib/Utility";
 import Constants from "../../struct/Constants";
 
+@ApplyOptions<KaikiCommandOptions>({
+    name: "urbandict",
+    aliases: ["urban", "ud"],
+    description: "Searches Urban Dictionary for a word or sentence",
+    usage: ["Watermelon", "anime"],
+})
 export default class UrbanDictCommand extends KaikiCommand {
-    constructor() {
-        super("urbandict", {
-            aliases: ["urbandict", "urban", "ud"],
-            description: "Searches Urban Dictionary for a word or sentence",
-            usage: ["Watermelon", "anime"],
-            args: [
-                {
-                    id: "term",
-                    match: "rest",
-                    otherwise: (msg: Message) => ({ embeds: [KaikiEmbeds.genericArgumentError(msg)] }),
-                },
-            ],
-        });
-    }
+    public async messageRun(message: Message, args: Args): Promise<Message | void> {
 
-    public async exec(message: Message, { term }: { term: string }): Promise<Message | void> {
+        const query = querystring.stringify({ term: await args.rest("string") });
 
-        const query = querystring.stringify({ term: term });
-
-        const { list }: { list: UrbanResponse[] } = (await KaikiUtil.handleToJSON(await (await fetch(`https://api.urbandictionary.com/v0/define?${query}`)).json()));
+        const { list }: {
+            list: UrbanResponse[]
+        } = (await KaikiUtil.handleToJSON(await (await fetch(`https://api.urbandictionary.com/v0/define?${query}`)).json()));
 
         if (!list.length) {
             return message.channel.send({
                 embeds: [
                     new EmbedBuilder({
-                        description: `No results found for **${term}**.`,
+                        description: `No results found for **${query}**.`,
                     })
                         .withErrorColor(message),
                 ],

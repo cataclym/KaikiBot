@@ -1,30 +1,25 @@
-import { Argument } from "discord-akairo";
-import { EmbedBuilder, Message, resolveColor, Role } from "discord.js";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args } from "@sapphire/framework";
+import { EmbedBuilder, Message, resolveColor } from "discord.js";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
-
+@ApplyOptions<KaikiCommandOptions>({
+    name: "roleinfo",
+    aliases: ["role", "rinfo"],
+    description: "Shows info about a given role. If no role is supplied, it defaults to current one.",
+    usage: ["@Gamers"],
+    preconditions: ["GuildOnly"],
+})
 export default class RoleInfoCommand extends KaikiCommand {
-    constructor() {
-        super("roleinfo", {
-            aliases: ["roleinfo", "role", "rinfo"],
-            description: "Shows info about a given role. If no role is supplied, it defaults to current one.",
-            usage: "@Gamers",
-            channel: "guild",
-            args: [
-                {
-                    id: "role",
-                    type: Argument.union("role", (m, p) => p?.length
-                        ? undefined
-                        : m.member?.roles.highest),
-                    match: "content",
-                    otherwise: (m) => ({ embeds: [KaikiEmbeds.roleArgumentError(m)] }),
-                },
-            ],
-        });
-    }
+    public async messageRun(message: Message<true>, args: Args): Promise<Message> {
 
-    public async exec(message: Message, { role }: { role: Role }): Promise<Message> {
+        if (!message.member) throw new Error();
+
+        const role = args.finished
+            ? message.member.roles.highest
+            : await args.rest("role");
+
         return message.channel.send({
             embeds: [
                 new EmbedBuilder({

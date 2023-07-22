@@ -1,86 +1,69 @@
-import { EmbedBuilder, GuildTextBasedChannel, Message, PermissionsBitField } from "discord.js";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args } from "@sapphire/framework";
+import { EmbedBuilder, Message } from "discord.js";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
-
+@ApplyOptions<KaikiCommandOptions>({
+    name: "goodbye",
+    aliases: ["goodbyetoggle", "byetoggle", "bye"],
+    description: "Toggles leave messages. Bot defaults to current channel if no channel is provided.",
+    usage: ["", "#leave-channel"],
+    requiredUserPermissions: ["ManageGuild"],
+    preconditions: ["GuildOnly"],
+    minorCategory: "Goodbye",
+})
 export default class GoodbyeConfigCommand extends KaikiCommand {
-    constructor() {
-        super("goodbye", {
-            aliases: ["goodbyetoggle", "goodbye", "byetoggle", "bye"],
-            userPermissions: PermissionsBitField.Flags.ManageGuild,
-            channel: "guild",
-            description: "Toggles leave messages. Bot defaults to current channel if no channel is provided.",
-            usage: ["", "#leave-channel"],
-            args: [
-                {
-                    id: "channel",
-                    type: "textChannel",
-                },
-            ],
-            subCategory: "Goodbye",
-        });
-    }
+    public async messageRun(message: Message<true>, args: Args): Promise<Message> {
 
-    public async exec(message: Message<true>, { channel }: { channel: GuildTextBasedChannel | null }): Promise<Message> {
+        const channel = await args.rest("guildTextChannel").catch(() => message.channel);
 
         const embed = new EmbedBuilder()
             .withOkColor(message);
 
-        let guildTable = await this.client.orm.guilds.findUnique({
-            where: {
-                Id: BigInt(message.guildId),
-            },
-            select: {
-                ByeChannel: true,
-            },
-        });
-
-        if (!guildTable) {
-            guildTable = await this.client.db.getOrCreateGuild(message.guildId);
-        }
-
-
-        channel = channel || message.channel;
+        const guildTable = await this.client.db.getOrCreateGuild(BigInt(message.guildId));
 
         const bigIntChannelId = BigInt(channel.id);
 
-        switch (guildTable?.ByeChannel) {
-            case undefined:
-            case null: {
-                await this.client.orm.guilds.update({
-                    where: {
-                        Id: BigInt(message.guildId),
-                    },
-                    data: {
-                        ByeChannel: bigIntChannelId,
-                    },
-                });
-                embed.setDescription(`Enabled goodbye message in ${channel.name}`);
-                break;
-            }
-            case bigIntChannelId: {
-                await this.client.orm.guilds.update({
-                    where: {
-                        Id: BigInt(message.guildId),
-                    },
-                    data: {
-                        ByeChannel: null,
-                    },
-                });
-                embed.setDescription("Disabled goodbye message");
-                break;
-            }
-            default: {
-                await this.client.orm.guilds.update({
-                    where: {
-                        Id: BigInt(message.guildId),
-                    },
-                    data: {
-                        ByeChannel: bigIntChannelId,
-                    },
-                });
-                embed.setDescription(`Set goodbye message to ${channel.name}`);
-                break;
-            }
+        if (guildTable.ByeChannel === undefined || guildTable.ByeChannel === null) {
+
+            await this.client.orm.guilds.update({
+                where: {
+                    Id: BigInt(message.guildId),
+                },
+                data: {
+                    ByeChannel: bigIntChannelId,
+                },
+            });
+            embed.setDescription(`Enabled goodbye message in ${channel.name}`);
+        }
+
+        else if (guildTable.ByeChannel === bigIntChannelId) {
+
+            await this.client.orm.guilds.update({
+                where: {
+                    Id: BigInt(message.guildId),
+                },
+                data: {
+                    ByeChannel: null,
+                },
+            });
+            embed.setDescription("Disabled goodbye message");
+
+        }
+
+        else {
+
+            await this.client.orm.guilds.update({
+                where: {
+                    Id: BigInt(message.guildId),
+                },
+                data: {
+                    ByeChannel: bigIntChannelId,
+                },
+            });
+            embed.setDescription(`Set goodbye message to ${channel.name}`);
+
         }
 
         return message.channel.send({

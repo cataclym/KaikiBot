@@ -1,8 +1,9 @@
-import logger from "loglevel";
-import fetch from "node-fetch";
+import { container } from "@sapphire/pieces";
+import { Collection } from "discord.js";
+import fetch, { RequestInfo } from "node-fetch";
 import KaikiUtil from "../../lib/Kaiki/KaikiUtil";
 import Constants from "../../struct/Constants";
-import E261APIData, { Post } from "../Interfaces/E261APIData";
+import E261APIData, { Post } from "../Interfaces/Common/E261APIData";
 
 export enum DAPI {
     E621,
@@ -11,9 +12,10 @@ export enum DAPI {
 
 export type HentaiTypes = "waifu" | "neko" | "femboy" | "trap" | "blowjob";
 
+// noinspection FunctionNamingConventionJS
 export default class HentaiService {
 
-    public imageCache: { [id: string]: Post } = {};
+    public imageCache = new Collection<number, Post>();
 
     options = {
         method: "GET",
@@ -46,58 +48,63 @@ export default class HentaiService {
 
     }
 
-    async DapiGrabber(tags: string[] | null, type: DAPI): Promise<Post | void> {
+    async apiGrabber(tags: string[] | null, type: DAPI): Promise<Post | void> {
 
         const tag = tags?.join("+").replace(" ", "_").toLowerCase() || "";
         let url = "";
 
+        const query = new URLSearchParams();
+
         switch (type) {
-            case DAPI.E621: {
-                const query = new URLSearchParams();
-                query.append("tags", tag);
+            case DAPI.E621:
+                if (tags) {
+                    query.append("tags", tag);
+                }
                 query.append("limit",
                     "50");
-                url = `https://e621.net/posts.json?${query}`;
-                break;
-            }
-            case DAPI.Danbooru: {
+
+                return this.e621(`https://e621.net/posts.json?${query}`);
+
+            case DAPI.Danbooru:
                 url = `https://danbooru.donmai.us/posts.json?limit=100&tags=${tag}`;
                 break;
-            }
-        }
 
-        if (type === DAPI.E621) {
-
-            const cache = Object.values(this.imageCache);
-            if (cache.length > Constants.MAGIC_NUMBERS.LIB.HENTAI.HENTAI_SERVICE.FULL_CACHE_SIZE) {
-                return cache[Math.floor(Math.random() * cache.length)];
-            }
-
-            const r = (await fetch(url, this.options));
-
-            if (Object.values(Constants.MAGIC_NUMBERS.LIB.HENTAI.HENTAI_SERVICE.HTTP_REQUESTS).includes(r.status)
-                && cache.length >= Constants.MAGIC_NUMBERS.LIB.HENTAI.HENTAI_SERVICE.MEDIUM_CACHE_SIZE) {
-                return cache[Math.floor(Math.random() * cache.length)];
-            }
-
-            if (r.status !== Constants.MAGIC_NUMBERS.LIB.HENTAI.HENTAI_SERVICE.HTTP_REQUESTS.OK) {
-                throw new Error(`Error: Fetch didnt return successful Status code\n${r.status} ${r.statusText}`);
-            }
-
-            const json = <E261APIData> await r.json()
-                .catch((err) => logger.error(err));
-
-            if (Array.isArray(json)) {
-                json.posts.forEach((p) => (this.imageCache)[p.id] = p);
-
-                return json.posts[Math.floor(Math.random() * json.posts.length)];
-            }
-
-            else {
-                const res = await fetch(url);
-                return JSON.parse(res.body?.toString()).posts;
-            }
         }
     }
 
+    async e621(url: RequestInfo) {
+
+
+        if (this.imageCache.size > Constants.MAGIC_NUMBERS.LIB.HENTAI.HENTAI_SERVICE.FULL_CACHE_SIZE) {
+            return this.imageCache.random()!;
+        }
+
+        const r = await fetch(url, this.options);
+
+        if (Object.values(Constants.MAGIC_NUMBERS.LIB.HENTAI.HENTAI_SERVICE.HTTP_REQUESTS).includes(r.status)
+            && this.imageCache.size >= Constants.MAGIC_NUMBERS.LIB.HENTAI.HENTAI_SERVICE.MEDIUM_CACHE_SIZE) {
+            return this.imageCache.random();
+        }
+
+        if (r.status !== Constants.MAGIC_NUMBERS.LIB.HENTAI.HENTAI_SERVICE.HTTP_REQUESTS.OK) {
+            throw new Error(`Error: Fetch didnt return successful Status code\n${r.status} ${r.statusText}`);
+        }
+
+        const json = <E261APIData> await r.json()
+            .catch((err) => container.logger.error(err));
+
+        if (Array.isArray(json.posts)) {
+            const [post] = await Promise.all(json.posts.map(async (p) => this.imageCache.set(p.id, p)));
+
+            return post.random();
+        }
+
+        else {
+            const res = await fetch(url);
+
+            if (!res.body) return;
+
+            return JSON.parse(res.body.toString()).posts;
+        }
+    }
 }

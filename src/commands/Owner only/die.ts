@@ -1,18 +1,17 @@
 import process from "process";
+import { ApplyOptions } from "@sapphire/decorators";
 import { ActionRowBuilder, ButtonBuilder, EmbedBuilder, InteractionCollector, Message } from "discord.js";
-import logger from "loglevel";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
+@ApplyOptions<KaikiCommandOptions>({
+    name: "die",
+    aliases: ["shutdown", "kill"],
+    description: "Shuts down bot.",
+    preconditions: ["OwnerOnly"],
+})
 export default class KillBotProcess extends KaikiCommand {
-    constructor() {
-        super("die", {
-            aliases: ["die", "kill", "shutdown"],
-            description: "Shuts down bot.",
-            ownerOnly: true,
-        });
-    }
-
-    public async exec(message: Message): Promise<void> {
+    public async messageRun(message: Message) {
 
         const deleteMsg = await message.channel.send({
             embeds: [
@@ -61,7 +60,7 @@ export default class KillBotProcess extends KaikiCommand {
 
             await deleteMsg.delete();
 
-            logger.warn("Shutting down");
+            this.container.logger.warn("Shutting down");
             // Disconnects the client connection
             this.client.destroy();
             // Exits process with SIGINT

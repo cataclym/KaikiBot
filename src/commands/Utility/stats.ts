@@ -1,21 +1,22 @@
 import { execSync } from "child_process";
 import * as process from "process";
-import { version as akairoVersion } from "discord-akairo";
+import { ApplyOptions } from "@sapphire/decorators";
+import { version as sapphireVersion } from "@sapphire/framework";
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
 import { ChannelType, EmbedBuilder, Message, time, version } from "discord.js";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+import Constants from "../../struct/Constants";
 
+@ApplyOptions<KaikiCommandOptions>({
+    aliases: ["stats"],
+    description: "Statistics and information",
+    minorCategory: "Info",
+})
 export default class StatsCommand extends KaikiCommand {
-    constructor() {
-        super("stats", {
-            aliases: ["stats"],
-            description: "Statistics and information",
-            subCategory: "Info",
-        });
-    }
 
-    public async exec(message: Message) {
+    public async messageRun(message: Message) {
 
         const packageJSON = this.client.package;
         const { cache } = this.client.guilds;
@@ -24,7 +25,7 @@ export default class StatsCommand extends KaikiCommand {
                 .setAuthor({
                     name: `${packageJSON.name} v${packageJSON.version}-${execSync("git rev-parse --short HEAD").toString()}`,
                     iconURL: message.client.user.displayAvatarURL(),
-                    url: packageJSON.repository.url,
+                    url: Constants.LINKS.REPO_URL,
                 })
                 .setDescription("Detailed statistics")
                 .addFields([
@@ -58,8 +59,8 @@ export default class StatsCommand extends KaikiCommand {
                         inline: true,
                     },
                     {
-                        name: "Discord-Akairo framework (Fork by TanzaniteBot)",
-                        value: `[Discord-Akairo (forked)](https://github.com/TanzaniteBot/discord-akairo 'github') v${akairoVersion}`,
+                        name: "@Sapphire/framework",
+                        value: `[sapphirejs](https://www.sapphirejs.dev/ 'sapphirejs website') v${sapphireVersion}`,
                         inline: true,
                     },
                     {
@@ -74,13 +75,13 @@ export default class StatsCommand extends KaikiCommand {
                     },
                 ])
                 .setAuthor({
-                    name: "© 2022 @Cata#2702",
+                    name: "© 2023 @Cata#2702",
                     iconURL: message.client.user.displayAvatarURL(),
                     url: packageJSON.repository.url,
                 })
                 .withOkColor(message),
         ];
 
-        return sendPaginatedMessage(message, pages, {});
+        return sendPaginatedMessage(message, pages, { owner: message.author });
     }
 }

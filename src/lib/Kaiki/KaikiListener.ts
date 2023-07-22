@@ -1,17 +1,16 @@
-import { Listener, ListenerOptions } from "discord-akairo";
-import KaikiAkairoClient from "./KaikiAkairoClient";
+import { Listener } from "@sapphire/framework";
+import { Events } from "discord.js";
+import KaikiSapphireClient from "./KaikiSapphireClient";
 
 export default class KaikiListener extends Listener {
+    client: KaikiSapphireClient<true>;
 
-    exec(...args: any[]) {
-        throw new Error("Method not implemented.");
+    public constructor(context: Listener.Context, options: Listener.Options) {
+        super(context, { ...options, event: Events.ClientReady, once: undefined });
+        this.client = this.container.client as KaikiSapphireClient<true>;
     }
 
-    client: KaikiAkairoClient<true>;
-
-    constructor(id: string, options: ListenerOptions) {
-        super(id, options);
+    run(...args: any): any {
+        return undefined;
     }
-
-
 }

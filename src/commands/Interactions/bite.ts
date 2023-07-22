@@ -1,24 +1,17 @@
-import { GuildMember, Message } from "discord.js";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args } from "@sapphire/framework";
+import { Message } from "discord.js";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
+@ApplyOptions<KaikiCommandOptions>({
+    name: "bite",
+    description: "Bite someone >:)",
+    usage: [""],
+    typing: true,
+})
 export default class Bite extends KaikiCommand {
-    constructor() {
-        super("bite", {
-            aliases: ["bite"],
-            description: "Bite someone >:)",
-            usage: [""],
-            typing: true,
-            args: [
-                {
-                    id: "mention",
-                    type: "member",
-                    default: null,
-                },
-            ],
-        });
-    }
-
-    public async exec(message: Message, { mention }: { mention: GuildMember | null }): Promise<Message> {
-        return this.client.imageAPIs.PurrBot.sendImageAPIRequest(message, "bite", mention);
+    public async messageRun(message: Message, args: Args): Promise<Message> {
+        return this.client.imageAPIs.PurrBot.sendImageAPIRequest(message, "bite", await args.rest("member").catch(() => null));
     }
 }

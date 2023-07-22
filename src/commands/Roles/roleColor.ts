@@ -1,47 +1,37 @@
-import { AttachmentBuilder, EmbedBuilder, Message, PermissionsBitField, resolveColor, Role } from "discord.js";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args } from "@sapphire/framework";
+import { AttachmentBuilder, EmbedBuilder, Message, PermissionsBitField, resolveColor } from "discord.js";
 import { imgFromColor } from "../../lib/Color";
-import KaikiArgumentsTypes from "../../lib/Kaiki/KaikiArgumentsTypes";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-import KaikiEmbeds from "../../lib/KaikiEmbeds";
+import KaikiEmbeds from "../../lib/Kaiki/KaikiEmbeds";
 import { rolePermissionCheck } from "../../lib/Roles";
-import { KaikiColor } from "../../lib/Types/KaikiColor";
 import Utility from "../../lib/Utility";
 
+@ApplyOptions<KaikiCommandOptions>({
+    name: "rolecolor",
+    aliases: ["roleclr", "rclr"],
+    description: "Sets or displays the color of a given role, or your highest role.",
+    usage: ["@Gamer ff00ff"],
+    preconditions: ["GuildOnly"],
+})
 export default class RoleColorCommand extends KaikiCommand {
-    constructor() {
-        super("rolecolor", {
-            aliases: ["rolecolor", "roleclr", "rclr"],
-            description: "Sets or displays the color of a given role, or your highest role.",
-            usage: "@Gamer ff00ff",
-            channel: "guild",
-            args: [
-                {
-                    id: "role",
-                    type: "role",
-                },
-                {
-                    id: "clr",
-                    type: KaikiArgumentsTypes.kaikiColorArgument,
-                    default: null,
-                },
-            ],
-        });
-    }
-
-    public async exec(message: Message<true>, {
-        role,
-        clr,
-    }: { role: Role | undefined, clr: KaikiColor | null }) {
+    public async messageRun(message: Message<true>, args: Args) {
 
         const { member } = message;
 
+        if (!member) throw new Error();
+
+        const role = args.finished
+            ? member.roles.highest
+            : await args.pick("role");
+
+        const clr = args.finished
+            ? undefined
+            : await args.pick("kaikiColor");
+
         if (!clr) {
-
-            if (!message.member) return;
-
-            if (!role) role = message.member.roles.highest;
-
-            const attachment = new AttachmentBuilder(await imgFromColor(Utility.HEXtoRGB(role.hexColor)), { name: "color.png" });
+            const attachment = new AttachmentBuilder(await imgFromColor(Utility.convertHexToRGB(role.hexColor)), { name: "color.png" });
             return message.channel.send({
                 files: [attachment],
                 embeds: [
@@ -54,8 +44,6 @@ export default class RoleColorCommand extends KaikiCommand {
                 ],
             });
         }
-
-        if (!role) return message.channel.send({ embeds: [KaikiEmbeds.genericArgumentError(message)] });
 
         const { hexColor } = role,
             attachment = new AttachmentBuilder(await imgFromColor(clr), { name: "color.png" });

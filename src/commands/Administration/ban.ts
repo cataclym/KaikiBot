@@ -1,60 +1,43 @@
-import { Argument } from "discord-akairo";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args } from "@sapphire/framework";
+import { EmbedBuilder, GuildMember, Message, User } from "discord.js";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
-import { EmbedBuilder, Guild, GuildMember, Message, PermissionsBitField, Snowflake, User } from "discord.js";
-import KaikiCommand from "../../lib/Kaiki/KaikiCommand.js";
-
+@ApplyOptions<KaikiCommandOptions>({
+    name: "ban",
+    aliases: ["bean", "b"],
+    description: "Bans a user by ID or name with an optional message.",
+    usage: "@notdreb Your behaviour is harmful",
+    requiredUserPermissions: ["BanMembers"],
+    requiredClientPermissions: ["BanMembers"],
+    preconditions: ["GuildOnly"],
+})
 export default class BanCommand extends KaikiCommand {
-    constructor() {
-        super("ban", {
-            aliases: ["ban", "bean", "b"],
-            userPermissions: PermissionsBitField.Flags.BanMembers,
-            clientPermissions: PermissionsBitField.Flags.BanMembers,
-            description: "Bans a user by ID or name with an optional message.",
-            usage: "@notdreb Your behaviour is harmful",
-            channel: "guild",
-            args: [
-                {
-                    id: "user",
-                    type: Argument.union("member", "user", async (_, phrase) => {
-                        const u = await this.client.users.fetch(phrase as Snowflake);
-                        return u || null;
-                    }),
-                    otherwise: (m: Message) => ({
-                        embeds: [
-                            new EmbedBuilder({
-                                description: "Can't find this user.",
-                            })
-                                .withErrorColor(m),
-                        ],
-                    }),
-                },
-                {
-                    id: "reason",
-                    type: "string",
-                    match: "restContent",
-                    default: "No reason specified",
-                },
-            ],
-        });
-    }
 
-    public async exec(message: Message, {
-        user,
-        reason,
-    }: { user: GuildMember | User, reason: string }): Promise<Message> {
+    public async messageRun(message: Message<true>, args: Args) {
 
-        const guild = message.guild as Guild,
-            guildClientMember = guild.members.me as GuildMember;
+        // Using both user and member to be able to user username as well as ids.
+        const user = await Promise.resolve(args.pick("user")
+            .catch(async () => args.pick("member")));
+
+        // Default ban string
+        const reason = await args.rest("string")
+            .catch(() => `Banned by ${message.author.username} [${message.author.id}]`);
+
+        const username = user instanceof User
+            ? user.username
+            : user.user.username;
+
+        const guild = message.guild,
+            guildClientMember = guild.members.me;
 
         const successBan = new EmbedBuilder({
             title: "Banned user",
             fields: [
-                {
-                    name: "Username", value: user instanceof GuildMember
-                        ? user.user.username
-                        : user.username, inline: true,
-                },
+                { name: "Username", value: username },
                 { name: "ID", value: user.id, inline: true },
+                { name: "Reason", value: reason, inline: true },
             ],
         })
             .withOkColor(message);
@@ -67,7 +50,7 @@ export default class BanCommand extends KaikiCommand {
             return message.channel.send({ embeds: [successBan] });
         }
 
-        // Check if member is bannable
+        // Check if member is ban-able
         if (message.author.id !== message.guild?.ownerId &&
             (message.member as GuildMember).roles.highest.position <= guildMember.roles.highest.position) {
 
@@ -82,7 +65,7 @@ export default class BanCommand extends KaikiCommand {
         }
 
         // x2
-        else if (guildClientMember.roles.highest.position <= guildMember.roles.highest.position) {
+        else if (guildClientMember && guildClientMember.roles.highest.position <= guildMember.roles.highest.position) {
             return message.channel.send({
                 embeds: [
                     new EmbedBuilder({
@@ -108,7 +91,7 @@ export default class BanCommand extends KaikiCommand {
                 // ignored
             }
         })
-            .catch((err) => console.log(err));
+            .catch((err) => this.client.logger.error(err));
 
         return message.channel.send({ embeds: [successBan] });
     }

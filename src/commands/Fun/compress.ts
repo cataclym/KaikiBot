@@ -1,25 +1,32 @@
-import { AttachmentBuilder, EmbedBuilder, Message, User } from "discord.js";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args, UserError } from "@sapphire/framework";
+import { AttachmentBuilder, EmbedBuilder, GuildMember, Message } from "discord.js";
 import fetch from "node-fetch";
 import sharp from "sharp";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
-export default class SquishCommand extends KaikiCommand {
-    constructor() {
-        super("compress", {
-            aliases: ["compress"],
-            description: "Compresses given member's avatar...",
-            usage: "@dreb",
-            args: [
-                {
-                    id: "member",
-                    type: "user",
-                    default: (message: Message) => message.author,
-                },
-            ],
-        });
-    }
+@ApplyOptions<KaikiCommandOptions>({
+    name: "compress",
+    description: "Compresses given member's avatar...",
+    usage: ["@dreb"],
+    preconditions: ["GuildOnly"],
+})
+export default class CompressCommand extends KaikiCommand {
 
-    public async exec(message: Message, { member }: { member: User }) {
+    public async messageRun(message: Message, args: Args) {
+
+        const member = <GuildMember> await args.pick("member")
+            .catch(() => {
+                if (args.finished) {
+                    return message.member;
+                }
+                throw new UserError({
+                    identifier: "NoMemberProvided",
+                    message: "Couldn't find a server member with that name.",
+                });
+            });
+
         const avatar = await (await fetch(member.displayAvatarURL({
             size: 32,
             extension: "jpg",

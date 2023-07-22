@@ -1,55 +1,25 @@
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args } from "@sapphire/framework";
 import { EmbedBuilder, Message } from "discord.js";
 import images from "../../data/images.json";
-import KaikiArgumentsTypes from "../../lib/Kaiki/KaikiArgumentsTypes";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 type Sides = "tails" | "heads";
 
+@ApplyOptions<KaikiCommandOptions>({
+    name: "betflip",
+    aliases: ["bf"],
+    description: "Bet on tails or heads. Guessing correct awards you 1.95x the currency you've bet.",
+    usage: ["5 heads", "10 t"],
+})
 export default class BetflipCommands extends KaikiCommand {
-    private readonly coinArgs: { [index: string]: Sides };
+    public async messageRun(message: Message, args: Args): Promise<Message> {
 
-    constructor() {
-        super("betflip", {
-            aliases: ["betflip", "bf"],
-            description: "Bet on tails or heads. Guessing correct awards you 1.95x the currency you've bet.",
-            usage: ["5 heads", "10 t"],
-            args: [
-                {
-                    id: "number",
-                    type: KaikiArgumentsTypes.moneyArgument,
-                    otherwise: (m) => ({
-                        embeds: [
-                            new EmbedBuilder()
-                                .setDescription("Please provide an amount to bet!")
-                                .withErrorColor(m),
-                        ],
-                    }),
-                },
-                {
-                    id: "coin",
-                    type: (_m, p) => this.coinArgs[p.toLowerCase()],
-                    otherwise: (m) => ({
-                        embeds: [
-                            new EmbedBuilder()
-                                .setDescription("Please select heads or tails!")
-                                .withErrorColor(m),
-                        ],
-                    }),
-                },
-            ],
-        });
-        this.coinArgs = {
-            "heads": "heads",
-            "head": "heads",
-            "h": "heads",
-            "tails": "tails",
-            "tail": "tails",
-            "t": "tails",
-        };
-    }
+        const number = await args.pick("kaikiMoney");
+        const coin = await args.rest("kaikiCoin");
 
-    public async exec(message: Message, { number, coin }: { number: bigint, coin: Sides }): Promise<Message> {
-        const success = await this.client.money.TryTake(message.author.id, number, "Betflip gamble");
+        const success = await this.client.money.tryTake(message.author.id, number, "Betflip gamble");
 
         if (!success) {
             return await message.channel.send({
@@ -72,7 +42,7 @@ export default class BetflipCommands extends KaikiCommand {
 
         if (coin === coinFlipped) {
             const amountWon = BigInt(Math.round(parseInt(number.toString()) * 1.95));
-            await this.client.money.Add(message.author.id, amountWon, "Betflip won x1.95");
+            await this.client.money.add(message.author.id, amountWon, "Betflip won x1.95");
 
             return message.channel.send({
                 embeds: [

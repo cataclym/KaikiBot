@@ -1,17 +1,16 @@
+import { ApplyOptions } from "@sapphire/decorators";
 import { EmbedBuilder, Message } from "discord.js";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
+@ApplyOptions<KaikiCommandOptions>({
+    name: "economy",
+    aliases: ["eco"],
+    description: "Displays overall currency statistics.",
+    preconditions: ["GuildOnly"],
+})
 export default class EconomyCommand extends KaikiCommand {
-    constructor() {
-        super("economy", {
-            aliases: ["economy", "eco"],
-            description: "Displays overall currency statistics.",
-            usage: "",
-            channel: "guild",
-        });
-    }
-
-    public async exec(message: Message): Promise<Message> {
+    public async messageRun(message: Message): Promise<Message> {
         const { currencySymbol } = this.client.money,
             usersDb = await this.client.orm.discordUsers.findMany({
                 select: {
@@ -24,6 +23,8 @@ export default class EconomyCommand extends KaikiCommand {
             totalUsersSum += Amount;
         }
 
+        const avgSum = totalUsersSum / BigInt(usersDb.length);
+
         const embeds = [
             new EmbedBuilder()
                 .setTitle("Economy stats")
@@ -31,6 +32,10 @@ export default class EconomyCommand extends KaikiCommand {
                     {
                         name: "Total currency owned by users",
                         value: `${totalUsersSum} ${currencySymbol}`,
+                    },
+                    {
+                        name: "Average amount per user",
+                        value: `${avgSum} ${currencySymbol}`,
                     },
                 ])
                 .withOkColor(message),

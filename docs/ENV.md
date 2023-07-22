@@ -56,6 +56,7 @@ Example
 ## MySQL
 
 Replace `yourUsername` and `yourPassword` with your MySQL user and password credentials
+- Note: In some cases you need to change `localhost` with `127.0.0.1` 
 
 Example
 

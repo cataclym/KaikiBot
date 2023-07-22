@@ -1,31 +1,24 @@
-import { EmbedBuilder, Message, PermissionsBitField } from "discord.js";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args } from "@sapphire/framework";
+import { EmbedBuilder, Message } from "discord.js";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
-import KaikiEmbeds from "../../lib/KaikiEmbeds";
-
+@ApplyOptions<KaikiCommandOptions>({
+    name: "rolecreate",
+    aliases: ["createrole", "rc", "cr"],
+    description: "Creates a role with a given name.",
+    usage: ["GAMERS"],
+    requiredUserPermissions: ["ManageRoles"],
+    requiredClientPermissions: ["ManageRoles"],
+    preconditions: ["GuildOnly"],
+})
 export default class RoleCreateCommand extends KaikiCommand {
-    constructor() {
-        super("rolecreate", {
-            aliases: ["rolecreate", "createrole", "rc", "cr"],
-            description: "Creates a role with a given name.",
-            usage: "GAMERS",
-            clientPermissions: PermissionsBitField.Flags.ManageRoles,
-            userPermissions: PermissionsBitField.Flags.ManageRoles,
-            channel: "guild",
-            args: [
-                {
-                    id: "name",
-                    type: "string",
-                    match: "rest",
-                    otherwise: (msg: Message) => ({ embeds: [KaikiEmbeds.genericArgumentError(msg)] }),
-                },
-            ],
-        });
-    }
+    public async messageRun(message: Message, args: Args): Promise<Message> {
 
-    public async exec(message: Message, { name }: { name: string }): Promise<Message> {
+        const name = await args.rest("string");
 
-        const createdRole = await message.guild?.roles.create({ name: name });
+        const createdRole = await message.guild?.roles.create({ name: name.substring(0, 32) });
 
         if (!createdRole) {
             throw new Error("Role creation failed.");
@@ -36,6 +29,16 @@ export default class RoleCreateCommand extends KaikiCommand {
                 new EmbedBuilder({
                     title: "Success!",
                     description: `Created ${createdRole}!`,
+                    fields: [
+                        {
+                            name: "Name",
+                            value: createdRole.name,
+                        },
+                        {
+                            name: "ID",
+                            value: createdRole.id,
+                        },
+                    ],
                 })
                     .withOkColor(message),
             ],

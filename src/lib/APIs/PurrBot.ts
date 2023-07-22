@@ -1,5 +1,5 @@
 import { GuildMember, Message } from "discord.js";
-import { hexColorTable } from "../Color";
+import Constants from "../../struct/Constants";
 import APIProcessor from "./APIProcessor";
 import ImageAPI from "./Common/ImageAPI";
 import { ImageAPIOptions } from "./Common/Types";
@@ -30,18 +30,18 @@ export default class PurrBot extends ImageAPI<EndpointSignatures> {
         endPointData: {
             "bite": {
                 action: "just bit",
-                color: hexColorTable["crimson"],
+                color: Constants.hexColorTable["crimson"],
                 append: "!!!",
             },
             "blush": {
                 action: "blushed",
-                color: hexColorTable["mediumorchid"],
+                color: Constants.hexColorTable["mediumorchid"],
                 appendable: true,
 
             },
             "feed": {
                 action: "fed",
-                color: hexColorTable["springgreen"],
+                color: Constants.hexColorTable["springgreen"],
                 append: "🍖",
             },
         },

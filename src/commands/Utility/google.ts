@@ -1,10 +1,11 @@
-import querystring from "querystring";
+import { ApplyOptions } from "@sapphire/decorators";
 import { EmbedBuilder, Message } from "discord.js";
-
 import fetch from "node-fetch";
 import { parse } from "node-html-parser";
+import querystring from "querystring";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-import KaikiEmbeds from "../../lib/KaikiEmbeds";
+import KaikiEmbeds from "../../lib/Kaiki/KaikiEmbeds";
 
 type ParsedResult = {
     title: string,
@@ -12,23 +13,15 @@ type ParsedResult = {
     description: string
 }
 
+@ApplyOptions<KaikiCommandOptions>({
+    name: "google",
+    aliases: ["search", "g"],
+    description: "Search google for something .",
+    usage: ["bing"],
+})
 export default class GoogleSearchCommand extends KaikiCommand {
-    constructor() {
-        super("google", {
-            aliases: ["google", "search", "g"],
-            description: "Search google for something .",
-            usage: "bing",
-            args: [
-                {
-                    id: "search",
-                    match: "rest",
-                    otherwise: (m) => ({ embeds: [KaikiEmbeds.genericArgumentError(m)] }),
-                },
-            ],
-        });
-    }
 
-    private options = {
+    private agent = {
         headers: {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.157 Safari/537.36",
         },
@@ -37,7 +30,7 @@ export default class GoogleSearchCommand extends KaikiCommand {
     public async exec(message: Message, { search }: { search: string }): Promise<Message> {
 
         const link = `https://www.google.com/search?${new URLSearchParams({ q: search })}&safe=on&lr=lang_eng&hl=en&ie=utf-8&oe=utf-8`;
-        const result = await fetch(link, this.options)
+        const result = await fetch(link, this.agent)
             .then(async reeee => parse(await reeee.text()));
 
         const parsedResults: ParsedResult[] = [];
@@ -51,22 +44,22 @@ export default class GoogleSearchCommand extends KaikiCommand {
                 url: res.querySelector("div.yuRUbf > a")?.rawAttributes.href,
                 description: (() => {
 
-                    const spans = res.querySelectorAll("span")
-                        .map(div => div.innerText)
-                        .filter(Boolean);
+                        const spans = res.querySelectorAll("span")
+                            .map(div => div.innerText)
+                            .filter(Boolean);
 
-                    return spans.length > 1
-                        ? spans.slice(1)
-                        : spans;
+                        return spans.length > 1
+                            ? spans.slice(1)
+                            : spans;
 
-                })()
-                    .join("\n")
+                    })()
+                        .join("\n")
                     || "N/A",
             });
         }
 
         if (!parsedResults.length) {
-            return message.channel.send({ embeds: [await KaikiEmbeds.errorMessage(message, `**${message.author.tag}** No results found`)] });
+            return message.channel.send({ embeds: [await KaikiEmbeds.errorMessage(message, `**${message.author.username}** No results found`)] });
         }
 
         return message.channel.send({

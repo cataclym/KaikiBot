@@ -1,46 +1,75 @@
 import { time } from "@discordjs/builders";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args, UserError } from "@sapphire/framework";
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
-import { EmbedBuilder, Message, User } from "discord.js";
+import { EmbedBuilder, Message } from "discord.js";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-import KaikiEmbeds from "../../lib/KaikiEmbeds";
+import KaikiEmbeds from "../../lib/Kaiki/KaikiEmbeds";
 import Constants from "../../struct/Constants";
 
+@ApplyOptions<KaikiCommandOptions>({
+    name: "currencytransactions",
+    aliases: ["curtrs"],
+    description: "Shows your currency transactions. Bot owner can see other people's transactions.",
+    usage: ["", "7", "10 @drev"],
+})
 export default class CurrencyTransactionsCommand extends KaikiCommand {
-    constructor() {
-        super("currencytransactions", {
-            aliases: ["currencytransactions", "curtrs"],
-            description: "Shows your currency transactions. Bot owner can see other people's transactions.",
-            usage: ["", "7", "10 @drev"],
-            args: [
-                {
-                    id: "optionalPage",
-                    type: "number",
-                    default: 1,
-                    unordered: true,
-                },
-                {
-                    id: "optionalUser",
-                    type: "user",
-                    default: (m: Message) => m.author,
-                    unordered: true,
-                },
-            ],
-        });
-    }
 
-    public async exec(message: Message, {
-        optionalPage,
-        optionalUser,
-    }: { optionalUser: User, optionalPage: number }) {
+    public async messageRun(message: Message, args: Args) {
 
-        if (optionalPage <= 0 || !Number.isSafeInteger(optionalPage)) {
-            optionalPage = 1;
+        const firstArg = await Promise.resolve(args.pick("number")
+            .catch(async () => args.pick("member")
+                .then(async (m) => m.user))
+            .catch(async () => {
+                if (args.finished) {
+                    return message.author;
+                }
+                throw new UserError({
+                    identifier: "IncorrectArgs",
+                    message: "Your arguments didn't resolve to a number or a member.",
+                });
+            }));
+
+        const secondArg = await Promise.resolve(args.pick("member")
+            .then(async (m) => m.user))
+            .catch(async () => {
+                if (args.finished) {
+                    return null;
+                }
+                throw new UserError({
+                    identifier: "IncorrectArgs",
+                    message: "Your arguments didn't resolve to a member.",
+                });
+            });
+
+        let page = 1;
+        let user = message.author;
+
+        if (typeof firstArg === "number") {
+            if (Number.isSafeInteger(firstArg)) {
+                page = firstArg;
+            }
+            else {
+                throw new UserError({
+                    message: "Provide a valid number.",
+                    identifier: "UnsafeInteger",
+                });
+            }
+        }
+
+        else {
+            user = firstArg;
+        }
+
+        if (secondArg) {
+            user = secondArg;
         }
 
         const db = (await this.client.orm.currencyTransactions.findMany({
             where: {
-                UserId: (optionalUser.id !== message.author.id && message.author.id === message.client.owner.id)
-                    ? BigInt(optionalUser.id)
+                UserId: (user.id !== message.author.id && message.author.id === message.client.owner.id)
+                    ? BigInt(user.id)
                     : BigInt(message.author.id),
             },
         })).sort((a, b) => b.DateAdded.getTime() - a.DateAdded.getTime());
@@ -57,6 +86,7 @@ export default class CurrencyTransactionsCommand extends KaikiCommand {
             p < db.length;
             i += Constants.MAGIC_NUMBERS.CMDS.GAMBLING.CUR_TRS.TRANS_PR_PAGE, p += Constants.MAGIC_NUMBERS.CMDS.GAMBLING.CUR_TRS.TRANS_PR_PAGE) {
             pages.push(CurrencyTransactionsCommand.baseEmbed(message)
+                .setTitle(`Showing ${user.username}'s currency transactions`)
                 .setDescription(
                     db.slice(p, i)
                         .map(row =>
@@ -68,7 +98,7 @@ export default class CurrencyTransactionsCommand extends KaikiCommand {
                 ),
             );
         }
-        return sendPaginatedMessage(message, pages, {}, optionalPage - 1);
+        return sendPaginatedMessage(message, pages, {}, page - 1);
 
     }
 

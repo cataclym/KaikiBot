@@ -1,50 +1,28 @@
-import { EmbedBuilder, Message, User } from "discord.js";
-import KaikiArgumentsTypes from "../../lib/Kaiki/KaikiArgumentsTypes";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args } from "@sapphire/framework";
+import { EmbedBuilder, Message } from "discord.js";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
+@ApplyOptions<KaikiCommandOptions>({
+    name: "award",
+    description: "For bot owner to award currency",
+    usage: ["50 @Cata"],
+    preconditions: ["OwnerOnly"],
+})
 export default class Award extends KaikiCommand {
-    constructor() {
-        super("award", {
-            ownerOnly: true,
-            aliases: ["award"],
-            description: "For bot owner to award currency",
-            usage: "50 @Cata",
-            args: [
-                {
-                    id: "amount",
-                    type: KaikiArgumentsTypes.moneyArgument,
-                    otherwise: (m: Message) => ({
-                        embeds: [
-                            new EmbedBuilder({
-                                title: "Invalid amount. It must be a number",
-                            })
-                                .withErrorColor(m),
-                        ],
-                    }),
-                },
-                {
-                    id: "user",
-                    type: "user",
-                    otherwise: (m: Message) => ({
-                        embeds: [
-                            new EmbedBuilder({
-                                title: "Can't find this user. Try again.",
-                            })
-                                .withErrorColor(m),
-                        ],
-                    }),
-                },
-            ],
-        });
-    }
+    public async messageRun(msg: Message, args: Args): Promise<void> {
 
-    public async exec(msg: Message, { amount, user }: { amount: bigint; user: User; }): Promise<void> {
-        const newAmount = await this.client.money.Add(user.id, amount, "Awarded by bot owner");
-        const bInt = BigInt(amount);
+        const amount = BigInt(await args.pick("number"));
+        const user = await Promise.resolve(args.rest("user")
+            .catch(async () => args.rest("member")
+                .then(async m => m.user)));
+
+        const newAmount = await this.client.money.add(user.id, amount, "Awarded by bot owner");
         await msg.channel.send({
             embeds: [
                 new EmbedBuilder()
-                    .setDescription(`You've awarded **${bInt}** ${this.client.money.currencyName} ${this.client.money.currencySymbol} to ${user.username}.
+                    .setDescription(`You've awarded **${amount}** ${this.client.money.currencyName} ${this.client.money.currencySymbol} to ${user.username}.
 They now have **${newAmount}** ${this.client.money.currencyName} ${this.client.money.currencySymbol}`)
                     .withOkColor(msg),
             ],

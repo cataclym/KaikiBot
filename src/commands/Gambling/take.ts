@@ -1,45 +1,22 @@
-import { EmbedBuilder, Message, User } from "discord.js";
-import KaikiArgumentsTypes from "../../lib/Kaiki/KaikiArgumentsTypes";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args } from "@sapphire/framework";
+import { EmbedBuilder, Message } from "discord.js";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
+@ApplyOptions<KaikiCommandOptions>({
+    name: "take",
+    description: "Takes money from the specified user",
+    usage: ["50 @Cata"],
+    preconditions: ["OwnerOnly"],
+})
 export default class Take extends KaikiCommand {
-    constructor() {
-        super("take", {
-            ownerOnly: true,
-            aliases: ["take"],
-            description: "Takes money from the specified user",
-            usage: "50 @Cata",
-            args: [
-                {
-                    id: "amount",
-                    type: KaikiArgumentsTypes.moneyArgument,
-                    otherwise: (m: Message) => ({
-                        embeds: [
-                            new EmbedBuilder({
-                                title: "Invalid amount. It must be a number",
-                            })
-                                .withOkColor(m),
-                        ],
-                    }),
-                },
-                {
-                    id: "user",
-                    type: "user",
-                    otherwise: (m: Message) => ({
-                        embeds: [
-                            new EmbedBuilder({
-                                title: "Can't find this user. Try again.",
-                            })
-                                .withOkColor(m),
-                        ],
-                    }),
-                },
-            ],
-        });
-    }
+    public async messageRun(msg: Message, args: Args): Promise<void> {
 
-    public async exec(msg: Message, { amount, user }: { amount: bigint; user: User; }): Promise<void> {
-        const success = await this.client.money.TryTake(user.id, amount, "-");
+        const amount = await args.pick("kaikiMoney");
+        const user = await args.rest("user");
+
+        const success = await this.client.money.tryTake(user.id, amount, "-");
         if (!success) {
             await msg.channel.send({
                 embeds: [

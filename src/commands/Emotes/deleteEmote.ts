@@ -1,45 +1,42 @@
-import { Collection, EmbedBuilder, GuildEmoji, Message, PermissionsBitField } from "discord.js";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args } from "@sapphire/framework";
+import { EmbedBuilder, Message } from "discord.js";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-import KaikiEmbeds from "../../lib/KaikiEmbeds";
 import Utility from "../../lib/Utility";
 import Constants from "../../struct/Constants";
 
 const timer = (ms: number) => new Promise(res => setTimeout(res, ms));
 
+@ApplyOptions<KaikiCommandOptions>({
+    name: "deleteemote",
+    aliases: ["de"],
+    description: "Deletes one or multiple emotes/emoji. Multiple emotes take longer, to avoid ratelimits. Keep a space between all emotes you wish to delete.",
+    usage: ":NadekoSip:",
+    requiredUserPermissions: ["ManageEmojisAndStickers"],
+    requiredClientPermissions: ["ManageEmojisAndStickers"],
+    preconditions: ["GuildOnly"],
+    typing: true,
+})
 export default class DeleteEmoteCommand extends KaikiCommand {
-    constructor() {
-        super("deleteemote", {
-            aliases: ["deleteemote", "de"],
-            description: "Deletes one or multiple emotes/emoji. Multiple emotes take longer, to avoid ratelimits. Keep a space between all emotes you wish to delete.",
-            usage: "<:NadekoSip:>",
-            clientPermissions: PermissionsBitField.Flags.ManageEmojisAndStickers,
-            userPermissions: PermissionsBitField.Flags.ManageEmojisAndStickers,
-            channel: "guild",
-            typing: true,
-            args: [
-                {
-                    id: "emotes",
-                    match: "separate",
-                    type: "emojis",
-                    otherwise: (msg: Message) => ({ embeds: [KaikiEmbeds.genericArgumentError(msg)] }),
-                },
-            ],
-        });
-    }
 
-    public async exec(message: Message, { emotes }: { emotes: Collection<string, GuildEmoji>[] }): Promise<Message> {
+    public async messageRun(message: Message, args: Args): Promise<Message> {
+
+        const emotes = await args.repeat("emoji");
 
         return (async function() {
             let i = 0;
             for (const emote of emotes) {
 
-                const newEmote = message.guild?.emojis.cache.get(emote.map(e => e.id)[0]);
+                if (!emote.id) continue;
 
-                if (newEmote) {
+                const emoji = message.guild?.emojis.cache.get(emote.id);
+
+                if (emoji) {
 
                     i > 0 ? await timer(Constants.MAGIC_NUMBERS.CMDS.EMOTES.DELETE_EMOTE.DELETE_DELAY) && i++ : i++;
 
-                    const deleted = await newEmote.delete();
+                    const deleted = await emoji.delete();
 
                     if (!deleted) {
                         return message.channel.send({
@@ -71,7 +68,7 @@ export default class DeleteEmoteCommand extends KaikiCommand {
                 embeds: [
                     new EmbedBuilder()
                         .setTitle("Success!")
-                        .setDescription(`Deleted:\n${Utility.trim(emotes.map((es) => es.map((e) => e)).join("\n"), Constants.MAGIC_NUMBERS.EMBED_LIMITS.DESCRIPTION)}`)
+                        .setDescription(`Deleted:\n${Utility.trim(emotes.map(e => `:${e.name}: [\`${e.id}\`]`).join("\n"), Constants.MAGIC_NUMBERS.EMBED_LIMITS.DESCRIPTION)}`)
                         .withOkColor(message),
                 ],
             });

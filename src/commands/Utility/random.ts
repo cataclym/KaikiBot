@@ -1,4 +1,7 @@
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args } from "@sapphire/framework";
 import { EmbedBuilder, Message } from "discord.js";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 
@@ -6,44 +9,31 @@ function getRndInteger(min: number, max: number) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+@ApplyOptions<KaikiCommandOptions>({
+    name: "random",
+    aliases: ["rng"],
+    description: "Sends a random number between your two inputs.",
+    usage: ["1 10", "25"],
+})
 export default class RandomNumberCommand extends KaikiCommand {
-    constructor() {
-        super("random", {
-            usage: ["1 10", "25"],
-            description: "Sends a random number between your two inputs.",
-            args: [
-                {
-                    id: "int",
-                    type: "integer",
-                    default: 1,
-                },
-                {
-                    id: "int2",
-                    type: "integer",
-                    default: 100,
-                },
-            ],
-            aliases: ["random", "rng"],
-        });
-    }
+    public async exec(message: Message, args: Args): Promise<Message> {
 
-    public async exec(message: Message, args: { int: number, int2: number }): Promise<Message> {
 
-        const number1 = args.int,
-            number2 = args.int2,
+        const numberOne = await args.pick("number").catch(() => 1),
+            numberTwo = await args.pick("number").catch(() => 100),
             embed = new EmbedBuilder()
                 .setTitle("Result:")
                 .setFooter({
-                    text: `Random number between ${number1} and ${number2}`,
+                    text: `Random number between ${numberOne} and ${numberTwo}`,
                 })
                 .withOkColor(message);
 
-        if (number1 > number2) {
-            embed.setDescription(String(getRndInteger(number2, number1)));
+        if (numberOne > numberTwo) {
+            embed.setDescription(String(getRndInteger(numberTwo, numberOne)));
         }
 
         else {
-            embed.setDescription(String(getRndInteger(number1, number2)));
+            embed.setDescription(String(getRndInteger(numberOne, numberTwo)));
         }
 
         return message.channel.send({ embeds: [embed] });

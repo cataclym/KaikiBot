@@ -1,38 +1,30 @@
-import { Argument } from "discord-akairo";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args } from "@sapphire/framework";
 import { EmbedBuilder, Message } from "discord.js";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
+@ApplyOptions<KaikiCommandOptions>({
+    name: "reload",
+    aliases: ["re"],
+    description: "Reloads a command..",
+    preconditions: ["OwnerOnly"],
+})
 export default class ReloadCommand extends KaikiCommand {
-    constructor() {
-        super("reload", {
-            aliases: ["re", "reload"],
-            description: "Reloads a command..",
-            ownerOnly: true,
-            args: [
-                {
-                    id: "command",
-                    type: Argument.union("command", (m, p) => {
-                        if (!p) return null;
-                        const alias = this.handler.aliases.get(p);
-                        if (!alias) return null;
-                        return this.handler.findCommand(alias);
-                    }),
-                    otherwise: (msg: Message) => ({ embeds: [KaikiEmbeds.genericArgumentError(msg)] }),
-                },
-            ],
-        });
-    }
+    public async messageRun(message: Message, args: Args) {
 
-    public async exec(message: Message, { command }: { command: KaikiCommand }): Promise<Message> {
+        const cmd = await args.rest("command");
 
-        await command.reload();
+        const unloaded = <KaikiCommand> await this.store.get(cmd.name);
+
+        await unloaded.reload();
+
         return message.channel.send({
             embeds: [
                 new EmbedBuilder({
                     title: "Command reloaded",
-                    description: command.filepath,
-                    footer: { text: `Command: ${command.id}` },
+                    description: unloaded.location.full,
+                    footer: { text: `Command: ${unloaded.name}` },
                 })
                     .withOkColor(message),
             ],

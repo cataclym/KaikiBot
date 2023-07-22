@@ -1,26 +1,23 @@
 import { time } from "@discordjs/builders";
-import { ChannelType, EmbedBuilder, Guild, Message } from "discord.js";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args } from "@sapphire/framework";
+import {ChannelType, EmbedBuilder, GuildFeature, Message} from "discord.js";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+import Constants, {UndocumentedFeatures} from "../../struct/Constants";
 
-import Constants from "../../struct/Constants";
-
+@ApplyOptions<KaikiCommandOptions>({
+    name: "serverinfo",
+    aliases: ["sinfo"],
+    description: "Shows information about the current server.",
+    minorCategory: "Info",
+})
 export default class ServerInfoCommand extends KaikiCommand {
-    constructor() {
-        super("serverinfo", {
-            aliases: ["serverinfo", "sinfo"],
-            description: "Shows information about the current server.",
-            args: [
-                {
-                    id: "guild",
-                    type: "guild",
-                    default: (message: Message) => message.guild,
-                },
-            ],
-            subCategory: "Info",
-        });
-    }
+    public async messageRun(message: Message, args: Args): Promise<Message> {
 
-    public async exec(message: Message, { guild }: { guild: Guild }): Promise<Message> {
+        const guild = message.inGuild()
+            ? await args.pick("guild").catch(() => message.guild)
+            : await args.pick("guild");
 
         const emb = new EmbedBuilder({
             thumbnail: { url: <string>guild.iconURL({ extension: "png", size: 2048 }) },
@@ -29,7 +26,7 @@ export default class ServerInfoCommand extends KaikiCommand {
             fields: [
                 {
                     name: "Owner",
-                    value: message.client.users.cache.get(guild.ownerId)?.tag ?? guild.ownerId,
+                    value: message.client.users.cache.get(guild.ownerId)?.username ?? guild.ownerId,
                     inline: true,
                 },
                 { name: "Created At", value: time(guild.createdAt), inline: true },
@@ -39,15 +36,15 @@ export default class ServerInfoCommand extends KaikiCommand {
                 { name: "MFA level", value: String(guild.mfaLevel), inline: true },
                 {
                     name: "Channels",
-                    value: `Text: **${guild.channels.cache.filter((channel) => channel.type === ChannelType.GuildText).size}**
-Voice: **${guild.channels.cache.filter((channel) => channel.type === ChannelType.GuildVoice).size}**
-News: **${guild.channels.cache.filter((channel) => channel.type === ChannelType.GuildNews).size}**`,
+                    value: `Text: **${guild.channels.cache.filter(channel => channel.type === ChannelType.GuildText).size}**
+Voice: **${guild.channels.cache.filter(channel => channel.type === ChannelType.GuildVoice).size}**
+News: **${guild.channels.cache.filter(channel => channel.type === ChannelType.GuildNews).size}**`,
                     inline: true,
                 },
                 { name: "Maximum video-channel users", value: String(guild.maxVideoChannelUsers), inline: false },
                 {
                     name: "Features", value: guild.features.length
-                        ? guild.features.map(f => Constants.guildFeatures[f] || f).sort().join("\n")
+                        ? guild.features.map((f: GuildFeature & UndocumentedFeatures) => Constants.guildFeatures[f] || f).sort().join("\n")
                         : "None", inline: false,
                 },
             ],

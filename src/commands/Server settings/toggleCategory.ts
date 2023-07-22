@@ -1,46 +1,26 @@
-import { AkairoModule, Command } from "discord-akairo";
-import { Collection, EmbedBuilder, Message, PermissionsBitField } from "discord.js";
-import { BlockedCategoriesEnum } from "../../lib/Enums/blockedCategoriesEnum";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args } from "@sapphire/framework";
+import { EmbedBuilder, Message } from "discord.js";
+import { CategoriesEnum } from "../../lib/Enums/categoriesEnum";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-import KaikiEmbeds from "../../lib/KaikiEmbeds";
 
-class BlockedCategory<K extends string, V extends AkairoModule<any, any>> extends Collection<K, V> {
-    public id: keyof typeof BlockedCategoriesEnum;
-
-    public constructor(id: keyof typeof BlockedCategoriesEnum, iterable?: Iterable<readonly [K, V]>) {
-        super(iterable);
-        this.id = id;
-    }
-}
-
+// TODO: Well this obviously needs to be revisited with sapphire in mind
+@ApplyOptions<KaikiCommandOptions>({
+    name: "togglecategory",
+    aliases: ["tc"],
+    description: "Toggles a category",
+    usage: ["Anime"],
+    requiredUserPermissions: ["Administrator"],
+    preconditions: ["GuildOnly"],
+})
 export default class ToggleCategoryCommand extends KaikiCommand {
-    constructor() {
-        super("togglecategory", {
-            aliases: ["togglecategory", "tc"],
-            userPermissions: PermissionsBitField.Flags.Administrator,
-            channel: "guild",
-            description: "Toggles a category",
-            usage: "Anime",
-            args: [
-                {
-                    id: "category",
-                    type: (_, phrase) => {
-                        return this.handler.categories.find((__, k) => {
-                            return phrase
-                                .toLowerCase()
-                                .startsWith(k.toLowerCase().slice(0, Math.max(phrase.length - 1, 1)));
-                        });
-                    },
-                    otherwise: (msg: Message) => ({ embeds: [KaikiEmbeds.genericArgumentError(msg)] }),
-                },
-            ],
-        });
-    }
+    public async messageRun(message: Message<true>, args: Args): Promise<Message> {
 
-    public async exec(message: Message<true>, { category }: { category: BlockedCategory<string, Command> }): Promise<Message> {
+        const categoryStr = await args.rest("category");
 
         const { guild } = message;
-        const index = BlockedCategoriesEnum[category.id];
+        const index = CategoriesEnum[categoryStr];
 
         let guildDb = await this.client.orm.guilds.findFirst({
             where: {
@@ -85,7 +65,7 @@ export default class ToggleCategoryCommand extends KaikiCommand {
         }
 
         const embed = new EmbedBuilder()
-            .setDescription(`${category.id} has been ${exists ? "enabled" : "disabled"}.`);
+            .setDescription(`${categoryStr} has been ${exists ? "enabled" : "disabled"}.`);
 
         return message.channel.send({
             embeds: [

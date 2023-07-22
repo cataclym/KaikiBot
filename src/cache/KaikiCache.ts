@@ -21,46 +21,47 @@ export default class KaikiCache {
     public emoteReactCache: EmoteReactCache;
     public dailyProvider: MySQLDailyProvider;
     public imageAPICache: Map<APIs, Map<string, Record<string, any>>>;
+    private imageAPIs: ClientImageAPIs;
 
-    constructor(orm: pkg.PrismaClient, connection: () => Pool) {
+    constructor(orm: pkg.PrismaClient, connection: Pool, imageAPIs: ClientImageAPIs) {
         this.animeQuoteCache = new Collection<string, RespType>();
         this.cmdStatsCache = new Map<string, number>();
         this.dailyProvider = new MySQLDailyProvider(connection);
         this.emoteReactCache = new Map<GuildString, Map<EmoteStringTypes, Map<EmoteTrigger, TriggerString>>>();
 
         // API cache
+        this.imageAPIs = imageAPIs;
         this.imageAPICache = new Map<APIs, Map<string, Record<string, any>>>;
 
-        (async () => await this.init(orm))();
+        void this.init(orm);
+        this.populateImageAPICache();
     }
 
-    public init = async (orm: pkg.PrismaClient) => {
+    public async init(orm: pkg.PrismaClient) {
 
         return setInterval(async () => {
-            if (!Object.entries(this.cmdStatsCache).length) return;
-
-            const requests = Object.entries(this.cmdStatsCache)
-                .map(([command, amount]) => orm.commandStats
-                    .upsert({
-                        where: {
-                            CommandAlias: command,
-                        },
-                        create: {
-                            CommandAlias: command,
-                            Count: amount,
-                        },
-                        update: {
-                            Count: {
-                                increment: amount,
+            if (this.cmdStatsCache.size) {
+                const requests = Array(...this.cmdStatsCache.entries())
+                    .map(([command, amount]) => orm.commandStats
+                        .upsert({
+                            where: {
+                                CommandAlias: command,
                             },
-                        },
-                    }));
-
-            await orm.$transaction(requests);
-
-            this.cmdStatsCache = new Map<string, number>();
+                            create: {
+                                CommandAlias: command,
+                                Count: amount,
+                            },
+                            update: {
+                                Count: {
+                                    increment: amount,
+                                },
+                            },
+                        }));
+                await orm.$transaction(requests);
+                this.cmdStatsCache = new Map();
+            }
         }, Constants.MAGIC_NUMBERS.CACHE.FIFTEEN_MINUTES_MS);
-    };
+    }
 
     public static async populateERCache(message: Message<true>) {
 
@@ -69,11 +70,7 @@ export default class KaikiCache {
 
         message.client.cache.emoteReactCache.set(message.guildId, new Map([["has_space", new Map()], ["no_space", new Map()]]));
 
-        if (!emoteReacts.length) {
-            return;
-        }
-
-        else {
+        if (emoteReacts.length) {
             const [space, noSpace]: PartitionResult = Utility.partition(emoteReacts, ([k]) => k.includes(" "));
 
             for (const [key, value] of space) {
@@ -127,28 +124,28 @@ export default class KaikiCache {
         }
     }
 
-    public populateImageAPICache(apis: ClientImageAPIs) {
-        Object.keys(apis).forEach((api: APIs) => {
+    private populateImageAPICache() {
+        Object.keys(this.imageAPIs).forEach((api: APIs) => {
             this.imageAPICache.set(api, new Map<string, Record<string, any>>);
         });
     }
 }
 
 class MySQLDailyProvider {
-    private connection: () => Pool;
+    private connection: Pool;
 
-    constructor(connection: () => Pool) {
+    constructor(connection: Pool) {
         this.connection = connection;
     }
 
-    async checkClaimed(id: string) {
-        const [rows] = await this.connection().query<RowDataPacket[]>("SELECT ClaimedDaily FROM DiscordUsers WHERE UserId = ?", [BigInt(id)]);
+    async hasClaimedDaily(id: string) {
+        const [rows] = await this.connection.query<RowDataPacket[]>("SELECT ClaimedDaily FROM DiscordUsers WHERE UserId = ?", [BigInt(id)]);
         return rows[0]?.ClaimedDaily ?? true;
     }
 
     // Sets claimed status to true
     async setClaimed(id: string) {
-        return this.connection().query<ResultSetHeader>("UPDATE DiscordUsers SET ClaimedDaily = ? WHERE UserId = ?", [true, BigInt(id)])
+        return this.connection.query<ResultSetHeader>("UPDATE DiscordUsers SET ClaimedDaily = ? WHERE UserId = ?", [true, BigInt(id)])
             .then(([result]) => result.changedRows
                 ? result.changedRows > 0
                 : false)

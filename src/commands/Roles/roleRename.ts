@@ -1,43 +1,33 @@
-import { EmbedBuilder, Message, PermissionsBitField, Role } from "discord.js";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args } from "@sapphire/framework";
+import { EmbedBuilder, Message } from "discord.js";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-import KaikiEmbeds from "../../lib/KaikiEmbeds";
-
+import KaikiEmbeds from "../../lib/Kaiki/KaikiEmbeds";
 import { rolePermissionCheck } from "../../lib/Roles";
 import Utility from "../../lib/Utility";
 import Constants from "../../struct/Constants";
 
+@ApplyOptions<KaikiCommandOptions>({
+    name: "rolerename",
+    aliases: ["rolename", "rn"],
+    description: "Renames a given role. The role you specify has to be lower in the role hierarchy than your highest role. Use 'quotes around rolename with spaces'.",
+    usage: ["@Gamer weeb"],
+    requiredUserPermissions: ["ManageRoles"],
+    requiredClientPermissions: ["ManageRoles"],
+    preconditions: ["GuildOnly"],
+})
 export default class RoleRenameCommand extends KaikiCommand {
-    constructor() {
-        super("rolerename", {
-            aliases: ["rolerename", "rolename", "rn"],
-            description: "Renames a given role. The role you specify has to be lower in the role hierarchy than your highest role. Use 'quotes around rolename with spaces'.",
-            usage: "@Gamer weeb",
-            clientPermissions: PermissionsBitField.Flags.ManageRoles,
-            userPermissions: PermissionsBitField.Flags.ManageRoles,
-            channel: "guild",
-            args: [
-                {
-                    id: "role",
-                    type: "role",
-                    otherwise: (m: Message) => ({ embeds: [KaikiEmbeds.roleArgumentError(m)] }),
-                },
-                {
-                    id: "name",
-                    type: "string",
-                    match: "rest",
-                    otherwise: (msg: Message) => ({ embeds: [KaikiEmbeds.genericArgumentError(msg)] }),
-                },
-            ],
-        });
-    }
+    public async messageRun(message: Message<true>, args: Args): Promise<Message> {
 
-    public async exec(message: Message<true>, { role, name }: { role: Role, name: string }): Promise<Message> {
+        const role = await args.pick("role");
+        const name = await args.rest("string");
 
         if (await rolePermissionCheck(message, role)) {
 
             const oldName = role.name;
 
-            role.edit({ name: Utility.trim(name.toString(), Constants.MAGIC_NUMBERS.COMMON.NAME_LIMIT) })
+            role.edit({ name: Utility.trim(name, Constants.MAGIC_NUMBERS.COMMON.NAME_LIMIT) })
                 .catch((e) => {
                     throw new Error("Error: Failed to edit role.\n" + e);
                 });

@@ -1,7 +1,7 @@
-import { AkairoMessage } from "discord-akairo";
-import { ApplicationCommandDataResolvable, EmbedBuilder, Message } from "discord.js";
-import KaikiAkairoClient from "../Kaiki/KaikiAkairoClient";
-import KaikiEmbeds from "../KaikiEmbeds";
+import { Command } from "@sapphire/framework";
+import { ApplicationCommandDataResolvable, EmbedBuilder, Guild, Message } from "discord.js";
+import KaikiEmbeds from "../Kaiki/KaikiEmbeds";
+import KaikiSapphireClient from "../Kaiki/KaikiSapphireClient";
 
 export default class SlashCommandsLib {
 
@@ -10,58 +10,62 @@ export default class SlashCommandsLib {
         description: "Excludes you from being targeted by dad-bot. Execute command again to reverse this action.",
     };
 
-    public static dadbotCheck(message: AkairoMessage | Message) {
-        return !!message.guild?.isDadBotEnabled();
+    public static dadbotCheck(message: Message | Guild) {
+        return !!(message instanceof Guild
+            ? message
+            : message.guild)?.isDadBotEnabled();
     }
 
-    public static async getOrCreateDadbotRole(message: AkairoMessage<"cached"> | Message<true>, client: KaikiAkairoClient<true>) {
-        const db = await client.db.getOrCreateGuild(message.guildId);
-        return message.guild?.roles.cache.get(String(db.ExcludeRole));
+    public static async getOrCreateDadbotRole(guild: Guild, client: KaikiSapphireClient<true>) {
+        const db = await client.db.getOrCreateGuild(guild.id);
+        return guild.roles.cache.get(String(db.ExcludeRole));
     }
 
-    public static async excludeCommand(message: Message<true>, client: KaikiAkairoClient<true>) {
+    public static async excludeCommand(messageOrInteraction: Message<true> | Command.ChatInputCommandInteraction<"cached">) {
+
+        const { guild } = messageOrInteraction;
+
         const embeds = [];
-        let excludedRole = await SlashCommandsLib.getOrCreateDadbotRole(message, client);
+        let excludedRole = await SlashCommandsLib.getOrCreateDadbotRole(guild, messageOrInteraction.client as KaikiSapphireClient<true>);
 
         if (!excludedRole) {
-            excludedRole = await message.guild?.roles.create({
+            excludedRole = await guild.roles.create({
                 name: process.env.DADBOT_DEFAULT_ROLENAME,
                 reason: "Initiate default dad-bot exclusion role.",
             });
 
-            await message.client.db.orm.guilds.update({
+            await guild.client.db.orm.guilds.update({
                 where: {
-                    Id: BigInt(message.guildId),
+                    Id: BigInt(guild.id),
                 },
                 data: {
                     ExcludeRole: BigInt(excludedRole?.id),
                 },
             });
 
-            await message.client.guildsDb.set(message.guildId, "ExcludeRole", excludedRole.id);
+            await guild.client.guildsDb.set(guild.id, "ExcludeRole", excludedRole.id);
 
             embeds.push(new EmbedBuilder({
                 title: "Creating dad-bot role!",
                 description: "There doesn't seem to be a default dad-bot role in this server. Creating one...",
                 footer: { text: "Beep boop..." },
             })
-                .withErrorColor(message.guild));
+                .withErrorColor(guild));
         }
 
-        if (!message.member?.hasExcludedRole()) {
-            await message.member?.roles.add(excludedRole);
+        if (!messageOrInteraction.member?.hasExcludedRole()) {
+            await messageOrInteraction.member?.roles.add(excludedRole);
             embeds.push(KaikiEmbeds.addedRoleEmbed(excludedRole.name)
-                .withOkColor(message.guild));
-            return message.reply({ embeds: embeds });
+                .withOkColor(guild));
+            return messageOrInteraction.reply({ embeds: embeds });
         }
 
         else {
-            await message.member.roles.remove(excludedRole);
+            await messageOrInteraction.member.roles.remove(excludedRole);
             embeds.push(KaikiEmbeds.removedRoleEmbed(excludedRole.name)
-                .withOkColor(message.guild));
-            return message.reply({ embeds: embeds });
+                .withOkColor(guild));
+            return messageOrInteraction.reply({ embeds: embeds });
         }
     }
-
 }
 

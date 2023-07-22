@@ -1,29 +1,24 @@
-import { EmbedBuilder, Message, PermissionsBitField, Role } from "discord.js";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args } from "@sapphire/framework";
+import { EmbedBuilder, Message } from "discord.js";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-import KaikiEmbeds from "../../lib/KaikiEmbeds";
-
+import KaikiEmbeds from "../../lib/Kaiki/KaikiEmbeds";
 import { rolePermissionCheck } from "../../lib/Roles";
 
+@ApplyOptions<KaikiCommandOptions>({
+    name: "rolementionable",
+    aliases: ["rolem", "mentionable"],
+    description: "Toggles if a role is mentionable",
+    usage: ["@gamers"],
+    requiredUserPermissions: ["ManageRoles"],
+    requiredClientPermissions: ["ManageRoles"],
+    preconditions: ["GuildOnly"],
+})
 export default class RoleMentionableCommand extends KaikiCommand {
-    constructor() {
-        super("rolementionable", {
-            aliases: ["rolementionable", "rolem", "mentionable"],
-            clientPermissions: PermissionsBitField.Flags.ManageRoles,
-            userPermissions: PermissionsBitField.Flags.ManageRoles,
-            description: "Toggles if a role is mentionable",
-            usage: "@gamers",
-            channel: "guild",
-            args: [
-                {
-                    id: "role",
-                    type: "role",
-                    otherwise: (m) => ({ embeds: [KaikiEmbeds.roleArgumentError(m)] }),
-                },
-            ],
-        });
-    }
+    public async messageRun(message: Message<true>, args: Args): Promise<Message> {
 
-    public async exec(message: Message<true>, { role }: { role: Role }): Promise<Message> {
+        const role = await args.rest("role");
 
         if (await rolePermissionCheck(message, role)) {
 
