@@ -1,12 +1,13 @@
 import { ApplyOptions } from "@sapphire/decorators";
+import { Args } from "@sapphire/framework";
 import { Message } from "discord.js";
-import { Args, Awaitable } from "@sapphire/framework";
-import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 @ApplyOptions<KaikiCommandOptions>({
     name: "cmdstats",
     description: "Displays command statistics. Stats are updated at interval.",
+    enabled: false,
 })
 export default class Cmdstats extends KaikiCommand {
     async messageRun(message: Message, args: Args) {

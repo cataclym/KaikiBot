@@ -76,7 +76,7 @@ export default class KaikiSapphireClient<Ready extends true> extends SapphireCli
         console.log(colorette.green(Constants.KaikiBotASCII));
 
         (async () => await this.initializeDatabase())()
-            .catch(() => process.exit(1))
+            .catch(() => process.exit(1));
     }
 
     public imageAPIs: ClientImageAPIs = {
@@ -147,8 +147,7 @@ export default class KaikiSapphireClient<Ready extends true> extends SapphireCli
             .then(() => this.logger.info(`${colorette.green("READY")} - DadBot channel provider`))
             .catch(e => this.dbRejected(e));
 
-        this.cache = new KaikiCache(this.orm, this.connection);
-        this.cache.populateImageAPICache(this.imageAPIs);
+        this.cache = new KaikiCache(this.orm, this.connection, this.imageAPIs);
         this.money = new MoneyService(this.orm);
     }
 
