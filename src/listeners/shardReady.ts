@@ -1,10 +1,10 @@
 import { ApplyOptions } from "@sapphire/decorators";
-import { Listener, ListenerOptions } from "@sapphire/framework";
+import { Events, Listener, ListenerOptions } from "@sapphire/framework";
 import chalk from "chalk";
 import { Snowflake } from "discord.js";
 
 @ApplyOptions<ListenerOptions>({
-    event: "shardReady",
+    event: Events.ShardReady,
 })
 export default class ShardReady extends Listener {
 

@@ -1,16 +1,15 @@
 import { ApplyOptions } from "@sapphire/decorators";
-import { Listener, ListenerOptions } from "@sapphire/framework";
+import { Events, Listener, ListenerOptions } from "@sapphire/framework";
 import { GuildMember } from "discord.js";
 import GreetHandler from "../lib/GreetHandler";
 
 @ApplyOptions<ListenerOptions>({
-    event: "guildMemberRemove",
+    event: Events.GuildMemberRemove,
 })
 export default class GuildMemberRemoved extends Listener {
     public async run(member: GuildMember): Promise<void> {
 
         const greetHandler = new GreetHandler(member);
-        await greetHandler.handleGoodbyeMessage();
 
         const guildId = BigInt(member.guild.id);
         const memberId = BigInt(member.id);
@@ -38,6 +37,10 @@ export default class GuildMemberRemoved extends Listener {
                 },
             });
         });
-        await client.orm.$transaction(leaveRoles);
+
+        await Promise.all([
+            client.orm.$transaction(leaveRoles),
+            greetHandler.handleGoodbyeMessage(),
+        ]);
     }
 }

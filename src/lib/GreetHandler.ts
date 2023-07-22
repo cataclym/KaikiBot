@@ -7,11 +7,12 @@ import {
     Message,
     MessageCreateOptions,
     PermissionsBitField,
-    StickerResolvable, userMention,
+    StickerResolvable,
+    userMention,
 } from "discord.js";
 
 interface MemberMessage extends Message<true> {
-    member: GuildMember
+    member: GuildMember;
 }
 
 interface SendMessageData {
@@ -39,15 +40,6 @@ export default class GreetHandler {
         this.guildMember = guildMember;
     }
 
-    static jsonErrorMessage = (m: Message) => ({
-        embeds: [
-            new EmbedBuilder()
-                .setTitle("Error")
-                .setDescription("Please provide valid json")
-                .withErrorColor(m),
-        ],
-    });
-
     static emptyMessageOptions = (m: Message | Guild) => ({
         embeds: [
             new EmbedBuilder()
@@ -57,13 +49,34 @@ export default class GreetHandler {
         ],
     });
 
+    private static genericGreetMessage = (m: Message | Guild) => ({
+        embeds: [
+            new EmbedBuilder()
+                .setTitle("Happy to see you %member.name%!")
+                .setDescription("Welcome to %guild.name%")
+                .withOkColor(m),
+        ],
+    });
+
+    private static genericByeMessage(m: Message | Guild) {
+        return {
+            embeds: [
+                new EmbedBuilder()
+                    .setTitle("%member.name% just left")
+                    .withErrorColor(m),
+            ],
+        };
+    }
+
     async handleGreetMessage() {
 
         const db = await this.guildMember.client.db.getOrCreateGuild(BigInt(this.guildMember.guild.id));
 
         if (!db.WelcomeChannel) {
-            return
+            return;
         }
+
+        if (!db.WelcomeMessage) db.WelcomeMessage = JSON.stringify(GreetHandler.genericGreetMessage(this.guildMember.guild));
 
         return this.sendWelcomeLeaveMessage({
             channel: db.WelcomeChannel,
@@ -79,6 +92,8 @@ export default class GreetHandler {
         if (!db.ByeChannel) {
             return;
         }
+
+        if (!db.ByeMessage) db.ByeMessage = JSON.stringify(GreetHandler.genericByeMessage(this.guildMember.guild));
 
         return this.sendWelcomeLeaveMessage({
             channel: db.ByeChannel,
@@ -102,7 +117,7 @@ export default class GreetHandler {
 
     async sendWelcomeLeaveMessage(data: SendMessageData) {
 
-        if (!data.channel || !data.embed) return false;
+        if (!data.channel) return false;
 
         const channel = this.guildMember.guild.channels.cache.get(String(data.channel))
             ?? await this.guildMember.guild.client.channels.fetch(String(data.channel), { cache: true });
@@ -139,8 +154,7 @@ export default class GreetHandler {
     }
 
     static assertMessageMember(message: Message<true>): message is MemberMessage {
-        if (message.member) return true;
-        return false;
+        return !!message.member;
     }
 }
 

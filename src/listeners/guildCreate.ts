@@ -1,10 +1,10 @@
 import { ApplyOptions } from "@sapphire/decorators";
-import { Listener, ListenerOptions } from "@sapphire/framework";
+import { Events, Listener, ListenerOptions } from "@sapphire/framework";
 import * as colorette from "colorette";
 import { Guild } from "discord.js";
 
 @ApplyOptions<ListenerOptions>({
-    event: "guildCreate",
+    event: Events.GuildCreate,
 })
 export default class GuildCreate extends Listener {
     public async run(guild: Guild) {

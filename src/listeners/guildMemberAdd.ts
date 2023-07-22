@@ -1,19 +1,20 @@
 import { ApplyOptions } from "@sapphire/decorators";
-import { Listener, ListenerOptions } from "@sapphire/framework";
+import { Events, Listener, ListenerOptions } from "@sapphire/framework";
 import { GuildMember } from "discord.js";
 import GreetHandler from "../lib/GreetHandler";
 import { handleStickyRoles } from "../lib/Roles";
 
 @ApplyOptions<ListenerOptions>({
-    event: "guildMemberAdd",
+    event: Events.GuildMemberAdd,
 })
 export default class GuildMemberAdd extends Listener {
     public async run(member: GuildMember): Promise<void> {
-        await this.container.client.anniversaryService.checkAnniversaryMember(member);
-
         const greetHandler = new GreetHandler(member);
-        await greetHandler.handleGreetMessage();
 
-        await handleStickyRoles(member);
+        await Promise.all([
+            this.container.client.anniversaryService.checkAnniversaryMember(member),
+            greetHandler.handleGreetMessage(),
+            handleStickyRoles(member),
+        ]);
     }
 }

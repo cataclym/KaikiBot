@@ -1,8 +1,8 @@
 import { ApplyOptions } from "@sapphire/decorators";
-import { Listener, ListenerOptions } from "@sapphire/framework";
+import { Events, Listener, ListenerOptions } from "@sapphire/framework";
 
 @ApplyOptions<ListenerOptions>({
-    event: "invalidated",
+    event: Events.Invalidated,
 })
 export default class InvalidatedListener extends Listener {
 

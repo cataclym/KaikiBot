@@ -1,9 +1,9 @@
 import { ApplyOptions } from "@sapphire/decorators";
-import { ListenerOptions } from "@sapphire/framework";
+import { Events, ListenerOptions } from "@sapphire/framework";
 import KaikiListener from "../lib/Kaiki/KaikiListener";
 
 @ApplyOptions<ListenerOptions>({
-    event: "ready",
+    event: Events.ClientReady,
     once: true,
 })
 export default class Ready extends KaikiListener {

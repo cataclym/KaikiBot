@@ -1,9 +1,9 @@
 import { ApplyOptions } from "@sapphire/decorators";
-import { Listener, ListenerOptions } from "@sapphire/framework";
+import { Events, Listener, ListenerOptions } from "@sapphire/framework";
 import chalk from "chalk";
 
 @ApplyOptions<ListenerOptions>({
-    event: "shardReconnecting",
+    event: Events.ShardReconnecting,
 })
 export default class ShardReconnecting extends Listener {
 

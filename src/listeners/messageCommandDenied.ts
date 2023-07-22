@@ -1,7 +1,6 @@
 import { ApplyOptions } from "@sapphire/decorators";
 import { Events, Listener, ListenerOptions, MessageCommandDeniedPayload, UserError } from "@sapphire/framework";
 import { EmbedBuilder, MessageCreateOptions } from "discord.js";
-import {container} from "@sapphire/pieces";
 
 @ApplyOptions<ListenerOptions>({
     event: Events.MessageCommandDenied,

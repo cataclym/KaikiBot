@@ -1,10 +1,10 @@
 import { ApplyOptions } from "@sapphire/decorators";
-import { Listener, ListenerOptions } from "@sapphire/framework";
+import { Events, Listener, ListenerOptions } from "@sapphire/framework";
 import chalk from "chalk";
 import type KaikiSapphireClient from "../lib/Kaiki/KaikiSapphireClient";
 
 @ApplyOptions<ListenerOptions>({
-    event: "shardResume",
+    event: Events.ShardResume,
 })
 export default class ShardResume extends Listener {
 

@@ -1,8 +1,8 @@
 import { ApplyOptions } from "@sapphire/decorators";
-import { Listener, ListenerOptions } from "@sapphire/framework";
+import { Events, Listener, ListenerOptions } from "@sapphire/framework";
 
 @ApplyOptions<ListenerOptions>({
-    event: "warn",
+    event: Events.Warn,
 })
 export default class Warn extends Listener {
 

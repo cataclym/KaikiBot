@@ -1,9 +1,9 @@
 import { ApplyOptions } from "@sapphire/decorators";
-import { Listener, ListenerOptions } from "@sapphire/framework";
+import { Events, Listener, ListenerOptions } from "@sapphire/framework";
 import chalk from "chalk";
 
 @ApplyOptions<ListenerOptions>({
-    event: "shardError",
+    event: Events.ShardError,
 })
 export default class ShardError extends Listener {
 
