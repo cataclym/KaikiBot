@@ -1,6 +1,6 @@
 import { ApplyOptions } from "@sapphire/decorators";
 import { Events, Listener, ListenerOptions } from "@sapphire/framework";
-import colorette from "colorette";
+import * as colorette from "colorette";
 import type KaikiSapphireClient from "../lib/Kaiki/KaikiSapphireClient";
 
 @ApplyOptions<ListenerOptions>({
