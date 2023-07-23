@@ -54,9 +54,11 @@ export default class AnniversaryRolesService {
                 else {
                     return this.client.logger.warn(`AnniversaryRolesService | ${guild.name} [${guild.id}] - can't add anniversary roles due to missing permissions: 'MANAGE_ROLES'`);
                 }
-            } catch (err) {
+            }
+            catch (err) {
                 this.client.logger.error(err);
-            } finally {
+            }
+            finally {
                 this.client.logger.info(`AnniversaryRolesService | Finished checking ${guild.name} [${guild.id}] - Anniversary enabled`);
             }
         }
@@ -95,13 +97,15 @@ export default class AnniversaryRolesService {
 
             try {
                 if (guild.members.me?.permissions.has(PermissionsBitField.Flags.ManageRoles)) {
-                    const [anniversaryRoleCreated, anniversaryRoleJoin] = <Role[]>await this.handleGuildRoles(guild);
+                    const [anniversaryRoleCreated, anniversaryRoleJoin] = <Role[]> await this.handleGuildRoles(guild);
                     // Get roles from the result of checking if guild has the roles at all / after creating them.
                     await this.memberCheckAnniversary(member, anniversaryRoleCreated, anniversaryRoleJoin, day, month);
                 }
-            } catch (err) {
+            }
+            catch (err) {
                 this.client.logger.error(err);
-            } finally {
+            }
+            finally {
                 this.client.logger.info(`AnniversaryRolesService | Checked user ${member.user.username} in ${guild.name} [${guild.id}]`);
             }
         }
@@ -157,7 +161,7 @@ export default class AnniversaryRolesService {
             // Check if guild is enabled.
             if (guild.members.me?.permissions.has(PermissionsBitField.Flags.ManageRoles)) {
                 // Check if perms.
-                const [anniversaryRoleCreated, anniversaryRoleJoin] = <Role[]>await this.handleGuildRoles(guild);
+                const [anniversaryRoleCreated, anniversaryRoleJoin] = <Role[]> await this.handleGuildRoles(guild);
                 // Get roles from the result of checking if guild has the roles at all / after creating them.
                 await Promise.all(guild.members.cache.map(async (member) => {
                     if (!member.user.bot) {

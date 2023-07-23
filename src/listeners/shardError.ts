@@ -1,6 +1,6 @@
 import { ApplyOptions } from "@sapphire/decorators";
 import { Events, Listener, ListenerOptions } from "@sapphire/framework";
-import colorette from "colorette";
+import * as colorette from "colorette";
 
 @ApplyOptions<ListenerOptions>({
     event: Events.ShardError,

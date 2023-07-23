@@ -211,7 +211,7 @@ export default class KaikiSapphireClient<Ready extends true> extends SapphireCli
         }
     }
 
-    private dbRejected(e: any) {
+    private dbRejected(e: unknown) {
         this.logger.fatal("Failed to connect to database using MySQL2.", e);
         process.exit(1);
     }
