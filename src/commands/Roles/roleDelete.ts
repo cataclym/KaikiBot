@@ -3,7 +3,7 @@ import { Args } from "@sapphire/framework";
 import { EmbedBuilder, Message } from "discord.js";
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-import { rolePermissionCheck } from "../../lib/Roles";
+import Roles from "../../lib/Roles";
 
 @ApplyOptions<KaikiCommandOptions>({
     name: "roledelete",
@@ -24,7 +24,7 @@ export default class RoleDeleteCommand extends KaikiCommand {
 
         for await (const role of roles) {
 
-            if (await rolePermissionCheck(message, role)) {
+            if (await Roles.rolePermissionCheck(message, role)) {
 
                 role.delete().catch(() => otherRoles.push(role.name));
                 deletedRoles.push(role.name);

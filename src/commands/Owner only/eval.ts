@@ -3,7 +3,7 @@ import { Args } from "@sapphire/framework";
 import { Message } from "discord.js";
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-import Utility from "../../lib/Utility";
+import KaikiUtil from "../../lib/KaikiUtil";
 import Constants from "../../struct/Constants";
 
 @ApplyOptions<KaikiCommandOptions>({
@@ -25,11 +25,11 @@ export default class EvalCommand extends KaikiCommand {
 
             evaled = (await import("util")).inspect(evaled);
             return message.channel.send({
-                content: await Utility.codeblock(Utility.trim(this.clean(evaled.toString()), Constants.MAGIC_NUMBERS.CMDS.OWNER_ONLY.EVAL.MAX_STRING), "xl"),
+                content: await KaikiUtil.codeblock(KaikiUtil.trim(this.clean(evaled.toString()), Constants.MAGIC_NUMBERS.CMDS.OWNER_ONLY.EVAL.MAX_STRING), "xl"),
             });
         }
         catch (err) {
-            return message.channel.send(`\`ERROR\` ${await Utility.codeblock(Utility.trim(this.clean(err.toString()), Constants.MAGIC_NUMBERS.CMDS.OWNER_ONLY.EVAL.MAX_ERROR_STRING), "xl")}`);
+            return message.channel.send(`\`ERROR\` ${await KaikiUtil.codeblock(KaikiUtil.trim(this.clean(err.toString()), Constants.MAGIC_NUMBERS.CMDS.OWNER_ONLY.EVAL.MAX_ERROR_STRING), "xl")}`);
         }
     }
 }

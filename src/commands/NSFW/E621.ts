@@ -5,7 +5,7 @@ import { DAPI } from "../../lib/Hentai/HentaiService";
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/Kaiki/KaikiEmbeds";
-import Utility from "../../lib/Utility";
+import KaikiUtil from "../../lib/KaikiUtil";
 
 @ApplyOptions<KaikiCommandOptions>({
     name: "e621",
@@ -23,7 +23,7 @@ export default class EAPICommand extends KaikiCommand {
 
             const emb = new EmbedBuilder()
                 .setAuthor({ name: post.tags.artist.join(", ") || "N/A" })
-                .setDescription(Utility.trim(`**Tags**: ${post.tags.general.join(",")}`, 2048))
+                .setDescription(KaikiUtil.trim(`**Tags**: ${post.tags.general.join(",")}`, 2048))
                 .setImage(post.file.url || post.preview.url || post.sample.url || post.sources[0])
                 .withOkColor(message);
 

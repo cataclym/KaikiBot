@@ -17,7 +17,7 @@ import {
 } from "discord.js";
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-import Utility from "../../lib/Utility";
+import KaikiUtil from "../../lib/KaikiUtil";
 import Constants from "../../struct/Constants";
 
 // Todo: Add missing arguments
@@ -157,7 +157,7 @@ export default class InfoCommand extends KaikiCommand {
         }
 
         if (isMember) {
-            const presence = Utility.getMemberPresence(obj);
+            const presence = KaikiUtil.getMemberPresence(obj);
 
             emb[0]
                 .addFields({

@@ -1,9 +1,9 @@
 import { container } from "@sapphire/pieces";
 import { Collection } from "discord.js";
 import fetch, { RequestInfo } from "node-fetch";
-import KaikiUtil from "../../lib/Kaiki/KaikiUtil";
 import Constants from "../../struct/Constants";
 import E261APIData, { Post } from "../Interfaces/Common/E261APIData";
+import KaikiUtil from "../KaikiUtil";
 
 export enum DAPI {
     E621,
@@ -68,6 +68,7 @@ export default class HentaiService {
             case DAPI.Danbooru:
                 url = `https://danbooru.donmai.us/posts.json?limit=100&tags=${tag}`;
                 break;
+            // TODO:::: ???
 
         }
     }

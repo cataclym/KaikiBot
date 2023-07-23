@@ -1,7 +1,6 @@
 import { Argument } from "@sapphire/framework";
-import KaikiUtil from "../lib/Kaiki/KaikiUtil";
+import KaikiUtil from "../lib/KaikiUtil";
 import { KaikiColor } from "../lib/Types/KaikiColor";
-import Utility from "../lib/Utility";
 import Constants from "../struct/Constants";
 
 export class KaikiColorArgument extends Argument<KaikiColor> {
@@ -19,10 +18,10 @@ export class KaikiColorArgument extends Argument<KaikiColor> {
         // }
 
         if (this.hexRegex.test(parameter)) {
-            return this.ok(Utility.convertHexToRGB(parameter));
+            return this.ok(KaikiUtil.convertHexToRGB(parameter));
         }
 
-        if (KaikiUtil.hasKey(Constants.hexColorTable, parameter)) return this.ok(Utility.convertHexToRGB(Constants.hexColorTable[parameter]));
+        if (KaikiUtil.hasKey(Constants.hexColorTable, parameter)) return this.ok(KaikiUtil.convertHexToRGB(Constants.hexColorTable[parameter]));
 
         return this.error({
             parameter,

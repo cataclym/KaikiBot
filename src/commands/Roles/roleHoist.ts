@@ -4,7 +4,7 @@ import { EmbedBuilder, Message } from "discord.js";
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/Kaiki/KaikiEmbeds";
-import { rolePermissionCheck } from "../../lib/Roles";
+import Roles from "../../lib/Roles";
 
 @ApplyOptions<KaikiCommandOptions>({
     name: "rolehoist",
@@ -20,7 +20,7 @@ export default class RoleHoistCommand extends KaikiCommand {
 
         const role = await args.rest("role");
 
-        if (await rolePermissionCheck(message, role)) {
+        if (await Roles.rolePermissionCheck(message, role)) {
 
             await role.setHoist(!role.hoist);
 

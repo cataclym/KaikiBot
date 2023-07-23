@@ -4,7 +4,7 @@ import { EmbedBuilder, Message } from "discord.js";
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/Kaiki/KaikiEmbeds";
-import { rolePermissionCheck } from "../../lib/Roles";
+import Roles from "../../lib/Roles";
 
 @ApplyOptions<KaikiCommandOptions>({
     name: "roleremove",
@@ -21,7 +21,7 @@ export default class RoleRemoveCommand extends KaikiCommand {
         const member = await args.pick("member");
         const role = await args.rest("role");
 
-        if (await rolePermissionCheck(message, role)) {
+        if (await Roles.rolePermissionCheck(message, role)) {
             if (member.roles.cache.has(role.id)) {
 
                 await member.roles.remove(role);

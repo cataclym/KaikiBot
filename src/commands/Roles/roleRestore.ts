@@ -3,8 +3,8 @@ import { Args } from "@sapphire/framework";
 import { EmbedBuilder, Message } from "discord.js";
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-import { restoreUserRoles } from "../../lib/Roles";
-import Utility from "../../lib/Utility";
+import KaikiUtil from "../../lib/KaikiUtil";
+import Roles from "../../lib/Roles";
 import Constants from "../../struct/Constants";
 
 @ApplyOptions<KaikiCommandOptions>({
@@ -20,7 +20,7 @@ export default class RestoreUserRoles extends KaikiCommand {
 
         const member = await args.rest("member");
 
-        const result = await restoreUserRoles(member);
+        const result = await Roles.restoreUserRoles(member);
 
         if (!result) {
             return;
@@ -33,7 +33,7 @@ export default class RestoreUserRoles extends KaikiCommand {
                         .setDescription(`Restored roles of \`${member.user.username}\` [${member.id}]`)
                         .addFields({
                             name: "Roles added",
-                            value: Utility.trim(result.roles.join("\n"), Constants.MAGIC_NUMBERS.EMBED_LIMITS.FIELD.VALUE),
+                            value: KaikiUtil.trim(result.roles.join("\n"), Constants.MAGIC_NUMBERS.EMBED_LIMITS.FIELD.VALUE),
                         })
                         .withOkColor(message),
                 ],

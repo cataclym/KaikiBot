@@ -5,7 +5,7 @@ import fetch from "node-fetch";
 import { ServerOffline, ServerOnline } from "../../lib/Interfaces/Common/mcsrvstatAPIData";
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-import Utility from "../../lib/Utility";
+import KaikiUtil from "../../lib/KaikiUtil";
 
 @ApplyOptions<KaikiCommandOptions>({
     name: "mcping",
@@ -39,13 +39,13 @@ export default class MinecraftPingCommand extends KaikiCommand {
                     { name: "Players", value: `${result.players.online}/${result.players.max}`, inline: true },
                     {
                         name: "Plugins",
-                        value: result.plugins?.names.length ? Utility.trim(result.plugins?.names.join(", "), 1024) : "None",
+                        value: result.plugins?.names.length ? KaikiUtil.trim(result.plugins?.names.join(", "), 1024) : "None",
                         inline: true,
                     },
                     { name: "Software", value: result?.software ?? "Unknown", inline: true },
                     {
                         name: "Mods",
-                        value: result.mods?.names.length ? Utility.trim(result.mods?.names.join(", "), 1024) : "None",
+                        value: result.mods?.names.length ? KaikiUtil.trim(result.mods?.names.join(", "), 1024) : "None",
                         inline: true,
                     },
                 ])

@@ -5,8 +5,8 @@ import { imgFromColor } from "../../lib/Color";
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/Kaiki/KaikiEmbeds";
-import { rolePermissionCheck } from "../../lib/Roles";
-import Utility from "../../lib/Utility";
+import KaikiUtil from "../../lib/KaikiUtil";
+import Roles from "../../lib/Roles";
 
 @ApplyOptions<KaikiCommandOptions>({
     name: "rolecolor",
@@ -31,7 +31,7 @@ export default class RoleColorCommand extends KaikiCommand {
             : await args.pick("kaikiColor");
 
         if (!clr) {
-            const attachment = new AttachmentBuilder(await imgFromColor(Utility.convertHexToRGB(role.hexColor)), { name: "color.png" });
+            const attachment = new AttachmentBuilder(await imgFromColor(KaikiUtil.convertHexToRGB(role.hexColor)), { name: "color.png" });
             return message.channel.send({
                 files: [attachment],
                 embeds: [
@@ -48,7 +48,7 @@ export default class RoleColorCommand extends KaikiCommand {
         const { hexColor } = role,
             attachment = new AttachmentBuilder(await imgFromColor(clr), { name: "color.png" });
 
-        if (await rolePermissionCheck(message, role)) {
+        if (await Roles.rolePermissionCheck(message, role)) {
 
             if (!member?.permissions.has(PermissionsBitField.Flags.ManageRoles)) {
                 return message.channel.send({

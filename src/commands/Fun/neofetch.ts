@@ -7,7 +7,7 @@ import { EmbedBuilder, Message } from "discord.js";
 import { distros } from "../../lib/distros.json";
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-import Utility from "../../lib/Utility";
+import KaikiUtil from "../../lib/KaikiUtil";
 import Constants from "../../struct/Constants";
 
 @ApplyOptions<KaikiCommandOptions>({
@@ -52,7 +52,7 @@ export default class NeofetchCommand extends KaikiCommand {
                 pages.push(new EmbedBuilder()
                     .setTitle("ascii_distro list")
                     .setThumbnail(message.author.displayAvatarURL())
-                    .setDescription(await Utility.codeblock(distros.slice(p, i).join(", "), "json"))
+                    .setDescription(await KaikiUtil.codeblock(distros.slice(p, i).join(", "), "json"))
                     .withOkColor(message));
             }
             return sendPaginatedMessage(message, pages, {});
@@ -69,7 +69,7 @@ export default class NeofetchCommand extends KaikiCommand {
                 if (error || stderr) {
                     return this.container.logger.error(error);
                 }
-                return message.channel.send(await Utility.codeblock("\u00AD" + stdout.replace(/```/g, "\u0300`\u0300`\u0300`\u0300")));
+                return message.channel.send(await KaikiUtil.codeblock("\u00AD" + stdout.replace(/```/g, "\u0300`\u0300`\u0300`\u0300")));
             });
         }
     }

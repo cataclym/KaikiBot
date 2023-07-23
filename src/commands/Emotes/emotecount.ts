@@ -4,7 +4,7 @@ import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
 import { EmbedBuilder, Guild, Message } from "discord.js";
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-import Utility from "../../lib/Utility";
+import KaikiUtil from "../../lib/KaikiUtil";
 import Constants from "../../struct/Constants";
 
 @ApplyOptions<KaikiCommandOptions>({
@@ -71,7 +71,7 @@ export default class EmoteCount extends KaikiCommand {
                 i += Constants.MAGIC_NUMBERS.CMDS.EMOTES.EMOTE_COUNT.MAX_PR_PAGE, p += Constants.MAGIC_NUMBERS.CMDS.EMOTES.EMOTE_COUNT.MAX_PR_PAGE) {
 
                 pages.push(EmbedBuilder.from(baseEmbed)
-                    .setDescription(Utility.trim(data.slice(p, i).join(""), Constants.MAGIC_NUMBERS.EMBED_LIMITS.DESCRIPTION)),
+                    .setDescription(KaikiUtil.trim(data.slice(p, i).join(""), Constants.MAGIC_NUMBERS.EMBED_LIMITS.DESCRIPTION)),
                 );
             }
         }
@@ -82,7 +82,7 @@ export default class EmoteCount extends KaikiCommand {
                 i += Constants.MAGIC_NUMBERS.CMDS.EMOTES.EMOTE_COUNT.MIN_PR_PAGE, p += Constants.MAGIC_NUMBERS.CMDS.EMOTES.EMOTE_COUNT.MIN_PR_PAGE) {
 
                 pages.push(EmbedBuilder.from(baseEmbed)
-                    .setDescription(Utility.trim(data.slice(p, i).join("\n"), Constants.MAGIC_NUMBERS.EMBED_LIMITS.DESCRIPTION)),
+                    .setDescription(KaikiUtil.trim(data.slice(p, i).join("\n"), Constants.MAGIC_NUMBERS.EMBED_LIMITS.DESCRIPTION)),
                 );
             }
         }

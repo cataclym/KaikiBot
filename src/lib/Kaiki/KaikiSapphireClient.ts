@@ -19,8 +19,8 @@ import WaifuIm from "../APIs/waifu.im";
 import WaifuPics from "../APIs/WaifuPics";
 import HentaiService from "../Hentai/HentaiService";
 import type PackageJSON from "../Interfaces/Common/PackageJSON";
+import KaikiUtil from "../KaikiUtil";
 import { MoneyService } from "../Money/MoneyService";
-import Utility from "../Utility";
 import KaikiClientInterface from "./KaikiClientInterface";
 
 export default class KaikiSapphireClient<Ready extends true> extends SapphireClient<Ready> implements KaikiClientInterface {
@@ -107,7 +107,7 @@ export default class KaikiSapphireClient<Ready extends true> extends SapphireCli
             // Check for "birthdays"
             await this.anniversaryService.birthdayService();
 
-        }, Utility.timeToMidnight());
+        }, KaikiUtil.timeToMidnight());
     }
 
     public async initializeServices() {

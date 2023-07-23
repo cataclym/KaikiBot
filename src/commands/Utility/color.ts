@@ -5,8 +5,8 @@ import { AttachmentBuilder, EmbedBuilder, Message } from "discord.js";
 import { imgFromColor } from "../../lib/Color";
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+import KaikiUtil from "../../lib/KaikiUtil";
 import { ColorNames } from "../../lib/Types/KaikiColor";
-import Utility from "../../lib/Utility";
 import Constants from "../../struct/Constants";
 
 @ApplyOptions<KaikiCommandOptions>({
@@ -44,7 +44,7 @@ export default class ColorCommand extends KaikiCommand {
         }
 
         const color = await args.rest("kaikiColor");
-        const hex = Utility.convertRGBToHex(color);
+        const hex = KaikiUtil.convertRGBToHex(color);
         const colorInt = parseInt(hex.replace("#", ""), 16);
 
         const colorString = `Hex: **${hex}** [${colorInt}]\nRed: **${color.r}**\nGreen: **${color.g}**\nBlue: **${color.b}**\n`;
