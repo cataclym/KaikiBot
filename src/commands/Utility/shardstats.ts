@@ -2,7 +2,7 @@ import { ApplyOptions } from "@sapphire/decorators";
 import { Message } from "discord.js";
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-import Utility from "../../lib/Utility";
+import KaikiUtil from "../../lib/KaikiUtil";
 
 enum ShardStats {
     "READY",
@@ -26,8 +26,8 @@ export default class ShardStatisticsCommand extends KaikiCommand {
         const { ws } = message.client;
 
         return message.channel.send({
-            content: `${await Utility.codeblock(`This guild is managed by shard: [${message.guild.shardId}]`, "xl")}
-    ${await Utility.codeblock(Array.from(ws.shards.entries())
+            content: `${await KaikiUtil.codeblock(`This guild is managed by shard: [${message.guild.shardId}]`, "xl")}
+    ${await KaikiUtil.codeblock(Array.from(ws.shards.entries())
         .map(([, w]) => `ID: [${w.id}] | Ping: ${w.ping}ms | Status: ${ShardStats[w.status]}`)
         .join("\n"), "xl")}`,
         });

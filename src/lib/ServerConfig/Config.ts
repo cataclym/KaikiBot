@@ -8,14 +8,13 @@ import {
     Message,
     MessageCreateOptions,
     PermissionsBitField,
-    resolveColor
+    resolveColor,
 } from "discord.js";
 import SlashCommandsLib from "../../lib/SlashCommands/SlashCommandsLib";
 import { imgFromColor } from "../Color";
 import { CategoriesEnum } from "../Enums/categoriesEnum";
 import GreetHandler from "../GreetHandler";
-import Utility from "../Utility";
-import KaikiUtil from "../Kaiki/KaikiUtil";
+import KaikiUtil from "../KaikiUtil";
 
 export default class Config {
     static async dadbotRun(message: Message<true>, args: Args) {
@@ -142,7 +141,7 @@ export default class Config {
 
         const intValue = resolveColor([color.r, color.g, color.b]);
 
-        const hex = Utility.convertRGBToHex(color);
+        const hex = KaikiUtil.convertRGBToHex(color);
 
         await message.client.guildsDb.set(message.guildId, "OkColor", intValue);
 
@@ -153,7 +152,7 @@ export default class Config {
                     .setDescription(`OkColor has been set to ${hex} [\`${intValue}\`]`)
                     .withOkColor(message),
             ],
-        })
+        });
     }
 
     static async errorcolorRun(message: Message<true>, args: Args) {
@@ -161,7 +160,7 @@ export default class Config {
 
         const intValue = resolveColor([color.r, color.g, color.b]);
 
-        const hex = Utility.convertRGBToHex(color);
+        const hex = KaikiUtil.convertRGBToHex(color);
 
         await message.client.guildsDb.set(message.guildId, "ErrorColor", intValue);
 
@@ -172,7 +171,7 @@ export default class Config {
                     .setDescription(`ErrorColor has been set to ${hex} [\`${intValue}\`]`)
                     .withErrorColor(message),
             ],
-        })
+        });
     }
 
 
@@ -203,14 +202,14 @@ export default class Config {
             .withOkColor(message)
             .data;
 
-        const realOkColor = Utility.convertHexToRGB(OkColor.toString(16));
-        const realErrorColor = Utility.convertHexToRGB(ErrorColor.toString(16));
+        const realOkColor = KaikiUtil.convertHexToRGB(OkColor.toString(16));
+        const realErrorColor = KaikiUtil.convertHexToRGB(ErrorColor.toString(16));
 
         const okColorAttachment = new AttachmentBuilder(await imgFromColor(realOkColor), { name: "okColorImg.jpg" });
         const errorColorAttachment = new AttachmentBuilder(await imgFromColor(realErrorColor), { name: "errorColorImg.jpg" });
 
-        const hexOkColor = Utility.convertRGBToHex(realOkColor);
-        const hexErrorColor = Utility.convertRGBToHex(realErrorColor);
+        const hexOkColor = KaikiUtil.convertRGBToHex(realOkColor);
+        const hexErrorColor = KaikiUtil.convertRGBToHex(realErrorColor);
 
         const firstPage: MessageCreateOptions = {
             content: undefined,
@@ -221,12 +220,12 @@ export default class Config {
                     .addFields([
                         {
                             name: "Dad-bot",
-                            value: Utility.toggledTernary(DadBot),
+                            value: KaikiUtil.toggledTernary(DadBot),
                             inline: true,
                         },
                         {
                             name: "Anniversary-Roles",
-                            value: Utility.toggledTernary(Anniversary),
+                            value: KaikiUtil.toggledTernary(Anniversary),
                             inline: true,
                         },
                         {
@@ -238,17 +237,17 @@ export default class Config {
                         },
                         {
                             name: "Welcome message",
-                            value: Utility.toggledTernary(!!WelcomeChannel),
+                            value: KaikiUtil.toggledTernary(!!WelcomeChannel),
                             inline: true,
                         },
                         {
                             name: "Goodbye message",
-                            value: Utility.toggledTernary(!!ByeChannel),
+                            value: KaikiUtil.toggledTernary(!!ByeChannel),
                             inline: true,
                         },
                         {
                             name: "Sticky roles",
-                            value: Utility.toggledTernary(await message.client.guildsDb.get(message.guildId, "StickyRoles", false)),
+                            value: KaikiUtil.toggledTernary(await message.client.guildsDb.get(message.guildId, "StickyRoles", false)),
                             inline: true,
                         },
                     ])

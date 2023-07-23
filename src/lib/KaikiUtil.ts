@@ -4,7 +4,7 @@ import Constants from "../struct/Constants";
 import { KaikiColor } from "./Types/KaikiColor";
 import { RegexpType } from "./Types/Miscellaneous";
 
-export default class Utility {
+export default class KaikiUtil {
     static toggledTernary(value: boolean) {
         return value
             ? "Enabled"
@@ -78,17 +78,6 @@ export default class Utility {
     ): Promise<string> {
         return `\`\`\`${language ?? ""}\n${code}\`\`\``;
     }
-
-    //     static async listenerLog(message: Message, listener: Listener,
-    //         logger: (...msg: any[]) => void, command?: Command, extra = ""): Promise<void> {
-    //
-    //         logger(`${chalk.blueBright(listener.id)} | ${chalk.blueBright(Date.now() - message.createdTimestamp)}ms
-    // ${message.channel.type !== ChannelType.DM
-    //         ? `Guild: ${chalk.blueBright(message.guild?.name ?? "N/A")} [${chalk.blueBright(message.guild?.id ?? "N/A")}]\nChannel: #${chalk.blueBright(message.channel.name)} [${chalk.blueBright(message.channel.id)}]`
-    //         : `DMChannel: [${chalk.blueBright(message.author.dmChannel?.id)}]`}
-    // User: ${chalk.blueBright(message.author.username)} [${chalk.blueBright(message.author.id)}]
-    // Executed ${chalk.blueBright(command?.id ?? "N/A")} | "${chalk.yellow(message.content.substring(0, 100))}"\n${extra}`);
-    //     }
 
     // Credit to https://futurestud.io/tutorials/split-an-array-into-smaller-array-chunks-in-javascript-and-node-js
     /**
@@ -182,5 +171,18 @@ export default class Utility {
 
     static isRegex(value: unknown): value is RegexpType {
         return (value as RegexpType).match !== undefined;
+    }
+
+    public static async handleToJSON(data: any) {
+        if (data) return data;
+        throw new Error("No data was found");
+    }
+
+    public static hasKey<O extends object>(obj: O, key: PropertyKey): key is keyof O {
+        return key in obj;
+    }
+
+    static genericArrayFilter<T>(x: T | undefined): x is T {
+        return !!x;
     }
 }

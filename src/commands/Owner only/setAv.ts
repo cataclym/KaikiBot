@@ -3,7 +3,7 @@ import { Args } from "@sapphire/framework";
 import { AttachmentBuilder, Message } from "discord.js";
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-import Utility from "../../lib/Utility";
+import KaikiUtil from "../../lib/KaikiUtil";
 
 @ApplyOptions<KaikiCommandOptions>({
     name: "setavatar",
@@ -17,7 +17,7 @@ export default class SetAvatarCommand extends KaikiCommand {
 
         const url = await args.rest("url");
 
-        const img = await Utility.loadImage(url.href);
+        const img = await KaikiUtil.loadImage(url.href);
 
         try {
             await this.client.user?.setAvatar(img);

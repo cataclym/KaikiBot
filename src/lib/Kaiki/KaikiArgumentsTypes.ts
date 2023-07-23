@@ -1,9 +1,6 @@
 import { Args, Argument } from "@sapphire/framework";
-import { Guild, Message } from "discord.js";
+import { Message } from "discord.js";
 import Constants from "../../struct/Constants";
-import { JSONToMessageOptions } from "../GreetHandler";
-import Utility from "../Utility";
-import KaikiUtil from "./KaikiUtil";
 
 
 export default class KaikiArgumentsTypes {
@@ -53,7 +50,7 @@ export default class KaikiArgumentsTypes {
         });
     });
 
-    public static emoteImageArgument = Args.make<string>( async (parameter: string, context: Argument.Context<string>) => {
+    public static emoteImageArgument = Args.make<string>(async (parameter: string, context: Argument.Context<string>) => {
 
         if (!parameter) {
             return Args.error({

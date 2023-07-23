@@ -2,7 +2,7 @@ import { ApplyOptions } from "@sapphire/decorators";
 import { Events, Listener, ListenerOptions } from "@sapphire/framework";
 import { GuildMember } from "discord.js";
 import GreetHandler from "../lib/GreetHandler";
-import { handleStickyRoles } from "../lib/Roles";
+import Roles from "../lib/Roles";
 
 @ApplyOptions<ListenerOptions>({
     event: Events.GuildMemberAdd,
@@ -14,7 +14,7 @@ export default class GuildMemberAdd extends Listener {
         await Promise.all([
             this.container.client.anniversaryService.checkAnniversaryMember(member),
             greetHandler.handleGreetMessage(),
-            handleStickyRoles(member),
+            Roles.handleStickyRoles(member),
         ]);
     }
 }

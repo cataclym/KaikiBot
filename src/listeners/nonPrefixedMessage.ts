@@ -4,7 +4,7 @@ import { EmbedBuilder, Message } from "discord.js";
 import KaikiCache from "../cache/KaikiCache";
 import { DadBot } from "../lib/DadBot";
 import Emotes from "../lib/Emotes/Emotes";
-import Utility from "../lib/Utility";
+import KaikiUtil from "../lib/KaikiUtil";
 
 @ApplyOptions<ListenerOptions>({
     event: Events.NonPrefixedMessage,
@@ -42,7 +42,7 @@ export default class NonPrefixedMessage extends Listener {
 
         const embed = new EmbedBuilder({
             author: { name: `${message.author.username} [${message.author.id}]` },
-            description: Utility.trim(message.content, 2048),
+            description: KaikiUtil.trim(message.content, 2048),
         })
             .withOkColor();
 

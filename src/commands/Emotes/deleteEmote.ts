@@ -3,7 +3,7 @@ import { Args } from "@sapphire/framework";
 import { EmbedBuilder, Message } from "discord.js";
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-import Utility from "../../lib/Utility";
+import KaikiUtil from "../../lib/KaikiUtil";
 import Constants from "../../struct/Constants";
 
 const timer = (ms: number) => new Promise(res => setTimeout(res, ms));
@@ -68,7 +68,7 @@ export default class DeleteEmoteCommand extends KaikiCommand {
                 embeds: [
                     new EmbedBuilder()
                         .setTitle("Success!")
-                        .setDescription(`Deleted:\n${Utility.trim(emotes.map(e => `:${e.name}: [\`${e.id}\`]`).join("\n"), Constants.MAGIC_NUMBERS.EMBED_LIMITS.DESCRIPTION)}`)
+                        .setDescription(`Deleted:\n${KaikiUtil.trim(emotes.map(e => `:${e.name}: [\`${e.id}\`]`).join("\n"), Constants.MAGIC_NUMBERS.EMBED_LIMITS.DESCRIPTION)}`)
                         .withOkColor(message),
                 ],
             });

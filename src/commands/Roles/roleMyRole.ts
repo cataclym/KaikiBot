@@ -3,11 +3,11 @@ import { Args } from "@sapphire/framework";
 import { Subcommand } from "@sapphire/plugin-subcommands";
 import { EmbedBuilder, GuildPremiumTier, Message } from "discord.js";
 import { KaikiSubCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiSubCommandOptions";
-import KaikiEmbeds from "../../lib/Kaiki/KaikiEmbeds";
-import Roles, { rolePermissionCheck } from "../../lib/Roles";
-import Utility from "../../lib/Utility";
-import Constants from "../../struct/Constants";
 import KaikiArgumentsTypes from "../../lib/Kaiki/KaikiArgumentsTypes";
+import KaikiEmbeds from "../../lib/Kaiki/KaikiEmbeds";
+import KaikiUtil from "../../lib/KaikiUtil";
+import Roles from "../../lib/Roles";
+import Constants from "../../struct/Constants";
 
 @ApplyOptions<KaikiSubCommandOptions>({
     name: "myrole",
@@ -90,7 +90,7 @@ export default class MyRoleCommand extends Subcommand {
         }
 
         const oldName = myRole.name;
-        await myRole.setName(Utility.trim(name, Constants.MAGIC_NUMBERS.COMMON.NAME_LIMIT));
+        await myRole.setName(KaikiUtil.trim(name, Constants.MAGIC_NUMBERS.COMMON.NAME_LIMIT));
         return message.channel.send({
             embeds: [
                 new EmbedBuilder()
@@ -115,7 +115,7 @@ export default class MyRoleCommand extends Subcommand {
             return message.channel.send({ embeds: [await KaikiEmbeds.embedFail(message, "This role is higher than me, I cannot edit this role!")] });
         }
 
-        const hex = Utility.convertRGBToHex(color);
+        const hex = KaikiUtil.convertRGBToHex(color);
 
         const oldHex = myRole.hexColor;
         await myRole.setColor(hex);
@@ -145,7 +145,7 @@ export default class MyRoleCommand extends Subcommand {
 
             if (!myRole) return message.channel.send({ embeds: [await KaikiEmbeds.embedFail(message)] });
 
-            if (await rolePermissionCheck(message, myRole)) {
+            if (await Roles.rolePermissionCheck(message, myRole)) {
                 myRole.setIcon(null);
                 return message.channel.send({
                     embeds: [
@@ -174,7 +174,7 @@ export default class MyRoleCommand extends Subcommand {
             await myRole.setIcon(icon).catch(async (err) => message.channel.send({
                 embeds: [
                     (await KaikiEmbeds.errorMessage(message.guild || message, "Unsupported image format"))
-                        .addFields({ name: "Message", value: await Utility.codeblock(err, "xl") }),
+                        .addFields({ name: "Message", value: await KaikiUtil.codeblock(err, "xl") }),
                 ],
             }));
 

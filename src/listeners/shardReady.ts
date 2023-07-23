@@ -1,6 +1,6 @@
 import { ApplyOptions } from "@sapphire/decorators";
 import { Events, Listener, ListenerOptions } from "@sapphire/framework";
-import chalk from "chalk";
+import * as colorette from "colorette";
 import { Snowflake } from "discord.js";
 
 @ApplyOptions<ListenerOptions>({
@@ -10,7 +10,7 @@ export default class ShardReady extends Listener {
 
     // Emitted when a shard turns ready.
     public async run(id: number, unavailableGuilds?: Set<Snowflake>): Promise<void> {
-        const arr = [`shardReady | Shard: ${chalk.green(id)}`];
+        const arr = [`shardReady | Shard: ${colorette.green(id)}`];
         if (unavailableGuilds?.size) {
             arr.push("Unavailable guilds:");
             unavailableGuilds.forEach((v1, v2) => {

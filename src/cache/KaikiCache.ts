@@ -2,8 +2,8 @@ import pkg from "@prisma/client";
 import { Collection, Message, Snowflake } from "discord.js";
 import { Pool, ResultSetHeader, RowDataPacket } from "mysql2/promise";
 import { APIs, ClientImageAPIs } from "../lib/APIs/Common/Types";
+import KaikiUtil from "../lib/KaikiUtil";
 import { RespType } from "../lib/Types/Miscellaneous";
-import Utility from "../lib/Utility";
 import Constants from "../struct/Constants";
 
 export type EmoteStringTypes = "has_space" | "no_space";
@@ -71,7 +71,7 @@ export default class KaikiCache {
         message.client.cache.emoteReactCache.set(message.guildId, new Map([["has_space", new Map()], ["no_space", new Map()]]));
 
         if (emoteReacts.length) {
-            const [space, noSpace]: PartitionResult = Utility.partition(emoteReacts, ([k]) => k.includes(" "));
+            const [space, noSpace]: PartitionResult = KaikiUtil.partition(emoteReacts, ([k]) => k.includes(" "));
 
             for (const [key, value] of space) {
                 message.client.cache.emoteReactCache.get(message.guildId)?.get("has_space")?.set(key, String(value));

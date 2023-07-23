@@ -4,8 +4,7 @@ import { AttachmentBuilder, ColorResolvable, EmbedBuilder, Message, MessageCreat
 import { imgFromColor } from "../../lib/Color";
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-import KaikiUtil from "../../lib/Kaiki/KaikiUtil";
-import Utility from "../../lib/Utility";
+import KaikiUtil from "../../lib/KaikiUtil";
 import Constants from "../../struct/Constants";
 
 @ApplyOptions<KaikiCommandOptions>({
@@ -27,7 +26,7 @@ export default class ColorListCommand extends KaikiCommand {
 
             if (!KaikiUtil.hasKey(Constants.hexColorTable, color)) return;
 
-            const clr = Utility.convertHexToRGB(String(Constants.hexColorTable[color]));
+            const clr = KaikiUtil.convertHexToRGB(String(Constants.hexColorTable[color]));
 
             embeds.push(new EmbedBuilder()
                 .addFields([

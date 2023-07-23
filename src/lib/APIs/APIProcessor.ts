@@ -1,7 +1,7 @@
 import { EmbedBuilder, GuildMember, Message } from "discord.js";
 import fetch, { RequestInfo } from "node-fetch";
 import InteractionsImageData from "../Interfaces/Common/InteractionsImageData";
-import KaikiUtil from "../Kaiki/KaikiUtil";
+import KaikiUtil from "../KaikiUtil";
 
 export default class APIProcessor {
     static async processImageAPIRequest(message: Message,

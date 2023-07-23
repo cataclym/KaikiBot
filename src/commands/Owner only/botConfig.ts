@@ -1,24 +1,12 @@
 import { ApplyOptions } from "@sapphire/decorators";
-import { Args, ArgumentError, MessageCommandContext, UserError } from "@sapphire/framework";
+import { Args } from "@sapphire/framework";
 import { container } from "@sapphire/pieces";
 import { Subcommand } from "@sapphire/plugin-subcommands";
-import { EmbedBuilder, formatEmoji, Message, parseEmoji, resolvePartialEmoji } from "discord.js";
-import { hasEmoji } from "node-emoji";
+import { EmbedBuilder, Message } from "discord.js";
 import { KaikiSubCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiSubCommandOptions";
-import Utility from "../../lib/Utility";
+import KaikiUtil from "../../lib/KaikiUtil";
 import Constants from "../../struct/Constants";
 import { BotConfig } from "../../struct/db/Database";
-
-enum ValidEnum {
-    ACTIVITY = "activity",
-    ACTIVITYTYPE = "activityType",
-    CURRENCYNAME = "currencyname",
-    CURRENCYSYMBOL = "currencysymbol",
-    DAILYENABLED = "dailyEnabled",
-    DAILYAMOUNT = "dailyAmount"
-}
-
-type ValidTypes = ["activity", "activityType", "currencyname", "currencysymbol", "dailyEnabled", "dailyAmount"];
 
 @ApplyOptions<KaikiSubCommandOptions>({
     name: "botconfig",
@@ -69,7 +57,7 @@ export default class BotConfigCommand extends Subcommand {
                     .addFields([
                         {
                             name: "Bot config",
-                            value: await Utility.codeblock(JSON
+                            value: await KaikiUtil.codeblock(JSON
                                 .stringify(new BotConfig(await this.client.connection.query("SELECT * FROM BotSettings")), null, 4), "json"),
                         },
                     ])

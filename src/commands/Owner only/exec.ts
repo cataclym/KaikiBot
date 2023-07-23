@@ -4,7 +4,7 @@ import { Args } from "@sapphire/framework";
 import { EmbedBuilder, Message } from "discord.js";
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-import Utility from "../../lib/Utility";
+import KaikiUtil from "../../lib/KaikiUtil";
 import Constants from "../../struct/Constants";
 
 @ApplyOptions<KaikiCommandOptions>({
@@ -28,7 +28,7 @@ export default class ExecCommand extends KaikiCommand {
                                 name: "Command errored",
                                 iconURL: message.client.user?.displayAvatarURL(),
                             })
-                            .setDescription(await Utility.codeblock(Utility.trim(String(e ?? "Unknown error"), Constants.MAGIC_NUMBERS.CMDS.OWNER_ONLY.EVAL.MAX_STRING)))
+                            .setDescription(await KaikiUtil.codeblock(KaikiUtil.trim(String(e ?? "Unknown error"), Constants.MAGIC_NUMBERS.CMDS.OWNER_ONLY.EVAL.MAX_STRING)))
                             .withErrorColor(message),
                     ],
                 });
@@ -41,7 +41,7 @@ export default class ExecCommand extends KaikiCommand {
                             name: "Executed command",
                             iconURL: message.client.user?.displayAvatarURL(),
                         })
-                        .setDescription(await Utility.codeblock(Utility.trim(stdout ?? "Command executed", Constants.MAGIC_NUMBERS.CMDS.OWNER_ONLY.EVAL.MAX_STRING)))
+                        .setDescription(await KaikiUtil.codeblock(KaikiUtil.trim(stdout ?? "Command executed", Constants.MAGIC_NUMBERS.CMDS.OWNER_ONLY.EVAL.MAX_STRING)))
                         .withOkColor(message),
                 ],
             });

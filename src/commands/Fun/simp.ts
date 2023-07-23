@@ -1,13 +1,13 @@
 import * as buffer from "buffer";
 import { ApplyOptions } from "@sapphire/decorators";
-import { AttachmentBuilder, GuildMember, Message } from "discord.js";
 import { Args, UserError } from "@sapphire/framework";
+import { AttachmentBuilder, GuildMember, Message } from "discord.js";
 import fetch from "node-fetch";
 import sharp from "sharp";
-import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
-import Utility from "../../lib/Utility";
 import Images from "../../data/images.json";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+import KaikiUtil from "../../lib/KaikiUtil";
 
 @ApplyOptions<KaikiCommandOptions>({
     name: "simp",
@@ -18,10 +18,12 @@ import Images from "../../data/images.json";
 export default class SimpCommand extends KaikiCommand {
 
     private backgroundUrl = Images.fun.commands.simp;
+
     private async background() {
-        return Utility.loadImage(this.backgroundUrl);
+        return KaikiUtil.loadImage(this.backgroundUrl);
     }
-    public async messageRun(message:Message, args:Args) {
+
+    public async messageRun(message: Message, args: Args) {
         const member = <GuildMember> await args.pick("member")
             .catch(() => {
                 if (args.finished) {

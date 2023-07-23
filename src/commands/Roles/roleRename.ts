@@ -4,8 +4,8 @@ import { EmbedBuilder, Message } from "discord.js";
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/Kaiki/KaikiEmbeds";
-import { rolePermissionCheck } from "../../lib/Roles";
-import Utility from "../../lib/Utility";
+import KaikiUtil from "../../lib/KaikiUtil";
+import Roles from "../../lib/Roles";
 import Constants from "../../struct/Constants";
 
 @ApplyOptions<KaikiCommandOptions>({
@@ -23,11 +23,11 @@ export default class RoleRenameCommand extends KaikiCommand {
         const role = await args.pick("role");
         const name = await args.rest("string");
 
-        if (await rolePermissionCheck(message, role)) {
+        if (await Roles.rolePermissionCheck(message, role)) {
 
             const oldName = role.name;
 
-            role.edit({ name: Utility.trim(name, Constants.MAGIC_NUMBERS.COMMON.NAME_LIMIT) })
+            role.edit({ name: KaikiUtil.trim(name, Constants.MAGIC_NUMBERS.COMMON.NAME_LIMIT) })
                 .catch((e) => {
                     throw new Error("Error: Failed to edit role.\n" + e);
                 });

@@ -7,8 +7,7 @@ import fetch from "node-fetch";
 import { UrbanResponse } from "../../lib/Interfaces/Common/UrbanResponse";
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-import KaikiUtil from "../../lib/Kaiki/KaikiUtil";
-import Utility from "../../lib/Utility";
+import KaikiUtil from "../../lib/KaikiUtil";
 import Constants from "../../struct/Constants";
 
 @ApplyOptions<KaikiCommandOptions>({
@@ -46,11 +45,11 @@ export default class UrbanDictCommand extends KaikiCommand {
                 .addFields(
                     {
                         name: "Definition",
-                        value: Utility.trim(result.definition, Constants.MAGIC_NUMBERS.EMBED_LIMITS.FIELD.VALUE),
+                        value: KaikiUtil.trim(result.definition, Constants.MAGIC_NUMBERS.EMBED_LIMITS.FIELD.VALUE),
                     },
                     {
                         name: "Example",
-                        value: Utility.trim(result.example || "N/A", Constants.MAGIC_NUMBERS.EMBED_LIMITS.FIELD.VALUE),
+                        value: KaikiUtil.trim(result.example || "N/A", Constants.MAGIC_NUMBERS.EMBED_LIMITS.FIELD.VALUE),
                     },
                     {
                         name: "Rating",

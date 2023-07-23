@@ -1,7 +1,7 @@
 import { DadBotChannels, Guilds } from "@prisma/client";
 import { ApplyOptions } from "@sapphire/decorators";
 import { Args } from "@sapphire/framework";
-import { EmbedBuilder, GuildChannel, Message } from "discord.js";
+import { EmbedBuilder, Message } from "discord.js";
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
@@ -42,21 +42,26 @@ export default class ExcludeDadbotChannelCommand extends KaikiCommand {
         if (!channels) {
             return message.channel.send({
                 embeds: [
-                    embed
-                        .setDescription((guildDb?.DadBotChannels ?? [])
-                            .map(k => message.guild.channels.cache.get(String(k.ChannelId)) ?? String(k.ChannelId))
-                            .sort((a, b) => {
-                                return (a as GuildChannel).name < (b as GuildChannel).name
+                    embed.setDescription(guildDb.DadBotChannels.length
+                        ? guildDb.DadBotChannels.map(k => {
+                            const channel = message.guild.channels.cache.get(String(k.ChannelId));
+
+                            return channel
+                                ? `${channel.name} [${channel.id}]`
+                                : String(k.ChannelId);
+                        })
+                            .sort((a, b) =>
+                                a < b
                                     ? -1
-                                    : 1;
-                            })
-                            .join("\n").trim() ?? "No channels excluded")
+                                    : 1)
+                            .join("\n").trim()
+                        : "No channels excluded")
                         .withOkColor(message),
                 ],
             });
         }
 
-        const guildId = BigInt(message.guildId),
+        const GuildId = BigInt(message.guildId),
             enabledChannels: bigint[] = [],
             excludedChannels: { GuildId: bigint, ChannelId: bigint }[] = [];
 
@@ -68,7 +73,7 @@ export default class ExcludeDadbotChannelCommand extends KaikiCommand {
 
             else {
                 excludedChannels.push({
-                    GuildId: guildId,
+                    GuildId,
                     ChannelId: BigInt(id),
                 });
             }
@@ -91,7 +96,13 @@ export default class ExcludeDadbotChannelCommand extends KaikiCommand {
                 {
                     name: "Excluded",
                     value: excludedChannels
-                        .map(k => message.guild.channels.cache.get(String(k.ChannelId)) ?? String(k.ChannelId))
+                        .map(k => {
+                            const channel = message.guild.channels.cache.get(String(k.ChannelId));
+
+                            return channel
+                                ? `${channel.name} [${channel.id}]`
+                                : String(k.ChannelId);
+                        })
                         .join("\n"),
                 },
             ]);
@@ -115,7 +126,13 @@ export default class ExcludeDadbotChannelCommand extends KaikiCommand {
                 {
                     name: "Un-excluded",
                     value: enabledChannels
-                        .map(k => message.guild.channels.cache.get(String(k)) ?? String(k))
+                        .map(k => {
+                            const channel = message.guild.channels.cache.get(String(k));
+
+                            return channel
+                                ? `${channel.name} [${channel.id}]`
+                                : String(k);
+                        })
                         .join("\n"),
                 },
             ]);

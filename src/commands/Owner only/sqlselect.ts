@@ -4,7 +4,7 @@ import { Message } from "discord.js";
 import { RowDataPacket } from "mysql2/promise";
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-import Utility from "../../lib/Utility";
+import KaikiUtil from "../../lib/KaikiUtil";
 import Constants from "../../struct/Constants";
 
 @ApplyOptions<KaikiCommandOptions>({
@@ -20,6 +20,6 @@ export default class SetNameCommand extends KaikiCommand {
 
         const res = await this.client.connection.query<RowDataPacket[]>(str);
 
-        return message.channel.send(await Utility.codeblock(Utility.trim(JSON.stringify(res[0], null, 4), Constants.MAGIC_NUMBERS.CMDS.OWNER_ONLY.SQL.MESSAGE_LIMIT_JSON), "json"));
+        return message.channel.send(await KaikiUtil.codeblock(KaikiUtil.trim(JSON.stringify(res[0], null, 4), Constants.MAGIC_NUMBERS.CMDS.OWNER_ONLY.SQL.MESSAGE_LIMIT_JSON), "json"));
     }
 }

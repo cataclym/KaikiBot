@@ -5,7 +5,7 @@ import sharp from "sharp";
 import Images from "../../data/images.json";
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-import Utility from "../../lib/Utility";
+import KaikiUtil from "../../lib/KaikiUtil";
 
 @ApplyOptions<KaikiCommandOptions>({
     name: "deadbeat",
@@ -33,7 +33,7 @@ export default class DeadbeatCommand extends KaikiCommand {
                 });
             });
 
-        const buffer = await Utility.loadImage(member.displayAvatarURL({ extension: "jpg", size: 128 }));
+        const buffer = await KaikiUtil.loadImage(member.displayAvatarURL({ extension: "jpg", size: 128 }));
 
         const modified = await sharp(buffer)
             .resize({ height: 189, width: 205 })
@@ -50,6 +50,6 @@ export default class DeadbeatCommand extends KaikiCommand {
     }
 
     private async background() {
-        return Utility.loadImage(this.backgroundUrl);
+        return KaikiUtil.loadImage(this.backgroundUrl);
     }
 }

@@ -5,7 +5,7 @@ import { ActionRowBuilder, ButtonBuilder, EmbedBuilder, Message } from "discord.
 import { ApplyOptions } from "@sapphire/decorators";
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-import Utility from "../../lib/Utility";
+import KaikiUtil from "../../lib/KaikiUtil";
 import Constants from "../../struct/Constants";
 
 const exec = util.promisify(execFile);
@@ -27,7 +27,7 @@ export default class UpdateCommand extends KaikiCommand {
                 embeds: [
                     new EmbedBuilder()
                         .setTitle("Error occurred while updating")
-                        .setDescription(await Utility.codeblock(Utility.trim(update.stderr, Constants.MAGIC_NUMBERS.CMDS.OWNER_ONLY.UPDATE.DESC_STR_LIMIT)))
+                        .setDescription(await KaikiUtil.codeblock(KaikiUtil.trim(update.stderr, Constants.MAGIC_NUMBERS.CMDS.OWNER_ONLY.UPDATE.DESC_STR_LIMIT)))
                         .withErrorColor(message),
                 ],
             });
@@ -37,7 +37,7 @@ export default class UpdateCommand extends KaikiCommand {
             return message.channel.send({
                 embeds: [
                     new EmbedBuilder()
-                        .setDescription(await Utility.codeblock(Utility.trim(update.stdout, Constants.MAGIC_NUMBERS.CMDS.OWNER_ONLY.UPDATE.DESC_STR_LIMIT)))
+                        .setDescription(await KaikiUtil.codeblock(KaikiUtil.trim(update.stdout, Constants.MAGIC_NUMBERS.CMDS.OWNER_ONLY.UPDATE.DESC_STR_LIMIT)))
                         .withErrorColor(message),
                 ],
             });
@@ -46,7 +46,7 @@ export default class UpdateCommand extends KaikiCommand {
         const embeds = [
             new EmbedBuilder()
                 .setTitle(`HEAD is now at ${execSync("git rev-parse --short HEAD")} ${execSync("git describe")}`)
-                .setDescription(await Utility.codeblock(Utility.trim(update.stdout, 4048)))
+                .setDescription(await KaikiUtil.codeblock(KaikiUtil.trim(update.stdout, 4048)))
                 .withOkColor(message),
             new EmbedBuilder()
                 .setTitle("Bot needs to compile updated files...!")
@@ -79,7 +79,7 @@ export default class UpdateCommand extends KaikiCommand {
                 embeds[1] = new EmbedBuilder()
                     .setTitle("Error occurred while building")
                     // Embed description limit 4096
-                    .setDescription(await Utility.codeblock(Utility.trim(build.stderr, Constants.MAGIC_NUMBERS.CMDS.OWNER_ONLY.UPDATE.DESC_STR_LIMIT)))
+                    .setDescription(await KaikiUtil.codeblock(KaikiUtil.trim(build.stderr, Constants.MAGIC_NUMBERS.CMDS.OWNER_ONLY.UPDATE.DESC_STR_LIMIT)))
                     .withErrorColor(message),
                 await i.editReply({
                     embeds: embeds,
@@ -91,7 +91,7 @@ export default class UpdateCommand extends KaikiCommand {
                 embeds[1] = new EmbedBuilder()
                     .setTitle("Finished building")
                     // Embed description limit 4096
-                    .setDescription(await Utility.codeblock(Utility.trim(build.stdout, Constants.MAGIC_NUMBERS.CMDS.OWNER_ONLY.UPDATE.DESC_STR_LIMIT)))
+                    .setDescription(await KaikiUtil.codeblock(KaikiUtil.trim(build.stdout, Constants.MAGIC_NUMBERS.CMDS.OWNER_ONLY.UPDATE.DESC_STR_LIMIT)))
                     .addFields([
                         {
                             name: "After building...",

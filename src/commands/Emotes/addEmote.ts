@@ -5,7 +5,7 @@ import Emotes from "../../lib/Emotes/Emotes";
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiArgumentsTypes from "../../lib/Kaiki/KaikiArgumentsTypes";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-import Utility from "../../lib/Utility";
+import KaikiUtil from "../../lib/KaikiUtil";
 import Constants from "../../struct/Constants";
 
 @ApplyOptions<KaikiCommandOptions>({
@@ -33,7 +33,7 @@ export default class AddEmoteCommand extends KaikiCommand {
         const msNow = Date.now().toString();
         const filePath = Emotes.filePath(msNow);
 
-        name = Utility.trim(name, Constants.MAGIC_NUMBERS.CMDS.EMOTES.ADD_EMOTE.NAME_MAX_LENGTH)
+        name = KaikiUtil.trim(name, Constants.MAGIC_NUMBERS.CMDS.EMOTES.ADD_EMOTE.NAME_MAX_LENGTH)
             .replace(/ /g, "_");
 
         await Emotes.fetchEmote(url, filePath);
