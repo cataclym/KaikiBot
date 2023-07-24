@@ -1,5 +1,6 @@
 import { ApplyOptions } from "@sapphire/decorators";
 import { Events, Listener, ListenerOptions, MessageCommandDeniedPayload, UserError } from "@sapphire/framework";
+import * as colorette from "colorette";
 import { EmbedBuilder, MessageCreateOptions } from "discord.js";
 
 @ApplyOptions<ListenerOptions>({
@@ -11,7 +12,7 @@ export default class MessageCommandDenied extends Listener {
 
     public async run(error: UserError, payload: MessageCommandDeniedPayload): Promise<void> {
 
-        this.container.logger.error(`Command: ${payload.command.name} | User: ${payload.message.author} [${payload.message.author.id}] | GID/CID: ${payload.message.guildId || payload.message.channelId} | ${error.name} ${error.message} ${error.identifier} ${error.stack}`);
+        this.container.logger.error(`Command: ${colorette.greenBright(payload.command.name)} | User: ${colorette.greenBright(payload.message.author.username)} [${colorette.greenBright(payload.message.author.id)}] | GID/CID: ${colorette.greenBright(payload.message.guildId || payload.message.channelId)} | ${error.name} ${error.message} ${error.identifier} ${error.stack}`);
 
         const messageOptions: MessageCreateOptions = {
             embeds:

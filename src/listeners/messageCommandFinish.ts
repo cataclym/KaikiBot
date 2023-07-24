@@ -1,5 +1,6 @@
 import { ApplyOptions } from "@sapphire/decorators";
 import { Command, Events, Listener, ListenerOptions } from "@sapphire/framework";
+import * as colorette from "colorette";
 import { Message } from "discord.js";
 
 @ApplyOptions<ListenerOptions>({
@@ -8,7 +9,7 @@ import { Message } from "discord.js";
 export class MessageCommandFinish extends Listener {
     public async run(message: Message, command: Command) {
 
-        this.container.logger.info(`Command: ${command.name} | User: ${message.author.username} [${message.author.id}] | GID/CID: ${message.guildId || message.channelId}`);
+        this.container.logger.info(`Command: ${colorette.greenBright(command.name)} | User: ${colorette.greenBright(message.author.username)} [${colorette.greenBright(message.author.id)}] | GID/CID: ${colorette.greenBright(message.guildId || message.channelId)}`);
 
         let cmd = message.client.cache.cmdStatsCache.get(command.name);
 
