@@ -82,7 +82,6 @@ export default class TodoCommand extends KaikiCommand {
         else {
 
             const reminderArray = Todo.reminderArray(todoArray);
-            if (page >= pages.length) page = 0;
 
             for (let index = 10, p = 0; p < reminderArray.length; index += 10, p += 10) {
                 pages.push(new EmbedBuilder(emb.data)
@@ -92,6 +91,8 @@ export default class TodoCommand extends KaikiCommand {
                     ),
                 );
             }
+
+            if (page >= pages.length) page = 0;
 
             sentMsg = await message.channel.send({
                 embeds: [pages[page]],
