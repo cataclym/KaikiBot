@@ -10,12 +10,6 @@ export default class SlashCommandsLib {
         description: "Excludes you from being targeted by dad-bot. Execute command again to reverse this action.",
     };
 
-    public static dadbotCheck(message: Message | Guild) {
-        return !!(message instanceof Guild
-            ? message
-            : message.guild)?.isDadBotEnabled();
-    }
-
     public static async getOrCreateDadbotRole(guild: Guild, client: KaikiSapphireClient<true>) {
         const db = await client.db.getOrCreateGuild(guild.id);
         return guild.roles.cache.get(String(db.ExcludeRole));

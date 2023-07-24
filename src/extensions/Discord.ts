@@ -9,19 +9,21 @@ declare module "discord.js" {
     }
 
     export interface Guild {
-        isDadBotEnabled(message?: Message): boolean;
+        isDadBotEnabledInGuildOnly(): boolean;
 
         client: KaikiSapphireClient<true>;
     }
 
     export interface GuildMember {
-        hasExcludedRole(member?: GuildMember): boolean;
+        hasExcludedRole(): boolean;
 
         client: KaikiSapphireClient<true>;
     }
 
     export interface Message {
         getMemberColorAsync(member?: GuildMember): Promise<ColorResolvable>;
+
+        isDadBotEnabledInGuildAndChannel(): boolean;
 
         client: KaikiSapphireClient<true>;
     }
@@ -35,33 +37,26 @@ declare module "discord.js" {
     export interface ButtonInteraction {
         client: KaikiSapphireClient<true>;
     }
-
 }
 
-GuildMember.prototype.hasExcludedRole = function(member?: GuildMember) {
+GuildMember.prototype.hasExcludedRole = function() {
 
-    member = member || this as GuildMember;
+    const roleId = this.guild.client.guildsDb.get(this.guild.id, "ExcludeRole", undefined);
 
-    const roleId = member.guild.client.guildsDb.get(member.guild.id, "ExcludeRole", undefined);
-
-    return !!member.roles.cache.get(roleId);
+    return !!this.roles.cache.get(roleId);
 };
 
-Guild.prototype.isDadBotEnabled = function(message?: Message) {
+Guild.prototype.isDadBotEnabledInGuildOnly = function() {
+    return !!(this && this.client.guildsDb.get(this.id, "DadBot", false));
+};
 
-    const g = message?.guild || this as Guild;
+Message.prototype.isDadBotEnabledInGuildAndChannel = function() {
+    if (!this.inGuild()) return false;
 
-    if (g && g.client.guildsDb.get(g.id, "DadBot", false)) {
+    if (!this.guild.isDadBotEnabledInGuildOnly()) return false;
 
-        if (message) {
-            return !message.client.dadBotChannels.items.get(message.channelId);
-        }
-
-        else {
-            return true;
-        }
-    }
-    return false;
+    // Return true when value is undefined
+    return !this.client.dadBotChannels.items.get(this.channelId);
 };
 
 EmbedBuilder.prototype.withErrorColor = function(messageOrGuild?: Message | Guild) {

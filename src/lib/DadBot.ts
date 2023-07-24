@@ -23,7 +23,7 @@ export class DadBot {
 
         if (message.content.includes("||")) return false;
 
-        if (!message.guild.isDadBotEnabled()) return false;
+        if (!message.isDadBotEnabledInGuildAndChannel()) return false;
 
         return !message.member.hasExcludedRole();
     }

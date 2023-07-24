@@ -21,8 +21,7 @@ export default class ExcludeCommand extends KaikiCommand {
                 .setName("exclude")
                 .setDescription(
                     "Excludes you from being targeted by dad-bot. Execute command again to reverse this action.",
-                ),
-        );
+                ));
     }
 
     public async messageRun(message: Message<true>) {
@@ -33,9 +32,8 @@ export default class ExcludeCommand extends KaikiCommand {
         return this.runMessageInteraction(interaction);
     }
 
-
     private runMessageInteraction(message: Message<true> | Command.ChatInputCommandInteraction<"cached">) {
-        if (!SlashCommandsLib.dadbotCheck(message.guild)) {
+        if (!message.guild.isDadBotEnabledInGuildOnly()) {
             return message.reply({
                 embeds: [
                     new EmbedBuilder()
