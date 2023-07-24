@@ -1,5 +1,5 @@
 import { ApplyOptions } from "@sapphire/decorators";
-import {EmbedBuilder, Message} from "discord.js";
+import { EmbedBuilder, Message } from "discord.js";
 import GreetHandler from "../../lib/GreetHandler";
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
@@ -18,7 +18,7 @@ export default class WelcomeTestCommand extends KaikiCommand {
 
         const welcomeData = {
             channel: db.WelcomeChannel || BigInt(message.channelId),
-            embed: db.WelcomeMessage,
+            message: db.WelcomeMessage,
             timeout: db.WelcomeTimeout,
         };
 
@@ -37,6 +37,6 @@ export default class WelcomeTestCommand extends KaikiCommand {
                         .setTitle("Message was not sent successfully!")
                         .withErrorColor(message),
             ],
-        })
+        });
     }
 }

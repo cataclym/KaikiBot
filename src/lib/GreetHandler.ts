@@ -17,7 +17,7 @@ interface MemberMessage extends Message<true> {
 
 interface SendMessageData {
     channel: bigint | null,
-    embed: string | null,
+    message: string | null,
     timeout: number | null,
 }
 
@@ -80,7 +80,7 @@ export default class GreetHandler {
 
         return this.sendWelcomeLeaveMessage({
             channel: db.WelcomeChannel,
-            embed: db.WelcomeMessage,
+            message: db.WelcomeMessage,
             timeout: db.WelcomeTimeout,
         });
     }
@@ -97,16 +97,16 @@ export default class GreetHandler {
 
         return this.sendWelcomeLeaveMessage({
             channel: db.ByeChannel,
-            embed: db.ByeMessage,
+            message: db.ByeMessage,
             timeout: db.ByeTimeout,
         });
     }
 
     async createAndParseGreetMsg(data: SendMessageData): Promise<MessageCreateOptions> {
-        if (!data.embed) {
+        if (!data.message) {
             return GreetHandler.emptyMessageOptions(this.guildMember.guild);
         }
-        const messageOptions: MessageCreateOptions = JSON.parse(await this.parsePlaceHolders(data.embed));
+        const messageOptions: MessageCreateOptions = JSON.parse(await this.parsePlaceHolders(data.message));
 
         if (!messageOptions.embeds?.every(object => !!Object.keys(object).length)) {
             messageOptions.embeds = undefined;
@@ -140,7 +140,7 @@ export default class GreetHandler {
             });
     }
 
-    private async parsePlaceHolders(input: string) {
+    public async parsePlaceHolders(input: string) {
 
         const lowercase = input.toLowerCase();
 

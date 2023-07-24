@@ -19,7 +19,7 @@ export default class GoodbyeTestTestCommand extends KaikiCommand {
 
         const welcomeData = {
             channel: db.ByeChannel || BigInt(message.channelId),
-            embed: db.ByeMessage,
+            message: db.ByeMessage,
             timeout: db.ByeTimeout,
         };
 

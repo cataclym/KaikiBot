@@ -243,12 +243,12 @@ export default class Constants {
     });
 
     static readonly channelTypes: { [type in keyof typeof ChannelType]: string } = Object.freeze({
-        AnnouncementThread: "AnnouncementThread",
+        AnnouncementThread: "Announcement thread",
         DM: "DM",
         GroupDM: "GroupDM",
-        GuildAnnouncement: "Guild Announcements",
+        GuildAnnouncement: "Guild announcements",
         GuildCategory: "Category",
-        GuildDirectory: "GuildDirectory",
+        GuildDirectory: "Guild directory",
         GuildForum: "Guild Forum",
         GuildNews: "News",
         GuildNewsThread: "News thread",
@@ -257,8 +257,8 @@ export default class Constants {
         GuildStageVoice: "Stage",
         GuildText: "Text",
         GuildVoice: "Voice",
-        PrivateThread: "PrivateThread",
-        PublicThread: "PublicThread",
+        PrivateThread: "Private thread",
+        PublicThread: "Public thread",
     });
 
     static readonly flags: { [index in UserFlagsString]: string } = Object.freeze({

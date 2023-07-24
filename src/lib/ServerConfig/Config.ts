@@ -290,7 +290,7 @@ export default class Config {
 
         if (db.WelcomeMessage) {
             pages.push(await greetHandler.createAndParseGreetMsg({
-                embed: db.WelcomeMessage || null,
+                message: db.WelcomeMessage || null,
                 channel: db.WelcomeChannel,
                 timeout: db.WelcomeTimeout,
             }));
@@ -298,7 +298,7 @@ export default class Config {
 
         if (db.ByeMessage) {
             pages.push(await greetHandler.createAndParseGreetMsg({
-                embed: db.ByeMessage || null,
+                message: db.ByeMessage || null,
                 channel: db.ByeChannel,
                 timeout: db.ByeTimeout,
             }));
