@@ -1,16 +1,46 @@
-import { Listener } from "discord-akairo";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Events, Listener, ListenerOptions } from "@sapphire/framework";
 import { GuildMember } from "discord.js";
-import db from "quick.db";
-const leaveRoleTable = new db.table("leaveRoleTable");
+import GreetHandler from "../lib/GreetHandler";
 
-export default class GuildMemberRemovedListener extends Listener {
-	constructor() {
-		super("guildMemberRemove", {
-			event: "guildMemberRemove",
-			emitter: "client",
-		});
-	}
-	async exec(member: GuildMember): Promise<void> {
-		leaveRoleTable.set(`${member.guild.id}.${member.id}`, member.roles.cache.map(role => role.id));
-	}
+@ApplyOptions<ListenerOptions>({
+    event: Events.GuildMemberRemove,
+})
+export default class GuildMemberRemoved extends Listener {
+    public async run(member: GuildMember): Promise<void> {
+
+        const greetHandler = new GreetHandler(member);
+
+        const guildId = BigInt(member.guild.id);
+        const memberId = BigInt(member.id);
+
+        const { client } = this.container;
+
+        const leaveRoles = member.roles.cache.map(role => {
+            return client.orm.leaveRoles.create({
+                data: {
+                    RoleId: BigInt(role.id),
+                    GuildUsers: {
+                        connectOrCreate: {
+                            create: {
+                                UserId: memberId,
+                                GuildId: guildId,
+                            },
+                            where: {
+                                UserId_GuildId: {
+                                    UserId: memberId,
+                                    GuildId: guildId,
+                                },
+                            },
+                        },
+                    },
+                },
+            });
+        });
+
+        await Promise.all([
+            client.orm.$transaction(leaveRoles),
+            greetHandler.handleGoodbyeMessage(),
+        ]);
+    }
 }

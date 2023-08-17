@@ -1,39 +1,43 @@
-import { Command } from "discord-akairo";
-import { MessageEmbed, Message, Role } from "discord.js";
-import { noArgRole } from "../../functions/embeds";
-import { getMemberColorAsync } from "../../functions/Util";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args } from "@sapphire/framework";
+import { EmbedBuilder, Message } from "discord.js";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+import KaikiEmbeds from "../../lib/Kaiki/KaikiEmbeds";
+import Roles from "../../lib/Roles";
 
-export default class RoleHoistCommand extends Command {
-	constructor() {
-		super("rolehoist", {
-			aliases: ["rolehoist", "hoist"],
-			clientPermissions: "MANAGE_ROLES",
-			userPermissions: "MANAGE_ROLES",
-			description: { description: "Hoists or unhoists a role", usage: "@gamers" },
-			channel: "guild",
-			args: [
-				{
-					id: "role",
-					type: "role",
-					otherwise: noArgRole,
-				},
-			],
-		});
-	}
+@ApplyOptions<KaikiCommandOptions>({
+    name: "rolehoist",
+    aliases: ["hoistrole", "hoist"],
+    description: "Hoists or unhoists a role",
+    usage: ["@gamers"],
+    requiredUserPermissions: ["ManageRoles"],
+    requiredClientPermissions: ["ManageRoles"],
+    preconditions: ["GuildOnly"],
+})
+export default class RoleHoistCommand extends KaikiCommand {
+    public async messageRun(message: Message<true>, args: Args): Promise<Message> {
 
-	async exec(message: Message, { role }: { role: Role}): Promise<Message> {
+        const role = await args.rest("role");
 
-		if (role.hoist) {
-			role.setHoist(false);
-		}
-		else {
-			role.setHoist(true);
-		}
+        if (await Roles.rolePermissionCheck(message, role)) {
 
-		return message.channel.send(new MessageEmbed({
-			color: await getMemberColorAsync(message),
-			description: `Toggled ${role.name}'s hoist status to ${!role.hoist}.`,
-		}));
+            await role.setHoist(!role.hoist);
 
-	}
+            return message.channel.send({
+                embeds: [
+                    new EmbedBuilder({
+                        description: `Toggled ${role.name}'s hoist status to ${!role.hoist}.`,
+                    })
+                        .withOkColor(message),
+                ],
+            });
+        }
+
+        else {
+            return message.channel.send({
+                embeds: [await KaikiEmbeds.errorMessage(message, "**Insufficient permissions**\nRole is above you or me in the role hierarchy.")],
+            });
+        }
+    }
 }

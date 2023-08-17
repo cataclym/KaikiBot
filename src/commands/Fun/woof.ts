@@ -1,20 +1,23 @@
-import { Command } from "discord-akairo";
-import { Message } from "discord.js";
+import { ApplyOptions } from "@sapphire/decorators";
+import { EmbedBuilder, Message } from "discord.js";
 import fetch from "node-fetch";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+import KaikiUtil from "../../lib/KaikiUtil";
 
-export default class WoofCommand extends Command {
-	constructor() {
-		super("woof", {
-			aliases: ["woof"],
-			description: { description: "Woof.", usage: "" },
-		});
-	}
-	public async exec(message: Message): Promise<Message | void> {
+@ApplyOptions<KaikiCommandOptions>({
+    name: "woof",
+    description: "Woof.",
+})
+export default class WoofCommand extends KaikiCommand {
+    public async messageRun(message: Message): Promise<Message | void> {
 
-		const file = await fetch("https://dog.ceo/api/breeds/image/random")
-			.then(response => response.json());
-		if (file) {
-			return message.channel.send(file.message);
-		}
-	}
+        return message.channel.send({
+            embeds: [
+                new EmbedBuilder()
+                    .setImage((await KaikiUtil.handleToJSON(await (await fetch("https://dog.ceo/api/breeds/image/random")).json())).message)
+                    .withOkColor(message),
+            ],
+        });
+    }
 }

@@ -1,17 +1,14 @@
-import { Listener } from "discord-akairo";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Events, Listener, ListenerOptions } from "@sapphire/framework";
 
-export default class WarnListener extends Listener {
-	constructor() {
-		super("warn", {
-			event: "warn",
-			emitter: "client",
-		});
-	}
-	// Emitted for general warnings.
+@ApplyOptions<ListenerOptions>({
+    event: Events.Warn,
+})
+export default class Warn extends Listener {
 
-	public async exec(info: string): Promise<void> {
+    // Emitted for general warnings.
+    public async run(info: string): Promise<void> {
 
-		console.warn(`🟧 warn | ${info}`);
-
-	}
+        this.container.logger.warn(`warn | ${info}`);
+    }
 }

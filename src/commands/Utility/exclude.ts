@@ -1,52 +1,48 @@
-import { Command } from "discord-akairo";
-import { config } from "../../config.js";
-import { MessageEmbed, Message } from "discord.js";
-import { errorColor, getMemberColorAsync } from "../../functions/Util";
+import { ApplyOptions } from "@sapphire/decorators";
+import { ChatInputCommand, Command } from "@sapphire/framework";
+import { EmbedBuilder, Message } from "discord.js";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+import SlashCommandsLib from "../../lib/SlashCommands/SlashCommandsLib";
 
-const errorEmbed = new MessageEmbed({
-	title: "Error!",
-	color: errorColor,
-	description: `A role with name \`${config.names}\` was not found in guild. Creating... `,
-	footer: { text: "Beep boop..." },
-});
-const addedRoleEmbed = new MessageEmbed({
-	title: "Success!",
-	description: `Added role \`${config.names}\`.\nType the command again to remove.`,
-});
-const removedRoleEmbed = new MessageEmbed({
-	title: "Success!",
-	description: `Removed role \`${config.names}\`.\nType the command again to add it back.`,
-});
+@ApplyOptions<KaikiCommandOptions>({
+    name: "exclude",
+    aliases: ["excl", "e"],
+    description:
+        "Excludes you from being targeted by dad-bot. Execute command again to reverse this action.",
+    requiredClientPermissions: ["ManageRoles"],
+    preconditions: ["GuildOnly"],
+})
+export default class ExcludeCommand extends KaikiCommand {
 
-export default class ExcludeCommand extends Command {
-	constructor() {
-		super("exclude", {
-			description: { description: "Adds or removes excluded role from user. Excludes the user from being targeted by dadbot." },
-			aliases: ["exclude", "e", "excl"],
-			clientPermissions: "MANAGE_ROLES",
-		});
-	}
+    public override registerApplicationCommands(registry: ChatInputCommand.Registry) {
+        registry.registerChatInputCommand((builder) =>
+            builder
+                .setName("exclude")
+                .setDescription(
+                    "Excludes you from being targeted by dad-bot. Execute command again to reverse this action.",
+                ));
+    }
 
-	async exec(message: Message): Promise<Message | void> {
-		const color = await getMemberColorAsync(message);
-		addedRoleEmbed.setColor(color);
-		removedRoleEmbed.setColor(color);
-		let excludedRole = message.guild?.roles.cache.find((r) => r.name === config.names);
+    public async messageRun(message: Message<true>) {
+        return this.runMessageInteraction(message);
+    }
 
-		if (!message.guild?.roles.cache.some(r => r.name === excludedRole?.name)) {
-			excludedRole = await message.guild?.roles.create({
-				data: { name: config.names },
-				reason: "Role didn't exist yet.",
-			});
-			await (message.channel.send(errorEmbed));
-		}
-		if (!message.member?.roles.cache.find((r) => r === excludedRole) && excludedRole) {
-			await message.member?.roles.add(excludedRole);
-			return message.channel.send(addedRoleEmbed);
-		}
-		if (message.member?.roles.cache.find((r) => r === excludedRole) && excludedRole) {
-			await message.member?.roles.remove(excludedRole);
-			return message.channel.send(removedRoleEmbed);
-		}
-	}
+    public async chatInputRun(interaction: Command.ChatInputCommandInteraction<"cached">) {
+        return this.runMessageInteraction(interaction);
+    }
+
+    private runMessageInteraction(message: Message<true> | Command.ChatInputCommandInteraction<"cached">) {
+        if (!message.guild.isDadBotEnabledInGuildOnly()) {
+            return message.reply({
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle("Dad-bot is not enabled")
+                        .withErrorColor(message.guild),
+                ],
+            });
+        }
+
+        return SlashCommandsLib.excludeCommand(message);
+    }
 }

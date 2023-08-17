@@ -1,19 +1,15 @@
-import { Listener } from "discord-akairo";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Events, Listener, ListenerOptions } from "@sapphire/framework";
+import * as colorette from "colorette";
 
-export default class ShardDisconnectListener extends Listener {
-	constructor() {
-		super("shardDisconnect", {
-			event: "shardDisconnect",
-			emitter: "client",
-		});
-	}
-	// Emitted when a shard's WebSocket disconnects and will no longer reconnect.
+@ApplyOptions<ListenerOptions>({
+    event: Events.ShardDisconnect,
+})
+export default class ShardDisconnect extends Listener {
 
-	public async exec(event: CloseEvent, id: number): Promise<void> {
+    // Emitted when a shard's WebSocket disconnects and will no longer reconnect.
+    public async run(event: CloseEvent, id: number) {
 
-		console.warn(
-			// eslint-disable-next-line indent
-	`🟥 ShardDisconnect | Shard: ${id} Reason: ${event.reason}`);
-
-	}
+        this.container.logger.warn(`ShardDisconnect | Shard: ${colorette.redBright(id)} Reason: ${event.reason}`);
+    }
 }

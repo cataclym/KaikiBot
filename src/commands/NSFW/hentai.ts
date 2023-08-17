@@ -1,46 +1,31 @@
-import { Command } from "discord-akairo";
-import { Message, MessageEmbed } from "discord.js";
-import { Image } from "kaori/typings/Image";
-import { getMemberColorAsync } from "../../functions/Util";
-import { grabHentaiPictureAsync } from "./hentaiService";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args, UserError } from "@sapphire/framework";
+import { Message } from "discord.js";
+import HentaiService from "../../lib/Hentai/HentaiService";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
-export default class HentaiCommand extends Command {
-	constructor() {
-		super("hentai", {
-			aliases: ["hentai"],
-			description: { description: "Fetches hentai images from" },
-			typing: true,
-			args: [{
-				id: "tags",
-				match: "rest",
-				type: "string",
-			}],
-		});
-	}
-	public async exec(message: Message, { tags }: { tags: string }): Promise<Message | void> {
-		if (message.channel.type === "text" && message.channel.nsfw) {
-			const messageArguments: string[] | undefined = tags?.split(/ +/);
-			postHentai(messageArguments);
-		}
-		else {
-			throw new Error ("Channel is not NSFW.");
-		}
-		async function postHentai(messageArguments: string[] | undefined): Promise<Message | void> {
-			const awaitResult = async () => (await grabHentaiPictureAsync(messageArguments));
-			const result: Image = await awaitResult();
-			if (result) {
-				return message.util?.send(result.sampleURL, new MessageEmbed({
-					author: { name: result.createdAt?.toLocaleString() },
-					title: "Score: " + result.score,
-					description: `[Source](${result.source} "${result.source}")`,
-					image: { url: <string | undefined> result.fileURL || result.sampleURL || result.previewURL },
-					footer: { text: result.tags.join(", ") },
-					color: await getMemberColorAsync(message),
-				}));
-			}
-			else {
-				return postHentai(messageArguments);
-			}
-		}
-	}
+@ApplyOptions<KaikiCommandOptions>({
+    name: "hentai",
+    description: "Fetches hentai images from Booru boards",
+    usage: ["", "waifu", "neko", "femboy", "blowjob"],
+    typing: true,
+    nsfw: true,
+})
+export default class HentaiCommand extends KaikiCommand {
+    public async messageRun(message: Message, args: Args): Promise<void | Message> {
+
+        const category = await args.pick("kaikiHentai")
+            .catch(() => {
+                if (args.finished) {
+                    return null;
+                }
+                throw new UserError({
+                    identifier: "NoCategoryProvided",
+                    message: "Couldn't find a category with that name.",
+                });
+            });
+
+        return message.channel.send(await this.client.hentaiService.grabHentai(category || HentaiService.hentaiArray[Math.floor(Math.random() * HentaiService.hentaiArray.length)], "single"));
+    }
 }

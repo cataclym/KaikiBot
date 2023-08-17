@@ -1,17 +1,15 @@
-import { Listener } from "discord-akairo";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Events, Listener, ListenerOptions } from "@sapphire/framework";
+import * as colorette from "colorette";
 
-export default class ShardReconnectingListener extends Listener {
-	constructor() {
-		super("shardReconnecting", {
-			event: "shardReconnecting",
-			emitter: "client",
-		});
-	}
-	// Emitted when a shard is attempting to reconnect or re-identify.
+@ApplyOptions<ListenerOptions>({
+    event: Events.ShardReconnecting,
+})
+export default class ShardReconnecting extends Listener {
 
-	public async exec(id: number): Promise<void> {
+    // Emitted when a shard is attempting to reconnect or re-identify.
+    public async run(id: number): Promise<void> {
 
-		console.warn(`🟧 shardReconnecting | Shard: ${id}`);
-
-	}
+        this.container.logger.info(`shardReconnecting | Shard: ${colorette.green(id)}`);
+    }
 }

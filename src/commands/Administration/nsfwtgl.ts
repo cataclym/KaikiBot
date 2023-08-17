@@ -1,33 +1,32 @@
-import { Command } from "discord-akairo";
-import { TextChannel, Message, MessageEmbed } from "discord.js";
-import { getMemberColorAsync } from "../../functions/Util";
+import { ApplyOptions } from "@sapphire/decorators";
+import { EmbedBuilder, Message, TextChannel } from "discord.js";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
-export default class ChannelNsfwCommand extends Command {
-	constructor() {
-		super("nsfwtgl", {
-			aliases: ["nsfwtgl", "nsfw", "nsfwtoggle"],
-			clientPermissions: "MANAGE_CHANNELS",
-			userPermissions: "MANAGE_CHANNELS",
-			description: { description: "Toggles if a channel is NSFW", usage: "" },
-			channel: "guild",
-		});
-	}
+@ApplyOptions<KaikiCommandOptions>({
+    name: "nsfwtgl",
+    aliases: ["nsfw", "nsfwtoggle"],
+    description: "Toggles NSFW in current channel",
 
-	async exec(message: Message): Promise<Message> {
+    requiredUserPermissions: ["ManageChannels"],
+    requiredClientPermissions: ["ManageChannels"],
+    preconditions: ["GuildOnly"],
+})
+export default class ChannelNsfwCommand extends KaikiCommand {
+    public async messageRun(message: Message): Promise<Message> {
 
-		const guidlChnl = message.channel as TextChannel;
+        const channel = message.channel as TextChannel;
 
-		if (guidlChnl.nsfw) {
-			guidlChnl.setNSFW(false);
-		}
+        const result = `NSFW in ${channel} has been ${!channel.nsfw ? "enabled" : "disabled"}.`;
+        await channel.setNSFW(!channel.nsfw, `${message.author.username} toggled NSFW.`);
 
-		else {
-			guidlChnl.setNSFW(true);
-		}
-
-		return message.channel.send(new MessageEmbed({
-			color: await getMemberColorAsync(message),
-			description: `Toggled ${guidlChnl.name}'s NSFW status to ${!guidlChnl.nsfw}.`,
-		}));
-	}
+        return message.channel.send({
+            embeds: [
+                new EmbedBuilder({
+                    description: result,
+                })
+                    .withOkColor(message),
+            ],
+        });
+    }
 }

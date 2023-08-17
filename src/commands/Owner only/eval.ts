@@ -1,43 +1,35 @@
-import { Command } from "discord-akairo";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args } from "@sapphire/framework";
 import { Message } from "discord.js";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+import KaikiUtil from "../../lib/KaikiUtil";
+import Constants from "../../struct/Constants";
 
-const clean = (text: string) => {
-	if (typeof (text) === "string") {
-		return text.replace(/`/g, "`" + String.fromCharCode(8203)).replace(/@/g, "@" + String.fromCharCode(8203));
-	}
-	else {
-		return text;
-	}
-};
+@ApplyOptions<KaikiCommandOptions>({
+    name: "eval",
+    description: "",
+    preconditions: ["OwnerOnly"],
+})
+export default class EvalCommand extends KaikiCommand {
+    private clean = (text: string) => {
+        return text.replace(/`/g, "`" + String.fromCharCode(8203)).replace(/@/g, "@" + String.fromCharCode(8203));
+    };
 
-export default class EvalCommand extends Command {
-	constructor() {
-		super("eval", {
-			aliases: ["eval"],
-			clientPermissions: "ADMINISTRATOR",
-			ownerOnly: true,
-			args: [
-				{
-					id: "code",
-					type: "string",
-					match: "rest",
-				},
-			],
-		});
-	}
-	async exec(message: Message, { code }: { code: string }): Promise<Message | void> {
-		try {
-			let evaled = eval(code);
+    public async messageRun(message: Message, args: Args): Promise<Message | Message[]> {
 
-			if (typeof evaled !== "string") {
-				evaled = (await import("util")).inspect(evaled);
-			}
-			return message.util?.send({
-				content: clean(evaled),
-				options: { split: true, code:"x1" } });
-		}
-		catch (err) {
-			return message.channel.send(`\`ERROR\` \`\`\`xl\n${clean(err)}\n\`\`\``);
-		}
-	}
+        const code = await args.rest("string");
+
+        try {
+            let evaled = await eval("(async () => " + code + ")()");
+
+            evaled = (await import("util")).inspect(evaled);
+            return message.channel.send({
+                content: await KaikiUtil.codeblock(KaikiUtil.trim(this.clean(evaled.toString()), Constants.MAGIC_NUMBERS.CMDS.OWNER_ONLY.EVAL.MAX_STRING), "xl"),
+            });
+        }
+        catch (err) {
+            return message.channel.send(`\`ERROR\` ${await KaikiUtil.codeblock(KaikiUtil.trim(this.clean(err.toString()), Constants.MAGIC_NUMBERS.CMDS.OWNER_ONLY.EVAL.MAX_ERROR_STRING), "xl")}`);
+        }
+    }
 }

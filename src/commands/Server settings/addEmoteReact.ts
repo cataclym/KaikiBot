@@ -1,0 +1,79 @@
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args } from "@sapphire/framework";
+import { EmbedBuilder, Message } from "discord.js";
+import KaikiCache from "../../cache/KaikiCache";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+
+@ApplyOptions<KaikiCommandOptions>({
+    name: "addemotereact",
+    aliases: ["emotereact", "aer"],
+    description: "Add triggers for the bot to react with emojis/emotes to. Use quotes for triggers with spaces.",
+    usage: ["red :red:", "anime :weeaboosgetout:"],
+    requiredUserPermissions: ["ManageEmojisAndStickers"],
+    requiredClientPermissions: ["AddReactions"],
+    preconditions: ["GuildOnly"],
+})
+export default class EmoteReactCommand extends KaikiCommand {
+    public async messageRun(message: Message<true>, args: Args): Promise<Message> {
+
+        const trigger = (await args.pick("string")).toLowerCase();
+        const emoji = await args.rest("emoji");
+        const emojiUrl = `https://cdn.discordapp.com/emojis/${emoji.id}.${emoji.animated ? "gif" : "png"}`;
+
+        if (!emoji.id) throw new Error("");
+
+        const possibleTrigger = await this.client.orm.emojiReactions.findFirst({
+            where: {
+                GuildId: BigInt(message.guildId),
+                TriggerString: trigger,
+            },
+        });
+
+        if (possibleTrigger) {
+            await this.client.orm.emojiReactions.update({
+                where: {
+                    Id: possibleTrigger.Id,
+                },
+                data: {
+                    EmojiId: BigInt(emoji.id),
+                    TriggerString: trigger,
+                },
+            });
+        }
+
+        else {
+            await this.client.orm.emojiReactions.create({
+                data: {
+                    Guilds: {
+                        connect: {
+                            Id: BigInt(message.guildId),
+                        },
+                    },
+                    EmojiId: BigInt(emoji.id),
+                    TriggerString: trigger,
+                },
+            });
+        }
+
+        if (!this.client.cache.emoteReactCache.get(message.guildId)) await KaikiCache.populateERCache(message);
+
+        if (trigger.includes(" ")) {
+            this.client.cache.emoteReactCache.get(message.guildId)?.get("has_space")?.set(trigger, emoji.id);
+        }
+
+        else {
+            this.client.cache.emoteReactCache.get(message.guildId)?.get("no_space")?.set(trigger, emoji.id);
+        }
+
+        return message.channel.send({
+            embeds: [
+                new EmbedBuilder()
+                    .setTitle("New emoji trigger added")
+                    .setDescription(`Typing \`${trigger}\` will force me to react with :${emoji.name}:...`)
+                    .setThumbnail(emojiUrl)
+                    .withOkColor(message),
+            ],
+        });
+    }
+}

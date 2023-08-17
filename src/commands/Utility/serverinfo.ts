@@ -1,45 +1,55 @@
-import { Command } from "discord-akairo";
-import { Guild } from "discord.js";
-import { MessageEmbed, Message } from "discord.js";
-import { config } from "../../config";
+import { time } from "@discordjs/builders";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args } from "@sapphire/framework";
+import {ChannelType, EmbedBuilder, GuildFeature, Message} from "discord.js";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+import Constants, {UndocumentedFeatures} from "../../struct/Constants";
 
-export default class ServerInfoCommand extends Command {
-	constructor() {
-		super("serverinfo", {
-			aliases: ["serverinfo", "sinfo"],
-			description: { description: "Shows information about the current server." },
-			args: [
-				{
-					id: "guild",
-					type: "guild",
-					default: (message: Message) => message.guild,
-				},
-			],
-		});
-	}
-	public async exec(message: Message, { guild }: { guild: Guild }): Promise<Message> {
-		return message.channel.send(new MessageEmbed({
-			thumbnail: { url: <string> guild?.iconURL({ size: 2048, dynamic: true }) },
-			title: guild?.name,
-			color: guild?.owner?.displayColor,
-			author: { name: "Server info" },
-			fields: [
-				{ name: "ID", value: guild?.id, inline: true },
-				{ name: "Owner", value: guild?.owner?.user.tag, inline: true },
-				{ name: "Members", value: guild?.memberCount, inline: true },
-				{ name:
-                    "Channels", value: "Text: " + guild?.channels.cache.filter((channel) => channel.type === "text").size +
-                    "\nVoice: " + guild?.channels.cache.filter((channel) => channel.type === "voice").size +
-                    "\nCategories: " + guild?.channels.cache.filter((channel) => channel.type === "category").size +
-                    "\nNews: " + guild?.channels.cache.filter((channel) => channel.type === "news").size +
-                    "\nStore: " + guild?.channels.cache.filter((channel) => channel.type === "store").size, inline: true },
-				{ name: "Created At", value: guild?.createdAt.toDateString(), inline: true },
-				{ name: "Region", value: guild?.region, inline: true },
-				{ name: "Roles", value: guild?.roles.cache.size, inline: true },
-				{ name: "Features", value: guild?.features.length ? guild?.features.join("\n") : "NONE", inline: true },
-				{ name: "Custom Emojis", value: "Count: **" + guild?.emojis.cache.size +
-                    "**\nSee them with `" + config.prefix + "emotecount`", inline: true },
-			],
-		}));
-	}
+@ApplyOptions<KaikiCommandOptions>({
+    name: "serverinfo",
+    aliases: ["sinfo"],
+    description: "Shows information about the current server.",
+    minorCategory: "Info",
+})
+export default class ServerInfoCommand extends KaikiCommand {
+    public async messageRun(message: Message, args: Args): Promise<Message> {
+
+        const guild = message.inGuild()
+            ? await args.pick("guild").catch(() => message.guild)
+            : await args.pick("guild");
+
+        const emb = new EmbedBuilder({
+            thumbnail: { url: <string>guild.iconURL({ extension: "png", size: 2048 }) },
+            title: `${guild.name} [${guild.id}]`,
+            author: { name: "Server info" },
+            fields: [
+                {
+                    name: "Owner",
+                    value: message.client.users.cache.get(guild.ownerId)?.username ?? guild.ownerId,
+                    inline: true,
+                },
+                { name: "Created At", value: time(guild.createdAt), inline: true },
+                { name: "Members", value: String(guild.memberCount), inline: true },
+                { name: "Roles", value: String(guild.roles.cache.size), inline: true },
+                { name: "Emotes", value: String(guild.emojis.cache.size), inline: true },
+                { name: "MFA level", value: String(guild.mfaLevel), inline: true },
+                {
+                    name: "Channels",
+                    value: `Text: **${guild.channels.cache.filter(channel => channel.type === ChannelType.GuildText).size}**
+Voice: **${guild.channels.cache.filter(channel => channel.type === ChannelType.GuildVoice).size}**
+News: **${guild.channels.cache.filter(channel => channel.type === ChannelType.GuildNews).size}**`,
+                    inline: true,
+                },
+                { name: "Maximum video-channel users", value: String(guild.maxVideoChannelUsers), inline: false },
+                {
+                    name: "Features", value: guild.features.length
+                        ? guild.features.map((f: GuildFeature & UndocumentedFeatures) => Constants.guildFeatures[f] || f).sort().join("\n")
+                        : "None", inline: false,
+                },
+            ],
+        });
+
+        return message.channel.send({ embeds: [emb.withOkColor(message)] });
+    }
 }

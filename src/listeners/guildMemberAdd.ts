@@ -1,17 +1,20 @@
-import { Listener } from "discord-akairo";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Events, Listener, ListenerOptions } from "@sapphire/framework";
 import { GuildMember } from "discord.js";
-import { TinderDBService } from "../functions/tinder";
+import GreetHandler from "../lib/GreetHandler";
+import Roles from "../lib/Roles";
 
-export default class GuildCreate extends Listener {
-	constructor() {
-		super("guildMemberAdd", {
-			event: "guildMemberAdd",
-			emitter: "client",
-		});
-	}
+@ApplyOptions<ListenerOptions>({
+    event: Events.GuildMemberAdd,
+})
+export default class GuildMemberAdd extends Listener {
+    public async run(member: GuildMember): Promise<void> {
+        const greetHandler = new GreetHandler(member);
 
-	public async exec(member: GuildMember): Promise<void> {
-		await TinderDBService(member.user);
-	}
+        await Promise.all([
+            this.container.client.anniversaryService.checkAnniversaryMember(member),
+            greetHandler.handleGreetMessage(),
+            Roles.handleStickyRoles(member),
+        ]);
+    }
 }
-

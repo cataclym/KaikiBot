@@ -1,41 +1,47 @@
-import { Command } from "discord-akairo";
-import { Message, MessageEmbed, User } from "discord.js";
-import { errorColor, getMemberColorAsync } from "../../functions/Util";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args } from "@sapphire/framework";
+import { EmbedBuilder, Message } from "discord.js";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
-export default class UnbanCommand extends Command {
-	constructor() {
-		super("unban", {
-			aliases: ["unban", "ub"],
-			userPermissions: "BAN_MEMBERS",
-			clientPermissions: "BAN_MEMBERS",
-			args: [
-				{
-					id: "user",
-					type: "user",
-					otherwise: new MessageEmbed({
-						color: errorColor,
-						description: "Can't find this user.",
-					}),
-				},
-			],
-		});
-	}
-	async exec(message: Message, { user }: { user: User }): Promise<Message> {
+@ApplyOptions<KaikiCommandOptions>({
+    name: "unban",
+    aliases: ["ub"],
+    description: "",
+    requiredUserPermissions: ["BanMembers"],
+    requiredClientPermissions: ["BanMembers"],
+    preconditions: ["GuildOnly"],
+})
+export default class UnbanCommand extends KaikiCommand {
+    public async messageRun(message: Message, args: Args): Promise<Message> {
 
-		const bans = await message.guild?.fetchBans();
+        const user = await args.pick("user");
 
-		if (bans?.find((u) => u.user.id === user.id)) {
-			await message.guild?.members.unban(user);
-			return message.channel.send(new MessageEmbed({
-				color: await getMemberColorAsync(message),
-				description: `Unbanned ${user.tag}.`,
-			}));
-		}
-		else {
-			return message.channel.send(new MessageEmbed({
-				color: errorColor,
-				description: "This user is not banned.",
-			}));
-		}
-	}
+        const bans = message.guild?.bans.cache.size
+            ? message.guild?.bans.cache
+            : await message.guild?.bans.fetch({ cache: true });
+
+        if (bans?.find((u) => u.user.id === user.id)) {
+            await message.guild?.members.unban(user);
+            return message.channel.send({
+                embeds: [
+                    new EmbedBuilder({
+                        description: `Unbanned ${user.username}.`,
+                    })
+                        .withOkColor(message),
+                ],
+            });
+        }
+
+        else {
+            return message.channel.send({
+                embeds: [
+                    new EmbedBuilder({
+                        description: `\`${user.username}\` is not banned.`,
+                    })
+                        .withErrorColor(message),
+                ],
+            });
+        }
+    }
 }

@@ -1,30 +1,33 @@
-import { Command } from "discord-akairo";
-import { MessageEmbed } from "discord.js";
-import { Message } from "discord.js";
-import { getMemberColorAsync } from "../../functions/Util";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args } from "@sapphire/framework";
+import { EmbedBuilder, Message } from "discord.js";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
-export default class ReloadCommand extends Command {
-	constructor() {
-		super("reload", {
-			aliases: ["re", "reload"],
-			description: { description: "Reloads a command. Note: It does not run the TypeScript compiler." },
-			ownerOnly: true,
-			args: [
-				{
-					id: "command",
-					type: "command",
-				},
-			],
-		});
-	}
-	async exec(message: Message, { command }: { command: Command}): Promise<Message> {
+@ApplyOptions<KaikiCommandOptions>({
+    name: "reload",
+    aliases: ["re"],
+    description: "Reloads a command..",
+    preconditions: ["OwnerOnly"],
+})
+export default class ReloadCommand extends KaikiCommand {
+    public async messageRun(message: Message, args: Args) {
 
-		command.reload();
-		return message.channel.send(new MessageEmbed({
-			title: "Command reloaded",
-			description: command.filepath,
-			footer: { text: "Command: " + command.id },
-			color: await getMemberColorAsync(message),
-		}));
-	}
+        const cmd = await args.rest("command");
+
+        const unloaded = <KaikiCommand> await this.store.get(cmd.name);
+
+        await unloaded.reload();
+
+        return message.channel.send({
+            embeds: [
+                new EmbedBuilder({
+                    title: "Command reloaded",
+                    description: unloaded.location.full,
+                    footer: { text: `Command: ${unloaded.name}` },
+                })
+                    .withOkColor(message),
+            ],
+        });
+    }
 }
