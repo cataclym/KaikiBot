@@ -1,49 +1,65 @@
-import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
-import fetch from "node-fetch";
-import { Command } from "discord-akairo";
-import { MessageEmbed, Message } from "discord.js";
 import querystring from "querystring";
-import { errorColor, getMemberColorAsync, trim } from "../../functions/Util";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args } from "@sapphire/framework";
+import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
+import { EmbedBuilder, Message } from "discord.js";
+import fetch from "node-fetch";
+import { UrbanResponse } from "../../lib/Interfaces/Common/UrbanResponse";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+import KaikiUtil from "../../lib/KaikiUtil";
+import Constants from "../../struct/Constants";
 
-export default class UrbanDictCommand extends Command {
-	constructor() {
-		super("urbandict", {
-			aliases: ["urbandict", "urban", "ud"],
-			description: { description: "Searches Urban Dictionary for a word or sentence", usage: "Watermelon" },
-			args: [
-				{
-					id: "term",
-					match: "rest",
-				},
-			],
-		});
-	}
-	public async exec(message: Message, { term }: { term: string }): Promise<Message | void> {
+@ApplyOptions<KaikiCommandOptions>({
+    name: "urbandict",
+    aliases: ["urban", "ud"],
+    description: "Searches Urban Dictionary for a word or sentence",
+    usage: ["Watermelon", "anime"],
+})
+export default class UrbanDictCommand extends KaikiCommand {
+    public async messageRun(message: Message, args: Args): Promise<Message | void> {
 
-		const query = querystring.stringify({ term: term });
+        const query = querystring.stringify({ term: await args.rest("string") });
 
-		const { list } = await fetch(`https://api.urbandictionary.com/v0/define?${query}`).then(response => response.json());
+        const { list }: {
+            list: UrbanResponse[]
+        } = (await KaikiUtil.handleToJSON(await (await fetch(`https://api.urbandictionary.com/v0/define?${query}`)).json()));
 
-		if (!list.length) {
-			return message.channel.send(new MessageEmbed({
-				description: `No results found for **${term}**.`,
-				color: errorColor,
-			}));
-		}
-		const color = await getMemberColorAsync(message);
-		const pages: MessageEmbed[] = [];
-		list.forEach(async (result: Record<string, string>) => {
-			return pages.push(new MessageEmbed()
-				.setTitle(result.word)
-				.setURL(result.permalink)
-				.addFields(
-					{ name: "Definition", value: trim(result.definition, 1024) },
-					{ name: "Example", value: trim(result.example, 1024) },
-					{ name: "Rating", value: `${result.thumbs_up} thumbs up. ${result.thumbs_down} thumbs down.` },
-				)
-				.setColor(color),
-			);
-		});
-		return editMessageWithPaginatedEmbeds(message, pages, {});
-	}
+        if (!list.length) {
+            return message.channel.send({
+                embeds: [
+                    new EmbedBuilder({
+                        description: `No results found for **${query}**.`,
+                    })
+                        .withErrorColor(message),
+                ],
+            });
+        }
+
+        const pages: EmbedBuilder[] = [];
+
+        for (const result of list) {
+            pages.push(new EmbedBuilder()
+                .setTitle(result.word)
+                .setURL(result.permalink)
+                .addFields(
+                    {
+                        name: "Definition",
+                        value: KaikiUtil.trim(result.definition, Constants.MAGIC_NUMBERS.EMBED_LIMITS.FIELD.VALUE),
+                    },
+                    {
+                        name: "Example",
+                        value: KaikiUtil.trim(result.example || "N/A", Constants.MAGIC_NUMBERS.EMBED_LIMITS.FIELD.VALUE),
+                    },
+                    {
+                        name: "Rating",
+                        value: `${result.thumbs_up} thumbs up. ${result.thumbs_down} thumbs down.`,
+                    },
+                )
+                .withOkColor(message),
+            );
+        }
+
+        return sendPaginatedMessage(message, pages, {});
+    }
 }

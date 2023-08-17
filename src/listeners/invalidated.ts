@@ -1,19 +1,17 @@
-import { Listener } from "discord-akairo";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Events, Listener, ListenerOptions } from "@sapphire/framework";
 
+@ApplyOptions<ListenerOptions>({
+    event: Events.Invalidated,
+})
 export default class InvalidatedListener extends Listener {
-	constructor() {
-		super("invalidated", {
-			event: "invalidated",
-			emitter: "client",
-		});
-	}
-	// Emitted when the client's session becomes invalidated.
 
-	public async exec(): Promise<never> {
+    // Emitted when the client's session becomes invalidated.
+    public async run(): Promise<never> {
 
-		console.error("🟥 invalidated | Session has become invalidated. Shutting down client.");
+        this.container.logger.error("invalidated | Session has become invalidated. Shutting down client.");
 
-		return process.exit(1);
+        return process.exit(1);
 
-	}
+    }
 }

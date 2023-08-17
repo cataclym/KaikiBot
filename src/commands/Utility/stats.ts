@@ -1,55 +1,87 @@
-import Discord, { Message, MessageEmbed } from "discord.js";
-import Akairo, { Command } from "discord-akairo";
-import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
-import { getMemberColorAsync } from "../../functions/Util";
-import { config } from "../../config";
+import { execSync } from "child_process";
+import * as process from "process";
+import { ApplyOptions } from "@sapphire/decorators";
+import { version as sapphireVersion } from "@sapphire/framework";
+import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
+import { ChannelType, EmbedBuilder, Message, time, version } from "discord.js";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 
-function format(seconds: number) {
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+import Constants from "../../struct/Constants";
 
-	const days = Math.floor(seconds / (60 * 60 * 24));
-	seconds %= (60 * 60 * 24);
-	const hours = Math.floor(seconds / (60 * 60));
-	seconds %= (60 * 60);
-	const minutes = Math.floor(seconds / 60);
-	const actualSeconds = Math.floor(seconds % 60);
-	return days + "** days**\n" + hours + "** hours**\n" + minutes + "** minutes**\n" + actualSeconds + "** seconds**";
+@ApplyOptions<KaikiCommandOptions>({
+    aliases: ["stats"],
+    description: "Statistics and information",
+    minorCategory: "Info",
+})
+export default class StatsCommand extends KaikiCommand {
+
+    public async messageRun(message: Message) {
+
+        const packageJSON = this.client.package;
+        const { cache } = this.client.guilds;
+        const pages = [
+            new EmbedBuilder()
+                .setAuthor({
+                    name: `${packageJSON.name} v${packageJSON.version}-${execSync("git rev-parse --short HEAD").toString()}`,
+                    iconURL: message.client.user.displayAvatarURL(),
+                    url: Constants.LINKS.REPO_URL,
+                })
+                .setDescription("Detailed statistics")
+                .addFields([
+                    {
+                        name: "Memory Usage",
+                        value: `${Math.round(process.memoryUsage().heapUsed / 1024 / 1024)}MB`,
+                        inline: true,
+                    },
+                    {
+                        name: "Uptime",
+                        value: time(new Date(Date.now() - process.uptime() * 1000), "R"),
+                        inline: true,
+                    },
+                    { name: "Users", value: String(message.client.users.cache.size), inline: true },
+                    {
+                        name: "Presence", value: `Guilds: **${cache.size}**\nText channels: **${cache
+                            .map(g => g.channels.cache
+                                .filter(channel => (channel.type !== ChannelType.GuildVoice) && channel.type !== ChannelType.GuildCategory).size)
+                            .reduce((a, b) => a + b, 0)}**\nVoice channels: **${cache
+                            .map(g => g.channels.cache.filter(channel => channel.type === ChannelType.GuildVoice).size)
+                            .reduce((a, b) => a + b, 0)}**`, inline: true,
+                    },
+                ])
+                .withOkColor(message),
+            new EmbedBuilder()
+                .setDescription("**Built using**:")
+                .addFields([
+                    {
+                        name: "Discord.js library",
+                        value: `[Discord.js](https://discord.js.org/#/ 'Discord.js website') v${version}`,
+                        inline: true,
+                    },
+                    {
+                        name: "@Sapphire/framework",
+                        value: `[sapphirejs](https://www.sapphirejs.dev/ 'sapphirejs website') v${sapphireVersion}`,
+                        inline: true,
+                    },
+                    {
+                        name: "Running on Node.js",
+                        value: `[Node.js](https://nodejs.org/en/ 'Node.js website') ${process.version}`,
+                        inline: true,
+                    },
+                    {
+                        name: "Node Package Manager",
+                        value: `[npm](https://www.npmjs.com/ 'npm website') \`${process.env.npm_config_user_agent || "N/A"}\``,
+                        inline: true,
+                    },
+                ])
+                .setAuthor({
+                    name: "© 2023 @Cata#2702",
+                    iconURL: message.client.user.displayAvatarURL(),
+                    url: packageJSON.repository.url,
+                })
+                .withOkColor(message),
+        ];
+
+        return sendPaginatedMessage(message, pages, { owner: message.author });
+    }
 }
-module.exports = class StatsCommand extends Command {
-	constructor() {
-		super("stats", {
-			aliases: ["stats"],
-			description: { description: "Statistics and information" },
-		});
-	}
-	async exec(message: Message) {
-
-		const color = await getMemberColorAsync(message);
-		const pages = [];
-		const guild = this.client.guilds.cache;
-		const embed = new MessageEmbed();
-		embed.setColor(color);
-		embed.setAuthor(`Nadeko Sengoku Bot v${process.env.npm_package_version}`, message.client.user?.displayAvatarURL({ dynamic: true }), "https://github.com/cataclym/nadekosengokubot");
-		embed.setDescription("**Built using**:");
-		embed.addFields([
-			{ name: "Discord.js library", value: `[Discord.js](https://discord.js.org/#/ 'Discord.js website') v${Discord.version}`, inline: true },
-			{ name: "Discord-Akairo framework", value: `[Discord-Akairo](https://discord-akairo.github.io/#/ 'Discord-Akairo website') v${Akairo.version}`, inline: true },
-			{ name: "Running on Node.js", value: `[Node.js](https://nodejs.org/en/ 'Node.js website') ${process.version}`, inline: true },
-			{ name: "Memory Usage", value: `${Math.round(process.memoryUsage().heapUsed / 1024 / 1024)}MB`, inline: true },
-			{ name: "Uptime", value: format(process.uptime()), inline: true },
-			{ name: "Users", value: message.client.users.cache.size, inline: true },
-			{ name: "Presence", value: "Guilds: " + guild.size +
-					"\nText channels: " + guild.map(g => g.channels.cache.filter(channel => (channel.type !== "voice") && channel.type !== "category").size).reduce((a, b) => a + b, 0) +
-				"\nVoice channels: " + guild.map(g => g.channels.cache.filter(channel => channel.type === "voice").size).reduce((a, b) => a + b, 0), inline: true },
-		]);
-
-		const embed2 = new MessageEmbed()
-			.setColor(color)
-			.setAuthor(`© 2020 ${this.client.users.cache.get(config.ownerID ?? "")?.tag}`, message.client.user?.displayAvatarURL({ dynamic: true }), "https://github.com/cataclym/nadekosengokubot");
-		for (const [key, value] of Object.entries(process.resourceUsage())) {
-			embed2.addField(key, value, true);
-		}
-		pages.push(embed, embed2);
-		await Promise.resolve(pages);
-		return editMessageWithPaginatedEmbeds(message, pages, {});
-	}
-};

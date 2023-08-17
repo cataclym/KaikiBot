@@ -1,26 +1,24 @@
-import { Command } from "discord-akairo";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args } from "@sapphire/framework";
 import { Message } from "discord.js";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
-export default class SetNameCommand extends Command {
-	constructor() {
-		super("setname", {
-			aliases: ["setname"],
-			description: { description: "Assigns the bot a new name/username.", usage: "Medusa" },
-			ownerOnly: true,
-			args: [
-				{
-					id: "name",
-					match: "separate",
-				},
-			],
-		});
-	}
-	public async exec(message: Message, { name }: { name: string[]}): Promise<Message> {
+@ApplyOptions<KaikiCommandOptions>({
+    name: "setname",
+    description: "Assigns the bot a new name/username.",
+    usage: ["Medusa"],
+    preconditions: ["OwnerOnly"],
+})
+export default class SetNameCommand extends KaikiCommand {
+    public async messageRun(message: Message, args: Args): Promise<Message> {
 
-		const fullName = name.join(" ").substring(0, 32);
+        const name = await args.rest("string");
 
-		this.client.user?.setUsername(fullName);
+        const fullName = name.substring(0, 32);
 
-		return message.channel.send(`Name set to \`${fullName}\``);
-	}
+        await this.client.user?.setUsername(fullName);
+
+        return message.channel.send(`Name set to \`${fullName}\``);
+    }
 }

@@ -1,48 +1,174 @@
-"use strict";
-import db from "quick.db";
-const ReminderList = new db.table("ReminderList");
-import { MessageEmbed } from "discord.js";
-import { config } from "../../config.js";
-import { Command, Flag, Argument } from "discord-akairo";
-import { editMessageWithPaginatedEmbeds } from "@cataclym/discord.js-pagination-ts-nsb";
-import { getMemberColorAsync } from "../../functions/Util.js";
-import { Message } from "discord.js";
-module.exports = class TodoCommand extends Command {
-	constructor() {
-		super("todo", {
-			aliases: ["todo", "note"],
-			description: {
-				description: "A personal todo list",
-				usage: `(Displays list)\n${config.prefix}todo add make cake 07/07/2020\n${config.prefix}todo remove 5\n${config.prefix}todo remove last\n${config.prefix}todo remove first\n${config.prefix}todo remove all`,
-			},
-		});
-	}
-	*args() {
-		const method = yield {
-			type: [
-				["add"],
-				["remove", "rem", "delete", "del"],
-			],
-		};
-		if (!Argument.isFailure(method)) {
-			return Flag.continue(method);
-		}
-	}
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args } from "@sapphire/framework";
+import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, EmbedBuilder, Message } from "discord.js";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+import { ButtonAdd } from "../../lib/Todo/Buttons/Add";
+import { ButtonRemove } from "../../lib/Todo/Buttons/Remove";
+import { Todo } from "../../lib/Todo/Todo";
 
-	async exec(message: Message) {
-		const color = await getMemberColorAsync(message), reminder: { todo: unknown[] | undefined } = ReminderList.fetch(`${message.author.id}`);
-		let reminderArray;
-		reminder?.todo?.length ? reminderArray = reminder.todo.map((a: unknown[]) => a.join(" ")) : reminderArray = ["Empty list"];
-		const pages = [];
-		for (let index = 30, p = 0; p < reminderArray.length; index = index + 30, p = p + 30) {
-			const embed = new MessageEmbed()
-				.setTitle("Todo")
-				.setAuthor(message.author.tag)
-				.setThumbnail("https://cdn.discordapp.com/attachments/717045690022363229/726600392107884646/3391ce4715f3c814d6067911438e5bf7.png")
-				.setColor(color)
-				.setDescription(reminderArray.map((item: string, i: number) => `${+i + 1}. ${item}`).slice(p, index).join("\n") + `\n\nTo learn more about the command, type \`${config.prefix}help todo\``);
-			pages.push(embed);
-		}
-		await editMessageWithPaginatedEmbeds(message, pages, {});
-	}
-};
+@ApplyOptions<KaikiCommandOptions>({
+    name: "todo",
+    aliases: ["note"],
+    description: "A personal todo list. The items are limited to 204 characters. Intended for small notes.",
+})
+export default class TodoCommand extends KaikiCommand {
+    public async messageRun(message: Message<true>, args: Args) {
+
+        let page = await args.pick("number").catch(() => 1);
+
+        const currentTime = Date.now();
+
+        page = (page <= 1 ? 0 : page - 1) || 0;
+
+        const row = new ActionRowBuilder<ButtonBuilder>()
+            .addComponents(new ButtonBuilder()
+                .setCustomId(`${currentTime}Add`)
+                .setEmoji("➕")
+                .setStyle(3),
+            )
+            .addComponents(new ButtonBuilder()
+                .setCustomId(`${currentTime}Remove`)
+                .setEmoji("➖")
+                .setStyle(4),
+            )
+            .addComponents(new ButtonBuilder()
+                .setCustomId(`${currentTime}Clear`)
+                .setEmoji("⬛")
+                .setStyle(4),
+            );
+
+        const rowTwo = new ActionRowBuilder<ButtonBuilder>()
+            .addComponents(
+                new ButtonBuilder()
+                    .setCustomId(`${currentTime}Backward`)
+                    .setEmoji("⬅")
+                    .setStyle(2),
+            )
+            .addComponents(
+                new ButtonBuilder()
+                    .setCustomId(`${currentTime}Forward`)
+                    .setEmoji("➡")
+                    .setStyle(2),
+            );
+
+        const emb = new EmbedBuilder()
+            .setTitle("Todo")
+            .setThumbnail("https://cdn.discordapp.com/attachments/717045690022363229/726600392107884646/3391ce4715f3c814d6067911438e5bf7.png")
+            .withOkColor(message);
+
+        const todoArray = await message.client.orm.todos.findMany({
+            where: {
+                DiscordUsers: {
+                    UserId: BigInt(message.author.id),
+                },
+            },
+            orderBy: {
+                Id: "asc",
+            },
+        });
+
+        let sentMsg: Message<true>;
+        const pages: EmbedBuilder[] = [];
+
+        if (!todoArray.length) {
+            row.components[1].setDisabled();
+            sentMsg = await message.channel.send({
+                embeds: [emb.setDescription("Your list is empty.")],
+                components: [row],
+            });
+        }
+
+        else {
+
+            const reminderArray = Todo.reminderArray(todoArray);
+
+            for (let index = 10, p = 0; p < reminderArray.length; index += 10, p += 10) {
+                pages.push(new EmbedBuilder(emb.data)
+                    .setDescription(reminderArray
+                        .slice(p, index)
+                        .join("\n"),
+                    ),
+                );
+            }
+
+            if (page >= pages.length) page = 0;
+
+            sentMsg = await message.channel.send({
+                embeds: [pages[page]],
+                // Only show arrows if necessary
+                components: todoArray.length > 10
+                    ? [row, rowTwo]
+                    : [row],
+            });
+        }
+
+        const buttonArray = [`${currentTime}Add`, `${currentTime}Backward`, `${currentTime}Clear`, `${currentTime}Forward`, `${currentTime}Remove`];
+
+        const messageComponentCollector = sentMsg.createMessageComponentCollector({
+            filter: (i) => {
+
+                if (buttonArray.includes(i.customId) && message.author.id === i.user.id) {
+                    return true;
+                }
+
+                else {
+                    i.deferUpdate();
+                    return false;
+                }
+            },
+            time: 120000,
+        });
+
+        messageComponentCollector.on("collect", async (buttonInteraction: ButtonInteraction) => {
+
+            switch (buttonInteraction.customId) {
+
+                case `${currentTime}Add`:
+                    messageComponentCollector.stop();
+                    await ButtonAdd.add(buttonInteraction, currentTime, todoArray, sentMsg);
+                    break;
+
+                case `${currentTime}Backward`:
+                    await buttonInteraction.deferUpdate();
+                    page = page > 0 ? --page : pages.length - 1;
+                    await updateMsg();
+                    break;
+
+                case `${currentTime}Clear`:
+                    await sentMsg.edit({
+                        components: [],
+                    });
+                    messageComponentCollector.stop();
+                    break;
+
+                case `${currentTime}Forward`:
+                    await buttonInteraction.deferUpdate();
+                    page = page + 1 < pages.length ? ++page : 0;
+                    await updateMsg();
+                    break;
+
+                case `${currentTime}Remove`:
+                    messageComponentCollector.stop();
+                    await ButtonRemove.Remove(buttonInteraction, currentTime, todoArray, sentMsg);
+                    break;
+
+                default:
+                    break;
+            }
+        });
+
+        messageComponentCollector.once("end", async () => {
+            await sentMsg.edit({
+                components: [],
+            });
+            messageComponentCollector.stop();
+        });
+
+        async function updateMsg() {
+            await sentMsg.edit({
+                embeds: [pages[page]],
+            });
+        }
+    }
+}

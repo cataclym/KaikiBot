@@ -1,18 +1,22 @@
-import { Listener } from "discord-akairo";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Events, Listener, ListenerOptions } from "@sapphire/framework";
+import * as colorette from "colorette";
+import { Snowflake } from "discord.js";
 
-export default class ShardReadyListener extends Listener {
-	constructor() {
-		super("shardReady", {
-			event: "shardReady",
-			emitter: "client",
-		});
-	}
-	// Emitted when a shard turns ready.
+@ApplyOptions<ListenerOptions>({
+    event: Events.ShardReady,
+})
+export default class ShardReady extends Listener {
 
-	public async exec(id: number, unavailableGuilds: Set<string> | undefined): Promise<void> {
-		const arr: string[] = [];
-		unavailableGuilds?.forEach((guild) => arr.push(guild));
-		console.log(`🟩 shardReady | Shard: ${id}${unavailableGuilds ? `\nUnavailable guilds: ${arr.join(", ")}` : ""}`);
-
-	}
+    // Emitted when a shard turns ready.
+    public async run(id: number, unavailableGuilds?: Set<Snowflake>): Promise<void> {
+        const arr = [`shardReady | Shard: ${colorette.green(id)}`];
+        if (unavailableGuilds?.size) {
+            arr.push("Unavailable guilds:");
+            unavailableGuilds.forEach((v1, v2) => {
+                arr.push(`${v1}: ${v2}`);
+            });
+        }
+        this.container.logger.info(arr.join("\n"));
+    }
 }

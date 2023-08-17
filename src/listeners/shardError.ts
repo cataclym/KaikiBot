@@ -1,17 +1,14 @@
-import { Listener } from "discord-akairo";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Events, Listener, ListenerOptions } from "@sapphire/framework";
+import * as colorette from "colorette";
 
-export default class ShardErrorListener extends Listener {
-	constructor() {
-		super("shardError", {
-			event: "shardError",
-			emitter: "client",
-		});
-	}
-	// Emitted whenever a shard's WebSocket encounters a connection error.
+@ApplyOptions<ListenerOptions>({
+    event: Events.ShardError,
+})
+export default class ShardError extends Listener {
 
-	public async exec(error: Error, id: number): Promise<void> {
-
-		console.error(`🟥 shardError | Shard: ${id} \n${error.stack ? error.stack : error}`);
-
-	}
+    // Emitted whenever a shard's WebSocket encounters a connection error.
+    public async run(error: Error, id: number): Promise<void> {
+        this.container.logger.error(`shardError | Shard: ${colorette.redBright(id)} \n${error.stack || error}`);
+    }
 }

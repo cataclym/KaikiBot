@@ -1,58 +1,55 @@
-import Canvas, { loadImage } from "canvas";
-import Discord, { Message } from "discord.js";
-import { Command } from "discord-akairo";
-const background = async () => await loadImage("https://cdn.discordapp.com/attachments/717045059215687691/763459004352954368/deadbeats.jpg");
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args, UserError } from "@sapphire/framework";
+import { AttachmentBuilder, cleanContent, GuildMember, Message } from "discord.js";
+import sharp from "sharp";
+import Images from "../../data/images.json";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+import KaikiUtil from "../../lib/KaikiUtil";
 
-module.exports = class DeadbeatCommand extends Command {
-	constructor() {
-		super("deadbeat", {
-			aliases: ["dead", "deadbeat"],
-			description: { description: "Just try it", usage: "@dreb" },
-			cooldown: 8000,
-			typing: true,
-			args: [{
-				id: "member",
-				type: "member",
-				match: "rest",
-				default: (message: Message) => {
-					return message.member;
-				},
-			}],
-		});
-	}
+@ApplyOptions<KaikiCommandOptions>({
+    name: "deadbeat",
+    aliases: ["dead"],
+    description: "Just try it",
+    usage: ["@dreb"],
+    typing: true,
+    cooldownDelay: 8000,
+    preconditions: ["GuildOnly"],
+})
+export default class DeadbeatCommand extends KaikiCommand {
 
-	async exec(message: Message, args: any) {
-		const member = args.member || args.default;
-		const applyText = (canvas: Canvas.Canvas, text: string) => {
-			const ctx = canvas.getContext("2d");
+    private backgroundUrl = Images.fun.commands.deadbeat;
 
-			let fontSize = 70;
+    public async messageRun(message: Message, args: Args) {
 
-			do {
-				ctx.font = `${fontSize -= 4}px sans-serif`;
-			} while (ctx.measureText(text).width > 300);
+        const member = <GuildMember> await args.pick("member")
+            .catch(() => {
+                if (args.finished) {
+                    return message.member;
+                }
+                throw new UserError({
+                    identifier: "NoMemberProvided",
+                    message: "Couldn't find a server member with that name.",
+                });
+            });
 
-			return ctx.font;
-		};
-		const canvas = Canvas.createCanvas(960, 540);
-		const ctx = canvas.getContext("2d");
+        const buffer = await KaikiUtil.loadImage(member.displayAvatarURL({ extension: "jpg", size: 128 }));
 
-		ctx.drawImage(await background(), 0, 0, canvas.width, canvas.height);
+        const modified = await sharp(buffer)
+            .resize({ height: 189, width: 205 })
+            .toBuffer();
 
-		ctx.strokeStyle = "#000000";
-		ctx.strokeRect(0, 0, canvas.width, canvas.height);
+        const image = sharp(await this.background())
+            .composite([{ input: modified, top: 88, left: 570 }]);
 
-		ctx.font = applyText(canvas, member.displayName);
-		ctx.fillStyle = "#ffffff";
-		ctx.textAlign = "center";
-		ctx.rotate(0.02);
-		ctx.fillText(member.displayName, 677, canvas.height / 2.20);
+        const attachment = new AttachmentBuilder(image, { name: "deadBeats.jpg" });
+        await message.channel.send({
+            content: cleanContent(`Deadbeat 👉 ${member}!`, message.channel),
+            files: [attachment],
+        });
+    }
 
-		ctx.rotate(-0.02);
-		const avatar = await Canvas.loadImage(member.user.displayAvatarURL({ format: "png" }));
-		ctx.drawImage(avatar, 620, 100, 100, 100);
-
-		const attachment = new Discord.MessageAttachment(canvas.toBuffer(), "deadBeats.jpg");
-		await message.util?.send(`Deadbeat 👉 ${member.user}`, attachment);
-	}
-};
+    private async background() {
+        return KaikiUtil.loadImage(this.backgroundUrl);
+    }
+}

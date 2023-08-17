@@ -1,39 +1,45 @@
-import { Command } from "discord-akairo";
-import { MessageEmbed, Message, Role } from "discord.js";
-import { noArgRole } from "../../functions/embeds";
-import { getMemberColorAsync } from "../../functions/Util";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args } from "@sapphire/framework";
+import { EmbedBuilder, Message } from "discord.js";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+import KaikiEmbeds from "../../lib/Kaiki/KaikiEmbeds";
+import Roles from "../../lib/Roles";
 
-export default class RoleMentionableCommand extends Command {
-	constructor() {
-		super("rolementionable", {
-			aliases: ["rolementionable", "rolem", "mentionable"],
-			clientPermissions: "MANAGE_ROLES",
-			userPermissions: "MANAGE_ROLES",
-			description: { description: "Toggles if a role is mentionable", usage: "@gamers" },
-			channel: "guild",
-			args: [
-				{
-					id: "role",
-					type: "role",
-					otherwise: noArgRole,
-				},
-			],
-		});
-	}
+@ApplyOptions<KaikiCommandOptions>({
+    name: "rolementionable",
+    aliases: ["rolem", "mentionable"],
+    description: "Toggles if a role is mentionable",
+    usage: ["@gamers"],
+    requiredUserPermissions: ["ManageRoles"],
+    requiredClientPermissions: ["ManageRoles"],
+    preconditions: ["GuildOnly"],
+})
+export default class RoleMentionableCommand extends KaikiCommand {
+    public async messageRun(message: Message<true>, args: Args): Promise<Message> {
 
-	async exec(message: Message, { role }: { role: Role}): Promise<Message> {
+        const role = await args.rest("role");
 
-		if (role.mentionable) {
-			role.setMentionable(false);
-		}
-		else {
-			role.setMentionable(true);
-		}
+        if (await Roles.rolePermissionCheck(message, role)) {
 
-		return message.channel.send(new MessageEmbed({
-			color: await getMemberColorAsync(message),
-			description: `Toggled ${role.name}'s mentionable status to ${!role.mentionable}.`,
-		}));
+            const bool = !role.mentionable;
 
-	}
+            await role.setMentionable(bool);
+
+            return message.channel.send({
+                embeds: [
+                    new EmbedBuilder({
+                        description: `Toggled ${role.name}'s mentionable status to ${bool}.`,
+                    })
+                        .withOkColor(message),
+                ],
+            });
+        }
+
+        else {
+            return message.channel.send({
+                embeds: [await KaikiEmbeds.errorMessage(message, "**Insufficient permissions**\nRole is above you or me in the role hierarchy.")],
+            });
+        }
+    }
 }

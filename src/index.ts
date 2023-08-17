@@ -1,12 +1,17 @@
-"use strict";
+import { container } from "@sapphire/pieces";
+import "@sapphire/plugin-logger/register";
+import "./extensions/Discord";
+import "./extensions/Sapphire";
+import KaikiSapphireClient from "./lib/Kaiki/KaikiSapphireClient";
+import BotContainer from "./struct/BotContainer";
 
-import { customClient } from "./struct/client";
-import { config } from "./config";
+class KaikiProgram {
+    async init() {
+        process.on("unhandledRejection", async (reason: Error, promise) => container.logger.warn(reason, promise));
 
-const client = new customClient();
+        const bot = new BotContainer(new KaikiSapphireClient());
+        await bot.init();
+    }
+}
 
-process.on("unhandledRejection", error => console.error("unhandledRejection | ", error));
-
-client.login(config.token).catch((err: Error) => {
-	console.error(err);
-});
+void new KaikiProgram().init();

@@ -1,17 +1,18 @@
-import { Listener } from "discord-akairo";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Events, Listener, ListenerOptions } from "@sapphire/framework";
+import * as colorette from "colorette";
+import type KaikiSapphireClient from "../lib/Kaiki/KaikiSapphireClient";
 
-export default class ShardResumeListener extends Listener {
-	constructor() {
-		super("shardResume", {
-			event: "shardResume",
-			emitter: "client",
-		});
-	}
-	// Emitted when a shard resumes successfully.
+@ApplyOptions<ListenerOptions>({
+    event: Events.ShardResume,
+})
+export default class ShardResume extends Listener {
 
-	public async exec(id: number, replayedEvents: number): Promise<void> {
+    // Emitted when a shard resumes successfully.
+    public async run(id: number, replayedEvents: number): Promise<void> {
 
-		console.log(`🟩 shardResume | Shard: ${id} \nReplayed ${replayedEvents} events.`);
+        this.container.logger.info(`shardResume | Shard: ${colorette.green(id)} \nReplayed ${colorette.green(replayedEvents)} events.`);
 
-	}
+        await (this.container.client as KaikiSapphireClient<true>).setPresence();
+    }
 }

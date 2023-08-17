@@ -1,23 +1,30 @@
-import { getMemberColorAsync } from "../../functions/Util";
-import { MessageEmbed, Message } from "discord.js";
-import { Command } from "discord-akairo";
+import { ApplyOptions } from "@sapphire/decorators";
+import { EmbedBuilder, Message } from "discord.js";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
-export default class PingCommand extends Command {
-	public constructor() {
-		super("ping", {
-			description: { description: "Ping!" },
-			aliases: ["p", "ping"],
-		});
-	}
-	public async exec(message: Message): Promise<Message> {
-		const InitialMSG: Message = await message.channel.send("Pinging...!"),
-			WSTime: number = Math.abs(message.client.ws.ping),
-			ClientTime: number = InitialMSG.createdTimestamp - message.createdTimestamp,
-			embed = new MessageEmbed()
-				.addFields([
-					{ name: "WebSocket ping", value: WSTime + " ms", inline: true },
-					{ name: "Client ping", value: ClientTime + " ms", inline: true }])
-				.setColor(await getMemberColorAsync(message));
-		return InitialMSG.edit(null, embed);
-	}
+@ApplyOptions<KaikiCommandOptions>({
+    name: "ping",
+    aliases: ["p"],
+    description: "Ping the bot and websocket to see if there are latency issues.",
+})
+export default class PingCommand extends KaikiCommand {
+    public async messageRun(message: Message) {
+
+        const initialMsg = await message.channel.send("Pinging...!"),
+            wsTime = Math.abs(message.client.ws.ping),
+            clientTime = initialMsg.createdTimestamp - message.createdTimestamp;
+
+        return initialMsg.edit({
+            embeds: [
+                new EmbedBuilder()
+                    .addFields([
+                        { name: "WebSocket ping", value: wsTime + " ms", inline: true },
+                        { name: "Client ping", value: clientTime + " ms", inline: true },
+                    ])
+                    .withOkColor(message),
+            ],
+            content: null,
+        });
+    }
 }

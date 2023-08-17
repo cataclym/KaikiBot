@@ -1,57 +1,74 @@
-import Canvas, { loadImage } from "canvas";
-import { Command } from "discord-akairo";
-import { Message, GuildMember, MessageAttachment } from "discord.js";
-// Canvas.registerFont("../../../lmsans9-regular.otf", { family: "Latin Modern Sans", style: "regular" });
-const background = async () => await loadImage("https://cdn.discordapp.com/attachments/717045059215687691/763459005137420328/simp.jpg");
-export default class SimpCommand extends Command {
-	constructor() {
-		super("simp", {
-			aliases: ["simp"],
-			description: { description: "Embarrass your simp friend", usage: "@dreb" },
-			cooldown: 8000,
-			typing: true,
-			args: [{
-				id: "member",
-				type: "member",
-				default: (message: Message) => {
-					return message.member;
-				},
-			}],
-		});
-	}
-	async exec(message: Message, { member }: { member: GuildMember }): Promise<Message | void> {
+import * as buffer from "buffer";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args, UserError } from "@sapphire/framework";
+import { AttachmentBuilder, GuildMember, Message } from "discord.js";
+import fetch from "node-fetch";
+import sharp from "sharp";
+import Images from "../../data/images.json";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+import KaikiUtil from "../../lib/KaikiUtil";
 
-		const applyText = (canvas: Canvas.Canvas, text: string) => {
-			const ctx = canvas.getContext("2d");
-			// Declare a base size of the font
-			let fontSize = 60;
-			do {
-				// Assign the font to the context and decrement it so it can be measured again
-				ctx.font = `${fontSize -= 2}px Latin Modern Sans`;
-				// Compare pixel width of the text to the canvas minus the approximate avatar size
-			} while (ctx.measureText(text).width > canvas.width / 2);
+@ApplyOptions<KaikiCommandOptions>({
+    name: "simp",
+    usage: "@dreb",
+    description: "Expose your friend as a disgusting simp!",
+    preconditions: ["GuildOnly"],
+})
+export default class SimpCommand extends KaikiCommand {
 
-			// Return the result to use in the actual canvas
-			return ctx.font;
-		};
-		const canvas = Canvas.createCanvas(500, 400);
-		const ctx = canvas.getContext("2d");
+    private backgroundUrl = Images.fun.commands.simp;
 
-		ctx.drawImage(await background(), 0, 0, canvas.width, canvas.height);
+    private async background() {
+        return KaikiUtil.loadImage(this.backgroundUrl);
+    }
 
-		ctx.strokeStyle = "#000000";
-		ctx.strokeRect(0, 0, canvas.width, canvas.height);
+    public async messageRun(message: Message, args: Args) {
+        const member = <GuildMember> await args.pick("member")
+            .catch(() => {
+                if (args.finished) {
+                    return message.member;
+                }
+                throw new UserError({
+                    identifier: "NoMemberProvided",
+                    message: "Couldn't find a server member with that name.",
+                });
+            });
 
-		ctx.font = applyText(canvas, member.displayName);
-		ctx.fillStyle = "#ffffff";
-		ctx.textAlign = "center";
-		ctx.textBaseline = "middle";
-		ctx.fillText(member.displayName, 350, 280);
+        const avatar = await (await fetch(member.displayAvatarURL({
+            size: 128,
+            extension: "jpg",
+        }))).buffer();
 
-		const avatar = await Canvas.loadImage(member.user.displayAvatarURL({ format: "png" }));
-		ctx.drawImage(avatar, 300, 140, 100, 100);
+        const textOverlay = `<svg height="741" width="1000">
+  <text transform="scale(3)" x="72" y="20" text-anchor="middle" fill="white"> ${member.user.username} </text>
+</svg>`;
 
-		const attachment = new MessageAttachment(canvas.toBuffer(), "Simper.jpg");
-		await message.util?.send(`Haha, you're a simp!! ${member.user}`, attachment);
-	}
+        const sharpAvatar = await sharp(avatar)
+            .resize({ height: 205, width: 205 })
+            .toBuffer();
+
+        const picture = sharp(await this.background())
+            .composite([
+                {
+                    input: sharpAvatar,
+                    left: 570,
+                    top: 120,
+                },
+                {
+                    input: buffer.Buffer.from(textOverlay),
+                    left: 460,
+                    top: 320,
+                },
+            ]);
+
+        const attachment = new AttachmentBuilder(picture, { name: "simp.jpg" });
+        await message.channel.send({
+            content: `Haha, you're a simp!! ${member}!`,
+            files: [attachment],
+            allowedMentions: {
+                users: [],
+            },
+        });
+    }
 }

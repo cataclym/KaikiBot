@@ -1,44 +1,68 @@
-import { Command } from "discord-akairo";
-import { Role, Message, MessageEmbed } from "discord.js";
-import { noArgRole } from "../../functions/embeds";
-import { errorColor, getMemberColorAsync } from "../../functions/Util";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args } from "@sapphire/framework";
+import { EmbedBuilder, Message } from "discord.js";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+import Roles from "../../lib/Roles";
 
-export default class RoleDeleteCommand extends Command {
-	constructor() {
-		super("roledelete", {
-			aliases: ["roledelete", "deleterole", "dr"],
-			clientPermissions: "MANAGE_ROLES",
-			userPermissions: "MANAGE_ROLES",
-			description: { description: "Deletes one or more roles", usage: "@gamers @streamers @weebs" },
-			channel: "guild",
-			args: [
-				{
-					id: "roles",
-					type: "roles",
-					otherwise: noArgRole,
-				},
-			],
-		});
-	}
+@ApplyOptions<KaikiCommandOptions>({
+    name: "roledelete",
+    aliases: ["deleterole", "dr"],
+    description: "Deletes one or more roles",
+    usage: ["@gamers @streamers @weebs"],
+    requiredUserPermissions: ["ManageRoles"],
+    requiredClientPermissions: ["ManageRoles"],
+    preconditions: ["GuildOnly"],
+})
+export default class RoleDeleteCommand extends KaikiCommand {
+    public async messageRun(message: Message<true>, args: Args): Promise<Message> {
 
-	async exec(message: Message, { roles }: { roles: Role[]}): Promise<Message | void> {
+        const roles = await args.repeat("role");
 
-		const rolesArray: string[] = [];
+        const deletedRoles: string[] = [];
+        const otherRoles: string[] = [];
 
-		roles.forEach(async (role: Role) => {
-			return rolesArray.push((await role.delete()).name);
-		});
-		if (rolesArray.length > 0) {
-			return message.channel.send(new MessageEmbed({
-				color: await getMemberColorAsync(message),
-				description: `Deleted: ${rolesArray.join(", ")}`,
-			}));
-		}
-		else {
-			return message.channel.send(new MessageEmbed({
-				color: errorColor,
-				description: "Couldn't delete roles!",
-			}));
-		}
-	}
+        for await (const role of roles) {
+
+            if (await Roles.rolePermissionCheck(message, role)) {
+
+                role.delete().catch(() => otherRoles.push(role.name));
+                deletedRoles.push(role.name);
+            }
+
+            else {
+                otherRoles.push(role.name);
+            }
+        }
+
+        if (otherRoles.length) {
+            return message.channel.send({
+                embeds: [
+                    new EmbedBuilder()
+                        .setDescription(`Role(s) \`${otherRoles.join("`, `")}\` could not be deleted due to insufficient permissions.`)
+                        .withErrorColor(message),
+                ],
+            });
+        }
+
+        else if (deletedRoles.length) {
+            return message.channel.send({
+                embeds: [
+                    new EmbedBuilder()
+                        .setDescription(`Deleted: \`${deletedRoles.join("`, `")}\``)
+                        .withOkColor(message),
+                ],
+            });
+        }
+
+        else {
+            return message.channel.send({
+                embeds: [
+                    new EmbedBuilder()
+                        .setDescription("Couldn't delete roles!")
+                        .withErrorColor(message),
+                ],
+            });
+        }
+    }
 }

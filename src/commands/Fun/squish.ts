@@ -1,34 +1,47 @@
-import { Command } from "discord-akairo";
-import { GuildMember, Message, MessageEmbed, MessageAttachment } from "discord.js";
-import canvas from "canvas";
+import { ApplyOptions } from "@sapphire/decorators";
+import { Args, UserError } from "@sapphire/framework";
+import { AttachmentBuilder, EmbedBuilder, GuildMember, Message } from "discord.js";
+import fetch from "node-fetch";
+import sharp from "sharp";
+import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
+import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
-export default class SquishCommand extends Command {
-	constructor() {
-		super("squish", {
-			aliases: ["squish"],
-			description: { description: "Squishes given member's avatar", usage: "@dreb" },
-			args: [
-				{
-					"id": "member",
-					"type": "member",
-					"default": (message: Message) => message.member,
-				},
-			],
-		});
-	}
-	public async exec(message: Message, { member }: { member: GuildMember}): Promise<Message> {
-		const picture = canvas.createCanvas(64, 256);
-		const squishImage = picture.getContext("2d");
-		const avatar = await canvas.loadImage(member.user.displayAvatarURL({ dynamic: true, size: 256, format: "png" }));
-		squishImage.drawImage(avatar, 0, 0, 64, 256);
-		const attachment: MessageAttachment = new MessageAttachment(picture.toBuffer(), "Squished.jpg");
-		const embed = new MessageEmbed({
-			title: "Squished avatar...",
-			image: { url: "attachment://Squished.jpg" },
-			color: member.displayColor,
-		});
+@ApplyOptions<KaikiCommandOptions>({
+    name: "squish",
+    description: "Squishes given member's avatar",
+    usage: ["@dreb"],
+    preconditions: ["GuildOnly"],
+})
+export default class SquishCommand extends KaikiCommand {
 
+    public async messageRun(message: Message, args: Args): Promise<Message> {
 
-		return message.channel.send({ files: [attachment], embed: embed });
-	}
+        const member = <GuildMember> await args.pick("member")
+            .catch(() => {
+                if (args.finished) {
+                    return message.member;
+                }
+                throw new UserError({
+                    identifier: "NoMemberProvided",
+                    message: "Couldn't find a server member with that name.",
+                });
+            });
+        const avatar = await (await fetch(member.displayAvatarURL({
+            size: 256,
+            extension: "jpg",
+        }))).buffer();
+
+        const picture = sharp(avatar)
+            .resize(64, 256, { fit: "fill" })
+            .webp();
+
+        const attachment: AttachmentBuilder = new AttachmentBuilder(await picture.toBuffer(), { name: "Squished.jpg" });
+        const embed = new EmbedBuilder({
+            title: "Squished avatar...",
+            image: { url: "attachment://Squished.jpg" },
+        })
+            .withOkColor(message);
+
+        return message.channel.send({ files: [attachment], embeds: [embed] });
+    }
 }
