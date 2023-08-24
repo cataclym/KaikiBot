@@ -6,13 +6,17 @@ import KaikiUtil from "../lib/KaikiUtil";
 import { RespType } from "../lib/Types/Miscellaneous";
 import Constants from "../struct/Constants";
 
-export type EmoteStringTypes = "has_space" | "no_space";
 export type EmoteTrigger = string;
 export type GuildString = Snowflake;
 export type TriggerString = string;
-export type EmoteReactCache = Map<GuildString, Map<EmoteStringTypes, Map<EmoteTrigger, TriggerString>>>;
+export type EmoteReactCache = Map<GuildString, Map<ERCacheType, Map<EmoteTrigger, TriggerString>>>;
 
 type PartitionResult = [[string, bigint][], [string, bigint][]];
+
+export enum ERCacheType {
+    HAS_SPACE,
+    NO_SPACE
+}
 
 export default class KaikiCache {
 
@@ -20,18 +24,18 @@ export default class KaikiCache {
     public cmdStatsCache: Map<string, number>;
     public emoteReactCache: EmoteReactCache;
     public dailyProvider: MySQLDailyProvider;
-    public imageAPICache: Map<APIs, Map<string, Record<string, any>>>;
+    public imageAPICache: Map<APIs, Map<string, Record<string, unknown>>>;
     private imageAPIs: ClientImageAPIs;
 
     constructor(orm: pkg.PrismaClient, connection: Pool, imageAPIs: ClientImageAPIs) {
         this.animeQuoteCache = new Collection<string, RespType>();
         this.cmdStatsCache = new Map<string, number>();
         this.dailyProvider = new MySQLDailyProvider(connection);
-        this.emoteReactCache = new Map<GuildString, Map<EmoteStringTypes, Map<EmoteTrigger, TriggerString>>>();
+        this.emoteReactCache = new Map<GuildString, Map<ERCacheType, Map<EmoteTrigger, TriggerString>>>();
 
         // API cache
         this.imageAPIs = imageAPIs;
-        this.imageAPICache = new Map<APIs, Map<string, Record<string, any>>>;
+        this.imageAPICache = new Map<APIs, Map<string, Record<string, unknown>>>;
 
         void this.init(orm);
         this.populateImageAPICache();
@@ -68,16 +72,16 @@ export default class KaikiCache {
         const emoteReacts = (await message.client.orm.emojiReactions.findMany({ where: { GuildId: BigInt(message.guildId) } }))
             .map(table => [table.TriggerString, table.EmojiId]);
 
-        message.client.cache.emoteReactCache.set(message.guildId, new Map([["has_space", new Map()], ["no_space", new Map()]]));
+        message.client.cache.emoteReactCache.set(message.guildId, new Map([[ERCacheType.HAS_SPACE, new Map()], [ERCacheType.NO_SPACE, new Map()]]));
 
         if (emoteReacts.length) {
-            const [space, noSpace]: PartitionResult = KaikiUtil.partition(emoteReacts, ([k]) => k.includes(" "));
+            const [space, noSpace]: PartitionResult = KaikiUtil.partition(emoteReacts, ([k]: string[]) => k.includes(" "));
 
             for (const [key, value] of space) {
-                message.client.cache.emoteReactCache.get(message.guildId)?.get("has_space")?.set(key, String(value));
+                message.client.cache.emoteReactCache.get(message.guildId)?.get(ERCacheType.HAS_SPACE)?.set(key, String(value));
             }
             for (const [key, value] of noSpace) {
-                message.client.cache.emoteReactCache.get(message.guildId)?.get("no_space")?.set(key, String(value));
+                message.client.cache.emoteReactCache.get(message.guildId)?.get(ERCacheType.NO_SPACE)?.set(key, String(value));
             }
         }
     }
@@ -96,7 +100,7 @@ export default class KaikiCache {
 
         if (!emotes) return;
 
-        const iterables = emotes?.get("has_space")?.keys();
+        const iterables = emotes?.get(ERCacheType.HAS_SPACE)?.keys();
 
         if (!iterables) return;
 
@@ -106,7 +110,7 @@ export default class KaikiCache {
         });
 
         for (const word of messageContent.split(" ")) {
-            if (emotes?.get("no_space")?.has(word)) {
+            if (emotes?.get(ERCacheType.NO_SPACE)?.has(word)) {
                 properMatches.push(word);
             }
         }
@@ -116,9 +120,9 @@ export default class KaikiCache {
         return KaikiCache.emoteReactLoop(message, properMatches, emotes);
     }
 
-    public static async emoteReactLoop(message: Message, matches: string[], wordObj: Map<EmoteStringTypes, Map<EmoteTrigger, TriggerString>>) {
+    public static async emoteReactLoop(message: Message, matches: string[], wordObj: Map<ERCacheType, Map<EmoteTrigger, TriggerString>>) {
         for (const word of matches) {
-            const emote = wordObj.get("no_space")?.get(word) || wordObj.get("has_space")?.get(word);
+            const emote = wordObj.get(ERCacheType.NO_SPACE)?.get(word) || wordObj.get(ERCacheType.HAS_SPACE)?.get(word);
             if (!message.guild?.emojis.cache.has(emote as Snowflake) || !emote) continue;
             await message.react(emote);
         }
@@ -126,7 +130,7 @@ export default class KaikiCache {
 
     private populateImageAPICache() {
         Object.keys(this.imageAPIs).forEach((api: APIs) => {
-            this.imageAPICache.set(api, new Map<string, Record<string, any>>);
+            this.imageAPICache.set(api, new Map<string, Record<string, unknown>>);
         });
     }
 }
@@ -146,8 +150,8 @@ class MySQLDailyProvider {
     // Sets claimed status to true
     async setClaimed(id: string) {
         return this.connection.query<ResultSetHeader>("UPDATE DiscordUsers SET ClaimedDaily = ? WHERE UserId = ?", [true, BigInt(id)])
-            .then(([result]) => result.changedRows
-                ? result.changedRows > 0
+            .then(([result]) => result.affectedRows
+                ? result.affectedRows > 0
                 : false)
             .catch(() => false);
     }

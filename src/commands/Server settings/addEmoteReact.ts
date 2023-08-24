@@ -1,7 +1,7 @@
 import { ApplyOptions } from "@sapphire/decorators";
 import { Args } from "@sapphire/framework";
 import { EmbedBuilder, Message } from "discord.js";
-import KaikiCache from "../../cache/KaikiCache";
+import KaikiCache, { ERCacheType } from "../../cache/KaikiCache";
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
@@ -59,11 +59,11 @@ export default class EmoteReactCommand extends KaikiCommand {
         if (!this.client.cache.emoteReactCache.get(message.guildId)) await KaikiCache.populateERCache(message);
 
         if (trigger.includes(" ")) {
-            this.client.cache.emoteReactCache.get(message.guildId)?.get("has_space")?.set(trigger, emoji.id);
+            this.client.cache.emoteReactCache.get(message.guildId)?.get(ERCacheType.HAS_SPACE)?.set(trigger, emoji.id);
         }
 
         else {
-            this.client.cache.emoteReactCache.get(message.guildId)?.get("no_space")?.set(trigger, emoji.id);
+            this.client.cache.emoteReactCache.get(message.guildId)?.get(ERCacheType.NO_SPACE)?.set(trigger, emoji.id);
         }
 
         return message.channel.send({
