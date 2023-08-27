@@ -3,6 +3,7 @@ import { Args } from "@sapphire/framework";
 import { EmbedBuilder, Message } from "discord.js";
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+import { ERCacheType } from "../../lib/Cache/KaikiCache";
 
 @ApplyOptions<KaikiCommandOptions>({
     name: "removereact",
@@ -41,11 +42,11 @@ export default class RemoveEmoteReactCommand extends KaikiCommand {
             });
 
             if (trigger.includes(" ")) {
-                this.client.cache.emoteReactCache.get(message.guildId)?.get("has_space")?.delete(trigger);
+                this.client.cache.emoteReactCache.get(message.guildId)?.get(ERCacheType.HAS_SPACE)?.delete(trigger);
             }
 
             else {
-                this.client.cache.emoteReactCache.get(message.guildId)?.get("no_space")?.delete(trigger);
+                this.client.cache.emoteReactCache.get(message.guildId)?.get(ERCacheType.NO_SPACE)?.delete(trigger);
             }
 
             const embed = new EmbedBuilder()

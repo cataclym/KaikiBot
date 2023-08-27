@@ -20,7 +20,6 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiUtil from "../../lib/KaikiUtil";
 import Constants from "../../struct/Constants";
 
-// Todo: Add missing arguments
 @ApplyOptions<KaikiCommandOptions>({
     name: "info",
     description: "Returns info on a channel, role, member, emoji, or message",
@@ -30,49 +29,6 @@ import Constants from "../../struct/Constants";
     minorCategory: "Info",
 })
 export default class InfoCommand extends KaikiCommand {
-    // constructor() {
-    //     super("info", {
-    //         aliases: ["info"],
-    //         channel: "guild",
-    //         description: "Returns info on a channel, role, member, emoji, or message",
-    //         usage: ["#channel", "@member", "@role", ":coolCustomEmoji:", "messageID"],
-    //         typing: true,
-    //         args: [
-    //             {
-    //                 id: "obj",
-    //                 type: Argument.union("member",
-    //                     "channel",
-    //                     "role",
-    //                     "emoji",
-    //                     "guildMessage",
-    //                     (message, content) => emojis.find(content),
-    //                     Constants.emoteRegex,
-    //                     (message) => message.stickers,
-    //                     (_, _phrase) => _phrase.length <= 0
-    //                         ? ""
-    //                         : undefined),
-    //                 match: "content",
-    //                 otherwise: async (m: Message) => ({
-    //                     embeds: [await KaikiEmbeds.errorMessage(m, "A channel, user, role, emoji or message was not found. Make sure to provide a valid argument!")],
-    //                 }),
-    //             },
-    //         ],
-    //         subCategory: "Info",
-    //     });
-    // }
-
-    // Custom arguments
-    // private static stickers = Args.make<Collection<string, Sticker>>((parameter: string, context: ArgumentContext<Collection<string, Sticker>>) => {
-    //
-    //     if (context.message.stickers.size) return Args.ok(context.message.stickers);
-    //
-    //     return Args.error({
-    //         parameter,
-    //         context,
-    //         argument: context.argument,
-    //     });
-    // });
-
     public async messageRun(message: Message<true>, args: Args) {
 
 

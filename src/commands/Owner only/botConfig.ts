@@ -83,10 +83,10 @@ export default class BotConfigCommand extends Subcommand {
         const oldActivityType = this.client.botSettings.get("1", "ActivityType", null);
 
         if (activity) {
-            message.client.user.setActivity({ type: Constants.activityTypes[type] });
+            message.client.user.setActivity({ type: Constants.activityTypes[type], name: activity });
         }
 
-        this.client.botSettings.set("1", "ActivityType", type);
+        await this.client.botSettings.set("1", "ActivityType", type);
 
         return BotConfigCommand.sendEmbed(message, oldActivityType, type);
     }
@@ -122,7 +122,7 @@ export default class BotConfigCommand extends Subcommand {
     public async dailyEnabledRun(message: Message, args: Args) {
         const value = await args.rest("boolean");
 
-        const oldValue = <boolean> await this.client.botSettings.get("1", "DailyEnabled", false);
+        const oldValue = <boolean>await this.client.botSettings.get("1", "DailyEnabled", false);
         await this.client.botSettings.set("1", "DailyEnabled", value);
 
         return BotConfigCommand.sendEmbed(message, String(oldValue), String(value));
@@ -131,7 +131,7 @@ export default class BotConfigCommand extends Subcommand {
     public async dailyAmountRun(message: Message, args: Args) {
         const value = await args.rest("number");
 
-        const oldValue = <number> await this.client.botSettings.get("1", "DailyAmount", Constants.MAGIC_NUMBERS.CMDS.OWNER_ONLY.BOT_CONFIG.DAILY_AMOUNT);
+        const oldValue = <number>await this.client.botSettings.get("1", "DailyAmount", Constants.MAGIC_NUMBERS.CMDS.OWNER_ONLY.BOT_CONFIG.DAILY_AMOUNT);
         await this.client.botSettings.set("1", "DailyAmount", value);
 
         return BotConfigCommand.sendEmbed(message, String(oldValue), String(value));
@@ -145,11 +145,11 @@ export default class BotConfigCommand extends Subcommand {
                     .addFields([
                         {
                             name: "Old Value",
-                            value: oldValue,
+                            value: String(oldValue),
                         },
                         {
                             name: "New value",
-                            value: newValue,
+                            value: String(newValue),
                         },
                     ])
                     .withOkColor(message),

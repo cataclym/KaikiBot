@@ -5,7 +5,7 @@ import { LogLevel, SapphireClient } from "@sapphire/framework";
 import * as colorette from "colorette";
 import { GatewayIntentBits, Guild, Partials, User } from "discord.js";
 import { Pool } from "mysql2/promise";
-import KaikiCache from "../../cache/KaikiCache";
+import KaikiCache from "../Cache/KaikiCache";
 import Constants from "../../struct/Constants";
 import Database from "../../struct/db/Database";
 import DatabaseProvider from "../../struct/db/DatabaseProvider";
@@ -204,8 +204,7 @@ export default class KaikiSapphireClient<Ready extends true> extends SapphireCli
         // Check if 'neofetch' is available
         try {
             execSync("command -v neofetch >/dev/null 2>&1");
-        }
-        catch {
+        } catch {
             await commandStore.unload("neofetch");
             this.logger.warn("Neofetch wasn't detected! Neofetch command will be disabled.");
         }
