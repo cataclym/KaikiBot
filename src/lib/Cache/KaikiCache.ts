@@ -1,17 +1,17 @@
 import pkg from "@prisma/client";
 import { Collection, Message, Snowflake } from "discord.js";
 import { Pool, ResultSetHeader, RowDataPacket } from "mysql2/promise";
-import { APIs, ClientImageAPIs } from "../lib/APIs/Common/Types";
-import KaikiUtil from "../lib/KaikiUtil";
-import { RespType } from "../lib/Types/Miscellaneous";
-import Constants from "../struct/Constants";
-
-export type EmoteTrigger = string;
-export type GuildString = Snowflake;
-export type TriggerString = string;
-export type EmoteReactCache = Map<GuildString, Map<ERCacheType, Map<EmoteTrigger, TriggerString>>>;
-
-type PartitionResult = [[string, bigint][], [string, bigint][]];
+import { APIs, ClientImageAPIs } from "../APIs/Common/Types";
+import KaikiUtil from "../KaikiUtil";
+import { RespType } from "../Types/Miscellaneous";
+import Constants from "../../struct/Constants";
+import {
+    EmoteReactCache,
+    EmoteTrigger,
+    GuildString,
+    PartitionResult,
+    TriggerString,
+} from "../Interfaces/Kaiki/KaikiCache";
 
 export enum ERCacheType {
     HAS_SPACE,
@@ -71,17 +71,22 @@ export default class KaikiCache {
 
         const emoteReacts = (await message.client.orm.emojiReactions.findMany({ where: { GuildId: BigInt(message.guildId) } }))
             .map(table => [table.TriggerString, table.EmojiId]);
+        const { emoteReactCache } = message.client.cache;
 
-        message.client.cache.emoteReactCache.set(message.guildId, new Map([[ERCacheType.HAS_SPACE, new Map()], [ERCacheType.NO_SPACE, new Map()]]));
+        // Populate guild cache with empty map
+        emoteReactCache.set(message.guildId, new Map([[ERCacheType.HAS_SPACE, new Map()], [ERCacheType.NO_SPACE, new Map()]]));
+
+        // Getting the guild cache
+        const guildCache = emoteReactCache.get(message.guildId);
 
         if (emoteReacts.length) {
             const [space, noSpace]: PartitionResult = KaikiUtil.partition(emoteReacts, ([k]: string[]) => k.includes(" "));
 
             for (const [key, value] of space) {
-                message.client.cache.emoteReactCache.get(message.guildId)?.get(ERCacheType.HAS_SPACE)?.set(key, String(value));
+                guildCache?.get(ERCacheType.HAS_SPACE)?.set(key, String(value));
             }
             for (const [key, value] of noSpace) {
-                message.client.cache.emoteReactCache.get(message.guildId)?.get(ERCacheType.NO_SPACE)?.set(key, String(value));
+                guildCache?.get(ERCacheType.NO_SPACE)?.set(key, String(value));
             }
         }
     }
@@ -89,35 +94,34 @@ export default class KaikiCache {
     // Reacts with emote to specified words
     public async emoteReact(message: Message<true>): Promise<void> {
 
-        const id = message.guildId,
+        const { guildId } = message,
             messageContent = message.content.toLowerCase();
 
-        if (!message.client.cache.emoteReactCache.get(id)) {
+        if (!message.client.cache.emoteReactCache.get(guildId)) {
             await KaikiCache.populateERCache(message);
         }
 
-        const emotes = message.client.cache.emoteReactCache.get(id);
+        const emotes = message.client.cache.emoteReactCache.get(guildId);
 
         if (!emotes) return;
 
-        const iterables = emotes?.get(ERCacheType.HAS_SPACE)?.keys();
+        // First find matches with spaces
+        const matches = Array.from(emotes?.get(ERCacheType.HAS_SPACE)?.keys() || [])
+            .filter(k => {
+                if (!k) return false;
+                return messageContent.match(new RegExp(k.toLowerCase(), "g"));
+            });
 
-        if (!iterables) return;
-
-        const properMatches = Array.from(iterables).filter(k => {
-            if (!k) return false;
-            messageContent.match(new RegExp(k.toLowerCase(), "g"));
-        });
-
+        // Then push matches that have no spaces
         for (const word of messageContent.split(" ")) {
             if (emotes?.get(ERCacheType.NO_SPACE)?.has(word)) {
-                properMatches.push(word);
+                matches.push(word);
             }
         }
 
-        if (!properMatches.length) return;
+        if (!matches.length) return;
 
-        return KaikiCache.emoteReactLoop(message, properMatches, emotes);
+        return KaikiCache.emoteReactLoop(message, matches, emotes);
     }
 
     public static async emoteReactLoop(message: Message, matches: string[], wordObj: Map<ERCacheType, Map<EmoteTrigger, TriggerString>>) {

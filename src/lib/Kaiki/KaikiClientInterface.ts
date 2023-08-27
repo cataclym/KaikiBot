@@ -1,7 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import { User } from "discord.js";
 import { Pool } from "mysql2/promise";
-import KaikiCache from "../../cache/KaikiCache";
+import KaikiCache from "../Cache/KaikiCache";
 import Database from "../../struct/db/Database";
 import DatabaseProvider from "../../struct/db/DatabaseProvider";
 import AnniversaryRolesService from "../AnniversaryRolesService";
