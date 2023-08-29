@@ -105,6 +105,10 @@ export default class HelpCommand extends KaikiCommand {
                 ])
                 .setFooter({ text: command.category || "N/A" });
 
+            if (Array.isArray(command.options.flags)) {
+                embed.addFields({ name: "Flags", value: command.options.flags.map(flag => `--${flag}`).join(", ") })
+            }
+
             if (command.options.requiredUserPermissions) {
                 embed.addFields([
                     {
