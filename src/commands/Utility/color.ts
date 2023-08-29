@@ -12,16 +12,16 @@ import Constants from "../../struct/Constants";
 @ApplyOptions<KaikiCommandOptions>({
     name: "color",
     aliases: ["clr"],
-    description: "Returns a representation of a color string, or shows list of available color names to use.",
-    usage: ["#ff00ff", "list"],
+    description: "Returns up to 10 representations the inputted color, or shows list of available color names to use.",
+    usage: ["#ff00ff #dc143c", "--list"],
     typing: true,
-    flags: ["list", "--list"],
+    flags: ["list"],
     minorCategory: "Color",
 })
 export default class ColorCommand extends KaikiCommand {
     public async messageRun(message: Message, args: Args): Promise<Message> {
 
-        const list = args.getFlags("list", "--list");
+        const list = args.getFlags("list");
 
         if (list) {
             const colorList = Object.keys(Constants.hexColorTable),
@@ -43,23 +43,28 @@ export default class ColorCommand extends KaikiCommand {
             return sendPaginatedMessage(message, pages, {});
         }
 
-        const color = await args.rest("kaikiColor");
-        const hex = KaikiUtil.convertRGBToHex(color);
-        const colorInt = parseInt(hex.replace("#", ""), 16);
+        const colorArray = await args.repeat("kaikiColor", { times: 10 });
 
-        const colorString = `Hex: **${hex}** [${colorInt}]\nRed: **${color.r}**\nGreen: **${color.g}**\nBlue: **${color.b}**\n`;
-        const attachment = new AttachmentBuilder(await imgFromColor(color), { name: "color.jpg" });
-        const embed = new EmbedBuilder({
-            description: colorString,
-            color: colorInt,
-            image: {
-                url: "attachment://color.jpg",
-            },
+        const attachments: AttachmentBuilder[] = [];
+        const embeds = colorArray.map(async color => {
+            const random = Math.round(Math.random() * Date.now());
+            const hex = KaikiUtil.convertRGBToHex(color);
+            const colorInteger = parseInt(hex.replace("#", ""), 16);
+            const colorString = `Hex: **${hex}** [${colorInteger}]\nRed: **${color.r}**\nGreen: **${color.g}**\nBlue: **${color.b}**\n`;
+            attachments.push(new AttachmentBuilder(await imgFromColor(color), { name: `${random}color.jpg` }));
+
+            return new EmbedBuilder({
+                description: colorString,
+                color: colorInteger,
+                image: {
+                    url: `attachment://${random}color.jpg`,
+                },
+            });
         });
 
         return message.channel.send({
-            files: [attachment],
-            embeds: [embed],
+            files: attachments,
+            embeds: await Promise.all(embeds),
         });
     }
 }

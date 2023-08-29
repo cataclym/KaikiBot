@@ -91,7 +91,7 @@ export default class KaikiCache {
         }
     }
 
-    // Reacts with emote to specified words
+    // Reacts with emote to words in Emote React cache.
     public async emoteReact(message: Message<true>): Promise<void> {
 
         const { guildId } = message,
