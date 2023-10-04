@@ -41,30 +41,34 @@ export default class KaikiCache {
         this.populateImageAPICache();
     }
 
+    // Creates a loop of 15 minutes to synchronize the command stats cache to the DB.
     public async init(orm: pkg.PrismaClient) {
-
         return setInterval(async () => {
-            if (this.cmdStatsCache.size) {
-                const requests = Array(...this.cmdStatsCache.entries())
-                    .map(([command, amount]) => orm.commandStats
-                        .upsert({
-                            where: {
-                                CommandAlias: command,
-                            },
-                            create: {
-                                CommandAlias: command,
-                                Count: amount,
-                            },
-                            update: {
-                                Count: {
-                                    increment: amount,
-                                },
-                            },
-                        }));
-                await orm.$transaction(requests);
-                this.cmdStatsCache = new Map();
-            }
+            void this.syncCommandStats(orm);
         }, Constants.MAGIC_NUMBERS.CACHE.FIFTEEN_MINUTES_MS);
+    }
+
+    private async syncCommandStats(orm: pkg.PrismaClient) {
+        if (!this.cmdStatsCache.size) return;
+
+        const requests = Array(...this.cmdStatsCache.entries())
+            .map(([command, amount]) => orm.commandStats
+                .upsert({
+                    where: {
+                        CommandAlias: command,
+                    },
+                    create: {
+                        CommandAlias: command,
+                        Count: amount,
+                    },
+                    update: {
+                        Count: {
+                            increment: amount,
+                        },
+                    },
+                }));
+        await orm.$transaction(requests);
+        this.cmdStatsCache = new Map();
     }
 
     public static async populateERCache(message: Message<true>) {

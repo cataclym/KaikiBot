@@ -91,6 +91,10 @@ export default class BotContainer {
                 }
 
                 await this.client.filterOptionalCommands();
+            })
+            .catch(e => {
+                container.logger.warn(e);
+                process.exit(1);
             });
     }
 }
