@@ -32,6 +32,6 @@ export default class NekosAPI extends ImageAPI<EndPoints> {
             },
         },
         objectIndex: ["data", "0", "url"],
-        url: endPoint => `https://nekos.nekidev.com/api/image/random?categories=${endPoint}&?nsfw=sfw`,
+        url: endPoint => `https://v1.nekosapi.com/api/image/random?categories=${endPoint}&?nsfw=sfw`,
     };
 }

@@ -121,7 +121,7 @@ export default class CommandsList extends KaikiCommand {
         });
     }
 
-    private categoriesEmbed = async (message: Message, prefix: any, {
+    private categoriesEmbed = async (message: Message, prefix: string, {
         name,
         version,
         repository,
@@ -135,12 +135,6 @@ export default class CommandsList extends KaikiCommand {
         },
         thumbnail: {
             url: images.utility.commands.notebook,
-        },
-        footer: {
-            text: message.author.username,
-            iconURL: (message.client.users.cache.get(Constants.authorId)
-                || (await message.client.users.fetch(Constants.authorId, { cache: true })))
-                .displayAvatarURL(),
         },
     }).withOkColor(message);
 
