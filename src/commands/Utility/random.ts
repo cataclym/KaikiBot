@@ -16,8 +16,7 @@ function getRndInteger(min: number, max: number) {
     usage: ["1 10", "25"],
 })
 export default class RandomNumberCommand extends KaikiCommand {
-    public async exec(message: Message, args: Args): Promise<Message> {
-
+    public async messageRun(message: Message, args: Args): Promise<Message> {
 
         const numberOne = await args.pick("number").catch(() => 1),
             numberTwo = await args.pick("number").catch(() => 100),
