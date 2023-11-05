@@ -1,5 +1,7 @@
 import { EmbedBuilder, GuildMember, Message } from "discord.js";
 import fetch, { RequestInfo } from "node-fetch";
+import { UserError } from "@sapphire/framework";
+import { container } from "@sapphire/pieces";
 import InteractionsImageData from "../Interfaces/Common/InteractionsImageData";
 import KaikiUtil from "../KaikiUtil";
 
@@ -32,7 +34,12 @@ export default class APIProcessor {
     }
 
     private static async processJSONIndexing(site: RequestInfo, jsonProperty: string | string[]): Promise<string> {
-        const result = (await KaikiUtil.handleToJSON(await (await fetch(site)).json()));
+        const result = await KaikiUtil.handleToJSON(await (await fetch(site)).json()
+            .catch(error => {
+                container.logger.error(error);
+                throw new UserError({ identifier: "ImageNotFound", message: "Sorry, no image was found... \\*_\\*" });
+            }),
+        );
 
         if (Array.isArray(jsonProperty)) {
             let image: any;

@@ -4,14 +4,14 @@ import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOpti
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 @ApplyOptions<KaikiCommandOptions>({
-    name: "catgirl",
-    description: "Spawn a catgirl picture",
+    name: "girl",
+    description: "Spawn art of a girl",
     usage: [""],
     typing: true,
     cooldownDelay: 1000,
 })
-export default class Catgirl extends KaikiCommand {
+export default class Girl extends KaikiCommand {
     public async messageRun(message: Message): Promise<Message> {
-        return this.client.imageAPIs.NekosAPI.sendImageAPIRequest(message, "Catgirl");
+        return this.client.imageAPIs.NekosAPI.sendImageAPIRequest(message, "Girl");
     }
 }
