@@ -35,7 +35,7 @@
     "node-emoji": "^1.11.0",
     "node-html-parser": "^6.1.6",
     "prisma": "^5.3.1",
-    "sharp": "^0.32.5",
+    "sharp": "^0.32.6",
     "typescript": "^5.2.2",
     "utf-8-validate": "^6.0.3",
     "zlib-sync": "^0.1.8"
