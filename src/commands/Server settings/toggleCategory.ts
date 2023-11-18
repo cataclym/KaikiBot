@@ -1,5 +1,5 @@
 import { ApplyOptions } from "@sapphire/decorators";
-import { Args } from "@sapphire/framework";
+import { Args, UserError } from "@sapphire/framework";
 import { EmbedBuilder, Message } from "discord.js";
 import { CategoriesEnum } from "../../lib/Enums/categoriesEnum";
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
@@ -10,12 +10,39 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
     name: "togglecategory",
     aliases: ["tc"],
     description: "Toggles a category",
-    usage: ["Anime"],
+    usage: ["Anime", ""],
     requiredUserPermissions: ["Administrator"],
     preconditions: ["GuildOnly"],
 })
 export default class ToggleCategoryCommand extends KaikiCommand {
     public async messageRun(message: Message<true>, args: Args): Promise<Message> {
+
+        if (args.finished) {
+            const blockedCategories = await message.client.orm.blockedCategories.findMany({
+                where: { GuildId: BigInt(message.guildId) },
+            });
+
+            if (!blockedCategories.length) {
+                throw new UserError({
+                    identifier: "NoCategoriesDisabled",
+                    message: "This server has not disabled any categories.",
+                });
+            }
+
+            const categories = blockedCategories
+                .map(e => CategoriesEnum[e.CategoryTarget])
+                .filter(Boolean)
+                .join("\n");
+
+            return message.channel.send({
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle("Disabled categories")
+                        .setDescription(categories)
+                        .withOkColor(),
+                ],
+            });
+        }
 
         const categoryStr = await args.rest("category");
 
@@ -30,6 +57,7 @@ export default class ToggleCategoryCommand extends KaikiCommand {
                 BlockedCategories: true,
             },
         });
+
 
         if (!guildDb) {
             const obj = {

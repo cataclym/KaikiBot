@@ -21,9 +21,7 @@ export default class UrbanDictCommand extends KaikiCommand {
 
         const query = querystring.stringify({ term: await args.rest("string") });
 
-        const { list }: {
-            list: UrbanResponse[]
-        } = (await KaikiUtil.handleToJSON(await (await fetch(`https://api.urbandictionary.com/v0/define?${query}`)).json()));
+        const list = await KaikiUtil.json<UrbanResponse[]>(KaikiUtil.checkResponse(await fetch(`https://api.urbandictionary.com/v0/define?${query}`)), "list");
 
         if (!list.length) {
             return message.channel.send({

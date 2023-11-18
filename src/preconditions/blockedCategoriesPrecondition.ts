@@ -6,7 +6,7 @@ import { Categories } from "../lib/Types/Miscellaneous";
 
 export class BlockedCategoriesPrecondition extends AllFlowsPrecondition {
 
-    public constructor(context: Piece.Context, options: AllFlowsPrecondition.Options) {
+    public constructor(context: Piece.LoaderContext<"preconditions">, options: AllFlowsPrecondition.Options) {
         super(context, {
             ...options,
             position: 20,

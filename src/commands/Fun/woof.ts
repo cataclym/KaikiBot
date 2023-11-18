@@ -15,7 +15,7 @@ export default class WoofCommand extends KaikiCommand {
         return message.channel.send({
             embeds: [
                 new EmbedBuilder()
-                    .setImage((await KaikiUtil.handleToJSON(await (await fetch("https://dog.ceo/api/breeds/image/random")).json())).message)
+                    .setImage(await KaikiUtil.json<string>(KaikiUtil.checkResponse(await fetch("https://dog.ceo/api/breeds/image/random")), "message"))
                     .withOkColor(message),
             ],
         });

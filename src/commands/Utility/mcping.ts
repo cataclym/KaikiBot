@@ -17,7 +17,7 @@ import KaikiUtil from "../../lib/KaikiUtil";
 })
 export default class MinecraftPingCommand extends KaikiCommand {
 
-    public async exec(message: Message, args: Args): Promise<Message> {
+    public async messageRun(message: Message, args: Args): Promise<Message> {
 
         const term = await args.pick("string");
 
