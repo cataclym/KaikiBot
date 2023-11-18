@@ -249,7 +249,8 @@ export default class Constants {
         GuildAnnouncement: "Guild announcements",
         GuildCategory: "Category",
         GuildDirectory: "Guild directory",
-        GuildForum: "Guild Forum",
+        GuildForum: "Guild forum",
+        GuildMedia: "Guild media",
         GuildNews: "News",
         GuildNewsThread: "News thread",
         GuildPrivateThread: "Private thread",
@@ -427,12 +428,6 @@ export default class Constants {
             HENTAI: {
                 HENTAI_SERVICE: {
                     FULL_CACHE_SIZE: 200,
-                    HTTP_REQUESTS: {
-                        BAD_GATEWAY: 502,
-                        OK: 200,
-                        SERVICE_UNAVAILABLE: 503,
-                        TOO_MANY_REQUESTS: 429,
-                    },
                     MEDIUM_CACHE_SIZE: 50,
                 },
             },
