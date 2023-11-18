@@ -76,15 +76,13 @@ export default class HentaiService {
 
     async e621(url: RequestInfo) {
 
-
         if (this.imageCache.size > Constants.MAGIC_NUMBERS.LIB.HENTAI.HENTAI_SERVICE.FULL_CACHE_SIZE) {
             return this.imageCache.random()!;
         }
 
         const r = await fetch(url, this.options);
 
-        if (Object.values(Constants.MAGIC_NUMBERS.LIB.HENTAI.HENTAI_SERVICE.HTTP_REQUESTS).includes(r.status)
-            && this.imageCache.size >= Constants.MAGIC_NUMBERS.LIB.HENTAI.HENTAI_SERVICE.MEDIUM_CACHE_SIZE) {
+        if (!r.ok && this.imageCache.size >= Constants.MAGIC_NUMBERS.LIB.HENTAI.HENTAI_SERVICE.MEDIUM_CACHE_SIZE) {
             return this.imageCache.random();
         }
 
