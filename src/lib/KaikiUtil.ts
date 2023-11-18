@@ -1,5 +1,5 @@
 import { ActivityType, ColorResolvable, GuildMember, HexColorString, Message } from "discord.js";
-import fetch from "node-fetch";
+import fetch, { Response } from "node-fetch";
 import Constants from "../struct/Constants";
 import { KaikiColor } from "./Types/KaikiColor";
 import { RegexpType } from "./Types/Miscellaneous";
@@ -173,16 +173,33 @@ export default class KaikiUtil {
         return (value as RegexpType).match !== undefined;
     }
 
-    public static async handleToJSON(data: any) {
-        if (data) return data;
-        throw new Error("No data was found");
-    }
-
     public static hasKey<O extends object>(obj: O, key: PropertyKey): key is keyof O {
         return key in obj;
     }
 
     static genericArrayFilter<T>(x: T | undefined): x is T {
         return !!x;
+    }
+
+    static checkResponse(resp: Response) {
+        if (!resp.ok) throw new Error(`Network response failed. ${resp.statusText} ${resp.status}`);
+        return resp;
+    }
+
+    static async json<T = any>(response: Response, index?: string | string[]): Promise<T> {
+        try {
+            let json = await response.json();
+
+            if (!index?.length) return json;
+
+            for (const jsonKey of Array.isArray(index) ? index : [index]) {
+                json = json[jsonKey];
+            }
+
+            return json as T;
+        }
+        catch (e) {
+            throw new Error(e);
+        }
     }
 }

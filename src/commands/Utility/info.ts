@@ -29,8 +29,12 @@ import Constants from "../../struct/Constants";
     minorCategory: "Info",
 })
 export default class InfoCommand extends KaikiCommand {
-    public async messageRun(message: Message<true>, args: Args) {
+    private NoArgumentFoundError = new UserError({
+        identifier: "NoArgumentFound",
+        message: "I couldn't find any relevant information for the argument you provided. Please check your input and try again.",
+    });
 
+    public async messageRun(message: Message<true>, args: Args) {
 
         const obj = args.finished
             ? message.member || message.author
@@ -38,8 +42,11 @@ export default class InfoCommand extends KaikiCommand {
                 .catch(async () => args.pick("user"))
                 .catch(async () => args.pick("guildChannel"))
                 .catch(async () => args.pick("role"))
+                .catch(async () => args.pick("message"))
                 .catch(async () => args.pick("emoji"))
-                .catch(async () => args.pick("message")));
+                .catch(async () => {
+                    throw this.NoArgumentFoundError;
+                }));
 
         let emb: EmbedBuilder[] = [];
 
@@ -63,8 +70,12 @@ export default class InfoCommand extends KaikiCommand {
             emb = await this.sticker(message, obj);
         }
 
-        else {
+        else if (this.isEmojiObject(obj)) {
             emb = await this.emoji(message, obj);
+        }
+
+        else {
+            throw this.NoArgumentFoundError;
         }
 
         return message.channel.send({ embeds: emb });
@@ -427,14 +438,6 @@ export default class InfoCommand extends KaikiCommand {
                 .withOkColor(message),
         ];
 
-        if (!obj.id) {
-            // Todo: It should return ArgumentError sometime
-            throw new UserError({
-                identifier: "DefaultEmoji",
-                message: "The given argument is a default emoji.",
-            });
-        }
-
         const id = obj.id;
         const link = `https://cdn.discordapp.com/emojis/${id}.${obj.animated ? "gif" : "png"}`;
 
@@ -498,5 +501,9 @@ export default class InfoCommand extends KaikiCommand {
         );
 
         return emb;
+    }
+
+    private isEmojiObject(obj: unknown): obj is EmojiObject {
+        return !!(obj as EmojiObject)?.name && !!(obj as EmojiObject)?.id;
     }
 }
