@@ -16,7 +16,7 @@ export default class MeowCommand extends KaikiCommand {
         return message.channel.send({
             embeds: [
                 new EmbedBuilder()
-                    .setImage((await KaikiUtil.handleToJSON(await (await fetch("https://api.thecatapi.com/v1/images/search")).json()))[0].url)
+                    .setImage(await KaikiUtil.json<string>(KaikiUtil.checkResponse(await fetch("https://api.thecatapi.com/v1/images/search")), ["0", "url"]))
                     .setFooter({ text: "https://thecatapi.com/" })
                     .withOkColor(message),
             ],

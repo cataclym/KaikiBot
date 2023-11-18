@@ -89,7 +89,7 @@ export default class NekosAPI extends ImageAPI<EndPoints> {
             "White hair": notImplementedEndPointData,
             Yuri: notImplementedEndPointData,
         },
-        objectIndex: ["0"],
+        objectIndex: ["items", "0", "image_url"],
         url: endPoint => `https://api.nekosapi.com/v3/images/random?tag=${NekosAPITags[endPoint]}&rating=safe&limit=1`,
     };
 }

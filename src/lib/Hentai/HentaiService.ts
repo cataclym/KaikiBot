@@ -1,4 +1,3 @@
-import { container } from "@sapphire/pieces";
 import { Collection } from "discord.js";
 import fetch, { RequestInfo } from "node-fetch";
 import Constants from "../../struct/Constants";
@@ -20,7 +19,7 @@ export default class HentaiService {
     options = {
         method: "GET",
         headers: {
-            "User-Agent": "KaikiDeishuBot is a Discord bot (https://gitlab.com/cataclym/KaikiDeishuBot/)",
+            "User-Agent": `KaikiDeishuBot is a Discord bot (${Constants.LINKS.REPO_URL})`,
         },
     };
 
@@ -42,10 +41,13 @@ export default class HentaiService {
                 },
                 body: JSON.stringify({ a: 1, b: "Textual content" }),
             });
-            return (await KaikiUtil.handleToJSON(await rawResponse.json()))["files"];
+            KaikiUtil.checkResponse(rawResponse);
+            return await KaikiUtil.json(rawResponse, ["files"]);
         }
-        return (await KaikiUtil.handleToJSON(await (await fetch(`https://waifu.pics/api/nsfw/${type}`)).json()))["url"];
+        const response = await fetch(`https://waifu.pics/api/nsfw/${type}`);
 
+        KaikiUtil.checkResponse(response);
+        return KaikiUtil.json<string>(response, ["url"]);
     }
 
     async apiGrabber(tags: string[] | null, type: DAPI): Promise<Post | void> {
@@ -69,7 +71,6 @@ export default class HentaiService {
                 url = `https://danbooru.donmai.us/posts.json?limit=100&tags=${tag}`;
                 break;
             // TODO:::: ???
-
         }
     }
 
@@ -87,12 +88,9 @@ export default class HentaiService {
             return this.imageCache.random();
         }
 
-        if (r.status !== Constants.MAGIC_NUMBERS.LIB.HENTAI.HENTAI_SERVICE.HTTP_REQUESTS.OK) {
-            throw new Error(`Error: Fetch didnt return successful Status code\n${r.status} ${r.statusText}`);
-        }
+        KaikiUtil.checkResponse(r);
 
-        const json = <E261APIData> await r.json()
-            .catch((err) => container.logger.error(err));
+        const json = await KaikiUtil.json<E261APIData>(r);
 
         if (Array.isArray(json.posts)) {
             const [post] = await Promise.all(json.posts.map(async (p) => this.imageCache.set(p.id, p)));

@@ -1,7 +1,5 @@
 import { EmbedBuilder, GuildMember, Message } from "discord.js";
 import fetch, { RequestInfo } from "node-fetch";
-import { UserError } from "@sapphire/framework";
-import { container } from "@sapphire/pieces";
 import InteractionsImageData from "../Interfaces/Common/InteractionsImageData";
 import KaikiUtil from "../KaikiUtil";
 
@@ -14,7 +12,7 @@ export default class APIProcessor {
 
         const { color } = data;
 
-        const image = await APIProcessor.processJSONIndexing(site, jsonProperty);
+        const image = await APIProcessor.processFetchRequest(site, jsonProperty);
 
         const embed = new EmbedBuilder({
             image: { url: image },
@@ -33,23 +31,9 @@ export default class APIProcessor {
         return embed;
     }
 
-    private static async processJSONIndexing(site: RequestInfo, jsonProperty: string | string[]): Promise<string> {
-        const result = await KaikiUtil.handleToJSON(await (await fetch(site)).json()
-            .catch(error => {
-                container.logger.error(error);
-                throw new UserError({ identifier: "ImageNotFound", message: "Sorry, no image was found... \\*_\\*" });
-            }),
-        );
-
-        if (Array.isArray(jsonProperty)) {
-            let image: any;
-            jsonProperty.forEach(index => image = (image || result)[index]);
-
-            return image;
-        }
-
-        else {
-            return result[jsonProperty];
-        }
+    private static async processFetchRequest(site: RequestInfo, jsonProperty: string | string[]): Promise<string> {
+        const response = await fetch(site);
+        KaikiUtil.checkResponse(response);
+        return KaikiUtil.json(response, jsonProperty);
     }
 }
