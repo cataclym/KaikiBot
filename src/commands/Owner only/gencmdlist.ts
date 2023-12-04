@@ -26,7 +26,6 @@ export default class GenCmdListCommand extends KaikiCommand {
                             return [
                                 category, commands
                                     .filter(command => command.category === category)
-                                    .filter(command => command.aliases.length)
                                     .map((command: KaikiCommand) => new GeneratedCommand(command)),
                             ];
                         }), (key, value) =>
