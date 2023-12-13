@@ -31,7 +31,7 @@ export default class BetflipCommands extends KaikiCommand {
             });
         }
 
-        const coinFlipped = Math.random() < 0.5
+        const coinFlipped: Sides = Math.random() < 0.5
             ? "tails"
             : "heads";
 
