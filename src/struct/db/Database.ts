@@ -36,8 +36,7 @@ export default class Database {
         try {
             this._mySQLConnection = createPool(this.createConfig());
             this.orm = new PrismaClient();
-        }
-        catch (e) {
+        } catch (e) {
             throw new Error(e);
         }
 
@@ -81,7 +80,7 @@ export default class Database {
         });
 
         if (!guildUser) {
-            return await this.orm.guildUsers.create({
+            return this.orm.guildUsers.create({
                 data: {
                     UserId: BigInt(userId),
                     Guilds: {

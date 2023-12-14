@@ -16,7 +16,7 @@ export class Provider {
      * @abstract
      * @returns {any}
      */
-    init() {
+    init(): any {
         throw new Error("NOT_IMPLEMENTED");
     }
 
@@ -40,7 +40,7 @@ export class Provider {
      * @param {any} value - The value.
      * @returns {any}
      */
-    set(id: string, key: string, value: any) {
+    set(id: string, key: string, value: any): any {
         throw new Error("NOT_IMPLEMENTED");
     }
 
@@ -51,7 +51,7 @@ export class Provider {
      * @param {string} key - The key to delete.
      * @returns {any}
      */
-    delete(id: string, key: string) {
+    delete(id: string, key: string): any {
         throw new Error("NOT_IMPLEMENTED");
     }
 
@@ -61,22 +61,15 @@ export class Provider {
      * @param {string} id - ID of entry.
      * @returns {any}
      */
-    clear(id: string) {
+    clear(id: string): any {
         throw new Error("NOT_IMPLEMENTED");
     }
 }
 
+/**
+ * Options to use for providers.
+ */
 export type ProviderOptions = {
     idColumn: string | "Id";
     dataColumn?: string;
 }
-
-/**
- * Options to use for providers.
- * @typedef {Object} ProviderOptions
- * @prop {string} [idColumn='id'] - Column for the unique key, defaults to 'id'.
- * @prop {string} [dataColumn] - Column for JSON data.
- * If not provided, the provider will use all columns of the table.
- * If provided, only one column will be used, but it will be more flexible due to being parsed as JSON.
- * For Sequelize, note that the model has to specify the type of the column as JSON or JSONB.
- */

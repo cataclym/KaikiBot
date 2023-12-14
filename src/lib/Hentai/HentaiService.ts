@@ -68,6 +68,7 @@ export default class HentaiService {
                 return this.e621(`https://e621.net/posts.json?${query}`);
 
             case DAPI.Danbooru:
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 url = `https://danbooru.donmai.us/posts.json?limit=100&tags=${tag}`;
                 break;
             // TODO:::: ???

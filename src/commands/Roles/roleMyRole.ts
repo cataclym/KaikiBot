@@ -1,7 +1,7 @@
 import { ApplyOptions } from "@sapphire/decorators";
 import { Args } from "@sapphire/framework";
 import { Subcommand } from "@sapphire/plugin-subcommands";
-import { EmbedBuilder, GuildPremiumTier, Message } from "discord.js";
+import { EmbedBuilder, Message } from "discord.js";
 import { KaikiSubCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiSubCommandOptions";
 import KaikiArgumentsTypes from "../../lib/Kaiki/KaikiArgumentsTypes";
 import KaikiEmbeds from "../../lib/Kaiki/KaikiEmbeds";
@@ -65,11 +65,11 @@ export default class MyRoleCommand extends Subcommand {
                     })
                     .setColor(myRole.hexColor)
                     .addFields({
-                        name: "Name", value: myRole.name, inline: true,
-                    },
-                    {
-                        name: "Colour", value: myRole.hexColor, inline: true,
-                    }),
+                            name: "Name", value: myRole.name, inline: true,
+                        },
+                        {
+                            name: "Colour", value: myRole.hexColor, inline: true,
+                        }),
             ],
         });
     }

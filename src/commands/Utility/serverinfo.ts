@@ -1,10 +1,10 @@
 import { time } from "@discordjs/builders";
 import { ApplyOptions } from "@sapphire/decorators";
 import { Args } from "@sapphire/framework";
-import {ChannelType, EmbedBuilder, GuildFeature, Message} from "discord.js";
+import { ChannelType, EmbedBuilder, GuildFeature, Message } from "discord.js";
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-import Constants, {UndocumentedFeatures} from "../../struct/Constants";
+import Constants, { UndocumentedFeatures } from "../../struct/Constants";
 
 @ApplyOptions<KaikiCommandOptions>({
     name: "serverinfo",

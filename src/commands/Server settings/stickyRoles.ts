@@ -1,5 +1,4 @@
 import { ApplyOptions } from "@sapphire/decorators";
-import { Args } from "@sapphire/framework";
 import { EmbedBuilder, Message } from "discord.js";
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
@@ -12,7 +11,7 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
     preconditions: ["GuildOnly"],
 })
 export default class ToggleStickyRolesCommand extends KaikiCommand {
-    public async messageRun(message: Message<true>, args: Args): Promise<Message> {
+    public async messageRun(message: Message<true>): Promise<Message> {
 
         const db = await this.client.db.getOrCreateGuild(BigInt(message.guildId));
 

@@ -2,7 +2,6 @@ import { ActivityType, ColorResolvable, GuildMember, HexColorString, Message } f
 import fetch, { Response } from "node-fetch";
 import Constants from "../struct/Constants";
 import { KaikiColor } from "./Types/KaikiColor";
-import { RegexpType } from "./Types/Miscellaneous";
 
 export default class KaikiUtil {
     static toggledTernary(value: boolean) {
@@ -169,10 +168,6 @@ export default class KaikiUtil {
         };
     }
 
-    static isRegex(value: unknown): value is RegexpType {
-        return (value as RegexpType).match !== undefined;
-    }
-
     public static hasKey<O extends object>(obj: O, key: PropertyKey): key is keyof O {
         return key in obj;
     }
@@ -197,8 +192,7 @@ export default class KaikiUtil {
             }
 
             return json as T;
-        }
-        catch (e) {
+        } catch (e) {
             throw new Error(e);
         }
     }

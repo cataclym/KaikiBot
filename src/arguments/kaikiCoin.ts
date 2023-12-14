@@ -11,7 +11,7 @@ export class KaikiCoinFlipArgument extends Argument<string> {
         "t": "tails",
     };
 
-    public run(parameter: string, context: Argument.Context<string>): Argument.AwaitableResult<string> {
+    public run(parameter: string): Argument.AwaitableResult<string> {
 
         if (Object.keys(KaikiCoinFlipArgument.coinArgs).includes(parameter)) {
             return this.ok(KaikiCoinFlipArgument.coinArgs[parameter]);

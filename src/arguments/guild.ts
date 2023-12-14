@@ -1,5 +1,5 @@
-import {Argument} from "@sapphire/framework";
-import {Guild} from "discord.js";
+import { Argument } from "@sapphire/framework";
+import { Guild } from "discord.js";
 
 export class GuildArgument extends Argument<Guild> {
     public async run(parameter: string, context: Argument.Context<Guild>) {
