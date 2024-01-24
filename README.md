@@ -5,6 +5,7 @@
     - [.env setup](docs/ENV.md)
 
 # Welcome to Kaiki Deishu Bot
+![](https://tokei.rs/b1/github/cataclym/Kaiki-Deishu-Bot)
 
 KaikiBot is a personal project for me and my server. Feel free to selfhost, fork, support this project!
 
