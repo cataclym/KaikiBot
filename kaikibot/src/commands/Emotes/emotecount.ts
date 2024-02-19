@@ -1,7 +1,7 @@
 import { ApplyOptions } from "@sapphire/decorators";
 import { Args, UserError } from "@sapphire/framework";
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
-import { EmbedBuilder, Guild, Message } from "discord.js";
+import { EmbedBuilder, Message } from "discord.js";
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiUtil from "../../lib/KaikiUtil";
@@ -10,10 +10,10 @@ import Constants from "../../struct/Constants";
 @ApplyOptions<KaikiCommandOptions>({
     name: "emotecount",
     aliases: ["emojicount", "ec"],
-    description: "Shows amount of times each emote has been used",
-    usage: ["", "--s", "--small"],
+    description: "Shows amount of times each emote has been used.\nUse --small for a more compact display.\nUse --clean to display *only* available emotes.",
+    usage: ["", "--small", "--clean"],
     preconditions: ["GuildOnly"],
-    flags: ["s", "small"],
+    flags: ["small", "clean"],
     cooldownDelay: 15000,
 })
 export default class EmoteCount extends KaikiCommand {
@@ -26,7 +26,8 @@ export default class EmoteCount extends KaikiCommand {
             });
         }
 
-        const isSmall = args.getFlags("s", "small");
+        const isSmall = args.getFlags("small");
+        const isClean = args.getFlags("clean");
 
         const pages: EmbedBuilder[] = [];
         let guildDB = await this.client.orm.guilds.findUnique({
@@ -45,24 +46,32 @@ export default class EmoteCount extends KaikiCommand {
 
         const baseEmbed = new EmbedBuilder()
             .setTitle("Emote count")
-            .setAuthor({ name: (message.guild as Guild).name })
+            .setAuthor({ name: message.guild.name })
             .withOkColor(message);
 
-        const map = message.guild.emojis.cache.map(guildEmoji => {
+        const mappedEmotesFromDb = message.guild.emojis.cache.map(guildEmoji => {
             const emoteData = guildDB?.EmojiStats.find(e => String(e.EmojiId) === guildEmoji.id);
             return Object.assign(guildEmoji, emoteData || { Count: 0 });
         })
+            .filter(ge => isClean && !ge.available)
             .sort(({ Count: b }, { Count: a }) => (a < b) ? -1 : ((a > b) ? 1 : 0));
 
+        // Throw error when there are no mapped emotes. This can happen when user uses --clean. Rare case.
+        if (!mappedEmotesFromDb.length) throw new UserError({
+            identifier: "NoAvailableEmotes",
+            message: "There are no available emotes in this server!"
+        })
 
-        const data = map
+        const data = mappedEmotesFromDb
             .map(guildEmoji => {
 
+                const emote = guildEmoji.available ? guildEmoji : "`Unavailable`";
+
                 if (isSmall) {
-                    return `${guildEmoji} \`${guildEmoji.Count || 0}\` `;
+                    return `${emote} \`${guildEmoji.Count || 0}\` `;
                 }
 
-                return `\`${guildEmoji.Count || 0}\` ${guildEmoji} | ${guildEmoji.name}`;
+                return `\`${guildEmoji.Count || 0}\` ${emote} | ${guildEmoji.name}`;
             });
 
         if (isSmall) {
