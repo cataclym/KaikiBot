@@ -3,9 +3,8 @@
   "version": "6.0.103",
   "main": "./dist/index.js",
   "scripts": {
-    "start": "node -r dotenv/config dist/index.js --color",
+    "start": "node dist/index.js --color",
     "build": "rm -rf dist/ && tsc -p tsconfig.json",
-    "install": "rm -rf dist/ && tsc -p tsconfig.json",
     "version": "auto-changelog -u --template keepachangelog && git add CHANGELOG.md",
     "watch": "tsc -p tsconfig.json -w"
   },

@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  mariadb:
+    image: mariadb:latest
+    restart: unless-stopped
+    env_file: ./.env
+    environment:
+      - MYSQL_ROOT_PASSWORD=$DB_ROOT_PASSWORD
+      - MYSQL_DATABASE=$DB_NAME
+      - MYSQL_USER=$DB_USER
+      - MYSQL_PASSWORD=$DB_ROOT_PASSWORD
+    volumes:
+      - db:/var/lib/mysql
+  app:
+    depends_on:
+      - mariadb
+    build: ./kaikibot
+    restart: unless-stopped
+    env_file: ./.env
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=$DATABASE_URL
+    stdin_open: true
+    tty: true
+
+volumes:
+  db:

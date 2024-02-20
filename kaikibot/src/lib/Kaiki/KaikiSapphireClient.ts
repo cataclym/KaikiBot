@@ -45,7 +45,7 @@ export default class KaikiSapphireClient<Ready extends true> extends SapphireCli
                 GatewayIntentBits.DirectMessageReactions,
                 GatewayIntentBits.DirectMessageTyping,
                 GatewayIntentBits.DirectMessages,
-                GatewayIntentBits.GuildBans,
+                GatewayIntentBits.GuildModeration,
                 GatewayIntentBits.GuildEmojisAndStickers,
                 GatewayIntentBits.GuildIntegrations,
                 GatewayIntentBits.GuildInvites,

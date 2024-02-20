@@ -2,8 +2,14 @@ import { PrismaClient } from "@prisma/client";
 import { ActivityType } from "discord.js";
 import { ConnectionOptions, createPool, FieldPacket, Pool } from "mysql2/promise";
 import KaikiSapphireClient from "../../lib/Kaiki/KaikiSapphireClient";
+import process from "process";
 
 export default class Database {
+
+    private _client: KaikiSapphireClient<true>;
+    public orm: PrismaClient;
+    private _mySQLConnection: Pool;
+
     constructor(client: KaikiSapphireClient<true>) {
         this._client = client;
     }
@@ -14,23 +20,16 @@ export default class Database {
 
     private createConfig(): ConnectionOptions {
 
-        const parsedUrl = new URL(encodeURI(String(process.env.DATABASE_URL)));
-        const parsedPassword = decodeURIComponent(parsedUrl.password);
-
         return {
-            user: parsedUrl.username,
-            password: parsedPassword,
-            host: parsedUrl.hostname,
-            port: parseInt(parsedUrl.port),
-            database: parsedUrl.pathname.slice(1),
+            user: process.env.DB_USER,
+            password: process.env.DB_PASSWORD,
+            host: process.env.DB_HOST,
+            port: process.env.DB_PORT ? parseInt(process.env.DB_PORT) : 3306,
+            database: process.env.DB_NAME,
             supportBigNumbers: true,
             waitForConnections: true,
         };
     }
-
-    private _client: KaikiSapphireClient<true>;
-    public orm: PrismaClient;
-    private _mySQLConnection: Pool;
 
     public async init(): Promise<Database> {
         try {
