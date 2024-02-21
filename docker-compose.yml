@@ -9,7 +9,7 @@ services:
       - MYSQL_ROOT_PASSWORD=$DB_ROOT_PASSWORD
       - MYSQL_DATABASE=$DB_NAME
       - MYSQL_USER=$DB_USER
-      - MYSQL_PASSWORD=$DB_ROOT_PASSWORD
+      - MYSQL_PASSWORD=$DB_PASSWORD
     volumes:
       - db:/var/lib/mysql
   app:
@@ -19,7 +19,7 @@ services:
     restart: unless-stopped
     env_file: ./.env
     ports:
-      - "3000:3000"
+      - "3307:3306"
     environment:
       - DATABASE_URL=$DATABASE_URL
     stdin_open: true
