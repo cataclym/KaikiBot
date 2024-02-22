@@ -5,6 +5,8 @@ services:
     image: mariadb:latest
     restart: unless-stopped
     env_file: ./.env
+    ports:
+      - "3307:3306"
     environment:
       - MYSQL_ROOT_PASSWORD=$DB_ROOT_PASSWORD
       - MYSQL_DATABASE=$DB_NAME
@@ -18,12 +20,9 @@ services:
     build: ./kaikibot
     restart: unless-stopped
     env_file: ./.env
-    ports:
-      - "3307:3306"
     environment:
       - DATABASE_URL=$DATABASE_URL
     stdin_open: true
     tty: true
-
 volumes:
   db:
