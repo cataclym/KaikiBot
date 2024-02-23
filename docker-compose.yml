@@ -5,6 +5,7 @@ services:
     image: mariadb:latest
     restart: unless-stopped
     env_file: ./.env
+    command: --wait-timeout=28800
     ports:
       - "3307:3306"
     environment:
@@ -17,7 +18,10 @@ services:
   kaikibot:
     depends_on:
       - db
-    build: ./kaikibot
+    build:
+      context: ./kaikibot
+      args:
+        - DATABASE_URL=$DATABASE_URL
     restart: unless-stopped
     env_file: ./.env
     stdin_open: true
