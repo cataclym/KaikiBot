@@ -1,4 +1,3 @@
-import { execSync } from "child_process";
 import { ApplyOptions } from "@sapphire/decorators";
 import { Args } from "@sapphire/framework";
 import { EmbedBuilder, Message } from "discord.js";
@@ -45,7 +44,7 @@ export default class HelpCommand extends KaikiCommand {
                     },
                 ])
                 .setAuthor({
-                    name: `${name} v${version}-${execSync("git rev-parse --short HEAD").toString()}`,
+                    name: `${name} v${version}`,
                     iconURL: message.author.displayAvatarURL(),
                     url: repository.url,
                 })

@@ -3,6 +3,7 @@
   "version": "6.0.103",
   "main": "./dist/index.js",
   "scripts": {
+    "start_docker": "npx prisma db push && npm run start",
     "start": "node dist/index.js --color",
     "build": "rm -rf dist/ && tsc -p tsconfig.json",
     "version": "auto-changelog -u --template keepachangelog && git add CHANGELOG.md",

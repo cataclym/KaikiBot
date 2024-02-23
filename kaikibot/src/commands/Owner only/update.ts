@@ -14,6 +14,7 @@ const exec = util.promisify(execFile);
     name: "update",
     description: "",
     preconditions: ["OwnerOnly"],
+    enabled: false,
 })
 export default class UpdateCommand extends KaikiCommand {
     static externalPath = (file: string) => path.join(__dirname, "..", "..", "..", "external", file);

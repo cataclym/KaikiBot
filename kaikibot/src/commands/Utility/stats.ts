@@ -24,7 +24,7 @@ export default class StatsCommand extends KaikiCommand {
         const pages = [
             new EmbedBuilder()
                 .setAuthor({
-                    name: `${packageJSON.name} v${packageJSON.version}-${execSync("git rev-parse --short HEAD").toString()}`,
+                    name: `${packageJSON.name} v${packageJSON.version}`,
                     iconURL: message.client.user.displayAvatarURL(),
                     url: Constants.LINKS.REPO_URL,
                 })

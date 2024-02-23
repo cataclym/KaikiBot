@@ -25,9 +25,9 @@ export default class PingCommand extends KaikiCommand {
 
     public async chatInputRun(interaction: ChatInputCommandInteraction) {
 
-        const initialMsg = await interaction.reply("Pinging...!");
+        const initialMsg = await interaction.reply({ content: "Pinging...!", fetchReply: true });
 
-        return initialMsg.edit(this.createEmbedMessage(interaction, initialMsg));
+        return interaction.editReply(this.createEmbedMessage(interaction, initialMsg));
     }
 
     private createEmbedMessage(interaction: ChatInputCommandInteraction | Message, initialMsg: Message | InteractionResponse) {
