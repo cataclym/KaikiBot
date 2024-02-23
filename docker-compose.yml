@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  mariadb:
+  db:
     image: mariadb:latest
     restart: unless-stopped
     env_file: ./.env
@@ -14,14 +14,12 @@ services:
       - MYSQL_PASSWORD=$DB_PASSWORD
     volumes:
       - db:/var/lib/mysql
-  app:
+  kaikibot:
     depends_on:
-      - mariadb
+      - db
     build: ./kaikibot
     restart: unless-stopped
     env_file: ./.env
-    environment:
-      - DATABASE_URL=$DATABASE_URL
     stdin_open: true
     tty: true
 volumes:
