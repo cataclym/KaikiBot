@@ -76,8 +76,8 @@ export default class KaikiSapphireClient<Ready extends true> extends SapphireCli
         console.log(colorette.green(Constants.KaikiBotASCII));
 
         (async () => await this.initializeDatabase())()
-            .catch(() => {
-                throw new Error("Failed to connect to DB!");
+            .catch((e) => {
+                throw new Error(e);
             });
     }
 
