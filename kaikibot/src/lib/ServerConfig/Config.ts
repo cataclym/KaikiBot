@@ -71,7 +71,7 @@ export default class Config {
     private static checkSubcommandUserPermission(message: Message, permission: bigint) {
         if (!(message.member && message.member.permissions.has(permission))) {
             throw new UserError({
-                message: `Missing permission(s): ${new PermissionsBitField(permission).toArray()}`,
+                message: `You do not have permission(s): ${new PermissionsBitField(permission).toArray()}`,
                 identifier: "configSubcommandPermission",
             });
         }
@@ -135,7 +135,6 @@ export default class Config {
         });
     }
 
-    // Todo finish config
     static async okcolorRun(message: Message<true>, args: Args) {
         const color = await args.rest("kaikiColor");
 

@@ -1,8 +1,10 @@
-import { Collection } from "discord.js";
-import fetch, { RequestInfo } from "node-fetch";
+import {Collection} from "discord.js";
+import fetch, {RequestInfo} from "node-fetch";
 import Constants from "../../struct/Constants";
-import E261APIData, { Post } from "../Interfaces/Common/E261APIData";
+import E261APIData, {E621Post} from "../Interfaces/Common/E261APIData";
 import KaikiUtil from "../KaikiUtil";
+import {DanbooruData, DanbooruPost} from "../Interfaces/Common/DanbooruData";
+import {Err, UserError} from "@sapphire/framework";
 
 export enum DAPI {
     E621,
@@ -13,8 +15,6 @@ export type HentaiTypes = "waifu" | "neko" | "femboy" | "trap" | "blowjob";
 
 // noinspection FunctionNamingConventionJS
 export default class HentaiService {
-
-    public imageCache = new Collection<number, Post>();
 
     options = {
         method: "GET",
@@ -50,59 +50,51 @@ export default class HentaiService {
         return KaikiUtil.json<string>(response, ["url"]);
     }
 
-    async apiGrabber(tags: string[] | null, type: DAPI): Promise<Post | void> {
+    async makeRequest(tags: string[] | null, type: DAPI.E621): Promise<E621Post>
+    async makeRequest(tags: string[] | null, type: DAPI.Danbooru): Promise<DanbooruPost>
+    async makeRequest(tags: string[] | null, type: DAPI): Promise<E621Post | DanbooruPost> {
 
-        const tag = tags?.join("+").replace(" ", "_").toLowerCase() || "";
-        let url = "";
-
-        const query = new URLSearchParams();
+        const tag = tags?.join("+").toLowerCase() || "";
 
         switch (type) {
             case DAPI.E621:
-                if (tags) {
-                    query.append("tags", tag);
-                }
-                query.append("limit",
-                    "50");
-
-                return this.e621(`https://e621.net/posts.json?${query}`);
+                return this.e621(`https://e621.net/posts.json?limit=5&tags=${tag}`);
 
             case DAPI.Danbooru:
-                // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                url = `https://danbooru.donmai.us/posts.json?limit=100&tags=${tag}`;
-                break;
-            // TODO:::: ???
+                return this.danbooru(`https://danbooru.donmai.us/posts.json?limit=5&tags=${tag}`);
         }
+    }
+
+    async danbooru(url: RequestInfo): Promise<DanbooruPost> {
+
+        const r = await fetch(url, this.options);
+
+        KaikiUtil.checkResponse(r);
+
+        const json = await KaikiUtil.json<DanbooruData>(r);
+
+        HentaiService.checkJSONLength(json);
+
+        return json[Math.round(Math.random() * json.length)];
     }
 
     async e621(url: RequestInfo) {
 
-        if (this.imageCache.size > Constants.MAGIC_NUMBERS.LIB.HENTAI.HENTAI_SERVICE.FULL_CACHE_SIZE) {
-            return this.imageCache.random()!;
-        }
-
         const r = await fetch(url, this.options);
-
-        if (!r.ok && this.imageCache.size >= Constants.MAGIC_NUMBERS.LIB.HENTAI.HENTAI_SERVICE.MEDIUM_CACHE_SIZE) {
-            return this.imageCache.random();
-        }
 
         KaikiUtil.checkResponse(r);
 
         const json = await KaikiUtil.json<E261APIData>(r);
 
-        if (Array.isArray(json.posts)) {
-            const [post] = await Promise.all(json.posts.map(async (p) => this.imageCache.set(p.id, p)));
+        HentaiService.checkJSONLength(json.posts);
 
-            return post.random();
-        }
+        return json.posts[Math.round(Math.random() * json.posts.length)];
+    }
 
-        else {
-            const res = await fetch(url);
-
-            if (!res.body) return;
-
-            return JSON.parse(res.body.toString()).posts;
-        }
+    private static checkJSONLength(json: Record<any, any>[]) {
+        if (!json.length) throw new UserError({
+            identifier: "EmptyHentaiResponse",
+            message: "Your search did not amount to any results."
+        });
     }
 }

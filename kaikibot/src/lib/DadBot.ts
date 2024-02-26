@@ -1,5 +1,5 @@
 import { container } from "@sapphire/pieces";
-import { GuildMember, Message } from "discord.js";
+import { GuildMember, Message, PermissionsBitField } from "discord.js";
 import Constants from "../struct/Constants";
 
 interface CustomMessageType extends Message<true> {
@@ -58,7 +58,7 @@ export class DadBot {
             const user = message.author;
             const position = message.guild.members.me?.roles.highest.comparePositionTo(message.member.roles.highest);
 
-            if (user.id !== message.guild?.ownerId && position ? position >= 0 : false) {
+            if (user.id !== message.guild?.ownerId && message.guild.members.me?.permissions.has(PermissionsBitField.Flags.ManageNicknames) && position ? position >= 0 : false) {
                 // Avoids setting nickname on Server owners
                 await message.member?.setNickname(nick)
                     .catch(() => container.logger.warn(`Insufficient permissions to set member's nickname [${message.member?.user.id}]`));
@@ -84,6 +84,5 @@ export class DadBot {
                 Nickname: nick,
             },
         });
-
     }
 }

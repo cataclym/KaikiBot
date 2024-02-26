@@ -38,13 +38,13 @@ export default class ServerInfoCommand extends KaikiCommand {
                     name: "Channels",
                     value: `Text: **${guild.channels.cache.filter(channel => channel.type === ChannelType.GuildText).size}**
 Voice: **${guild.channels.cache.filter(channel => channel.type === ChannelType.GuildVoice).size}**
-News: **${guild.channels.cache.filter(channel => channel.type === ChannelType.GuildNews).size}**`,
+News: **${guild.channels.cache.filter(channel => channel.type === ChannelType.GuildAnnouncement).size}**`,
                     inline: true,
                 },
                 { name: "Maximum video-channel users", value: String(guild.maxVideoChannelUsers), inline: false },
                 {
                     name: "Features", value: guild.features.length
-                        ? guild.features.map((f: GuildFeature & UndocumentedFeatures) => Constants.guildFeatures[f] || f).sort().join("\n")
+                        ? guild.features.map((f: GuildFeature & UndocumentedFeatures) => `* ${Constants.guildFeatures[f] || f}`).sort().join("\n")
                         : "None", inline: false,
                 },
             ],

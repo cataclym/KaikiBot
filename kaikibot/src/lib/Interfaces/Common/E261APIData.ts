@@ -1,4 +1,4 @@
-export interface Post {
+export interface E621Post {
     id: number;
     created_at: Date;
     updated_at: Date;
@@ -103,5 +103,5 @@ export interface Tags {
 }
 
 export default interface E261APIData {
-    posts: Post[];
+    posts: E621Post[];
 }
