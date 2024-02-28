@@ -20,11 +20,14 @@ services:
       - db
     build:
       context: .
+      dockerfile: Dockerfile.dev
       args:
         - DATABASE_URL=$DATABASE_URL
     restart: unless-stopped
     env_file: ./.env
     stdin_open: true
     tty: true
+    volumes:
+      - ./src:/usr/app/src
 volumes:
   db:

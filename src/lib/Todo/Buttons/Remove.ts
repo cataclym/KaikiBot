@@ -15,7 +15,7 @@ export class ButtonRemove {
     static async Remove(buttonInteraction: ButtonInteraction<CacheType>,
         currentTime: number,
         todoArray: Todos[],
-        sentMsg: Message<false> | Message<true>,
+        sentMsg: Message,
     ) {
         await buttonInteraction.showModal(this.RemoveModal(currentTime));
 

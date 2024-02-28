@@ -1,25 +1,17 @@
-import { ApplyOptions } from "@sapphire/decorators";
-import { Args } from "@sapphire/framework";
-import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, EmbedBuilder, Message } from "discord.js";
-import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
-import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-import { ButtonAdd } from "../../lib/Todo/Buttons/Add";
-import { ButtonRemove } from "../../lib/Todo/Buttons/Remove";
-import { Todo } from "../../lib/Todo/Todo";
+import { Todos } from "@prisma/client";
+import Constants from "../../struct/Constants";
+import KaikiUtil from "../KaikiUtil";
+import { APIUser, ActionRowBuilder, ButtonBuilder, ButtonInteraction, EmbedBuilder, GuildMember, Message, User } from "discord.js";
+import { ButtonAdd } from "./Buttons/Add";
+import { ButtonRemove } from "./Buttons/Remove";
 
-@ApplyOptions<KaikiCommandOptions>({
-    name: "todo",
-    aliases: ["note"],
-    description: "A personal todo list. The items are limited to 204 characters. Intended for small notes.",
-})
-export default class TodoCommand extends KaikiCommand {
-    public async messageRun(message: Message<true>, args: Args) {
+export class Todo {
+    public static reminderArray(todoArray: Todos[]) {
+        return todoArray.map((todo, i) => `${+i + 1}. ${KaikiUtil.trim(todo.String.split(/\r?\n/).join(" "), Constants.MAGIC_NUMBERS.CMDS.UTILITY.TODO.INPUT_MAX_LENGTH)}`);
+    }
 
-        let page = await args.pick("number").catch(() => 1);
-
+    public static createButtons() {
         const currentTime = Date.now();
-
-        page = (page <= 1 ? 0 : page - 1) || 0;
 
         const row = new ActionRowBuilder<ButtonBuilder>()
             .addComponents(new ButtonBuilder()
@@ -52,63 +44,16 @@ export default class TodoCommand extends KaikiCommand {
                     .setStyle(2),
             );
 
-        const emb = new EmbedBuilder()
-            .setTitle("Todo")
-            .setThumbnail("https://cdn.discordapp.com/attachments/717045690022363229/726600392107884646/3391ce4715f3c814d6067911438e5bf7.png")
-            .withOkColor(message);
+        return { row, rowTwo, currentTime };
+    }
 
-        const todoArray = await message.client.orm.todos.findMany({
-            where: {
-                DiscordUsers: {
-                    UserId: BigInt(message.author.id),
-                },
-            },
-            orderBy: {
-                Id: "asc",
-            },
-        });
-
-        let sentMsg: Message<true>;
-        const pages: EmbedBuilder[] = [];
-
-        if (!todoArray.length) {
-            row.components[1].setDisabled();
-            sentMsg = await message.channel.send({
-                embeds: [emb.setDescription("Your list is empty.")],
-                components: [row],
-            });
-        }
-
-        else {
-
-            const reminderArray = Todo.reminderArray(todoArray);
-
-            for (let index = 10, p = 0; p < reminderArray.length; index += 10, p += 10) {
-                pages.push(new EmbedBuilder(emb.data)
-                    .setDescription(reminderArray
-                        .slice(p, index)
-                        .join("\n"),
-                    ),
-                );
-            }
-
-            if (page >= pages.length) page = 0;
-
-            sentMsg = await message.channel.send({
-                embeds: [pages[page]],
-                // Only show arrows if necessary
-                components: todoArray.length > 10
-                    ? [row, rowTwo]
-                    : [row],
-            });
-        }
-
+    public static handleInteraction(sentMsg: Message, author: User | APIUser, currentTime: number, page: number, pages: EmbedBuilder[], todoArray: Todos[]) {
         const buttonArray = [`${currentTime}Add`, `${currentTime}Backward`, `${currentTime}Clear`, `${currentTime}Forward`, `${currentTime}Remove`];
 
         const messageComponentCollector = sentMsg.createMessageComponentCollector({
             filter: (i) => {
 
-                if (buttonArray.includes(i.customId) && message.author.id === i.user.id) {
+                if (buttonArray.includes(i.customId) && author.id === i.user.id) {
                     return true;
                 }
 
@@ -125,7 +70,6 @@ export default class TodoCommand extends KaikiCommand {
             switch (buttonInteraction.customId) {
 
                 case `${currentTime}Add`:
-                    messageComponentCollector.stop();
                     await ButtonAdd.add(buttonInteraction, currentTime, todoArray, sentMsg);
                     break;
 
@@ -159,6 +103,7 @@ export default class TodoCommand extends KaikiCommand {
         });
 
         messageComponentCollector.once("end", async () => {
+            sentMsg.
             await sentMsg.edit({
                 components: [],
             });
@@ -171,4 +116,6 @@ export default class TodoCommand extends KaikiCommand {
             });
         }
     }
+
 }
+
