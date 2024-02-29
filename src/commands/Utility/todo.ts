@@ -8,18 +8,19 @@ import { Todo } from "../../lib/Todo/Todo";
 @ApplyOptions<KaikiCommandOptions>({
     name: "todo",
     aliases: ["note"],
-    description: "A personal todo list. The items are limited to 204 characters. Intended for small notes.",
+    description:
+        "A personal todo list. The items are limited to 204 characters. Intended for small notes.",
 })
 export default class TodoCommand extends KaikiCommand {
-
     public async messageRun(message: Message<true>, args: Args) {
-
         let page = await args.pick("number").catch(() => 1);
         page = (page <= 1 ? 0 : page - 1) || 0;
 
         const emb = new EmbedBuilder()
             .setTitle("Todo")
-            .setThumbnail("https://cdn.discordapp.com/attachments/717045690022363229/726600392107884646/3391ce4715f3c814d6067911438e5bf7.png")
+            .setThumbnail(
+                "https://cdn.discordapp.com/attachments/717045690022363229/726600392107884646/3391ce4715f3c814d6067911438e5bf7.png"
+            )
             .withOkColor(message);
 
         const todoArray = await message.client.orm.todos.findMany({
@@ -44,15 +45,17 @@ export default class TodoCommand extends KaikiCommand {
                 components: [row],
             });
         } else {
-
             const reminderArray = Todo.reminderArray(todoArray);
 
-            for (let index = 10, p = 0; p < reminderArray.length; index += 10, p += 10) {
-                pages.push(new EmbedBuilder(emb.data)
-                    .setDescription(reminderArray
-                        .slice(p, index)
-                        .join("\n"),
-                    ),
+            for (
+                let index = 10, p = 0;
+                p < reminderArray.length;
+                index += 10, p += 10
+            ) {
+                pages.push(
+                    new EmbedBuilder(emb.data).setDescription(
+                        reminderArray.slice(p, index).join("\n")
+                    )
                 );
             }
 
@@ -61,12 +64,17 @@ export default class TodoCommand extends KaikiCommand {
             sentMsg = await message.channel.send({
                 embeds: [pages[page]],
                 // Only show arrows if necessary
-                components: todoArray.length > 10
-                    ? [row, rowTwo]
-                    : [row],
+                components: todoArray.length > 10 ? [row, rowTwo] : [row],
             });
         }
 
-        Todo.handleInteraction(sentMsg, message.author, currentTime, page, pages, todoArray);
+        Todo.handleInitialInteraction(
+            sentMsg,
+            message.author,
+            currentTime,
+            page,
+            pages,
+            todoArray
+        );
     }
 }

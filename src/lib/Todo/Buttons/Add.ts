@@ -56,6 +56,7 @@ export class ButtonAdd {
 
         const entry = await buttonInteraction.client.orm.todos.create({
             data: {
+                // Get input from modal
                 String: interaction.fields
                     .getTextInputValue(`${currentTime}text1`)
                     .trim(),
@@ -75,6 +76,7 @@ export class ButtonAdd {
         if (!interaction.deferred)
             await interaction.deferReply({ ephemeral: true });
 
+        // Make sure our local copy is up-to-date
         todoArray.push({
             String: entry.String,
             UserId: entry.UserId,
@@ -98,7 +100,7 @@ export class ButtonAdd {
 
         const { row, rowTwo, currentTime: newTime } = Todo.createButtons();
 
-        const [msg] = await Promise.all([
+        await Promise.all([
             interaction.editReply({
                 content: `Added entry \`${todoArray.length}\`.`,
                 embeds: [pages.at(-1) || pages[0]],
@@ -107,17 +109,96 @@ export class ButtonAdd {
                 options: { fetchReply: true },
             }),
             sentMsg.delete(),
+            Todo.handleFurtherInteractions(
+                interaction,
+                buttonInteraction.user,
+                newTime,
+                pages.length - 1,
+                pages,
+                todoArray
+            ),
         ]);
+    }
 
-        if (!buttonInteraction.member) return;
+    public static async furtherAdd(
+        buttonInteraction: ButtonInteraction,
+        currentTime: number,
+        todoArray: Todos[]
+    ) {
+        {
+            await buttonInteraction.showModal(this.todoModal(currentTime));
 
-        Todo.handleInteraction(
-            msg,
-            buttonInteraction.member.user,
-            newTime,
-            pages.length - 1,
-            pages,
-            todoArray
-        );
+            const interaction = await buttonInteraction.awaitModalSubmit({
+                time: 120000,
+                filter: (i) => i.customId === `${currentTime}AddModal`,
+            });
+
+            const uId = BigInt(interaction.user.id);
+
+            const entry = await buttonInteraction.client.orm.todos.create({
+                data: {
+                    // Get input from modal
+                    String: interaction.fields
+                        .getTextInputValue(`${currentTime}text1`)
+                        .trim(),
+                    DiscordUsers: {
+                        connectOrCreate: {
+                            create: {
+                                UserId: uId,
+                            },
+                            where: {
+                                UserId: uId,
+                            },
+                        },
+                    },
+                },
+            });
+
+            if (!interaction.deferred)
+                await interaction.deferReply({ ephemeral: true });
+
+            // Make sure our local copy is up-to-date
+            todoArray.push({
+                String: entry.String,
+                UserId: entry.UserId,
+                Id: entry.Id,
+            });
+
+            const reminderArray = Todo.reminderArray(todoArray);
+            const pages: EmbedBuilder[] = [];
+
+            for (
+                let index = 10, p = 0;
+                p < reminderArray.length;
+                index += 10, p += 10
+            ) {
+                pages.push(
+                    new EmbedBuilder(
+                        ButtonAdd.Embed(sentMsg).data
+                    ).setDescription(reminderArray.slice(p, index).join("\n"))
+                );
+            }
+
+            const { row, rowTwo, currentTime: newTime } = Todo.createButtons();
+
+            await Promise.all([
+                interaction.editReply({
+                    content: `Added entry \`${todoArray.length}\`.`,
+                    embeds: [pages.at(-1) || pages[0]],
+                    // Only show arrows if necessary
+                    components: todoArray.length > 10 ? [row, rowTwo] : [row],
+                    options: { fetchReply: true },
+                }),
+
+                Todo.handleFurtherInteractions(
+                    interaction,
+                    buttonInteraction.user,
+                    newTime,
+                    pages.length - 1,
+                    pages,
+                    todoArray
+                ),
+            ]);
+        }
     }
 }
