@@ -11,11 +11,10 @@ import {
     Message,
     ModalSubmitInteraction,
     User,
-    BooleanCache,
+    InteractionResponse,
 } from "discord.js";
 import { ButtonAdd } from "./Buttons/Add";
 import { ButtonRemove } from "./Buttons/Remove";
-import { concurrency } from "sharp";
 
 export class Todo {
     public static reminderArray(todoArray: Todos[]) {
@@ -26,7 +25,8 @@ export class Todo {
     }
 
     public static createButtons() {
-        const currentTime = Date.now();
+        // Create a unique number.
+        const currentTime = Math.round(Date.now() * Math.random());
 
         const row = new ActionRowBuilder<ButtonBuilder>()
             .addComponents(
@@ -73,27 +73,14 @@ export class Todo {
         pages: EmbedBuilder[],
         todoArray: Todos[]
     ) {
-        const buttonArray = [
-            `${currentTime}Add`,
-            `${currentTime}Backward`,
-            `${currentTime}Clear`,
-            `${currentTime}Forward`,
-            `${currentTime}Remove`,
-        ];
+        const buttonIdentityStrings =
+            Todo.createButtonIdentityStrings(currentTime);
 
         const messageComponentCollector =
             sentMsg.createMessageComponentCollector({
-                filter: (i) => {
-                    if (
-                        buttonArray.includes(i.customId) &&
-                        author.id === i.user.id
-                    ) {
-                        return true;
-                    } else {
-                        i.deferUpdate();
-                        return false;
-                    }
-                },
+                filter: (i) =>
+                    Object.values(buttonIdentityStrings).includes(i.customId) &&
+                    author.id === i.user.id,
                 time: 120000,
             });
 
@@ -101,7 +88,7 @@ export class Todo {
             "collect",
             async (buttonInteraction: ButtonInteraction) => {
                 switch (buttonInteraction.customId) {
-                    case `${currentTime}Add`:
+                    case buttonIdentityStrings.add:
                         messageComponentCollector.stop();
                         await ButtonAdd.add(
                             buttonInteraction,
@@ -111,26 +98,7 @@ export class Todo {
                         );
                         break;
 
-                    case `${currentTime}Backward`:
-                        await buttonInteraction.deferUpdate();
-                        page = page > 0 ? --page : pages.length - 1;
-                        await updateMsg();
-                        break;
-
-                    case `${currentTime}Clear`:
-                        await sentMsg.edit({
-                            components: [],
-                        });
-                        messageComponentCollector.stop();
-                        break;
-
-                    case `${currentTime}Forward`:
-                        await buttonInteraction.deferUpdate();
-                        page = page + 1 < pages.length ? ++page : 0;
-                        await updateMsg();
-                        break;
-
-                    case `${currentTime}Remove`:
+                    case buttonIdentityStrings.remove:
                         messageComponentCollector.stop();
                         await ButtonRemove.Remove(
                             buttonInteraction,
@@ -138,6 +106,25 @@ export class Todo {
                             todoArray,
                             sentMsg
                         );
+                        break;
+
+                    case buttonIdentityStrings.forward:
+                        await buttonInteraction.deferUpdate();
+                        page = page + 1 < pages.length ? ++page : 0;
+                        await updateMsg();
+                        break;
+
+                    case buttonIdentityStrings.backward:
+                        await buttonInteraction.deferUpdate();
+                        page = page > 0 ? --page : pages.length - 1;
+                        await updateMsg();
+                        break;
+
+                    case buttonIdentityStrings.clear:
+                        await sentMsg.edit({
+                            components: [],
+                        });
+                        messageComponentCollector.stop();
                         break;
 
                     default:
@@ -162,61 +149,64 @@ export class Todo {
 
     public static async handleFurtherInteractions(
         interaction: ModalSubmitInteraction<CacheType>,
-        author: User | APIUser,
+        message: Message | InteractionResponse,
         currentTime: number,
         page: number,
         pages: EmbedBuilder[],
         todoArray: Todos[]
     ) {
-        const buttonArray = Todo.createButtonStringArray(currentTime);
+        const buttonIdentityStrings =
+            Todo.createButtonIdentityStrings(currentTime);
 
-        const messageComponentCollector = (
-            interaction.message || (await interaction.fetchReply())
-        ).createMessageComponentCollector({
-            filter: (i) =>
-                buttonArray.includes(i.customId) && author.id === i.user.id,
-            time: 120000,
-        });
+        const messageComponentCollector =
+            message.createMessageComponentCollector({
+                filter: (i) =>
+                    Object.values(buttonIdentityStrings).includes(i.customId) &&
+                    interaction.user.id === i.user.id,
+                time: 120000,
+            });
 
         messageComponentCollector.on(
             "collect",
             async (buttonInteraction: ButtonInteraction) => {
                 switch (buttonInteraction.customId) {
-                    case `${currentTime}Add`:
+                    case buttonIdentityStrings.add:
                         messageComponentCollector.stop();
                         await ButtonAdd.furtherAdd(
                             buttonInteraction,
                             currentTime,
-                            todoArray);
+                            todoArray,
+                            ButtonAdd.Embed().data
+                        );
                         break;
 
-                    case `${currentTime}Backward`:
-                        await buttonInteraction.deferUpdate();
-                        page = page > 0 ? --page : pages.length - 1;
-                        await updateMsg();
-                        break;
-
-                    case `${currentTime}Clear`:
-                        await sentMsg.edit({
-                            components: [],
-                        });
-                        messageComponentCollector.stop();
-                        break;
-
-                    case `${currentTime}Forward`:
-                        await buttonInteraction.deferUpdate();
-                        page = page + 1 < pages.length ? ++page : 0;
-                        await updateMsg();
-                        break;
-
-                    case `${currentTime}Remove`:
+                    case buttonIdentityStrings.remove:
                         messageComponentCollector.stop();
                         await ButtonRemove.Remove(
                             buttonInteraction,
                             currentTime,
                             todoArray,
-                            sentMsg
+                            await interaction.fetchReply()
                         );
+                        break;
+
+                    case buttonIdentityStrings.forward:
+                        await buttonInteraction.deferUpdate();
+                        page = page + 1 < pages.length ? ++page : 0;
+                        await updateMsg();
+                        break;
+
+                    case buttonIdentityStrings.backward:
+                        await buttonInteraction.deferUpdate();
+                        page = page > 0 ? --page : pages.length - 1;
+                        await updateMsg();
+                        break;
+
+                    case buttonIdentityStrings.clear:
+                        await interaction.editReply({
+                            components: [],
+                        });
+                        messageComponentCollector.stop();
                         break;
 
                     default:
@@ -226,26 +216,26 @@ export class Todo {
         );
 
         messageComponentCollector.once("end", async () => {
-            await sentMsg.edit({
+            await interaction.editReply({
                 components: [],
             });
             messageComponentCollector.stop();
         });
 
         async function updateMsg() {
-            await sentMsg.edit({
+            await interaction.editReply({
                 embeds: [pages[page]],
             });
         }
     }
 
-    static createButtonStringArray(currentTime: number) {
-        return [
-            `${currentTime}Add`,
-            `${currentTime}Backward`,
-            `${currentTime}Clear`,
-            `${currentTime}Forward`,
-            `${currentTime}Remove`,
-        ];
+    static createButtonIdentityStrings(currentTime: number) {
+        return {
+            add: `${currentTime}Add`,
+            remove: `${currentTime}Remove`,
+            forward: `${currentTime}Forward`,
+            backward: `${currentTime}Backward`,
+            clear: `${currentTime}Clear`,
+        };
     }
 }

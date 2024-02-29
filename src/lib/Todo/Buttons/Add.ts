@@ -1,8 +1,10 @@
 import { Todos } from "@prisma/client";
 import {
     ActionRowBuilder,
+    APIEmbed,
     ButtonInteraction,
     EmbedBuilder,
+    InteractionResponse,
     Message,
     ModalActionRowComponentBuilder,
     ModalBuilder,
@@ -31,7 +33,7 @@ export class ButtonAdd {
                 )
             );
 
-    private static Embed = (message: Message) =>
+    static Embed = (message?: Message) =>
         new EmbedBuilder()
             .setTitle("Todo")
             .setThumbnail(
@@ -100,7 +102,7 @@ export class ButtonAdd {
 
         const { row, rowTwo, currentTime: newTime } = Todo.createButtons();
 
-        await Promise.all([
+        const [message] = await Promise.all([
             interaction.editReply({
                 content: `Added entry \`${todoArray.length}\`.`,
                 embeds: [pages.at(-1) || pages[0]],
@@ -109,21 +111,24 @@ export class ButtonAdd {
                 options: { fetchReply: true },
             }),
             sentMsg.delete(),
-            Todo.handleFurtherInteractions(
-                interaction,
-                buttonInteraction.user,
-                newTime,
-                pages.length - 1,
-                pages,
-                todoArray
-            ),
         ]);
+
+        // Handle interaction, after message was sent
+        await Todo.handleFurtherInteractions(
+            interaction,
+            message,
+            newTime,
+            pages.length - 1,
+            pages,
+            todoArray
+        );
     }
 
     public static async furtherAdd(
         buttonInteraction: ButtonInteraction,
         currentTime: number,
-        todoArray: Todos[]
+        todoArray: Todos[],
+        embedData: APIEmbed
     ) {
         {
             await buttonInteraction.showModal(this.todoModal(currentTime));
@@ -132,6 +137,9 @@ export class ButtonAdd {
                 time: 120000,
                 filter: (i) => i.customId === `${currentTime}AddModal`,
             });
+
+            if (!interaction.deferred)
+                await interaction.deferReply({ ephemeral: true });
 
             const uId = BigInt(interaction.user.id);
 
@@ -154,9 +162,6 @@ export class ButtonAdd {
                 },
             });
 
-            if (!interaction.deferred)
-                await interaction.deferReply({ ephemeral: true });
-
             // Make sure our local copy is up-to-date
             todoArray.push({
                 String: entry.String,
@@ -173,32 +178,31 @@ export class ButtonAdd {
                 index += 10, p += 10
             ) {
                 pages.push(
-                    new EmbedBuilder(
-                        ButtonAdd.Embed(sentMsg).data
-                    ).setDescription(reminderArray.slice(p, index).join("\n"))
+                    new EmbedBuilder(embedData).setDescription(
+                        reminderArray.slice(p, index).join("\n")
+                    )
                 );
             }
 
+            // Create new rows of buttons with a new unique time
             const { row, rowTwo, currentTime: newTime } = Todo.createButtons();
 
-            await Promise.all([
-                interaction.editReply({
-                    content: `Added entry \`${todoArray.length}\`.`,
-                    embeds: [pages.at(-1) || pages[0]],
-                    // Only show arrows if necessary
-                    components: todoArray.length > 10 ? [row, rowTwo] : [row],
-                    options: { fetchReply: true },
-                }),
+            const message = await interaction.editReply({
+                content: `Added entry \`${todoArray.length}\`.`,
+                embeds: [pages.at(-1) || pages[0]],
+                // Only show arrows if necessary
+                components: todoArray.length > 10 ? [row, rowTwo] : [row],
+                options: { fetchReply: true },
+            });
 
-                Todo.handleFurtherInteractions(
-                    interaction,
-                    buttonInteraction.user,
-                    newTime,
-                    pages.length - 1,
-                    pages,
-                    todoArray
-                ),
-            ]);
+            await Todo.handleFurtherInteractions(
+                interaction,
+                message,
+                newTime,
+                pages.length - 1,
+                pages,
+                todoArray
+            );
         }
     }
 }
