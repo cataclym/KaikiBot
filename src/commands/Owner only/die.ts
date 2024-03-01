@@ -1,6 +1,12 @@
 import process from "process";
 import { ApplyOptions } from "@sapphire/decorators";
-import { ActionRowBuilder, ButtonBuilder, EmbedBuilder, InteractionCollector, Message } from "discord.js";
+import {
+    ActionRowBuilder,
+    ButtonBuilder,
+    EmbedBuilder,
+    InteractionCollector,
+    Message,
+} from "discord.js";
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
@@ -12,7 +18,6 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 })
 export default class KillBotProcess extends KaikiCommand {
     public async messageRun(message: Message) {
-
         const deleteMsg = await message.channel.send({
             embeds: [
                 new EmbedBuilder()
@@ -22,13 +27,12 @@ export default class KillBotProcess extends KaikiCommand {
             isInteraction: true,
             components: [
                 new ActionRowBuilder<ButtonBuilder>({
-                    components:
-                        [
-                            new ButtonBuilder()
-                                .setCustomId("1")
-                                .setLabel("Click to kill")
-                                .setStyle(4),
-                        ],
+                    components: [
+                        new ButtonBuilder()
+                            .setCustomId("1")
+                            .setLabel("Click to kill")
+                            .setStyle(4),
+                    ],
                 }),
             ],
         });
@@ -40,12 +44,16 @@ export default class KillBotProcess extends KaikiCommand {
         });
 
         buttonListener.once("collect", async (mci) => {
-
             if (mci.isButton()) {
                 await mci.reply({
-                    ephemeral: true, embeds: [
+                    ephemeral: true,
+                    embeds: [
                         new EmbedBuilder()
-                            .setAuthor({ name: "Dying", iconURL: message.client.user?.displayAvatarURL() })
+                            .setAuthor({
+                                name: "Dying",
+                                iconURL:
+                                    message.client.user?.displayAvatarURL(),
+                            })
                             .addFields([
                                 {
                                     name: "Shutting down",
@@ -58,13 +66,12 @@ export default class KillBotProcess extends KaikiCommand {
                 });
             }
 
-            await deleteMsg.delete();
+            await Promise.all([deleteMsg.delete(), message.react("✅")]);
 
             this.container.logger.warn("Shutting down");
             // Disconnects the client connection
-            this.client.destroy();
+            this.client.destroy().then(() => process.exit(0));
             // Exits process with SIGINT
-            process.exit(0);
         });
 
         buttonListener.once("end", async () => {
