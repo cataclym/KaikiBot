@@ -8,6 +8,7 @@ import { Todo } from "../../lib/Todo/Todo";
 @ApplyOptions<KaikiCommandOptions>({
     name: "todo",
     aliases: ["note"],
+    usage: ["", "2"],
     description:
         "A personal todo list. The items are limited to 204 characters. Intended for small notes.",
 })
@@ -74,7 +75,8 @@ export default class TodoCommand extends KaikiCommand {
             currentTime,
             page,
             pages,
-            todoArray
+            todoArray,
+            () => message.react("✅")
         );
     }
 }

@@ -12,6 +12,7 @@ import {
     ModalSubmitInteraction,
     User,
     InteractionResponse,
+    MessageReaction,
 } from "discord.js";
 import { ButtonAdd } from "./Buttons/Add";
 import { ButtonRemove } from "./Buttons/Remove";
@@ -71,7 +72,8 @@ export class Todo {
         currentTime: number,
         page: number,
         pages: EmbedBuilder[],
-        todoArray: Todos[]
+        todoArray: Todos[],
+        react: () => Promise<MessageReaction>
     ) {
         const buttonIdentityStrings =
             Todo.createButtonIdentityStrings(currentTime);
@@ -90,22 +92,27 @@ export class Todo {
                 switch (buttonInteraction.customId) {
                     case buttonIdentityStrings.add:
                         messageComponentCollector.stop();
-                        await ButtonAdd.add(
-                            buttonInteraction,
-                            currentTime,
-                            todoArray,
-                            sentMsg
-                        );
+                        await Promise.all([
+                            ButtonAdd.add(
+                                buttonInteraction,
+                                currentTime,
+                                todoArray,
+                                sentMsg
+                            ),
+                            react(),
+                        ]);
                         break;
 
                     case buttonIdentityStrings.remove:
                         messageComponentCollector.stop();
-                        await ButtonRemove.Remove(
-                            buttonInteraction,
-                            currentTime,
-                            todoArray,
-                            sentMsg
-                        );
+                        await Promise.all([
+                            ButtonRemove.Remove(
+                                buttonInteraction,
+                                currentTime,
+                                todoArray
+                            ),
+                            react(),
+                        ]);
                         break;
 
                     case buttonIdentityStrings.forward:
@@ -175,8 +182,7 @@ export class Todo {
                         await ButtonAdd.furtherAdd(
                             buttonInteraction,
                             currentTime,
-                            todoArray,
-                            ButtonAdd.Embed().data
+                            todoArray
                         );
                         break;
 
@@ -185,8 +191,7 @@ export class Todo {
                         await ButtonRemove.Remove(
                             buttonInteraction,
                             currentTime,
-                            todoArray,
-                            await interaction.fetchReply()
+                            todoArray
                         );
                         break;
 

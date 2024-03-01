@@ -4,7 +4,6 @@ import {
     APIEmbed,
     ButtonInteraction,
     EmbedBuilder,
-    InteractionResponse,
     Message,
     ModalActionRowComponentBuilder,
     ModalBuilder,
@@ -127,8 +126,7 @@ export class ButtonAdd {
     public static async furtherAdd(
         buttonInteraction: ButtonInteraction,
         currentTime: number,
-        todoArray: Todos[],
-        embedData: APIEmbed
+        todoArray: Todos[]
     ) {
         {
             await buttonInteraction.showModal(this.todoModal(currentTime));
@@ -178,7 +176,7 @@ export class ButtonAdd {
                 index += 10, p += 10
             ) {
                 pages.push(
-                    new EmbedBuilder(embedData).setDescription(
+                    new EmbedBuilder(ButtonAdd.Embed().data).setDescription(
                         reminderArray.slice(p, index).join("\n")
                     )
                 );
