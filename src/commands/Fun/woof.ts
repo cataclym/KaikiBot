@@ -1,6 +1,6 @@
 import { ApplyOptions } from "@sapphire/decorators";
 import { EmbedBuilder, Message } from "discord.js";
-import fetch from "node-fetch";
+
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiUtil from "../../lib/KaikiUtil";
@@ -11,11 +11,19 @@ import KaikiUtil from "../../lib/KaikiUtil";
 })
 export default class WoofCommand extends KaikiCommand {
     public async messageRun(message: Message): Promise<Message | void> {
-
         return message.channel.send({
             embeds: [
                 new EmbedBuilder()
-                    .setImage(await KaikiUtil.json<string>(KaikiUtil.checkResponse(await fetch("https://dog.ceo/api/breeds/image/random")), "message"))
+                    .setImage(
+                        await KaikiUtil.json<string>(
+                            KaikiUtil.checkResponse(
+                                await fetch(
+                                    "https://dog.ceo/api/breeds/image/random"
+                                )
+                            ),
+                            "message"
+                        )
+                    )
                     .withOkColor(message),
             ],
         });

@@ -29,7 +29,6 @@
     "@sapphire/plugin-logger": "^4.0.2",
     "@sapphire/plugin-subcommands": "^6.0.3",
     "@sapphire/shapeshift": "^3.9.6",
-    "@types/node-fetch": "^2.6.11",
     "bufferutil": "^4.0.8",
     "discord-js-button-pagination-ts": "^4.1.5",
     "discord.js": "^14.14.1",

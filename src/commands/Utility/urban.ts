@@ -3,7 +3,7 @@ import { ApplyOptions } from "@sapphire/decorators";
 import { Args } from "@sapphire/framework";
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
 import { EmbedBuilder, Message } from "discord.js";
-import fetch from "node-fetch";
+
 import { UrbanResponse } from "../../lib/Interfaces/Common/UrbanResponse";
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
@@ -17,19 +17,29 @@ import Constants from "../../struct/Constants";
     usage: ["Watermelon", "anime"],
 })
 export default class UrbanDictCommand extends KaikiCommand {
-    public async messageRun(message: Message, args: Args): Promise<Message | void> {
+    public async messageRun(
+        message: Message,
+        args: Args
+    ): Promise<Message | void> {
+        const query = querystring.stringify({
+            term: await args.rest("string"),
+        });
 
-        const query = querystring.stringify({ term: await args.rest("string") });
-
-        const list = await KaikiUtil.json<UrbanResponse[]>(KaikiUtil.checkResponse(await fetch(`https://api.urbandictionary.com/v0/define?${query}`)), "list");
+        const list = await KaikiUtil.json<UrbanResponse[]>(
+            KaikiUtil.checkResponse(
+                await fetch(
+                    `https://api.urbandictionary.com/v0/define?${query}`
+                )
+            ),
+            "list"
+        );
 
         if (!list.length) {
             return message.channel.send({
                 embeds: [
                     new EmbedBuilder({
                         description: `No results found for **${query}**.`,
-                    })
-                        .withErrorColor(message),
+                    }).withErrorColor(message),
                 ],
             });
         }
@@ -37,24 +47,31 @@ export default class UrbanDictCommand extends KaikiCommand {
         const pages: EmbedBuilder[] = [];
 
         for (const result of list) {
-            pages.push(new EmbedBuilder()
-                .setTitle(result.word)
-                .setURL(result.permalink)
-                .addFields(
-                    {
-                        name: "Definition",
-                        value: KaikiUtil.trim(result.definition, Constants.MAGIC_NUMBERS.EMBED_LIMITS.FIELD.VALUE),
-                    },
-                    {
-                        name: "Example",
-                        value: KaikiUtil.trim(result.example || "N/A", Constants.MAGIC_NUMBERS.EMBED_LIMITS.FIELD.VALUE),
-                    },
-                    {
-                        name: "Rating",
-                        value: `${result.thumbs_up} thumbs up. ${result.thumbs_down} thumbs down.`,
-                    },
-                )
-                .withOkColor(message),
+            pages.push(
+                new EmbedBuilder()
+                    .setTitle(result.word)
+                    .setURL(result.permalink)
+                    .addFields(
+                        {
+                            name: "Definition",
+                            value: KaikiUtil.trim(
+                                result.definition,
+                                Constants.MAGIC_NUMBERS.EMBED_LIMITS.FIELD.VALUE
+                            ),
+                        },
+                        {
+                            name: "Example",
+                            value: KaikiUtil.trim(
+                                result.example || "N/A",
+                                Constants.MAGIC_NUMBERS.EMBED_LIMITS.FIELD.VALUE
+                            ),
+                        },
+                        {
+                            name: "Rating",
+                            value: `${result.thumbs_up} thumbs up. ${result.thumbs_down} thumbs down.`,
+                        }
+                    )
+                    .withOkColor(message)
             );
         }
 

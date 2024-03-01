@@ -1,7 +1,7 @@
 import { ApplyOptions } from "@sapphire/decorators";
 import { Args } from "@sapphire/framework";
 import { EmbedBuilder, Message } from "discord.js";
-import fetch from "node-fetch";
+
 import CommonEmbed from "../../lib/Anime/CommonEmbed";
 
 import AnilistGraphQL from "../../lib/APIs/AnilistGraphQL";
@@ -17,8 +17,10 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
     typing: true,
 })
 export default class MangaCommand extends KaikiCommand {
-    public async messageRun(message: Message<true>, args: Args): Promise<Message | void> {
-
+    public async messageRun(
+        message: Message<true>,
+        args: Args
+    ): Promise<Message | void> {
         const manga = await args.rest("string");
 
         const url = "https://graphql.anilist.co",
@@ -26,7 +28,7 @@ export default class MangaCommand extends KaikiCommand {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "Accept": "application/json",
+                    Accept: "application/json",
                 },
                 body: JSON.stringify({
                     query: AnilistGraphQL.mangaQuery,
@@ -39,7 +41,8 @@ export default class MangaCommand extends KaikiCommand {
                 }),
             };
 
-        return await fetch(url, options).then(AnilistGraphQL.handleResponse)
+        return await fetch(url, options)
+            .then(AnilistGraphQL.handleResponse)
             .then((response: MangaData) => {
                 const {
                     coverImage,
@@ -52,9 +55,15 @@ export default class MangaCommand extends KaikiCommand {
                     endDate,
                     siteUrl,
                 } = response.data.Page.media[0];
-                const monthFormat = new Intl.DateTimeFormat("en-US", { month: "long" });
-                const started = startDate.month ? `${monthFormat.format(startDate.month)} ${startDate.day}, ${startDate.year}` : null;
-                const ended = endDate.month ? `${monthFormat.format(endDate.month)} ${endDate.day}, ${endDate.year}` : null;
+                const monthFormat = new Intl.DateTimeFormat("en-US", {
+                    month: "long",
+                });
+                const started = startDate.month
+                    ? `${monthFormat.format(startDate.month)} ${startDate.day}, ${startDate.year}`
+                    : null;
+                const ended = endDate.month
+                    ? `${monthFormat.format(endDate.month)} ${endDate.day}, ${endDate.year}`
+                    : null;
                 const aired =
                     started && ended
                         ? started === ended
@@ -64,13 +73,31 @@ export default class MangaCommand extends KaikiCommand {
 
                 return message.channel.send({
                     embeds: [
-                        CommonEmbed.createEmbed(coverImage, title, siteUrl, description, message),
+                        CommonEmbed.createEmbed(
+                            coverImage,
+                            title,
+                            siteUrl,
+                            description,
+                            message
+                        ),
                         new EmbedBuilder()
                             .addFields([
-                                { name: "Chapters", value: String(chapters ?? "N/A"), inline: true },
-                                { name: "Release period", value: aired, inline: true },
+                                {
+                                    name: "Chapters",
+                                    value: String(chapters ?? "N/A"),
+                                    inline: true,
+                                },
+                                {
+                                    name: "Release period",
+                                    value: aired,
+                                    inline: true,
+                                },
                                 { name: "Status", value: status, inline: true },
-                                { name: "Genres", value: genres.join(", "), inline: false },
+                                {
+                                    name: "Genres",
+                                    value: genres.join(", "),
+                                    inline: false,
+                                },
                             ])
                             .withOkColor(message),
                     ],
@@ -79,4 +106,3 @@ export default class MangaCommand extends KaikiCommand {
             .catch(AnilistGraphQL.handleError);
     }
 }
-
