@@ -53,7 +53,10 @@ export default class EmoteCount extends KaikiCommand {
             const emoteData = guildDB?.EmojiStats.find(e => String(e.EmojiId) === guildEmoji.id);
             return Object.assign(guildEmoji, emoteData || { Count: 0 });
         })
-            .filter(ge => isClean && !ge.available)
+            .filter(ge => {
+                if (isClean) return ge.available;
+                return true;
+            })
             .sort(({ Count: b }, { Count: a }) => (a < b) ? -1 : ((a > b) ? 1 : 0));
 
         // Throw error when there are no mapped emotes. This can happen when user uses --clean. Rare case.
