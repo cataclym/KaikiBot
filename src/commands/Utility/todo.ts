@@ -69,14 +69,6 @@ export default class TodoCommand extends KaikiCommand {
             });
         }
 
-        Todo.handleInitialInteraction(
-            sentMsg,
-            message.author,
-            currentTime,
-            page,
-            pages,
-            todoArray,
-            () => message.react("✅")
-        );
+        new Todo(message, sentMsg, currentTime, page, pages, todoArray);
     }
 }
