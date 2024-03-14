@@ -7,44 +7,96 @@ import {
     ButtonInteraction,
     CacheType,
     EmbedBuilder,
+    GuildMember,
+    GuildTextBasedChannel,
     Message,
     ModalSubmitInteraction,
+    TextBasedChannel,
+    User,
 } from "discord.js";
 import { ButtonAdd } from "./Buttons/Add";
 import { ButtonRemove } from "./Buttons/Remove";
 import { container } from "@sapphire/pieces";
 
 export class Todo {
-    message: Message;
     currentTime: number;
     page: number;
     pages: EmbedBuilder[];
-    sentMsg?: Message;
     todoArray: Todos[];
-    interaction: ModalSubmitInteraction<CacheType>;
+    interaction?: ModalSubmitInteraction<CacheType>;
+    author: GuildMember | User;
+    baseEmbed: EmbedBuilder;
+    message: Message<boolean>;
+    channel: TextBasedChannel | GuildTextBasedChannel;
 
     public constructor(
-        message: Message<boolean>,
-        sentMsg: Message<boolean>,
-        currentTime: number,
         page: number,
-        pages: EmbedBuilder[],
-        todoArray: { Id: bigint; UserId: bigint; String: string }[]
+        author: GuildMember | User,
+        channel: GuildTextBasedChannel | TextBasedChannel,
+        isInteraction?: boolean
     ) {
-        this.message = message;
-        this.sentMsg = sentMsg;
+        this.channel = channel;
+        this.author = author;
+        this.baseEmbed = new EmbedBuilder()
+            .setTitle("Todo")
+            .setThumbnail(Constants.LINKS.TODO_IMG)
+            .withOkColor("guild" in author ? author.guild : undefined);
+
+        const { row, rowTwo, currentTime } = Todo.createButtons();
+
         this.currentTime = currentTime;
         this.page = page;
-        this.pages = pages;
-        this.todoArray = todoArray;
 
-        this.manageInteractions().catch(container.logger.warn);
-    }
+        (async () => {
+            this.pages = [];
 
-    private async manageInteractions() {
-        await this.handleInitialInteraction().then(async () =>
-            this.handleFurtherInteractions()
-        );
+            this.todoArray = await container.client.orm.todos.findMany({
+                where: {
+                    DiscordUsers: {
+                        UserId: BigInt(author.id),
+                    },
+                },
+                orderBy: {
+                    Id: "asc",
+                },
+            });
+
+            if (!this.todoArray.length) {
+                row.components[1].setDisabled();
+                this.message = await this.channel.send({
+                    options: { ephemeral: isInteraction },
+                    embeds: [
+                        new EmbedBuilder(this.baseEmbed.data).setDescription(
+                            "Your list is empty."
+                        ),
+                    ],
+                    components: [row],
+                });
+            } else {
+                const reminderArray = Todo.reminderArray(this.todoArray);
+
+                for (
+                    let index = 10, p = 0;
+                    p < reminderArray.length;
+                    index += 10, p += 10
+                ) {
+                    this.pages.push(
+                        new EmbedBuilder(this.baseEmbed.data).setDescription(
+                            reminderArray.slice(p, index).join("\n")
+                        )
+                    );
+                }
+
+                if (this.page >= this.pages.length) this.page = 0;
+
+                this.message = await this.channel.send({
+                    embeds: [this.pages[this.page]],
+                    // Only show arrows if necessary
+                    components:
+                        this.todoArray.length > 10 ? [row, rowTwo] : [row],
+                });
+            }
+        })().then(async () => this.handleFurtherInteractions());
     }
 
     public static reminderArray(todoArray: Todos[]) {
@@ -54,70 +106,7 @@ export class Todo {
         );
     }
 
-    public async handleInitialInteraction() {
-        const buttonIdentityStrings = this.createButtonIdentityStrings();
-
-        const messageComponentCollector =
-            this.sentMsg!.createMessageComponentCollector({
-                filter: (i) =>
-                    Object.values(buttonIdentityStrings).includes(i.customId) &&
-                    this.message.author.id === i.user.id,
-                time: 120000,
-            });
-
-        messageComponentCollector.on(
-            "collect",
-            async (buttonInteraction: ButtonInteraction) => {
-                switch (buttonInteraction.customId) {
-                    case buttonIdentityStrings.add:
-                        messageComponentCollector.stop();
-                        await this.add(buttonInteraction);
-                        break;
-
-                    case buttonIdentityStrings.remove:
-                        messageComponentCollector.stop();
-                        await this.remove(buttonInteraction);
-                        break;
-
-                    case buttonIdentityStrings.forward:
-                        await buttonInteraction.deferUpdate();
-                        this.setPageBackwards();
-                        await this.updateMsg();
-                        break;
-
-                    case buttonIdentityStrings.backward:
-                        await buttonInteraction.deferUpdate();
-                        this.setPageBackwards();
-                        await this.updateMsg();
-                        break;
-
-                    case buttonIdentityStrings.clear:
-                        messageComponentCollector.stop();
-                        break;
-
-                    default:
-                        break;
-                }
-            }
-        );
-
-        messageComponentCollector.once("end", async () => {
-            if (this.sentMsg) {
-                await this.sentMsg.edit({
-                    components: [],
-                });
-            } else {
-                await this.interaction.editReply({
-                    components: [],
-                });
-            }
-            messageComponentCollector.stop();
-            // Stop execution
-            throw new Error();
-        });
-    }
-
-    private async remove(buttonInteraction: ButtonInteraction<CacheType>) {
+    protected async remove(buttonInteraction: ButtonInteraction<CacheType>) {
         {
             await buttonInteraction.showModal(
                 ButtonRemove.RemoveModal(this.currentTime)
@@ -174,9 +163,9 @@ export class Todo {
                 index += 10, p += 10
             ) {
                 pages.push(
-                    new EmbedBuilder(
-                        Todo.baseEmbed(this.message).data
-                    ).setDescription(reminderArray.slice(p, index).join("\n"))
+                    new EmbedBuilder(this.baseEmbed.data).setDescription(
+                        reminderArray.slice(p, index).join("\n")
+                    )
                 );
             }
 
@@ -199,10 +188,8 @@ export class Todo {
                         this.todoArray.length > 10 ? [row, rowTwo] : [row],
                     options: { fetchReply: true },
                 }),
-                this.sentMsg?.delete(),
             ]);
 
-            delete this.sentMsg;
             this.message = message;
             this.currentTime = currentTime;
             this.interaction = interaction;
@@ -211,7 +198,7 @@ export class Todo {
         }
     }
 
-    private async add(buttonInteraction: ButtonInteraction<CacheType>) {
+    protected async add(buttonInteraction: ButtonInteraction<CacheType>) {
         await buttonInteraction.showModal(
             ButtonAdd.todoModal(this.currentTime)
         );
@@ -221,7 +208,7 @@ export class Todo {
             filter: (i) => i.customId === `${this.currentTime}AddModal`,
         });
 
-        const uId = BigInt(interaction.user.id);
+        const uId = BigInt(this.author.id);
 
         const entry = await buttonInteraction.client.orm.todos.create({
             data: {
@@ -261,26 +248,22 @@ export class Todo {
             index += 10, p += 10
         ) {
             this.pages.push(
-                new EmbedBuilder(
-                    Todo.baseEmbed(this.message).data
-                ).setDescription(reminderArray.slice(p, index).join("\n"))
+                new EmbedBuilder(this.baseEmbed.data).setDescription(
+                    reminderArray.slice(p, index).join("\n")
+                )
             );
         }
 
         const { row, rowTwo, currentTime } = Todo.createButtons();
 
-        const [message] = await Promise.all([
-            interaction.editReply({
-                content: `Added entry \`${this.todoArray.length}\`.`,
-                embeds: [this.pages.at(-1) || this.pages[0]],
-                // Only show arrows if necessary
-                components: this.todoArray.length > 10 ? [row, rowTwo] : [row],
-                options: { fetchReply: true },
-            }),
-            this.sentMsg?.delete(),
-        ]);
+        const message = await interaction.editReply({
+            content: `Added entry \`${this.todoArray.length}\`.`,
+            embeds: [this.pages.at(-1) || this.pages[0]],
+            // Only show arrows if necessary
+            components: this.todoArray.length > 10 ? [row, rowTwo] : [row],
+            options: { fetchReply: true },
+        });
 
-        delete this.sentMsg;
         this.message = message;
         this.currentTime = currentTime;
         this.interaction = interaction;
@@ -288,23 +271,19 @@ export class Todo {
         return;
     }
 
-    private async updateMsg() {
-        if (this.sentMsg) {
-            await this.sentMsg.edit({
-                embeds: [this.pages[this.page]],
-            });
-        } else {
-            await this.interaction.editReply({
-                embeds: [this.pages[this.page]],
-            });
-        }
+    protected async updateMsg() {
+        await (
+            this.interaction ? this.interaction.editReply : this.message.edit
+        )({
+            embeds: [this.pages[this.page]],
+        });
     }
 
     private setPageForwards() {
         this.page = this.page + 1 < this.pages.length ? ++this.page : 0;
     }
 
-    private setPageBackwards() {
+    protected setPageBackwards() {
         this.page = this.page > 0 ? --this.page : this.pages.length - 1;
     }
 
@@ -315,7 +294,7 @@ export class Todo {
             this.message.createMessageComponentCollector({
                 filter: (i) =>
                     Object.values(buttonIdentityStrings).includes(i.customId) &&
-                    this.interaction.user.id === i.user.id,
+                    this.author.id === i.user.id,
                 time: 120000,
             });
 
@@ -358,7 +337,7 @@ export class Todo {
         );
 
         messageComponentCollector.once("end", async () => {
-            await this.interaction.editReply({
+            await this.interaction?.editReply({
                 components: [],
             });
             messageComponentCollector.stop();
@@ -367,7 +346,7 @@ export class Todo {
         });
     }
 
-    private createButtonIdentityStrings() {
+    protected createButtonIdentityStrings() {
         const { currentTime } = this;
         return {
             add: `${currentTime}Add`,
@@ -418,12 +397,4 @@ export class Todo {
 
         return { row, rowTwo, currentTime };
     }
-
-    static baseEmbed = (message: Message) =>
-        new EmbedBuilder()
-            .setTitle("Todo")
-            .setThumbnail(
-                "https://cdn.discordapp.com/attachments/717045690022363229/726600392107884646/3391ce4715f3c814d6067911438e5bf7.png"
-            )
-            .withOkColor(message);
 }
