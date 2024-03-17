@@ -1,9 +1,10 @@
 import { ApplyOptions } from "@sapphire/decorators";
 import { Args } from "@sapphire/framework";
-import { AttachmentBuilder, EmbedBuilder, Message, REST, Routes } from "discord.js";
+import { AttachmentBuilder, EmbedBuilder, Message } from "discord.js";
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiUtil from "../../lib/KaikiUtil";
+import sharp from "sharp";
 
 @ApplyOptions<KaikiCommandOptions>({
     name: "setbanner",
@@ -20,13 +21,20 @@ export default class SetAvatarCommand extends KaikiCommand {
 
         const img = await KaikiUtil.loadImage(url.href);
 
-        const imgBuffer = Buffer.from(img);
+        const imgBuffer = await sharp(img).toBuffer();
 
-        const rest = new REST({version: "9"}).setToken(this.client.token);
+        const response = await fetch("https://discord.com/api/v9/users/@me", {
+            method: "PATCH",
+            headers: {
+                Authorization: `Bot ${this.client.token}`,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                banner: `data:image/gif;base64,${imgBuffer.toString("base64")}`
+            })
+        });
 
-        await rest.patch(Routes.user(), { body: { banner: `data:image/gif;base64,${imgBuffer.toString("base64")}` } })
-
-        const attachment = new AttachmentBuilder(imgBuffer, { name: `bannerFile` })
+        const attachment = new AttachmentBuilder(imgBuffer, { name: "bannerFile" + url.pathname.substring(url.pathname.lastIndexOf(".")) })
 
         return message.channel.send({
             content: "New banner set.",
