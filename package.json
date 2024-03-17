@@ -1,6 +1,6 @@
 {
   "name": "kaikideishubot",
-  "version": "6.1.4",
+  "version": "6.1.5",
   "main": "./dist/index.js",
   "scripts": {
     "start_docker": "npx prisma db push && npm run start",
