@@ -21,7 +21,7 @@ export default class SetAvatarCommand extends KaikiCommand {
 
         const img = await KaikiUtil.loadImage(url.href);
 
-        const imgBuffer = await sharp(img).toBuffer();
+        const imgBuffer = Buffer.from(img);
 
         const response = await fetch("https://discord.com/api/v9/users/@me", {
             method: "PATCH",
