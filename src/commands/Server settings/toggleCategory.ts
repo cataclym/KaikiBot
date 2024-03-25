@@ -15,12 +15,15 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
     preconditions: ["GuildOnly"],
 })
 export default class ToggleCategoryCommand extends KaikiCommand {
-    public async messageRun(message: Message<true>, args: Args): Promise<Message> {
-
+    public async messageRun(
+        message: Message<true>,
+        args: Args
+    ): Promise<Message> {
         if (args.finished) {
-            const blockedCategories = await message.client.orm.blockedCategories.findMany({
-                where: { GuildId: BigInt(message.guildId) },
-            });
+            const blockedCategories =
+                await message.client.orm.blockedCategories.findMany({
+                    where: { GuildId: BigInt(message.guildId) },
+                });
 
             if (!blockedCategories.length) {
                 throw new UserError({
@@ -30,7 +33,7 @@ export default class ToggleCategoryCommand extends KaikiCommand {
             }
 
             const categories = blockedCategories
-                .map(e => CategoriesEnum[e.CategoryTarget])
+                .map((e) => CategoriesEnum[e.CategoryTarget])
                 .filter(Boolean)
                 .join("\n");
 
@@ -58,16 +61,20 @@ export default class ToggleCategoryCommand extends KaikiCommand {
             },
         });
 
-
         if (!guildDb) {
             const obj = {
                 BlockedCategories: [],
             };
-            Object.assign(obj, await this.client.db.getOrCreateGuild(BigInt(message.guildId)));
+            Object.assign(
+                obj,
+                await this.client.db.getOrCreateGuild(BigInt(message.guildId))
+            );
             guildDb = obj;
         }
 
-        const exists = guildDb.BlockedCategories.find(cat => cat.CategoryTarget === index);
+        const exists = guildDb.BlockedCategories.find(
+            (cat) => cat.CategoryTarget === index
+        );
 
         if (exists) {
             await this.client.orm.blockedCategories.delete({
@@ -75,9 +82,7 @@ export default class ToggleCategoryCommand extends KaikiCommand {
                     Id: exists.Id,
                 },
             });
-        }
-
-        else {
+        } else {
             await this.client.orm.guilds.update({
                 where: {
                     Id: BigInt(guild.id),
@@ -92,8 +97,9 @@ export default class ToggleCategoryCommand extends KaikiCommand {
             });
         }
 
-        const embed = new EmbedBuilder()
-            .setDescription(`${categoryStr} has been ${exists ? "enabled" : "disabled"}.`);
+        const embed = new EmbedBuilder().setDescription(
+            `${categoryStr} has been ${exists ? "enabled" : "disabled"}.`
+        );
 
         return message.channel.send({
             embeds: [

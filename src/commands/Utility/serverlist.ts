@@ -15,27 +15,28 @@ import Constants from "../../struct/Constants";
 })
 export default class ServerList extends KaikiCommand {
     public async messageRun(message: Message, args: Args) {
-
         const startPage = await args.pick("number").catch(() => 0);
 
-        const { GUILDS_PER_PAGE } = Constants.MAGIC_NUMBERS.CMDS.UTILITY.SERVER_LIST;
+        const { GUILDS_PER_PAGE } =
+            Constants.MAGIC_NUMBERS.CMDS.UTILITY.SERVER_LIST;
         const pages = [];
         const embed = new EmbedBuilder()
             .setDescription("Server list")
             .setTitle(`Total Servers: ${this.client.guilds.cache.size}`)
             .withOkColor(message);
 
-
-        for (let from = 0, to = GUILDS_PER_PAGE, guilds = [...this.client.guilds.cache.values()];
+        for (
+            let from = 0,
+                to = GUILDS_PER_PAGE,
+                guilds = [...this.client.guilds.cache.values()];
             from <= guilds.length;
-            from += GUILDS_PER_PAGE, to += GUILDS_PER_PAGE) {
-
-            const currentPageGuilds = guilds
-                .slice(from, to);
+            from += GUILDS_PER_PAGE, to += GUILDS_PER_PAGE
+        ) {
+            const currentPageGuilds = guilds.slice(from, to);
 
             const emb = EmbedBuilder.from(embed);
 
-            currentPageGuilds.forEach(guild => {
+            currentPageGuilds.forEach((guild) => {
                 emb.addFields({
                     name: guild.name,
                     value: `ID: ${guild.id}\nMembers: ${guild.memberCount}\nShard: ${guild.shardId}`,
@@ -46,6 +47,11 @@ export default class ServerList extends KaikiCommand {
             pages.push(emb);
         }
 
-        return sendPaginatedMessage(message, pages, { owner: message.author }, startPage);
+        return sendPaginatedMessage(
+            message,
+            pages,
+            { owner: message.author },
+            startPage
+        );
     }
 }

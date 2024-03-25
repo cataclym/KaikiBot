@@ -10,12 +10,18 @@ export class WelcomeGoodbyeMessageArgument extends Argument<JSONToMessageOptions
             const messageOptions = new JSONToMessageOptions(json);
 
             if (!messageOptions) {
-                return this.error({ parameter, message: "Please provide valid json" });
+                return this.error({
+                    parameter,
+                    message: "Please provide valid json",
+                });
             }
 
             return this.ok(messageOptions);
         } catch {
-            return this.error({ parameter, message: "Please provide valid json" });
+            return this.error({
+                parameter,
+                message: "Please provide valid json",
+            });
         }
     }
 }

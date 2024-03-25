@@ -7,26 +7,34 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 @ApplyOptions<KaikiCommandOptions>({
     name: "goodbye",
     aliases: ["goodbyetoggle", "byetoggle", "bye"],
-    description: "Toggles leave messages. Bot defaults to current channel if no channel is provided.",
+    description:
+        "Toggles leave messages. Bot defaults to current channel if no channel is provided.",
     usage: ["", "#leave-channel"],
     requiredUserPermissions: ["ManageGuild"],
     preconditions: ["GuildOnly"],
     minorCategory: "Goodbye",
 })
 export default class GoodbyeConfigCommand extends KaikiCommand {
-    public async messageRun(message: Message<true>, args: Args): Promise<Message> {
+    public async messageRun(
+        message: Message<true>,
+        args: Args
+    ): Promise<Message> {
+        const channel = await args
+            .rest("guildTextChannel")
+            .catch(() => message.channel);
 
-        const channel = await args.rest("guildTextChannel").catch(() => message.channel);
+        const embed = new EmbedBuilder().withOkColor(message);
 
-        const embed = new EmbedBuilder()
-            .withOkColor(message);
-
-        const guildTable = await this.client.db.getOrCreateGuild(BigInt(message.guildId));
+        const guildTable = await this.client.db.getOrCreateGuild(
+            BigInt(message.guildId)
+        );
 
         const bigIntChannelId = BigInt(channel.id);
 
-        if (guildTable.ByeChannel === undefined || guildTable.ByeChannel === null) {
-
+        if (
+            guildTable.ByeChannel === undefined ||
+            guildTable.ByeChannel === null
+        ) {
             await this.client.orm.guilds.update({
                 where: {
                     Id: BigInt(message.guildId),
@@ -36,10 +44,7 @@ export default class GoodbyeConfigCommand extends KaikiCommand {
                 },
             });
             embed.setDescription(`Enabled goodbye message in ${channel.name}`);
-        }
-
-        else if (guildTable.ByeChannel === bigIntChannelId) {
-
+        } else if (guildTable.ByeChannel === bigIntChannelId) {
             await this.client.orm.guilds.update({
                 where: {
                     Id: BigInt(message.guildId),
@@ -49,11 +54,7 @@ export default class GoodbyeConfigCommand extends KaikiCommand {
                 },
             });
             embed.setDescription("Disabled goodbye message");
-
-        }
-
-        else {
-
+        } else {
             await this.client.orm.guilds.update({
                 where: {
                     Id: BigInt(message.guildId),
@@ -63,7 +64,6 @@ export default class GoodbyeConfigCommand extends KaikiCommand {
                 },
             });
             embed.setDescription(`Set goodbye message to ${channel.name}`);
-
         }
 
         return message.channel.send({

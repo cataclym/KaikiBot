@@ -15,15 +15,24 @@ import KaikiUtil from "../../lib/KaikiUtil";
 })
 export default class EAPICommand extends KaikiCommand {
     public async messageRun(message: Message, args: Args): Promise<Message> {
-
         const tags = await args.pick("string").catch(() => undefined);
 
-        const post = await this.client.hentaiService.makeRequest(tags ? tags?.split("+").map(tag => tag.replace(" ", "_")) : null, DAPI.E621);
+        const post = await this.client.hentaiService.makeRequest(
+            tags ? tags?.split("+").map((tag) => tag.replace(" ", "_")) : null,
+            DAPI.E621
+        );
 
         const emb = new EmbedBuilder()
             .setAuthor({ name: post.tags.artist.join(", ") || "N/A" })
-            .setDescription(KaikiUtil.trim(`**Tags**: ${post.tags.general.join(",")}`, 2048))
-            .setImage(post.file.url || post.preview.url || post.sample.url || post.sources[0])
+            .setDescription(
+                KaikiUtil.trim(`**Tags**: ${post.tags.general.join(",")}`, 2048)
+            )
+            .setImage(
+                post.file.url ||
+                    post.preview.url ||
+                    post.sample.url ||
+                    post.sources[0]
+            )
             .withOkColor(message);
 
         if (post.tags.character.length) {

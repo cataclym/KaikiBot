@@ -12,7 +12,6 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 })
 export default class Deregister extends KaikiCommand {
     public async messageRun(message: Message, args: Args) {
-
         const cmd = await args.rest("command");
 
         const unloaded = await this.store.unload(cmd);

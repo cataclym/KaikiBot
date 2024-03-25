@@ -11,9 +11,7 @@ import KaikiUtil from "../lib/KaikiUtil";
 })
 export default class NonPrefixedMessage extends Listener {
     public async run(message: Message) {
-
         if (message.inGuild()) {
-
             let promise;
 
             if (!message.client.cache.emoteReactCache.has(message.guildId)) {
@@ -26,32 +24,31 @@ export default class NonPrefixedMessage extends Listener {
                 Emotes.countEmotes(message),
                 message.client.cache.emoteReact(message),
             ]);
-        }
-
-        else {
+        } else {
             return this.sendDM(message);
         }
     }
 
     private async sendDM(message: Message): Promise<Message | undefined> {
-
         if (message.author === message.client.owner) return;
 
         let attachmentLinks = "";
-        message.client.logger.info(`Message | DM from ${message.author.username} [${message.author.id}]`);
+        message.client.logger.info(
+            `Message | DM from ${message.author.username} [${message.author.id}]`
+        );
 
         const embed = new EmbedBuilder({
-            author: { name: `${message.author.username} [${message.author.id}]` },
+            author: {
+                name: `${message.author.username} [${message.author.id}]`,
+            },
             description: KaikiUtil.trim(message.content, 2048),
-        })
-            .withOkColor();
+        }).withOkColor();
 
         // Attachments lol
         const { attachments } = message;
 
         if (attachments.first()) {
-
-            const urls: string[] = attachments.map(a => a.url);
+            const urls: string[] = attachments.map((a) => a.url);
 
             const restLinks = [...urls];
             restLinks.shift();
@@ -65,7 +62,9 @@ export default class NonPrefixedMessage extends Listener {
                 .setFooter({ text: urls.join("\n") });
         }
 
-        return message.client.owner.send({ content: attachmentLinks ?? undefined, embeds: [embed] });
-
+        return message.client.owner.send({
+            content: attachmentLinks ?? undefined,
+            embeds: [embed],
+        });
     }
 }

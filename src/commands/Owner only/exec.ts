@@ -15,20 +15,27 @@ import Constants from "../../struct/Constants";
 })
 export default class ExecCommand extends KaikiCommand {
     public async messageRun(message: Message, args: Args) {
-
         const command = await args.rest("string");
 
         return exec(command, async (e, stdout) => {
-
             if (e) {
                 return message.channel.send({
                     embeds: [
                         new EmbedBuilder()
                             .setAuthor({
                                 name: "Command errored",
-                                iconURL: message.client.user?.displayAvatarURL(),
+                                iconURL:
+                                    message.client.user?.displayAvatarURL(),
                             })
-                            .setDescription(await KaikiUtil.codeblock(KaikiUtil.trim(String(e ?? "Unknown error"), Constants.MAGIC_NUMBERS.CMDS.OWNER_ONLY.EVAL.MAX_STRING)))
+                            .setDescription(
+                                await KaikiUtil.codeblock(
+                                    KaikiUtil.trim(
+                                        String(e ?? "Unknown error"),
+                                        Constants.MAGIC_NUMBERS.CMDS.OWNER_ONLY
+                                            .EVAL.MAX_STRING
+                                    )
+                                )
+                            )
                             .withErrorColor(message),
                     ],
                 });
@@ -41,7 +48,15 @@ export default class ExecCommand extends KaikiCommand {
                             name: "Executed command",
                             iconURL: message.client.user?.displayAvatarURL(),
                         })
-                        .setDescription(await KaikiUtil.codeblock(KaikiUtil.trim(stdout ?? "Command executed", Constants.MAGIC_NUMBERS.CMDS.OWNER_ONLY.EVAL.MAX_STRING)))
+                        .setDescription(
+                            await KaikiUtil.codeblock(
+                                KaikiUtil.trim(
+                                    stdout ?? "Command executed",
+                                    Constants.MAGIC_NUMBERS.CMDS.OWNER_ONLY.EVAL
+                                        .MAX_STRING
+                                )
+                            )
+                        )
                         .withOkColor(message),
                 ],
             });

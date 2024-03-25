@@ -16,9 +16,7 @@ import Constants from "../../struct/Constants";
     minorCategory: "Info",
 })
 export default class StatsCommand extends KaikiCommand {
-
     public async messageRun(message: Message) {
-
         const packageJSON = this.client.package;
         const { cache } = this.client.guilds;
         const pages = [
@@ -37,17 +35,44 @@ export default class StatsCommand extends KaikiCommand {
                     },
                     {
                         name: "Uptime",
-                        value: time(new Date(Date.now() - process.uptime() * 1000), "R"),
+                        value: time(
+                            new Date(Date.now() - process.uptime() * 1000),
+                            "R"
+                        ),
                         inline: true,
                     },
-                    { name: "Users", value: String(message.client.users.cache.size), inline: true },
                     {
-                        name: "Presence", value: `Guilds: **${cache.size}**\nText channels: **${cache
-                            .map(g => g.channels.cache
-                                .filter(channel => (channel.type !== ChannelType.GuildVoice) && channel.type !== ChannelType.GuildCategory).size)
-                            .reduce((a, b) => a + b, 0)}**\nVoice channels: **${cache
-                            .map(g => g.channels.cache.filter(channel => channel.type === ChannelType.GuildVoice).size)
-                            .reduce((a, b) => a + b, 0)}**`, inline: true,
+                        name: "Users",
+                        value: String(message.client.users.cache.size),
+                        inline: true,
+                    },
+                    {
+                        name: "Presence",
+                        value: `Guilds: **${cache.size}**\nText channels: **${cache
+                            .map(
+                                (g) =>
+                                    g.channels.cache.filter(
+                                        (channel) =>
+                                            channel.type !==
+                                                ChannelType.GuildVoice &&
+                                            channel.type !==
+                                                ChannelType.GuildCategory
+                                    ).size
+                            )
+                            .reduce(
+                                (a, b) => a + b,
+                                0
+                            )}**\nVoice channels: **${cache
+                            .map(
+                                (g) =>
+                                    g.channels.cache.filter(
+                                        (channel) =>
+                                            channel.type ===
+                                            ChannelType.GuildVoice
+                                    ).size
+                            )
+                            .reduce((a, b) => a + b, 0)}**`,
+                        inline: true,
                     },
                 ])
                 .withOkColor(message),

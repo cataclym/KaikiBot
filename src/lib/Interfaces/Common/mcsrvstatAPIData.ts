@@ -8,7 +8,7 @@ export interface Players {
     online: number;
     max: number;
     list: string[];
-    uuid: {[id: string]: string};
+    uuid: { [id: string]: string };
 }
 
 export interface Plugins {
@@ -28,7 +28,6 @@ export interface Info {
 }
 
 export interface ServerOnlineInterfaces {
-
     Debug: {
         ping: boolean;
         query: boolean;
@@ -38,11 +37,11 @@ export interface ServerOnlineInterfaces {
         cnameinsrv: boolean;
         animatedmotd: boolean;
         cachetime: number;
-    }
+    };
 
     Motd: Motd;
 
-    Uuid: {[id: string]: string}
+    Uuid: { [id: string]: string };
 
     Players: Players;
 
@@ -54,39 +53,38 @@ export interface ServerOnlineInterfaces {
 }
 
 export interface ServerOnline {
-        online: true;
-        ip: string;
-        port: number;
-        debug: Debug;
-        motd: Motd;
-        players: Players;
-        version: string;
-        protocol: number;
-        hostname: string;
-        icon: string;
-        software: string;
-        map: string;
-        plugins: Plugins;
-        mods: Mods;
-        info: Info;
-    }
-
-export interface ServerOffline {
-        online: false;
-        ip: string;
-        port: number;
-        debug: Debug;
-        hostname: string;
-    }
-
-export interface Debug {
-        ping: boolean;
-        query: boolean;
-        srv: boolean;
-        querymismatch: boolean;
-        ipinsrv: boolean;
-        cnameinsrv: boolean;
-        animatedmotd: boolean;
-        cachetime: number;
+    online: true;
+    ip: string;
+    port: number;
+    debug: Debug;
+    motd: Motd;
+    players: Players;
+    version: string;
+    protocol: number;
+    hostname: string;
+    icon: string;
+    software: string;
+    map: string;
+    plugins: Plugins;
+    mods: Mods;
+    info: Info;
 }
 
+export interface ServerOffline {
+    online: false;
+    ip: string;
+    port: number;
+    debug: Debug;
+    hostname: string;
+}
+
+export interface Debug {
+    ping: boolean;
+    query: boolean;
+    srv: boolean;
+    querymismatch: boolean;
+    ipinsrv: boolean;
+    cnameinsrv: boolean;
+    animatedmotd: boolean;
+    cachetime: number;
+}

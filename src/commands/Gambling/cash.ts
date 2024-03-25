@@ -7,12 +7,13 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 @ApplyOptions<KaikiCommandOptions>({
     name: "cash",
     aliases: ["currency", "cur", "$", "£", "¥", "€"],
-    description: "Shows specified user's current balance. If no user is specified, shows your balance",
+    description:
+        "Shows specified user's current balance. If no user is specified, shows your balance",
 })
 export default class Cash extends KaikiCommand {
     public async messageRun(msg: Message, args: Args): Promise<void> {
-
-        const user = await args.rest("user")
+        const user = await args
+            .rest("user")
             .catch(async () => (await args.rest("member")).user)
             .catch(() => msg.author);
 
@@ -20,7 +21,9 @@ export default class Cash extends KaikiCommand {
         await msg.channel.send({
             embeds: [
                 new EmbedBuilder()
-                    .setDescription(`${user.username} has **${moneh}** ${this.client.money.currencyName} ${this.client.money.currencySymbol}`)
+                    .setDescription(
+                        `${user.username} has **${moneh}** ${this.client.money.currencyName} ${this.client.money.currencySymbol}`
+                    )
                     .withOkColor(msg),
             ],
         });

@@ -15,9 +15,10 @@ export default class InviteCommand extends KaikiCommand {
                 new EmbedBuilder({
                     title: "Invite me to your server",
                     description: `[Link](https://discord.com/oauth2/authorize?client_id=${this.client.user?.id}&scope=bot)`,
-                    image: { url: this.client.user?.displayAvatarURL({ size: 128 }) },
-                })
-                    .withOkColor(message),
+                    image: {
+                        url: this.client.user?.displayAvatarURL({ size: 128 }),
+                    },
+                }).withOkColor(message),
             ],
         });
     }

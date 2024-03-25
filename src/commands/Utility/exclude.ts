@@ -14,25 +14,31 @@ import SlashCommandsLib from "../../lib/SlashCommands/SlashCommandsLib";
     preconditions: ["GuildOnly"],
 })
 export default class ExcludeCommand extends KaikiCommand {
-
-    public override registerApplicationCommands(registry: ChatInputCommand.Registry) {
+    public override registerApplicationCommands(
+        registry: ChatInputCommand.Registry
+    ) {
         registry.registerChatInputCommand((builder) =>
             builder
                 .setName("exclude")
                 .setDescription(
-                    "Excludes you from being targeted by dad-bot. Execute command again to reverse this action.",
-                ));
+                    "Excludes you from being targeted by dad-bot. Execute command again to reverse this action."
+                )
+        );
     }
 
     public async messageRun(message: Message<true>) {
         return this.runMessageInteraction(message);
     }
 
-    public async chatInputRun(interaction: Command.ChatInputCommandInteraction<"cached">) {
+    public async chatInputRun(
+        interaction: Command.ChatInputCommandInteraction<"cached">
+    ) {
         return this.runMessageInteraction(interaction);
     }
 
-    private runMessageInteraction(message: Message<true> | Command.ChatInputCommandInteraction<"cached">) {
+    private runMessageInteraction(
+        message: Message<true> | Command.ChatInputCommandInteraction<"cached">
+    ) {
         if (!message.guild.isDadBotEnabledInGuildOnly()) {
             return message.reply({
                 embeds: [

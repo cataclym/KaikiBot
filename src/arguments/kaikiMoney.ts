@@ -4,7 +4,6 @@ import Constants from "../struct/Constants";
 
 export class KaikiMoneyArgument extends Argument<bigint> {
     public async run(parameter: string, context: Argument.Context<bigint>) {
-
         const input = parameter.trim().toUpperCase().replace("K", "000");
 
         const int = KaikiArgumentsTypes.checkInt(input);
@@ -12,14 +11,23 @@ export class KaikiMoneyArgument extends Argument<bigint> {
         if (!int) {
             switch (input) {
                 case "ALL":
-                    return this.ok(await KaikiArgumentsTypes.getCurrency(context.message));
+                    return this.ok(
+                        await KaikiArgumentsTypes.getCurrency(context.message)
+                    );
 
                 case "HALF":
-                    return this.ok(await KaikiArgumentsTypes.getCurrency(context.message) / BigInt(2));
+                    return this.ok(
+                        (await KaikiArgumentsTypes.getCurrency(
+                            context.message
+                        )) / BigInt(2)
+                    );
 
                 case "MAX":
-                    return this.ok(BigInt(Constants.MAGIC_NUMBERS.LIB.KAIKI.KAIKI_ARGS.MAX_INT));
-
+                    return this.ok(
+                        BigInt(
+                            Constants.MAGIC_NUMBERS.LIB.KAIKI.KAIKI_ARGS.MAX_INT
+                        )
+                    );
             }
             return this.error({
                 context,
@@ -29,12 +37,12 @@ export class KaikiMoneyArgument extends Argument<bigint> {
             });
         }
 
-        return context.message.client.money.get(context.message.author.id)
-            .then(money => {
+        return context.message.client.money
+            .get(context.message.author.id)
+            .then((money) => {
                 if (int <= money) {
                     return this.ok(BigInt(int));
-                }
-                else {
+                } else {
                     return this.error({
                         context,
                         parameter,

@@ -15,15 +15,20 @@ export default class NekosAPI extends ImageAPI<EndPoints> {
         super(data);
     }
 
-    public async sendImageAPIRequest<T extends EndPoints>(message: Message, endPoint: T, mention?: GuildMember | null) {
-
+    public async sendImageAPIRequest<T extends EndPoints>(
+        message: Message,
+        endPoint: T,
+        mention?: GuildMember | null
+    ) {
         return message.channel.send({
             embeds: [
-                await APIProcessor.processImageAPIRequest(message,
+                await APIProcessor.processImageAPIRequest(
+                    message,
                     this.url(endPoint),
                     this.endPoints[endPoint],
                     this.objectIndex,
-                    mention),
+                    mention
+                ),
             ],
         });
     }
@@ -40,7 +45,7 @@ export default class NekosAPI extends ImageAPI<EndPoints> {
             Boy: notImplementedEndPointData,
             "Brown Hair": notImplementedEndPointData,
             "Bunny girl": notImplementedEndPointData,
-            "Catgirl": {
+            Catgirl: {
                 action: false,
                 color: Constants.hexColorTable["lightgoldenrodyellow"],
             },
@@ -90,6 +95,7 @@ export default class NekosAPI extends ImageAPI<EndPoints> {
             Yuri: notImplementedEndPointData,
         },
         objectIndex: ["items", "0", "image_url"],
-        url: endPoint => `https://api.nekosapi.com/v3/images/random?tag=${NekosAPITags[endPoint]}&rating=safe&limit=1`,
+        url: (endPoint) =>
+            `https://api.nekosapi.com/v3/images/random?tag=${NekosAPITags[endPoint]}&rating=safe&limit=1`,
     };
 }

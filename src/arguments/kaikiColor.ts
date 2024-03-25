@@ -8,8 +8,10 @@ export class KaikiColorArgument extends Argument<KaikiColor> {
 
     private hexRegex = /^#?[0-9A-F]{6}$/i;
 
-    public run(parameter: string, context: Argument.Context<KaikiColor>): Argument.AwaitableResult<KaikiColor> {
-
+    public run(
+        parameter: string,
+        context: Argument.Context<KaikiColor>
+    ): Argument.AwaitableResult<KaikiColor> {
         // Uncommented for being unnecessary, but still cool to have.
         // const hexInteger = parseInt(parameter);
         //
@@ -21,7 +23,10 @@ export class KaikiColorArgument extends Argument<KaikiColor> {
             return this.ok(KaikiUtil.convertHexToRGB(parameter));
         }
 
-        if (KaikiUtil.hasKey(Constants.hexColorTable, parameter)) return this.ok(KaikiUtil.convertHexToRGB(Constants.hexColorTable[parameter]));
+        if (KaikiUtil.hasKey(Constants.hexColorTable, parameter))
+            return this.ok(
+                KaikiUtil.convertHexToRGB(Constants.hexColorTable[parameter])
+            );
 
         return this.error({
             parameter,

@@ -16,7 +16,6 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 })
 export default class ExcludeStickyRolesCommand extends KaikiCommand {
     public async messageRun(message: Message<true>, args: Args) {
-
         const roles = await args.repeat("role").catch(() => undefined);
 
         const bigIntGuildId = BigInt(message.guildId);
@@ -30,8 +29,10 @@ export default class ExcludeStickyRolesCommand extends KaikiCommand {
         });
 
         if (!guildDb) {
-            guildDb = await this.client.db.getOrCreateGuild(bigIntGuildId) as Guilds & {
-                ExcludedStickyRoles: ExcludedStickyRoles[]
+            guildDb = (await this.client.db.getOrCreateGuild(
+                bigIntGuildId
+            )) as Guilds & {
+                ExcludedStickyRoles: ExcludedStickyRoles[];
             };
             guildDb["ExcludedStickyRoles"] = [];
         }
@@ -43,35 +44,41 @@ export default class ExcludeStickyRolesCommand extends KaikiCommand {
         if (!roles) {
             return message.channel.send({
                 embeds: [
-                    embed.setDescription(guildDb?.ExcludedStickyRoles.length
-                        ? guildDb.ExcludedStickyRoles.map(k => {
-                            const role = message.guild.roles.cache.get(String(k.RoleId));
+                    embed
+                        .setDescription(
+                            guildDb?.ExcludedStickyRoles.length
+                                ? guildDb.ExcludedStickyRoles.map((k) => {
+                                      const role =
+                                          message.guild.roles.cache.get(
+                                              String(k.RoleId)
+                                          );
 
-                            return role
-                                ? `${role.name} [${role.id}]`
-                                : String(k.RoleId);
-                        })
-                            .sort((a, b) =>
-                                a < b
-                                    ? -1
-                                    : 1)
-                            .join("\n").trim()
-                        : "No roles excluded")
+                                      return role
+                                          ? `${role.name} [${role.id}]`
+                                          : String(k.RoleId);
+                                  })
+                                      .sort((a, b) => (a < b ? -1 : 1))
+                                      .join("\n")
+                                      .trim()
+                                : "No roles excluded"
+                        )
                         .withOkColor(message),
                 ],
             });
         }
 
-        const GuildId = BigInt(message.guildId), enabledRoles: bigint[] = [],
-            excludedRoles: { GuildId: bigint, RoleId: bigint }[] = [];
+        const GuildId = BigInt(message.guildId),
+            enabledRoles: bigint[] = [],
+            excludedRoles: { GuildId: bigint; RoleId: bigint }[] = [];
 
         for (const role of roles) {
-
-            if (guildDb?.ExcludedStickyRoles.find(c => String(c.RoleId) === role.id)) {
+            if (
+                guildDb?.ExcludedStickyRoles.find(
+                    (c) => String(c.RoleId) === role.id
+                )
+            ) {
                 enabledRoles.push(BigInt(role.id));
-            }
-
-            else {
+            } else {
                 excludedRoles.push({
                     GuildId,
                     RoleId: BigInt(role.id),
@@ -88,8 +95,10 @@ export default class ExcludeStickyRolesCommand extends KaikiCommand {
                 {
                     name: "Excluded",
                     value: excludedRoles
-                        .map(k => {
-                            const role = message.guild.roles.cache.get(String(k.RoleId));
+                        .map((k) => {
+                            const role = message.guild.roles.cache.get(
+                                String(k.RoleId)
+                            );
 
                             return role
                                 ? `${role.name} [${role.id}]`
@@ -113,8 +122,10 @@ export default class ExcludeStickyRolesCommand extends KaikiCommand {
                 {
                     name: "Un-excluded",
                     value: enabledRoles
-                        .map(k => {
-                            const role = message.guild.roles.cache.get(String(k));
+                        .map((k) => {
+                            const role = message.guild.roles.cache.get(
+                                String(k)
+                            );
 
                             return role
                                 ? `${role.name} [${role.id}]`

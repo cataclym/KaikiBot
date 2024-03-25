@@ -11,6 +11,9 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 })
 export default class Peek extends KaikiCommand {
     public async messageRun(message: Message) {
-        return this.client.imageAPIs.KawaiiAPI.sendImageAPIRequest(message, "peek");
+        return this.client.imageAPIs.KawaiiAPI.sendImageAPIRequest(
+            message,
+            "peek"
+        );
     }
 }

@@ -13,7 +13,6 @@ import Constants from "../../struct/Constants";
 })
 export default class ListUserRoles extends KaikiCommand {
     public async messageRun(message: Message<true>): Promise<Message> {
-
         const db = await this.client.orm.guildUsers.findMany({
             where: {
                 GuildId: BigInt(message.guildId),
@@ -28,36 +27,42 @@ export default class ListUserRoles extends KaikiCommand {
         });
 
         if (db.length) {
-
-            const { ROLE_PR_PAGE } = Constants.MAGIC_NUMBERS.CMDS.ROLES.USER_ROLES;
+            const { ROLE_PR_PAGE } =
+                Constants.MAGIC_NUMBERS.CMDS.ROLES.USER_ROLES;
 
             const mapped = db
-                    .map((table) => `${message.guild?.members.cache.get(String(table.UserId)) || table.UserId} [\`${message.guild?.roles.cache.get(String(table.UserRole)) || table.UserRole}\`]`)
+                    .map(
+                        (table) =>
+                            `${message.guild?.members.cache.get(String(table.UserId)) || table.UserId} [\`${message.guild?.roles.cache.get(String(table.UserRole)) || table.UserRole}\`]`
+                    )
                     .sort(),
                 pages: EmbedBuilder[] = [];
 
-            for (let items = ROLE_PR_PAGE, from = 0;
+            for (
+                let items = ROLE_PR_PAGE, from = 0;
                 mapped.length > from;
-                items += ROLE_PR_PAGE, from += ROLE_PR_PAGE) {
-
+                items += ROLE_PR_PAGE, from += ROLE_PR_PAGE
+            ) {
                 const pageRoles = mapped.slice(from, items);
 
-                pages.push(new EmbedBuilder()
-                    .setTitle("Custom Userroles")
-                    .setDescription(pageRoles.join("\n"))
-                    .withOkColor(message));
+                pages.push(
+                    new EmbedBuilder()
+                        .setTitle("Custom Userroles")
+                        .setDescription(pageRoles.join("\n"))
+                        .withOkColor(message)
+                );
             }
 
             return sendPaginatedMessage(message, pages, {});
-        }
-
-        else {
+        } else {
             return message.channel.send({
                 embeds: [
                     new EmbedBuilder()
                         .withErrorColor(message)
                         .setTitle("No user roles")
-                        .setDescription("This guild has not used this feature yet."),
+                        .setDescription(
+                            "This guild has not used this feature yet."
+                        ),
                 ],
             });
         }

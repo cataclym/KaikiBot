@@ -14,8 +14,10 @@ import { ERCacheType } from "../../lib/Cache/KaikiCache";
     preconditions: ["GuildOnly"],
 })
 export default class RemoveEmoteReactCommand extends KaikiCommand {
-    public async messageRun(message: Message<true>, args: Args): Promise<Message> {
-
+    public async messageRun(
+        message: Message<true>,
+        args: Args
+    ): Promise<Message> {
         const trigger = await args.rest("string");
 
         const db = await this.client.orm.emojiReactions.findFirst({
@@ -30,11 +32,9 @@ export default class RemoveEmoteReactCommand extends KaikiCommand {
             },
         });
 
-        const emoji = message.guild?.emojis.cache
-            .get(String(db?.EmojiId));
+        const emoji = message.guild?.emojis.cache.get(String(db?.EmojiId));
 
         if (db && emoji) {
-
             await this.client.orm.emojiReactions.delete({
                 where: {
                     Id: db.Id,
@@ -42,24 +42,28 @@ export default class RemoveEmoteReactCommand extends KaikiCommand {
             });
 
             if (trigger.includes(" ")) {
-                this.client.cache.emoteReactCache.get(message.guildId)?.get(ERCacheType.HAS_SPACE)?.delete(trigger);
-            }
-
-            else {
-                this.client.cache.emoteReactCache.get(message.guildId)?.get(ERCacheType.NO_SPACE)?.delete(trigger);
+                this.client.cache.emoteReactCache
+                    .get(message.guildId)
+                    ?.get(ERCacheType.HAS_SPACE)
+                    ?.delete(trigger);
+            } else {
+                this.client.cache.emoteReactCache
+                    .get(message.guildId)
+                    ?.get(ERCacheType.NO_SPACE)
+                    ?.delete(trigger);
             }
 
             const embed = new EmbedBuilder()
                 .setTitle("Removed emoji trigger")
-                .setDescription(`Saying \`${trigger}\` will no longer force me to react with \`${emoji?.name ?? "missing emote"}\``)
+                .setDescription(
+                    `Saying \`${trigger}\` will no longer force me to react with \`${emoji?.name ?? "missing emote"}\``
+                )
                 .withOkColor(message);
 
             if (emoji) embed.setThumbnail(emoji.url);
 
             return message.channel.send({ embeds: [embed] });
-        }
-
-        else {
+        } else {
             return message.channel.send({
                 embeds: [
                     new EmbedBuilder()

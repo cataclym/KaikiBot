@@ -7,15 +7,22 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 @ApplyOptions<KaikiCommandOptions>({
     name: "setdaily",
     aliases: ["dailyset"],
-    description: "Sets the daily currency allowance amount. Set to 0 to disable.",
+    description:
+        "Sets the daily currency allowance amount. Set to 0 to disable.",
     preconditions: ["OwnerOnly"],
 })
 export default class SetDailyCommand extends KaikiCommand {
-    public async messageRun(message: Message<true>, args: Args): Promise<Message> {
-
+    public async messageRun(
+        message: Message<true>,
+        args: Args
+    ): Promise<Message> {
         const arg = await args.rest("integer").catch(() => 0);
 
-        const isEnabled = this.client.botSettings.get("1", "DailyEnabled", false);
+        const isEnabled = this.client.botSettings.get(
+            "1",
+            "DailyEnabled",
+            false
+        );
 
         if (arg > 0) {
             await this.client.botSettings.set("1", "DailyEnabled", true);
@@ -23,23 +30,23 @@ export default class SetDailyCommand extends KaikiCommand {
             return message.channel.send({
                 embeds: [
                     new EmbedBuilder()
-                        .setDescription(`Users will be able to claim ${arg} ${this.client.money.currencyName} ${this.client.money.currencySymbol} every day`)
+                        .setDescription(
+                            `Users will be able to claim ${arg} ${this.client.money.currencyName} ${this.client.money.currencySymbol} every day`
+                        )
                         .withOkColor(message),
                 ],
             });
-        }
-
-        else if (!isEnabled) {
+        } else if (!isEnabled) {
             return message.channel.send({
                 embeds: [
                     new EmbedBuilder()
-                        .setDescription("Daily currency allowance is already disabled!")
+                        .setDescription(
+                            "Daily currency allowance is already disabled!"
+                        )
                         .withErrorColor(message),
                 ],
             });
-        }
-
-        else {
+        } else {
             await this.client.botSettings.set("1", "DailyEnabled", false);
             return message.channel.send({
                 embeds: [

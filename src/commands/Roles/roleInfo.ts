@@ -7,13 +7,16 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 @ApplyOptions<KaikiCommandOptions>({
     name: "roleinfo",
     aliases: ["role", "rinfo"],
-    description: "Shows info about a given role. If no role is supplied, it defaults to current one.",
+    description:
+        "Shows info about a given role. If no role is supplied, it defaults to current one.",
     usage: ["@Gamers"],
     preconditions: ["GuildOnly"],
 })
 export default class RoleInfoCommand extends KaikiCommand {
-    public async messageRun(message: Message<true>, args: Args): Promise<Message> {
-
+    public async messageRun(
+        message: Message<true>,
+        args: Args
+    ): Promise<Message> {
         if (!message.member) throw new Error();
 
         const role = args.finished
@@ -27,12 +30,32 @@ export default class RoleInfoCommand extends KaikiCommand {
                     color: resolveColor(role.hexColor),
                     fields: [
                         { name: "ID", value: role.id, inline: true },
-                        { name: "Members", value: String(role.members.size), inline: true },
+                        {
+                            name: "Members",
+                            value: String(role.members.size),
+                            inline: true,
+                        },
                         { name: "Color", value: role.hexColor, inline: true },
-                        { name: "Hoisted", value: role.hoist ? "True" : "False", inline: true },
-                        { name: "Mentionable", value: role.mentionable ? "True" : "False", inline: true },
-                        { name: "Position", value: String(role.position), inline: true },
-                        { name: "Created at", value: role.createdAt.toDateString(), inline: true },
+                        {
+                            name: "Hoisted",
+                            value: role.hoist ? "True" : "False",
+                            inline: true,
+                        },
+                        {
+                            name: "Mentionable",
+                            value: role.mentionable ? "True" : "False",
+                            inline: true,
+                        },
+                        {
+                            name: "Position",
+                            value: String(role.position),
+                            inline: true,
+                        },
+                        {
+                            name: "Created at",
+                            value: role.createdAt.toDateString(),
+                            inline: true,
+                        },
                     ],
                 }),
             ],

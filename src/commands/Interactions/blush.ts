@@ -11,6 +11,9 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 })
 export default class Blush extends KaikiCommand {
     public async messageRun(message: Message): Promise<Message> {
-        return this.client.imageAPIs.PurrBot.sendImageAPIRequest(message, "blush");
+        return this.client.imageAPIs.PurrBot.sendImageAPIRequest(
+            message,
+            "blush"
+        );
     }
 }

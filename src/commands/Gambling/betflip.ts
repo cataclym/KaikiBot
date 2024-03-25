@@ -10,50 +10,59 @@ type Sides = "tails" | "heads";
 @ApplyOptions<KaikiCommandOptions>({
     name: "betflip",
     aliases: ["bf"],
-    description: "Bet on tails or heads. Guessing correct awards you 1.95x the currency you've bet.",
+    description:
+        "Bet on tails or heads. Guessing correct awards you 1.95x the currency you've bet.",
     usage: ["5 heads", "10 t"],
 })
 export default class BetflipCommands extends KaikiCommand {
     public async messageRun(message: Message, args: Args): Promise<Message> {
-
         const number = await args.pick("kaikiMoney");
         const coin = await args.rest("kaikiCoin");
 
-        const success = await this.client.money.tryTake(message.author.id, number, "Betflip gamble");
+        const success = await this.client.money.tryTake(
+            message.author.id,
+            number,
+            "Betflip gamble"
+        );
 
         if (!success) {
             return await message.channel.send({
                 embeds: [
                     new EmbedBuilder()
-                        .setDescription(`You don't have enough ${this.client.money.currencySymbol}`)
+                        .setDescription(
+                            `You don't have enough ${this.client.money.currencySymbol}`
+                        )
                         .withErrorColor(message),
                 ],
             });
         }
 
-        const coinFlipped: Sides = Math.random() < 0.5
-            ? "tails"
-            : "heads";
+        const coinFlipped: Sides = Math.random() < 0.5 ? "tails" : "heads";
 
         const emb = new EmbedBuilder({
             image: { url: images.gambling.coin[coinFlipped] },
-        })
-            .setTitle(`Flipped ${coinFlipped}!`);
+        }).setTitle(`Flipped ${coinFlipped}!`);
 
         if (coin === coinFlipped) {
-            const amountWon = BigInt(Math.round(parseInt(number.toString()) * 1.95));
-            await this.client.money.add(message.author.id, amountWon, "Betflip won x1.95");
+            const amountWon = BigInt(
+                Math.round(parseInt(number.toString()) * 1.95)
+            );
+            await this.client.money.add(
+                message.author.id,
+                amountWon,
+                "Betflip won x1.95"
+            );
 
             return message.channel.send({
                 embeds: [
                     emb
-                        .setDescription(`You won **${amountWon}** ${this.client.money.currencySymbol}!!`)
+                        .setDescription(
+                            `You won **${amountWon}** ${this.client.money.currencySymbol}!!`
+                        )
                         .withOkColor(message),
                 ],
             });
-        }
-
-        else {
+        } else {
             return message.channel.send({
                 embeds: [
                     emb

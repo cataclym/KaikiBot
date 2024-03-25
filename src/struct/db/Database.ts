@@ -1,11 +1,15 @@
 import { PrismaClient } from "@prisma/client";
 import { ActivityType } from "discord.js";
-import { ConnectionOptions, createPool, FieldPacket, Pool } from "mysql2/promise";
+import {
+    ConnectionOptions,
+    createPool,
+    FieldPacket,
+    Pool,
+} from "mysql2/promise";
 import KaikiSapphireClient from "../../lib/Kaiki/KaikiSapphireClient";
 import process from "process";
 
 export default class Database {
-
     private _client: KaikiSapphireClient<true>;
     public orm: PrismaClient;
     private _mySQLConnection: Pool;
@@ -19,7 +23,6 @@ export default class Database {
     }
 
     private createConfig(): ConnectionOptions {
-
         return {
             user: process.env.DB_USER,
             password: process.env.DB_PASSWORD,
@@ -70,7 +73,10 @@ export default class Database {
         return guild;
     }
 
-    public async getOrCreateGuildUser(userId: string | bigint, guildId: string | bigint) {
+    public async getOrCreateGuildUser(
+        userId: string | bigint,
+        guildId: string | bigint
+    ) {
         const guildUser = await this.orm.guildUsers.findFirst({
             where: {
                 UserId: BigInt(userId),

@@ -11,6 +11,9 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 })
 export default class Marin extends KaikiCommand {
     public async messageRun(message: Message): Promise<Message> {
-        return this.client.imageAPIs.WaifuIm.sendImageAPIRequest(message, "marin-kitagawa");
+        return this.client.imageAPIs.WaifuIm.sendImageAPIRequest(
+            message,
+            "marin-kitagawa"
+        );
     }
 }

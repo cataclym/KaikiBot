@@ -9,7 +9,9 @@ import { config } from "dotenv";
 
 config();
 
-process.on("unhandledRejection", async (reason: Error, promise) => container.logger.warn(reason, promise));
+process.on("unhandledRejection", async (reason: Error, promise) =>
+    container.logger.warn(reason, promise)
+);
 
 const bot = new BotContainer(new KaikiSapphireClient());
 void bot.init();

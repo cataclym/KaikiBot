@@ -6,9 +6,10 @@ import * as colorette from "colorette";
     event: Events.ShardError,
 })
 export default class ShardError extends Listener {
-
     // Emitted whenever a shard's WebSocket encounters a connection error.
     public async run(error: Error, id: number): Promise<void> {
-        this.container.logger.error(`shardError | Shard: ${colorette.redBright(id)} \n${error.stack || error}`);
+        this.container.logger.error(
+            `shardError | Shard: ${colorette.redBright(id)} \n${error.stack || error}`
+        );
     }
 }

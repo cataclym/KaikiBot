@@ -7,9 +7,11 @@ import { Snowflake } from "discord.js";
     event: Events.ShardReady,
 })
 export default class ShardReady extends Listener {
-
     // Emitted when a shard turns ready.
-    public async run(id: number, unavailableGuilds?: Set<Snowflake>): Promise<void> {
+    public async run(
+        id: number,
+        unavailableGuilds?: Set<Snowflake>
+    ): Promise<void> {
         const arr = [`shardReady | Shard: ${colorette.green(id)}`];
         if (unavailableGuilds?.size) {
             arr.push("Unavailable guilds:");

@@ -12,10 +12,9 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 })
 export default class ReloadCommand extends KaikiCommand {
     public async messageRun(message: Message, args: Args) {
-
         const cmd = await args.rest("command");
 
-        const unloaded = <KaikiCommand> await this.store.get(cmd.name);
+        const unloaded = <KaikiCommand>await this.store.get(cmd.name);
 
         await unloaded.reload();
 
@@ -25,8 +24,7 @@ export default class ReloadCommand extends KaikiCommand {
                     title: "Command reloaded",
                     description: unloaded.location.full,
                     footer: { text: `Command: ${unloaded.name}` },
-                })
-                    .withOkColor(message),
+                }).withOkColor(message),
             ],
         });
     }

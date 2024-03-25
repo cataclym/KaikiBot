@@ -4,7 +4,6 @@
 import { container } from "@sapphire/pieces";
 
 export default class AnilistGraphQL {
-
     static aniQuery = `
 query ($page: Int, $perPage: Int, $search: String, $type: MediaType) {
           Page(page: $page, perPage: $perPage) {
@@ -120,11 +119,12 @@ query ($page: Int, $perPage: Int, $search: String, $type: MediaType) {
         }
 `;
 
-    static async handleResponse(response: { json: () => Promise<any>; ok: any; }) {
+    static async handleResponse(response: {
+        json: () => Promise<any>;
+        ok: any;
+    }) {
         const json = await response.json();
-        return await (response.ok
-            ? json
-            : Promise.reject(json));
+        return await (response.ok ? json : Promise.reject(json));
     }
 
     static handleError(error: never) {

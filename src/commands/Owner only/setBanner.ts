@@ -27,20 +27,26 @@ export default class SetAvatarCommand extends KaikiCommand {
             method: "PATCH",
             headers: {
                 Authorization: `Bot ${this.client.token}`,
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
             },
             body: JSON.stringify({
-                banner: `data:image/gif;base64,${imgBuffer.toString("base64")}`
-            })
+                banner: `data:image/gif;base64,${imgBuffer.toString("base64")}`,
+            }),
         });
 
-        const attachment = new AttachmentBuilder(imgBuffer, { name: "bannerFile" + url.pathname.substring(url.pathname.lastIndexOf(".")) })
+        const attachment = new AttachmentBuilder(imgBuffer, {
+            name:
+                "bannerFile" +
+                url.pathname.substring(url.pathname.lastIndexOf(".")),
+        });
 
         return message.channel.send({
             content: "New banner set.",
-            embeds: [new EmbedBuilder()
-                .setImage(`attachment://${attachment.name}`)
-                .withOkColor(message)],
+            embeds: [
+                new EmbedBuilder()
+                    .setImage(`attachment://${attachment.name}`)
+                    .withOkColor(message),
+            ],
             files: [attachment],
         });
     }

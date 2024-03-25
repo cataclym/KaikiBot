@@ -23,8 +23,10 @@ import KaikiUtil from "../KaikiUtil";
 import { MoneyService } from "../Money/MoneyService";
 import KaikiClientInterface from "./KaikiClientInterface";
 
-export default class KaikiSapphireClient<Ready extends true> extends SapphireClient<Ready> implements KaikiClientInterface {
-
+export default class KaikiSapphireClient<Ready extends true>
+    extends SapphireClient<Ready>
+    implements KaikiClientInterface
+{
     public anniversaryService: AnniversaryRolesService;
     public botSettings: DatabaseProvider;
     public cache: KaikiCache;
@@ -57,7 +59,11 @@ export default class KaikiSapphireClient<Ready extends true> extends SapphireCli
                 GatewayIntentBits.Guilds,
                 GatewayIntentBits.MessageContent,
             ],
-            partials: [Partials.Reaction, Partials.Channel, Partials.GuildMember],
+            partials: [
+                Partials.Reaction,
+                Partials.Channel,
+                Partials.GuildMember,
+            ],
             shards: "auto",
             loadMessageCommandListeners: true,
             loadDefaultErrorListeners: true,
@@ -75,10 +81,9 @@ export default class KaikiSapphireClient<Ready extends true> extends SapphireCli
         // Not using logger here. Because it resets multiline color
         console.log(colorette.green(Constants.KaikiBotASCII));
 
-        (async () => await this.initializeDatabase())()
-            .catch((e) => {
-                throw new Error(e);
-            });
+        (async () => await this.initializeDatabase())().catch((e) => {
+            throw new Error(e);
+        });
     }
 
     public imageAPIs: ClientImageAPIs = {
@@ -94,12 +99,13 @@ export default class KaikiSapphireClient<Ready extends true> extends SapphireCli
         if (!guild) {
             return String(process.env.PREFIX);
         }
-        return String(this.guildsDb.get(guild.id, "Prefix", process.env.PREFIX));
+        return String(
+            this.guildsDb.get(guild.id, "Prefix", process.env.PREFIX)
+        );
     };
 
     private async dailyResetTimer(): Promise<void> {
         setTimeout(async () => {
-
             // Loop this
             await this.dailyResetTimer();
 
@@ -108,12 +114,10 @@ export default class KaikiSapphireClient<Ready extends true> extends SapphireCli
 
             // Check for "birthdays"
             await this.anniversaryService.birthdayService();
-
         }, KaikiUtil.timeToMidnight());
     }
 
     public async initializeServices() {
-
         this.anniversaryService = new AnniversaryRolesService(this);
 
         // This will execute at midnight
@@ -134,20 +138,44 @@ export default class KaikiSapphireClient<Ready extends true> extends SapphireCli
         this.orm = database.orm;
         this.connection = database.mySQLConnection;
 
-        this.botSettings = new DatabaseProvider(this.connection, "BotSettings", { idColumn: "Id" }, false);
-        this.botSettings.init()
-            .then(() => this.logger.info(`${colorette.green("READY")} - Bot settings provider`))
-            .catch(e => this.dbRejected(e));
+        this.botSettings = new DatabaseProvider(
+            this.connection,
+            "BotSettings",
+            { idColumn: "Id" },
+            false
+        );
+        this.botSettings
+            .init()
+            .then(() =>
+                this.logger.info(
+                    `${colorette.green("READY")} - Bot settings provider`
+                )
+            )
+            .catch((e) => this.dbRejected(e));
 
-        this.guildsDb = new DatabaseProvider(this.connection, "Guilds", { idColumn: "Id" });
-        this.guildsDb.init()
-            .then(() => this.logger.info(`${colorette.green("READY")} - Guild provider`))
-            .catch(e => this.dbRejected(e));
+        this.guildsDb = new DatabaseProvider(this.connection, "Guilds", {
+            idColumn: "Id",
+        });
+        this.guildsDb
+            .init()
+            .then(() =>
+                this.logger.info(`${colorette.green("READY")} - Guild provider`)
+            )
+            .catch((e) => this.dbRejected(e));
 
-        this.dadBotChannels = new DatabaseProvider(this.connection, "DadBotChannels", { idColumn: "ChannelId" });
-        this.dadBotChannels.init()
-            .then(() => this.logger.info(`${colorette.green("READY")} - DadBot channel provider`))
-            .catch(e => this.dbRejected(e));
+        this.dadBotChannels = new DatabaseProvider(
+            this.connection,
+            "DadBotChannels",
+            { idColumn: "ChannelId" }
+        );
+        this.dadBotChannels
+            .init()
+            .then(() =>
+                this.logger.info(
+                    `${colorette.green("READY")} - DadBot channel provider`
+                )
+            )
+            .catch((e) => this.dbRejected(e));
 
         this.cache = new KaikiCache(this.orm, this.connection, this.imageAPIs);
         this.money = new MoneyService(this.orm);
@@ -156,18 +184,20 @@ export default class KaikiSapphireClient<Ready extends true> extends SapphireCli
     private async presenceLoop(): Promise<NodeJS.Timer> {
         await this.setPresence();
 
-        return setInterval(((scope: KaikiSapphireClient<true>) => {
-            return async () => {
-                await scope.setPresence();
-            };
-        })(this), Constants.MAGIC_NUMBERS.LIB.KAIKI.PRESENCE_UPDATE_TIMEOUT);
+        return setInterval(
+            ((scope: KaikiSapphireClient<true>) => {
+                return async () => {
+                    await scope.setPresence();
+                };
+            })(this),
+            Constants.MAGIC_NUMBERS.LIB.KAIKI.PRESENCE_UPDATE_TIMEOUT
+        );
     }
 
     public async setPresence() {
         const db = await this.orm.botSettings.findFirst();
 
         if (db && db.Activity && db.ActivityType) {
-
             const acType = Constants.activityTypes[db.ActivityType];
 
             this.user?.setPresence({
@@ -190,17 +220,24 @@ export default class KaikiSapphireClient<Ready extends true> extends SapphireCli
                 ClaimedDaily: false,
             },
         });
-        this.logger.info(`ResetDailyClaims | Daily claims have been reset! Updated ${colorette.green(updated.count)} entries!`);
+        this.logger.info(
+            `ResetDailyClaims | Daily claims have been reset! Updated ${colorette.green(updated.count)} entries!`
+        );
     }
 
     async filterOptionalCommands() {
         const commandStore = this.stores.get("commands");
 
-        if (!process.env.KAWAIIKEY || process.env.KAWAIIKEY === "[YOUR_OPTIONAL_KAWAII_KEY]") {
+        if (
+            !process.env.KAWAIIKEY ||
+            process.env.KAWAIIKEY === "[YOUR_OPTIONAL_KAWAII_KEY]"
+        ) {
             for (const entry of ["run", "peek", "pout", "lick"]) {
                 await commandStore.unload(entry);
             }
-            this.logger.warn("No Kawaii key provided. Kawaii API commands will be disabled.");
+            this.logger.warn(
+                "No Kawaii key provided. Kawaii API commands will be disabled."
+            );
         }
 
         // Check if 'neofetch' is available
@@ -208,7 +245,9 @@ export default class KaikiSapphireClient<Ready extends true> extends SapphireCli
             execSync("command -v neofetch >/dev/null 2>&1");
         } catch {
             await commandStore.unload("neofetch");
-            this.logger.warn("Neofetch wasn't detected! Neofetch command will be disabled.");
+            this.logger.warn(
+                "Neofetch wasn't detected! Neofetch command will be disabled."
+            );
         }
     }
 

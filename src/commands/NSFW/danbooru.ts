@@ -14,21 +14,29 @@ import KaikiUtil from "../../lib/KaikiUtil";
     nsfw: true,
 })
 export default class EAPICommand extends KaikiCommand {
-
     private videoExtensions = [".mp4", ".webm", ".ts", ".mkv"];
 
     public async messageRun(message: Message, args: Args): Promise<Message> {
-
         let content;
 
         const tags = await args.repeat("string").catch(() => undefined);
 
-        const post = await this.client.hentaiService.makeRequest(tags || null, DAPI.Danbooru);
+        const post = await this.client.hentaiService.makeRequest(
+            tags || null,
+            DAPI.Danbooru
+        );
 
         const emb = new EmbedBuilder()
             .setAuthor({ name: post.tag_string_artist })
-            .setDescription(KaikiUtil.trim(`**Tags**: ${post.tag_string_general}`, 2048))
-            .setImage(post.file_url || post.preview_file_url || post.large_file_url || post.source)
+            .setDescription(
+                KaikiUtil.trim(`**Tags**: ${post.tag_string_general}`, 2048)
+            )
+            .setImage(
+                post.file_url ||
+                    post.preview_file_url ||
+                    post.large_file_url ||
+                    post.source
+            )
             .withOkColor(message);
 
         if (post.tag_string_character) {
@@ -53,4 +61,3 @@ export default class EAPICommand extends KaikiCommand {
         return message.channel.send({ content, embeds: [emb] });
     }
 }
-

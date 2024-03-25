@@ -15,4 +15,3 @@ export interface UrbanResponse {
 export interface RootObject {
     list: UrbanResponse[];
 }
-

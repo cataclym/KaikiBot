@@ -7,26 +7,34 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 @ApplyOptions<KaikiCommandOptions>({
     name: "welcometoggle",
     aliases: ["welcome"],
-    description: "Toggles welcome messages. Bot defaults to current channel if no channel is provided.",
+    description:
+        "Toggles welcome messages. Bot defaults to current channel if no channel is provided.",
     usage: ["", "#welcome-channel"],
     requiredUserPermissions: ["ManageGuild"],
     preconditions: ["GuildOnly"],
     minorCategory: "Welcome",
 })
 export default class WelcomeToggleCommand extends KaikiCommand {
-    public async messageRun(message: Message<true>, args: Args): Promise<Message> {
+    public async messageRun(
+        message: Message<true>,
+        args: Args
+    ): Promise<Message> {
+        const channel = await args
+            .rest("guildTextChannel")
+            .catch(() => message.channel);
 
-        const channel = await args.rest("guildTextChannel").catch(() => message.channel);
+        const embed = new EmbedBuilder().withOkColor(message);
 
-        const embed = new EmbedBuilder()
-            .withOkColor(message);
-
-        const guildTable = await this.client.db.getOrCreateGuild(BigInt(message.guildId));
+        const guildTable = await this.client.db.getOrCreateGuild(
+            BigInt(message.guildId)
+        );
 
         const bigIntChannelId = BigInt(channel.id);
 
-        if (guildTable.WelcomeChannel === undefined || guildTable.WelcomeChannel === null) {
-
+        if (
+            guildTable.WelcomeChannel === undefined ||
+            guildTable.WelcomeChannel === null
+        ) {
             await this.client.orm.guilds.update({
                 where: {
                     Id: BigInt(message.guildId),
@@ -36,11 +44,7 @@ export default class WelcomeToggleCommand extends KaikiCommand {
                 },
             });
             embed.setDescription(`Enabled welcome message in ${channel.name}`);
-
-        }
-
-        else if (guildTable.WelcomeChannel === bigIntChannelId) {
-
+        } else if (guildTable.WelcomeChannel === bigIntChannelId) {
             await this.client.orm.guilds.update({
                 where: {
                     Id: BigInt(message.guildId),
@@ -50,11 +54,7 @@ export default class WelcomeToggleCommand extends KaikiCommand {
                 },
             });
             embed.setDescription("Disabled welcome message");
-
-        }
-
-        else {
-
+        } else {
             await this.client.orm.guilds.update({
                 where: {
                     Id: BigInt(message.guildId),
@@ -64,7 +64,6 @@ export default class WelcomeToggleCommand extends KaikiCommand {
                 },
             });
             embed.setDescription(`Set welcome message to ${channel.name}`);
-
         }
 
         return message.channel.send({

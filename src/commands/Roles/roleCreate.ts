@@ -15,10 +15,11 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 })
 export default class RoleCreateCommand extends KaikiCommand {
     public async messageRun(message: Message, args: Args): Promise<Message> {
-
         const name = await args.rest("string");
 
-        const createdRole = await message.guild?.roles.create({ name: name.substring(0, 32) });
+        const createdRole = await message.guild?.roles.create({
+            name: name.substring(0, 32),
+        });
 
         if (!createdRole) {
             throw new Error("Role creation failed.");
@@ -39,8 +40,7 @@ export default class RoleCreateCommand extends KaikiCommand {
                             value: createdRole.id,
                         },
                     ],
-                })
-                    .withOkColor(message),
+                }).withOkColor(message),
             ],
         });
     }

@@ -8,16 +8,20 @@ import KaikiEmbeds from "../../lib/Kaiki/KaikiEmbeds";
 
 @ApplyOptions<KaikiCommandOptions>({
     name: "say",
-    description: "Bot will send the message you typed in the specified channel. It also takes embeds",
+    description:
+        "Bot will send the message you typed in the specified channel. It also takes embeds",
     usage: ["#general hello from another channel", "<embed code>"],
     requiredUserPermissions: ["ManageMessages"],
     preconditions: ["GuildOnly"],
     quotes: [],
 })
 export default class SayCommand extends KaikiCommand {
-    public async messageRun(message: Message<true>, args: Args): Promise<Message | void> {
-
-        const targetChannel = await args.pick("guildTextChannel")
+    public async messageRun(
+        message: Message<true>,
+        args: Args
+    ): Promise<Message | void> {
+        const targetChannel = await args
+            .pick("guildTextChannel")
             .catch(() => message.channel);
 
         let stringOrJSON = await args.rest("string");
@@ -30,20 +34,31 @@ export default class SayCommand extends KaikiCommand {
 
         try {
             stringOrJSON = JSON.parse(stringOrJSON);
-        }
-        catch {
+        } catch {
             // Ignore
         }
 
         if (message.channel.type !== ChannelType.GuildText) return;
 
-        if (!message.member.permissionsIn(targetChannel).has(PermissionsBitField.Flags.ManageMessages)) {
-            return message.channel.send({ embeds: [await KaikiEmbeds.errorMessage(message, `You do not have \`MANAGE_MESSAGES\` in ${targetChannel}`)] });
+        if (
+            !message.member
+                .permissionsIn(targetChannel)
+                .has(PermissionsBitField.Flags.ManageMessages)
+        ) {
+            return message.channel.send({
+                embeds: [
+                    await KaikiEmbeds.errorMessage(
+                        message,
+                        `You do not have \`MANAGE_MESSAGES\` in ${targetChannel}`
+                    ),
+                ],
+            });
         }
 
-        return targetChannel.send(typeof stringOrJSON === "object"
-            ? new JSONToMessageOptions(stringOrJSON)
-            : { content: stringOrJSON });
+        return targetChannel.send(
+            typeof stringOrJSON === "object"
+                ? new JSONToMessageOptions(stringOrJSON)
+                : { content: stringOrJSON }
+        );
     }
 }
-

@@ -11,22 +11,22 @@ export type ImageAPIEndPointTypes<T extends string> = {
 };
 
 export interface ImageAPIOptions<T extends string> {
-    endPointData: ImageAPIEndPointTypes<T>,
-    url: (endPoint: T) => string,
-    objectIndex: string | string[],
+    endPointData: ImageAPIEndPointTypes<T>;
+    url: (endPoint: T) => string;
+    objectIndex: string | string[];
     token?: string | undefined;
 }
 
 export type ClientImageAPIs = {
-    "KawaiiAPI": KawaiiAPI,
-    "NekosLife": NekosLife,
-    "NekosAPI": NekosAPI;
-    "PurrBot": PurrBot;
-    "WaifuIm": WaifuIm,
-    "WaifuPics": WaifuPics
-}
+    KawaiiAPI: KawaiiAPI;
+    NekosLife: NekosLife;
+    NekosAPI: NekosAPI;
+    PurrBot: PurrBot;
+    WaifuIm: WaifuIm;
+    WaifuPics: WaifuPics;
+};
 
-export type APIs = keyof ClientImageAPIs
+export type APIs = keyof ClientImageAPIs;
 
 export enum NekosAPITags {
     Illustration = 1,
@@ -80,5 +80,5 @@ export enum NekosAPITags {
     Skirt = 49,
     "Blonde hair" = 50,
     Horsegirl = 51,
-    Boy = 52
+    Boy = 52,
 }

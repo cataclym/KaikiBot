@@ -6,10 +6,10 @@
 image: node:20
 
 cache:
-  paths:
-    - node_modules/
+    paths:
+        - node_modules/
 
 build:
-  script:
-    - npm install
-    - npm run build
+    script:
+        - npm install
+        - npm run build

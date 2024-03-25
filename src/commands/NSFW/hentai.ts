@@ -13,19 +13,30 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
     nsfw: true,
 })
 export default class HentaiCommand extends KaikiCommand {
-    public async messageRun(message: Message, args: Args): Promise<void | Message> {
-
-        const category = await args.pick("kaikiHentai")
-            .catch(() => {
-                if (args.finished) {
-                    return null;
-                }
-                throw new UserError({
-                    identifier: "NoCategoryProvided",
-                    message: "Couldn't find a category with that name.",
-                });
+    public async messageRun(
+        message: Message,
+        args: Args
+    ): Promise<void | Message> {
+        const category = await args.pick("kaikiHentai").catch(() => {
+            if (args.finished) {
+                return null;
+            }
+            throw new UserError({
+                identifier: "NoCategoryProvided",
+                message: "Couldn't find a category with that name.",
             });
+        });
 
-        return message.channel.send(await this.client.hentaiService.grabHentai(category || HentaiService.hentaiArray[Math.floor(Math.random() * HentaiService.hentaiArray.length)], "single"));
+        return message.channel.send(
+            await this.client.hentaiService.grabHentai(
+                category ||
+                    HentaiService.hentaiArray[
+                        Math.floor(
+                            Math.random() * HentaiService.hentaiArray.length
+                        )
+                    ],
+                "single"
+            )
+        );
     }
 }

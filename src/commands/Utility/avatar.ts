@@ -11,9 +11,7 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
     usage: "@dreb",
 })
 export default class AvatarCommand extends KaikiCommand {
-
     public async messageRun(message: Message, args: Args): Promise<Message> {
-
         const user = await args.pick("user").catch(() => message.author);
 
         const av = user.displayAvatarURL({ size: 4096 }),
@@ -33,30 +31,39 @@ export default class AvatarCommand extends KaikiCommand {
                 ],
                 image: { url: av },
                 footer: { text: "ID: " + user.id },
-            })
-                .withOkColor(message),
+            }).withOkColor(message),
         ];
 
         if (message.guild) {
             const member = message.guild.members.cache.get(user.id);
             if (member && member.avatar) {
                 const memberAvatar = member.displayAvatarURL({ size: 4096 }),
-                    memberJpeg = member.displayAvatarURL({ size: 4096, extension: "jpg" }),
-                    memberPng = member.displayAvatarURL({ size: 4096, extension: "png" }),
-                    memberWebp = member.displayAvatarURL({ size: 4096, extension: "webp" });
+                    memberJpeg = member.displayAvatarURL({
+                        size: 4096,
+                        extension: "jpg",
+                    }),
+                    memberPng = member.displayAvatarURL({
+                        size: 4096,
+                        extension: "png",
+                    }),
+                    memberWebp = member.displayAvatarURL({
+                        size: 4096,
+                        extension: "webp",
+                    });
 
-                embeds.push(new EmbedBuilder({
-                    title: "Server avatar",
-                    fields: [
-                        {
-                            name: "Links",
-                            value: `${memberAvatar !== memberWebp ? `[gif](${memberAvatar}) ` : ""}[jpg](${memberJpeg}) [png](${memberPng}) [webp](${memberWebp})`,
-                            inline: false,
-                        },
-                    ],
-                    image: { url: memberAvatar },
-                })
-                    .withOkColor(message));
+                embeds.push(
+                    new EmbedBuilder({
+                        title: "Server avatar",
+                        fields: [
+                            {
+                                name: "Links",
+                                value: `${memberAvatar !== memberWebp ? `[gif](${memberAvatar}) ` : ""}[jpg](${memberJpeg}) [png](${memberPng}) [webp](${memberWebp})`,
+                                inline: false,
+                            },
+                        ],
+                        image: { url: memberAvatar },
+                    }).withOkColor(message)
+                );
             }
         }
 

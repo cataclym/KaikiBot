@@ -12,6 +12,11 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 })
 export default class Ero extends KaikiCommand {
     public async messageRun(message: Message): Promise<Message> {
-        return this.client.imageAPIs.WaifuIm.sendImageAPIRequest(message, "ero", undefined, true);
+        return this.client.imageAPIs.WaifuIm.sendImageAPIRequest(
+            message,
+            "ero",
+            undefined,
+            true
+        );
     }
 }

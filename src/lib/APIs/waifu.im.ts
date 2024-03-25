@@ -5,33 +5,42 @@ import ImageAPI from "./Common/ImageAPI";
 import type { ImageAPIOptions } from "./Common/Types";
 
 export default class WaifuIm extends ImageAPI<EndPointSignatures> {
-    constructor(imageAPIData: ImageAPIOptions<EndPointSignatures> = WaifuIm.data) {
+    constructor(
+        imageAPIData: ImageAPIOptions<EndPointSignatures> = WaifuIm.data
+    ) {
         super(imageAPIData);
     }
 
-    public async sendImageAPIRequest<T extends EndPointSignatures>(message: Message, endPoint: T, mention?: GuildMember | null, nsfw = false) {
+    public async sendImageAPIRequest<T extends EndPointSignatures>(
+        message: Message,
+        endPoint: T,
+        mention?: GuildMember | null,
+        nsfw = false
+    ) {
         return message.channel.send({
             embeds: [
-                await APIProcessor.processImageAPIRequest(message,
+                await APIProcessor.processImageAPIRequest(
+                    message,
                     this.url(endPoint, nsfw),
                     this.endPoints[endPoint],
                     this.objectIndex,
-                    mention),
+                    mention
+                ),
             ],
         });
     }
 
     static data: ImageAPIOptions<EndPointSignatures> = {
         endPointData: {
-            "uniform": {
+            uniform: {
                 action: "",
                 color: Constants.hexColorTable["lightskyblue"],
             },
-            "maid": {
+            maid: {
                 action: "",
                 color: Constants.hexColorTable["lightskyblue"],
             },
-            "selfies": {
+            selfies: {
                 action: "",
                 color: Constants.hexColorTable["lightskyblue"],
             },
@@ -39,18 +48,19 @@ export default class WaifuIm extends ImageAPI<EndPointSignatures> {
                 action: "",
                 color: Constants.hexColorTable["lightskyblue"],
             },
-            "ero": {
+            ero: {
                 action: "",
                 color: Constants.hexColorTable["hotpink"],
             },
         },
         objectIndex: ["images", "0", "url"],
-        url: (string: string, nsfw = false) => `https://api.waifu.im/search/?included_tags=${string}&is_nsfw=${nsfw}`,
+        url: (string: string, nsfw = false) =>
+            `https://api.waifu.im/search/?included_tags=${string}&is_nsfw=${nsfw}`,
     };
-
 }
 
-type EndPointSignatures = "uniform"
+type EndPointSignatures =
+    | "uniform"
     | "maid"
     | "selfies"
     | "marin-kitagawa"

@@ -14,7 +14,9 @@ export default class LeaderboardCommand extends KaikiCommand {
     public async messageRun(message: Message): Promise<Message> {
         const { currencySymbol } = this.client.money,
             guildOnlyEntries = (await this.client.orm.discordUsers.findMany({}))
-                .filter(e => message.guild?.members.cache.get(String(e.UserId)))
+                .filter((e) =>
+                    message.guild?.members.cache.get(String(e.UserId))
+                )
                 .sort((e, o) => Number(o.Amount) - Number(e.Amount))
                 .map((e, i) => ({
                     user: String(e.UserId),
@@ -27,8 +29,11 @@ export default class LeaderboardCommand extends KaikiCommand {
             embeds: EmbedBuilder[] = [];
 
         if (guildOnlyEntries.length) {
-            for (let i = 9, p = 0; p < guildOnlyEntries.length; i += 9, p += 9) {
-
+            for (
+                let i = 9, p = 0;
+                p < guildOnlyEntries.length;
+                i += 9, p += 9
+            ) {
                 const emb = EmbedBuilder.from(embed);
 
                 guildOnlyEntries.slice(p, i).forEach((e) => {
@@ -41,8 +46,7 @@ export default class LeaderboardCommand extends KaikiCommand {
 
                 embeds.push(emb);
             }
-        }
-        else {
+        } else {
             embeds.push(embed.setDescription("There's nothing here, yet."));
         }
 

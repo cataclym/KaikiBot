@@ -7,7 +7,8 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 @ApplyOptions<KaikiCommandOptions>({
     name: "welcomemessage",
     aliases: ["welcomemsg"],
-    description: "Set message to display when someone joins the guild. Provide either text, or valid JSON from the [embed creator](https://embed.kaikibot.xyz)",
+    description:
+        "Set message to display when someone joins the guild. Provide either text, or valid JSON from the [embed creator](https://embed.kaikibot.xyz)",
     requiredUserPermissions: ["ManageGuild"],
     preconditions: ["GuildOnly"],
     minorCategory: "Welcome",
@@ -15,7 +16,6 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 })
 export default class WelcomeMessageCommand extends KaikiCommand {
     public async messageRun(message: Message, args: Args): Promise<Message> {
-
         const json = await args.rest("welcomeGoodbyeMessage");
 
         const guildID = (message.guild as Guild).id;
@@ -29,14 +29,19 @@ export default class WelcomeMessageCommand extends KaikiCommand {
 
         const embeds = [
             new EmbedBuilder()
-                .setDescription(`New welcome message has been set!\n\nTest what the message looks like by typing \`${prefix}welcometest\``)
+                .setDescription(
+                    `New welcome message has been set!\n\nTest what the message looks like by typing \`${prefix}welcometest\``
+                )
                 .withOkColor(message),
         ];
 
         if (!db.WelcomeChannel) {
-            embeds.push(new EmbedBuilder()
-                .setDescription(`Enable \`welcome\` messages by typing \`${prefix}welcome\`.`)
-                .withOkColor(message),
+            embeds.push(
+                new EmbedBuilder()
+                    .setDescription(
+                        `Enable \`welcome\` messages by typing \`${prefix}welcome\`.`
+                    )
+                    .withOkColor(message)
             );
         }
 

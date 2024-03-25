@@ -10,7 +10,8 @@ export class MoneyService {
         (async () => {
             const botSettings = await this.orm.botSettings.findFirst();
 
-            if (!botSettings) throw new Error("Missing row in BotSettings table!");
+            if (!botSettings)
+                throw new Error("Missing row in BotSettings table!");
 
             this.currencyName = botSettings.CurrencyName;
             this.currencySymbol = botSettings.CurrencySymbol;
@@ -47,7 +48,11 @@ export class MoneyService {
         return query.Amount;
     }
 
-    async tryTake(id: string, amount: bigint, reason: string): Promise<boolean> {
+    async tryTake(
+        id: string,
+        amount: bigint,
+        reason: string
+    ): Promise<boolean> {
         if (amount <= 0) {
             throw new Error("Amount must be greater than 0");
         }
@@ -69,8 +74,7 @@ export class MoneyService {
                 },
             });
             return true;
-        }
-        else if (!currentAmount) {
+        } else if (!currentAmount) {
             this.lazyCreateCurrencyTransactions(bIntId, amount, reason);
             await this.orm.discordUsers.create({
                 data: { UserId: bIntId },
