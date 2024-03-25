@@ -301,6 +301,9 @@ export default class Constants {
             FIFTEEN_MINUTES_MS: 900000,
         },
         CMDS: {
+            ADMIN: {
+                SB_MSG_DEL_SECONDS: 604800,
+            },
             ANIME: {},
             EMOTES: {
                 ADD_EMOTE: {
