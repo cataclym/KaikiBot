@@ -5,7 +5,8 @@ import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOpti
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import Constants from "../../struct/Constants";
 
-export type ValidActivities = "PLAYING"
+export type ValidActivities =
+    | "PLAYING"
     | "STREAMING"
     | "LISTENING"
     | "WATCHING"
@@ -19,22 +20,24 @@ export type ValidActivities = "PLAYING"
     preconditions: ["OwnerOnly"],
 })
 export default class SetActivityCommand extends KaikiCommand {
-
     public async messageRun(message: Message, args: Args) {
-
         const type = await args.pick("activityType");
 
         const name = await args.rest("string");
 
         return Promise.all([
-            message.client.user?.setActivity({ type: Constants.activityTypes[type], name: name }),
+            message.client.user?.setActivity({
+                type: Constants.activityTypes[type],
+                name: name,
+            }),
             this.client.botSettings.set("1", "Activity", name),
             this.client.botSettings.set("1", "ActivityType", type),
             message.channel.send({
                 embeds: [
                     new EmbedBuilder()
                         .addFields({
-                            name: "Status changed", value: `**Type**: ${type}\n**Activity**: ${name}`,
+                            name: "Status changed",
+                            value: `**Type**: ${type}\n**Activity**: ${name}`,
                         })
                         .withOkColor(message),
                 ],

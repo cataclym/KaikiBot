@@ -1,10 +1,11 @@
 ### Paths
 
-- Docs
-    - [Guide](docs/GUIDE.md)
-    - [.env setup](docs/ENV.md)
+-   Docs
+    -   [Guide](docs/GUIDE.md)
+    -   [.env setup](docs/ENV.md)
 
 # Welcome to Kaiki Deishu Bot
+
 [![](https://tokei.rs/b1/github/cataclym/Kaiki-Deishu-Bot?category=code)](https://github.com/cataclym/Kaiki-Deishu-Bot)
 [![](https://tokei.rs/b1/github/cataclym/Kaiki-Deishu-Bot?category=files)](https://github.com/cataclym/Kaiki-Deishu-Bot)
 

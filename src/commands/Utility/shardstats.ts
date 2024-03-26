@@ -22,14 +22,19 @@ enum ShardStats {
 })
 export default class ShardStatisticsCommand extends KaikiCommand {
     public async messageRun(message: Message<true>) {
-
         const { ws } = message.client;
 
         return message.channel.send({
             content: `${await KaikiUtil.codeblock(`This guild is managed by shard: [${message.guild.shardId}]`, "xl")}
-    ${await KaikiUtil.codeblock(Array.from(ws.shards.entries())
-        .map(([, w]) => `ID: [${w.id}] | Ping: ${w.ping}ms | Status: ${ShardStats[w.status]}`)
-        .join("\n"), "xl")}`,
+    ${await KaikiUtil.codeblock(
+        Array.from(ws.shards.entries())
+            .map(
+                ([, w]) =>
+                    `ID: [${w.id}] | Ping: ${w.ping}ms | Status: ${ShardStats[w.status]}`
+            )
+            .join("\n"),
+        "xl"
+    )}`,
         });
     }
 }

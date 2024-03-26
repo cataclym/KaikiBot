@@ -8,7 +8,6 @@ import GreetHandler from "../lib/GreetHandler";
 })
 export default class GuildMemberRemoved extends Listener {
     public async run(member: GuildMember): Promise<void> {
-
         const greetHandler = new GreetHandler(member);
 
         const guildId = BigInt(member.guild.id);
@@ -16,7 +15,7 @@ export default class GuildMemberRemoved extends Listener {
 
         const { client } = this.container;
 
-        const leaveRoles = member.roles.cache.map(role => {
+        const leaveRoles = member.roles.cache.map((role) => {
             return client.orm.leaveRoles.create({
                 data: {
                     RoleId: BigInt(role.id),

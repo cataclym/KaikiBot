@@ -10,7 +10,12 @@ export default class DatabaseProvider extends Provider {
     public items: Collection<string, any>;
     private readonly bigInt: boolean;
 
-    constructor(db: Pool, tableName: string, options?: ProviderOptions, bigint?: boolean) {
+    constructor(
+        db: Pool,
+        tableName: string,
+        options?: ProviderOptions,
+        bigint?: boolean
+    ) {
         super();
         this.items = new Collection();
         this.db = db;
@@ -21,17 +26,22 @@ export default class DatabaseProvider extends Provider {
     }
 
     async init(): Promise<void> {
-        const [rows] = <RowDataPacket[][]> await this.db.query(
+        const [rows] = <RowDataPacket[][]>await this.db.query(
             `SELECT *
-             FROM ${this.tableName}`,
+             FROM ${this.tableName}`
         );
 
         for (const row of rows) {
             if (this.bigInt) {
-                this.items.set(row[this.idColumn], this.dataColumn ? JSON.parse(row[this.dataColumn]) : row);
-            }
-            else {
-                this.items.set(String(row[this.idColumn]), this.dataColumn ? JSON.parse(row[this.dataColumn]) : row);
+                this.items.set(
+                    row[this.idColumn],
+                    this.dataColumn ? JSON.parse(row[this.dataColumn]) : row
+                );
+            } else {
+                this.items.set(
+                    String(row[this.idColumn]),
+                    this.dataColumn ? JSON.parse(row[this.dataColumn]) : row
+                );
             }
         }
     }
@@ -53,25 +63,25 @@ export default class DatabaseProvider extends Provider {
         this.items.set(id, data);
 
         if (this.dataColumn) {
-            return this.db.execute(exists
-                ? `UPDATE ${this.tableName}
+            return this.db.execute(
+                exists
+                    ? `UPDATE ${this.tableName}
                    SET ${this.dataColumn} = ?
                    WHERE ${this.idColumn} = ?`
-                : `INSERT INTO ${this.tableName} (${this.idColumn}, ${this.dataColumn})
-                   VALUES (?, ?)`, exists
-                ? [data[key], id]
-                : [id, data[key]],
+                    : `INSERT INTO ${this.tableName} (${this.idColumn}, ${this.dataColumn})
+                   VALUES (?, ?)`,
+                exists ? [data[key], id] : [id, data[key]]
             );
         }
 
-        return this.db.execute(exists
-            ? `UPDATE ${this.tableName}
+        return this.db.execute(
+            exists
+                ? `UPDATE ${this.tableName}
                SET ${key} = ?
                WHERE ${this.idColumn} = ?`
-            : `INSERT INTO ${this.tableName} (${this.idColumn}, ${key})
-               VALUES (?, ?)`, exists
-            ? [data[key], id]
-            : [id, data[key]],
+                : `INSERT INTO ${this.tableName} (${this.idColumn}, ${key})
+               VALUES (?, ?)`,
+            exists ? [data[key], id] : [id, data[key]]
         );
     }
 
@@ -80,26 +90,35 @@ export default class DatabaseProvider extends Provider {
         delete data[key];
 
         if (this.dataColumn) {
-            return this.db.execute(`UPDATE ${this.tableName}
+            return this.db.execute(
+                `UPDATE ${this.tableName}
                                     SET ${this.dataColumn} = $value
-                                    WHERE ${this.idColumn} = $id`, {
-                $id: id,
-                $value: JSON.stringify(data),
-            });
+                                    WHERE ${this.idColumn} = $id`,
+                {
+                    $id: id,
+                    $value: JSON.stringify(data),
+                }
+            );
         }
 
-        return this.db.execute(`UPDATE ${this.tableName}
+        return this.db.execute(
+            `UPDATE ${this.tableName}
                                 SET ${key} = $value
-                                WHERE ${this.idColumn} = $id`, {
-            $id: id,
-            $value: null,
-        });
+                                WHERE ${this.idColumn} = $id`,
+            {
+                $id: id,
+                $value: null,
+            }
+        );
     }
 
     clear(id: string) {
         this.items.delete(id);
-        return this.db.execute(`DELETE
+        return this.db.execute(
+            `DELETE
                                 FROM ${this.tableName}
-                                WHERE ${this.idColumn} = $id`, { $id: id });
+                                WHERE ${this.idColumn} = $id`,
+            { $id: id }
+        );
     }
 }

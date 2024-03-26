@@ -8,8 +8,16 @@ import Config from "../../lib/ServerConfig/Config";
 @ApplyOptions<KaikiSubCommandOptions>({
     name: "config",
     aliases: ["configure", "conf"],
-    description: "Configure or display guild specific settings.\nYou can use any of the following\n`'1', 'true', '+', 't', 'yes', 'y'` to enable configs or \n`'0', 'false', '-', 'f', 'no', 'n'` to disable them.",
-    usage: ["", "dadbot enable", "anniversary enable", "prefix !", "okcolor <hex>", "errorcolor <hex>"],
+    description:
+        "Configure or display guild specific settings.\nYou can use any of the following\n`'1', 'true', '+', 't', 'yes', 'y'` to enable configs or \n`'0', 'false', '-', 'f', 'no', 'n'` to disable them.",
+    usage: [
+        "",
+        "dadbot enable",
+        "anniversary enable",
+        "prefix !",
+        "okcolor <hex>",
+        "errorcolor <hex>",
+    ],
     requiredUserPermissions: ["ManageMessages"],
     preconditions: ["GuildOnly"],
     subcommands: [
@@ -66,7 +74,10 @@ export default class ConfigCommand extends Subcommand {
         return Config.dadbotRun(message, args);
     }
 
-    public async anniversaryRun(message: Message<true>, args: Args): Promise<Message<true>> {
+    public async anniversaryRun(
+        message: Message<true>,
+        args: Args
+    ): Promise<Message<true>> {
         return Config.anniversaryRun(message, args);
     }
 

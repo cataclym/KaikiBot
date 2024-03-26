@@ -7,7 +7,8 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 @ApplyOptions<KaikiCommandOptions>({
     name: "goodbyemessage",
     aliases: ["goodbyemsg", "byemessage", "byemsg"],
-    description: "Set message to display when someone leaves the guild. Provide either text, or valid JSON from the [embed creator](https://embed.kaikibot.xyz)",
+    description:
+        "Set message to display when someone leaves the guild. Provide either text, or valid JSON from the [embed creator](https://embed.kaikibot.xyz)",
     requiredUserPermissions: ["ManageGuild"],
     preconditions: ["GuildOnly"],
     minorCategory: "Goodbye",
@@ -15,7 +16,6 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 })
 export default class ByeMessageCommand extends KaikiCommand {
     public async messageRun(message: Message, args: Args): Promise<Message> {
-
         const json = await args.rest("welcomeGoodbyeMessage");
 
         const guildID = (message.guild as Guild).id;
@@ -29,14 +29,19 @@ export default class ByeMessageCommand extends KaikiCommand {
 
         const embed = [
             new EmbedBuilder()
-                .setDescription(`New bye message has been set!\n\nTest what the message looks like by typing \`${prefix}byetest\``)
+                .setDescription(
+                    `New bye message has been set!\n\nTest what the message looks like by typing \`${prefix}byetest\``
+                )
                 .withOkColor(message),
         ];
 
         if (!db.ByeChannel) {
-            embed.push(new EmbedBuilder()
-                .setDescription(`Enable \`goodbye\` messages by typing \`${prefix}goodbye\`.`)
-                .withOkColor(message),
+            embed.push(
+                new EmbedBuilder()
+                    .setDescription(
+                        `Enable \`goodbye\` messages by typing \`${prefix}goodbye\`.`
+                    )
+                    .withOkColor(message)
             );
         }
 

@@ -12,6 +12,9 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 })
 export default class Selfies extends KaikiCommand {
     public async messageRun(message: Message): Promise<Message> {
-        return this.client.imageAPIs.WaifuIm.sendImageAPIRequest(message, "selfies");
+        return this.client.imageAPIs.WaifuIm.sendImageAPIRequest(
+            message,
+            "selfies"
+        );
     }
 }

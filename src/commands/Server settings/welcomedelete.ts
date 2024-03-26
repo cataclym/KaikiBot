@@ -7,15 +7,18 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 @ApplyOptions<KaikiCommandOptions>({
     name: "welcomedelete",
     aliases: ["welcomedel"],
-    description: "Set the time it takes for welcome messages to be deleted by the bot",
+    description:
+        "Set the time it takes for welcome messages to be deleted by the bot",
     usage: ["10"],
     requiredUserPermissions: ["ManageGuild"],
     preconditions: ["GuildOnly"],
     minorCategory: "Welcome",
 })
 export default class WelcomeDeleteCommand extends KaikiCommand {
-    public async messageRun(message: Message<true>, args: Args): Promise<Message> {
-
+    public async messageRun(
+        message: Message<true>,
+        args: Args
+    ): Promise<Message> {
         const time = await args.rest("number").catch(() => null);
 
         await this.client.orm.guilds.update({
@@ -30,7 +33,9 @@ export default class WelcomeDeleteCommand extends KaikiCommand {
         return message.channel.send({
             embeds: [
                 new EmbedBuilder()
-                    .setDescription(`Welcome messages will be deleted after ${time} seconds.`)
+                    .setDescription(
+                        `Welcome messages will be deleted after ${time} seconds.`
+                    )
                     .withOkColor(message),
             ],
         });

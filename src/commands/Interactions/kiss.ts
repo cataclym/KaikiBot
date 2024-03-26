@@ -13,6 +13,10 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 })
 export default class Kiss extends KaikiCommand {
     public async messageRun(message: Message, args: Args): Promise<Message> {
-        return this.client.imageAPIs.WaifuPics.sendImageAPIRequest(message, "kiss", await args.rest("member").catch(() => null));
+        return this.client.imageAPIs.WaifuPics.sendImageAPIRequest(
+            message,
+            "kiss",
+            await args.rest("member").catch(() => null)
+        );
     }
 }

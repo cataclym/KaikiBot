@@ -1,5 +1,11 @@
 import { ApplyOptions } from "@sapphire/decorators";
-import { ActionRowBuilder, ButtonBuilder, EmbedBuilder, InteractionCollector, Message } from "discord.js";
+import {
+    ActionRowBuilder,
+    ButtonBuilder,
+    EmbedBuilder,
+    InteractionCollector,
+    Message,
+} from "discord.js";
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
@@ -9,29 +15,29 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 })
 export default class ForgetMeCommand extends KaikiCommand {
     public async messageRun(message: Message): Promise<void> {
-
         const deleteMsg = await message.channel.send({
             embeds: [
                 new EmbedBuilder()
-                    .setDescription("Are you *sure* you want to delete all your entries in the database?")
+                    .setDescription(
+                        "Are you *sure* you want to delete all your entries in the database?"
+                    )
                     .withOkColor(message),
             ],
             isInteraction: true,
             components: [
                 new ActionRowBuilder<ButtonBuilder>({
-                    components:
-                        [
-                            new ButtonBuilder()
-                                .setCustomId("1")
-                                .setLabel("Yes")
-                                .setEmoji("⚠️")
-                                .setStyle(4),
-                            new ButtonBuilder()
-                                .setCustomId("2")
-                                .setLabel("No")
-                                .setEmoji("❌")
-                                .setStyle(2),
-                        ],
+                    components: [
+                        new ButtonBuilder()
+                            .setCustomId("1")
+                            .setLabel("Yes")
+                            .setEmoji("⚠️")
+                            .setStyle(4),
+                        new ButtonBuilder()
+                            .setCustomId("2")
+                            .setLabel("No")
+                            .setEmoji("❌")
+                            .setStyle(2),
+                    ],
                 }),
             ],
         });
@@ -43,7 +49,6 @@ export default class ForgetMeCommand extends KaikiCommand {
         });
 
         buttonListener.once("collect", async (i) => {
-
             if (i.isButton()) {
                 if (i.customId === "1") {
                     const userData = await this.client.orm.discordUsers.delete({
@@ -57,17 +62,20 @@ export default class ForgetMeCommand extends KaikiCommand {
                         },
                     });
 
-                    const guildData = await this.client.orm.guildUsers.deleteMany({
-                        where: {
-                            UserId: BigInt(message.author.id),
-                        },
-                    });
+                    const guildData =
+                        await this.client.orm.guildUsers.deleteMany({
+                            where: {
+                                UserId: BigInt(message.author.id),
+                            },
+                        });
 
                     message.channel.send({
                         embeds: [
                             new EmbedBuilder()
                                 .setTitle("Deleted data")
-                                .setDescription("All data stored about you has been deleted!")
+                                .setDescription(
+                                    "All data stored about you has been deleted!"
+                                )
                                 .addFields([
                                     {
                                         name: "Cleared user-data",
@@ -85,8 +93,7 @@ export default class ForgetMeCommand extends KaikiCommand {
                                 .withOkColor(message),
                         ],
                     });
-                }
-                else {
+                } else {
                     await message.delete();
                 }
                 buttonListener.stop();

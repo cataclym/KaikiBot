@@ -1,8 +1,8 @@
 ### Paths
 
-- [Readme](../README.md)
-- Docs
-    - [Guide](GUIDE.md)
+-   [Readme](../README.md)
+-   Docs
+    -   [Guide](GUIDE.md)
 
 # .env setup guide
 
@@ -12,13 +12,13 @@ The .env file is important for the bot to run at all. Read below how to populate
 
 Create a bot application
 
-* Go to your discord bot applications (https://discord.com/developers/applications/)
-* Click `New Application` in top right corner
-* Fill in a name, and assign it to personal team.
-* Click `Bot` under `SETTINGS` on the menu, on the left.
-* Click `Add Bot`
-* Click `Copy` under `TOKEN`
-* Paste the token in the .env file. Make sure it looks like the example below.
+-   Go to your discord bot applications (https://discord.com/developers/applications/)
+-   Click `New Application` in top right corner
+-   Fill in a name, and assign it to personal team.
+-   Click `Bot` under `SETTINGS` on the menu, on the left.
+-   Click `Add Bot`
+-   Click `Copy` under `TOKEN`
+-   Paste the token in the .env file. Make sure it looks like the example below.
 
 Example
 
@@ -26,10 +26,10 @@ Example
 
 ## OWNER
 
-* Enable developer mode in Discord
-    * Navigate to Discord settings
-    * Under settings, click `Advanced`
-    * Tick `Developer mode`. Make sure it's green.
+-   Enable developer mode in Discord
+    -   Navigate to Discord settings
+    -   Under settings, click `Advanced`
+    -   Tick `Developer mode`. Make sure it's green.
 
 Example
 
@@ -45,9 +45,9 @@ Example
 
 ## KAWAIIKEY
 
-* Login to https://kawaii.red/dashboard/ with your Discord account
-* Reveal and copy the token
-* Paste the token in the .env file. Make sure it looks like the example below.
+-   Login to https://kawaii.red/dashboard/ with your Discord account
+-   Reveal and copy the token
+-   Paste the token in the .env file. Make sure it looks like the example below.
 
 Example
 
@@ -56,7 +56,8 @@ Example
 ## MySQL
 
 Replace `yourUsername` and `yourPassword` with your MySQL user and password credentials
-- Note: In some cases you need to change `localhost` with `127.0.0.1` 
+
+-   Note: In some cases you need to change `localhost` with `127.0.0.1`
 
 Example
 

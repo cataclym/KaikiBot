@@ -11,6 +11,9 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 })
 export default class Uniform extends KaikiCommand {
     public async messageRun(message: Message) {
-        return this.client.imageAPIs.WaifuIm.sendImageAPIRequest(message, "uniform");
+        return this.client.imageAPIs.WaifuIm.sendImageAPIRequest(
+            message,
+            "uniform"
+        );
     }
 }

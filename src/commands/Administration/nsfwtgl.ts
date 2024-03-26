@@ -14,18 +14,19 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 })
 export default class ChannelNsfwCommand extends KaikiCommand {
     public async messageRun(message: Message): Promise<Message> {
-
         const channel = message.channel as TextChannel;
 
         const result = `NSFW in ${channel} has been ${!channel.nsfw ? "enabled" : "disabled"}.`;
-        await channel.setNSFW(!channel.nsfw, `${message.author.username} toggled NSFW.`);
+        await channel.setNSFW(
+            !channel.nsfw,
+            `${message.author.username} toggled NSFW.`
+        );
 
         return message.channel.send({
             embeds: [
                 new EmbedBuilder({
                     description: result,
-                })
-                    .withOkColor(message),
+                }).withOkColor(message),
             ],
         });
     }

@@ -13,8 +13,9 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 })
 export default class WelcomeTestCommand extends KaikiCommand {
     public async messageRun(message: Message<true>) {
-
-        const db = await this.client.db.getOrCreateGuild(BigInt(message.guildId));
+        const db = await this.client.db.getOrCreateGuild(
+            BigInt(message.guildId)
+        );
 
         const welcomeData = {
             channel: db.WelcomeChannel || BigInt(message.channelId),
@@ -31,11 +32,11 @@ export default class WelcomeTestCommand extends KaikiCommand {
             embeds: [
                 result
                     ? new EmbedBuilder()
-                        .setTitle("Message sent successfully!")
-                        .withOkColor(message)
+                          .setTitle("Message sent successfully!")
+                          .withOkColor(message)
                     : new EmbedBuilder()
-                        .setTitle("Message was not sent successfully!")
-                        .withErrorColor(message),
+                          .setTitle("Message was not sent successfully!")
+                          .withErrorColor(message),
             ],
         });
     }

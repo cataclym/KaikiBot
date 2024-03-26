@@ -11,5 +11,5 @@ export enum CategoriesEnum {
     "Server settings",
     Utility,
     Images,
-    Interactions
+    Interactions,
 }

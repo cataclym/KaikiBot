@@ -11,37 +11,41 @@ import Constants from "../../struct/Constants";
 @ApplyOptions<KaikiCommandOptions>({
     name: "currencytransactions",
     aliases: ["curtrs"],
-    description: "Shows your currency transactions. Bot owner can see other people's transactions.",
+    description:
+        "Shows your currency transactions. Bot owner can see other people's transactions.",
     usage: ["", "7", "10 @drev"],
 })
 export default class CurrencyTransactionsCommand extends KaikiCommand {
-
     public async messageRun(message: Message, args: Args) {
+        const firstArg = await Promise.resolve(
+            args
+                .pick("number")
+                .catch(async () =>
+                    args.pick("member").then(async (m) => m.user)
+                )
+                .catch(async () => {
+                    if (args.finished) {
+                        return message.author;
+                    }
+                    throw new UserError({
+                        identifier: "IncorrectArgs",
+                        message:
+                            "Your arguments didn't resolve to a number or a member.",
+                    });
+                })
+        );
 
-        const firstArg = await Promise.resolve(args.pick("number")
-            .catch(async () => args.pick("member")
-                .then(async (m) => m.user))
-            .catch(async () => {
-                if (args.finished) {
-                    return message.author;
-                }
-                throw new UserError({
-                    identifier: "IncorrectArgs",
-                    message: "Your arguments didn't resolve to a number or a member.",
-                });
-            }));
-
-        const secondArg = await Promise.resolve(args.pick("member")
-            .then(async (m) => m.user))
-            .catch(async () => {
-                if (args.finished) {
-                    return null;
-                }
-                throw new UserError({
-                    identifier: "IncorrectArgs",
-                    message: "Your arguments didn't resolve to a member.",
-                });
+        const secondArg = await Promise.resolve(
+            args.pick("member").then(async (m) => m.user)
+        ).catch(async () => {
+            if (args.finished) {
+                return null;
+            }
+            throw new UserError({
+                identifier: "IncorrectArgs",
+                message: "Your arguments didn't resolve to a member.",
             });
+        });
 
         let page = 1;
         let user = message.author;
@@ -49,16 +53,13 @@ export default class CurrencyTransactionsCommand extends KaikiCommand {
         if (typeof firstArg === "number") {
             if (Number.isSafeInteger(firstArg)) {
                 page = firstArg;
-            }
-            else {
+            } else {
                 throw new UserError({
                     message: "Provide a valid number.",
                     identifier: "UnsafeInteger",
                 });
             }
-        }
-
-        else {
+        } else {
             user = firstArg;
         }
 
@@ -66,44 +67,64 @@ export default class CurrencyTransactionsCommand extends KaikiCommand {
             user = secondArg;
         }
 
-        const db = (await this.client.orm.currencyTransactions.findMany({
-            where: {
-                UserId: (user.id !== message.author.id && message.author.id === message.client.owner.id)
-                    ? BigInt(user.id)
-                    : BigInt(message.author.id),
-            },
-        })).sort((a, b) => b.DateAdded.getTime() - a.DateAdded.getTime());
+        const db = (
+            await this.client.orm.currencyTransactions.findMany({
+                where: {
+                    UserId:
+                        user.id !== message.author.id &&
+                        message.author.id === message.client.owner.id
+                            ? BigInt(user.id)
+                            : BigInt(message.author.id),
+                },
+            })
+        ).sort((a, b) => b.DateAdded.getTime() - a.DateAdded.getTime());
 
         if (!db || !db.length) {
             return message.channel.send({
-                embeds: [await KaikiEmbeds.embedFail(message, "No currency transactions were found. Try getting some cash!")],
+                embeds: [
+                    await KaikiEmbeds.embedFail(
+                        message,
+                        "No currency transactions were found. Try getting some cash!"
+                    ),
+                ],
             });
         }
 
         const pages = [];
 
-        for (let i = Constants.MAGIC_NUMBERS.CMDS.GAMBLING.CUR_TRS.TRANS_PR_PAGE, p = 0;
+        for (
+            let i = Constants.MAGIC_NUMBERS.CMDS.GAMBLING.CUR_TRS.TRANS_PR_PAGE,
+                p = 0;
             p < db.length;
-            i += Constants.MAGIC_NUMBERS.CMDS.GAMBLING.CUR_TRS.TRANS_PR_PAGE, p += Constants.MAGIC_NUMBERS.CMDS.GAMBLING.CUR_TRS.TRANS_PR_PAGE) {
-            pages.push(CurrencyTransactionsCommand.baseEmbed(message)
-                .setTitle(`Showing ${user.username}'s currency transactions`)
-                .setDescription(
-                    db.slice(p, i)
-                        .map(row =>
-                            `${row.Amount > Constants.MAGIC_NUMBERS.CMDS.GAMBLING.CUR_TRS.BIGINT_ZERO
-                                ? "🟩"
-                                : "🟥"} ${time(row.DateAdded)} ${this.client.money.currencySymbol} ${row.Amount}\nNote: \`${row.Reason}\``,
-                        )
-                        .join("\n"),
-                ),
+            i += Constants.MAGIC_NUMBERS.CMDS.GAMBLING.CUR_TRS.TRANS_PR_PAGE,
+                p += Constants.MAGIC_NUMBERS.CMDS.GAMBLING.CUR_TRS.TRANS_PR_PAGE
+        ) {
+            pages.push(
+                CurrencyTransactionsCommand.baseEmbed(message)
+                    .setTitle(
+                        `Showing ${user.username}'s currency transactions`
+                    )
+                    .setDescription(
+                        db
+                            .slice(p, i)
+                            .map(
+                                (row) =>
+                                    `${
+                                        row.Amount >
+                                        Constants.MAGIC_NUMBERS.CMDS.GAMBLING
+                                            .CUR_TRS.BIGINT_ZERO
+                                            ? "🟩"
+                                            : "🟥"
+                                    } ${time(row.DateAdded)} ${this.client.money.currencySymbol} ${row.Amount}\nNote: \`${row.Reason}\``
+                            )
+                            .join("\n")
+                    )
             );
         }
         return sendPaginatedMessage(message, pages, {}, page - 1);
-
     }
 
     private static baseEmbed(message: Message) {
-        return new EmbedBuilder()
-            .withOkColor(message);
+        return new EmbedBuilder().withOkColor(message);
     }
 }

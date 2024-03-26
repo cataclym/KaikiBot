@@ -1,12 +1,15 @@
 ### Paths
-- [Readme](../README.md)
-- Docs
-  - [.env setup](ENV.md)
+
+-   [Readme](../README.md)
+-   Docs
+    -   [.env setup](ENV.md)
 
 ## Requirements
-* Linux (Can work on other OS, but not supported)
-* Node.js v16.6 (or newer) https://nodejs.org/en/
-* MySQL
+
+-   Linux (Can work on other OS, but not supported)
+-   Node.js v16.6 (or newer) https://nodejs.org/en/
+-   MySQL
+
 ## Instructions
 
 1. Clone repo: `git clone https://gitlab.com/cataclym/KaikiDeishuBot.git && cd KaikiDeishuBot`
@@ -24,7 +27,8 @@ Having issues? Come join us on discord
     <img src="https://discord.com/api/guilds/794671071886049280/embed.png?style=banner3" title="Discord Server" alt="Kaiki invite link">
 </a>
 
-***
+---
+
 # Inviting your bot
 
 First make sure you have created a bot application. Learn how to [here](ENV.md).

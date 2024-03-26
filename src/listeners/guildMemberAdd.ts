@@ -12,7 +12,9 @@ export default class GuildMemberAdd extends Listener {
         const greetHandler = new GreetHandler(member);
 
         await Promise.all([
-            this.container.client.anniversaryService.checkAnniversaryMember(member),
+            this.container.client.anniversaryService.checkAnniversaryMember(
+                member
+            ),
             greetHandler.handleGreetMessage(),
             Roles.handleStickyRoles(member),
         ]);

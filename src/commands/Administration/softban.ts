@@ -3,14 +3,16 @@ import { Args } from "@sapphire/framework";
 import { EmbedBuilder, GuildMember, Message, User } from "discord.js";
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+import Constants from "../../struct/Constants";
 
 @ApplyOptions<KaikiCommandOptions>({
-    name: "ban",
-    aliases: ["bean", "b"],
-    description: "Bans a user by ID or name with an optional message.",
+    name: "softban",
+    aliases: ["sb"],
+    description:
+        "Bans and unbans a user by ID or name, with an optional message. Also removes all the users messages.",
     usage: "@notdreb Your behaviour is harmful",
-    requiredUserPermissions: ["BanMembers"],
-    requiredClientPermissions: ["BanMembers"],
+    requiredUserPermissions: ["KickMembers", "ManageMessages"],
+    requiredClientPermissions: ["BanMembers", "ManageMessages"],
     preconditions: ["GuildOnly"],
 })
 export default class BanCommand extends KaikiCommand {
@@ -25,7 +27,7 @@ export default class BanCommand extends KaikiCommand {
             .rest("string")
             .catch(
                 () =>
-                    `Banned by ${message.author.username} [${message.author.id}]`
+                    `Softbanned by ${message.author.username} [${message.author.id}]`
             );
 
         const username =
@@ -34,8 +36,8 @@ export default class BanCommand extends KaikiCommand {
         const guild = message.guild,
             guildClientMember = guild.members.me;
 
-        const successBan = new EmbedBuilder({
-            title: "Banned user",
+        const successBanEmbed = new EmbedBuilder({
+            title: "Softbanned user",
             fields: [
                 { name: "Username", value: username },
                 { name: "ID", value: user.id, inline: true },
@@ -48,7 +50,7 @@ export default class BanCommand extends KaikiCommand {
 
         if (!guildMember) {
             await message.guild?.members.ban(user, { reason: reason });
-            return message.channel.send({ embeds: [successBan] });
+            return message.channel.send({ embeds: [successBanEmbed] });
         }
 
         // Check if member is ban-able
@@ -82,23 +84,32 @@ export default class BanCommand extends KaikiCommand {
             });
         }
 
-        await message.guild?.members
-            .ban(user, { reason: reason })
-            .then((m) => {
-                try {
-                    (m as GuildMember | User).send({
-                        embeds: [
-                            new EmbedBuilder({
-                                description: `You have been banned from ${message.guild?.name}.\nReason: ${reason}`,
-                            }).withOkColor(message),
-                        ],
-                    });
-                } catch {
-                    // ignored
-                }
-            })
-            .catch((err) => this.client.logger.error(err));
+        // Initial ban
+        const m = await message.guild?.members.ban(user, {
+            reason: reason,
+            deleteMessageSeconds:
+                Constants.MAGIC_NUMBERS.CMDS.ADMIN.SB_MSG_DEL_SECONDS,
+        });
 
-        return message.channel.send({ embeds: [successBan] });
+        try {
+            await (m as GuildMember | User).send({
+                embeds: [
+                    new EmbedBuilder({
+                        description: `You have been soft-banned from ${message.guild?.name || message.guildId}.\nReason: ${reason}`,
+                    }).withOkColor(message),
+                ],
+            });
+        } catch {
+            // this 🤾‍♀️
+        }
+
+        // Unban
+        try {
+            await message.guild.members.unban(user.id);
+        } catch {
+            await message.guild.members.unban(user.id);
+        }
+
+        return message.channel.send({ embeds: [successBanEmbed] });
     }
 }

@@ -8,15 +8,18 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 @ApplyOptions<KaikiCommandOptions>({
     name: "addemotereact",
     aliases: ["emotereact", "aer"],
-    description: "Add triggers for the bot to react with emojis/emotes to. Use quotes for triggers with spaces.",
+    description:
+        "Add triggers for the bot to react with emojis/emotes to. Use quotes for triggers with spaces.",
     usage: ["red :red:", "anime :weeaboosgetout:"],
     requiredUserPermissions: ["ManageEmojisAndStickers"],
     requiredClientPermissions: ["AddReactions"],
     preconditions: ["GuildOnly"],
 })
 export default class EmoteReactCommand extends KaikiCommand {
-    public async messageRun(message: Message<true>, args: Args): Promise<Message> {
-
+    public async messageRun(
+        message: Message<true>,
+        args: Args
+    ): Promise<Message> {
         const trigger = (await args.pick("string")).toLowerCase();
         const emoji = await args.rest("emoji");
         const emojiUrl = `https://cdn.discordapp.com/emojis/${emoji.id}.${emoji.animated ? "gif" : "png"}`;
@@ -40,9 +43,7 @@ export default class EmoteReactCommand extends KaikiCommand {
                     TriggerString: trigger,
                 },
             });
-        }
-
-        else {
+        } else {
             await this.client.orm.emojiReactions.create({
                 data: {
                     Guilds: {
@@ -56,21 +57,28 @@ export default class EmoteReactCommand extends KaikiCommand {
             });
         }
 
-        if (!this.client.cache.emoteReactCache.get(message.guildId)) await KaikiCache.populateERCache(message);
+        if (!this.client.cache.emoteReactCache.get(message.guildId))
+            await KaikiCache.populateERCache(message);
 
         if (trigger.includes(" ")) {
-            this.client.cache.emoteReactCache.get(message.guildId)?.get(ERCacheType.HAS_SPACE)?.set(trigger, emoji.id);
-        }
-
-        else {
-            this.client.cache.emoteReactCache.get(message.guildId)?.get(ERCacheType.NO_SPACE)?.set(trigger, emoji.id);
+            this.client.cache.emoteReactCache
+                .get(message.guildId)
+                ?.get(ERCacheType.HAS_SPACE)
+                ?.set(trigger, emoji.id);
+        } else {
+            this.client.cache.emoteReactCache
+                .get(message.guildId)
+                ?.get(ERCacheType.NO_SPACE)
+                ?.set(trigger, emoji.id);
         }
 
         return message.channel.send({
             embeds: [
                 new EmbedBuilder()
                     .setTitle("New emoji trigger added")
-                    .setDescription(`Typing \`${trigger}\` will force me to react with :${emoji.name}:...`)
+                    .setDescription(
+                        `Typing \`${trigger}\` will force me to react with :${emoji.name}:...`
+                    )
                     .setThumbnail(emojiUrl)
                     .withOkColor(message),
             ],

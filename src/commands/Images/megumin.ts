@@ -11,6 +11,9 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 })
 export default class megumin extends KaikiCommand {
     public async messageRun(message: Message): Promise<Message> {
-        return this.client.imageAPIs.WaifuPics.sendImageAPIRequest(message, "megumin");
+        return this.client.imageAPIs.WaifuPics.sendImageAPIRequest(
+            message,
+            "megumin"
+        );
     }
 }

@@ -9,28 +9,31 @@ import Constants from "../../struct/Constants";
 @ApplyOptions<KaikiCommandOptions>({
     name: "names",
     aliases: ["name"],
-    description: "Returns yours or mentioned user's daddy nicknames. Delete your nicknames with 'delete' argument.",
+    description:
+        "Returns yours or mentioned user's daddy nicknames. Delete your nicknames with 'delete' argument.",
     usage: ["@dreb", "delete"],
     preconditions: ["GuildOnly"],
 })
 export default class NamesCommand extends KaikiCommand {
-    private static baseEmbed = (message: Message, member: GuildMember) => new EmbedBuilder()
-        .setTitle(`${member.user.username}'s past names`)
-        .setThumbnail(member.displayAvatarURL())
-        .withOkColor(message);
+    private static baseEmbed = (message: Message, member: GuildMember) =>
+        new EmbedBuilder()
+            .setTitle(`${member.user.username}'s past names`)
+            .setThumbnail(member.displayAvatarURL())
+            .withOkColor(message);
 
-    public async messageRun(message: Message, args: Args): Promise<Message | void> {
-
-        const member = <GuildMember> await args.pick("member")
-            .catch(() => {
-                if (args.finished) {
-                    return message.member;
-                }
-                throw new UserError({
-                    identifier: "NoMemberProvided",
-                    message: "Couldn't find a server member with that name.",
-                });
+    public async messageRun(
+        message: Message,
+        args: Args
+    ): Promise<Message | void> {
+        const member = <GuildMember>await args.pick("member").catch(() => {
+            if (args.finished) {
+                return message.member;
+            }
+            throw new UserError({
+                identifier: "NoMemberProvided",
+                message: "Couldn't find a server member with that name.",
             });
+        });
 
         const method = await args.pick(this.argument).catch(() => null);
 
@@ -46,9 +49,7 @@ export default class NamesCommand extends KaikiCommand {
                         },
                     },
                 });
-            }
-
-            else {
+            } else {
                 deleted = await this.client.orm.userNicknames.deleteMany({
                     where: {
                         GuildUsers: {
@@ -61,7 +62,9 @@ export default class NamesCommand extends KaikiCommand {
             return message.channel.send({
                 embeds: [
                     new EmbedBuilder()
-                        .setDescription(`Deleted all of <@${message.author.id}>'s nicknames from ${message.inGuild() ? "this server" : "all servers"}!.\nWell done, you made daddy forget.`)
+                        .setDescription(
+                            `Deleted all of <@${message.author.id}>'s nicknames from ${message.inGuild() ? "this server" : "all servers"}!.\nWell done, you made daddy forget.`
+                        )
                         .setFooter({
                             text: `Deleted ${deleted.count} entries.`,
                         })
@@ -84,15 +87,11 @@ export default class NamesCommand extends KaikiCommand {
             });
 
             if (db.length) {
-                nicknames = db.map(name => name.Nickname);
-            }
-
-            else {
+                nicknames = db.map((name) => name.Nickname);
+            } else {
                 nicknames = ["Empty"];
             }
-        }
-
-        else {
+        } else {
             const db = await this.client.orm.userNicknames.findMany({
                 where: {
                     GuildUsers: {
@@ -102,19 +101,23 @@ export default class NamesCommand extends KaikiCommand {
             });
 
             if (db.length) {
-                nicknames = db.map(name => name.Nickname);
-            }
-
-            else {
+                nicknames = db.map((name) => name.Nickname);
+            } else {
                 nicknames = ["Empty"];
             }
         }
 
-        for (let i = Constants.MAGIC_NUMBERS.CMDS.FUN.NAMES.NAMES_PR_PAGE, p = 0;
+        for (
+            let i = Constants.MAGIC_NUMBERS.CMDS.FUN.NAMES.NAMES_PR_PAGE, p = 0;
             p < nicknames.length;
-            i += Constants.MAGIC_NUMBERS.CMDS.FUN.NAMES.NAMES_PR_PAGE, p += Constants.MAGIC_NUMBERS.CMDS.FUN.NAMES.NAMES_PR_PAGE) {
-            pages.push(NamesCommand.baseEmbed(message, member)
-                .setDescription(nicknames.slice(p, i).join(", ")));
+            i += Constants.MAGIC_NUMBERS.CMDS.FUN.NAMES.NAMES_PR_PAGE,
+                p += Constants.MAGIC_NUMBERS.CMDS.FUN.NAMES.NAMES_PR_PAGE
+        ) {
+            pages.push(
+                NamesCommand.baseEmbed(message, member).setDescription(
+                    nicknames.slice(p, i).join(", ")
+                )
+            );
         }
 
         return sendPaginatedMessage(message, pages, { owner: message.author });

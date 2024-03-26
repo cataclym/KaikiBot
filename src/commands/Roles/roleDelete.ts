@@ -15,22 +15,20 @@ import Roles from "../../lib/Roles";
     preconditions: ["GuildOnly"],
 })
 export default class RoleDeleteCommand extends KaikiCommand {
-    public async messageRun(message: Message<true>, args: Args): Promise<Message> {
-
+    public async messageRun(
+        message: Message<true>,
+        args: Args
+    ): Promise<Message> {
         const roles = await args.repeat("role");
 
         const deletedRoles: string[] = [];
         const otherRoles: string[] = [];
 
         for await (const role of roles) {
-
             if (await Roles.rolePermissionCheck(message, role)) {
-
                 role.delete().catch(() => otherRoles.push(role.name));
                 deletedRoles.push(role.name);
-            }
-
-            else {
+            } else {
                 otherRoles.push(role.name);
             }
         }
@@ -39,23 +37,23 @@ export default class RoleDeleteCommand extends KaikiCommand {
             return message.channel.send({
                 embeds: [
                     new EmbedBuilder()
-                        .setDescription(`Role(s) \`${otherRoles.join("`, `")}\` could not be deleted due to insufficient permissions.`)
+                        .setDescription(
+                            `Role(s) \`${otherRoles.join("`, `")}\` could not be deleted due to insufficient permissions.`
+                        )
                         .withErrorColor(message),
                 ],
             });
-        }
-
-        else if (deletedRoles.length) {
+        } else if (deletedRoles.length) {
             return message.channel.send({
                 embeds: [
                     new EmbedBuilder()
-                        .setDescription(`Deleted: \`${deletedRoles.join("`, `")}\``)
+                        .setDescription(
+                            `Deleted: \`${deletedRoles.join("`, `")}\``
+                        )
                         .withOkColor(message),
                 ],
             });
-        }
-
-        else {
+        } else {
             return message.channel.send({
                 embeds: [
                     new EmbedBuilder()

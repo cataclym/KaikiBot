@@ -14,7 +14,6 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 })
 export default class UnbanCommand extends KaikiCommand {
     public async messageRun(message: Message, args: Args): Promise<Message> {
-
         const user = await args.pick("user");
 
         const bans = message.guild?.bans.cache.size
@@ -27,19 +26,15 @@ export default class UnbanCommand extends KaikiCommand {
                 embeds: [
                     new EmbedBuilder({
                         description: `Unbanned ${user.username}.`,
-                    })
-                        .withOkColor(message),
+                    }).withOkColor(message),
                 ],
             });
-        }
-
-        else {
+        } else {
             return message.channel.send({
                 embeds: [
                     new EmbedBuilder({
                         description: `\`${user.username}\` is not banned.`,
-                    })
-                        .withErrorColor(message),
+                    }).withErrorColor(message),
                 ],
             });
         }

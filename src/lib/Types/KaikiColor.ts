@@ -4,7 +4,7 @@ export type KaikiColor = {
     b: number;
 };
 
-export type KaikiRGBA = `rgba(${string})`
+export type KaikiRGBA = `rgba(${string})`;
 
 export type ColorNames = {
     aliceblue: string;
@@ -155,5 +155,5 @@ export type ColorNames = {
     white: string;
     whitesmoke: string;
     yellow: string;
-    yellowgreen: string
-}
+    yellowgreen: string;
+};

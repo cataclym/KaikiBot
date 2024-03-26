@@ -14,8 +14,9 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 })
 export default class GoodbyeTestTestCommand extends KaikiCommand {
     public async messageRun(message: Message<true>): Promise<void> {
-
-        const db = await this.client.db.getOrCreateGuild(BigInt(message.guildId));
+        const db = await this.client.db.getOrCreateGuild(
+            BigInt(message.guildId)
+        );
 
         const welcomeData = {
             channel: db.ByeChannel || BigInt(message.channelId),

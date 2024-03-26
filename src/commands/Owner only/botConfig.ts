@@ -11,7 +11,8 @@ import { BotConfig } from "../../struct/db/Database";
 @ApplyOptions<KaikiSubCommandOptions>({
     name: "botconfig",
     aliases: ["bc"],
-    description: "Change various bot configurations. Run without arguments to see current settings.",
+    description:
+        "Change various bot configurations. Run without arguments to see current settings.",
     usage: ["<setting> <value>", "currencyname Europe Dollars"],
     preconditions: ["OwnerOnly"],
     subcommands: [
@@ -47,7 +48,6 @@ import { BotConfig } from "../../struct/db/Database";
     ],
 })
 export default class BotConfigCommand extends Subcommand {
-
     private client = container.client;
 
     public async showRun(message: Message) {
@@ -57,8 +57,18 @@ export default class BotConfigCommand extends Subcommand {
                     .addFields([
                         {
                             name: "Bot config",
-                            value: await KaikiUtil.codeblock(JSON
-                                .stringify(new BotConfig(await this.client.connection.query("SELECT * FROM BotSettings")), null, 4), "json"),
+                            value: await KaikiUtil.codeblock(
+                                JSON.stringify(
+                                    new BotConfig(
+                                        await this.client.connection.query(
+                                            "SELECT * FROM BotSettings"
+                                        )
+                                    ),
+                                    null,
+                                    4
+                                ),
+                                "json"
+                            ),
                         },
                     ])
                     .withOkColor(message),
@@ -80,10 +90,17 @@ export default class BotConfigCommand extends Subcommand {
     public async activitytypeRun(message: Message, args: Args) {
         const type = await args.pick("activityType");
         const activity = this.client.botSettings.get("1", "Activity", null);
-        const oldActivityType = this.client.botSettings.get("1", "ActivityType", null);
+        const oldActivityType = this.client.botSettings.get(
+            "1",
+            "ActivityType",
+            null
+        );
 
         if (activity) {
-            message.client.user.setActivity({ type: Constants.activityTypes[type], name: activity });
+            message.client.user.setActivity({
+                type: Constants.activityTypes[type],
+                name: activity,
+            });
         }
 
         await this.client.botSettings.set("1", "ActivityType", type);
@@ -92,11 +109,14 @@ export default class BotConfigCommand extends Subcommand {
     }
 
     public async currencynameRun(message: Message, args: Args) {
-
         const value = await args.rest("string");
 
         const [oldValue] = await Promise.all([
-            this.client.botSettings.get("1", "CurrencyName", Constants.DEFAULTS.BOT_CONFIG.CUR_NAME),
+            this.client.botSettings.get(
+                "1",
+                "CurrencyName",
+                Constants.DEFAULTS.BOT_CONFIG.CUR_NAME
+            ),
             this.client.botSettings.set("1", "CurrencyName", value),
         ]);
 
@@ -106,11 +126,14 @@ export default class BotConfigCommand extends Subcommand {
     }
 
     public async currencysymbolRun(message: Message, args: Args) {
-
         const value = await args.rest("string");
 
         const [oldValue] = await Promise.all([
-            this.client.botSettings.get("1", "CurrencySymbol", Constants.DEFAULTS.BOT_CONFIG.CUR_SYMBOL),
+            this.client.botSettings.get(
+                "1",
+                "CurrencySymbol",
+                Constants.DEFAULTS.BOT_CONFIG.CUR_SYMBOL
+            ),
             this.client.botSettings.set("1", "CurrencySymbol", value),
         ]);
 
@@ -122,22 +145,42 @@ export default class BotConfigCommand extends Subcommand {
     public async dailyEnabledRun(message: Message, args: Args) {
         const value = await args.rest("boolean");
 
-        const oldValue = <boolean>await this.client.botSettings.get("1", "DailyEnabled", false);
+        const oldValue = <boolean>(
+            await this.client.botSettings.get("1", "DailyEnabled", false)
+        );
         await this.client.botSettings.set("1", "DailyEnabled", value);
 
-        return BotConfigCommand.sendEmbed(message, String(oldValue), String(value));
+        return BotConfigCommand.sendEmbed(
+            message,
+            String(oldValue),
+            String(value)
+        );
     }
 
     public async dailyAmountRun(message: Message, args: Args) {
         const value = await args.rest("number");
 
-        const oldValue = <number>await this.client.botSettings.get("1", "DailyAmount", Constants.MAGIC_NUMBERS.CMDS.OWNER_ONLY.BOT_CONFIG.DAILY_AMOUNT);
+        const oldValue = <number>(
+            await this.client.botSettings.get(
+                "1",
+                "DailyAmount",
+                Constants.MAGIC_NUMBERS.CMDS.OWNER_ONLY.BOT_CONFIG.DAILY_AMOUNT
+            )
+        );
         await this.client.botSettings.set("1", "DailyAmount", value);
 
-        return BotConfigCommand.sendEmbed(message, String(oldValue), String(value));
+        return BotConfigCommand.sendEmbed(
+            message,
+            String(oldValue),
+            String(value)
+        );
     }
 
-    private static sendEmbed = (message: Message, oldValue: string, newValue: string) => {
+    private static sendEmbed = (
+        message: Message,
+        oldValue: string,
+        newValue: string
+    ) => {
         return message.channel.send({
             embeds: [
                 new EmbedBuilder()

@@ -11,22 +11,27 @@ export default class NekosLife extends ImageAPI<APIs> {
         super(data);
     }
 
-    public async sendImageAPIRequest<T extends APIs>(message: Message, endPoint: T, mention?: GuildMember | null) {
-
+    public async sendImageAPIRequest<T extends APIs>(
+        message: Message,
+        endPoint: T,
+        mention?: GuildMember | null
+    ) {
         return message.channel.send({
             embeds: [
-                await APIProcessor.processImageAPIRequest(message,
+                await APIProcessor.processImageAPIRequest(
+                    message,
                     this.url(endPoint),
                     this.endPoints[endPoint],
                     this.objectIndex,
-                    mention),
+                    mention
+                ),
             ],
         });
     }
 
     static data: ImageAPIOptions<APIs> = {
         endPointData: {
-            "spank": {
+            spank: {
                 action: "spanked",
                 color: Constants.hexColorTable["peachpuff"],
                 append: "🍑👋",

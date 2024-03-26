@@ -2,10 +2,10 @@
 
 ### I owe some amazing people thanks, and more!
 
-- Huge thanks to @Arvfitii for helping me whenever im in need!
-- Thanks to @rjt-rockx on Discord for so much help and time!
-- Should also mention @shivaco for help <3
-- Thanks also to @Kwoth <3
+-   Huge thanks to @Arvfitii for helping me whenever im in need!
+-   Thanks to @rjt-rockx on Discord for so much help and time!
+-   Should also mention @shivaco for help <3
+-   Thanks also to @Kwoth <3
 
 ### A bit about this project
 

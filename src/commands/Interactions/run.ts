@@ -10,9 +10,10 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
     typing: true,
 })
 export default class RunCommand extends KaikiCommand {
-
     public async messageRun(message: Message): Promise<Message | void> {
-
-        return this.client.imageAPIs.KawaiiAPI.sendImageAPIRequest(message, "run");
+        return this.client.imageAPIs.KawaiiAPI.sendImageAPIRequest(
+            message,
+            "run"
+        );
     }
 }

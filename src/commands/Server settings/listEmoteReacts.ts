@@ -14,8 +14,9 @@ import Constants from "../../struct/Constants";
 })
 export default class RemoveEmoteReactCommand extends KaikiCommand {
     public async messageRun(message: Message<true>): Promise<Message> {
-
-        const db = await this.client.orm.emojiReactions.findMany({ where: { GuildId: BigInt(message.guildId) } }),
+        const db = await this.client.orm.emojiReactions.findMany({
+                where: { GuildId: BigInt(message.guildId) },
+            }),
             pages: EmbedBuilder[] = [];
 
         if (!db.length) {
@@ -23,22 +24,40 @@ export default class RemoveEmoteReactCommand extends KaikiCommand {
                 embeds: [
                     new EmbedBuilder()
                         .setTitle("No triggers")
-                        .setDescription(`Add triggers with ${(await message.client.fetchPrefix(message))}aer`)
+                        .setDescription(
+                            `Add triggers with ${await message.client.fetchPrefix(message)}aer`
+                        )
                         .withErrorColor(message),
                 ],
             });
         }
 
-        for (let index = Constants.MAGIC_NUMBERS.CMDS.SERVER_SETTINGS.EMOTES.EMOTE_TRIGGERS_PR_PAGE, p = 0;
+        for (
+            let index =
+                    Constants.MAGIC_NUMBERS.CMDS.SERVER_SETTINGS.EMOTES
+                        .EMOTE_TRIGGERS_PR_PAGE,
+                p = 0;
             p < db.length;
-            index += Constants.MAGIC_NUMBERS.CMDS.SERVER_SETTINGS.EMOTES.EMOTE_TRIGGERS_PR_PAGE, p += Constants.MAGIC_NUMBERS.CMDS.SERVER_SETTINGS.EMOTES.EMOTE_TRIGGERS_PR_PAGE) {
-
-            pages.push(new EmbedBuilder()
-                .setTitle("Emoji triggers")
-                .setDescription(db.slice(p, index).map(table => {
-                    return `**${table.TriggerString}** => ${message.guild?.emojis.cache.get(String(table.EmojiId)) ?? table.EmojiId}`;
-                }).join("\n"))
-                .withOkColor(message));
+            index +=
+                Constants.MAGIC_NUMBERS.CMDS.SERVER_SETTINGS.EMOTES
+                    .EMOTE_TRIGGERS_PR_PAGE,
+                p +=
+                    Constants.MAGIC_NUMBERS.CMDS.SERVER_SETTINGS.EMOTES
+                        .EMOTE_TRIGGERS_PR_PAGE
+        ) {
+            pages.push(
+                new EmbedBuilder()
+                    .setTitle("Emoji triggers")
+                    .setDescription(
+                        db
+                            .slice(p, index)
+                            .map((table) => {
+                                return `**${table.TriggerString}** => ${message.guild?.emojis.cache.get(String(table.EmojiId)) ?? table.EmojiId}`;
+                            })
+                            .join("\n")
+                    )
+                    .withOkColor(message)
+            );
         }
 
         return sendPaginatedMessage(message, pages, {});

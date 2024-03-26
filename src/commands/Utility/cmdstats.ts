@@ -12,8 +12,7 @@ export default class Cmdstats extends KaikiCommand {
     async messageRun(message: Message) {
         const db = await this.client.orm.commandStats.findMany();
 
-        const total = db.map(entry => entry.Count)
-            .reduce((a, b) => a + b);
+        const total = db.map((entry) => entry.Count).reduce((a, b) => a + b);
 
         const sorted = db.sort((a, b) => b.Count - a.Count);
 
@@ -25,8 +24,12 @@ export default class Cmdstats extends KaikiCommand {
                     .addFields([
                         {
                             name: "Most used",
-                            value: sorted.slice(0, 5)
-                                .map((entry, i) => `#**${i + 1}** ${entry.CommandAlias}: **${entry.Count}**`)
+                            value: sorted
+                                .slice(0, 5)
+                                .map(
+                                    (entry, i) =>
+                                        `#**${i + 1}** ${entry.CommandAlias}: **${entry.Count}**`
+                                )
                                 .join("\n"),
                         },
                     ])

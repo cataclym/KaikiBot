@@ -9,22 +9,29 @@ import KaikiEmbeds from "../../lib/Kaiki/KaikiEmbeds";
     description: "Claim your daily currency allowance",
 })
 export default class ClaimDailyCommand extends KaikiCommand {
-
     public async messageRun(message: Message) {
-
         const enabled = this.client.botSettings.get("1", "DailyEnabled", false);
 
         if (!enabled) {
-            return message.channel.send({ embeds: [await KaikiEmbeds.errorMessage(message, "A daily amount has not been set by the bot owner!")] });
+            return message.channel.send({
+                embeds: [
+                    await KaikiEmbeds.errorMessage(
+                        message,
+                        "A daily amount has not been set by the bot owner!"
+                    ),
+                ],
+            });
         }
 
         const amount = this.client.botSettings.get("1", "DailyAmount", 250);
 
-        if (!(await this.client.orm.discordUsers.findUnique({
-            where: {
-                UserId: BigInt(message.author.id),
-            },
-        }))) {
+        if (
+            !(await this.client.orm.discordUsers.findUnique({
+                where: {
+                    UserId: BigInt(message.author.id),
+                },
+            }))
+        ) {
             await this.client.orm.discordUsers.create({
                 data: {
                     UserId: BigInt(message.author.id),
@@ -32,25 +39,34 @@ export default class ClaimDailyCommand extends KaikiCommand {
             });
         }
 
-        if (!await this.client.cache.dailyProvider.hasClaimedDaily(message.author.id)) {
-
+        if (
+            !(await this.client.cache.dailyProvider.hasClaimedDaily(
+                message.author.id
+            ))
+        ) {
             await this.client.cache.dailyProvider.setClaimed(message.author.id);
-            await this.client.money.add(message.author.id, BigInt(amount), "Claimed daily");
+            await this.client.money.add(
+                message.author.id,
+                BigInt(amount),
+                "Claimed daily"
+            );
 
             return message.channel.send({
                 embeds: [
                     new EmbedBuilder()
-                        .setDescription(`**${message.author.username}**, You've just claimed your daily allowance!\n**${amount}** ${this.client.money.currencyName} ${this.client.money.currencySymbol}`)
+                        .setDescription(
+                            `**${message.author.username}**, You've just claimed your daily allowance!\n**${amount}** ${this.client.money.currencyName} ${this.client.money.currencySymbol}`
+                        )
                         .withOkColor(message),
                 ],
             });
-        }
-
-        else {
+        } else {
             return message.channel.send({
                 embeds: [
                     new EmbedBuilder()
-                        .setDescription(`**${message.author.username}**, You've already claimed your daily allowance!!`)
+                        .setDescription(
+                            `**${message.author.username}**, You've already claimed your daily allowance!!`
+                        )
                         .withErrorColor(message),
                 ],
             });

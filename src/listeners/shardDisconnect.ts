@@ -6,10 +6,10 @@ import * as colorette from "colorette";
     event: Events.ShardDisconnect,
 })
 export default class ShardDisconnect extends Listener {
-
     // Emitted when a shard's WebSocket disconnects and will no longer reconnect.
     public async run(event: CloseEvent, id: number) {
-
-        this.container.logger.warn(`ShardDisconnect | Shard: ${colorette.redBright(id)} Reason: ${event.reason}`);
+        this.container.logger.warn(
+            `ShardDisconnect | Shard: ${colorette.redBright(id)} Reason: ${event.reason}`
+        );
     }
 }

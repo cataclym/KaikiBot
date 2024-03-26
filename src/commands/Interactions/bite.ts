@@ -12,6 +12,10 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 })
 export default class Bite extends KaikiCommand {
     public async messageRun(message: Message, args: Args): Promise<Message> {
-        return this.client.imageAPIs.PurrBot.sendImageAPIRequest(message, "bite", await args.rest("member").catch(() => null));
+        return this.client.imageAPIs.PurrBot.sendImageAPIRequest(
+            message,
+            "bite",
+            await args.rest("member").catch(() => null)
+        );
     }
 }

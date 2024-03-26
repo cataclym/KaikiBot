@@ -13,7 +13,9 @@ export default class BotContainer {
         this.client = client;
 
         if (!process.env) {
-            throw new Error(`Missing .env file. Please double-check the guide! (${Constants.LINKS.GUIDE})`);
+            throw new Error(
+                `Missing .env file. Please double-check the guide! (${Constants.LINKS.GUIDE})`
+            );
         }
 
         if (!process.env.PREFIX || process.env.PREFIX === "[YOUR_PREFIX]") {
@@ -29,23 +31,26 @@ export default class BotContainer {
 
     private async loadPackageJSON() {
         if (!process.env.npm_package_json) {
-            this.client.package = await fs.readFile("package.json")
-                .then(file => JSON.parse(file.toString()));
-        }
-
-        else {
-            this.client.package = await fs.readFile(process.env.npm_package_json)
-                .then(file => JSON.parse(file.toString()));
+            this.client.package = await fs
+                .readFile("package.json")
+                .then((file) => JSON.parse(file.toString()));
+        } else {
+            this.client.package = await fs
+                .readFile(process.env.npm_package_json)
+                .then((file) => JSON.parse(file.toString()));
         }
     }
 
     private static noBotOwner(): never {
-        container.logger.error("No bot owner found! Double check your bot application in Discord's developer panel.");
+        container.logger.error(
+            "No bot owner found! Double check your bot application in Discord's developer panel."
+        );
         process.exit(1);
     }
 
     public async init() {
-        this.client.login(process.env.CLIENT_TOKEN)
+        this.client
+            .login(process.env.CLIENT_TOKEN)
             .then(async () => {
                 if (!this.client.user) {
                     throw new Error("Missing bot client user!");
@@ -57,42 +62,49 @@ export default class BotContainer {
                     return BotContainer.noBotOwner();
                 }
 
-                const owner = this.client.application.owner instanceof Team
-                    ? this.client.application.owner.owner?.user
-                    : this.client.application.owner;
+                const owner =
+                    this.client.application.owner instanceof Team
+                        ? this.client.application.owner.owner?.user
+                        : this.client.application.owner;
 
                 if (!owner) {
                     return BotContainer.noBotOwner();
-                }
-
-                else {
+                } else {
                     this.client.owner = owner;
                 }
 
-                this.client.logger.info(`Bot account: ${colorette.greenBright(this.client.user.username)}`);
-                this.client.logger.info(`Bot owner: ${colorette.greenBright(this.client.owner.username)}`);
+                this.client.logger.info(
+                    `Bot account: ${colorette.greenBright(this.client.user.username)}`
+                );
+                this.client.logger.info(
+                    `Bot owner: ${colorette.greenBright(this.client.owner.username)}`
+                );
 
                 // Let bot owner know when bot goes online.
-                if (this.client.user && this.client.owner.id === process.env.OWNER) {
+                if (
+                    this.client.user &&
+                    this.client.owner.id === process.env.OWNER
+                ) {
                     // Inconspicuous emotes haha
-                    const emoji = ["✨", "♥️", "✅", "🇹🇼"][Math.floor(Math.random() * 4)];
+                    const emoji = ["✨", "♥️", "✅", "🇹🇼"][
+                        Math.floor(Math.random() * 4)
+                    ];
                     await this.client.owner.send({
-                        embeds:
-                            [
-                                new EmbedBuilder()
-                                    .setTitle(emoji)
-                                    .setDescription("Bot is online!")
-                                    .setFooter({
-                                        text: `${this.client.package.name} - v${this.client.package.version}`,
-                                    })
-                                    .withOkColor(),
-                            ],
+                        embeds: [
+                            new EmbedBuilder()
+                                .setTitle(emoji)
+                                .setDescription("Bot is online!")
+                                .setFooter({
+                                    text: `${this.client.package.name} - v${this.client.package.version}`,
+                                })
+                                .withOkColor(),
+                        ],
                     });
                 }
 
                 await this.client.filterOptionalCommands();
             })
-            .catch(e => {
+            .catch((e) => {
                 container.logger.warn(e);
                 process.exit(1);
             });

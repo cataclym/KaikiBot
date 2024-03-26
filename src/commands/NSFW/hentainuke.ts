@@ -14,24 +14,34 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 })
 export default class HentaiNukeCommand extends KaikiCommand {
     public async messageRun(message: Message, args: Args): Promise<void> {
-
-        const category = await args.pick("kaikiHentai")
-            .catch(() => {
-                if (args.finished) {
-                    return null;
-                }
-                throw new UserError({
-                    identifier: "NoCategoryProvided",
-                    message: "Couldn't find a category with that name.",
-                });
+        const category = await args.pick("kaikiHentai").catch(() => {
+            if (args.finished) {
+                return null;
+            }
+            throw new UserError({
+                identifier: "NoCategoryProvided",
+                message: "Couldn't find a category with that name.",
             });
-        const megaResponse = (await this.client.hentaiService.grabHentai(category ?? HentaiService.hentaiArray[Math.floor(Math.random() * HentaiService.hentaiArray.length)], "bomb"));
+        });
+        const megaResponse = await this.client.hentaiService.grabHentai(
+            category ??
+                HentaiService.hentaiArray[
+                    Math.floor(Math.random() * HentaiService.hentaiArray.length)
+                ],
+            "bomb"
+        );
 
-        for (let index = 10, p = 0; p < megaResponse.length; index += 10, p += 10) {
+        for (
+            let index = 10, p = 0;
+            p < megaResponse.length;
+            index += 10, p += 10
+        ) {
             await message.channel.send({
-                embeds: megaResponse.slice(p, index).map(link => new EmbedBuilder()
-                    .setImage(link)
-                    .withOkColor(message)),
+                embeds: megaResponse
+                    .slice(p, index)
+                    .map((link) =>
+                        new EmbedBuilder().setImage(link).withOkColor(message)
+                    ),
             });
         }
     }

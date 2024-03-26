@@ -11,6 +11,9 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 })
 export default class Neko extends KaikiCommand {
     public async messageRun(message: Message): Promise<Message> {
-        return this.client.imageAPIs.WaifuPics.sendImageAPIRequest(message, "neko");
+        return this.client.imageAPIs.WaifuPics.sendImageAPIRequest(
+            message,
+            "neko"
+        );
     }
 }

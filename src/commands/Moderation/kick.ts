@@ -15,32 +15,35 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 })
 export default class KickCommand extends KaikiCommand {
     public async messageRun(message: Message, args: Args): Promise<Message> {
-
         const member = await args.pick("member");
         const reason = await args.rest("string").catch(() => "Kicked");
 
         const guild = message.guild as Guild;
         const guildClientMember = guild.members.me as GuildMember;
 
-        if (message.author.id !== message.guild?.ownerId &&
-            (message.member as GuildMember).roles.highest.position <= member.roles.highest.position) {
-
+        if (
+            message.author.id !== message.guild?.ownerId &&
+            (message.member as GuildMember).roles.highest.position <=
+                member.roles.highest.position
+        ) {
             return message.channel.send({
                 embeds: [
                     new EmbedBuilder({
-                        description: "You don't have permissions to kick this member.",
-                    })
-                        .withErrorColor(message),
+                        description:
+                            "You don't have permissions to kick this member.",
+                    }).withErrorColor(message),
                 ],
             });
-        }
-        else if (guildClientMember.roles.highest.position <= member.roles.highest.position) {
+        } else if (
+            guildClientMember.roles.highest.position <=
+            member.roles.highest.position
+        ) {
             return message.channel.send({
                 embeds: [
                     new EmbedBuilder({
-                        description: "Sorry, I don't have permissions to kick this member.",
-                    })
-                        .withErrorColor(message),
+                        description:
+                            "Sorry, I don't have permissions to kick this member.",
+                    }).withErrorColor(message),
                 ],
             });
         }
@@ -51,20 +54,23 @@ export default class KickCommand extends KaikiCommand {
                 { name: "Username", value: member.user.username, inline: true },
                 { name: "ID", value: member.user.id, inline: true },
             ],
-        })
-            .withOkColor(message);
+        }).withOkColor(message);
 
-        await member.kick(reason).then(m => {
-            m.user.send({
-                embeds: [
-                    new EmbedBuilder({
-                        description: `You have been kicked from ${message.guild?.name}.\nReason: ${reason}`,
+        await member
+            .kick(reason)
+            .then((m) => {
+                m.user
+                    .send({
+                        embeds: [
+                            new EmbedBuilder({
+                                description: `You have been kicked from ${message.guild?.name}.\nReason: ${reason}`,
+                            }).withErrorColor(message),
+                        ],
                     })
-                        .withErrorColor(message),
-                ],
+                    .catch(() =>
+                        embed.setFooter({ text: "DM'ing user failed." })
+                    );
             })
-                .catch(() => embed.setFooter({ text: "DM'ing user failed." }));
-        })
             .catch((err) => console.log(err));
 
         return message.channel.send({ embeds: [embed] });

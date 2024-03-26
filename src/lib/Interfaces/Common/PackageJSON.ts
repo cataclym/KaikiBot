@@ -30,4 +30,3 @@ export default interface PackageJSON {
 }
 
 export type Dependencies = { [module: string]: number };
-

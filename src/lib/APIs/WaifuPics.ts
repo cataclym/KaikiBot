@@ -9,78 +9,84 @@ export default class WaifuPics extends ImageAPI<APIs> {
         super(imageApiData);
     }
 
-    public async sendImageAPIRequest<T extends APIs>(message: Message, endPoint: T, mention?: GuildMember | null) {
+    public async sendImageAPIRequest<T extends APIs>(
+        message: Message,
+        endPoint: T,
+        mention?: GuildMember | null
+    ) {
         return message.channel.send({
             embeds: [
-                await APIProcessor.processImageAPIRequest(message,
+                await APIProcessor.processImageAPIRequest(
+                    message,
                     this.url(endPoint),
                     this.endPoints[endPoint],
                     this.objectIndex,
-                    mention),
+                    mention
+                ),
             ],
         });
     }
 
     static data: ImageAPIOptions<APIs> = {
         endPointData: {
-            "waifu": {
+            waifu: {
                 action: false,
                 color: Constants.hexColorTable["peachpuff"],
             },
-            "neko": {
+            neko: {
                 action: false,
                 color: Constants.hexColorTable["royalblue"],
             },
-            "shinobu": {
+            shinobu: {
                 action: false,
                 color: Constants.hexColorTable["lightyellow"],
             },
-            "megumin": {
+            megumin: {
                 action: false,
                 color: Constants.hexColorTable["mediumvioletred"],
             },
-            "cry": {
+            cry: {
                 action: false,
                 color: Constants.hexColorTable["dodgerblue"],
                 appendable: true,
             },
-            "bully": {
+            bully: {
                 action: "bullied",
                 color: Constants.hexColorTable["darkorchid"],
             },
-            "cuddle": {
+            cuddle: {
                 action: "cuddled",
                 color: Constants.hexColorTable["seagreen"],
             },
-            "hug": {
+            hug: {
                 action: "hugged",
                 color: Constants.hexColorTable["plum"],
             },
-            "pat": {
+            pat: {
                 action: "patted",
                 color: Constants.hexColorTable["mintcream"],
                 append: "✨",
             },
-            "bonk": {
+            bonk: {
                 action: "bonked",
                 color: Constants.hexColorTable["maroon"],
                 append: "🏏",
             },
-            "yeet": {
+            yeet: {
                 action: "yeeted",
                 color: Constants.hexColorTable["lawngreen"],
                 append: "👋",
             },
-            "kiss": {
+            kiss: {
                 action: "kissed",
                 color: Constants.hexColorTable["hotpink"],
                 append: "♥️",
             },
-            "nom": {
+            nom: {
                 action: "nommed",
                 color: Constants.hexColorTable["mediumseagreen"],
             },
-            "slap": {
+            slap: {
                 action: "slapped",
                 color: Constants.hexColorTable["pink"],
                 append: "👋",
@@ -91,7 +97,8 @@ export default class WaifuPics extends ImageAPI<APIs> {
     };
 }
 
-type APIs = "bonk"
+type APIs =
+    | "bonk"
     | "cry"
     | "cuddle"
     | "hug"

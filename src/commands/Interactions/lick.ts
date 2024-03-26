@@ -11,8 +11,14 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
     typing: true,
 })
 export default class Lick extends KaikiCommand {
-    public async messageRun(message: Message, args: Args): Promise<void | Message> {
-
-        return this.client.imageAPIs.KawaiiAPI.sendImageAPIRequest(message, "lick", await args.rest("member").catch(() => null));
+    public async messageRun(
+        message: Message,
+        args: Args
+    ): Promise<void | Message> {
+        return this.client.imageAPIs.KawaiiAPI.sendImageAPIRequest(
+            message,
+            "lick",
+            await args.rest("member").catch(() => null)
+        );
     }
 }

@@ -11,7 +11,9 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 })
 export default class Pout extends KaikiCommand {
     public async messageRun(message: Message): Promise<Message | void> {
-
-        return this.client.imageAPIs.KawaiiAPI.sendImageAPIRequest(message, "pout");
+        return this.client.imageAPIs.KawaiiAPI.sendImageAPIRequest(
+            message,
+            "pout"
+        );
     }
 }

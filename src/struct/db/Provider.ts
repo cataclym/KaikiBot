@@ -72,4 +72,4 @@ export class Provider {
 export type ProviderOptions = {
     idColumn: string | "Id";
     dataColumn?: string;
-}
+};

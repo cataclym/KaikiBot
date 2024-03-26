@@ -1,5 +1,6 @@
-export type RespType = { anime: string, character: string, quote: string };
-export type Categories = "Administration"
+export type RespType = { anime: string; character: string; quote: string };
+export type Categories =
+    | "Administration"
     | "Anime"
     | "Emotes"
     | "Fun"
@@ -11,4 +12,4 @@ export type Categories = "Administration"
     | "Server settings"
     | "Utility"
     | "Images"
-    | "Interactions"
+    | "Interactions";
