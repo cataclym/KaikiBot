@@ -1,9 +1,6 @@
 import { Todos } from "@prisma/client";
 import Constants from "../../struct/Constants";
-import KaikiUtil from "../KaikiUtil";
 import {
-    ActionRowBuilder,
-    ButtonBuilder,
     ButtonInteraction,
     CacheType,
     EmbedBuilder,
@@ -17,13 +14,14 @@ import {
 import { ButtonAdd } from "./Buttons/Add";
 import { ButtonRemove } from "./Buttons/Remove";
 import { container } from "@sapphire/pieces";
+import Common from "./Common";
 
 export class Todo {
     currentTime: number;
     page: number;
     pages: EmbedBuilder[];
     todoArray: Todos[];
-    interaction?: ModalSubmitInteraction<CacheType>;
+    interaction?: ModalSubmitInteraction;
     author: GuildMember | User;
     baseEmbed: EmbedBuilder;
     message: Message<boolean>;
@@ -42,7 +40,7 @@ export class Todo {
             .setThumbnail(Constants.LINKS.TODO_IMG)
             .withOkColor("guild" in author ? author.guild : undefined);
 
-        const { row, rowTwo, currentTime } = Todo.createButtons();
+        const { row, rowTwo, currentTime } = Common.createButtons();
 
         this.currentTime = currentTime;
         this.page = page;
@@ -73,7 +71,7 @@ export class Todo {
                     components: [row],
                 });
             } else {
-                const reminderArray = Todo.reminderArray(this.todoArray);
+                const reminderArray = Common.reminderArray(this.todoArray);
 
                 for (
                     let index = 10, p = 0;
@@ -97,13 +95,6 @@ export class Todo {
                 });
             }
         })().then(async () => this.handleFurtherInteractions());
-    }
-
-    public static reminderArray(todoArray: Todos[]) {
-        return todoArray.map(
-            (todo, i) =>
-                `${+i + 1}. ${KaikiUtil.trim(todo.String.split(/\r?\n/).join(" "), Constants.MAGIC_NUMBERS.CMDS.UTILITY.TODO.INPUT_MAX_LENGTH)}`
-        );
     }
 
     protected async remove(buttonInteraction: ButtonInteraction<CacheType>) {
@@ -154,7 +145,7 @@ export class Todo {
             // Make sure our local copy is up-to-date
             this.todoArray.splice(toRemoveIndex, 1);
 
-            const reminderArray = Todo.reminderArray(this.todoArray);
+            const reminderArray = Common.reminderArray(this.todoArray);
             const pages: EmbedBuilder[] = [];
 
             for (
@@ -171,7 +162,7 @@ export class Todo {
 
             const page = Math.floor(toRemoveIndex * 0.1);
 
-            const { row, rowTwo, currentTime } = Todo.createButtons();
+            const { row, rowTwo, currentTime } = Common.createButtons();
 
             const [message] = await Promise.all([
                 interaction.editReply({
@@ -239,7 +230,7 @@ export class Todo {
             Id: entry.Id,
         });
 
-        const reminderArray = Todo.reminderArray(this.todoArray);
+        const reminderArray = Common.reminderArray(this.todoArray);
         this.pages = [];
 
         for (
@@ -254,17 +245,15 @@ export class Todo {
             );
         }
 
-        const { row, rowTwo, currentTime } = Todo.createButtons();
+        const { row, rowTwo, currentTime } = Common.createButtons();
 
-        const message = await interaction.editReply({
+        this.message = await interaction.editReply({
             content: `Added entry \`${this.todoArray.length}\`.`,
             embeds: [this.pages.at(-1) || this.pages[0]],
             // Only show arrows if necessary
             components: this.todoArray.length > 10 ? [row, rowTwo] : [row],
             options: { fetchReply: true },
         });
-
-        this.message = message;
         this.currentTime = currentTime;
         this.interaction = interaction;
 
@@ -355,46 +344,5 @@ export class Todo {
             backward: `${currentTime}Backward`,
             clear: `${currentTime}Clear`,
         };
-    }
-
-    public static createButtons() {
-        // Create a unique number.
-        const currentTime = Math.round(Date.now() * Math.random());
-
-        const row = new ActionRowBuilder<ButtonBuilder>()
-            .addComponents(
-                new ButtonBuilder()
-                    .setCustomId(`${currentTime}Add`)
-                    .setEmoji("➕")
-                    .setStyle(3)
-            )
-            .addComponents(
-                new ButtonBuilder()
-                    .setCustomId(`${currentTime}Remove`)
-                    .setEmoji("➖")
-                    .setStyle(4)
-            )
-            .addComponents(
-                new ButtonBuilder()
-                    .setCustomId(`${currentTime}Clear`)
-                    .setEmoji("⬛")
-                    .setStyle(4)
-            );
-
-        const rowTwo = new ActionRowBuilder<ButtonBuilder>()
-            .addComponents(
-                new ButtonBuilder()
-                    .setCustomId(`${currentTime}Backward`)
-                    .setEmoji("⬅")
-                    .setStyle(2)
-            )
-            .addComponents(
-                new ButtonBuilder()
-                    .setCustomId(`${currentTime}Forward`)
-                    .setEmoji("➡")
-                    .setStyle(2)
-            );
-
-        return { row, rowTwo, currentTime };
     }
 }
