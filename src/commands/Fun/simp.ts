@@ -28,7 +28,7 @@ export default class SimpCommand extends KaikiCommand {
                 return message.member;
             }
             throw new UserError({
-                identifier: "NoMemberProvided",
+                identifier: "InvalidMemberProvided",
                 message: "Couldn't find a server member with that name.",
             });
         });
@@ -42,12 +42,27 @@ export default class SimpCommand extends KaikiCommand {
             )
         ).arrayBuffer();
 
-        const textOverlay = `<svg height="741" width="1000">
-  <text transform="scale(3)" x="72" y="20" text-anchor="middle" fill="white"> ${member.user.username} </text>
+        const textOverlay = `<svg height="100" width="500">
+                                <style>
+                                    .userText {
+                                        font-family: sans-serif;
+                                        font-size: 42px;
+                                        text-anchor: middle;
+                                        fill: white;
+                                    }
+                                </style>
+  <text x="250" y="50" class="userText"> ${member.user.username} </text>
 </svg>`;
 
         const sharpAvatar = await sharp(avatar)
             .resize({ height: 205, width: 205 })
+            .extend({
+                top: 2,
+                bottom: 2,
+                left: 2,
+                right: 2,
+                background: "black",
+            })
             .toBuffer();
 
         const picture = sharp(await this.background()).composite([
@@ -58,8 +73,8 @@ export default class SimpCommand extends KaikiCommand {
             },
             {
                 input: buffer.Buffer.from(textOverlay),
-                left: 460,
-                top: 320,
+                left: 425,
+                top: 335,
             },
         ]);
 
