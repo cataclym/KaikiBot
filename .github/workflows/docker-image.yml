@@ -13,4 +13,4 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Build the Docker image
-      run: docker-compose build . --tag kaikibot:$(date +%s)
+      run: docker build . --tag kaikibot:$(date +%s)
