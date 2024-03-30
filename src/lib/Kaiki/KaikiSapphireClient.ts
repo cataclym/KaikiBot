@@ -3,7 +3,14 @@ import process from "process";
 import { type PrismaClient } from "@prisma/client";
 import { LogLevel, SapphireClient } from "@sapphire/framework";
 import * as colorette from "colorette";
-import { GatewayIntentBits, Guild, Partials, User } from "discord.js";
+import {
+    EmbedBuilder,
+    GatewayIntentBits,
+    Guild,
+    Partials,
+    Team,
+    User,
+} from "discord.js";
 import { Pool } from "mysql2/promise";
 import KaikiCache from "../Cache/KaikiCache";
 import Constants from "../../struct/Constants";
@@ -22,6 +29,8 @@ import type PackageJSON from "../Interfaces/Common/PackageJSON";
 import KaikiUtil from "../KaikiUtil";
 import { MoneyService } from "../Money/MoneyService";
 import KaikiClientInterface from "./KaikiClientInterface";
+import fs from "fs/promises";
+import { container } from "@sapphire/pieces";
 
 export default class KaikiSapphireClient<Ready extends true>
     extends SapphireClient<Ready>
@@ -78,12 +87,100 @@ export default class KaikiSapphireClient<Ready extends true>
             typing: true,
         });
 
-        // Not using logger here. Because it resets multiline color
-        console.log(colorette.green(Constants.KaikiBotASCII));
-
         (async () => await this.initializeDatabase())().catch((e) => {
             throw new Error(e);
         });
+
+        if (!process.env) {
+            throw new Error(
+                `Missing .env file. Please double-check the guide! (${Constants.LINKS.GUIDE})`
+            );
+        }
+
+        if (!process.env.PREFIX || process.env.PREFIX === "[YOUR_PREFIX]") {
+            throw new Error("Missing prefix! Set a prefix in .env");
+        }
+
+        if (!process.env.DATABASE_URL) {
+            throw new Error("Missing DATABASE_URL! Set a valid url in .env");
+        }
+
+        void this.loadPackageJSON();
+
+        // Not using logger here. Because it resets multiline color
+        console.log(colorette.green(Constants.KaikiBotASCII));
+
+        super.login(process.env.CLIENT_TOKEN).then(async () => this.init(this));
+    }
+
+    private async init(client: this) {
+        if (!client.user) {
+            throw new Error("Missing bot client user!");
+        }
+
+        await client.application?.fetch();
+
+        if (!client.application?.owner) {
+            return KaikiSapphireClient.noBotOwner();
+        }
+
+        const owner =
+            client.application.owner instanceof Team
+                ? client.application.owner.owner?.user
+                : client.application.owner;
+
+        if (!owner) {
+            return KaikiSapphireClient.noBotOwner();
+        } else {
+            client.owner = owner;
+        }
+
+        client.logger.info(
+            `Bot account: ${colorette.greenBright(client.user.username)}`
+        );
+        client.logger.info(
+            `Bot owner: ${colorette.greenBright(client.owner.username)}`
+        );
+
+        // Let bot owner know when bot goes online.
+        if (client.user && client.owner.id === process.env.OWNER) {
+            // Inconspicuous emotes haha
+            const emoji = ["✨", "♥️", "✅", "🇹🇼"][
+                Math.floor(Math.random() * 4)
+            ];
+            await client.owner.send({
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle(emoji)
+                        .setDescription("Bot is online!")
+                        .setFooter({
+                            text: `${client.package.name} - v${client.package.version}`,
+                        })
+                        .withOkColor(),
+                ],
+            });
+        }
+
+        await client.filterOptionalCommands();
+    }
+
+    private static noBotOwner(): never {
+        container.logger.error(
+            "No bot owner found! Double check your bot application in Discord's developer panel."
+        );
+        process.exit(1);
+    }
+
+    private async loadPackageJSON() {
+        if (!process.env.npm_package_json) {
+            this.package = await fs
+                .readFile("package.json")
+                .then((file) => JSON.parse(file.toString()));
+        } else {
+            this.package = await fs
+                .readFile(process.env.npm_package_json)
+                .then((file) => JSON.parse(file.toString()));
+        }
     }
 
     public imageAPIs: ClientImageAPIs = {

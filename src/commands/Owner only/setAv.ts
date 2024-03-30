@@ -5,6 +5,7 @@ import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOpti
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiUtil from "../../lib/KaikiUtil";
 import * as buffer from "buffer";
+import Constants from "../../struct/Constants";
 
 @ApplyOptions<KaikiCommandOptions>({
     name: "setavatar",
@@ -19,15 +20,13 @@ export default class SetAvatarCommand extends KaikiCommand {
     public async messageRun(message: Message, args: Args): Promise<Message> {
         const url = await args.rest("url");
 
+        if (!url.href.match(Constants.imageRegex)?.length) throw new Error(
+            "Unsupported image type. Please provide a PNG, JPEG or GIF link.",
+        );
+
         const img = await KaikiUtil.loadImage(url.href);
 
-        try {
-            await this.client.user?.setAvatar(buffer.Buffer.from(img));
-        } catch (error) {
-            throw new Error(
-                "Unsupported image type. Please provide a PNG, JPEG or GIF link."
-            );
-        }
+        await this.client.user?.setAvatar(buffer.Buffer.from(img));
 
         return message.channel.send({
             content: "Avatar set.",

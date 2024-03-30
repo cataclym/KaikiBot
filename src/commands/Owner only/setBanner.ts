@@ -5,6 +5,7 @@ import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOpti
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiUtil from "../../lib/KaikiUtil";
 import sharp from "sharp";
+import Constants from "../../struct/Constants";
 
 @ApplyOptions<KaikiCommandOptions>({
     name: "setbanner",
@@ -19,11 +20,15 @@ export default class SetAvatarCommand extends KaikiCommand {
     public async messageRun(message: Message, args: Args): Promise<Message> {
         const url = await args.rest("url");
 
+        if (!url.href.match(Constants.imageRegex)?.length) throw new Error(
+            "Unsupported image type. Please provide a PNG, JPEG or GIF link.",
+        );
+
         const img = await KaikiUtil.loadImage(url.href);
 
         const imgBuffer = Buffer.from(img);
 
-        const response = await fetch("https://discord.com/api/v9/users/@me", {
+        await fetch("https://discord.com/api/v9/users/@me", {
             method: "PATCH",
             headers: {
                 Authorization: `Bot ${this.client.token}`,

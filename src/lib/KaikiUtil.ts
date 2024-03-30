@@ -121,7 +121,9 @@ export default class KaikiUtil {
     }
 
     static async loadImage(url: string) {
-        return fetch(url).then((res) => res.arrayBuffer());
+        const res = await fetch(url);
+        if (!res.ok) throw new Error("Unable to load image. Double-check the image url.")
+        return res.arrayBuffer();
     }
 
     // Credits to https://www.html-code-generator.com/javascript/color-converter-script
