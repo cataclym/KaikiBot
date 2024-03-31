@@ -1,23 +1,10 @@
-import {
-    ActivityType,
-    ColorResolvable,
-    GuildMember,
-    HexColorString,
-    Message,
-} from "discord.js";
+import { ActivityType, GuildMember, HexColorString } from "discord.js";
 import Constants from "../struct/Constants";
 import { KaikiColor } from "./Types/KaikiColor";
 
 export default class KaikiUtil {
     static toggledTernary(value: boolean) {
         return value ? "Enabled" : "Disabled";
-    }
-
-    // Returns message member's displaycolor if it exists, otherwise black.
-    static async getMemberColorAsync(
-        message: Message
-    ): Promise<ColorResolvable> {
-        return <ColorResolvable>message?.member?.displayColor || "#000000";
     }
 
     static timeToMidnight(): number {
@@ -86,26 +73,6 @@ export default class KaikiUtil {
         return `\`\`\`${language ?? ""}\n${code}\`\`\``;
     }
 
-    // Credit to https://futurestud.io/tutorials/split-an-array-into-smaller-array-chunks-in-javascript-and-node-js
-    /**
-     * Split the `items` array into multiple, smaller arrays of the given `size`.
-     *
-     * @param {Array} items
-     * @param {Number} size
-     *
-     * @returns {Array[]}
-     */
-    static async chunk(items: any[], size: number): Promise<any[]> {
-        const chunks = [];
-        items = [].concat(...items);
-
-        while (items.length) {
-            chunks.push(items.splice(0, size));
-        }
-
-        return chunks;
-    }
-
     // Credits to https://www.codegrepper.com/code-examples/javascript/nodejs+strip+html+from+string
     static stripHtml(html: string) {
         return html.replace(/(<([^>]+)>)/gi, "");
@@ -122,7 +89,10 @@ export default class KaikiUtil {
 
     static async loadImage(url: string) {
         const res = await fetch(url);
-        if (!res.ok) throw new Error("Unable to load image. Double-check the image url.")
+        if (!res.ok)
+            throw new Error(
+                "Unable to load image. Double-check the image url."
+            );
         return res.arrayBuffer();
     }
 

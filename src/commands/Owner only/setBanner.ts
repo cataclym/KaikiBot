@@ -20,9 +20,10 @@ export default class SetAvatarCommand extends KaikiCommand {
     public async messageRun(message: Message, args: Args): Promise<Message> {
         const url = await args.rest("url");
 
-        if (!url.href.match(Constants.imageRegex)?.length) throw new Error(
-            "Unsupported image type. Please provide a PNG, JPEG or GIF link.",
-        );
+        if (!url.href.match(Constants.imageRegex)?.length)
+            throw new Error(
+                "Unsupported image type. Please provide a PNG, JPEG or GIF link."
+            );
 
         const img = await KaikiUtil.loadImage(url.href);
 
