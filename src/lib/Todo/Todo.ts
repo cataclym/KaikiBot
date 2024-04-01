@@ -4,6 +4,7 @@ import {
     ButtonInteraction,
     CacheType,
     EmbedBuilder,
+    Guild,
     GuildMember,
     GuildTextBasedChannel,
     Message,
@@ -17,15 +18,16 @@ import { container } from "@sapphire/pieces";
 import Common from "./Common";
 
 export class Todo {
-    currentTime: number;
-    page: number;
-    pages: EmbedBuilder[];
-    todoArray: Todos[];
-    interaction?: ModalSubmitInteraction;
-    author: GuildMember | User;
-    baseEmbed: EmbedBuilder;
-    message: Message<boolean>;
-    channel: TextBasedChannel | GuildTextBasedChannel;
+    private currentTime: number;
+    private page: number;
+    private pages: EmbedBuilder[];
+    private todoArray: Todos[];
+    private interaction?: ModalSubmitInteraction;
+    private author: GuildMember | User;
+    private baseEmbed: EmbedBuilder;
+    private message: Message<boolean>;
+    private channel: TextBasedChannel | GuildTextBasedChannel;
+    private readonly colorGuild: Guild | undefined;
 
     public constructor(
         page: number,
@@ -35,68 +37,72 @@ export class Todo {
     ) {
         this.channel = channel;
         this.author = author;
+        this.colorGuild = "guild" in author ? author.guild : undefined;
+        
         this.baseEmbed = new EmbedBuilder()
             .setTitle("Todo")
             .setThumbnail(Constants.LINKS.TODO_IMG)
-            .withOkColor("guild" in author ? author.guild : undefined);
+            .withOkColor(this.colorGuild);
+
+        this.page = page;
+
+        this.firstInteraction(isInteraction).then(async () => this.handleFurtherInteractions());
+    }
+
+    async firstInteraction(isInteraction: boolean | undefined) {
+        this.pages = [];
+
+        this.todoArray = await container.client.orm.todos.findMany({
+            where: {
+                DiscordUsers: {
+                    UserId: BigInt(this.author.id),
+                },
+            },
+            orderBy: {
+                Id: "asc",
+            },
+        });
 
         const { row, rowTwo, currentTime } = Common.createButtons();
 
         this.currentTime = currentTime;
-        this.page = page;
 
-        (async () => {
-            this.pages = [];
-
-            this.todoArray = await container.client.orm.todos.findMany({
-                where: {
-                    DiscordUsers: {
-                        UserId: BigInt(author.id),
-                    },
-                },
-                orderBy: {
-                    Id: "asc",
-                },
+        if (!this.todoArray.length) {
+            row.components[1].setDisabled();
+            this.message = await this.channel.send({
+                options: { ephemeral: isInteraction },
+                embeds: [
+                    new EmbedBuilder(this.baseEmbed.data).setDescription(
+                        "Your list is empty."
+                    ),
+                ],
+                components: [row],
             });
+        } else {
+            const reminderArray = Common.reminderArray(this.todoArray);
 
-            if (!this.todoArray.length) {
-                row.components[1].setDisabled();
-                this.message = await this.channel.send({
-                    options: { ephemeral: isInteraction },
-                    embeds: [
-                        new EmbedBuilder(this.baseEmbed.data).setDescription(
-                            "Your list is empty."
-                        ),
-                    ],
-                    components: [row],
-                });
-            } else {
-                const reminderArray = Common.reminderArray(this.todoArray);
-
-                for (
-                    let index = 10, p = 0;
-                    p < reminderArray.length;
-                    index += 10, p += 10
-                ) {
-                    this.pages.push(
-                        new EmbedBuilder(this.baseEmbed.data).setDescription(
-                            reminderArray.slice(p, index).join("\n")
-                        )
-                    );
-                }
-
-                if (this.page >= this.pages.length) this.page = 0;
-
-                this.message = await this.channel.send({
-                    embeds: [this.pages[this.page]],
-                    // Only show arrows if necessary
-                    components:
-                        this.todoArray.length > 10 ? [row, rowTwo] : [row],
-                });
+            for (
+                let index = 10, p = 0;
+                p < reminderArray.length;
+                index += 10, p += 10
+            ) {
+                this.pages.push(
+                    new EmbedBuilder(this.baseEmbed.data).setDescription(
+                        reminderArray.slice(p, index).join("\n")
+                    )
+                );
             }
-        })().then(async () => this.handleFurtherInteractions());
-    }
 
+            if (this.page >= this.pages.length) this.page = 0;
+
+            this.message = await this.channel.send({
+                embeds: [this.pages[this.page]],
+                // Only show arrows if necessary
+                components:
+                    this.todoArray.length > 10 ? [row, rowTwo] : [row],
+            });
+        }
+    }
     protected async remove(buttonInteraction: ButtonInteraction<CacheType>) {
         {
             await buttonInteraction.showModal(
@@ -127,7 +133,7 @@ export class Todo {
                         new EmbedBuilder()
                             .setTitle("Doesn't exist")
                             .setDescription(`No entry with ID: \`${input}\``)
-                            .withErrorColor(),
+                            .withErrorColor(this.colorGuild),
                     ],
                 });
                 return;
@@ -171,7 +177,7 @@ export class Todo {
                         new EmbedBuilder()
                             .setAuthor({ name: "Deleted:" })
                             .setDescription(`\`${entry.String}\``)
-                            .withOkColor(),
+                            .withOkColor(this.colorGuild),
                         pages.at(page) || pages[0],
                     ],
                     // Only show arrows if necessary
