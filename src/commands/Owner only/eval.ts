@@ -10,6 +10,7 @@ import Constants from "../../struct/Constants";
     name: "eval",
     description: "",
     preconditions: ["OwnerOnly"],
+    quotes: [],
 })
 export default class EvalCommand extends KaikiCommand {
     private clean = (text: string) => {
