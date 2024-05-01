@@ -1,8 +1,8 @@
 import { EmbedBuilder, Message } from "discord.js";
-import { RespType } from "../Types/Miscellaneous";
+import { AnimeQuoteResponse } from "../Types/Miscellaneous";
 
 export async function sendQuote(
-    resp: RespType,
+    resp: AnimeQuoteResponse,
     message: Message
 ): Promise<Message> {
     return message.channel.send({

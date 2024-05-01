@@ -36,7 +36,7 @@ export default class DeadbeatCommand extends KaikiCommand {
         });
 
         const buffer = await KaikiUtil.loadImage(
-            member.displayAvatarURL({ extension: "jpg", size: 128 })
+            member.displayAvatarURL({ extension: "jpg", size: 256 })
         );
 
         const modified = await sharp(buffer)

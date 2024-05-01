@@ -81,18 +81,20 @@ export default class TicTacToeCommand extends KaikiCommand {
                         playerTwo,
                         message
                     );
-                    acceptMessage.delete();
+                    await acceptMessage.delete();
                 } else {
-                    await message.reply({
-                        embeds: [
-                            new EmbedBuilder()
-                                .setDescription(
-                                    `${playerTwo.user.username} has declined your Tic-Tac-Toe challenge`
-                                )
-                                .withErrorColor(message),
-                        ],
-                    });
-                    acceptMessage.delete();
+                    await Promise.all([
+                        message.reply({
+                            embeds: [
+                                new EmbedBuilder()
+                                    .setDescription(
+                                        `${playerTwo.user.username} has declined your Tic-Tac-Toe challenge`
+                                    )
+                                    .withErrorColor(message),
+                            ],
+                        }),
+                        acceptMessage.delete(),
+                    ]);
                 }
             })
             .catch(() => {

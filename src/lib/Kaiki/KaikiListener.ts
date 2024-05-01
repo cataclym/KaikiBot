@@ -17,6 +17,7 @@ export default class KaikiListener extends Listener {
         this.client = this.container.client as KaikiSapphireClient<true>;
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public run(...args: never): unknown {
         throw new Error("NOT_IMPLEMENTED");
     }

@@ -4,7 +4,6 @@ import { AttachmentBuilder, EmbedBuilder, Message } from "discord.js";
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiUtil from "../../lib/KaikiUtil";
-import sharp from "sharp";
 import Constants from "../../struct/Constants";
 
 @ApplyOptions<KaikiCommandOptions>({

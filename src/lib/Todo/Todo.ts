@@ -155,7 +155,7 @@ export class Todo {
     }
 
     public static async handleFurtherInteractions(
-        interaction: ModalSubmitInteraction<CacheType>,
+        interaction: ModalSubmitInteraction,
         message: Message | InteractionResponse,
         currentTime: number,
         page: number,

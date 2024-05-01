@@ -1,4 +1,8 @@
-export type RespType = { anime: string; character: string; quote: string };
+export type AnimeQuoteResponse = {
+    anime: string;
+    character: string;
+    quote: string;
+};
 export type Categories =
     | "Administration"
     | "Anime"
