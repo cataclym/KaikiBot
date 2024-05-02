@@ -14,31 +14,30 @@ import {
 } from "discord.js";
 import { ButtonAdd } from "./Buttons/Add";
 import { ButtonRemove } from "./Buttons/Remove";
-import { container } from "@sapphire/pieces";
 import Common from "./Common";
+import { container } from "@sapphire/pieces";
 
 export class Todo {
-    private currentTime: number;
-    private page: number;
-    private pages: EmbedBuilder[];
-    private todoArray: Todos[];
-    private interaction?: ModalSubmitInteraction;
-    private author: GuildMember | User;
-    private baseEmbed: EmbedBuilder;
-    private message: Message<boolean>;
-    private channel: TextBasedChannel | GuildTextBasedChannel;
+    protected currentTime: number;
+    protected page: number;
+    protected pages: EmbedBuilder[];
+    protected todoArray: Todos[];
+    protected author: GuildMember | User;
+    protected baseEmbed: EmbedBuilder;
+    protected message: Message<boolean>;
+    protected channel: TextBasedChannel | GuildTextBasedChannel;
     private readonly colorGuild: Guild | undefined;
+    protected interaction: ModalSubmitInteraction<CacheType>;
 
     public constructor(
         page: number,
         author: GuildMember | User,
-        channel: GuildTextBasedChannel | TextBasedChannel,
-        isInteraction?: boolean
+        channel: GuildTextBasedChannel | TextBasedChannel
     ) {
         this.channel = channel;
         this.author = author;
         this.colorGuild = "guild" in author ? author.guild : undefined;
-        
+
         this.baseEmbed = new EmbedBuilder()
             .setTitle("Todo")
             .setThumbnail(Constants.LINKS.TODO_IMG)
@@ -46,63 +45,34 @@ export class Todo {
 
         this.page = page;
 
-        this.firstInteraction(isInteraction).then(async () => this.handleFurtherInteractions());
-    }
-
-    async firstInteraction(isInteraction: boolean | undefined) {
-        this.pages = [];
-
-        this.todoArray = await container.client.orm.todos.findMany({
-            where: {
-                DiscordUsers: {
-                    UserId: BigInt(this.author.id),
+        container.client.orm.todos
+            .findMany({
+                where: {
+                    DiscordUsers: {
+                        UserId: BigInt(this.author.id),
+                    },
                 },
-            },
-            orderBy: {
-                Id: "asc",
-            },
-        });
+                orderBy: {
+                    Id: "asc",
+                },
+            })
+            .then((todo) => {
+                this.todoArray = todo;
 
-        const { row, rowTwo, currentTime } = Common.createButtons();
+                if (!this.message) this.runTodo();
 
-        this.currentTime = currentTime;
-
-        if (!this.todoArray.length) {
-            row.components[1].setDisabled();
-            this.message = await this.channel.send({
-                options: { ephemeral: isInteraction },
-                embeds: [
-                    new EmbedBuilder(this.baseEmbed.data).setDescription(
-                        "Your list is empty."
-                    ),
-                ],
-                components: [row],
+                this.listen();
             });
-        } else {
-            const reminderArray = Common.reminderArray(this.todoArray);
-
-            for (
-                let index = 10, p = 0;
-                p < reminderArray.length;
-                index += 10, p += 10
-            ) {
-                this.pages.push(
-                    new EmbedBuilder(this.baseEmbed.data).setDescription(
-                        reminderArray.slice(p, index).join("\n")
-                    )
-                );
-            }
-
-            if (this.page >= this.pages.length) this.page = 0;
-
-            this.message = await this.channel.send({
-                embeds: [this.pages[this.page]],
-                // Only show arrows if necessary
-                components:
-                    this.todoArray.length > 10 ? [row, rowTwo] : [row],
-            });
-        }
     }
+
+    protected listen() {
+        throw new Error("Method not implemented.");
+    }
+
+    protected runTodo() {
+        throw new Error("Method not implemented.");
+    }
+
     protected async remove(buttonInteraction: ButtonInteraction<CacheType>) {
         {
             await buttonInteraction.showModal(
@@ -267,78 +237,15 @@ export class Todo {
     }
 
     protected async updateMsg() {
-        await (
-            this.interaction ? this.interaction.editReply : this.message.edit
-        )({
-            embeds: [this.pages[this.page]],
-        });
+        throw new Error("Method not implemented.");
     }
 
-    private setPageForwards() {
+    protected setPageForwards() {
         this.page = this.page + 1 < this.pages.length ? ++this.page : 0;
     }
 
     protected setPageBackwards() {
         this.page = this.page > 0 ? --this.page : this.pages.length - 1;
-    }
-
-    public async handleFurtherInteractions() {
-        const buttonIdentityStrings = this.createButtonIdentityStrings();
-
-        const messageComponentCollector =
-            this.message.createMessageComponentCollector({
-                filter: (i) =>
-                    Object.values(buttonIdentityStrings).includes(i.customId) &&
-                    this.author.id === i.user.id,
-                time: 120000,
-            });
-
-        messageComponentCollector.on(
-            "collect",
-            async (buttonInteraction: ButtonInteraction) => {
-                switch (buttonInteraction.customId) {
-                    case buttonIdentityStrings.add:
-                        messageComponentCollector.stop();
-                        await this.add(buttonInteraction);
-                        await this.handleFurtherInteractions();
-                        break;
-
-                    case buttonIdentityStrings.remove:
-                        messageComponentCollector.stop();
-                        await this.remove(buttonInteraction);
-                        await this.handleFurtherInteractions();
-                        break;
-
-                    case buttonIdentityStrings.forward:
-                        await buttonInteraction.deferUpdate();
-                        this.setPageForwards();
-                        await this.updateMsg();
-                        break;
-
-                    case buttonIdentityStrings.backward:
-                        await buttonInteraction.deferUpdate();
-                        this.setPageBackwards();
-                        await this.updateMsg();
-                        break;
-
-                    case buttonIdentityStrings.clear:
-                        messageComponentCollector.stop();
-                        break;
-
-                    default:
-                        break;
-                }
-            }
-        );
-
-        messageComponentCollector.once("end", async () => {
-            await this.interaction?.editReply({
-                components: [],
-            });
-            messageComponentCollector.stop();
-            // Stop execution
-            throw new Error();
-        });
     }
 
     protected createButtonIdentityStrings() {

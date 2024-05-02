@@ -3,7 +3,8 @@ import { ApplicationCommandRegistry, Args, Command } from "@sapphire/framework";
 import { Awaitable, Message } from "discord.js";
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-import { Todo } from "../../lib/Todo/Todo";
+import MessageBasedTodo from "../../lib/Todo/MessageBasedTodo";
+import InteractionBasedTodo from "../../lib/Todo/InteractionBasedTodo";
 
 @ApplyOptions<KaikiCommandOptions>({
     name: "todo",
@@ -17,11 +18,10 @@ export default class TodoCommand extends KaikiCommand {
         let page = await args.pick("number").catch(() => 1);
         page = (page <= 1 ? 0 : page - 1) || 0;
 
-        new Todo(
+        new MessageBasedTodo(
             page,
             message.member || message.author,
-            message.channel,
-            false
+            message.channel
         );
     }
 
@@ -33,13 +33,12 @@ export default class TodoCommand extends KaikiCommand {
 
         await interaction.deferReply();
 
-        new Todo(
+        new InteractionBasedTodo(
             page,
             interaction.member && "id" in interaction.member
                 ? interaction.member
                 : interaction.user,
-            interaction.channel!,
-            true
+            interaction.channel!
         );
     }
 
