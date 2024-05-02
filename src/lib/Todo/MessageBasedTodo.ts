@@ -81,10 +81,8 @@ export default class MessageBasedTodo extends Todo {
                 switch (buttonInteraction.customId) {
                     case buttonIdentityStrings.add:
                         messageComponentCollector.stop();
-                        await Promise.all([
-                            this.add(buttonInteraction),
-                            this.message.delete(),
-                        ]);
+                        await this.add(buttonInteraction);
+                        await this.message.delete();
                         new InteractionBasedTodo(
                             this.page,
                             this.author,
@@ -94,10 +92,8 @@ export default class MessageBasedTodo extends Todo {
 
                     case buttonIdentityStrings.remove:
                         messageComponentCollector.stop();
-                        await Promise.all([
-                            this.remove(buttonInteraction),
-                            this.message.delete(),
-                        ]);
+                        await this.remove(buttonInteraction);
+                        await this.message.delete();
                         new InteractionBasedTodo(
                             this.page,
                             this.author,
