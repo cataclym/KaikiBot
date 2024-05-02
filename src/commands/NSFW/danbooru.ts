@@ -1,10 +1,12 @@
 import { ApplyOptions } from "@sapphire/decorators";
-import { Args } from "@sapphire/framework";
+import { Args, UserError } from "@sapphire/framework";
 import { EmbedBuilder, Message } from "discord.js";
 import { DAPI } from "../../lib/Hentai/HentaiService";
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiUtil from "../../lib/KaikiUtil";
+import * as stream from "node:stream";
+import * as repl from "node:repl";
 
 @ApplyOptions<KaikiCommandOptions>({
     name: "danbooru",
@@ -17,7 +19,7 @@ export default class EAPICommand extends KaikiCommand {
     private videoExtensions = [".mp4", ".webm", ".ts", ".mkv"];
 
     public async messageRun(message: Message, args: Args): Promise<Message> {
-        let content;
+        let content: string;
 
         const tags = await args.repeat("string").catch(() => undefined);
 
@@ -26,17 +28,20 @@ export default class EAPICommand extends KaikiCommand {
             DAPI.Danbooru
         );
 
+        if (!post)
+            throw new UserError({
+                message: "No posts received, please try again.",
+                identifier: "NoHentaiPost",
+            });
+
+        const imageURL = post.file_url || post.large_file_url || null;
+
         const emb = new EmbedBuilder()
-            .setAuthor({ name: post.tag_string_artist })
+            .setAuthor({ name: post.tag_string_artist || "*Artist missing*" })
             .setDescription(
                 KaikiUtil.trim(`**Tags**: ${post.tag_string_general}`, 2048)
             )
-            .setImage(
-                post.file_url ||
-                    post.preview_file_url ||
-                    post.large_file_url ||
-                    post.source
-            )
+            .setImage(imageURL)
             .withOkColor(message);
 
         if (post.tag_string_character) {
@@ -49,15 +54,21 @@ export default class EAPICommand extends KaikiCommand {
             ]);
         }
 
-        const isVideo = await (async () => {
-            for (const ext of this.videoExtensions) {
-                if (post.file_url?.endsWith(ext)) return true;
-                return false;
-            }
-        })();
+        const isVideo = this.videoExtensions.some((extension) =>
+            post.file_url?.endsWith(extension)
+        );
 
         if (isVideo) content = post.file_url!;
 
-        return message.channel.send({ content, embeds: [emb] });
+        return message.channel.send({ embeds: [emb] }).then(async () => {
+            return new Promise((resolve) => {
+                if (content)
+                    setTimeout(
+                        () =>
+                            resolve(message.channel.send({ content: content })),
+                        1500
+                    );
+            });
+        });
     }
 }

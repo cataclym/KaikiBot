@@ -55,7 +55,7 @@ export default class DatabaseProvider extends Provider {
         return defaultValue;
     }
 
-    set(id: string, key: string, value: any) {
+    async set(id: string, key: string, value: any) {
         const data = this.items.get(id) || {};
         const exists = this.items.has(id);
 

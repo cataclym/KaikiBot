@@ -76,13 +76,12 @@ export default class BotConfigCommand extends Subcommand {
         });
     }
 
-    // TODO: Remember to test this out / Fix moving args over from subcommand / Calling the command correctly.
     public async activityRun(message: Message, args: Args) {
         const name = await args.rest("string");
         const oldActivity = this.client.botSettings.get("1", "Activity", null);
 
-        message.client.user.setActivity({ name: name });
-        this.client.botSettings.set("1", "Activity", name);
+        message.client.user.setActivity({ name });
+        await this.client.botSettings.set("1", "Activity", name);
 
         return BotConfigCommand.sendEmbed(message, oldActivity, name);
     }

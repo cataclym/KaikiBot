@@ -4,7 +4,6 @@ import { AttachmentBuilder, EmbedBuilder, Message } from "discord.js";
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiUtil from "../../lib/KaikiUtil";
-import sharp from "sharp";
 import Constants from "../../struct/Constants";
 
 @ApplyOptions<KaikiCommandOptions>({
@@ -20,7 +19,7 @@ export default class SetAvatarCommand extends KaikiCommand {
     public async messageRun(message: Message, args: Args): Promise<Message> {
         const url = await args.rest("url");
 
-        if (!url.href.match(Constants.imageRegex)?.length)
+        if (!url.href.match(Constants.imgExtensionsRegex)?.length)
             throw new Error(
                 "Unsupported image type. Please provide a PNG, JPEG or GIF link."
             );

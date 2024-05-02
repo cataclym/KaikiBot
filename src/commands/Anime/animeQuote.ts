@@ -1,10 +1,10 @@
 import { ApplyOptions } from "@sapphire/decorators";
 import { Message } from "discord.js";
-
 import { sendQuote } from "../../lib/APIs/animeQuote";
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
-import { RespType } from "../../lib/Types/Miscellaneous";
+import { AnimeQuoteResponse } from "../../lib/Types/Miscellaneous";
+import { UserError } from "@sapphire/framework";
 
 @ApplyOptions<KaikiCommandOptions>({
     name: "animequote",
@@ -16,19 +16,32 @@ export default class AnimeQuoteCommand extends KaikiCommand {
     public async messageRun(message: Message): Promise<Message | void> {
         const { animeQuoteCache } = this.client.cache;
 
-        const resp = await fetch("http://animechan.melosh.space/random");
+        let resp = await fetch("https://animechan.xyz/api/random").catch(
+            (err) => this.getCachedResponse(err)
+        );
 
-        if (!resp.ok) {
-            this.container.logger.warn(
-                `Animequote received no data: ${resp.statusText}`
-            );
+        if (!resp?.ok) {
+            resp = this.getCachedResponse(resp);
         }
+        const quoteData = <AnimeQuoteResponse>await resp.json();
 
-        const response = <RespType>await resp.json();
+        if (!animeQuoteCache.has(quoteData.character))
+            animeQuoteCache.set(quoteData.character, quoteData);
 
-        if (!animeQuoteCache.has(response.character))
-            animeQuoteCache.set(response.character, response);
+        return sendQuote(quoteData, message);
+    }
 
-        return sendQuote(response, message);
+    private getCachedResponse(err: Response) {
+        const { animeQuoteCache } = this.client.cache;
+
+        this.container.logger.warn(`Animequote received no data: ${err}`);
+
+        if (animeQuoteCache.size)
+            return new Response(JSON.stringify(animeQuoteCache.random()));
+
+        throw new UserError({
+            message: "No quotes received, try again at another time.",
+            identifier: "NoAnimeQuotes",
+        });
     }
 }

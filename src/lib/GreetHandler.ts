@@ -150,7 +150,7 @@ export default class GreetHandler {
 
         if (
             channel.type !== ChannelType.GuildText &&
-            channel.type !== ChannelType.GuildNews
+            channel.type !== ChannelType.GuildAnnouncement
         )
             return false;
 

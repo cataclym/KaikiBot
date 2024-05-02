@@ -1,4 +1,3 @@
-import { execSync } from "child_process";
 import * as process from "process";
 import { ApplyOptions } from "@sapphire/decorators";
 import { version as sapphireVersion } from "@sapphire/framework";

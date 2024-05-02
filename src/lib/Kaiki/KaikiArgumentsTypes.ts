@@ -11,7 +11,7 @@ export default class KaikiArgumentsTypes {
                 if (url) return Args.ok(url);
             }
 
-            const imageMatches = parameter.match(Constants.imageRegex);
+            const imageMatches = parameter.match(Constants.imgExtensionsRegex);
 
             if (imageMatches) {
                 return Args.ok(imageMatches[0].toString());

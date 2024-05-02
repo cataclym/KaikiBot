@@ -1,7 +1,7 @@
 import { ApplyOptions } from "@sapphire/decorators";
 import { Args } from "@sapphire/framework";
 import { Message } from "discord.js";
-import { OkPacket } from "mysql2/promise";
+import { ResultSetHeader } from "mysql2/promise";
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiUtil from "../../lib/KaikiUtil";
@@ -18,7 +18,7 @@ export default class SetNameCommand extends KaikiCommand {
     public async messageRun(message: Message, args: Args): Promise<Message> {
         const str = await args.rest("string");
 
-        const res = await this.client.connection.query<OkPacket>(str);
+        const res = await this.client.connection.query<ResultSetHeader>(str);
 
         return message.channel.send(
             await KaikiUtil.codeblock(

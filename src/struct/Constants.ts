@@ -113,8 +113,7 @@ export default class Constants {
 
     // Credit to https://github.com/Snitt/emojibotten/blob/master/commands/management/emoji.js
     static readonly emoteRegex = /<(a?)((!?\d+)|(:.+?:\d+))>/g;
-    static readonly imageRegex =
-        /(http(s?):)([/|.\w\s-])*\.(?:jpg|gif|png|jpeg)/gi;
+    static readonly imgExtensionsRegex = /(?:jpg|gif|png|jpeg)/gi;
 
     static readonly guildFeatures: {
         [index in UndocumentedFeatures]: string;
