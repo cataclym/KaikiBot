@@ -9,15 +9,21 @@ import {
 } from "discord.js";
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+import { Args } from "@sapphire/framework";
 
 @ApplyOptions<KaikiCommandOptions>({
     name: "die",
     aliases: ["shutdown", "kill"],
     description: "Shuts down bot.",
     preconditions: ["OwnerOnly"],
+    flags: ["y", "yes"],
 })
 export default class KillBotProcess extends KaikiCommand {
-    public async messageRun(message: Message) {
+    public async messageRun(message: Message, args: Args) {
+        if (args.getFlags("y", "yes")) {
+            return this.shutdown(message);
+        }
+
         const deleteMsg = await message.channel.send({
             embeds: [
                 new EmbedBuilder()
@@ -66,17 +72,22 @@ export default class KillBotProcess extends KaikiCommand {
                 });
             }
 
-            await Promise.all([deleteMsg.delete(), message.react("✅")]);
-
-            this.container.logger.warn("Shutting down");
-            // Disconnects the client connection
-            this.client.destroy().then(() => process.exit(0));
-            // Exits process with SIGINT
+            await deleteMsg
+                .delete()
+                .then(async () => await this.shutdown(message));
         });
 
         buttonListener.once("end", async () => {
             await deleteMsg.delete();
             await message.delete();
         });
+    }
+
+    private async shutdown(message: Message): Promise<void> {
+        await message.react("✅");
+        this.container.logger.warn("Shutting down");
+        // Disconnects the client connection
+        this.client.destroy().then(() => process.exit(0));
+        // Exits process with SIGINT
     }
 }
