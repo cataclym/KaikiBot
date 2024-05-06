@@ -2,6 +2,7 @@
 
 -   Docs
     -   [Guide](docs/GUIDE.md)
+    -   [Placeholders](docs/PLACEHOLDERS.md) for greet and bye messages
     -   [.env setup](docs/ENV.md)
 
 # Welcome to Kaiki Deishu Bot

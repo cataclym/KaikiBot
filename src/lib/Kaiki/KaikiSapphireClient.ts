@@ -31,6 +31,7 @@ import { MoneyService } from "../Money/MoneyService";
 import KaikiClientInterface from "./KaikiClientInterface";
 import fs from "fs/promises";
 import { container } from "@sapphire/pieces";
+import { DjsAdapter, createDjsClient, DBLClient } from "discordbotlist-djs";
 
 export default class KaikiSapphireClient<Ready extends true>
     extends SapphireClient<Ready>
@@ -118,6 +119,15 @@ export default class KaikiSapphireClient<Ready extends true>
             throw new Error("Missing bot client user!");
         }
 
+        if (
+            process.env.DBL_API_TOKEN &&
+            process.env.NODE_ENV === "production"
+        ) {
+            const dbl = createDjsClient(process.env.DBL_API_TOKEN, client);
+
+            dbl.startPosting();
+            dbl.startPolling();
+        }
         await client.application?.fetch();
 
         if (!client.application?.owner) {
@@ -351,5 +361,30 @@ export default class KaikiSapphireClient<Ready extends true>
     private dbRejected(e: unknown) {
         this.logger.fatal("Failed to connect to database using MySQL2.", e);
         process.exit(1);
+    }
+
+    private dblListener(client: DBLClient<DjsAdapter>) {
+        client.on("vote", async (vote) => {
+            await Promise.all([
+                this.users.cache
+                    .get(vote.id)
+                    ?.send({
+                        embeds: [
+                            new EmbedBuilder()
+                                .setTitle("Thank you for your support! 🎉")
+                                .setDescription(
+                                    `You received 120 ${this.money.currencyName} ${this.money.currencySymbol}`
+                                )
+                                .setFooter({
+                                    text: "🧡",
+                                })
+                                .setColor(Constants.kaikiOrange),
+                        ],
+                    })
+                    // Ignore failed DMs
+                    .catch(() => undefined),
+                this.money.add(vote.id, 120n, "Voted - DiscordBotList"),
+            ]);
+        });
     }
 }

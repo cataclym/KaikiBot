@@ -520,6 +520,8 @@ export default class Constants {
                 ERR_CLR: [255, 0, 0] as RGBTuple,
                 HRS_DAY: 24,
                 OK_CLR: [0, 255, 0] as RGBTuple,
+                // #ea580c
+                KAIKI_CLR: [234, 88, 12] as RGBTuple,
             },
         },
     });
@@ -527,6 +529,8 @@ export default class Constants {
     static readonly errorColor = Constants.MAGIC_NUMBERS.LIB.UTILITY.ERR_CLR;
 
     static readonly okColor = Constants.MAGIC_NUMBERS.LIB.UTILITY.OK_CLR;
+
+    static readonly kaikiOrange = Constants.MAGIC_NUMBERS.LIB.UTILITY.KAIKI_CLR;
 
     static readonly KaikiBotASCII =
         "__/\\\\\\________/\\\\\\___________________________________________/\\\\\\\\\\\\\\\\\\\\\\\\\\_______________________________        \n" +

@@ -200,7 +200,7 @@ export type IJSONToMessageOptions = MessageCreateOptions & {
 export class JSONToMessageOptions implements MessageCreateOptions {
     embeds: EmbedBuilder[] | undefined;
     content?: string | undefined;
-    stickers?: StickerResolvable[] | undefined;
+    stickers?: readonly StickerResolvable[] | undefined;
 
     constructor(any: IJSONToMessageOptions) {
         this.content = any.content;
