@@ -17,7 +17,8 @@ export default class Cash extends KaikiCommand {
             embeds: [
                 new EmbedBuilder()
                     .setTitle("Vote here")
-                    .setURL(process.env.DBL_PAGE_URL),
+                    .setURL(process.env.DBL_PAGE_URL)
+                    .withOkColor(msg),
             ],
         });
     }
