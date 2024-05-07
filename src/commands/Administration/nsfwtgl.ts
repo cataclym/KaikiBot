@@ -6,6 +6,7 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 @ApplyOptions<KaikiCommandOptions>({
     name: "nsfwtgl",
     aliases: ["nsfw", "nsfwtoggle"],
+    usage: "",
     description: "Toggles NSFW in current channel",
 
     requiredUserPermissions: ["ManageChannels"],

@@ -6,6 +6,7 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 @ApplyOptions<KaikiCommandOptions>({
     name: "stickyroles",
     aliases: ["sticky"],
+    usage: "",
     description:
         "Toggles whether bot will give all roles back when someone re-joins the server",
     requiredUserPermissions: ["Administrator"],

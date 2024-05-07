@@ -6,6 +6,7 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 @ApplyOptions<KaikiCommandOptions>({
     name: "economy",
     aliases: ["eco"],
+    usage: "",
     description: "Displays overall currency statistics.",
     preconditions: ["GuildOnly"],
 })

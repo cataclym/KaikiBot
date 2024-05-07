@@ -7,6 +7,7 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 @ApplyOptions<KaikiCommandOptions>({
     name: "goodbyetest",
     aliases: ["byetest"],
+    usage: "",
     description: "Tests goodbye message as it would appear when triggered.",
     requiredUserPermissions: ["ManageGuild"],
     preconditions: ["GuildOnly"],

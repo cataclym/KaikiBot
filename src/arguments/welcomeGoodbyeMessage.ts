@@ -13,6 +13,7 @@ export class WelcomeGoodbyeMessageArgument extends Argument<JSONToMessageOptions
                 return this.error({
                     parameter,
                     message: "Please provide valid json",
+                    identifier: "InvalidJSON",
                 });
             }
 
@@ -21,6 +22,7 @@ export class WelcomeGoodbyeMessageArgument extends Argument<JSONToMessageOptions
             return this.error({
                 parameter,
                 message: "Please provide valid json",
+                identifier: "InvalidJSON",
             });
         }
     }

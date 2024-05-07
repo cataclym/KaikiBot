@@ -16,6 +16,7 @@ import Constants from "../../struct/Constants";
 @ApplyOptions<KaikiCommandOptions>({
     name: "colorlist",
     aliases: ["colors", "clrs"],
+    usage: "",
     description: "Shows a list of all supported color names for the bot",
     typing: true,
     minorCategory: "Color",

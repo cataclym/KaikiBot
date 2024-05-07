@@ -7,6 +7,7 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 @ApplyOptions<KaikiCommandOptions>({
     name: "reload",
     aliases: ["re"],
+    usage: "todo",
     description: "Reloads a command..",
     preconditions: ["OwnerOnly"],
 })
@@ -14,7 +15,7 @@ export default class ReloadCommand extends KaikiCommand {
     public async messageRun(message: Message, args: Args) {
         const cmd = await args.rest("command");
 
-        const unloaded = <KaikiCommand>await this.store.get(cmd.name);
+        const unloaded = <KaikiCommand>this.store.get(cmd.name);
 
         await unloaded.reload();
 

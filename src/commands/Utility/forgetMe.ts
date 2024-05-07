@@ -11,6 +11,7 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 @ApplyOptions<KaikiCommandOptions>({
     name: "forgetme",
+    usage: "",
     description: "Deletes all information about you in the database",
 })
 export default class ForgetMeCommand extends KaikiCommand {

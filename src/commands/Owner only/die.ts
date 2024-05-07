@@ -14,6 +14,7 @@ import { Args } from "@sapphire/framework";
 @ApplyOptions<KaikiCommandOptions>({
     name: "die",
     aliases: ["shutdown", "kill"],
+    usage: "",
     description: "Shuts down bot.",
     preconditions: ["OwnerOnly"],
     flags: ["y", "yes"],

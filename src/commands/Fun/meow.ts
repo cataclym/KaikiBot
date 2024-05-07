@@ -6,6 +6,7 @@ import KaikiUtil from "../../lib/KaikiUtil";
 
 @ApplyOptions<KaikiCommandOptions>({
     name: "meow",
+    usage: "",
     description: "Meow.",
 })
 export default class MeowCommand extends KaikiCommand {

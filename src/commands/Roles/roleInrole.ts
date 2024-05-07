@@ -8,6 +8,7 @@ import Constants from "../../struct/Constants";
 
 @ApplyOptions<KaikiCommandOptions>({
     name: "inrole",
+    usage: "@Gamers",
     description: "Lists all users in role",
     preconditions: ["GuildOnly"],
 })

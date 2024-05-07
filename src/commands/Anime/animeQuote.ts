@@ -9,6 +9,7 @@ import { UserError } from "@sapphire/framework";
 @ApplyOptions<KaikiCommandOptions>({
     name: "animequote",
     aliases: ["aq"],
+    usage: "",
     description: "Shows a random anime quote...",
     typing: true,
 })

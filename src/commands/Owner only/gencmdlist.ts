@@ -7,6 +7,7 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 @ApplyOptions<KaikiCommandOptions>({
     name: "gencmdlist",
     aliases: ["gencmdlst"],
+    usage: "",
     description: "Uploads a JSON file containing all commands.",
     preconditions: ["OwnerOnly"],
 })

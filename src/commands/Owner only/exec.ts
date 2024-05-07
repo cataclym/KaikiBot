@@ -9,6 +9,7 @@ import Constants from "../../struct/Constants";
 
 @ApplyOptions<KaikiCommandOptions>({
     name: "exec",
+    usage: "ls",
     description: "Use with caution",
     preconditions: ["OwnerOnly"],
     typing: true,

@@ -11,6 +11,7 @@ import Constants from "../../struct/Constants";
 @ApplyOptions<KaikiCommandOptions>({
     aliases: ["stats"],
     name: "stats",
+    usage: "",
     description: "Statistics and information",
     minorCategory: "Info",
 })

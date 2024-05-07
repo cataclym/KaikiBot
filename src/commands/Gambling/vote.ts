@@ -6,7 +6,7 @@ import process from "process";
 
 @ApplyOptions<KaikiCommandOptions>({
     name: "vote",
-    aliases: [],
+    usage: "",
     description: "Vote for me on DiscordBotList, receive a currency reward!",
 })
 export default class Cash extends KaikiCommand {

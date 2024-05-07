@@ -6,6 +6,7 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 @ApplyOptions<KaikiCommandOptions>({
     name: "invite",
     aliases: ["inv"],
+    usage: "",
     description: "Get a link to invite the bot to your server.",
 })
 export default class InviteCommand extends KaikiCommand {

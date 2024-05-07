@@ -7,6 +7,7 @@ import KaikiUtil from "../../lib/KaikiUtil";
 
 @ApplyOptions<KaikiCommandOptions>({
     name: "woof",
+    usage: "",
     description: "Woof.",
 })
 export default class WoofCommand extends KaikiCommand {

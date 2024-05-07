@@ -9,6 +9,7 @@ import Constants from "../../struct/Constants";
 @ApplyOptions<KaikiCommandOptions>({
     name: "eval",
     description: "",
+    usage: "2+2",
     preconditions: ["OwnerOnly"],
     quotes: [],
 })

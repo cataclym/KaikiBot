@@ -8,6 +8,7 @@ import SlashCommandsLib from "../../lib/SlashCommands/SlashCommandsLib";
 @ApplyOptions<KaikiCommandOptions>({
     name: "exclude",
     aliases: ["excl", "e"],
+    usage: "",
     description:
         "Excludes you from being targeted by dad-bot. Execute command again to reverse this action.",
     requiredClientPermissions: ["ManageRoles"],

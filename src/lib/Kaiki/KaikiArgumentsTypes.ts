@@ -1,4 +1,4 @@
-import { Args, Argument } from "@sapphire/framework";
+import { Args, Argument, Identifiers } from "@sapphire/framework";
 import { Message } from "discord.js";
 import Constants from "../../struct/Constants";
 
@@ -41,6 +41,7 @@ export default class KaikiArgumentsTypes {
             return Args.error({
                 context,
                 argument: context.argument,
+                identifier: Identifiers.ArgsMissing,
                 parameter,
             });
         }

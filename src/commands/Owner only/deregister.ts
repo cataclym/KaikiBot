@@ -7,6 +7,7 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 @ApplyOptions<KaikiCommandOptions>({
     name: "deregister",
     aliases: ["dereg"],
+    usage: "todo",
     description: "Deregister a command, until bot restarts.",
     preconditions: ["OwnerOnly"],
 })

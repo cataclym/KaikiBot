@@ -6,6 +6,7 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 @ApplyOptions<KaikiCommandOptions>({
     name: "cmdstats",
     aliases: ["commandstats"],
+    usage: "",
     description: "Displays command statistics. Stats are updated at interval.",
 })
 export default class Cmdstats extends KaikiCommand {
@@ -33,7 +34,7 @@ export default class Cmdstats extends KaikiCommand {
                                 .join("\n"),
                         },
                     ])
-                    .withOkColor(),
+                    .withOkColor(message),
             ],
         });
     }

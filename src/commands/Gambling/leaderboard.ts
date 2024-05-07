@@ -7,6 +7,7 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 @ApplyOptions<KaikiCommandOptions>({
     name: "leaderboard",
     aliases: ["lb"],
+    usage: "",
     description: "Shows currency leaderboard for the current server.",
     preconditions: ["GuildOnly"],
 })

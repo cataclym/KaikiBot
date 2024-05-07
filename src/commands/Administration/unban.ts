@@ -8,6 +8,7 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
     name: "unban",
     aliases: ["ub"],
     description: "",
+    usage: "103020509395056",
     requiredUserPermissions: ["BanMembers"],
     requiredClientPermissions: ["BanMembers"],
     preconditions: ["GuildOnly"],

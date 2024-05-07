@@ -16,6 +16,7 @@ enum ShardStats {
 @ApplyOptions<KaikiCommandOptions>({
     name: "shardstats",
     aliases: ["shards"],
+    usage: "",
     description: "Displays the states of all shards",
     preconditions: ["GuildOnly"],
     minorCategory: "Info",

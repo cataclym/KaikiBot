@@ -7,6 +7,7 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 @ApplyOptions<KaikiCommandOptions>({
     name: "goodbyemessage",
     aliases: ["goodbyemsg", "byemessage", "byemsg"],
+    usage: ["Bye, %member.name%!", "{ embed data }"],
     description:
         "Set message to display when someone leaves the guild. Provide either text, or valid JSON from the [embed creator](https://embed.kaikibot.xyz)",
     requiredUserPermissions: ["ManageGuild"],

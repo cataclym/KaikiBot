@@ -31,7 +31,7 @@ import { MoneyService } from "../Money/MoneyService";
 import KaikiClientInterface from "./KaikiClientInterface";
 import fs from "fs/promises";
 import { container } from "@sapphire/pieces";
-import { DjsAdapter, createDjsClient, DBLClient } from "discordbotlist-djs";
+import { createDjsClient } from "discordbotlist-djs";
 
 export default class KaikiSapphireClient<Ready extends true>
     extends SapphireClient<Ready>
@@ -123,10 +123,7 @@ export default class KaikiSapphireClient<Ready extends true>
             process.env.DBL_API_TOKEN &&
             process.env.NODE_ENV === "production"
         ) {
-            const dbl = createDjsClient(process.env.DBL_API_TOKEN, client);
-
-            dbl.startPosting();
-            dbl.startPolling();
+            this.dblService();
         }
         await client.application?.fetch();
 
@@ -363,7 +360,12 @@ export default class KaikiSapphireClient<Ready extends true>
         process.exit(1);
     }
 
-    private dblListener(client: DBLClient<DjsAdapter>) {
+    private dblService() {
+        const client = createDjsClient(process.env.DBL_API_TOKEN!, this);
+
+        client.startPosting();
+        client.startPolling();
+
         client.on("vote", async (vote) => {
             await Promise.all([
                 this.users.cache

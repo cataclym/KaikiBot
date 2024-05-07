@@ -13,6 +13,7 @@ import { ApplicationCommandRegistry } from "@sapphire/framework";
 @ApplyOptions<KaikiCommandOptions>({
     name: "ping",
     aliases: ["p"],
+    usage: "",
     description:
         "Ping the bot and websocket to see if there are latency issues.",
 })

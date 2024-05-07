@@ -6,6 +6,7 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 @ApplyOptions<KaikiCommandOptions>({
     name: "dailyreset",
     aliases: ["resetdaily"],
+    usage: "",
     description: "Resets daily claims that have been made",
     preconditions: ["OwnerOnly"],
 })

@@ -9,6 +9,7 @@ import Constants, { UndocumentedFeatures } from "../../struct/Constants";
 @ApplyOptions<KaikiCommandOptions>({
     name: "serverinfo",
     aliases: ["sinfo"],
+    usage: ["", "1233109312930920391023", "CoolServerName"],
     description: "Shows information about the current server.",
     minorCategory: "Info",
 })

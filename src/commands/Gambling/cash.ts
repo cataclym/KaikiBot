@@ -7,6 +7,7 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 @ApplyOptions<KaikiCommandOptions>({
     name: "cash",
     aliases: ["currency", "cur", "$", "£", "¥", "€"],
+    usage: "",
     description:
         "Shows specified user's current balance. If no user is specified, shows your balance",
 })

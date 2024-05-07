@@ -7,6 +7,7 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 @ApplyOptions<KaikiCommandOptions>({
     name: "setdaily",
     aliases: ["dailyset"],
+    usage: "120",
     description:
         "Sets the daily currency allowance amount. Set to 0 to disable.",
     preconditions: ["OwnerOnly"],

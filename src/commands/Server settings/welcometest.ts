@@ -8,6 +8,7 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
     name: "welcometest",
     description: "Tests welcome message as it would appear for new members.",
     requiredUserPermissions: ["ManageGuild"],
+    usage: "",
     preconditions: ["GuildOnly"],
     minorCategory: "Welcome",
 })

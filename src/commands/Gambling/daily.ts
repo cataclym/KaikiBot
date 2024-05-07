@@ -6,6 +6,7 @@ import KaikiEmbeds from "../../lib/Kaiki/KaikiEmbeds";
 
 @ApplyOptions<KaikiCommandOptions>({
     name: "daily",
+    usage: "",
     description: "Claim your daily currency allowance",
 })
 export default class ClaimDailyCommand extends KaikiCommand {

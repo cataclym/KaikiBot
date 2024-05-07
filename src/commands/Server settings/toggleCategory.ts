@@ -9,7 +9,8 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 @ApplyOptions<KaikiCommandOptions>({
     name: "togglecategory",
     aliases: ["tc"],
-    description: "Toggles a category",
+    description:
+        "Toggles a category. Provide no parameter to see a list of disabled categories.",
     usage: ["Anime", ""],
     requiredUserPermissions: ["Administrator"],
     preconditions: ["GuildOnly"],
