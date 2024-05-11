@@ -25,7 +25,7 @@ export default class DatabaseProvider extends Provider {
         this.bigInt = bigint ?? true;
     }
 
-    async init(): Promise<void> {
+    async init() {
         const [rows] = <RowDataPacket[][]>await this.db.query(
             `SELECT *
              FROM ${this.tableName}`

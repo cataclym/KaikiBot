@@ -5,13 +5,11 @@ import {
     MessageCreateOptions,
 } from "discord.js";
 import {
-    err,
     Identifiers,
     MessageCommandDeniedPayload,
     UserError,
 } from "@sapphire/framework";
 import KaikiCommand from "../Kaiki/KaikiCommand";
-import { container } from "@sapphire/pieces";
 
 type ErrorContext = {
     message: Message;

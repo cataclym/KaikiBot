@@ -108,6 +108,13 @@ export class DadBot {
             }
         }
 
+        const { cmdStatsCache } = message.client.cache;
+        let cmd = cmdStatsCache.get("dadbot");
+
+        cmd
+            ? cmdStatsCache.set("dadbot", cmd++)
+            : cmdStatsCache.set("dadbot", 1);
+
         await container.client.orm.userNicknames.create({
             data: {
                 GuildUsers: {

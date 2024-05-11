@@ -5,8 +5,6 @@ import { DAPI } from "../../lib/Hentai/HentaiService";
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiUtil from "../../lib/KaikiUtil";
-import * as stream from "node:stream";
-import * as repl from "node:repl";
 
 @ApplyOptions<KaikiCommandOptions>({
     name: "danbooru",

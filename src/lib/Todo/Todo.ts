@@ -6,7 +6,6 @@ import {
     ActionRowBuilder,
     ButtonBuilder,
     ButtonInteraction,
-    CacheType,
     EmbedBuilder,
     Message,
     ModalSubmitInteraction,

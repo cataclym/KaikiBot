@@ -1,9 +1,10 @@
 import { Collection } from "discord.js";
+import { FieldPacket, QueryResult } from "mysql2/promise";
 
-export class Provider {
+export abstract class Provider {
     public items: Collection<string, any>;
 
-    constructor() {
+    protected constructor() {
         /**
          * Cached entries.
          * @type {Collection<string, Object>}
@@ -14,11 +15,9 @@ export class Provider {
     /**
      * Initializes the provider.
      * @abstract
-     * @returns {any}
+     * @returns {Promise<void>}
      */
-    init(): any {
-        throw new Error("NOT_IMPLEMENTED");
-    }
+    abstract init(): Promise<void>;
 
     /**
      * Gets a value.
@@ -28,9 +27,7 @@ export class Provider {
      * @param {any} [defaultValue] - Default value if not found or null.
      * @returns {any}
      */
-    get(id: string, key: string, defaultValue?: any): any {
-        throw new Error("NOT_IMPLEMENTED");
-    }
+    abstract get<T>(id: string, key: string, defaultValue?: any): T;
 
     /**
      * Sets a value.
@@ -40,9 +37,11 @@ export class Provider {
      * @param {any} value - The value.
      * @returns {any}
      */
-    set(id: string, key: string, value: any): any {
-        throw new Error("NOT_IMPLEMENTED");
-    }
+    abstract set(
+        id: string,
+        key: string,
+        value: any
+    ): Promise<[QueryResult, FieldPacket[]]>;
 
     /**
      * Deletes a value.
@@ -51,9 +50,7 @@ export class Provider {
      * @param {string} key - The key to delete.
      * @returns {any}
      */
-    delete(id: string, key: string): any {
-        throw new Error("NOT_IMPLEMENTED");
-    }
+    abstract delete(id: string, key: string): any;
 
     /**
      * Clears an entry.
@@ -61,9 +58,7 @@ export class Provider {
      * @param {string} id - ID of entry.
      * @returns {any}
      */
-    clear(id: string): any {
-        throw new Error("NOT_IMPLEMENTED");
-    }
+    abstract clear(id: string): any;
 }
 
 /**
