@@ -91,7 +91,7 @@ export default class StatsCommand extends KaikiCommand {
                     },
                     {
                         name: "Running on Node.js",
-                        value: `[Node.js](https://nodejs.org/en/ 'Node.js website') ${process.version}`,
+                        value: `[Node.js](https://nodejs.org/en/ 'Node.js website') ${process.version} (${process.env.NODE_ENV})`,
                         inline: true,
                     },
                     {
@@ -101,7 +101,7 @@ export default class StatsCommand extends KaikiCommand {
                     },
                 ])
                 .setAuthor({
-                    name: "© 2023 @Cata#2702",
+                    name: "© 2024 @Cata#2702",
                     iconURL: message.client.user.displayAvatarURL(),
                     url: packageJSON.repository.url,
                 })

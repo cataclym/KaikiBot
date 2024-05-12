@@ -57,6 +57,17 @@ export default class KaikiCache {
         }, Constants.MAGIC_NUMBERS.CACHE.FIFTEEN_MINUTES_MS);
     }
 
+    public incrementCommand(command: string) {
+        let number = this.cmdStatsCache.get(command);
+
+        if (number !== undefined) {
+            this.cmdStatsCache.set(command, number++);
+        }
+        else {
+            this.cmdStatsCache.set(command, 1);
+        }
+    }
+
     private async syncCommandStats(orm: pkg.PrismaClient) {
         if (!this.cmdStatsCache.size) return;
 

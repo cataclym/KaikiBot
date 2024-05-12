@@ -13,14 +13,17 @@ import { Message } from "discord.js";
 })
 export class MessageCommandFinish extends Listener {
     public async run(message: Message, command: Command) {
+        const guildStr = message.inGuild()
+            ? `Guild: ${colorette.greenBright(message.guild.name)} [${colorette.greenBright(message.guildId)}]`
+            : `DM Channel: [${colorette.greenBright(message.channelId)}]`
+
         this.container.logger.info(
-            `Command: ${colorette.greenBright(command.name)} | User: ${colorette.greenBright(message.author.username)} [${colorette.greenBright(message.author.id)}] | GID/CID: ${colorette.greenBright(message.guildId || message.channelId)}`
+            `      > Command: ${colorette.greenBright(command.name)}
+        User: ${colorette.greenBright(message.author.username)} [${colorette.greenBright(message.author.id)}]
+       
+        a ${guildStr}`
         );
 
-        let cmd = message.client.cache.cmdStatsCache.get(command.name);
-
-        cmd
-            ? message.client.cache.cmdStatsCache.set(command.name, cmd++)
-            : message.client.cache.cmdStatsCache.set(command.name, 1);
+        message.client.cache.incrementCommand(command.name)
     }
 }

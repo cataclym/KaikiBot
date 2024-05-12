@@ -14,7 +14,7 @@ export class DadBot {
 
         if (!nick) return;
 
-        return await this.setAndSaveUsername(message, nick);
+        return await this.replyAndSave(message, nick);
     }
 
     private static preCheck(
@@ -63,7 +63,7 @@ export class DadBot {
         return false;
     }
 
-    private static async setAndSaveUsername(
+    private static async replyAndSave(
         message: CustomMessageType,
         nick: string
     ) {
@@ -107,15 +107,10 @@ export class DadBot {
                     );
             }
         }
-
-        const { cmdStatsCache } = message.client.cache;
-        let cmd = cmdStatsCache.get("dadbot");
-
-        cmd
-            ? cmdStatsCache.set("dadbot", cmd++)
-            : cmdStatsCache.set("dadbot", 1);
-
-        await container.client.orm.userNicknames.create({
+        await DadBot.saveUsername(message, nick);
+    }
+    private static async saveUsername(message: CustomMessageType, nick: string) {
+        return container.client.orm.userNicknames.create({
             data: {
                 GuildUsers: {
                     connectOrCreate: {
@@ -133,6 +128,6 @@ export class DadBot {
                 },
                 Nickname: nick,
             },
-        });
+        })
     }
 }
