@@ -12,9 +12,9 @@ import Constants from "../../struct/Constants";
 
 @ApplyOptions<KaikiCommandOptions>({
     name: "neofetch",
-    aliases: ["neo"],
+    aliases: ["neo", "fastfetch"],
     description:
-        "Displays neofetch ascii art. Provide argument '--list' to get a list of all supported distros.",
+        "Displays neofetch/fastfetch ascii art. Provide argument '--list' to get a list of all supported distros.",
     usage: ["", "opensuse", "--list"],
     cooldownDelay: 2000,
     typing: true,

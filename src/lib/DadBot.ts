@@ -109,7 +109,10 @@ export class DadBot {
         }
         await DadBot.saveUsername(message, nick);
     }
-    private static async saveUsername(message: CustomMessageType, nick: string) {
+    private static async saveUsername(
+        message: CustomMessageType,
+        nick: string
+    ) {
         return container.client.orm.userNicknames.create({
             data: {
                 GuildUsers: {
@@ -128,6 +131,6 @@ export class DadBot {
                 },
                 Nickname: nick,
             },
-        })
+        });
     }
 }

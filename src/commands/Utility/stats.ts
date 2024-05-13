@@ -108,6 +108,6 @@ export default class StatsCommand extends KaikiCommand {
                 .withOkColor(message),
         ];
 
-        return sendPaginatedMessage(message, pages, { owner: message.author });
+        return sendPaginatedMessage(message, pages);
     }
 }

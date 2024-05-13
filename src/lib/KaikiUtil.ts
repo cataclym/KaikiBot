@@ -15,6 +15,15 @@ export default class KaikiUtil {
         );
     }
 
+    static timeToMidnightOrNoon() {
+        const timeToMidnight = KaikiUtil.timeToMidnight();
+        const twelveHrInMs = 12 * 60 * 60 * 1000;
+
+        return timeToMidnight < twelveHrInMs
+            ? timeToMidnight
+            : timeToMidnight - twelveHrInMs;
+    }
+
     static trim(str: string, max: number): string {
         return str.length > max ? `${str.slice(0, max - 3)}...` : str;
     }
@@ -60,6 +69,7 @@ export default class KaikiUtil {
             | "fix"
             | "glsl"
             | "ini"
+            | "js"
             | "json"
             | "md"
             | "ml"
@@ -67,6 +77,7 @@ export default class KaikiUtil {
             | "py"
             | "sql"
             | "tex"
+            | "ts"
             | "xl"
             | "xml"
     ): Promise<string> {

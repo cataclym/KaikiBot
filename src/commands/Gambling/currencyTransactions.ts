@@ -121,7 +121,7 @@ export default class CurrencyTransactionsCommand extends KaikiCommand {
                     )
             );
         }
-        return sendPaginatedMessage(message, pages, {}, page - 1);
+        return sendPaginatedMessage(message, pages, { startPage: page - 1 });
     }
 
     private static baseEmbed(message: Message) {

@@ -1,8 +1,9 @@
 import { ApplyOptions } from "@sapphire/decorators";
-import { EmbedBuilder, Message } from "discord.js";
+import { EmbedBuilder, Message, time } from "discord.js";
 import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/Kaiki/KaikiEmbeds";
+import KaikiUtil from "../../lib/KaikiUtil";
 
 @ApplyOptions<KaikiCommandOptions>({
     name: "daily",
@@ -56,7 +57,7 @@ export default class ClaimDailyCommand extends KaikiCommand {
                 embeds: [
                     new EmbedBuilder()
                         .setDescription(
-                            `**${message.author.username}**, You've just claimed your daily allowance!\n**${amount}** ${this.client.money.currencyName} ${this.client.money.currencySymbol}`
+                            `**${message.author.username}**, You've just claimed your daily allowance!\n+**${amount}** ${this.client.money.currencyName} ${this.client.money.currencySymbol}\n\nClaim again in ${time(new Date(new Date().getTime() + KaikiUtil.timeToMidnightOrNoon()), "R")}`
                         )
                         .withOkColor(message),
                 ],
@@ -66,7 +67,7 @@ export default class ClaimDailyCommand extends KaikiCommand {
                 embeds: [
                     new EmbedBuilder()
                         .setDescription(
-                            `**${message.author.username}**, You've already claimed your daily allowance!!`
+                            `**${message.author.username}**, You've already claimed your daily allowance!!\n\nClaim again in ${time(new Date(new Date().getTime() + KaikiUtil.timeToMidnightOrNoon()), "R")}`
                         )
                         .withErrorColor(message),
                 ],

@@ -11,8 +11,9 @@ export class KaikiCoinFlipArgument extends Argument<string> {
     };
 
     public run(parameter: string): Argument.AwaitableResult<string> {
-        if (Object.keys(KaikiCoinFlipArgument.coinArgs).includes(parameter)) {
-            return this.ok(KaikiCoinFlipArgument.coinArgs[parameter]);
+        const argument = parameter.toLowerCase();
+        if (Object.keys(KaikiCoinFlipArgument.coinArgs).includes(argument)) {
+            return this.ok(KaikiCoinFlipArgument.coinArgs[argument]);
         }
         return this.error({
             parameter,

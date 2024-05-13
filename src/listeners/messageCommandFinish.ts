@@ -15,15 +15,14 @@ export class MessageCommandFinish extends Listener {
     public async run(message: Message, command: Command) {
         const guildStr = message.inGuild()
             ? `Guild: ${colorette.greenBright(message.guild.name)} [${colorette.greenBright(message.guildId)}]`
-            : `DM Channel: [${colorette.greenBright(message.channelId)}]`
+            : `DM Channel: [${colorette.greenBright(message.channelId)}]`;
 
         this.container.logger.info(
             `      > Command: ${colorette.greenBright(command.name)}
         User: ${colorette.greenBright(message.author.username)} [${colorette.greenBright(message.author.id)}]
-       
-        a ${guildStr}`
+        ${guildStr}`
         );
 
-        message.client.cache.incrementCommand(command.name)
+        message.client.cache.incrementCommand(command.name);
     }
 }

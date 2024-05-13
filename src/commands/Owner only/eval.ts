@@ -36,7 +36,7 @@ export default class EvalCommand extends KaikiCommand {
                         this.clean(evaled.toString()),
                         Constants.MAGIC_NUMBERS.CMDS.OWNER_ONLY.EVAL.MAX_STRING
                     ),
-                    "xl"
+                    "js"
                 ),
             });
         } catch (err) {

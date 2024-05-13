@@ -62,8 +62,7 @@ export default class KaikiCache {
 
         if (number !== undefined) {
             this.cmdStatsCache.set(command, number++);
-        }
-        else {
+        } else {
             this.cmdStatsCache.set(command, 1);
         }
     }

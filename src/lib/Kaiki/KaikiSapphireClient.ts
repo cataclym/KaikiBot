@@ -213,12 +213,19 @@ export default class KaikiSapphireClient<Ready extends true>
             // Loop this
             await this.dailyResetTimer();
 
-            // Reset daily currency claims
-            await this.resetDailyClaims();
-
             // Check for "birthdays"
             await this.anniversaryService.birthdayService();
         }, KaikiUtil.timeToMidnight());
+    }
+
+    private async resetTimer(): Promise<void> {
+        setTimeout(async () => {
+            // Loop this
+            await this.resetTimer();
+
+            // Reset daily currency claims
+            await this.resetDailyClaims();
+        }, KaikiUtil.timeToMidnightOrNoon());
     }
 
     public async initializeServices() {
@@ -367,6 +374,7 @@ export default class KaikiSapphireClient<Ready extends true>
         client.startPolling();
 
         client.on("vote", async (vote) => {
+            const amount = this.botSettings.get("1", "DailyAmount", 250);
             await Promise.all([
                 this.users.cache
                     .get(vote.id)
@@ -375,7 +383,7 @@ export default class KaikiSapphireClient<Ready extends true>
                             new EmbedBuilder()
                                 .setTitle("Thank you for your support! 🎉")
                                 .setDescription(
-                                    `You received 120 ${this.money.currencyName} ${this.money.currencySymbol}`
+                                    `You received ${amount} ${this.money.currencyName} ${this.money.currencySymbol}`
                                 )
                                 .setFooter({
                                     text: "🧡",
@@ -385,7 +393,11 @@ export default class KaikiSapphireClient<Ready extends true>
                     })
                     // Ignore failed DMs
                     .catch(() => undefined),
-                this.money.add(vote.id, 120n, "Voted - DiscordBotList"),
+                this.money.add(
+                    vote.id,
+                    BigInt(amount),
+                    "Voted - DiscordBotList"
+                ),
             ]);
         });
     }

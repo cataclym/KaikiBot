@@ -8,7 +8,7 @@ import Constants from "../../struct/Constants";
 
 @ApplyOptions<KaikiCommandOptions>({
     name: "serverlist",
-    aliases: ["listservers"],
+    aliases: ["listservers", "servers"],
     description: "Lists all servers the bot is in. 15 servers per page.",
     usage: ["", "7"],
     requiredClientPermissions: ["SendMessages"],
@@ -47,11 +47,9 @@ export default class ServerList extends KaikiCommand {
             pages.push(emb);
         }
 
-        return sendPaginatedMessage(
-            message,
-            pages,
-            { owner: message.author },
-            startPage
-        );
+        return sendPaginatedMessage(message, pages, {
+            owner: message.author,
+            startPage,
+        });
     }
 }
