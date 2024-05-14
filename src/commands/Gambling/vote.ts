@@ -18,7 +18,7 @@ export default class Cash extends KaikiCommand {
             embeds: [
                 new EmbedBuilder()
                     .setTitle("Vote here")
-                    .setDescription(`Voting will award you ${amount} ${this.client.money.currencyName} ${this.client.money.currencySymbol}`)
+                    .setDescription(`Voting will award you ${amount} ${this.client.money.currencyName} ${this.client.money.currencySymbol}\nReward may take up to 5 minutes`)
                     .setURL(process.env.DBL_PAGE_URL)
                     .withOkColor(msg),
             ],
