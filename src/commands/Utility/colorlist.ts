@@ -8,7 +8,7 @@ import {
     MessageCreateOptions,
 } from "discord.js";
 import { imgFromColor } from "../../lib/Color";
-import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
+import KaikiCommandOptions from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiUtil from "../../lib/KaikiUtil";
 import Constants from "../../struct/Constants";

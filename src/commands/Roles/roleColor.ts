@@ -8,7 +8,7 @@ import {
     resolveColor,
 } from "discord.js";
 import { imgFromColor } from "../../lib/Color";
-import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
+import KaikiCommandOptions from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/Kaiki/KaikiEmbeds";
 import KaikiUtil from "../../lib/KaikiUtil";

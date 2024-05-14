@@ -2,7 +2,7 @@ import { ApplyOptions } from "@sapphire/decorators";
 import { Args, UserError } from "@sapphire/framework";
 import { EmbedBuilder, Message } from "discord.js";
 import { CategoriesEnum } from "../../lib/Enums/categoriesEnum";
-import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
+import KaikiCommandOptions from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 // TODO: Well this obviously needs to be revisited with sapphire in mind

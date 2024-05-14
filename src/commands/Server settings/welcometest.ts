@@ -1,7 +1,7 @@
 import { ApplyOptions } from "@sapphire/decorators";
 import { EmbedBuilder, Message } from "discord.js";
 import GreetHandler from "../../lib/GreetHandler";
-import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
+import KaikiCommandOptions from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 @ApplyOptions<KaikiCommandOptions>({

@@ -1,6 +1,6 @@
 import { ApplyOptions } from "@sapphire/decorators";
 import { EmbedBuilder, Message, time } from "discord.js";
-import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
+import KaikiCommandOptions from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/Kaiki/KaikiEmbeds";
 import KaikiUtil from "../../lib/KaikiUtil";

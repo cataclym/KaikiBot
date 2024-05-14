@@ -6,7 +6,7 @@ import CommonEmbed from "../../lib/Anime/CommonEmbed";
 
 import AnilistGraphQL from "../../lib/APIs/AnilistGraphQL";
 import MangaData from "../../lib/Interfaces/Common/MangaData";
-import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
+import KaikiCommandOptions from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 @ApplyOptions<KaikiCommandOptions>({

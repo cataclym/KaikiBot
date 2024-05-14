@@ -1,5 +1,5 @@
 import { Args, Command, CommandOptions } from "@sapphire/framework";
-import { KaikiCommandOptions } from "../Interfaces/Kaiki/KaikiCommandOptions";
+import KaikiCommandOptions from "../Interfaces/Kaiki/KaikiCommandOptions";
 import type KaikiSapphireClient from "./KaikiSapphireClient";
 
 export default class KaikiCommand extends Command<Args, CommandOptions> {

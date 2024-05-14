@@ -5,7 +5,7 @@ import { EmbedBuilder, Message } from "discord.js";
 import CommonEmbed from "../../lib/Anime/CommonEmbed";
 import AnilistGraphQL from "../../lib/APIs/AnilistGraphQL";
 import AnimeData from "../../lib/Interfaces/Common/AnimeData";
-import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
+import KaikiCommandOptions from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 @ApplyOptions<KaikiCommandOptions>({

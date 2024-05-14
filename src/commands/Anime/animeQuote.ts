@@ -1,7 +1,7 @@
 import { ApplyOptions } from "@sapphire/decorators";
 import { Message } from "discord.js";
 import { sendQuote } from "../../lib/APIs/animeQuote";
-import { KaikiCommandOptions } from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
+import KaikiCommandOptions from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import { AnimeQuoteResponse } from "../../lib/Types/Miscellaneous";
 import { UserError } from "@sapphire/framework";
