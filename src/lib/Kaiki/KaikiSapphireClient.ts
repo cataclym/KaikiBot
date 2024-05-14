@@ -232,7 +232,7 @@ export default class KaikiSapphireClient<Ready extends true>
         this.anniversaryService = new AnniversaryRolesService(this);
 
         // This will execute at midnight
-        await this.dailyResetTimer();
+        await Promise.all([this.dailyResetTimer(), this.resetTimer()]);
         this.logger.info("AnniversaryRolesService | Service initiated");
 
         this.hentaiService = new HentaiService();
