@@ -20,7 +20,10 @@ export default class FlipCommand extends KaikiCommand {
             .pick("integer", { maximum: 10, minimum: 1 })
             .catch(() => {
                 if (args.finished) return 1;
-                throw new UserError({ identifier: "FlipsOutOfRange", message: "Please specify a number from 1 to 10" })
+                throw new UserError({
+                    identifier: "FlipsOutOfRange",
+                    message: "Please specify a number from 1 to 10",
+                });
             });
 
         const height = 256;
@@ -43,8 +46,8 @@ export default class FlipCommand extends KaikiCommand {
                 width,
                 height,
                 channels: 4,
-                background: { r: 0, g: 0, b: 0, alpha: 0 }
-            }
+                background: { r: 0, g: 0, b: 0, alpha: 0 },
+            },
         })
             .composite(flips)
             .webp()
@@ -75,7 +78,7 @@ export default class FlipCommand extends KaikiCommand {
         this.imageBuffers = await Promise.all([
             fetches[0].arrayBuffer(),
             fetches[1].arrayBuffer(),
-        ])
+        ]);
 
         return this.imageBuffers;
     }
