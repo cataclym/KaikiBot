@@ -3,7 +3,7 @@
 -   [Readme](../README.md)
 -   Docs
     -   [.env setup](ENV.md)
-    -   [Placeholders](docs/PLACEHOLDERS.md)
+    -   [Placeholders](PLACEHOLDERS.md)
 
 ## Requirements
 
