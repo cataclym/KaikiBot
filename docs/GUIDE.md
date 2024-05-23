@@ -3,6 +3,7 @@
 -   [Readme](../README.md)
 -   Docs
     -   [.env setup](ENV.md)
+    -   [Placeholders](docs/PLACEHOLDERS.md)
 
 ## Requirements
 
@@ -12,7 +13,7 @@
 
 ## Instructions
 
-1. Clone repo: `git clone https://gitlab.com/cataclym/KaikiDeishuBot.git && cd KaikiDeishuBot`
+1. Clone repo: `git clone https://github.com/cataclym/KaikiBot.git && cd KaikiDeishuBot`
 2. Create .env file: `cp .env.example .env`.
 3. Edit .env to add your token and owner id. Using nano or your editor of choice: `nano .env` then follow the [full instructions](ENV.md)!
 4. Install dependencies: `npm i`

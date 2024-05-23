@@ -4,6 +4,7 @@
 -   Docs
 
     -   [Guide](GUIDE.md)
+    -   [.env setup](ENV.md)
 
     ## Placeholders
 

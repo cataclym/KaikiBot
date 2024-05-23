@@ -9,7 +9,7 @@
 ### Kaiki is a unique Discord bot, written in Typescript.
 
 | [Website](https://kaikibot.xyz) | [Add Kaiki to your server](https://discord.com/oauth2/authorize?client_id=714695773534814238&scope=bot) |
-| :------------------------------ | :-----------------------------------------------------------------------------------------------------: |
+|:--------------------------------|:-------------------------------------------------------------------------------------------------------:|
 
 <h3 style="color: #ea580c"> Economy </h3>
 Gambling commands, daily currency claims, currency transactions

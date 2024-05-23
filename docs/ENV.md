@@ -3,6 +3,7 @@
 -   [Readme](../README.md)
 -   Docs
     -   [Guide](GUIDE.md)
+    -   [Placeholders](docs/PLACEHOLDERS.md)
 
 # .env setup guide
 

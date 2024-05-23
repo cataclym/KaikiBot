@@ -25,4 +25,4 @@ rules:
     "@typescript-eslint/no-explicit-any": "off"
 ignorePatterns:
     - dist
-    - "./CHANGELOG.md"
+    - "*.md"
