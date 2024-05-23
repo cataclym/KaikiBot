@@ -851,7 +851,7 @@ export default class Constants {
     });
 
     static readonly LINKS = Object.freeze({
-        REPO_URL: "https://github.com/cataclym/Kaiki-Deishu-Bot.git",
-        GUIDE: "https://github.com/cataclym/Kaiki-Deishu-Bot/blob/master/docs/GUIDE.md",
+        REPO_URL: "https://github.com/cataclym/KaikiBot.git",
+        GUIDE: "https://github.com/cataclym/KaikiBot/blob/master/docs/GUIDE.md",
     });
 }
