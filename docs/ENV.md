@@ -24,24 +24,15 @@ Example
 
     CLIENT_TOKEN=MND5MTA2MzY2MzgwNzU5Fjgw.O08nDN.Bl6rIwtlAg9Hxuz8CLPD0l23sun
 
-## OWNER
-
--   Enable developer mode in Discord
-    -   Navigate to Discord settings
-    -   Under settings, click `Advanced`
-    -   Tick `Developer mode`. Make sure it's green.
-
-Example
-
-    OWNER=142788173885276162
-
 ## PREFIX
 
 Decide what prefix the bot should default to on new servers.
 
 Example
 
-    PREFIX=;
+    PREFIX=+
+
+Prefix is `+`
 
 ## KAWAIIKEY
 
@@ -62,31 +53,36 @@ Replace `yourUsername` and `yourPassword` with your MySQL user and password cred
 Example
 
     DATABASE_URL="mysql://yourUsername:yourPassword@localhost:3306/kaikidb"
+    DB_HOST=localhost
+    DB_USER=yourUsername
+    DB_PASSWORD=yourPassword
+    DB_ROOT_PASSWORD=yourRootPassword
+    DB_NAME=kaikidb
 
 ## The rest of the file
 
 Please leave this as is, unless you know what you're doing
 
-    DADBOT_MAX_LENGTH=256
-
-    DADBOT_NICKNAME_LENGTH=32
-
-    NODE_ENV=production
-
 ## Example of finished .env file
 
+    # Bot
     CLIENT_TOKEN=MND5MTA2MzY2MzgwNzU5Fjgw.O08nDN.Bl6rIwtlAg9Hxuz8CLPD0l23sun
-
-    OWNER=142788173885276162
-
-    PREFIX=;
-
-    DATABASE_URL="mysql://yourUsername:yourPassword@localhost:3306/kaikidb"
-
+    PREFIX=+
     KAWAIIKEY=142788173885276162.DspDpD0isjuXAKD73vWs
 
-    DADBOT_MAX_LENGTH=256
+    # Database
+    DATABASE_URL="mysql://yourUsername:yourPassword@localhost:3306/kaikidb"
+    DB_HOST=localhost
+    DB_USER=yourUsername
+    DB_PASSWORD=yourPassword
+    DB_ROOT_PASSWORD=yourRootPassword
+    DB_NAME=kaikidb
 
-    DADBOT_NICKNAME_LENGTH=32
-
+    # Docker
+    NODE_DOCKER_PORT=8080
     NODE_ENV=production
+
+    # Bot settings
+    DADBOT_MAX_LENGTH=256
+    DADBOT_NICKNAME_LENGTH=32
+    DADBOT_DEFAULT_ROLENAME=Dadbot-excluded

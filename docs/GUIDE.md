@@ -7,8 +7,8 @@
 ## Requirements
 
 -   Linux (Can work on other OS, but not supported)
--   Node.js v16.6 (or newer) https://nodejs.org/en/
--   MySQL
+-   Node.js v18 (or newer) https://nodejs.org/en/
+-   MySQL/MariaDB
 
 ## Instructions
 
@@ -21,7 +21,7 @@
 7. ?
 8. Profit
 
-Having issues? Come join us on discord
+Having issues? Come join us on Discord
 
 <a href="https://discord.gg/8G3AqjnFfX">
     <img src="https://discord.com/api/guilds/794671071886049280/embed.png?style=banner3" title="Discord Server" alt="Kaiki invite link">
