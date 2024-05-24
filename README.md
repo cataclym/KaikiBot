@@ -11,13 +11,13 @@
 | [Website](https://kaikibot.xyz) | [Add Kaiki to your server](https://discord.com/oauth2/authorize?client_id=714695773534814238&scope=bot) |
 |:--------------------------------|:-------------------------------------------------------------------------------------------------------:|
 
-<h3 style="color: #ea580c"> Economy </h3>
+#### Economy
 Gambling commands, daily currency claims, currency transactions
 
-<h3 style="color: #ea580c"> Interactions </h3>
+### Interactions
 Anime reaction gifs for most situations, always +pat your homies
 
-<h3 style="color: #ea580c"> Unique </h3>
+### Unique
 
 -   See how many times each emote has been used in the server
 -   Ping your minecraft server to check it's status
@@ -26,18 +26,19 @@ Anime reaction gifs for most situations, always +pat your homies
 
 ... and much more.
 
-Feel free to selfhost and/or contribute!
-
 ## Documentation
 
--   Docs
-    -   [Selfhosting guide](docs/GUIDE.md)
-    -   [Placeholders](docs/PLACEHOLDERS.md) for greet and bye messages
-    -   [.env setup](docs/ENV.md)
+-   [Selfhosting guide](docs/GUIDE.md)
+-   [Placeholders](docs/PLACEHOLDERS.md) for greet and bye messages
+-   [.env setup](docs/ENV.md)
 
 ## Contributing
 
-Consider contributing. I appreciate all the help I can get!
+Consider contributing! I appreciate all the help I can get.
+
+### Upcoming plans
+* Rework todo (TodoRework branch)
+* Serve/Update commandlist to website automatically
 
 ---
 

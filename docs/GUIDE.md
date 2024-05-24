@@ -13,12 +13,27 @@
 
 ## Instructions
 
-1. Clone repo: `git clone https://github.com/cataclym/KaikiBot.git && cd KaikiDeishuBot`
-2. Create .env file: `cp .env.example .env`.
-3. Edit .env to add your token and owner id. Using nano or your editor of choice: `nano .env` then follow the [full instructions](ENV.md)!
-4. Install dependencies: `npm i`
-5. Run the compiler: `npm run build`
-6. Run the program: `npm run start`
+1. Clone repo
+```
+git clone https://github.com/cataclym/KaikiBot.git && cd KaikiBot
+```
+2. Create .env file
+```
+cp .env.example .env
+```
+3. [Setup .env file](ENV.md)
+4. Install dependencies:
+```
+npm i
+```
+5. Run the compiler
+```
+npm run build
+```
+6. Run the program 
+```
+npm run start
+```
 7. ?
 8. Profit
 
