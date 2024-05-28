@@ -7,7 +7,7 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 @ApplyOptions<KaikiCommandOptions>({
     name: "unban",
     aliases: ["ub"],
-    description: "",
+    description: "Unbans a given user by ID",
     usage: "103020509395056",
     requiredUserPermissions: ["BanMembers"],
     requiredClientPermissions: ["BanMembers"],
