@@ -1,54 +1,97 @@
 import { ApplyOptions } from "@sapphire/decorators";
 import { PreconditionEntryResolvable } from "@sapphire/framework";
-import { AttachmentBuilder, Message, PermissionsBitField } from "discord.js";
+import { AttachmentBuilder, EmbedBuilder, Message, PermissionsBitField } from "discord.js";
 import KaikiCommandOptions from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+import Constants from "../../struct/Constants";
+import process from "process";
 
 @ApplyOptions<KaikiCommandOptions>({
     name: "gencmdlist",
-    aliases: ["gencmdlst"],
+    aliases: ["gencmdlst", "gencmds"],
     usage: "",
-    description: "Uploads a JSON file containing all commands.",
+    description: "Uploads a JSON file containing all commands. Supports uploading to a specific endpoint.",
     preconditions: ["OwnerOnly"],
 })
 export default class GenCmdListCommand extends KaikiCommand {
-    public async messageRun(message: Message): Promise<Message> {
+    public async messageRun(message: Message) {
+
+        if (!process.env.SELF_API || !process.env.SELF_API_TOKEN) {
+            return message.channel.send({
+                files: [
+                    new AttachmentBuilder(Buffer.from(this.generateCommmandlist(), "utf-8"),
+                        { name: "cmdlist.json" }
+                    ),
+                ],
+            });
+        }
+
+        const pendingMsg = await message.channel.send({
+            embeds: [
+                new EmbedBuilder()
+                    .setDescription("Uploading commandslist...")
+                    .setColor(Constants.kaikiOrange)
+            ]
+        })
+
+        const list = this.generateCommmandlist();
+
+        const uri = new URL(process.env.SELF_API)
+        uri.searchParams.append("token", process.env.SELF_API_TOKEN)
+
+        const res = await fetch(uri, {
+            method: "POST",
+            body: JSON.stringify({
+                list: list,
+            }),
+            headers: {
+                "content-type": "application/json"
+            }
+        })
+
+        if (res.status === 201) {
+            await pendingMsg.edit({
+                embeds: [
+                    new EmbedBuilder()
+                        .setDescription("Successfully uploaded commands")
+                        .withOkColor(message),
+                ],
+                files: [
+                    new AttachmentBuilder(Buffer.from(list, "utf-8"),
+                        { name: "cmdlist.json" }
+                    ),
+                ],
+            })
+        }
+    }
+
+    private generateCommmandlist() {
         const commands = Array.from(this.store.values());
 
         const { categories } = this.store;
 
-        return message.channel.send({
-            files: [
-                new AttachmentBuilder(
-                    Buffer.from(
-                        JSON.stringify(
-                            categories.map((category) => {
-                                // Akairo: Category ID, Command[]
-                                return [
-                                    category,
-                                    commands
-                                        .filter(
-                                            (command) =>
-                                                command.category === category
-                                        )
-                                        .map(
-                                            (command: KaikiCommand) =>
-                                                new GeneratedCommand(command)
-                                        ),
-                                ];
-                            }),
-                            (key, value) =>
-                                typeof value === "bigint"
-                                    ? value.toString()
-                                    : value,
-                            4
+        return JSON.stringify(
+            categories.map((category) => {
+                // Akairo: Category ID, Command[]
+                return [
+                    category,
+                    commands
+                        .filter(
+                            (command) =>
+                                command.category === category
+                        )
+                        .map(
+                            (command: KaikiCommand) =>
+                                new GeneratedCommand(command)
                         ),
-                        "utf-8"
-                    ),
-                    { name: "cmdlist.json" }
-                ),
-            ],
-        });
+                ];
+            }),
+            (key, value) =>
+                typeof value === "bigint"
+                    ? value.toString()
+                    : value,
+            4
+        );
     }
 }
 
@@ -57,7 +100,7 @@ class GeneratedCommand {
     aliases: string[];
     channel?: string | undefined | PreconditionEntryResolvable;
     ownerOnly?: boolean;
-    usage?: string | string[] | undefined;
+    usage?: string | string[];
     userPermissions?: string;
     description?: string;
 
