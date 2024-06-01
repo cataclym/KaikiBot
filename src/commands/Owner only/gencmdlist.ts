@@ -1,6 +1,6 @@
 import { ApplyOptions } from "@sapphire/decorators";
 import { PreconditionEntryResolvable } from "@sapphire/framework";
-import { AttachmentBuilder, EmbedBuilder, Message, PermissionsBitField } from "discord.js";
+import { AttachmentBuilder, EmbedBuilder, Message, PermissionsBitField, PermissionsString } from "discord.js";
 import KaikiCommandOptions from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import Constants from "../../struct/Constants";
@@ -101,7 +101,7 @@ class GeneratedCommand {
     channel?: string | undefined | PreconditionEntryResolvable;
     ownerOnly?: boolean;
     usage?: string | string[];
-    userPermissions?: string;
+    userPermissions?: PermissionsString[];
     description?: string;
 
     constructor(command: KaikiCommand) {
@@ -117,8 +117,7 @@ class GeneratedCommand {
         this.userPermissions = new PermissionsBitField(
             command.options.requiredUserPermissions
         )
-            .toArray()
-            .join();
+            .toArray();
         this.description = command.description;
     }
 }
