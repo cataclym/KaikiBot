@@ -5,7 +5,10 @@ import images from "../../data/images.json";
 import KaikiCommandOptions from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
-type Sides = "tails" | "heads";
+export enum Sides {
+    tails = "tails",
+    heads = "heads",
+}
 
 @ApplyOptions<KaikiCommandOptions>({
     name: "betflip",
@@ -14,7 +17,14 @@ type Sides = "tails" | "heads";
         "Bet on tails or heads. Guessing correct awards you 1.95x the currency you've bet.",
     usage: ["5 heads", "10 t"],
 })
-export default class BetflipCommands extends KaikiCommand {
+export default class BetflipCommand extends KaikiCommand {
+
+    static async flip(): Promise<[Sides, boolean, bigint]> {
+        const coinFlipped: Sides = Math.random() < 0.5 ? Sides.tails : Sides.heads;
+
+        return [Sides.heads, 1n]
+    }
+
     public async messageRun(message: Message, args: Args): Promise<Message> {
         const number = await args.pick("kaikiMoney");
         const coin = await args.rest("kaikiCoin");
@@ -37,11 +47,13 @@ export default class BetflipCommands extends KaikiCommand {
             });
         }
 
-        const coinFlipped: Sides = Math.random() < 0.5 ? "tails" : "heads";
+        const [coinFlipped, winnings] = await BetflipCommand.flip();
 
         const emb = new EmbedBuilder({
             image: { url: images.gambling.coin[coinFlipped] },
         }).setTitle(`Flipped ${coinFlipped}!`);
+
+
 
         if (coin === coinFlipped) {
             const amountWon = BigInt(

@@ -6,6 +6,10 @@ import KaikiCommandOptions from "../../lib/Interfaces/Kaiki/KaikiCommandOptions"
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import Constants from "../../struct/Constants";
 
+export enum Slots {
+
+}
+
 @ApplyOptions<KaikiCommandOptions>({
     name: "Slots",
     aliases: ["slots", "slot"],
@@ -13,6 +17,11 @@ import Constants from "../../struct/Constants";
     usage: ["69"],
 })
 export default class SlotsCommand extends KaikiCommand {
+
+    static async run(): Promise<[Slots, number, bigint]> {
+        throw new Error("Method not implemented.");
+    }
+
     public async messageRun(message: Message, args: Args): Promise<void> {
         const amount = await args.rest("kaikiMoney");
 
@@ -21,7 +30,7 @@ export default class SlotsCommand extends KaikiCommand {
                 embeds: [
                     new EmbedBuilder()
                         .setDescription(
-                            `You need to bet more than 2 ${this.client.money.currencySymbol}`
+                            `You need to bet at least 2 ${this.client.money.currencySymbol}`
                         )
                         .withErrorColor(message),
                 ],
