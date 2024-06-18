@@ -13,9 +13,9 @@ import Constants from "../../struct/Constants";
     usage: ["69"],
 })
 export default class BetRollCommand extends KaikiCommand {
-
-    public static async roll(number = 100n): Promise<[BetRoll, number, bigint]> {
-
+    public static async roll(
+        number = 100n
+    ): Promise<[BetRoll, number, bigint]> {
         // Gives a random number between 0-100
         const roll = Math.round(Math.random() * 100);
 
@@ -30,14 +30,12 @@ export default class BetRollCommand extends KaikiCommand {
             const winnings = number * 2n;
 
             return [BetRoll.Double, roll, winnings];
-
         } else if (
             roll < Constants.MAGIC_NUMBERS.CMDS.GAMBLING.BET_ROLL.TEN_TIMES_ROLL
         ) {
             const winnings = number * 4n;
 
             return [BetRoll.Quadruple, roll, winnings];
-
         } else {
             const winnings = number * 10n;
 
@@ -51,7 +49,7 @@ export default class BetRollCommand extends KaikiCommand {
         const success = await this.client.money.tryTake(
             message.author.id,
             number,
-            "Betroll gamble",
+            "Betroll gamble"
         );
 
         if (!success) {
@@ -59,7 +57,7 @@ export default class BetRollCommand extends KaikiCommand {
                 embeds: [
                     new EmbedBuilder()
                         .setDescription(
-                            `You don't have enough ${this.client.money.currencySymbol}`,
+                            `You don't have enough ${this.client.money.currencySymbol}`
                         )
                         .withErrorColor(message),
                 ],
@@ -73,7 +71,7 @@ export default class BetRollCommand extends KaikiCommand {
             case BetRoll.None:
                 msg = new EmbedBuilder()
                     .setDescription(
-                        `🎲 You rolled \`${roll}\`. Better luck next time!`,
+                        `🎲 You rolled \`${roll}\`. Better luck next time!`
                     )
                     .withOkColor(message);
                 break;
@@ -81,11 +79,11 @@ export default class BetRollCommand extends KaikiCommand {
                 await this.client.money.add(
                     message.author.id,
                     winnings,
-                    "Betroll won x2",
+                    "Betroll won x2"
                 );
                 msg = new EmbedBuilder()
                     .setDescription(
-                        `🎲 You rolled \`${roll}\`, and won **${winnings}** ${this.client.money.currencySymbol}, for rolling above 66`,
+                        `🎲 You rolled \`${roll}\`, and won **${winnings}** ${this.client.money.currencySymbol}, for rolling above 66`
                     )
                     .withOkColor(message);
                 break;
@@ -93,11 +91,11 @@ export default class BetRollCommand extends KaikiCommand {
                 await this.client.money.add(
                     message.author.id,
                     winnings,
-                    "Betroll won x4",
+                    "Betroll won x4"
                 );
                 msg = new EmbedBuilder()
                     .setDescription(
-                        `🎲 You rolled \`${roll}\`, and won ${winnings} ${this.client.money.currencySymbol}, for rolling above 90`,
+                        `🎲 You rolled \`${roll}\`, and won ${winnings} ${this.client.money.currencySymbol}, for rolling above 90`
                     )
                     .withOkColor(message);
                 break;
@@ -105,13 +103,13 @@ export default class BetRollCommand extends KaikiCommand {
                 await this.client.money.add(
                     message.author.id,
                     winnings,
-                    "Betroll won x10",
+                    "Betroll won x10"
                 );
-                msg =                     new EmbedBuilder()
+                msg = new EmbedBuilder()
                     .setDescription(
-                        `🎲 You rolled \`${roll}\`!!! You won ${winnings} ${this.client.money.currencySymbol}, for rolling above 99`,
+                        `🎲 You rolled \`${roll}\`!!! You won ${winnings} ${this.client.money.currencySymbol}, for rolling above 99`
                     )
-                    .withOkColor(message)
+                    .withOkColor(message);
                 break;
         }
 
@@ -123,5 +121,5 @@ export enum BetRoll {
     None,
     Double,
     Quadruple,
-    Ten
+    Ten,
 }

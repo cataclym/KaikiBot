@@ -18,11 +18,23 @@ export enum Sides {
     usage: ["5 heads", "10 t"],
 })
 export default class BetflipCommand extends KaikiCommand {
+    static RandomFlip = (): Sides =>
+        Math.random() < 0.5 ? Sides.tails : Sides.heads;
 
-    static async flip(): Promise<[Sides, boolean, bigint]> {
-        const coinFlipped: Sides = Math.random() < 0.5 ? Sides.tails : Sides.heads;
+    static async flip(
+        side = BetflipCommand.RandomFlip(),
+        amount = 100n
+    ): Promise<[Sides, bigint]> {
+        const coinFlipped: Sides = BetflipCommand.RandomFlip();
 
-        return [Sides.heads, 1n]
+        if (side === coinFlipped) {
+            return [
+                coinFlipped,
+                BigInt(Math.round(parseInt(amount.toString()) * 1.95)),
+            ];
+        }
+
+        return [coinFlipped, 0n];
     }
 
     public async messageRun(message: Message, args: Args): Promise<Message> {
@@ -53,15 +65,10 @@ export default class BetflipCommand extends KaikiCommand {
             image: { url: images.gambling.coin[coinFlipped] },
         }).setTitle(`Flipped ${coinFlipped}!`);
 
-
-
         if (coin === coinFlipped) {
-            const amountWon = BigInt(
-                Math.round(parseInt(number.toString()) * 1.95)
-            );
             await this.client.money.add(
                 message.author.id,
-                amountWon,
+                winnings,
                 "Betflip won x1.95"
             );
 
@@ -69,7 +76,7 @@ export default class BetflipCommand extends KaikiCommand {
                 embeds: [
                     emb
                         .setDescription(
-                            `You won **${amountWon}** ${this.client.money.currencySymbol}!!`
+                            `You won **${winnings}** ${this.client.money.currencySymbol}!!`
                         )
                         .withOkColor(message),
                 ],

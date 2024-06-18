@@ -8,7 +8,7 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
     name: "globalleaderboard",
     aliases: ["glb"],
     usage: "",
-    description: "Shows global currency leaderboard for the current server."
+    description: "Shows global currency leaderboard for the current server.",
 })
 export default class GlobalLeaderboard extends KaikiCommand {
     public async messageRun(message: Message): Promise<Message> {

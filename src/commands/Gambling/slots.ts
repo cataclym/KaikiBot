@@ -7,7 +7,9 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import Constants from "../../struct/Constants";
 
 export enum Slots {
-
+    x0,
+    x10,
+    x30,
 }
 
 @ApplyOptions<KaikiCommandOptions>({
@@ -17,7 +19,6 @@ export enum Slots {
     usage: ["69"],
 })
 export default class SlotsCommand extends KaikiCommand {
-
     static async run(): Promise<[Slots, number, bigint]> {
         throw new Error("Method not implemented.");
     }

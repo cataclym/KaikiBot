@@ -12,7 +12,10 @@ export enum GamblingCommands {
 }
 
 export default class KaikiArgumentsTypes {
-    static entries = Object.entries(GamblingCommands) as [string, GamblingCommands][];
+    static entries = Object.entries(GamblingCommands) as [
+        string,
+        GamblingCommands,
+    ][];
 
     // These are only for specific use cases, whereas arguments in ../../arguments are more general.
     public static urlEmoteAttachmentIArgument = Args.make<string>(
@@ -106,9 +109,14 @@ export default class KaikiArgumentsTypes {
     );
 
     public static gamblingCommandsArgument = Args.make<GamblingCommands>(
-        async (parameter: string, context: Argument.Context<GamblingCommands>) => {
+        async (
+            parameter: string,
+            context: Argument.Context<GamblingCommands>
+        ) => {
             const argument = parameter.toLowerCase();
-            const command = KaikiArgumentsTypes.entries.find(entry => entry[0] === argument);
+            const command = KaikiArgumentsTypes.entries.find(
+                (entry) => entry[0] === argument
+            );
             if (command) {
                 return Args.ok(command[1]);
             }
@@ -119,7 +127,7 @@ export default class KaikiArgumentsTypes {
                     "The provided argument could not be resolved to a gambling command.",
             });
         }
-    )
+    );
 
     static checkInt = (phrase: string) => {
         const int = parseInt(phrase);

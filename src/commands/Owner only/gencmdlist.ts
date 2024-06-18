@@ -1,6 +1,12 @@
 import { ApplyOptions } from "@sapphire/decorators";
 import { PreconditionEntryResolvable } from "@sapphire/framework";
-import { AttachmentBuilder, EmbedBuilder, Message, PermissionsBitField, PermissionsString } from "discord.js";
+import {
+    AttachmentBuilder,
+    EmbedBuilder,
+    Message,
+    PermissionsBitField,
+    PermissionsString,
+} from "discord.js";
 import KaikiCommandOptions from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import Constants from "../../struct/Constants";
@@ -10,16 +16,17 @@ import process from "process";
     name: "gencmdlist",
     aliases: ["gencmdlst", "gencmds"],
     usage: "",
-    description: "Uploads a JSON file containing all commands. Supports uploading to a specific endpoint.",
+    description:
+        "Uploads a JSON file containing all commands. Supports uploading to a specific endpoint.",
     preconditions: ["OwnerOnly"],
 })
 export default class GenCmdListCommand extends KaikiCommand {
     public async messageRun(message: Message) {
-
         if (!process.env.SELF_API || !process.env.SELF_API_TOKEN) {
             return message.channel.send({
                 files: [
-                    new AttachmentBuilder(Buffer.from(this.generateCommmandlist(), "utf-8"),
+                    new AttachmentBuilder(
+                        Buffer.from(this.generateCommmandlist(), "utf-8"),
                         { name: "cmdlist.json" }
                     ),
                 ],
@@ -30,14 +37,14 @@ export default class GenCmdListCommand extends KaikiCommand {
             embeds: [
                 new EmbedBuilder()
                     .setDescription("Uploading commandslist...")
-                    .setColor(Constants.kaikiOrange)
-            ]
-        })
+                    .setColor(Constants.kaikiOrange),
+            ],
+        });
 
         const list = this.generateCommmandlist();
 
-        const uri = new URL(process.env.SELF_API)
-        uri.searchParams.append("token", process.env.SELF_API_TOKEN)
+        const uri = new URL(process.env.SELF_API);
+        uri.searchParams.append("token", process.env.SELF_API_TOKEN);
 
         const res = await fetch(uri, {
             method: "POST",
@@ -45,9 +52,9 @@ export default class GenCmdListCommand extends KaikiCommand {
                 list: list,
             }),
             headers: {
-                "content-type": "application/json"
-            }
-        })
+                "content-type": "application/json",
+            },
+        });
 
         if (res.status === 201) {
             await pendingMsg.edit({
@@ -57,11 +64,11 @@ export default class GenCmdListCommand extends KaikiCommand {
                         .withOkColor(message),
                 ],
                 files: [
-                    new AttachmentBuilder(Buffer.from(list, "utf-8"),
-                        { name: "cmdlist.json" }
-                    ),
+                    new AttachmentBuilder(Buffer.from(list, "utf-8"), {
+                        name: "cmdlist.json",
+                    }),
                 ],
-            })
+            });
         }
     }
 
@@ -76,10 +83,7 @@ export default class GenCmdListCommand extends KaikiCommand {
                 return [
                     category,
                     commands
-                        .filter(
-                            (command) =>
-                                command.category === category
-                        )
+                        .filter((command) => command.category === category)
                         .map(
                             (command: KaikiCommand) =>
                                 new GeneratedCommand(command)
@@ -87,9 +91,7 @@ export default class GenCmdListCommand extends KaikiCommand {
                 ];
             }),
             (key, value) =>
-                typeof value === "bigint"
-                    ? value.toString()
-                    : value,
+                typeof value === "bigint" ? value.toString() : value,
             4
         );
     }
@@ -116,8 +118,7 @@ class GeneratedCommand {
         this.usage = command.usage;
         this.userPermissions = new PermissionsBitField(
             command.options.requiredUserPermissions
-        )
-            .toArray();
+        ).toArray();
         this.description = command.description;
     }
 }
