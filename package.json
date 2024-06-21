@@ -49,7 +49,8 @@
 		"eslint": "^8.57.0",
 		"eslint-import-resolver-typescript": "^3.6.1",
 		"eslint-plugin-import": "^2.29.1",
-		"typescript": "^5.4.5"
+		"typescript": "^5.4.5",
+		"source-map-support": "^0.5.21"
 	},
 	"description": "Discord bot built with Sapphire, Prisma and MySQL2",
 	"repository": {
