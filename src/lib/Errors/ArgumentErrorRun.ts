@@ -12,9 +12,9 @@ import {
 import KaikiCommand from "../Kaiki/KaikiCommand";
 
 type ErrorContext = {
-    message: Message;
-    command: KaikiCommand;
-    commandContext: Record<string, unknown>;
+	message: Message;
+	command: KaikiCommand;
+	commandContext: Record<string, unknown>;
 };
 
 export default async (

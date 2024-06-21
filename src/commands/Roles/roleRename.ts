@@ -12,7 +12,7 @@ import Constants from "../../struct/Constants";
     name: "rolerename",
     aliases: ["rolename", "rn"],
     description:
-        "Renames a given role. The role you specify has to be lower in the role hierarchy than your highest role. Use 'quotes around rolename with spaces'.",
+		"Renames a given role. The role you specify has to be lower in the role hierarchy than your highest role. Use 'quotes around rolename with spaces'.",
     usage: ["@Gamer weeb"],
     requiredUserPermissions: ["ManageRoles"],
     requiredClientPermissions: ["ManageRoles"],

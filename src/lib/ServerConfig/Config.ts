@@ -117,7 +117,7 @@ export default class Config {
         if (booleanArgument) {
             if (!anniversaryEnabled) {
                 await message.client.anniversaryService.checkBirthdayOnAdd(
-                    message.guild as Guild
+					message.guild as Guild
                 );
                 await message.client.guildsDb.set(
                     message.guildId,
@@ -239,8 +239,8 @@ export default class Config {
                 BigInt(message.guildId)
             );
             const blockedCategoriesObj: {
-                BlockedCategories: BlockedCategories[];
-            } = { BlockedCategories: [] };
+				BlockedCategories: BlockedCategories[];
+			} = { BlockedCategories: [] };
             Object.assign(g, blockedCategoriesObj);
             db = g as Guilds & { BlockedCategories: BlockedCategories[] };
         }
@@ -298,9 +298,9 @@ export default class Config {
                     {
                         name: "Guild prefix",
                         value:
-                            Prefix === process.env.PREFIX
-                                ? `\`${process.env.PREFIX}\` (Default)`
-                                : `\`${Prefix}\``,
+							Prefix === process.env.PREFIX
+							    ? `\`${process.env.PREFIX}\` (Default)`
+							    : `\`${Prefix}\``,
                         inline: true,
                     },
                     {

@@ -1,3 +1,5 @@
+import { SlotResult } from "../../commands/Gambling/slots";
+
 export default class Gambling {
     static readonly slotDict: { [num: number]: string } = Object.freeze({
         0: "🥑",
@@ -27,10 +29,7 @@ export default class Gambling {
             Math.floor(Math.random() * Object.keys(this.slotDict).length)
         ];
 
-    static async playSlots(currencySymbol: string): Promise<{
-        string: string;
-        numbers: string[];
-    }> {
+    static async playSlots(currencySymbol: string): Promise<SlotResult> {
         const arr = new Array(9);
         for (let i = 0; i < arr.length; i++) {
             await (async () => {

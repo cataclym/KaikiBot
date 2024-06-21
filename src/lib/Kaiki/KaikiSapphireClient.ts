@@ -121,7 +121,7 @@ export default class KaikiSapphireClient<Ready extends true>
 
         if (
             process.env.DBL_API_TOKEN &&
-            process.env.NODE_ENV === "production"
+			process.env.NODE_ENV === "production"
         ) {
             this.dblService();
         }
@@ -132,9 +132,9 @@ export default class KaikiSapphireClient<Ready extends true>
         }
 
         const owner =
-            client.application.owner instanceof Team
-                ? client.application.owner.owner?.user
-                : client.application.owner;
+			client.application.owner instanceof Team
+			    ? client.application.owner.owner?.user
+			    : client.application.owner;
 
         if (!owner) {
             return KaikiSapphireClient.noBotOwner();
@@ -341,7 +341,7 @@ export default class KaikiSapphireClient<Ready extends true>
 
         if (
             !process.env.KAWAIIKEY ||
-            process.env.KAWAIIKEY === "[YOUR_OPTIONAL_KAWAII_KEY]"
+			process.env.KAWAIIKEY === "[YOUR_OPTIONAL_KAWAII_KEY]"
         ) {
             for (const entry of ["run", "peek", "pout", "lick"]) {
                 await commandStore.unload(entry);
@@ -391,7 +391,7 @@ export default class KaikiSapphireClient<Ready extends true>
                                 .setColor(Constants.kaikiOrange),
                         ],
                     })
-                    // Ignore failed DMs
+                // Ignore failed DMs
                     .catch(() => undefined),
                 this.money.add(
                     vote.id,

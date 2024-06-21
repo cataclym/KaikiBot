@@ -26,7 +26,7 @@ export default class ExecCommand extends KaikiCommand {
                             .setAuthor({
                                 name: "Command errored",
                                 iconURL:
-                                    message.client.user?.displayAvatarURL(),
+									message.client.user?.displayAvatarURL(),
                             })
                             .setDescription(
                                 await KaikiUtil.codeblock(

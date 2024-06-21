@@ -54,9 +54,9 @@ export default class StatsCommand extends KaikiCommand {
                                     g.channels.cache.filter(
                                         (channel) =>
                                             channel.type !==
-                                                ChannelType.GuildVoice &&
-                                            channel.type !==
-                                                ChannelType.GuildCategory
+												ChannelType.GuildVoice &&
+											channel.type !==
+												ChannelType.GuildCategory
                                     ).size
                             )
                             .reduce(
@@ -68,7 +68,7 @@ export default class StatsCommand extends KaikiCommand {
                                     g.channels.cache.filter(
                                         (channel) =>
                                             channel.type ===
-                                            ChannelType.GuildVoice
+											ChannelType.GuildVoice
                                     ).size
                             )
                             .reduce((a, b) => a + b, 0)}**`,

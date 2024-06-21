@@ -17,7 +17,7 @@ import process from "process";
     aliases: ["gencmdlst", "gencmds"],
     usage: "",
     description:
-        "Uploads a JSON file containing all commands. Supports uploading to a specific endpoint.",
+		"Uploads a JSON file containing all commands. Supports uploading to a specific endpoint.",
     preconditions: ["OwnerOnly"],
 })
 export default class GenCmdListCommand extends KaikiCommand {
@@ -111,8 +111,8 @@ class GeneratedCommand {
         this.aliases = Array.from(command.aliases);
         this.channel = command.options.preconditions?.includes("GuildOnly")
             ? command.options.preconditions[
-                  command.options.preconditions.indexOf("GuildOnly")
-              ]
+                command.options.preconditions.indexOf("GuildOnly")
+            ]
             : undefined;
         this.ownerOnly = !!command.options.preconditions?.includes("OwnerOnly");
         this.usage = command.usage;

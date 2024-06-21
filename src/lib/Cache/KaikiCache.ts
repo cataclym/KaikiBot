@@ -14,8 +14,8 @@ import {
 } from "../Interfaces/Kaiki/KaikiCache";
 
 export enum ERCacheType {
-    HAS_SPACE,
-    NO_SPACE,
+	HAS_SPACE,
+	NO_SPACE,
 }
 
 export default class KaikiCache {
@@ -35,16 +35,16 @@ export default class KaikiCache {
         this.cmdStatsCache = new Map<string, number>();
         this.dailyProvider = new MySQLDailyProvider(connection);
         this.emoteReactCache = new Map<
-            GuildString,
-            Map<ERCacheType, Map<EmoteTrigger, TriggerString>>
-        >();
+			GuildString,
+			Map<ERCacheType, Map<EmoteTrigger, TriggerString>>
+		>();
 
         // API cache
         this.imageAPIs = imageAPIs;
         this.imageAPICache = new Map<
-            APIs,
-            Map<string, Record<string, unknown>>
-        >();
+			APIs,
+			Map<string, Record<string, unknown>>
+		>();
 
         void this.init(orm);
         this.populateImageAPICache();
@@ -166,8 +166,8 @@ export default class KaikiCache {
     ) {
         for (const word of matches) {
             const emote =
-                wordObj.get(ERCacheType.NO_SPACE)?.get(word) ||
-                wordObj.get(ERCacheType.HAS_SPACE)?.get(word);
+				wordObj.get(ERCacheType.NO_SPACE)?.get(word) ||
+				wordObj.get(ERCacheType.HAS_SPACE)?.get(word);
             if (!message.guild?.emojis.cache.has(emote as Snowflake) || !emote)
                 continue;
             await message.react(emote);

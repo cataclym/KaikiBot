@@ -23,26 +23,26 @@ export default class KickCommand extends KaikiCommand {
 
         if (
             message.author.id !== message.guild?.ownerId &&
-            (message.member as GuildMember).roles.highest.position <=
-                member.roles.highest.position
+			(message.member as GuildMember).roles.highest.position <=
+				member.roles.highest.position
         ) {
             return message.channel.send({
                 embeds: [
                     new EmbedBuilder({
                         description:
-                            "You don't have permissions to kick this member.",
+							"You don't have permissions to kick this member.",
                     }).withErrorColor(message),
                 ],
             });
         } else if (
             guildClientMember.roles.highest.position <=
-            member.roles.highest.position
+			member.roles.highest.position
         ) {
             return message.channel.send({
                 embeds: [
                     new EmbedBuilder({
                         description:
-                            "Sorry, I don't have permissions to kick this member.",
+							"Sorry, I don't have permissions to kick this member.",
                     }).withErrorColor(message),
                 ],
             });

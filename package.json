@@ -1,65 +1,63 @@
 {
-    "name": "kaikideishubot",
-    "version": "6.1.17",
-    "main": "./dist/index.js",
-    "scripts": {
-        "start_docker": "npx prisma db push && npm run start",
-        "start": "node dist/index.js --color",
-        "build": "rm -rf dist/ && tsc -p tsconfig.json",
-        "version": "auto-changelog -p -u -o CHANGELOG.md -t keepachangelog && git add CHANGELOG.md",
-        "watch": "tsc -p tsconfig.json -w",
-        "dev": "npm run watch & npm run start_docker",
-        "format": "prettier --write .",
-        "lint": "prettier --check . && eslint ."
-    },
-    "keywords": [
-        "Community",
-        "Customizable",
-        "Discord",
-        "Typescript",
-        "Prisma",
-        "MySQL",
-        "Multipurpose",
-        "Docker"
-    ],
-    "author": "Cata <cata@cata.moe>",
-    "license": "MIT",
-    "dependencies": {
-        "@prisma/client": "^5.10.2",
-        "@sapphire/decorators": "^6.1.0",
-        "@sapphire/framework": "^5.2.1",
-        "@sapphire/plugin-logger": "^4.0.2",
-        "@sapphire/plugin-subcommands": "^6.0.3",
-        "@sapphire/shapeshift": "^3.9.7",
-        "bufferutil": "^4.0.8",
-        "discord-js-button-pagination-ts": "^4.2.0",
-        "discord.js": "^14.15.2",
-        "discordbotlist-djs": "^0.0.4",
-        "dotenv": "^16.4.5",
-        "mysql2": "^3.10.0",
-        "prisma": "^5.10.2",
-        "sharp": "^0.33.3",
-        "utf-8-validate": "^6.0.3",
-        "zlib-sync": "^0.1.9"
-    },
-    "devDependencies": {
-        "@typescript-eslint/eslint-plugin": "^7.7.1",
-        "@typescript-eslint/parser": "^7.7.1",
-        "auto-changelog": "^2.4.0",
-        "eslint": "^8.57.0",
-        "eslint-import-resolver-typescript": "^3.6.1",
-        "eslint-plugin-import": "^2.29.1",
-        "prettier": "^3.2.5",
-        "prettier-eslint": "^16.3.0",
-        "typescript": "^5.4.5"
-    },
-    "description": "Discord bot built with Sapphire, Prisma and MySQL2",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/cataclym/KaikiBot.git"
-    },
-    "engines": {
-        "node": ">=18.0.0",
-        "npm": ">=9.0.0"
-    }
+	"name": "kaikideishubot",
+	"version": "6.1.17",
+	"main": "./dist/index.js",
+	"scripts": {
+		"start_docker": "npx prisma db push && npm run start",
+		"start": "node dist/index.js --color",
+		"build": "rm -rf dist/ && tsc -p tsconfig.json",
+		"version": "auto-changelog -p -u -o CHANGELOG.md -t keepachangelog && git add CHANGELOG.md",
+		"watch": "tsc -p tsconfig.json -w",
+		"dev": "npm run watch & npm run start_docker",
+		"lint": "eslint ."
+	},
+	"keywords": [
+		"Community",
+		"Customizable",
+		"Discord",
+		"Typescript",
+		"Prisma",
+		"MySQL",
+		"Multipurpose",
+		"Docker"
+	],
+	"author": "Cata <cata@cata.moe>",
+	"license": "MIT",
+	"dependencies": {
+		"@prisma/client": "^5.10.2",
+		"@sapphire/decorators": "^6.1.0",
+		"@sapphire/framework": "^5.2.1",
+		"@sapphire/plugin-logger": "^4.0.2",
+		"@sapphire/plugin-subcommands": "^6.0.3",
+		"@sapphire/shapeshift": "^3.9.7",
+		"bufferutil": "^4.0.8",
+		"discord-js-button-pagination-ts": "^4.2.0",
+		"discord.js": "^14.15.2",
+		"discordbotlist-djs": "^0.0.4",
+		"dotenv": "^16.4.5",
+		"mysql2": "^3.10.0",
+		"node-gyp": "^10.1.0",
+		"prisma": "^5.10.2",
+		"sharp": "^0.33.3",
+		"utf-8-validate": "^6.0.3",
+		"zlib-sync": "^0.1.9"
+	},
+	"devDependencies": {
+		"@typescript-eslint/eslint-plugin": "^7.7.1",
+		"@typescript-eslint/parser": "^7.7.1",
+		"auto-changelog": "^2.4.0",
+		"eslint": "^8.57.0",
+		"eslint-import-resolver-typescript": "^3.6.1",
+		"eslint-plugin-import": "^2.29.1",
+		"typescript": "^5.4.5"
+	},
+	"description": "Discord bot built with Sapphire, Prisma and MySQL2",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/cataclym/KaikiBot.git"
+	},
+	"engines": {
+		"node": ">=18.0.0",
+		"npm": ">=9.0.0"
+	}
 }

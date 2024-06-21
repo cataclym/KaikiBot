@@ -32,24 +32,24 @@ export default class InfoCommand extends KaikiCommand {
     private NoArgumentFoundError = new UserError({
         identifier: "NoArgumentFound",
         message:
-            "I couldn't find any relevant information for the argument you provided. Please check your input and try again.",
+			"I couldn't find any relevant information for the argument you provided. Please check your input and try again.",
     });
 
     public async messageRun(message: Message<true>, args: Args) {
         const obj = args.finished
             ? message.member || message.author
             : await Promise.resolve(
-                  args
-                      .pick("member")
-                      .catch(async () => args.pick("user"))
-                      .catch(async () => args.pick("guildChannel"))
-                      .catch(async () => args.pick("role"))
-                      .catch(async () => args.pick("message"))
-                      .catch(async () => args.pick("emoji"))
-                      .catch(async () => {
-                          throw this.NoArgumentFoundError;
-                      })
-              );
+                args
+                    .pick("member")
+                    .catch(async () => args.pick("user"))
+                    .catch(async () => args.pick("guildChannel"))
+                    .catch(async () => args.pick("role"))
+                    .catch(async () => args.pick("message"))
+                    .catch(async () => args.pick("emoji"))
+                    .catch(async () => {
+                        throw this.NoArgumentFoundError;
+                    })
+            );
 
         let emb: EmbedBuilder[] = [];
 
@@ -179,15 +179,15 @@ export default class InfoCommand extends KaikiCommand {
                 {
                     name: "Type",
                     value: Constants.channelTypes[
-                        ChannelType[obj.type] as keyof typeof ChannelType
+						ChannelType[obj.type] as keyof typeof ChannelType
                     ],
                 },
                 {
                     name: "User limit",
                     value:
-                        obj.userLimit === 0
-                            ? "No limit"
-                            : String(obj.userLimit),
+						obj.userLimit === 0
+						    ? "No limit"
+						    : String(obj.userLimit),
                 },
                 {
                     name: "Created at",
@@ -217,7 +217,7 @@ export default class InfoCommand extends KaikiCommand {
                     {
                         name: "Type",
                         value: Constants.channelTypes[
-                            ChannelType[obj.type] as keyof typeof ChannelType
+							ChannelType[obj.type] as keyof typeof ChannelType
                         ],
                     },
                     {
@@ -239,8 +239,8 @@ export default class InfoCommand extends KaikiCommand {
                         {
                             name: "Author",
                             value:
-                                message.guild.members.cache.get(obj.ownerId)
-                                    ?.user.username || obj.ownerId,
+								message.guild.members.cache.get(obj.ownerId)
+								    ?.user.username || obj.ownerId,
                         },
                     ]);
                 }
@@ -255,9 +255,9 @@ export default class InfoCommand extends KaikiCommand {
                         {
                             name: "Type",
                             value: Constants.channelTypes[
-                                ChannelType[
-                                    obj.type
-                                ] as keyof typeof ChannelType
+								ChannelType[
+								    obj.type
+								] as keyof typeof ChannelType
                             ],
                         },
                         {
@@ -294,7 +294,7 @@ export default class InfoCommand extends KaikiCommand {
                     {
                         name: "Type",
                         value: Constants.channelTypes[
-                            ChannelType[obj.type] as keyof typeof ChannelType
+							ChannelType[obj.type] as keyof typeof ChannelType
                         ],
                     },
                     {
@@ -322,7 +322,7 @@ export default class InfoCommand extends KaikiCommand {
                 {
                     name: "Type",
                     value: Constants.channelTypes[
-                        ChannelType[obj.type] as keyof typeof ChannelType
+						ChannelType[obj.type] as keyof typeof ChannelType
                     ],
                 },
                 {
@@ -493,9 +493,9 @@ export default class InfoCommand extends KaikiCommand {
                         {
                             name: "Type",
                             value:
-                                sticker.type === 1
-                                    ? "Official"
-                                    : "Guild" || "N/A",
+								sticker.type === 1
+								    ? "Official"
+								    : "Guild" || "N/A",
                             inline: true,
                         }
                     )

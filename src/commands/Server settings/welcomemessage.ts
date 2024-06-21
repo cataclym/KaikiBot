@@ -9,7 +9,7 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
     aliases: ["welcomemsg"],
     usage: ["Hii welcome, %member.name%!", "{ embed data }"],
     description:
-        "Set message to display when someone joins the guild. Provide either text, or valid JSON from the [embed creator](https://embed.kaikibot.xyz)",
+		"Set message to display when someone joins the guild. Provide either text, or valid JSON from the [embed creator](https://embed.kaikibot.xyz)",
     requiredUserPermissions: ["ManageGuild"],
     preconditions: ["GuildOnly"],
     minorCategory: "Welcome",

@@ -64,11 +64,11 @@ export default class ForgetMeCommand extends KaikiCommand {
                     });
 
                     const guildData =
-                        await this.client.orm.guildUsers.deleteMany({
-                            where: {
-                                UserId: BigInt(message.author.id),
-                            },
-                        });
+						await this.client.orm.guildUsers.deleteMany({
+						    where: {
+						        UserId: BigInt(message.author.id),
+						    },
+						});
 
                     message.channel.send({
                         embeds: [

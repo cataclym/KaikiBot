@@ -25,9 +25,9 @@ export default class Emotes {
             sharpFile
                 .resize(
                     imgSize ||
-                        Constants.MAGIC_NUMBERS.CMDS.EMOTES.MAX_WIDTH_HEIGHT,
+						Constants.MAGIC_NUMBERS.CMDS.EMOTES.MAX_WIDTH_HEIGHT,
                     imgSize ||
-                        Constants.MAGIC_NUMBERS.CMDS.EMOTES.MAX_WIDTH_HEIGHT,
+						Constants.MAGIC_NUMBERS.CMDS.EMOTES.MAX_WIDTH_HEIGHT,
                     {
                         fit: "contain",
                         background: { r: 0, g: 0, b: 0, alpha: 0 },

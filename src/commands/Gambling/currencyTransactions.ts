@@ -12,7 +12,7 @@ import Constants from "../../struct/Constants";
     name: "currencytransactions",
     aliases: ["curtrs"],
     description:
-        "Shows your currency transactions. Bot owner can see other people's transactions.",
+		"Shows your currency transactions. Bot owner can see other people's transactions.",
     usage: ["", "7", "10 @drev"],
 })
 export default class CurrencyTransactionsCommand extends KaikiCommand {
@@ -30,7 +30,7 @@ export default class CurrencyTransactionsCommand extends KaikiCommand {
                     throw new UserError({
                         identifier: "IncorrectArgs",
                         message:
-                            "Your arguments didn't resolve to a number or a member.",
+							"Your arguments didn't resolve to a number or a member.",
                     });
                 })
         );
@@ -71,10 +71,10 @@ export default class CurrencyTransactionsCommand extends KaikiCommand {
             await this.client.orm.currencyTransactions.findMany({
                 where: {
                     UserId:
-                        user.id !== message.author.id &&
-                        message.author.id === message.client.owner.id
-                            ? BigInt(user.id)
-                            : BigInt(message.author.id),
+						user.id !== message.author.id &&
+						message.author.id === message.client.owner.id
+						    ? BigInt(user.id)
+						    : BigInt(message.author.id),
                 },
             })
         ).sort((a, b) => b.DateAdded.getTime() - a.DateAdded.getTime());
@@ -97,7 +97,7 @@ export default class CurrencyTransactionsCommand extends KaikiCommand {
                 p = 0;
             p < db.length;
             i += Constants.MAGIC_NUMBERS.CMDS.GAMBLING.CUR_TRS.TRANS_PR_PAGE,
-                p += Constants.MAGIC_NUMBERS.CMDS.GAMBLING.CUR_TRS.TRANS_PR_PAGE
+            p += Constants.MAGIC_NUMBERS.CMDS.GAMBLING.CUR_TRS.TRANS_PR_PAGE
         ) {
             pages.push(
                 CurrencyTransactionsCommand.baseEmbed(message)
@@ -111,8 +111,8 @@ export default class CurrencyTransactionsCommand extends KaikiCommand {
                                 (row) =>
                                     `${
                                         row.Amount >
-                                        Constants.MAGIC_NUMBERS.CMDS.GAMBLING
-                                            .CUR_TRS.BIGINT_ZERO
+										Constants.MAGIC_NUMBERS.CMDS.GAMBLING
+										    .CUR_TRS.BIGINT_ZERO
                                             ? "🟩"
                                             : "🟥"
                                     } ${time(row.DateAdded)} ${this.client.money.currencySymbol} ${row.Amount}\nNote: \`${row.Reason}\``

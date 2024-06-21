@@ -22,7 +22,7 @@ export class OwnerOnly extends AllFlowsPrecondition {
         return this.container.client.owner.id === id
             ? this.ok()
             : this.error({
-                  message: "Only the bot owner can use this command!",
-              });
+                message: "Only the bot owner can use this command!",
+            });
     }
 }

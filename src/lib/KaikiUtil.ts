@@ -11,7 +11,7 @@ export default class KaikiUtil {
         const d = new Date();
         return (
             -d +
-            d.setHours(Constants.MAGIC_NUMBERS.LIB.UTILITY.HRS_DAY, 0, 0, 0)
+			d.setHours(Constants.MAGIC_NUMBERS.LIB.UTILITY.HRS_DAY, 0, 0, 0)
         );
     }
 
@@ -57,29 +57,29 @@ export default class KaikiUtil {
     static async codeblock(
         code: string,
         language?:
-            | "ansi"
-            | "asciidoc"
-            | "autohotkey"
-            | "bash"
-            | "coffeescript"
-            | "cpp"
-            | "cs"
-            | "css"
-            | "diff"
-            | "fix"
-            | "glsl"
-            | "ini"
-            | "js"
-            | "json"
-            | "md"
-            | "ml"
-            | "prolog"
-            | "py"
-            | "sql"
-            | "tex"
-            | "ts"
-            | "xl"
-            | "xml"
+			| "ansi"
+			| "asciidoc"
+			| "autohotkey"
+			| "bash"
+			| "coffeescript"
+			| "cpp"
+			| "cs"
+			| "css"
+			| "diff"
+			| "fix"
+			| "glsl"
+			| "ini"
+			| "js"
+			| "json"
+			| "md"
+			| "ml"
+			| "prolog"
+			| "py"
+			| "sql"
+			| "tex"
+			| "ts"
+			| "xl"
+			| "xml"
     ): Promise<string> {
         return `\`\`\`${language ?? ""}\n${code}\`\`\``;
     }
@@ -134,9 +134,9 @@ export default class KaikiUtil {
         }
 
         const presence =
-            activities.find((psnc) => psnc.assets) ||
-            activities.find((psnc) => psnc.type !== ActivityType.Custom) ||
-            activities.shift();
+			activities.find((psnc) => psnc.assets) ||
+			activities.find((psnc) => psnc.type !== ActivityType.Custom) ||
+			activities.shift();
 
         if (!presence) {
             return null;
@@ -145,8 +145,8 @@ export default class KaikiUtil {
         const type = ActivityType[presence.type];
 
         const image =
-            presence.assets?.largeImageURL() ||
-            presence.assets?.smallImageURL();
+			presence.assets?.largeImageURL() ||
+			presence.assets?.smallImageURL();
 
         return {
             name: presence.name,

@@ -14,7 +14,7 @@ import SlotsCommand, { Slots } from "../Gambling/slots";
     name: "bettest",
     usage: ["br 100", "bf 2000"],
     description:
-        "Tests gambling commands by running them specified amounts of times.",
+		"Tests gambling commands by running them specified amounts of times.",
     preconditions: ["OwnerOnly"],
 })
 export default class BetTest extends KaikiCommand {
@@ -27,36 +27,36 @@ export default class BetTest extends KaikiCommand {
         let str: string;
 
         switch (gambling) {
-            case GamblingCommands.br:
-            case GamblingCommands.betroll:
-                str = BetTest.betRollStr(
-                    await Promise.all(
-                        new Array(executions)
-                            .fill(async () => BetRollCommand.roll())
-                            .map((x) => x())
-                    )
-                );
-                break;
-            case GamblingCommands.bf:
-            case GamblingCommands.betflip:
-                str = BetTest.betFlipStr(
-                    await Promise.all(
-                        new Array(executions)
-                            .fill(async () => BetflipCommand.flip())
-                            .map((x) => x())
-                    )
-                );
-                break;
-            case GamblingCommands.slot:
-            case GamblingCommands.slots:
-                str = BetTest.SlotsStr(
-                    await Promise.all(
-                        new Array(executions)
-                            .fill(async () => SlotsCommand.run())
-                            .map((x) => x())
-                    )
-                );
-                break;
+        case GamblingCommands.br:
+        case GamblingCommands.betroll:
+            str = BetTest.betRollStr(
+                await Promise.all(
+                    new Array(executions)
+                        .fill(async () => BetRollCommand.roll())
+                        .map((x) => x())
+                )
+            );
+            break;
+        case GamblingCommands.bf:
+        case GamblingCommands.betflip:
+            str = BetTest.betFlipStr(
+                await Promise.all(
+                    new Array(executions)
+                        .fill(async () => BetflipCommand.flip())
+                        .map((x) => x())
+                )
+            );
+            break;
+        case GamblingCommands.slot:
+        case GamblingCommands.slots:
+            str = BetTest.SlotsStr(
+                await Promise.all(
+                    new Array(executions)
+                        .fill(async () => SlotsCommand.run())
+                        .map((x) => x())
+                )
+            );
+            break;
         }
 
         return message.channel.send({

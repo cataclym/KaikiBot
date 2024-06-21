@@ -9,7 +9,7 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
     aliases: ["dailyset"],
     usage: "120",
     description:
-        "Sets the daily currency allowance amount. Set to 0 to disable.",
+		"Sets the daily currency allowance amount. Set to 0 to disable.",
     preconditions: ["OwnerOnly"],
 })
 export default class SetDailyCommand extends KaikiCommand {

@@ -9,7 +9,7 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
     name: "addemotereact",
     aliases: ["emotereact", "aer"],
     description:
-        "Add triggers for the bot to react with emojis/emotes to. Use quotes for triggers with spaces.",
+		"Add triggers for the bot to react with emojis/emotes to. Use quotes for triggers with spaces.",
     usage: ["red :red:", "anime :weeaboosgetout:"],
     requiredUserPermissions: ["ManageEmojisAndStickers"],
     requiredClientPermissions: ["AddReactions"],

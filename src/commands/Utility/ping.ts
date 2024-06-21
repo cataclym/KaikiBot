@@ -15,7 +15,7 @@ import { ApplicationCommandRegistry } from "@sapphire/framework";
     aliases: ["p"],
     usage: "",
     description:
-        "Ping the bot and websocket to see if there are latency issues.",
+		"Ping the bot and websocket to see if there are latency issues.",
 })
 export default class PingCommand extends KaikiCommand {
     public async messageRun(message: Message) {
@@ -61,9 +61,9 @@ export default class PingCommand extends KaikiCommand {
                         {
                             name: "Client ping",
                             value:
-                                initialMsg.createdTimestamp -
-                                interaction.createdTimestamp +
-                                " ms",
+								initialMsg.createdTimestamp -
+								interaction.createdTimestamp +
+								" ms",
                             inline: true,
                         },
                     ])

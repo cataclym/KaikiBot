@@ -6,15 +6,15 @@ import KaikiCommandOptions from "../../lib/Interfaces/Kaiki/KaikiCommandOptions"
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
 export enum Sides {
-    tails = "tails",
-    heads = "heads",
+	tails = "tails",
+	heads = "heads",
 }
 
 @ApplyOptions<KaikiCommandOptions>({
     name: "betflip",
     aliases: ["bf"],
     description:
-        "Bet on tails or heads. Guessing correct awards you 1.95x the currency you've bet.",
+		"Bet on tails or heads. Guessing correct awards you 1.95x the currency you've bet.",
     usage: ["5 heads", "10 t"],
 })
 export default class BetflipCommand extends KaikiCommand {

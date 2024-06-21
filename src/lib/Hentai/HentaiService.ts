@@ -5,8 +5,8 @@ import { DanbooruData, DanbooruPost } from "../Interfaces/Common/DanbooruData";
 import { UserError } from "@sapphire/framework";
 
 export enum DAPI {
-    E621,
-    Danbooru,
+	E621,
+	Danbooru,
 }
 
 export type HentaiTypes = "waifu" | "neko" | "femboy" | "trap" | "blowjob";
@@ -28,13 +28,13 @@ export default class HentaiService {
     ];
 
     public async grabHentai(
-        type: HentaiTypes,
-        format: "single"
-    ): Promise<string>;
+		type: HentaiTypes,
+		format: "single"
+	): Promise<string>;
     public async grabHentai(
-        type: HentaiTypes,
-        format: "bomb"
-    ): Promise<string[]>;
+		type: HentaiTypes,
+		format: "bomb"
+	): Promise<string[]>;
     public async grabHentai(
         type: HentaiTypes,
         format: "single" | "bomb"
@@ -63,13 +63,13 @@ export default class HentaiService {
     }
 
     async makeRequest(
-        tags: string[] | null,
-        type: DAPI.E621
-    ): Promise<E621Post>;
+		tags: string[] | null,
+		type: DAPI.E621
+	): Promise<E621Post>;
     async makeRequest(
-        tags: string[] | null,
-        type: DAPI.Danbooru
-    ): Promise<DanbooruPost>;
+		tags: string[] | null,
+		type: DAPI.Danbooru
+	): Promise<DanbooruPost>;
     async makeRequest(
         tags: string[] | null,
         type: DAPI
@@ -77,15 +77,15 @@ export default class HentaiService {
         const tag = tags?.join("+").toLowerCase() || "";
 
         switch (type) {
-            case DAPI.E621:
-                return this.e621(
-                    `https://e621.net/posts.json?limit=5&tags=${tag}`
-                );
+        case DAPI.E621:
+            return this.e621(
+                `https://e621.net/posts.json?limit=5&tags=${tag}`
+            );
 
-            case DAPI.Danbooru:
-                return this.danbooru(
-                    `https://danbooru.donmai.us/posts.json?limit=5&tags=${tag}`
-                );
+        case DAPI.Danbooru:
+            return this.danbooru(
+                `https://danbooru.donmai.us/posts.json?limit=5&tags=${tag}`
+            );
         }
     }
 

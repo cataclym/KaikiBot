@@ -3,19 +3,19 @@ import { Message } from "discord.js";
 import Constants from "../../struct/Constants";
 
 export enum GamblingCommands {
-    br,
-    betroll = 0,
-    bf,
-    betflip = 1,
-    slot,
-    slots = 2,
+	br,
+	betroll = 0,
+	bf,
+	betflip = 1,
+	slot,
+	slots = 2,
 }
 
 export default class KaikiArgumentsTypes {
     static entries = Object.entries(GamblingCommands) as [
-        string,
-        GamblingCommands,
-    ][];
+		string,
+		GamblingCommands,
+	][];
 
     // These are only for specific use cases, whereas arguments in ../../arguments are more general.
     public static urlEmoteAttachmentIArgument = Args.make<string>(
@@ -124,7 +124,7 @@ export default class KaikiArgumentsTypes {
                 parameter,
                 argument: context.argument,
                 message:
-                    "The provided argument could not be resolved to a gambling command.",
+					"The provided argument could not be resolved to a gambling command.",
             });
         }
     );

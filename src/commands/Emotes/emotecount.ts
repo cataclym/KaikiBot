@@ -8,9 +8,9 @@ import KaikiUtil from "../../lib/KaikiUtil";
 import Constants from "../../struct/Constants";
 
 type cleanGuildEmote = GuildEmoji & {
-    EmojiId: bigint;
-    Count: bigint;
-    GuildId: bigint;
+	EmojiId: bigint;
+	Count: bigint;
+	GuildId: bigint;
 };
 
 type customGuildEmote = cleanGuildEmote | { Count: bigint };
@@ -19,7 +19,7 @@ type customGuildEmote = cleanGuildEmote | { Count: bigint };
     name: "emotecount",
     aliases: ["emojicount", "ec"],
     description:
-        "Shows amount of times each emote has been used.\nUse --small for a more compact display.\nUse --clean to display *only* available emotes.",
+		"Shows amount of times each emote has been used.\nUse --small for a more compact display.\nUse --clean to display *only* available emotes.",
     usage: ["", "--small", "--clean"],
     preconditions: ["GuildOnly"],
     flags: ["small", "clean"],
@@ -106,15 +106,15 @@ export default class EmoteCount extends KaikiCommand {
         if (isSmall) {
             for (
                 let i =
-                        Constants.MAGIC_NUMBERS.CMDS.EMOTES.EMOTE_COUNT
-                            .MAX_PR_PAGE,
+						Constants.MAGIC_NUMBERS.CMDS.EMOTES.EMOTE_COUNT
+						    .MAX_PR_PAGE,
                     p = 0;
                 p < data.length;
                 i +=
-                    Constants.MAGIC_NUMBERS.CMDS.EMOTES.EMOTE_COUNT.MAX_PR_PAGE,
-                    p +=
-                        Constants.MAGIC_NUMBERS.CMDS.EMOTES.EMOTE_COUNT
-                            .MAX_PR_PAGE
+					Constants.MAGIC_NUMBERS.CMDS.EMOTES.EMOTE_COUNT.MAX_PR_PAGE,
+                p +=
+						Constants.MAGIC_NUMBERS.CMDS.EMOTES.EMOTE_COUNT
+						    .MAX_PR_PAGE
             ) {
                 pages.push(
                     EmbedBuilder.from(baseEmbed).setDescription(
@@ -128,15 +128,15 @@ export default class EmoteCount extends KaikiCommand {
         } else {
             for (
                 let i =
-                        Constants.MAGIC_NUMBERS.CMDS.EMOTES.EMOTE_COUNT
-                            .MIN_PR_PAGE,
+						Constants.MAGIC_NUMBERS.CMDS.EMOTES.EMOTE_COUNT
+						    .MIN_PR_PAGE,
                     p = 0;
                 p < data.length;
                 i +=
-                    Constants.MAGIC_NUMBERS.CMDS.EMOTES.EMOTE_COUNT.MIN_PR_PAGE,
-                    p +=
-                        Constants.MAGIC_NUMBERS.CMDS.EMOTES.EMOTE_COUNT
-                            .MIN_PR_PAGE
+					Constants.MAGIC_NUMBERS.CMDS.EMOTES.EMOTE_COUNT.MIN_PR_PAGE,
+                p +=
+						Constants.MAGIC_NUMBERS.CMDS.EMOTES.EMOTE_COUNT
+						    .MIN_PR_PAGE
             ) {
                 pages.push(
                     EmbedBuilder.from(baseEmbed).setDescription(

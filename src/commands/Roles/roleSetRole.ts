@@ -10,7 +10,7 @@ import Roles from "../../lib/Roles";
     name: "setrole",
     aliases: ["sr"],
     description:
-        "Gives a role to a user. The role you specify has to be lower in the role hierarchy than your highest role.",
+		"Gives a role to a user. The role you specify has to be lower in the role hierarchy than your highest role.",
     usage: ["@Dreb Gamer"],
     requiredUserPermissions: ["ManageRoles"],
     requiredClientPermissions: ["ManageRoles"],

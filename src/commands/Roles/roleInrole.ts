@@ -27,7 +27,7 @@ export default class RoleInRoleCommand extends KaikiCommand {
             .sort(
                 (a: GuildMember, b: GuildMember) =>
                     b.roles.highest.position - a.roles.highest.position ||
-                    (a.id as unknown as number) - (b.id as unknown as number)
+					(a.id as unknown as number) - (b.id as unknown as number)
             )
             .slice(0, 400);
 
@@ -35,7 +35,7 @@ export default class RoleInRoleCommand extends KaikiCommand {
 
         if (data && data.length) {
             const { ROLES_PR_PAGE } =
-                Constants.MAGIC_NUMBERS.CMDS.ROLES.IN_ROLE;
+				Constants.MAGIC_NUMBERS.CMDS.ROLES.IN_ROLE;
 
             for (
                 let i = ROLES_PR_PAGE, p = 0;

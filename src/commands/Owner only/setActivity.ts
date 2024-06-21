@@ -6,11 +6,11 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import Constants from "../../struct/Constants";
 
 export type ValidActivities =
-    | "PLAYING"
-    | "STREAMING"
-    | "LISTENING"
-    | "WATCHING"
-    | "COMPETING";
+	| "PLAYING"
+	| "STREAMING"
+	| "LISTENING"
+	| "WATCHING"
+	| "COMPETING";
 
 @ApplyOptions<KaikiCommandOptions>({
     name: "setactivity",

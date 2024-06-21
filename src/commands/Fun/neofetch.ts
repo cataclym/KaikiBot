@@ -14,7 +14,7 @@ import Constants from "../../struct/Constants";
     name: "neofetch",
     aliases: ["neo", "fastfetch"],
     description:
-        "Displays neofetch/fastfetch ascii art. Provide argument '--list' to get a list of all supported distros.",
+		"Displays neofetch/fastfetch ascii art. Provide argument '--list' to get a list of all supported distros.",
     usage: ["", "opensuse", "--list"],
     cooldownDelay: 2000,
     typing: true,
@@ -48,17 +48,17 @@ export default class NeofetchCommand extends KaikiCommand {
             const pages: EmbedBuilder[] = [];
             for (
                 let i =
-                        Constants.MAGIC_NUMBERS.CMDS.FUN.NEOFETCH
-                            .DISTROS_PR_PAGE,
+						Constants.MAGIC_NUMBERS.CMDS.FUN.NEOFETCH
+						    .DISTROS_PR_PAGE,
                     p = 0;
                 p < distros.length;
                 i =
-                    i +
-                    Constants.MAGIC_NUMBERS.CMDS.FUN.NEOFETCH.DISTROS_PR_PAGE,
-                    p =
-                        p +
-                        Constants.MAGIC_NUMBERS.CMDS.FUN.NEOFETCH
-                            .DISTROS_PR_PAGE
+					i +
+					Constants.MAGIC_NUMBERS.CMDS.FUN.NEOFETCH.DISTROS_PR_PAGE,
+                p =
+						p +
+						Constants.MAGIC_NUMBERS.CMDS.FUN.NEOFETCH
+						    .DISTROS_PR_PAGE
             ) {
                 pages.push(
                     new EmbedBuilder()
@@ -89,10 +89,10 @@ export default class NeofetchCommand extends KaikiCommand {
                 return message.channel.send(
                     await KaikiUtil.codeblock(
                         "\u00AD" +
-                            stdout.replace(
-                                /```/g,
-                                "\u0300`\u0300`\u0300`\u0300"
-                            )
+							stdout.replace(
+							    /```/g,
+							    "\u0300`\u0300`\u0300`\u0300"
+							)
                     )
                 );
             });

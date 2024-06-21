@@ -29,9 +29,9 @@ export default class EAPICommand extends KaikiCommand {
             )
             .setImage(
                 post.file.url ||
-                    post.preview.url ||
-                    post.sample.url ||
-                    post.sources[0]
+					post.preview.url ||
+					post.sample.url ||
+					post.sources[0]
             )
             .withOkColor(message);
 

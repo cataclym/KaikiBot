@@ -30,11 +30,11 @@ export default class TicTacToe {
     active: boolean;
 
     /**
-     * Initializes a TicTacToe game.
-     * @param playerOne @type {GuildMember}
-     * @param playerTwo @type {GuildMember}
-     * @param message @type {Message}
-     */
+	 * Initializes a TicTacToe game.
+	 * @param playerOne @type {GuildMember}
+	 * @param playerTwo @type {GuildMember}
+	 * @param message @type {Message}
+	 */
 
     constructor(
         playerOne: GuildMember,
@@ -134,7 +134,7 @@ export default class TicTacToe {
 
         this.stateDict[int] = sign;
         this.currentPlayer =
-            player.id !== this.pOne.player.id ? this.pOne : this.pTwo;
+			player.id !== this.pOne.player.id ? this.pOne : this.pTwo;
 
         await this.updateEmbed(this.currentPlayer);
 
