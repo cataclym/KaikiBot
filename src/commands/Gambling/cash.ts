@@ -9,7 +9,7 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
     aliases: ["currency", "cur", "$", "£", "¥", "€"],
     usage: "",
     description:
-        "Shows specified user's current balance. If no user is specified, shows your balance",
+		"Shows specified user's current balance. If no user is specified, shows your balance",
 })
 export default class Cash extends KaikiCommand {
     public async messageRun(msg: Message, args: Args): Promise<void> {

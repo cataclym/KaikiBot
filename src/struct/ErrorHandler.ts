@@ -1,4 +1,3 @@
-import { container } from "@sapphire/framework";
 import process from "process";
 
 process.on("unhandledRejection", (reason: Error, promise) =>

@@ -29,7 +29,7 @@ export default class ListUserRoles extends KaikiCommand {
 
         if (db.length) {
             const { ROLE_PR_PAGE } =
-                Constants.MAGIC_NUMBERS.CMDS.ROLES.USER_ROLES;
+				Constants.MAGIC_NUMBERS.CMDS.ROLES.USER_ROLES;
 
             const mapped = db
                     .map(

@@ -10,7 +10,7 @@ import Constants from "../../struct/Constants";
 @ApplyOptions<KaikiCommandOptions>({
     name: "sqlexec",
     description:
-        "Executes sql queries and returns the number of affected rows. Dangerous.",
+		"Executes sql queries and returns the number of affected rows. Dangerous.",
     usage: ["UPDATE DiscordUsers SET amount=amount+69420"],
     preconditions: ["OwnerOnly"],
 })

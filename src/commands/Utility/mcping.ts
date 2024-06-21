@@ -26,18 +26,18 @@ export default class MinecraftPingCommand extends KaikiCommand {
             `https://api.mcsrvstat.us/2/${term}`
         ).then(
             (response) =>
-                response.json() as Promise<ServerOffline | ServerOnline>
+				response.json() as Promise<ServerOffline | ServerOnline>
         );
 
         if (result.online) {
             const attachment = result?.icon?.length
                 ? new AttachmentBuilder(
-                      Buffer.from(
-                          result.icon.slice(result.icon.indexOf(",")),
-                          "base64"
-                      ),
-                      { name: "icon.png" }
-                  )
+                    Buffer.from(
+                        result.icon.slice(result.icon.indexOf(",")),
+                        "base64"
+                    ),
+                    { name: "icon.png" }
+                )
                 : undefined;
 
             const embed = new EmbedBuilder()
@@ -65,9 +65,9 @@ export default class MinecraftPingCommand extends KaikiCommand {
                         name: "Plugins",
                         value: result.plugins?.names.length
                             ? KaikiUtil.trim(
-                                  result.plugins?.names.join(", "),
-                                  1024
-                              )
+                                result.plugins?.names.join(", "),
+                                1024
+                            )
                             : "None",
                         inline: true,
                     },
@@ -80,9 +80,9 @@ export default class MinecraftPingCommand extends KaikiCommand {
                         name: "Mods",
                         value: result.mods?.names.length
                             ? KaikiUtil.trim(
-                                  result.mods?.names.join(", "),
-                                  1024
-                              )
+                                result.mods?.names.join(", "),
+                                1024
+                            )
                             : "None",
                         inline: true,
                     },

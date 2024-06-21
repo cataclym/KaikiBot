@@ -13,7 +13,7 @@ import Constants from "../../struct/Constants";
     name: "color",
     aliases: ["clr"],
     description:
-        "Returns up to 10 representations the inputted color, or shows list of available color names to use.",
+		"Returns up to 10 representations the inputted color, or shows list of available color names to use.",
     usage: ["#ff00ff #dc143c", "--list"],
     typing: true,
     flags: ["list"],
@@ -26,11 +26,11 @@ export default class ColorCommand extends KaikiCommand {
         if (list) {
             const colorList = Object.keys(Constants.hexColorTable),
                 embedColor =
-                    Constants.hexColorTable[
-                        colorList[
-                            Math.floor(Math.random() * colorList.length)
-                        ] as keyof ColorNames
-                    ],
+					Constants.hexColorTable[
+						colorList[
+						    Math.floor(Math.random() * colorList.length)
+						] as keyof ColorNames
+					],
                 pages: EmbedBuilder[] = [];
 
             for (
@@ -41,11 +41,11 @@ export default class ColorCommand extends KaikiCommand {
                     p = 0;
                 p < colorList.length;
                 index +=
-                    Constants.MAGIC_NUMBERS.CMDS.UTILITY.COLOR
-                        .CLR_NAMES_PR_PAGE,
-                    p +=
-                        Constants.MAGIC_NUMBERS.CMDS.UTILITY.COLOR
-                            .CLR_NAMES_PR_PAGE
+					Constants.MAGIC_NUMBERS.CMDS.UTILITY.COLOR
+					    .CLR_NAMES_PR_PAGE,
+                p +=
+						Constants.MAGIC_NUMBERS.CMDS.UTILITY.COLOR
+						    .CLR_NAMES_PR_PAGE
             ) {
                 pages.push(
                     new EmbedBuilder({

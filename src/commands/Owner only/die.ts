@@ -59,7 +59,7 @@ export default class KillBotProcess extends KaikiCommand {
                             .setAuthor({
                                 name: "Dying",
                                 iconURL:
-                                    message.client.user?.displayAvatarURL(),
+									message.client.user?.displayAvatarURL(),
                             })
                             .addFields([
                                 {

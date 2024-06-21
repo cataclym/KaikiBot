@@ -29,7 +29,7 @@ export default class BanCommand extends KaikiCommand {
             );
 
         const username =
-            user instanceof User ? user.username : user.user.username;
+			user instanceof User ? user.username : user.user.username;
 
         const guild = message.guild,
             guildClientMember = guild.members.me;
@@ -54,8 +54,8 @@ export default class BanCommand extends KaikiCommand {
         // Check if member is ban-able
         if (
             message.author.id !== message.guild?.ownerId &&
-            (message.member as GuildMember).roles.highest.position <=
-                guildMember.roles.highest.position
+			(message.member as GuildMember).roles.highest.position <=
+				guildMember.roles.highest.position
         ) {
             return message.channel.send({
                 embeds: [
@@ -69,14 +69,14 @@ export default class BanCommand extends KaikiCommand {
         // x2
         else if (
             guildClientMember &&
-            guildClientMember.roles.highest.position <=
-                guildMember.roles.highest.position
+			guildClientMember.roles.highest.position <=
+				guildMember.roles.highest.position
         ) {
             return message.channel.send({
                 embeds: [
                     new EmbedBuilder({
                         description:
-                            "Sorry, I don't have permissions to ban this member.",
+							"Sorry, I don't have permissions to ban this member.",
                     }).withErrorColor(message),
                 ],
             });

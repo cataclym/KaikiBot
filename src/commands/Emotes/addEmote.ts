@@ -12,7 +12,7 @@ import Constants from "../../struct/Constants";
     name: "addemote",
     aliases: ["ae"],
     description:
-        "Adds an emote from an image link or attached image, with an optional name.",
+		"Adds an emote from an image link or attached image, with an optional name.",
     usage: "image-link Emotename",
     requiredUserPermissions: ["ManageEmojisAndStickers"],
     requiredClientPermissions: ["ManageEmojisAndStickers"],
@@ -28,7 +28,7 @@ export default class AddEmoteCommand extends KaikiCommand {
         );
 
         let name =
-            message.attachments.first()?.name || (await args.rest("string"));
+			message.attachments.first()?.name || (await args.rest("string"));
 
         if (!url || !name) return;
 

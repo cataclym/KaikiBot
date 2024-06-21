@@ -10,7 +10,7 @@ import { Todo } from "../../lib/Todo/Todo";
     aliases: ["note"],
     usage: ["", "2"],
     description:
-        "A personal todo list. The items are limited to 204 characters. Intended for small notes.",
+		"A personal todo list. The items are limited to 204 characters. Intended for small notes.",
 })
 export default class TodoCommand extends KaikiCommand {
     public async messageRun(message: Message<true>, args: Args) {

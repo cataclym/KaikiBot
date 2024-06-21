@@ -14,7 +14,7 @@ export default class ShardResume extends Listener {
         );
 
         await (
-            this.container.client as KaikiSapphireClient<true>
+			this.container.client as KaikiSapphireClient<true>
         ).setPresence();
     }
 }

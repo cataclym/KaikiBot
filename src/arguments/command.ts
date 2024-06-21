@@ -16,8 +16,8 @@ export class CommandArgument extends Argument<KaikiCommand> {
         });
 
         const aliasResult = <KaikiCommand>(
-            container.stores.get("commands").aliases.get(parameter)
-        );
+			container.stores.get("commands").aliases.get(parameter)
+		);
 
         const partialResult = cmds
             .sort(
@@ -36,7 +36,7 @@ export class CommandArgument extends Argument<KaikiCommand> {
         if (!aliasResult && !fullNameResult && !partialResult) {
             return this.error({
                 message:
-                    "The provided argument could not be resolved to a command.",
+					"The provided argument could not be resolved to a command.",
                 parameter,
                 context,
             });

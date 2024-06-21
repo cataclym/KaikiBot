@@ -10,7 +10,7 @@ import Constants from "../../struct/Constants";
 @ApplyOptions<KaikiCommandOptions>({
     name: "restore",
     description:
-        "Restores roles for a user who has previously left the server.",
+		"Restores roles for a user who has previously left the server.",
     usage: ["@dreb"],
     requiredUserPermissions: ["Administrator"],
     requiredClientPermissions: ["ManageRoles"],

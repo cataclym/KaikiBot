@@ -18,7 +18,7 @@ import Roles from "../../lib/Roles";
     name: "rolecolor",
     aliases: ["roleclr", "rclr"],
     description:
-        "Sets or displays the color of a given role, or your highest role.",
+		"Sets or displays the color of a given role, or your highest role.",
     usage: ["@Gamer ff00ff"],
     preconditions: ["GuildOnly"],
 })

@@ -5,12 +5,12 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiUtil from "../../lib/KaikiUtil";
 
 enum ShardStats {
-    "READY",
-    "CONNECTING",
-    "RECONNECTING",
-    "IDLE",
-    "NEARLY",
-    "DISCONNECTED",
+	"READY",
+	"CONNECTING",
+	"RECONNECTING",
+	"IDLE",
+	"NEARLY",
+	"DISCONNECTED",
 }
 
 @ApplyOptions<KaikiCommandOptions>({

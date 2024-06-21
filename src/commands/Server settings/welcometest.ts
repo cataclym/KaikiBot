@@ -33,11 +33,11 @@ export default class WelcomeTestCommand extends KaikiCommand {
             embeds: [
                 result
                     ? new EmbedBuilder()
-                          .setTitle("Message sent successfully!")
-                          .withOkColor(message)
+                        .setTitle("Message sent successfully!")
+                        .withOkColor(message)
                     : new EmbedBuilder()
-                          .setTitle("Message was not sent successfully!")
-                          .withErrorColor(message),
+                        .setTitle("Message was not sent successfully!")
+                        .withErrorColor(message),
             ],
         });
     }

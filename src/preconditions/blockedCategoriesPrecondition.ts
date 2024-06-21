@@ -44,9 +44,9 @@ export class BlockedCategoriesPrecondition extends AllFlowsPrecondition {
 
     private async checkBlockedCategories(
         messageOrInteraction:
-            | Message
-            | ContextMenuCommandInteraction
-            | ChatInputCommandInteraction,
+			| Message
+			| ContextMenuCommandInteraction
+			| ChatInputCommandInteraction,
         cmd: Command
     ) {
         if (messageOrInteraction.guildId === null || !cmd.category)
@@ -54,7 +54,7 @@ export class BlockedCategoriesPrecondition extends AllFlowsPrecondition {
 
         const isBlocked = await Result.fromAsync(
             (
-                messageOrInteraction.client as KaikiSapphireClient<true>
+				messageOrInteraction.client as KaikiSapphireClient<true>
             ).orm.blockedCategories.findFirstOrThrow({
                 where: {
                     GuildId: BigInt(messageOrInteraction.guildId),

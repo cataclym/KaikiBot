@@ -8,7 +8,7 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
     name: "welcometoggle",
     aliases: ["welcome"],
     description:
-        "Toggles welcome messages. Bot defaults to current channel if no channel is provided.",
+		"Toggles welcome messages. Bot defaults to current channel if no channel is provided.",
     usage: ["", "#welcome-channel"],
     requiredUserPermissions: ["ManageGuild"],
     preconditions: ["GuildOnly"],
@@ -33,7 +33,7 @@ export default class WelcomeToggleCommand extends KaikiCommand {
 
         if (
             guildTable.WelcomeChannel === undefined ||
-            guildTable.WelcomeChannel === null
+			guildTable.WelcomeChannel === null
         ) {
             await this.client.orm.guilds.update({
                 where: {

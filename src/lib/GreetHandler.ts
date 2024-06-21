@@ -12,13 +12,13 @@ import {
 } from "discord.js";
 
 interface MemberMessage extends Message<true> {
-    member: GuildMember;
+	member: GuildMember;
 }
 
 interface SendMessageData {
-    channel: bigint | null;
-    message: string | null;
-    timeout: number | null;
+	channel: bigint | null;
+	message: string | null;
+	timeout: number | null;
 }
 
 export default class GreetHandler {
@@ -140,17 +140,17 @@ export default class GreetHandler {
         if (!data.channel) return false;
 
         const channel =
-            this.guildMember.guild.channels.cache.get(String(data.channel)) ??
-            (await this.guildMember.guild.client.channels.fetch(
-                String(data.channel),
-                { cache: true }
-            ));
+			this.guildMember.guild.channels.cache.get(String(data.channel)) ??
+			(await this.guildMember.guild.client.channels.fetch(
+			    String(data.channel),
+			    { cache: true }
+			));
 
         if (!channel) return false;
 
         if (
             channel.type !== ChannelType.GuildText &&
-            channel.type !== ChannelType.GuildAnnouncement
+			channel.type !== ChannelType.GuildAnnouncement
         )
             return false;
 
@@ -162,7 +162,7 @@ export default class GreetHandler {
             return false;
 
         const parsedMessageOptions = await this.createAndParseGreetMsg(
-            <SendMessageData>data
+			<SendMessageData>data
         );
 
         return channel.send(parsedMessageOptions).then((m) => {
@@ -194,7 +194,7 @@ export default class GreetHandler {
 }
 
 export type IJSONToMessageOptions = MessageCreateOptions & {
-    embeds?: APIEmbed[] | undefined;
+	embeds?: APIEmbed[] | undefined;
 };
 
 export class JSONToMessageOptions implements MessageCreateOptions {
@@ -208,12 +208,15 @@ export class JSONToMessageOptions implements MessageCreateOptions {
 
         this.embeds = any.embeds
             ? any.embeds.map((e: APIEmbed) => {
-                  if (e.color && !Number.isInteger(e.color)) {
-                      e.color = parseInt(String(e.color).replace(/#/g, ""), 16);
-                  }
+                if (e.color && !Number.isInteger(e.color)) {
+                    e.color = parseInt(
+                        String(e.color).replace(/#/g, ""),
+                        16
+                    );
+                }
 
-                  return EmbedBuilder.from(e);
-              })
+                return EmbedBuilder.from(e);
+            })
             : undefined;
     }
 }

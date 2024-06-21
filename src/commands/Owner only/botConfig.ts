@@ -12,7 +12,7 @@ import { BotConfig } from "../../struct/db/Database";
     name: "botconfig",
     aliases: ["bc"],
     description:
-        "Change various bot configurations. Run without arguments to see current settings.",
+		"Change various bot configurations. Run without arguments to see current settings.",
     usage: ["<setting> <value>", "currencyname Europe Dollars"],
     preconditions: ["OwnerOnly"],
     subcommands: [
@@ -145,8 +145,8 @@ export default class BotConfigCommand extends Subcommand {
         const value = await args.rest("boolean");
 
         const oldValue = <boolean>(
-            await this.client.botSettings.get("1", "DailyEnabled", false)
-        );
+			await this.client.botSettings.get("1", "DailyEnabled", false)
+		);
         await this.client.botSettings.set("1", "DailyEnabled", value);
 
         return BotConfigCommand.sendEmbed(
@@ -160,12 +160,12 @@ export default class BotConfigCommand extends Subcommand {
         const value = await args.rest("number");
 
         const oldValue = <number>(
-            await this.client.botSettings.get(
-                "1",
-                "DailyAmount",
-                Constants.MAGIC_NUMBERS.CMDS.OWNER_ONLY.BOT_CONFIG.DAILY_AMOUNT
-            )
-        );
+			await this.client.botSettings.get(
+			    "1",
+			    "DailyAmount",
+			    Constants.MAGIC_NUMBERS.CMDS.OWNER_ONLY.BOT_CONFIG.DAILY_AMOUNT
+			)
+		);
         await this.client.botSettings.set("1", "DailyAmount", value);
 
         return BotConfigCommand.sendEmbed(

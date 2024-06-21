@@ -10,7 +10,7 @@ import Constants from "../../struct/Constants";
     name: "names",
     aliases: ["name"],
     description:
-        "Returns yours or mentioned user's daddy nicknames. Delete your nicknames with 'delete' argument.",
+		"Returns yours or mentioned user's daddy nicknames. Delete your nicknames with 'delete' argument.",
     usage: ["@dreb", "delete"],
     preconditions: ["GuildOnly"],
 })
@@ -111,7 +111,7 @@ export default class NamesCommand extends KaikiCommand {
             let i = Constants.MAGIC_NUMBERS.CMDS.FUN.NAMES.NAMES_PR_PAGE, p = 0;
             p < nicknames.length;
             i += Constants.MAGIC_NUMBERS.CMDS.FUN.NAMES.NAMES_PR_PAGE,
-                p += Constants.MAGIC_NUMBERS.CMDS.FUN.NAMES.NAMES_PR_PAGE
+            p += Constants.MAGIC_NUMBERS.CMDS.FUN.NAMES.NAMES_PR_PAGE
         ) {
             pages.push(
                 NamesCommand.baseEmbed(message, member).setDescription(

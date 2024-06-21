@@ -10,7 +10,7 @@ import Roles from "../../lib/Roles";
     name: "roleremove",
     aliases: ["removerole", "rr"],
     description:
-        "Takes away a user's role. The role you specify has to be lower in the role hierarchy than your highest role.",
+		"Takes away a user's role. The role you specify has to be lower in the role hierarchy than your highest role.",
     usage: ["@Dreb Gamer"],
     requiredUserPermissions: ["ManageRoles"],
     requiredClientPermissions: ["ManageRoles"],

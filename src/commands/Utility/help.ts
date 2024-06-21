@@ -62,26 +62,26 @@ export default class HelpCommand extends KaikiCommand {
                 .join("`, `");
 
             const extractedCommandUsage =
-                command instanceof Subcommand
-                    ? command.options.usage
-                    : command.usage;
+				command instanceof Subcommand
+				    ? command.options.usage
+				    : command.usage;
 
             const commandUsage = extractedCommandUsage
                 ? Array.isArray(extractedCommandUsage)
                     ? extractedCommandUsage
-                          .sort(
-                              (a, b) =>
-                                  b.length - a.length || a.localeCompare(b)
-                          )
-                          .map((u) => `${prefix}${command.name} ${u}`)
-                          .join("\n")
+                        .sort(
+                            (a, b) =>
+                                b.length - a.length || a.localeCompare(b)
+                        )
+                        .map((u) => `${prefix}${command.name} ${u}`)
+                        .join("\n")
                     : `${prefix}${command.name} ${command.usage}`
                 : `${prefix}${command.name}`;
 
             const cooldown =
-                command.options.cooldownDelay ||
-                this.client.options.defaultCooldown?.delay ||
-                0;
+				command.options.cooldownDelay ||
+				this.client.options.defaultCooldown?.delay ||
+				0;
 
             if (aliases.length) {
                 embed.addFields([

@@ -9,7 +9,7 @@ import Config from "../../lib/ServerConfig/Config";
     name: "config",
     aliases: ["configure", "conf"],
     description:
-        "Configure or display guild specific settings.\nYou can use any of the following\n`'1', 'true', '+', 't', 'yes', 'y'` to enable configs or \n`'0', 'false', '-', 'f', 'no', 'n'` to disable them.",
+		"Configure or display guild specific settings.\nYou can use any of the following\n`'1', 'true', '+', 't', 'yes', 'y'` to enable configs or \n`'0', 'false', '-', 'f', 'no', 'n'` to disable them.",
     usage: [
         "",
         "dadbot enable",

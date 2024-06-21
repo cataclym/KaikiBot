@@ -99,9 +99,9 @@ export default class Roles {
                 .filter(
                     (r) =>
                         r.position !== 0 &&
-                        !member.roles.cache.has(r.id) &&
-                        r.position <
-                            (guild.members.me?.roles.highest.position || 0)
+						!member.roles.cache.has(r.id) &&
+						r.position <
+							(guild.members.me?.roles.highest.position || 0)
                 );
 
             if (!rolesToAdd.length) {
@@ -126,8 +126,8 @@ export default class Roles {
     static async rolePermissionCheck(message: Message<true>, role: Role) {
         if (
             (role.position < (message.member?.roles.highest.position || 0) ||
-                message.guild.ownerId === message.member?.id) &&
-            !role.managed
+				message.guild.ownerId === message.member?.id) &&
+			!role.managed
         ) {
             return Roles.botRolePermissionCheck(message, role);
         }
@@ -137,7 +137,7 @@ export default class Roles {
     static async botRolePermissionCheck(message: Message<true>, role: Role) {
         return (
             role.position <
-            (message.guild.members.me?.roles.highest.position || 0)
+			(message.guild.members.me?.roles.highest.position || 0)
         );
     }
 }

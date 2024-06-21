@@ -65,11 +65,11 @@ export default class MangaCommand extends KaikiCommand {
                     ? `${monthFormat.format(endDate.month)} ${endDate.day}, ${endDate.year}`
                     : null;
                 const aired =
-                    started && ended
-                        ? started === ended
-                            ? started
-                            : `${started} to ${ended}`
-                        : started || "N/A";
+					started && ended
+					    ? started === ended
+					        ? started
+					        : `${started} to ${ended}`
+					    : started || "N/A";
 
                 return message.channel.send({
                     embeds: [

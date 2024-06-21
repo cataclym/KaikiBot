@@ -98,17 +98,17 @@ export default class WaifuPics extends ImageAPI<APIs> {
 }
 
 type APIs =
-    | "bonk"
-    | "cry"
-    | "cuddle"
-    | "hug"
-    | "kiss"
-    | "pat"
-    | "waifu"
-    | "yeet"
-    | "bully"
-    | "megumin"
-    | "neko"
-    | "shinobu"
-    | "nom"
-    | "slap";
+	| "bonk"
+	| "cry"
+	| "cuddle"
+	| "hug"
+	| "kiss"
+	| "pat"
+	| "waifu"
+	| "yeet"
+	| "bully"
+	| "megumin"
+	| "neko"
+	| "shinobu"
+	| "nom"
+	| "slap";

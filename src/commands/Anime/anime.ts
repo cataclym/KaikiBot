@@ -59,7 +59,7 @@ export default class AnimeCommand extends KaikiCommand {
                 const started = `${monthFormat.format(startDate.month)} ${startDate.day}, ${startDate.year}`;
                 const ended = `${monthFormat.format(endDate.month)} ${endDate.day}, ${endDate.year}`;
                 const aired =
-                    started === ended ? started : `${started} to ${ended}`;
+					started === ended ? started : `${started} to ${ended}`;
 
                 return message.channel.send({
                     embeds: [

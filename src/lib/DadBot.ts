@@ -3,7 +3,7 @@ import { GuildMember, Message, PermissionsBitField } from "discord.js";
 import Constants from "../struct/Constants";
 
 interface CustomMessageType extends Message<true> {
-    member: GuildMember;
+	member: GuildMember;
 }
 
 export class DadBot {
@@ -47,14 +47,14 @@ export class DadBot {
 
                 if (
                     match.length &&
-                    match.length <=
-                        parseInt(
-                            process.env.DADBOT_NICKNAME_LENGTH ||
-                                String(
-                                    Constants.MAGIC_NUMBERS.CMDS.ETC.DAD_BOT
-                                        .DADBOT_NICK_LENGTH
-                                )
-                        )
+					match.length <=
+						parseInt(
+						    process.env.DADBOT_NICKNAME_LENGTH ||
+								String(
+								    Constants.MAGIC_NUMBERS.CMDS.ETC.DAD_BOT
+								        .DADBOT_NICK_LENGTH
+								)
+						)
                 ) {
                     return match;
                 }
@@ -74,26 +74,26 @@ export class DadBot {
 
         if (
             nick.length <=
-            parseInt(
-                process.env.DADBOT_NICKNAME_LENGTH ||
-                    String(
-                        Constants.MAGIC_NUMBERS.CMDS.ETC.DAD_BOT
-                            .DADBOT_NICK_LENGTH
-                    )
-            )
+			parseInt(
+			    process.env.DADBOT_NICKNAME_LENGTH ||
+					String(
+					    Constants.MAGIC_NUMBERS.CMDS.ETC.DAD_BOT
+					        .DADBOT_NICK_LENGTH
+					)
+			)
         ) {
             const user = message.author;
             const position =
-                message.guild.members.me?.roles.highest.comparePositionTo(
-                    message.member.roles.highest
-                );
+				message.guild.members.me?.roles.highest.comparePositionTo(
+				    message.member.roles.highest
+				);
 
             if (
                 user.id !== message.guild?.ownerId &&
-                message.guild.members.me?.permissions.has(
-                    PermissionsBitField.Flags.ManageNicknames
-                ) &&
-                position
+				message.guild.members.me?.permissions.has(
+				    PermissionsBitField.Flags.ManageNicknames
+				) &&
+				position
                     ? position >= 0
                     : false
             ) {

@@ -18,7 +18,7 @@ import KaikiEmbeds from "../../lib/Kaiki/KaikiEmbeds";
     name: "tictactoe",
     aliases: ["ttt"],
     description:
-        "Starts a TicTacToe game, where you play against an @mentioned person.",
+		"Starts a TicTacToe game, where you play against an @mentioned person.",
     usage: ["@Dreb"],
     preconditions: ["GuildOnly"],
 })
@@ -77,9 +77,9 @@ export default class TicTacToeCommand extends KaikiCommand {
             .then(async (interaction) => {
                 if (interaction.customId === "1") {
                     new TicTacToe(
-                        message.member as GuildMember,
-                        playerTwo,
-                        message
+						message.member as GuildMember,
+						playerTwo,
+						message
                     );
                     await acceptMessage.delete();
                 } else {

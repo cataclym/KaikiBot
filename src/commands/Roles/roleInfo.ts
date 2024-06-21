@@ -8,7 +8,7 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
     name: "roleinfo",
     aliases: ["role", "rinfo"],
     description:
-        "Shows info about a given role. If no role is supplied, it defaults to current one.",
+		"Shows info about a given role. If no role is supplied, it defaults to current one.",
     usage: ["@Gamers"],
     preconditions: ["GuildOnly"],
 })

@@ -18,7 +18,7 @@ export class KaikiCoinFlipArgument extends Argument<string> {
         return this.error({
             parameter,
             message:
-                "The provided argument could not be resolved to a coin side.",
+				"The provided argument could not be resolved to a coin side.",
         });
     }
 }

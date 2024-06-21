@@ -1,20 +1,20 @@
 {
-    "compilerOptions": {
-        "rootDir": "src",
-        "outDir": "dist",
-        "baseUrl": ".",
-        "esModuleInterop": true,
-        "forceConsistentCasingInFileNames": true,
-        "module": "NodeNext",
-        "moduleResolution": "NodeNext",
-        "noImplicitAny": true,
-        "resolveJsonModule": true,
-        "sourceMap": true,
-        "strictNullChecks": true,
-        "target": "ESNext",
-        "types": ["node"],
-        "declaration": false,
-        "emitDecoratorMetadata": true,
-        "experimentalDecorators": true
-    }
+	"compilerOptions": {
+		"rootDir": "src",
+		"outDir": "dist",
+		"baseUrl": ".",
+		"esModuleInterop": true,
+		"forceConsistentCasingInFileNames": true,
+		"module": "NodeNext",
+		"moduleResolution": "NodeNext",
+		"noImplicitAny": true,
+		"resolveJsonModule": true,
+		"sourceMap": true,
+		"strictNullChecks": true,
+		"target": "ESNext",
+		"types": ["node"],
+		"declaration": false,
+		"emitDecoratorMetadata": true,
+		"experimentalDecorators": true
+	}
 }

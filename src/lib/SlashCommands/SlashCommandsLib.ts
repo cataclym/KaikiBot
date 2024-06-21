@@ -12,7 +12,7 @@ export default class SlashCommandsLib {
     static excludeData: ApplicationCommandDataResolvable = {
         name: "exclude",
         description:
-            "Excludes you from being targeted by dad-bot. Execute command again to reverse this action.",
+			"Excludes you from being targeted by dad-bot. Execute command again to reverse this action.",
     };
 
     public static async getOrCreateDadbotRole(
@@ -25,15 +25,15 @@ export default class SlashCommandsLib {
 
     public static async excludeCommand(
         messageOrInteraction:
-            | Message<true>
-            | Command.ChatInputCommandInteraction<"cached">
+			| Message<true>
+			| Command.ChatInputCommandInteraction<"cached">
     ) {
         const { guild } = messageOrInteraction;
 
         const embeds = [];
         let excludedRole = await SlashCommandsLib.getOrCreateDadbotRole(
             guild,
-            messageOrInteraction.client as KaikiSapphireClient<true>
+			messageOrInteraction.client as KaikiSapphireClient<true>
         );
 
         if (!excludedRole) {
@@ -61,7 +61,7 @@ export default class SlashCommandsLib {
                 new EmbedBuilder({
                     title: "Creating dad-bot role!",
                     description:
-                        "There doesn't seem to be a default dad-bot role in this server. Creating one...",
+						"There doesn't seem to be a default dad-bot role in this server. Creating one...",
                     footer: { text: "Beep boop..." },
                 }).withErrorColor(guild)
             );

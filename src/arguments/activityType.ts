@@ -26,7 +26,7 @@ Valid types are: \`${ActivityTypeArgument.validActivities.join("`, `")}\``,
 
     private assertType(str: string): str is ValidActivities {
         return ActivityTypeArgument.validActivities.includes(
-            str as ValidActivities
+			str as ValidActivities
         );
     }
 }

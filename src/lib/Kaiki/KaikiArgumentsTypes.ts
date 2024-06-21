@@ -2,7 +2,21 @@ import { Args, Argument, Identifiers } from "@sapphire/framework";
 import { Message } from "discord.js";
 import Constants from "../../struct/Constants";
 
+export enum GamblingCommands {
+	br,
+	betroll = 0,
+	bf,
+	betflip = 1,
+	slot,
+	slots = 2,
+}
+
 export default class KaikiArgumentsTypes {
+    static entries = Object.entries(GamblingCommands) as [
+		string,
+		GamblingCommands,
+	][];
+
     // These are only for specific use cases, whereas arguments in ../../arguments are more general.
     public static urlEmoteAttachmentIArgument = Args.make<string>(
         async (parameter, context) => {
@@ -90,6 +104,27 @@ export default class KaikiArgumentsTypes {
             return Args.error({
                 parameter,
                 argument: context.argument,
+            });
+        }
+    );
+
+    public static gamblingCommandsArgument = Args.make<GamblingCommands>(
+        async (
+            parameter: string,
+            context: Argument.Context<GamblingCommands>
+        ) => {
+            const argument = parameter.toLowerCase();
+            const command = KaikiArgumentsTypes.entries.find(
+                (entry) => entry[0] === argument
+            );
+            if (command) {
+                return Args.ok(command[1]);
+            }
+            return Args.error({
+                parameter,
+                argument: context.argument,
+                message:
+					"The provided argument could not be resolved to a gambling command.",
             });
         }
     );

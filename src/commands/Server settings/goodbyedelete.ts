@@ -8,7 +8,7 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
     name: "goodbyedelete",
     aliases: ["goodbyedel", "byedel"],
     description:
-        "Set the time, in seconds, it takes for goodbye messages to be deleted by the bot. Set to 0 to disable.",
+		"Set the time, in seconds, it takes for goodbye messages to be deleted by the bot. Set to 0 to disable.",
     usage: ["10"],
     requiredUserPermissions: ["ManageGuild"],
     preconditions: ["GuildOnly"],

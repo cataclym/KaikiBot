@@ -60,8 +60,8 @@ export default class WaifuIm extends ImageAPI<EndPointSignatures> {
 }
 
 type EndPointSignatures =
-    | "uniform"
-    | "maid"
-    | "selfies"
-    | "marin-kitagawa"
-    | "ero";
+	| "uniform"
+	| "maid"
+	| "selfies"
+	| "marin-kitagawa"
+	| "ero";

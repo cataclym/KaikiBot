@@ -8,7 +8,7 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
     name: "welcomedelete",
     aliases: ["welcomedel"],
     description:
-        "Set the time it takes for welcome messages to be deleted by the bot",
+		"Set the time it takes for welcome messages to be deleted by the bot",
     usage: ["10"],
     requiredUserPermissions: ["ManageGuild"],
     preconditions: ["GuildOnly"],

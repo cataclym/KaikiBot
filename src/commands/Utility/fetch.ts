@@ -13,7 +13,7 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
     name: "fetch",
     aliases: ["fu"],
     description:
-        "Fetches a discord user, shows relevant information. 30sec cooldown.",
+		"Fetches a discord user, shows relevant information. 30sec cooldown.",
     usage: ["<id>"],
     cooldownDelay: 30000,
 })
@@ -35,7 +35,7 @@ export default class FetchUserCommand extends KaikiCommand {
             return new UserError({
                 identifier: "fetchNoUserFound",
                 message:
-                    "Provided argument doesn't seem to be a valid user ID.",
+					"Provided argument doesn't seem to be a valid user ID.",
                 context: ctx,
             });
         }

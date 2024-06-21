@@ -18,7 +18,7 @@ export default class ServerList extends KaikiCommand {
         const startPage = await args.pick("number").catch(() => 0);
 
         const { GUILDS_PER_PAGE } =
-            Constants.MAGIC_NUMBERS.CMDS.UTILITY.SERVER_LIST;
+			Constants.MAGIC_NUMBERS.CMDS.UTILITY.SERVER_LIST;
         const pages = [];
         const embed = new EmbedBuilder()
             .setDescription("Server list")

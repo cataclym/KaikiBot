@@ -13,7 +13,7 @@ import Constants from "../../struct/Constants";
     name: "myrole",
     aliases: ["mr"],
     description:
-        "Checks your assigned user role. Can set role color, name and icon.",
+		"Checks your assigned user role. Can set role color, name and icon.",
     usage: ["color FF0000", "name Dreb", "icon :someEmoji:", "icon reset"],
     requiredClientPermissions: ["ManageRoles"],
     preconditions: ["GuildOnly"],
@@ -64,8 +64,8 @@ export default class MyRoleCommand extends Subcommand {
                     .setAuthor({
                         name: `Current role assigned to ${message.author.username}`,
                         iconURL:
-                            message.guild.iconURL({ size: 2048 }) ||
-                            message.author.displayAvatarURL({ size: 2048 }),
+							message.guild.iconURL({ size: 2048 }) ||
+							message.author.displayAvatarURL({ size: 2048 }),
                     })
                     .setColor(myRole.hexColor)
                     .addFields(

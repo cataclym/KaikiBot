@@ -32,8 +32,8 @@ export default class ExcludeStickyRolesCommand extends KaikiCommand {
             guildDb = (await this.client.db.getOrCreateGuild(
                 bigIntGuildId
             )) as Guilds & {
-                ExcludedStickyRoles: ExcludedStickyRoles[];
-            };
+				ExcludedStickyRoles: ExcludedStickyRoles[];
+			};
             guildDb["ExcludedStickyRoles"] = [];
         }
 
@@ -48,18 +48,18 @@ export default class ExcludeStickyRolesCommand extends KaikiCommand {
                         .setDescription(
                             guildDb?.ExcludedStickyRoles.length
                                 ? guildDb.ExcludedStickyRoles.map((k) => {
-                                      const role =
-                                          message.guild.roles.cache.get(
-                                              String(k.RoleId)
-                                          );
+                                    const role =
+											message.guild.roles.cache.get(
+											    String(k.RoleId)
+											);
 
-                                      return role
-                                          ? `${role.name} [${role.id}]`
-                                          : String(k.RoleId);
-                                  })
-                                      .sort((a, b) => (a < b ? -1 : 1))
-                                      .join("\n")
-                                      .trim()
+                                    return role
+                                        ? `${role.name} [${role.id}]`
+                                        : String(k.RoleId);
+                                })
+                                    .sort((a, b) => (a < b ? -1 : 1))
+                                    .join("\n")
+                                    .trim()
                                 : "No roles excluded"
                         )
                         .withOkColor(message),

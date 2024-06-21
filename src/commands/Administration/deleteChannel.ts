@@ -8,7 +8,7 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
     name: "deletechannel",
     aliases: ["dtchnl", "delchan"],
     description:
-        "Deletes one or more channels. Also deletes categories, threads and voice channels.",
+		"Deletes one or more channels. Also deletes categories, threads and voice channels.",
     usage: "#channel1 #channel2 #channel3",
     requiredUserPermissions: ["ManageChannels"],
     requiredClientPermissions: ["ManageChannels"],
