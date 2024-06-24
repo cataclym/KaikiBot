@@ -47,9 +47,6 @@ export default class Config {
                     "DadBot",
                     true
                 );
-                await message.guild?.commands.create(
-                    SlashCommandsLib.excludeData
-                );
 
                 embed
                     .setTitle(

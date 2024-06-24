@@ -12,9 +12,8 @@ import SlotsCommand, { SlotResult, Slots } from "../Gambling/slots";
 
 @ApplyOptions<KaikiCommandOptions>({
     name: "bettest",
-    usage: ["br 100", "bf 2000"],
-    description:
-		"Tests gambling commands by running them specified amounts of times.",
+    usage: ["br 100", "bf 2000", "slots 100000"],
+    description: "Tests gambling commands by running them specified amounts of times.",
     preconditions: ["OwnerOnly"],
 })
 export default class BetTest extends KaikiCommand {
@@ -62,7 +61,7 @@ export default class BetTest extends KaikiCommand {
         return message.channel.send({
             embeds: [
                 new EmbedBuilder()
-                    .setTitle("Betting Test")
+                    .setTitle(`Bettest ${BetTest.bettestNames[gambling]}`)
                     .setDescription(str)
                     .withOkColor(message),
             ],
@@ -70,12 +69,9 @@ export default class BetTest extends KaikiCommand {
     }
 
     static SlotsStr(results: Array<[Slots, SlotResult, bigint]>): string {
-        const collectionSize = results.length;
-
-        const totalSpent = BigInt(collectionSize * 100);
-        const winnings = BigInt(results.map((x) => x[2]).reduce((a, b) => a + b));
-
-        const none = results.filter((x) => x[0] === Slots.x0).length,
+        const collectionSize = results.length, totalSpent = BigInt(collectionSize * 100),
+            winnings = BigInt(results.map((x) => x[2]).reduce((a, b) => a + b)),
+            none = results.filter((x) => x[0] === Slots.x0).length,
             ten = results.filter((x) => x[0] === Slots.x10).length,
             thirty = results.filter((x) => x[0] === Slots.x30).length;
 
@@ -83,36 +79,32 @@ export default class BetTest extends KaikiCommand {
 x**10** - ${ten} ${BetTest.calcPercentage(ten, collectionSize)}
 x**30** - ${thirty} ${BetTest.calcPercentage(thirty, collectionSize)}
 
-Total bet: **${totalSpent}**
-Payout: **${winnings}** \`${Number((winnings * 100n) / totalSpent).toFixed(2)}%\`
-Difference: **${winnings - totalSpent}**
+${BetTest.betStatsStr(totalSpent, winnings)}
 `;
     }
 
-    static betRollStr(results: Array<[BetRoll, number, bigint]>): string {
-        const collectionSize = results.length;
+    private static bettestNames: { [Property in GamblingCommands]: string } = {
+        0: "Betroll",
+        1: "Betflip",
+        2: "Slots",
+    }
 
-        const loss = results
+    static betRollStr(results: Array<[BetRoll, number, bigint]>): string {
+        // 100 is the fixed amount set in bettests
+        const collectionSize = results.length, loss = results
                 .map((x) => x[0])
-                .filter((x) => x === BetRoll.None).length,
-            double = results.filter((x) => x[0] === BetRoll.Double).length,
+                .filter((x) => x === BetRoll.None).length, double = results.filter((x) => x[0] === BetRoll.Double).length,
             quadruple = results.filter(
                 (x) => x[0] === BetRoll.Quadruple
-            ).length,
-            ten = results.filter((x) => x[0] === BetRoll.Ten).length;
-
-        const winnings = results.map((x) => x[2]).reduce((a, b) => a + b);
-        // 100 is the fixed amount set in bettests
-        const totalSpent = BigInt(collectionSize * 100);
+            ).length, ten = results.filter((x) => x[0] === BetRoll.Ten).length,
+            winnings = results.map((x) => x[2]).reduce((a, b) => a + b), totalSpent = BigInt(collectionSize * 100);
 
         return `* x**10** - ${ten} ${BetTest.calcPercentage(ten, collectionSize)}
 * x**4** - ${quadruple} ${BetTest.calcPercentage(quadruple, collectionSize)}
 * x**2** - ${double} ${BetTest.calcPercentage(double, collectionSize)}
 * **Loss** - ${loss} ${BetTest.calcPercentage(loss, collectionSize)}
         
-Total bet: **${totalSpent}**
-Payout: **${winnings}** \`${Number((winnings * 100n) / totalSpent).toFixed(2)}%\`
-Difference: **${winnings - totalSpent}**
+${BetTest.betStatsStr(totalSpent, winnings)}
 `;
     }
 
@@ -120,16 +112,21 @@ Difference: **${winnings - totalSpent}**
         const collectionSize = results.length, heads = results.filter(([sides]) => sides === Sides.heads).length,
             tails = results.length - heads, winnings = results.map((x) => x[1]).reduce((a, b) => a + b),
             totalSpent = BigInt(collectionSize * 100);
+
         return `* Tails - ${tails} ${BetTest.calcPercentage(tails, collectionSize)}
 * Heads - ${heads} ${BetTest.calcPercentage(heads, collectionSize)}
 
-Total bet: **${totalSpent}**
-Payout: **${winnings}** \`${Number((winnings * 100n) / totalSpent).toFixed(2)}%\`
-Difference: **${winnings - totalSpent}**
+${BetTest.betStatsStr(totalSpent, winnings)}
 `;
     }
 
     private static calcPercentage(part: number, collectionSize: number) {
         return `\`${((part / collectionSize) * 100).toFixed(2)}%\``;
+    }
+
+    private static betStatsStr(totalSpent: bigint, winnings: bigint) {
+        return `Total bet: **${totalSpent}**
+Payout: **${winnings}** \`${Number((winnings * 100n) / totalSpent).toFixed(2)}%\`
+Difference: **${winnings - totalSpent}**`
     }
 }
