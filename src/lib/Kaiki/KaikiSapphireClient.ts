@@ -32,6 +32,7 @@ import KaikiClientInterface from "./KaikiClientInterface";
 import fs from "fs/promises";
 import { container } from "@sapphire/pieces";
 import { createDjsClient } from "discordbotlist-djs";
+import NeofetchCommand from "../../commands/Fun/neofetch";
 
 export default class KaikiSapphireClient<Ready extends true>
     extends SapphireClient<Ready>
@@ -351,14 +352,17 @@ export default class KaikiSapphireClient<Ready extends true>
             );
         }
 
-        // Check if 'neofetch' is available
+        // Check if 'neofetch/fastfetch' is available
         try {
-            execSync("command -v neofetch >/dev/null 2>&1");
+            execSync("command -v fastfetch >/dev/null 2>&1");
         } catch {
-            await commandStore.unload("neofetch");
-            this.logger.warn(
-                "Neofetch wasn't detected! Neofetch command will be disabled."
-            );
+            try {
+                execSync("command -v neofetch >/dev/null 2>&1");
+            } catch {
+                await commandStore.unload("neofetch");
+                this.logger.warn("Neofetch or fastfetch wasn't detected! Neofetch command will be disabled.");
+            }
+            NeofetchCommand.usingFastFetch = false;
         }
     }
 

@@ -21,6 +21,9 @@ import Constants from "../../struct/Constants";
     flags: ["list"],
 })
 export default class NeofetchCommand extends KaikiCommand {
+
+    public static usingFastFetch = true;
+
     private static neofetchArgument = Args.make<string>((parameter) => {
         const success = distros.find((str) => {
             const k = str.toLowerCase();
@@ -75,12 +78,14 @@ export default class NeofetchCommand extends KaikiCommand {
             }
             return sendPaginatedMessage(message, pages, {});
         } else {
-            let cmd = `neofetch -L --ascii_distro ${os}|sed 's/\x1B\\[[0-9;?]*[a-zA-Z]//g'`;
 
+            let cmd = `neofetch -L --ascii_distro ${os}|sed 's/\x1B\\[[0-9;?]*[a-zA-Z]//g'`;
             const { platform } = process;
 
             if (!os && platform !== "win32")
                 cmd = "neofetch -L | sed 's/\x1B\\[[0-9;\\?]*[a-zA-Z]//g'";
+
+            if (NeofetchCommand.usingFastFetch) cmd = `fastfetch --config external/fastfetch.jsonc -l ${os}`;
 
             exec(cmd, async (error, stdout, stderr) => {
                 if (error || stderr) {
@@ -89,10 +94,13 @@ export default class NeofetchCommand extends KaikiCommand {
                 return message.channel.send(
                     await KaikiUtil.codeblock(
                         "\u00AD" +
-							stdout.replace(
+                        stdout.replace(
 							    /```/g,
 							    "\u0300`\u0300`\u0300`\u0300"
-							)
+                        ).replace(
+                            Constants.NeoFetchRegExp,
+                            ""
+                        )
                     )
                 );
             });

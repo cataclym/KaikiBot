@@ -854,4 +854,6 @@ export default class Constants {
         REPO_URL: "https://github.com/cataclym/KaikiBot.git",
         GUIDE: "https://github.com/cataclym/KaikiBot/blob/master/docs/GUIDE.md",
     });
+    // eslint-disable-next-line no-control-regex
+    static NeoFetchRegExp = new RegExp(/[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g);
 }
