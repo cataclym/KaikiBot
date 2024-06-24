@@ -1,19 +1,6 @@
 import { EmbedBuilder, GuildMember, Message } from "discord.js";
 import Constants from "../../struct/Constants";
 
-const numbers = ["1", "2", "3", "4", "5", "6", "7", "8", "9"];
-const winningCombos = [
-    [0, 1, 2],
-    [3, 4, 5],
-    [6, 7, 8],
-    [0, 3, 6],
-    [1, 4, 7],
-    [2, 5, 8],
-    [0, 4, 8],
-    [2, 4, 6],
-];
-
-const drawMessage = "Game ended in a draw!";
 type PlayerType = { player: GuildMember; color: string; sign: string };
 
 export default class TicTacToe {
@@ -22,12 +9,24 @@ export default class TicTacToe {
     currentPlayer: PlayerType;
     message: Message;
     embed: Promise<Message>;
-    moves?: PlayerType[];
     currentPlayerTurn: (p: GuildMember, m: Message) => Promise<void>;
     winningMessage: (p: GuildMember) => string;
     timedWinMessage: (p: GuildMember) => string;
     stateDict: { [index: number]: string };
     active: boolean;
+
+    static drawMessage = "Game ended in a draw!";
+    static numbers = ["1", "2", "3", "4", "5", "6", "7", "8", "9"];
+    static winningCombos = [
+        [0, 1, 2],
+        [3, 4, 5],
+        [6, 7, 8],
+        [0, 3, 6],
+        [1, 4, 7],
+        [2, 5, 8],
+        [0, 4, 8],
+        [2, 4, 6],
+    ];
 
     /**
 	 * Initializes a TicTacToe game.
@@ -98,11 +97,11 @@ export default class TicTacToe {
         const { player } = playerObject;
 
         const filter = (m: Message) =>
-            numbers.includes(m.content) && m.member?.id === player.id;
+            TicTacToe.numbers.includes(m.content) && m.member?.id === player.id;
 
         this.message.channel
             .awaitMessages({
-                filter: filter,
+                filter,
                 max: 1,
                 time: 20000,
                 errors: ["time"],
@@ -120,7 +119,7 @@ export default class TicTacToe {
     private async input(playerObject: PlayerType, m: Message) {
         const { player, sign } = playerObject;
 
-        if (!numbers.includes(m.content.trim())) {
+        if (!TicTacToe.numbers.includes(m.content.trim())) {
             await m.delete();
             return this.awaitInput(playerObject);
         }
@@ -168,7 +167,7 @@ export default class TicTacToe {
     }
 
     private checkWin(value: string) {
-        return winningCombos.some((arr) => {
+        return TicTacToe.winningCombos.some((arr) => {
             return arr.every((num) => this.stateDict[num] === value);
         });
     }
@@ -200,7 +199,7 @@ export default class TicTacToe {
     private tie() {
         if (this.active) {
             this.active = false;
-            return this.message.channel.send(drawMessage);
+            return this.message.channel.send(TicTacToe.drawMessage);
         }
     }
 }
