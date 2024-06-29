@@ -65,7 +65,6 @@ export default class KaikiSapphireClient<Ready extends true>
                 GatewayIntentBits.GuildMembers,
                 GatewayIntentBits.GuildMessageReactions,
                 GatewayIntentBits.GuildMessages,
-                GatewayIntentBits.GuildPresences,
                 GatewayIntentBits.GuildWebhooks,
                 GatewayIntentBits.Guilds,
                 GatewayIntentBits.MessageContent,
@@ -340,10 +339,7 @@ export default class KaikiSapphireClient<Ready extends true>
     async filterOptionalCommands() {
         const commandStore = this.stores.get("commands");
 
-        if (
-            !process.env.KAWAIIKEY ||
-			process.env.KAWAIIKEY === "[YOUR_OPTIONAL_KAWAII_KEY]"
-        ) {
+        if (!process.env.KAWAIIKEY || process.env.KAWAIIKEY === "[YOUR_OPTIONAL_KAWAII_KEY]") {
             for (const entry of ["run", "peek", "pout", "lick"]) {
                 await commandStore.unload(entry);
             }

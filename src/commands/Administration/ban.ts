@@ -15,7 +15,7 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 })
 export default class BanCommand extends KaikiCommand {
     public async messageRun(message: Message<true>, args: Args) {
-        // Using both user and member to be able to user username as well as ids.
+        // Using both user and member to be able to use username as well as ids.
         const user = await Promise.resolve(
             args.pick("user").catch(async () => args.pick("member"))
         );
