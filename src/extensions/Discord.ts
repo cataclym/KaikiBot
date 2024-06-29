@@ -1,5 +1,4 @@
 import {
-    ColorResolvable,
     EmbedBuilder,
     Guild,
     GuildMember,

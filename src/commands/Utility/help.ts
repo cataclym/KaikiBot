@@ -4,6 +4,7 @@ import { EmbedBuilder, Message } from "discord.js";
 import { Subcommand } from "@sapphire/plugin-subcommands";
 import KaikiCommandOptions from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+import Constants from "../../struct/Constants";
 
 @ApplyOptions<KaikiCommandOptions>({
     name: "help",
@@ -40,6 +41,11 @@ export default class HelpCommand extends KaikiCommand {
                         value: `\`${prefix}help [command]\` to get more help. Example: \`${prefix}help ping\``,
                         inline: false,
                     },
+                    {
+                        name: "Policies",
+                        value: `[Privacy policy](${Constants.LINKS.PRIVACY_POLICY}) | [Terms of Use](${Constants.LINKS.TERMS_OF_USE})`
+
+                    }
                 ])
                 .setAuthor({
                     name: `${name} v${version}`,

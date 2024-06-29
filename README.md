@@ -38,7 +38,7 @@ Consider contributing! I appreciate all the help I can get.
 
 ### Upcoming plans
 * Rework todo (TodoRework branch)
-* Serve/Update commandlist to website automatically
+* Serve and Update commandlist to website automatically
 
 ---
 
