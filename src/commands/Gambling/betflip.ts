@@ -59,7 +59,7 @@ export default class BetflipCommand extends KaikiCommand {
             });
         }
 
-        const [coinFlipped, winnings] = await BetflipCommand.flip();
+        const [coinFlipped, winnings] = await BetflipCommand.flip(coin, number);
 
         const emb = new EmbedBuilder({
             image: { url: images.gambling.coin[coinFlipped] },

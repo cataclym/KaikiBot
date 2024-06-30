@@ -5,6 +5,7 @@ import { HentaiTypes } from "../lib/Hentai/HentaiService";
 import KaikiCommand from "../lib/Kaiki/KaikiCommand";
 import { KaikiColor } from "../lib/Types/KaikiColor";
 import { Categories } from "../lib/Types/Miscellaneous";
+import { Sides } from "../commands/Gambling/betflip";
 
 declare module "@sapphire/framework" {
 	interface Preconditions {
@@ -16,7 +17,7 @@ declare module "@sapphire/framework" {
 		category: Categories;
 		command: KaikiCommand;
 		guild: Guild;
-		kaikiCoin: string;
+		kaikiCoin: Sides;
 		kaikiColor: KaikiColor;
 		kaikiHentai: HentaiTypes;
 		kaikiMoney: bigint;
