@@ -57,7 +57,7 @@ export default class ClaimDailyCommand extends KaikiCommand {
                 embeds: [
                     new EmbedBuilder()
                         .setDescription(
-                            `**${message.author.username}**, You've just claimed your daily allowance!\n+**${amount}** ${this.client.money.currencyName} ${this.client.money.currencySymbol}\n\nClaim again in ${time(new Date(new Date().getTime() + KaikiUtil.timeToMidnightOrNoon()), "R")}`
+                            `**${message.author.username}**, You've just claimed your daily allowance!\n+**${amount}** ${this.client.money.currencyName} ${this.client.money.currencySymbol}\n\nClaim again ${time(new Date(new Date().getTime() + KaikiUtil.timeToMidnightOrNoon()), "R")}`
                         )
                         .withOkColor(message),
                 ],
@@ -67,7 +67,7 @@ export default class ClaimDailyCommand extends KaikiCommand {
                 embeds: [
                     new EmbedBuilder()
                         .setDescription(
-                            `**${message.author.username}**, You've already claimed your daily allowance!!\n\nClaim again in ${time(new Date(new Date().getTime() + KaikiUtil.timeToMidnightOrNoon()), "R")}`
+                            `**${message.author.username}**, You've already claimed your daily allowance!!\n\nClaim again ${time(new Date(new Date().getTime() + KaikiUtil.timeToMidnightOrNoon()), "R")}`
                         )
                         .withErrorColor(message),
                 ],

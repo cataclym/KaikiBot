@@ -10,7 +10,6 @@ import {
     PermissionsBitField,
     resolveColor,
 } from "discord.js";
-import SlashCommandsLib from "../../lib/SlashCommands/SlashCommandsLib";
 import { imgFromColor } from "../Color";
 import { CategoriesEnum } from "../Enums/categoriesEnum";
 import GreetHandler from "../GreetHandler";

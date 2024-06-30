@@ -43,7 +43,7 @@ export default class StatsCommand extends KaikiCommand {
                     },
                     {
                         name: "Users",
-                        value: String(message.client.users.cache.size),
+                        value: `${message.client.guilds.cache.reduce((acc, guild) => acc + guild.memberCount, 0)} (${message.client.users.cache.size} cached)`,
                         inline: true,
                     },
                     {

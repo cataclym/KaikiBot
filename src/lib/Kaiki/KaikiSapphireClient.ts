@@ -149,26 +149,32 @@ export default class KaikiSapphireClient<Ready extends true>
             `Bot owner: ${colorette.greenBright(client.owner.username)}`
         );
 
+        await Promise.all([
+            client.filterOptionalCommands(),
+            client.sendOnlineMsg(),
+        ]);
+    }
+
+    private async sendOnlineMsg() {
         // Let bot owner know when bot goes online.
-        if (client.user && client.owner.id === process.env.OWNER) {
+        if (this.user && this.owner.id === process.env.OWNER) {
             // Inconspicuous emotes haha
             const emoji = ["✨", "♥️", "✅", "🇹🇼"][
                 Math.floor(Math.random() * 4)
             ];
-            await client.owner.send({
+
+            await this.owner.send({
                 embeds: [
                     new EmbedBuilder()
                         .setTitle(emoji)
                         .setDescription("Bot is online!")
                         .setFooter({
-                            text: `${client.package.name} - v${client.package.version}`,
+                            text: `${this.package.name} - v${this.package.version}`,
                         })
                         .withOkColor(),
                 ],
             });
         }
-
-        await client.filterOptionalCommands();
     }
 
     private static noBotOwner(): never {

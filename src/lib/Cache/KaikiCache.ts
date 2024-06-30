@@ -1,9 +1,8 @@
 import pkg from "@prisma/client";
-import { Collection, Message, Snowflake } from "discord.js";
+import { Message, Snowflake } from "discord.js";
 import { Pool, ResultSetHeader, RowDataPacket } from "mysql2/promise";
 import { APIs, ClientImageAPIs } from "../APIs/Common/Types";
 import KaikiUtil from "../KaikiUtil";
-import { AnimeQuoteResponse } from "../Types/Miscellaneous";
 import Constants from "../../struct/Constants";
 import {
     EmoteReactCache,
@@ -19,7 +18,6 @@ export enum ERCacheType {
 }
 
 export default class KaikiCache {
-    public animeQuoteCache: Collection<string, AnimeQuoteResponse>;
     public cmdStatsCache: Map<string, number>;
     public emoteReactCache: EmoteReactCache;
     public dailyProvider: MySQLDailyProvider;
@@ -31,7 +29,6 @@ export default class KaikiCache {
         connection: Pool,
         imageAPIs: ClientImageAPIs
     ) {
-        this.animeQuoteCache = new Collection<string, AnimeQuoteResponse>();
         this.cmdStatsCache = new Map<string, number>();
         this.dailyProvider = new MySQLDailyProvider(connection);
         this.emoteReactCache = new Map<
