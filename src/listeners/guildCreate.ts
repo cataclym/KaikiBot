@@ -8,9 +8,14 @@ import { Guild } from "discord.js";
 })
 export default class GuildCreate extends Listener {
     public async run(guild: Guild) {
+
         guild.client.logger.info(
             `\nBot was added to ${colorette.green(guild.name)} | Size: ${guild.memberCount} members!\n`
         );
-        await guild.client.anniversaryService.checkBirthdayOnAdd(guild);
+
+        await Promise.all([
+            guild.client.anniversaryService.checkBirthdayOnAdd(guild),
+            guild.members.fetch()
+        ])
     }
 }

@@ -17,6 +17,10 @@ type ErrorContext = {
 	commandContext: Record<string, unknown>;
 };
 
+function isIdentifier(identifier: string): identifier is Identifiers {
+    return identifier in Identifiers;
+}
+
 export default async (
     error: UserError,
     payload: MessageCommandDeniedPayload
@@ -25,7 +29,7 @@ export default async (
         title: "Argument error",
     };
 
-    if (error.identifier === Identifiers.ArgsMissing) {
+    if (isIdentifier(error.identifier) && [Identifiers.ArgsMissing, Identifiers.ArgsUnavailable].includes(error.identifier)) {
         const errorContext = error.context as ErrorContext;
         const prefix = errorContext.commandContext.prefix;
 

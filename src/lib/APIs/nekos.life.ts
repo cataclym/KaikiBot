@@ -4,7 +4,7 @@ import APIProcessor from "./APIProcessor";
 import ImageAPI from "./Common/ImageAPI";
 import { ImageAPIOptions } from "./Common/Types";
 
-type APIs = "spank";
+export enum APIs { spank = "spank" }
 
 export default class NekosLife extends ImageAPI<APIs> {
     constructor(data: ImageAPIOptions<"spank"> = NekosLife.data) {

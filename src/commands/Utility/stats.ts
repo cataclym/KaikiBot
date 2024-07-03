@@ -4,7 +4,6 @@ import { version as sapphireVersion } from "@sapphire/framework";
 import { sendPaginatedMessage } from "discord-js-button-pagination-ts";
 import { ChannelType, EmbedBuilder, Message, time, version } from "discord.js";
 import KaikiCommandOptions from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
-
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import Constants from "../../struct/Constants";
 
@@ -12,7 +11,7 @@ import Constants from "../../struct/Constants";
     aliases: ["stats"],
     name: "stats",
     usage: "",
-    description: "Statistics and information",
+    description: "Statistics and information about the bot application",
     minorCategory: "Info",
 })
 export default class StatsCommand extends KaikiCommand {
@@ -80,7 +79,7 @@ export default class StatsCommand extends KaikiCommand {
                 .setDescription("**Built using**:")
                 .addFields([
                     {
-                        name: "Discord.js library",
+                        name: "Discord.js",
                         value: `[Discord.js](https://discord.js.org/#/ 'Discord.js website') v${version}`,
                         inline: true,
                     },
@@ -96,12 +95,12 @@ export default class StatsCommand extends KaikiCommand {
                     },
                     {
                         name: "Node Package Manager",
-                        value: `[npm](https://www.npmjs.com/ 'npm website') \`${process.env.npm_config_user_agent || "N/A"}\``,
+                        value: `[npm](https://www.npmjs.com/ 'npm website') \`${process.env.npm_config_user_agent || ""}\``,
                         inline: true,
                     },
                 ])
                 .setAuthor({
-                    name: "© 2024 @Cata#2702",
+                    name: "© 2024 @Cata",
                     iconURL: message.client.user.displayAvatarURL(),
                     url: packageJSON.repository.url,
                 })

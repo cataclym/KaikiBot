@@ -4,7 +4,7 @@ import APIProcessor from "./APIProcessor";
 import ImageAPI from "./Common/ImageAPI";
 import { ImageAPIOptions } from "./Common/Types";
 
-type EndPointSignatures = "run" | "peek" | "pout" | "lick";
+export enum EndPointSignatures { run = "run", peek = "peek", pout = "pout", lick = "lick" }
 
 export default class KawaiiAPI extends ImageAPI<EndPointSignatures> {
     constructor(data: ImageAPIOptions<EndPointSignatures> = KawaiiAPI.data) {
@@ -18,9 +18,7 @@ export default class KawaiiAPI extends ImageAPI<EndPointSignatures> {
         endPoint: T,
         mention?: GuildMember | null
     ) {
-        if (!KawaiiAPI.token) {
-            return;
-        }
+        if (!KawaiiAPI.token) return
 
         return message.channel.send({
             embeds: [

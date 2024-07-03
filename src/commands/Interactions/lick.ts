@@ -3,6 +3,7 @@ import { Args } from "@sapphire/framework";
 import { Message } from "discord.js";
 import KaikiCommandOptions from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+import { EndPointSignatures } from "../../lib/APIs/KawaiiAPI";
 
 @ApplyOptions<KaikiCommandOptions>({
     name: "lick",
@@ -17,7 +18,7 @@ export default class Lick extends KaikiCommand {
     ): Promise<void | Message> {
         return this.client.imageAPIs.KawaiiAPI.sendImageAPIRequest(
             message,
-            "lick",
+            EndPointSignatures.lick,
             await args.rest("member").catch(() => null)
         );
     }

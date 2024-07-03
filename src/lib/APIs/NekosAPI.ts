@@ -5,6 +5,7 @@ import ImageAPI from "./Common/ImageAPI";
 import { ImageAPIOptions, NekosAPITags } from "./Common/Types";
 
 type EndPoints = keyof typeof NekosAPITags;
+
 const notImplementedEndPointData = {
     action: "",
     color: 0,

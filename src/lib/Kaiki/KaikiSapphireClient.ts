@@ -4,6 +4,7 @@ import { type PrismaClient } from "@prisma/client";
 import { LogLevel, SapphireClient } from "@sapphire/framework";
 import * as colorette from "colorette";
 import {
+    Collection,
     EmbedBuilder,
     GatewayIntentBits,
     Guild,
@@ -12,13 +13,13 @@ import {
     User,
 } from "discord.js";
 import { Pool } from "mysql2/promise";
-import KaikiCache from "../Cache/KaikiCache";
+import KaikiCache, { GuildMemberCache } from "../Cache/KaikiCache";
 import Constants from "../../struct/Constants";
 import Database from "../../struct/db/Database";
 import DatabaseProvider from "../../struct/db/DatabaseProvider";
 import AnniversaryRolesService from "../AnniversaryRolesService";
 import type { ClientImageAPIs } from "../APIs/Common/Types";
-import KawaiiAPI from "../APIs/KawaiiAPI";
+import KawaiiAPI, { EndPointSignatures } from "../APIs/KawaiiAPI";
 import NekosLife from "../APIs/nekos.life";
 import NekosAPI from "../APIs/NekosAPI";
 import PurrBot from "../APIs/PurrBot";
@@ -31,8 +32,8 @@ import { MoneyService } from "../Money/MoneyService";
 import KaikiClientInterface from "./KaikiClientInterface";
 import fs from "fs/promises";
 import { container } from "@sapphire/pieces";
-import { createDjsClient } from "discordbotlist-djs";
 import NeofetchCommand from "../../commands/Fun/neofetch";
+import DiscordBotListService from "../DiscordBotList/DiscordBotListService";
 
 export default class KaikiSapphireClient<Ready extends true>
     extends SapphireClient<Ready>
@@ -56,7 +57,6 @@ export default class KaikiSapphireClient<Ready extends true>
             allowedMentions: { parse: ["users"], repliedUser: true },
             intents: [
                 GatewayIntentBits.DirectMessageReactions,
-                GatewayIntentBits.DirectMessageTyping,
                 GatewayIntentBits.DirectMessages,
                 GatewayIntentBits.GuildModeration,
                 GatewayIntentBits.GuildEmojisAndStickers,
@@ -67,7 +67,7 @@ export default class KaikiSapphireClient<Ready extends true>
                 GatewayIntentBits.GuildMessages,
                 GatewayIntentBits.GuildWebhooks,
                 GatewayIntentBits.Guilds,
-                GatewayIntentBits.MessageContent,
+                GatewayIntentBits.MessageContent
             ],
             partials: [
                 Partials.Reaction,
@@ -119,12 +119,10 @@ export default class KaikiSapphireClient<Ready extends true>
             throw new Error("Missing bot client user!");
         }
 
-        if (
-            process.env.DBL_API_TOKEN &&
-			process.env.NODE_ENV === "production"
-        ) {
-            this.dblService();
+        if (process.env.DBL_API_TOKEN && process.env.NODE_ENV === "production") {
+            new DiscordBotListService(this);
         }
+
         await client.application?.fetch();
 
         if (!client.application?.owner) {
@@ -152,6 +150,7 @@ export default class KaikiSapphireClient<Ready extends true>
         await Promise.all([
             client.filterOptionalCommands(),
             client.sendOnlineMsg(),
+            client.cache.readSavedCache()
         ]);
     }
 
@@ -238,13 +237,16 @@ export default class KaikiSapphireClient<Ready extends true>
         this.anniversaryService = new AnniversaryRolesService(this);
 
         // This will execute at midnight
-        await Promise.all([this.dailyResetTimer(), this.resetTimer()]);
-        this.logger.info("AnniversaryRolesService | Service initiated");
+        await Promise.all([
+            this.dailyResetTimer(),
+            this.resetTimer(),
+            this.fetchMembersLoop(),
+            this.presenceLoop()
+        ]);
+        this.logger.info("Timers and loops started");
 
         this.hentaiService = new HentaiService();
         this.logger.info("HentaiService | Service initiated");
-
-        void this.presenceLoop();
     }
 
     private async initializeDatabase() {
@@ -328,6 +330,23 @@ export default class KaikiSapphireClient<Ready extends true>
         }
     }
 
+    private async fetchMembersLoop() {
+        const guilds = this.guilds.cache;
+        const iterator = guilds.values();
+        const interval = setInterval(async () => {
+            // Get next guild from iterator
+            const guild = iterator.next().value as Guild | undefined
+            // Stop looping interval when there are no more guilds in iterator
+            if (!guild) {
+                clearInterval(interval);
+                return;
+            }
+            // Fetch guild members
+            await guild.members.fetch();
+            // Half a minute
+        }, 30000);
+    }
+
     public async resetDailyClaims(): Promise<void> {
         const updated = await this.orm.discordUsers.updateMany({
             where: {
@@ -346,7 +365,7 @@ export default class KaikiSapphireClient<Ready extends true>
         const commandStore = this.stores.get("commands");
 
         if (!process.env.KAWAIIKEY || process.env.KAWAIIKEY === "[YOUR_OPTIONAL_KAWAII_KEY]") {
-            for (const entry of ["run", "peek", "pout", "lick"]) {
+            for (const entry in EndPointSignatures) {
                 await commandStore.unload(entry);
             }
             this.logger.warn(
@@ -371,40 +390,5 @@ export default class KaikiSapphireClient<Ready extends true>
     private dbRejected(e: unknown) {
         this.logger.fatal("Failed to connect to database using MySQL2.", e);
         process.exit(1);
-    }
-
-    private dblService() {
-        const client = createDjsClient(process.env.DBL_API_TOKEN!, this);
-
-        client.startPosting();
-        client.startPolling();
-
-        client.on("vote", async (vote) => {
-            const amount = this.botSettings.get("1", "DailyAmount", 250);
-            await Promise.all([
-                this.users.cache
-                    .get(vote.id)
-                    ?.send({
-                        embeds: [
-                            new EmbedBuilder()
-                                .setTitle("Thank you for your support! 🎉")
-                                .setDescription(
-                                    `You received ${amount} ${this.money.currencyName} ${this.money.currencySymbol}`
-                                )
-                                .setFooter({
-                                    text: "🧡",
-                                })
-                                .setColor(Constants.kaikiOrange),
-                        ],
-                    })
-                // Ignore failed DMs
-                    .catch(() => undefined),
-                this.money.add(
-                    vote.id,
-                    BigInt(amount),
-                    "Voted - DiscordBotList"
-                ),
-            ]);
-        });
     }
 }

@@ -3,13 +3,16 @@ import { ApplyOptions } from "@sapphire/decorators";
 import {
     ActionRowBuilder,
     ButtonBuilder,
-    EmbedBuilder,
+    EmbedBuilder, GuildMember,
     InteractionCollector,
     Message,
+    Snowflake,
 } from "discord.js";
 import KaikiCommandOptions from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import { Args } from "@sapphire/framework";
+import fs from "fs/promises";
+import { GuildMemberCache } from "../../lib/Cache/KaikiCache";
 
 @ApplyOptions<KaikiCommandOptions>({
     name: "die",
@@ -85,7 +88,18 @@ export default class KillBotProcess extends KaikiCommand {
     }
 
     private async shutdown(message: Message): Promise<void> {
-        await message.react("✅");
+
+        const guildMemberCache: GuildMemberCache = {};
+
+        for (const [, v] of message.client.guilds.cache) {
+            guildMemberCache[v.id] = v.members.cache
+        }
+
+        await Promise.all([
+            message.react("✅"),
+            fs.writeFile(`./members-${Date.now()}.cache`, JSON.stringify(guildMemberCache))
+        ]);
+
         this.container.logger.warn("Shutting down");
         // Disconnects the client connection
         this.client.destroy().then(() => process.exit(0));

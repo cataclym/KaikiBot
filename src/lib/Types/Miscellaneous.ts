@@ -12,3 +12,4 @@ export type Categories =
 	| "Roles"
 	| "Server settings"
 	| "Utility";
+
