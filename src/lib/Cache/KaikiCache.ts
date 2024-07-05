@@ -1,5 +1,5 @@
 import pkg from "@prisma/client";
-import { Collection, GuildMember, Message, Snowflake } from "discord.js";
+import { Message, Snowflake } from "discord.js";
 import { Pool, ResultSetHeader, RowDataPacket } from "mysql2/promise";
 import { APIs, ClientImageAPIs } from "../APIs/Common/Types";
 import KaikiUtil from "../KaikiUtil";
@@ -11,15 +11,11 @@ import {
     PartitionResult,
     TriggerString,
 } from "../Interfaces/Kaiki/KaikiCache";
-import fs from "fs/promises";
-import { container } from "@sapphire/pieces";
 
 export enum ERCacheType {
 	HAS_SPACE,
 	NO_SPACE,
 }
-
-export type GuildMemberCache = {[key: Snowflake]: Collection<Snowflake, GuildMember>}
 
 export default class KaikiCache {
     public cmdStatsCache: Map<string, number>;
@@ -182,38 +178,7 @@ export default class KaikiCache {
                 new Map<string, Record<string, unknown>>()
             );
         });
-    }
-
-    public async readSavedCache() {
-        const files = await fs.readdir(".")
-        const caches = files.filter(f => f.endsWith(".cache"));
-
-        for (const filePath of caches) {
-
-            const content = await fs.readFile(filePath, { encoding: "utf-8" })
-
-            if (!content) {
-                await fs.unlink(filePath)
-                continue;
-            }
-
-            const guildMembersCache: GuildMemberCache = JSON.parse(content)
-
-            for (const [k, v] of Object.entries(guildMembersCache)) {
-
-                const cache = container.client.guilds.cache.get(k)?.members.cache;
-                const localCache = new Collection(v.entries());
-
-                if (!cache || !localCache?.size) continue;
-
-                for (const [key, member] of localCache.entries()) {
-                    cache.set(key, member);
-                }
-            }
-            await fs.unlink(filePath)
-        }
-    }
-}
+    }}
 
 class MySQLDailyProvider {
     private connection: Pool;

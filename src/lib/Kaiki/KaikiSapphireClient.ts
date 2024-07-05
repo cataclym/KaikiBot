@@ -4,7 +4,6 @@ import { type PrismaClient } from "@prisma/client";
 import { LogLevel, SapphireClient } from "@sapphire/framework";
 import * as colorette from "colorette";
 import {
-    Collection,
     EmbedBuilder,
     GatewayIntentBits,
     Guild,
@@ -13,7 +12,7 @@ import {
     User,
 } from "discord.js";
 import { Pool } from "mysql2/promise";
-import KaikiCache, { GuildMemberCache } from "../Cache/KaikiCache";
+import KaikiCache from "../Cache/KaikiCache";
 import Constants from "../../struct/Constants";
 import Database from "../../struct/db/Database";
 import DatabaseProvider from "../../struct/db/DatabaseProvider";
@@ -150,7 +149,6 @@ export default class KaikiSapphireClient<Ready extends true>
         await Promise.all([
             client.filterOptionalCommands(),
             client.sendOnlineMsg(),
-            client.cache.readSavedCache()
         ]);
     }
 
