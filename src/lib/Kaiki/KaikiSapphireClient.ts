@@ -223,12 +223,45 @@ export default class KaikiSapphireClient<Ready extends true>
 
     private async resetTimer(): Promise<void> {
         setTimeout(async () => {
-            // Loop this
-            await this.resetTimer();
-
-            // Reset daily currency claims
-            await this.resetDailyClaims();
+            await Promise.all([
+                // Loop this
+                this.resetTimer(),
+                // Reset daily currency claims
+                this.resetDailyClaims(),
+                this.sendDailyReminders()
+            ])
         }, KaikiUtil.timeToMidnightOrNoon());
+    }
+
+    private async sendDailyReminders() {
+        const users = await this.orm.discordUsers.findMany({
+            where: {
+                DailyReminder: {
+                    not: undefined
+                }
+            }
+        })
+
+        await Promise.all(users.map(async (user) => this.users.cache.get(String(user.UserId))
+            ?.send({
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle("Reminder")
+                        .setDescription("Your currency claim is ready!")
+                        .withOkColor()
+                ]
+            })));
+
+        await this.orm.discordUsers.updateMany({
+            where: {
+                DailyReminder: {
+                    not: undefined
+                }
+            },
+            data: {
+                DailyReminder: undefined
+            }
+        })
     }
 
     public async initializeServices() {

@@ -57,11 +57,12 @@ model ExcludedStickyRoles {
 }
 
 model DiscordUsers {
-  UserId       BigInt   @id @unique(map: "UserId")
-  Amount       BigInt   @default(0)
-  ClaimedDaily Boolean  @default(false)
-  CreatedAt    DateTime @default(now()) @db.Timestamp(0)
-  Todos        Todos[]
+  UserId        BigInt   @id @unique(map: "UserId")
+  Amount        BigInt   @default(0)
+  ClaimedDaily  Boolean  @default(false)
+  DailyReminder DateTime?
+  CreatedAt     DateTime @default(now()) @db.Timestamp(0)
+  Todos         Todos[]
 }
 
 model EmojiReactions {

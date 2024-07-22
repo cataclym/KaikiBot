@@ -18,10 +18,10 @@ export enum ERCacheType {
 }
 
 export default class KaikiCache {
-    public cmdStatsCache: Map<string, number>;
-    public emoteReactCache: EmoteReactCache;
+    public cmdStatsCache = new Map<string, number>();
+    public emoteReactCache = new Map<GuildString, Map<ERCacheType, Map<EmoteTrigger, TriggerString>>>();
     public dailyProvider: MySQLDailyProvider;
-    public imageAPICache: Map<APIs, Map<string, Record<string, unknown>>>;
+    public imageAPICache = new Map<APIs, Map<string, Record<string, unknown>>>();
     private imageAPIs: ClientImageAPIs;
 
     constructor(
@@ -29,19 +29,8 @@ export default class KaikiCache {
         connection: Pool,
         imageAPIs: ClientImageAPIs
     ) {
-        this.cmdStatsCache = new Map<string, number>();
         this.dailyProvider = new MySQLDailyProvider(connection);
-        this.emoteReactCache = new Map<
-			GuildString,
-			Map<ERCacheType, Map<EmoteTrigger, TriggerString>>
-		>();
-
-        // API cache
         this.imageAPIs = imageAPIs;
-        this.imageAPICache = new Map<
-			APIs,
-			Map<string, Record<string, unknown>>
-		>();
 
         void this.init(orm);
         this.populateImageAPICache();

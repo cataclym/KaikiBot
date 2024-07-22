@@ -1,9 +1,10 @@
 import { ApplyOptions } from "@sapphire/decorators";
-import { EmbedBuilder, Message, time } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, EmbedBuilder, Message, time } from "discord.js";
 import KaikiCommandOptions from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/Kaiki/KaikiEmbeds";
 import KaikiUtil from "../../lib/KaikiUtil";
+import Gambling from "../../lib/Gambling/Gambling";
 
 @ApplyOptions<KaikiCommandOptions>({
     name: "daily",
@@ -41,6 +42,10 @@ export default class ClaimDailyCommand extends KaikiCommand {
             });
         }
 
+        const gambling = new Gambling(message.author);
+        const button = gambling.createDailyReminder();
+        const actionRow = [new ActionRowBuilder<ButtonBuilder>().setComponents(button)];
+
         if (
             !(await this.client.cache.dailyProvider.hasClaimedDaily(
                 message.author.id
@@ -54,6 +59,7 @@ export default class ClaimDailyCommand extends KaikiCommand {
             );
 
             return message.channel.send({
+                components: actionRow,
                 embeds: [
                     new EmbedBuilder()
                         .setDescription(
@@ -61,9 +67,10 @@ export default class ClaimDailyCommand extends KaikiCommand {
                         )
                         .withOkColor(message),
                 ],
-            });
+            }).then(msg => gambling.handleReminder(msg));
         } else {
             return message.channel.send({
+                components: actionRow,
                 embeds: [
                     new EmbedBuilder()
                         .setDescription(
@@ -71,7 +78,7 @@ export default class ClaimDailyCommand extends KaikiCommand {
                         )
                         .withErrorColor(message),
                 ],
-            });
+            }).then(msg => gambling.handleReminder(msg));
         }
     }
 }
