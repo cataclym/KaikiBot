@@ -127,7 +127,5 @@ query ($page: Int, $perPage: Int, $search: String, $type: MediaType) {
         return await (response.ok ? json : Promise.reject(json));
     }
 
-    static handleError(error: never) {
-        container.logger.error(error);
-    }
+    static handleError = (error: never) => container.logger.error(error);
 }
