@@ -102,7 +102,7 @@ ${arr[6]} - ${arr[7]} - ${arr[8]}
                 options: { ephemeral: true },
                 embeds: [
                     new EmbedBuilder()
-                        .setDescription(`I will notify you in ${time(new Date(new Date().getTime() + KaikiUtil.timeToMidnightOrNoon()), "R")}`)
+                        .setDescription(`I will notify you ${time(new Date(new Date().getTime() + KaikiUtil.timeToMidnightOrNoon()), "R")}`)
                         .withOkColor(msg)
                 ]
             })
