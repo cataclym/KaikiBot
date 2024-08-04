@@ -255,11 +255,11 @@ export default class KaikiSapphireClient<Ready extends true>
         await this.orm.discordUsers.updateMany({
             where: {
                 DailyReminder: {
-                    not: undefined
+                    not: null
                 }
             },
             data: {
-                DailyReminder: undefined
+                DailyReminder: null
             }
         })
     }
