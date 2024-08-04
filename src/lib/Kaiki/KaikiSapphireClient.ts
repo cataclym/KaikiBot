@@ -237,7 +237,7 @@ export default class KaikiSapphireClient<Ready extends true>
         const users = await this.orm.discordUsers.findMany({
             where: {
                 DailyReminder: {
-                    not: undefined
+                    not: null
                 }
             }
         })
