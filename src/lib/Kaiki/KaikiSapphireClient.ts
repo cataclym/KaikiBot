@@ -33,6 +33,8 @@ import fs from "fs/promises";
 import { container } from "@sapphire/pieces";
 import NeofetchCommand from "../../commands/Fun/neofetch";
 import DiscordBotListService from "../DiscordBotList/DiscordBotListService";
+import express from "express";
+import * as https from "node:https";
 
 export default class KaikiSapphireClient<Ready extends true>
     extends SapphireClient<Ready>
@@ -421,5 +423,18 @@ export default class KaikiSapphireClient<Ready extends true>
     private dbRejected(e: unknown) {
         this.logger.fatal("Failed to connect to database using MySQL2.", e);
         process.exit(1);
+    }
+
+    private WebListener() {
+        if (!process.env.SELF_API_PORT) return;
+
+        this.logger.info(`WebListener server is listening on port: ${process.env.SELF_API_PORT}`);
+
+        const app = express();
+        app.get("/API/UserCache/:id", async (req, res) => {
+            res.send({ title: "hello" })
+        })
+
+        app.listen(process.env.SELF_API_PORT)
     }
 }

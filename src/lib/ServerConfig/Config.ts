@@ -16,7 +16,7 @@ import GreetHandler from "../GreetHandler";
 import KaikiUtil from "../KaikiUtil";
 
 export default class Config {
-    static async dadbotRun(message: Message<true>, args: Args) {
+    static async            dadbotRun(message: Message<true>, args: Args) {
         Config.checkSubcommandUserPermission(
             message,
             PermissionsBitField.Flags.Administrator

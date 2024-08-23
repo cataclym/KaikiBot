@@ -22,7 +22,7 @@ import process from "process";
 })
 export default class GenCmdListCommand extends KaikiCommand {
     public async messageRun(message: Message) {
-        if (!process.env.SELF_API || !process.env.SELF_API_TOKEN) {
+        if (!process.env.CMDLIST_URL || !process.env.SELF_API_TOKEN) {
             return message.channel.send({
                 files: [
                     new AttachmentBuilder(
@@ -43,7 +43,7 @@ export default class GenCmdListCommand extends KaikiCommand {
 
         const list = this.generateCommmandlist();
 
-        const uri = new URL(process.env.SELF_API);
+        const uri = new URL(process.env.CMDLIST_URL);
         uri.searchParams.append("token", process.env.SELF_API_TOKEN);
 
         const res = await fetch(uri, {
