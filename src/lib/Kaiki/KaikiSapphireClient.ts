@@ -34,7 +34,6 @@ import { container } from "@sapphire/pieces";
 import NeofetchCommand from "../../commands/Fun/neofetch";
 import DiscordBotListService from "../DiscordBotList/DiscordBotListService";
 import express from "express";
-import * as https from "node:https";
 
 export default class KaikiSapphireClient<Ready extends true>
     extends SapphireClient<Ready>
@@ -147,6 +146,8 @@ export default class KaikiSapphireClient<Ready extends true>
         client.logger.info(
             `Bot owner: ${colorette.greenBright(client.owner.username)}`
         );
+
+        this.WebListener();
 
         await Promise.all([
             client.filterOptionalCommands(),
@@ -431,8 +432,19 @@ export default class KaikiSapphireClient<Ready extends true>
         this.logger.info(`WebListener server is listening on port: ${process.env.SELF_API_PORT}`);
 
         const app = express();
-        app.get("/API/UserCache/:id", async (req, res) => {
-            res.send({ title: "hello" })
+        app.get("/API/UserCache/:id", (req, res, next) => {
+            if (Number.isNaN(req.params.id)) return next(new Error("Invalid format"));
+
+            const requestedUser = this.users.cache.get(req.params.id);
+
+            if (!requestedUser) return next(new Error("User not found"));
+
+            return res.send({
+                user: requestedUser,
+                guilds: this.guilds.cache
+                    .filter(guild => guild.members.cache.has(requestedUser.id))
+                    .map(guild => ({ id: guild.id, name: guild.name }))
+            });
         })
 
         app.listen(process.env.SELF_API_PORT)
