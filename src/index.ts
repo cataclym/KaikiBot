@@ -5,7 +5,7 @@ import "./extensions/Discord";
 import "./extensions/Sapphire";
 import "./struct/ErrorHandler";
 import KaikiSapphireClient from "./lib/Kaiki/KaikiSapphireClient";
-import "source-map-support/register"
+import "source-map-support/register";
 import { config } from "dotenv";
 
 // Load .env

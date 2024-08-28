@@ -1,8 +1,7 @@
 import { ApplyOptions } from "@sapphire/decorators";
 import { Args } from "@sapphire/framework";
 import { EmbedBuilder, Message } from "discord.js";
-
-import CommonEmbed from "../../lib/Anime/CommonEmbed";
+import Common from "../../lib/Anime/Common";
 import AnilistGraphQL from "../../lib/APIs/AnilistGraphQL";
 import AnimeData from "../../lib/Interfaces/Common/AnimeData";
 import KaikiCommandOptions from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
@@ -53,17 +52,13 @@ export default class AnimeCommand extends KaikiCommand {
                     endDate,
                     siteUrl,
                 } = response.data.Page.media[0];
-                const monthFormat = new Intl.DateTimeFormat("en-US", {
-                    month: "long",
-                });
-                const started = `${monthFormat.format(startDate.month)} ${startDate.day}, ${startDate.year}`;
-                const ended = `${monthFormat.format(endDate.month)} ${endDate.day}, ${endDate.year}`;
-                const aired =
-					started === ended ? started : `${started} to ${ended}`;
+
+                const started = Common.formatDate(startDate);
+                const airedText = Object.values(endDate).some(Boolean) ? `${started} to ${Common.formatDate(endDate)}` : started;
 
                 return message.channel.send({
                     embeds: [
-                        CommonEmbed.createEmbed(
+                        Common.createEmbed(
                             coverImage,
                             title,
                             siteUrl,
@@ -75,10 +70,10 @@ export default class AnimeCommand extends KaikiCommand {
                                 { name: "Format", value: format, inline: true },
                                 {
                                     name: "Episodes",
-                                    value: String(episodes),
+                                    value: String(episodes || "N/A"),
                                     inline: true,
                                 },
-                                { name: "Aired", value: aired, inline: true },
+                                { name: "Aired", value: airedText, inline: true },
                                 { name: "Status", value: status, inline: true },
                                 {
                                     name: "Genres",

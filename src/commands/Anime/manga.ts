@@ -1,9 +1,7 @@
 import { ApplyOptions } from "@sapphire/decorators";
 import { Args } from "@sapphire/framework";
 import { EmbedBuilder, Message } from "discord.js";
-
-import CommonEmbed from "../../lib/Anime/CommonEmbed";
-
+import Common from "../../lib/Anime/Common";
 import AnilistGraphQL from "../../lib/APIs/AnilistGraphQL";
 import MangaData from "../../lib/Interfaces/Common/MangaData";
 import KaikiCommandOptions from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
@@ -55,25 +53,13 @@ export default class MangaCommand extends KaikiCommand {
                     endDate,
                     siteUrl,
                 } = response.data.Page.media[0];
-                const monthFormat = new Intl.DateTimeFormat("en-US", {
-                    month: "long",
-                });
-                const started = startDate.month
-                    ? `${monthFormat.format(startDate.month)} ${startDate.day}, ${startDate.year}`
-                    : null;
-                const ended = endDate.month
-                    ? `${monthFormat.format(endDate.month)} ${endDate.day}, ${endDate.year}`
-                    : null;
-                const aired =
-					started && ended
-					    ? started === ended
-					        ? started
-					        : `${started} to ${ended}`
-					    : started || "N/A";
+
+                const started = Common.formatDate(startDate);
+                const airedText = Object.values(endDate).some(Boolean) ? started : Common.formatDate(endDate);
 
                 return message.channel.send({
                     embeds: [
-                        CommonEmbed.createEmbed(
+                        Common.createEmbed(
                             coverImage,
                             title,
                             siteUrl,
@@ -89,7 +75,7 @@ export default class MangaCommand extends KaikiCommand {
                                 },
                                 {
                                     name: "Release period",
-                                    value: aired,
+                                    value: airedText,
                                     inline: true,
                                 },
                                 { name: "Status", value: status, inline: true },

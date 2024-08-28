@@ -3,12 +3,11 @@
 	"version": "6.1.20",
 	"main": "./dist/index.js",
 	"scripts": {
-		"start_docker": "npx prisma db push && npm run start",
 		"start": "node dist/index.js --color",
-		"build": "rm -rf dist/ && npx prisma generate && tsc -p tsconfig.json && npx prisma migrate deploy",
+		"build": "rm -rf dist/ && npx prisma migrate deploy && npx prisma generate && tsc -p tsconfig.json",
 		"version": "auto-changelog -p -u -o CHANGELOG.md -t keepachangelog && git add CHANGELOG.md",
 		"watch": "tsc -p tsconfig.json -w",
-		"dev": "npm run watch & npm run start_docker",
+		"dev": "npm run watch & npm run start",
 		"lint": "eslint ."
 	},
 	"keywords": [
@@ -36,7 +35,7 @@
 		"discordbotlist-djs": "^0.0.4",
 		"dotenv": "^16.4.5",
 		"express": "^4.19.2",
-		"mysql2": "^3.10.0",
+		"mysql2": "^3.11.0",
 		"node-gyp": "^10.1.0",
 		"prisma": "^5.10.2",
 		"sharp": "^0.33.3",
