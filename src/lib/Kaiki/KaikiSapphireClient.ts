@@ -33,7 +33,7 @@ import fs from "fs/promises";
 import { container } from "@sapphire/pieces";
 import NeofetchCommand from "../../commands/Fun/neofetch";
 import DiscordBotListService from "../DiscordBotList/DiscordBotListService";
-import express from "express";
+import { Webserver } from "../WebAPI/Webserver";
 
 export default class KaikiSapphireClient<Ready extends true>
     extends SapphireClient<Ready>
@@ -88,7 +88,8 @@ export default class KaikiSapphireClient<Ready extends true>
             typing: true,
         });
 
-        (async () => await this.initializeDatabase())().catch((e) => {
+        this.db = new Database(this);
+        (async () => await this.db.initializeDatabase())().catch((e) => {
             throw new Error(e);
         });
 
@@ -143,11 +144,12 @@ export default class KaikiSapphireClient<Ready extends true>
         client.logger.info(
             `Bot account: ${colorette.greenBright(client.user.username)}`
         );
+
         client.logger.info(
             `Bot owner: ${colorette.greenBright(client.owner.username)}`
         );
 
-        this.WebListener();
+        Webserver.WebListener();
 
         await Promise.all([
             client.filterOptionalCommands(),
@@ -283,57 +285,6 @@ export default class KaikiSapphireClient<Ready extends true>
         this.logger.info("HentaiService | Service initiated");
     }
 
-    private async initializeDatabase() {
-        this.db = new Database(this);
-
-        const database = await this.db.init();
-
-        this.orm = database.orm;
-        this.connection = database.mySQLConnection;
-
-        this.botSettings = new DatabaseProvider(
-            this.connection,
-            "BotSettings",
-            { idColumn: "Id" },
-            false
-        );
-        this.botSettings
-            .init()
-            .then(() =>
-                this.logger.info(
-                    `${colorette.green("READY")} - Bot settings provider`
-                )
-            )
-            .catch((e) => this.dbRejected(e));
-
-        this.guildsDb = new DatabaseProvider(this.connection, "Guilds", {
-            idColumn: "Id",
-        });
-        this.guildsDb
-            .init()
-            .then(() =>
-                this.logger.info(`${colorette.green("READY")} - Guild provider`)
-            )
-            .catch((e) => this.dbRejected(e));
-
-        this.dadBotChannels = new DatabaseProvider(
-            this.connection,
-            "DadBotChannels",
-            { idColumn: "ChannelId" }
-        );
-        this.dadBotChannels
-            .init()
-            .then(() =>
-                this.logger.info(
-                    `${colorette.green("READY")} - DadBot channel provider`
-                )
-            )
-            .catch((e) => this.dbRejected(e));
-
-        this.cache = new KaikiCache(this.orm, this.connection, this.imageAPIs);
-        this.money = new MoneyService(this.orm);
-    }
-
     private async presenceLoop(): Promise<NodeJS.Timer> {
         await this.setPresence();
 
@@ -419,34 +370,5 @@ export default class KaikiSapphireClient<Ready extends true>
             }
             NeofetchCommand.usingFastFetch = false;
         }
-    }
-
-    private dbRejected(e: unknown) {
-        this.logger.fatal("Failed to connect to database using MySQL2.", e);
-        process.exit(1);
-    }
-
-    private WebListener() {
-        if (!process.env.SELF_API_PORT) return;
-
-        this.logger.info(`WebListener server is listening on port: ${process.env.SELF_API_PORT}`);
-
-        const app = express();
-        app.get("/API/UserCache/:id", (req, res, next) => {
-            if (Number.isNaN(req.params.id)) return next(new Error("Invalid format"));
-
-            const requestedUser = this.users.cache.get(req.params.id);
-
-            if (!requestedUser) return next(new Error("User not found"));
-
-            return res.send({
-                user: requestedUser,
-                guilds: this.guilds.cache
-                    .filter(guild => guild.members.cache.has(requestedUser.id))
-                    .map(guild => ({ id: guild.id, name: guild.name }))
-            });
-        })
-
-        app.listen(process.env.SELF_API_PORT)
     }
 }

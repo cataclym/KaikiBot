@@ -44,11 +44,11 @@ export default class GenCmdListCommand extends KaikiCommand {
         const list = this.generateCommmandlist();
 
         const uri = new URL(process.env.CMDLIST_URL);
-        uri.searchParams.append("token", process.env.SELF_API_TOKEN);
 
         const res = await fetch(uri, {
             method: "POST",
             body: JSON.stringify({
+                token: process.env.SELF_API_TOKEN,
                 list: list,
             }),
             headers: {

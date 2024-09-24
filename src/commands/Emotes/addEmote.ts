@@ -12,8 +12,8 @@ import Constants from "../../struct/Constants";
     name: "addemote",
     aliases: ["ae"],
     description:
-		"Adds an emote from an image link or attached image, with an optional name.",
-    usage: "image-link Emotename",
+		"Adds an emote from an image link or attached image, with an optional name. Or steal another servers emote.",
+    usage: ["image-link Emotename", ":CoolEmote:"],
     requiredUserPermissions: ["ManageEmojisAndStickers"],
     requiredClientPermissions: ["ManageEmojisAndStickers"],
     preconditions: ["GuildOnly"],
@@ -21,6 +21,7 @@ import Constants from "../../struct/Constants";
 })
 export default class AddEmoteCommand extends KaikiCommand {
     public async messageRun(message: Message, args: Args) {
+
         // Create custom type for url
         // that returns an actual URL
         const url = await args.pick(
@@ -28,7 +29,7 @@ export default class AddEmoteCommand extends KaikiCommand {
         );
 
         let name =
-			message.attachments.first()?.name || (await args.rest("string"));
+			message.attachments.first()?.name || (await args.rest("string").catch(() => ""));
 
         if (!url || !name) return;
 
