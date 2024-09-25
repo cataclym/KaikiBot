@@ -72,6 +72,8 @@ export class DadBot {
             allowedMentions: {},
         });
 
+        message.client.cache.incrementCommand("dadbot");
+
         if (
             nick.length <=
 			parseInt(
