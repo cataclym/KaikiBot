@@ -6,6 +6,7 @@ import KaikiCommand from "../lib/Kaiki/KaikiCommand";
 import { KaikiColor } from "../lib/Types/KaikiColor";
 import { Categories } from "../lib/Types/Miscellaneous";
 import { Sides } from "../commands/Gambling/betflip";
+import { Emote } from "../arguments/kaikiEmote";
 
 declare module "@sapphire/framework" {
 	interface Preconditions {
@@ -21,6 +22,7 @@ declare module "@sapphire/framework" {
 		kaikiColor: KaikiColor;
 		kaikiHentai: HentaiTypes;
 		kaikiMoney: bigint;
+		kaikiEmote: Emote | string;
 		welcomeGoodbyeMessage: JSONToMessageOptions;
 	}
 

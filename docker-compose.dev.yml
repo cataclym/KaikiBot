@@ -5,6 +5,10 @@ services:
     kaikibot:
         depends_on:
             - db
+        links:
+            - db
+        ports:
+            - "6363:6363"
         build:
             context: .
             dockerfile: Dockerfile.dev
