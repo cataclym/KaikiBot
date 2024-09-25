@@ -1,4 +1,4 @@
-FROM node:18
+FROM node:20
 LABEL authors="Ole"
 
 WORKDIR /usr/app
@@ -8,7 +8,7 @@ RUN npm install
 COPY prisma .
 ARG DATABASE_URL
 ENV DATABASE_URL $DATABASE_URL
-RUN npx prisma db pull && npx prisma generate
+RUN npx prisma migrate deploy && npx prisma generate
 COPY . ./
 RUN npm run build
 CMD ["npm", "run", "dev"]

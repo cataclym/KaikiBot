@@ -17,15 +17,9 @@ export class KaikiEmote extends Argument<Emote | string> {
         }
 
         const url = await context.args
-            .pick("url")
-            .catch(() => undefined);
+            .pick("url");
 
-        if (url) return Args.ok(url.href);
-
-        return this.error({
-            parameter,
-            context
-        });
+        return Args.ok(url.href);
     }
 }
 
@@ -33,7 +27,7 @@ function isEmojiObject(emoji: EmojiObject | undefined): emoji is NonNullEmojiObj
     return emoji?.name != null && emoji?.id != null;
 }
 
-type Emote = {
+export type Emote = {
   name: string,
   id: Snowflake,
   url: string,
