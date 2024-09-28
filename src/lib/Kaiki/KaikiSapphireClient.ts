@@ -51,6 +51,7 @@ export default class KaikiSapphireClient<Ready extends true>
     public owner: User;
     public package: PackageJSON;
     public hentaiService: HentaiService;
+    private webListener: Webserver;
 
     constructor() {
         super({
@@ -149,7 +150,7 @@ export default class KaikiSapphireClient<Ready extends true>
             `Bot owner: ${colorette.greenBright(client.owner.username)}`
         );
 
-        Webserver.WebListener();
+        this.webListener = new Webserver();
 
         await Promise.all([
             client.filterOptionalCommands(),
