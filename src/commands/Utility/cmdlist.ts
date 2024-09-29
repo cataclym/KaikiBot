@@ -65,7 +65,7 @@ export default class CommandsList extends KaikiCommand {
                 ]);
             }
 
-            const interactionMessage = await message.channel.send({
+            const interactionMessage = await message.reply({
                 embeds: [embed],
                 components: [component],
             });
@@ -139,7 +139,7 @@ export default class CommandsList extends KaikiCommand {
             }
         );
 
-        return message.channel.send({
+        return message.reply({
             embeds: [emb],
         });
     }

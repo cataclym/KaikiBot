@@ -4,7 +4,7 @@ import Constants from "../struct/Constants";
 
 export class MentionPrefixOnly extends Listener {
     public async run(msg: Message) {
-        const embed = msg.channel.send({
+        const embed = msg.reply({
             embeds: [
                 new EmbedBuilder({
                     title: `Hi ${msg.author.username}, what's up?`,

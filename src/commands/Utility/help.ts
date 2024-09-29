@@ -57,7 +57,7 @@ export default class HelpCommand extends KaikiCommand {
                     iconURL: avatarURL,
                 });
 
-            return message.channel.send({ embeds: [embed] });
+            return message.reply({ embeds: [embed] });
         }
 
         const command = await args.pick("command").catch(() => undefined);
@@ -135,9 +135,9 @@ export default class HelpCommand extends KaikiCommand {
                 ]);
             }
 
-            return message.channel.send({ embeds: [embed] });
+            return message.reply({ embeds: [embed] });
         } else {
-            return message.channel.send({
+            return message.reply({
                 embeds: [
                     new EmbedBuilder({
                         description: `**${message.author.username}** Command \`${args.next()}\` not found.`,

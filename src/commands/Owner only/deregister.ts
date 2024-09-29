@@ -17,7 +17,7 @@ export default class Deregister extends KaikiCommand {
 
         const unloaded = await this.store.unload(cmd);
 
-        return message.channel.send({
+        return message.reply({
             embeds: [
                 new EmbedBuilder()
                     .setTitle("Command has been deregistered.")

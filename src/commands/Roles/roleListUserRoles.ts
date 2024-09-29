@@ -13,7 +13,7 @@ import Constants from "../../struct/Constants";
     preconditions: ["GuildOnly"],
 })
 export default class ListUserRoles extends KaikiCommand {
-    public async messageRun(message: Message<true>): Promise<Message> {
+    public async messageRun(message: Message<true>) {
         const db = await this.client.orm.guildUsers.findMany({
             where: {
                 GuildId: BigInt(message.guildId),
@@ -56,7 +56,7 @@ export default class ListUserRoles extends KaikiCommand {
 
             return sendPaginatedMessage(message, pages, {});
         } else {
-            return message.channel.send({
+            return message.reply({
                 embeds: [
                     new EmbedBuilder()
                         .withErrorColor(message)

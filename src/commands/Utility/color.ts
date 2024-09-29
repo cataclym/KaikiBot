@@ -20,7 +20,7 @@ import Constants from "../../struct/Constants";
     minorCategory: "Color",
 })
 export default class ColorCommand extends KaikiCommand {
-    public async messageRun(message: Message, args: Args): Promise<Message> {
+    public async messageRun(message: Message, args: Args) {
         const list = args.getFlags("list");
 
         if (list) {
@@ -85,7 +85,7 @@ export default class ColorCommand extends KaikiCommand {
             });
         });
 
-        return message.channel.send({
+        return message.reply({
             files: attachments,
             embeds: await Promise.all(embeds),
         });

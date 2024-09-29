@@ -26,7 +26,7 @@ export default class KickCommand extends KaikiCommand {
 			(message.member as GuildMember).roles.highest.position <=
 				member.roles.highest.position
         ) {
-            return message.channel.send({
+            return message.reply({
                 embeds: [
                     new EmbedBuilder({
                         description:
@@ -38,7 +38,7 @@ export default class KickCommand extends KaikiCommand {
             guildClientMember.roles.highest.position <=
 			member.roles.highest.position
         ) {
-            return message.channel.send({
+            return message.reply({
                 embeds: [
                     new EmbedBuilder({
                         description:
@@ -73,6 +73,6 @@ export default class KickCommand extends KaikiCommand {
             })
             .catch((err) => console.log(err));
 
-        return message.channel.send({ embeds: [embed] });
+        return message.reply({ embeds: [embed] });
     }
 }

@@ -77,7 +77,7 @@ export default class Config {
                 )
                 .withErrorColor(message);
         }
-        return message.channel.send({
+        return message.reply({
             embeds: [embed],
         });
     }
@@ -143,7 +143,7 @@ export default class Config {
             );
         }
 
-        return message.channel.send({
+        return message.reply({
             embeds: [embed],
         });
     }
@@ -165,7 +165,7 @@ export default class Config {
 
         await message.client.guildsDb.set(guildID, "Prefix", value);
 
-        return message.channel.send({
+        return message.reply({
             embeds: [
                 new EmbedBuilder({
                     title: "Prefix changed!",
@@ -185,7 +185,7 @@ export default class Config {
 
         await message.client.guildsDb.set(message.guildId, "OkColor", intValue);
 
-        return message.channel.send({
+        return message.reply({
             embeds: [
                 new EmbedBuilder()
                     .setTitle("Success!")
@@ -210,7 +210,7 @@ export default class Config {
             intValue
         );
 
-        return message.channel.send({
+        return message.reply({
             embeds: [
                 new EmbedBuilder()
                     .setTitle("Success!")

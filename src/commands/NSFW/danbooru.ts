@@ -58,12 +58,12 @@ export default class EAPICommand extends KaikiCommand {
 
         if (isVideo) content = post.file_url!;
 
-        return message.channel.send({ embeds: [emb] }).then(async () => {
+        return message.reply({ embeds: [emb] }).then(async () => {
             return new Promise((resolve) => {
                 if (content)
                     setTimeout(
                         () =>
-                            resolve(message.channel.send({ content: content })),
+                            resolve(message.reply({ content: content })),
                         1500
                     );
             });

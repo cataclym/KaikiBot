@@ -504,7 +504,7 @@ export default class Constants {
                 KAIKI_ARGS: {
                     MAX_COLOR_VALUE: 0xffffff,
                     // eslint-disable-next-line @typescript-eslint/no-loss-of-precision
-                    MAX_INT: 0x7fffffffffffffff,
+                    MAX_INT: 0x7fffffffffffffffn,
                     // ABSOLUTE ZERO IN BINARY
                     MIN_INT: 0b0,
                 },

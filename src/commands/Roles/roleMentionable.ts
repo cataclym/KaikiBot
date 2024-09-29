@@ -27,7 +27,7 @@ export default class RoleMentionableCommand extends KaikiCommand {
 
             await role.setMentionable(bool);
 
-            return message.channel.send({
+            return message.reply({
                 embeds: [
                     new EmbedBuilder({
                         description: `Toggled ${role.name}'s mentionable status to ${bool}.`,
@@ -35,7 +35,7 @@ export default class RoleMentionableCommand extends KaikiCommand {
                 ],
             });
         } else {
-            return message.channel.send({
+            return message.reply({
                 embeds: [
                     await KaikiEmbeds.errorMessage(
                         message,

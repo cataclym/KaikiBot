@@ -23,7 +23,7 @@ import process from "process";
 export default class GenCmdListCommand extends KaikiCommand {
     public async messageRun(message: Message) {
         if (!process.env.CMDLIST_URL || !process.env.SELF_API_TOKEN) {
-            return message.channel.send({
+            return message.reply({
                 files: [
                     new AttachmentBuilder(
                         Buffer.from(this.generateCommmandlist(), "utf-8"),
@@ -33,7 +33,7 @@ export default class GenCmdListCommand extends KaikiCommand {
             });
         }
 
-        const pendingMsg = await message.channel.send({
+        const pendingMsg = await message.reply({
             embeds: [
                 new EmbedBuilder()
                     .setDescription("Uploading commandslist...")

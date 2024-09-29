@@ -30,7 +30,7 @@
 		"@sapphire/plugin-subcommands": "^7.0.0",
 		"@sapphire/shapeshift": "^4.0.0",
 		"bufferutil": "^4.0.8",
-		"discord-js-button-pagination-ts": "^4.2.1-0",
+		"discord-js-button-pagination-ts": "^4.2.1",
 		"discord.js": "^14.16.2",
 		"discordbotlist-djs": "^0.0.4",
 		"dotenv": "^16.4.5",
@@ -50,7 +50,7 @@
 		"eslint": "^8.57.1",
 		"eslint-import-resolver-typescript": "^3.6.3",
 		"eslint-plugin-import": "^2.30.0",
-		"typescript": "^5.6.2"
+		"typescript": "~5.4.5"
 	},
 	"description": "Discord bot built with Sapphire, Prisma and MySQL2",
 	"repository": {

@@ -55,7 +55,7 @@ export default class FlipCommand extends KaikiCommand {
 
         const attachment = new AttachmentBuilder(image, { name: "flips.jpg" });
 
-        return message.channel.send({
+        return message.reply({
             files: [attachment],
             embeds: [
                 new EmbedBuilder()

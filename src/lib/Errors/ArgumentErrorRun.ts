@@ -17,8 +17,8 @@ type ErrorContext = {
 	commandContext: Record<string, unknown>;
 };
 
-function isIdentifier(identifier: string): identifier is Identifiers {
-    return identifier in Identifiers;
+function isArgsMissingError(identifier: string): identifier is Identifiers.ArgsMissing {
+    return identifier === Identifiers.ArgsMissing;
 }
 
 export default async (
@@ -29,7 +29,7 @@ export default async (
         title: "Argument error",
     };
 
-    if (isIdentifier(error.identifier) && [Identifiers.ArgsMissing, Identifiers.ArgsUnavailable].includes(error.identifier)) {
+    if (isArgsMissingError(error.identifier)) {
         const errorContext = error.context as ErrorContext;
         const prefix = errorContext.commandContext.prefix;
 

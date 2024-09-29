@@ -15,7 +15,7 @@ export class Webserver {
     client: KaikiSapphireClient<true>;
     // Creates an express webserver and server user-data on the specified URL path
 
-    public Webserver(client: KaikiSapphireClient<true>) {
+    public constructor(client: KaikiSapphireClient<true>) {
         if (!process.env.SELF_API_PORT) return;
 
         container.logger.info(`WebListener server is listening on port: ${Colorette.greenBright(process.env.SELF_API_PORT)}`);

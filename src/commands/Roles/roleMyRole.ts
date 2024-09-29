@@ -54,11 +54,11 @@ export default class MyRoleCommand extends Subcommand {
         const myRole = await Roles.getRole(message);
 
         if (!myRole)
-            return message.channel.send({
+            return message.reply({
                 embeds: [await KaikiEmbeds.embedFail(message)],
             });
 
-        return message.channel.send({
+        return message.reply({
             embeds: [
                 new EmbedBuilder()
                     .setAuthor({
@@ -90,7 +90,7 @@ export default class MyRoleCommand extends Subcommand {
         const myRole = await Roles.getRole(message);
 
         if (!myRole)
-            return message.channel.send({
+            return message.reply({
                 embeds: [await KaikiEmbeds.embedFail(message)],
             });
 
@@ -98,7 +98,7 @@ export default class MyRoleCommand extends Subcommand {
             isPosition = botRole?.comparePositionTo(myRole);
 
         if (isPosition && isPosition <= 0) {
-            return message.channel.send({
+            return message.reply({
                 embeds: [
                     await KaikiEmbeds.embedFail(
                         message,
@@ -112,7 +112,7 @@ export default class MyRoleCommand extends Subcommand {
         await myRole.setName(
             KaikiUtil.trim(name, Constants.MAGIC_NUMBERS.COMMON.NAME_LIMIT)
         );
-        return message.channel.send({
+        return message.reply({
             embeds: [
                 new EmbedBuilder()
                     .setDescription(
@@ -129,7 +129,7 @@ export default class MyRoleCommand extends Subcommand {
         const myRole = await Roles.getRole(message);
 
         if (!myRole)
-            return message.channel.send({
+            return message.reply({
                 embeds: [await KaikiEmbeds.embedFail(message)],
             });
 
@@ -137,7 +137,7 @@ export default class MyRoleCommand extends Subcommand {
             isPosition = botRole?.comparePositionTo(myRole);
 
         if (isPosition && isPosition <= 0) {
-            return message.channel.send({
+            return message.reply({
                 embeds: [
                     await KaikiEmbeds.embedFail(
                         message,
@@ -152,7 +152,7 @@ export default class MyRoleCommand extends Subcommand {
         const oldHex = myRole.hexColor;
         await myRole.setColor(hex);
 
-        return message.channel.send({
+        return message.reply({
             embeds: [
                 new EmbedBuilder()
                     .setDescription(
@@ -167,7 +167,7 @@ export default class MyRoleCommand extends Subcommand {
         const { guild } = message;
 
         if (!guild.features.includes("ROLE_ICONS")) {
-            return message.channel.send({
+            return message.reply({
                 embeds: [
                     await KaikiEmbeds.errorMessage(
                         message.guild || message,
@@ -181,13 +181,13 @@ export default class MyRoleCommand extends Subcommand {
             const myRole = await Roles.getRole(message);
 
             if (!myRole)
-                return message.channel.send({
+                return message.reply({
                     embeds: [await KaikiEmbeds.embedFail(message)],
                 });
 
             if (await Roles.rolePermissionCheck(message, myRole)) {
                 myRole.setIcon(null);
-                return message.channel.send({
+                return message.reply({
                     embeds: [
                         new EmbedBuilder()
                             .setDescription("Role-icon has been reset!")
@@ -203,7 +203,7 @@ export default class MyRoleCommand extends Subcommand {
             const myRole = await Roles.getRole(message);
 
             if (!myRole)
-                return message.channel.send({
+                return message.reply({
                     embeds: [await KaikiEmbeds.embedFail(message)],
                 });
 
@@ -211,7 +211,7 @@ export default class MyRoleCommand extends Subcommand {
                 isPosition = botRole?.comparePositionTo(myRole);
 
             if (isPosition && isPosition <= 0) {
-                return message.channel.send({
+                return message.reply({
                     embeds: [
                         await KaikiEmbeds.embedFail(
                             message,
@@ -222,7 +222,7 @@ export default class MyRoleCommand extends Subcommand {
             }
 
             await myRole.setIcon(icon).catch(async (err) =>
-                message.channel.send({
+                message.reply({
                     embeds: [
                         (
                             await KaikiEmbeds.errorMessage(
@@ -237,7 +237,7 @@ export default class MyRoleCommand extends Subcommand {
                 })
             );
 
-            return message.channel.send({
+            return message.reply({
                 embeds: [
                     new EmbedBuilder()
                         .setDescription(

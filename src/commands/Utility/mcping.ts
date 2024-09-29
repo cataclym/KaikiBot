@@ -91,15 +91,15 @@ export default class MinecraftPingCommand extends KaikiCommand {
 
             if (attachment) {
                 embed.setImage("attachment://icon.png");
-                return message.channel.send({
+                return message.reply({
                     files: [attachment],
                     embeds: [embed],
                 });
             } else {
-                return message.channel.send({ embeds: [embed] });
+                return message.reply({ embeds: [embed] });
             }
         } else {
-            return message.channel.send({
+            return message.reply({
                 embeds: [
                     new EmbedBuilder()
                         .setTitle(

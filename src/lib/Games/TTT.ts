@@ -1,18 +1,23 @@
 import { EmbedBuilder, GuildMember, Message } from "discord.js";
 import Constants from "../../struct/Constants";
 
-type PlayerType = { player: GuildMember; color: string; sign: string };
+type PlayerType = { player: GuildMember; color: string; sign: Sign };
+
+enum Sign {
+    PLAYER1,
+    PLAYER2
+}
 
 export default class TicTacToe {
     pOne: PlayerType;
     pTwo: PlayerType;
     currentPlayer: PlayerType;
-    message: Message;
-    embed: Promise<Message>;
+    message: Message<true>;
+    embed: Promise<Message<true>>;
     currentPlayerTurn: (p: GuildMember, m: Message) => Promise<void>;
     winningMessage: (p: GuildMember) => string;
     timedWinMessage: (p: GuildMember) => string;
-    stateDict: { [index: number]: string };
+    stateDict: { [index: number]: string | Sign };
     active: boolean;
 
     static drawMessage = "Game ended in a draw!";
@@ -38,10 +43,10 @@ export default class TicTacToe {
     constructor(
         playerOne: GuildMember,
         playerTwo: GuildMember,
-        message: Message
+        message: Message<true>
     ) {
-        this.pOne = { player: playerOne, color: "78b159", sign: "p1" };
-        this.pTwo = { player: playerTwo, color: "dd2e44", sign: "p2" };
+        this.pOne = { player: playerOne, color: "78b159", sign: Sign.PLAYER1 };
+        this.pTwo = { player: playerTwo, color: "dd2e44", sign: Sign.PLAYER2 };
         this.currentPlayer = this.pTwo;
         this.message = message;
         this.stateDict = {
@@ -59,7 +64,7 @@ export default class TicTacToe {
 
         this.start();
 
-        this.embed = this.message.channel.send({
+        this.embed = this.message.reply({
             content: `${this.pTwo.player} starts!`,
             embeds: [
                 new EmbedBuilder({
@@ -72,7 +77,7 @@ export default class TicTacToe {
         });
 
         this.currentPlayerTurn = async (p: GuildMember, m: Message) =>
-            this.message.channel.send(`It's ${p}'s turn`).then(async (m2) => {
+            this.message.reply(`It's ${p}'s turn`).then(async (m2) => {
                 setTimeout(
                     async () => m.delete(),
                     Constants.MAGIC_NUMBERS.LIB.GAMES.TTT.MSG_DEL_TIMEOUT
@@ -96,7 +101,7 @@ export default class TicTacToe {
 
         const { player } = playerObject;
 
-        const filter = (m: Message) =>
+        const filter = (m: Message<true>) =>
             TicTacToe.numbers.includes(m.content) && m.member?.id === player.id;
 
         this.message.channel
@@ -126,7 +131,7 @@ export default class TicTacToe {
 
         const int = parseInt(m.content) - 1;
 
-        if (this.stateDict[int] === ("p1" || "p2")) {
+        if (this.stateDict[int] === Sign.PLAYER1 || this.stateDict[int] === Sign.PLAYER2) {
             await m.delete();
             return this.awaitInput(playerObject);
         }
@@ -166,7 +171,7 @@ export default class TicTacToe {
         });
     }
 
-    private checkWin(value: string) {
+    private checkWin(value: Sign) {
         return TicTacToe.winningCombos.some((arr) => {
             return arr.every((num) => this.stateDict[num] === value);
         });
@@ -181,7 +186,7 @@ export default class TicTacToe {
     private win(winner: PlayerType) {
         if (this.active) {
             this.active = false;
-            return this.message.channel.send(
+            return this.message.reply(
                 this.winningMessage(winner.player)
             );
         }
@@ -190,7 +195,7 @@ export default class TicTacToe {
     private timedWin(loser: PlayerType) {
         if (this.active) {
             this.active = false;
-            return this.message.channel.send(
+            return this.message.reply(
                 this.timedWinMessage(loser.player)
             );
         }
@@ -199,7 +204,7 @@ export default class TicTacToe {
     private tie() {
         if (this.active) {
             this.active = false;
-            return this.message.channel.send(TicTacToe.drawMessage);
+            return this.message.reply(TicTacToe.drawMessage);
         }
     }
 }

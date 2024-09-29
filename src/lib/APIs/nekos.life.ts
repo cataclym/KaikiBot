@@ -16,7 +16,7 @@ export default class NekosLife extends ImageAPI<APIs> {
         endPoint: T,
         mention?: GuildMember | null
     ) {
-        return message.channel.send({
+        return message.reply({
             embeds: [
                 await APIProcessor.processImageAPIRequest(
                     message,

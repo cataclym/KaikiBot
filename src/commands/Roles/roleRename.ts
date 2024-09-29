@@ -37,7 +37,7 @@ export default class RoleRenameCommand extends KaikiCommand {
             }).catch((e) => {
                 throw new Error("Error: Failed to edit role.\n" + e);
             });
-            return message.channel.send({
+            return message.reply({
                 embeds: [
                     new EmbedBuilder()
                         .setTitle("Success!")
@@ -46,7 +46,7 @@ export default class RoleRenameCommand extends KaikiCommand {
                 ],
             });
         } else {
-            return message.channel.send({
+            return message.reply({
                 embeds: [
                     await KaikiEmbeds.errorMessage(
                         message,

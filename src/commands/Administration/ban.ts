@@ -48,7 +48,7 @@ export default class BanCommand extends KaikiCommand {
 
         if (!guildMember) {
             await message.guild?.members.ban(user, { reason: reason });
-            return message.channel.send({ embeds: [successBan] });
+            return message.reply({ embeds: [successBan] });
         }
 
         // Check if member is ban-able
@@ -57,7 +57,7 @@ export default class BanCommand extends KaikiCommand {
 			(message.member as GuildMember).roles.highest.position <=
 				guildMember.roles.highest.position
         ) {
-            return message.channel.send({
+            return message.reply({
                 embeds: [
                     new EmbedBuilder({
                         description: `${message.author}, You can't use this command on users with a role higher or equal to yours in the role hierarchy.`,
@@ -72,7 +72,7 @@ export default class BanCommand extends KaikiCommand {
 			guildClientMember.roles.highest.position <=
 				guildMember.roles.highest.position
         ) {
-            return message.channel.send({
+            return message.reply({
                 embeds: [
                     new EmbedBuilder({
                         description:
@@ -99,6 +99,6 @@ export default class BanCommand extends KaikiCommand {
             })
             .catch((err) => this.client.logger.error(err));
 
-        return message.channel.send({ embeds: [successBan] });
+        return message.reply({ embeds: [successBan] });
     }
 }

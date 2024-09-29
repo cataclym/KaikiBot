@@ -23,7 +23,7 @@ export default class RoleInfoCommand extends KaikiCommand {
             ? message.member.roles.highest
             : await args.rest("role");
 
-        return message.channel.send({
+        return message.reply({
             embeds: [
                 new EmbedBuilder({
                     title: `Info for ${role.name}`,

@@ -45,6 +45,6 @@ export default class EAPICommand extends KaikiCommand {
             ]);
         }
 
-        return message.channel.send({ embeds: [emb] });
+        return message.reply({ embeds: [emb] });
     }
 }

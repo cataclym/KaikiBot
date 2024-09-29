@@ -32,7 +32,7 @@ export default class DeleteChannelCommand extends KaikiCommand {
         // Don't send message if current channel was deleted
         if (channels.includes(m.channel)) return;
 
-        return m.channel.send({
+        return m.reply({
             embeds: [
                 new EmbedBuilder()
                     .setTitle("Channel(s) deleted")

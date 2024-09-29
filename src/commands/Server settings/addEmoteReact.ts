@@ -72,7 +72,7 @@ export default class EmoteReactCommand extends KaikiCommand {
                 ?.set(trigger, emoji.id);
         }
 
-        return message.channel.send({
+        return message.reply({
             embeds: [
                 new EmbedBuilder()
                     .setTitle("New emoji trigger added")

@@ -91,7 +91,7 @@ export default class NeofetchCommand extends KaikiCommand {
                 if (error || stderr) {
                     return this.container.logger.error(error);
                 }
-                return message.channel.send(
+                return message.reply(
                     await KaikiUtil.codeblock(
                         "\u00AD" +
                         stdout.replace(

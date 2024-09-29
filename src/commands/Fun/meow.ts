@@ -11,7 +11,7 @@ import KaikiUtil from "../../lib/KaikiUtil";
 })
 export default class MeowCommand extends KaikiCommand {
     public async messageRun(message: Message): Promise<Message | void> {
-        return message.channel.send({
+        return message.reply({
             embeds: [
                 new EmbedBuilder()
                     .setImage(

@@ -25,7 +25,7 @@ export default class RoleCreateCommand extends KaikiCommand {
             throw new Error("Role creation failed.");
         }
 
-        return message.channel.send({
+        return message.reply({
             embeds: [
                 new EmbedBuilder({
                     title: "Success!",

@@ -12,7 +12,7 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
     preconditions: ["GuildOnly"],
 })
 export default class LeaderboardCommand extends KaikiCommand {
-    public async messageRun(message: Message): Promise<Message> {
+    public async messageRun(message: Message): Promise<void> {
         const { currencySymbol } = this.client.money,
             guildOnlyEntries = (await this.client.orm.discordUsers.findMany({}))
                 .filter((e) =>

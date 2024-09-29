@@ -42,7 +42,7 @@ export default class ExcludeStickyRolesCommand extends KaikiCommand {
             .withOkColor(message);
 
         if (!roles) {
-            return message.channel.send({
+            return message.reply({
                 embeds: [
                     embed
                         .setDescription(
@@ -136,7 +136,7 @@ export default class ExcludeStickyRolesCommand extends KaikiCommand {
             ]);
         }
 
-        return message.channel.send({
+        return message.reply({
             embeds: [embed],
         });
     }

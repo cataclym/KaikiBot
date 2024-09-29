@@ -23,7 +23,7 @@ export default class KillBotProcess extends KaikiCommand {
             return this.shutdown(message);
         }
 
-        const deleteMsg = await message.channel.send({
+        const deleteMsg = await message.reply({
             embeds: [
                 new EmbedBuilder()
                     .setDescription("Do you *really* want to shut me down?")

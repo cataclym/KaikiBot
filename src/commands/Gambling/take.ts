@@ -17,7 +17,7 @@ export default class Take extends KaikiCommand {
 
         const success = await this.client.money.tryTake(user.id, amount, "-");
         if (!success) {
-            await msg.channel.send({
+            await msg.reply({
                 embeds: [
                     new EmbedBuilder()
                         .setDescription(
@@ -29,7 +29,7 @@ export default class Take extends KaikiCommand {
             return;
         }
 
-        await msg.channel.send({
+        await msg.reply({
             embeds: [
                 new EmbedBuilder()
                     .setDescription(

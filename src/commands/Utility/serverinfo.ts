@@ -86,6 +86,6 @@ News: **${guild.channels.cache.filter((channel) => channel.type === ChannelType.
             ],
         });
 
-        return message.channel.send({ embeds: [emb.withOkColor(message)] });
+        return message.reply({ embeds: [emb.withOkColor(message)] });
     }
 }

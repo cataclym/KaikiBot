@@ -38,7 +38,7 @@ export default class ToggleCategoryCommand extends KaikiCommand {
                 .filter(Boolean)
                 .join("\n");
 
-            return message.channel.send({
+            return message.reply({
                 embeds: [
                     new EmbedBuilder()
                         .setTitle("Disabled categories")
@@ -102,7 +102,7 @@ export default class ToggleCategoryCommand extends KaikiCommand {
             `${categoryStr} has been ${exists ? "enabled" : "disabled"}.`
         );
 
-        return message.channel.send({
+        return message.reply({
             embeds: [
                 exists
                     ? embed.withOkColor(message)

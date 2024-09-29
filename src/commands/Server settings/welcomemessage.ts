@@ -46,7 +46,7 @@ export default class WelcomeMessageCommand extends KaikiCommand {
             );
         }
 
-        return message.channel.send({
+        return message.reply({
             embeds: embeds,
         });
     }

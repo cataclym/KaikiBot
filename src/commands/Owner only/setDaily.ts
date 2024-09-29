@@ -28,7 +28,7 @@ export default class SetDailyCommand extends KaikiCommand {
         if (arg > 0) {
             await this.client.botSettings.set("1", "DailyEnabled", true);
             await this.client.botSettings.set("1", "DailyAmount", arg);
-            return message.channel.send({
+            return message.reply({
                 embeds: [
                     new EmbedBuilder()
                         .setDescription(
@@ -38,7 +38,7 @@ export default class SetDailyCommand extends KaikiCommand {
                 ],
             });
         } else if (!isEnabled) {
-            return message.channel.send({
+            return message.reply({
                 embeds: [
                     new EmbedBuilder()
                         .setDescription(
@@ -49,7 +49,7 @@ export default class SetDailyCommand extends KaikiCommand {
             });
         } else {
             await this.client.botSettings.set("1", "DailyEnabled", false);
-            return message.channel.send({
+            return message.reply({
                 embeds: [
                     new EmbedBuilder()
                         .setDescription("Disabled daily currency allowance.")

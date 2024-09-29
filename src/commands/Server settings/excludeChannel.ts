@@ -47,7 +47,7 @@ export default class ExcludeDadbotChannelCommand extends KaikiCommand {
             .withOkColor(message);
 
         if (!channels) {
-            return message.channel.send({
+            return message.reply({
                 embeds: [
                     embed
                         .setDescription(
@@ -152,7 +152,7 @@ export default class ExcludeDadbotChannelCommand extends KaikiCommand {
             ]);
         }
 
-        return message.channel.send({
+        return message.reply({
             embeds: [embed],
         });
     }

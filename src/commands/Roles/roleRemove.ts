@@ -28,7 +28,7 @@ export default class RoleRemoveCommand extends KaikiCommand {
             if (member.roles.cache.has(role.id)) {
                 await member.roles.remove(role);
 
-                return message.channel.send({
+                return message.reply({
                     embeds: [
                         new EmbedBuilder({
                             title: "Success!",
@@ -37,7 +37,7 @@ export default class RoleRemoveCommand extends KaikiCommand {
                     ],
                 });
             } else {
-                return message.channel.send({
+                return message.reply({
                     embeds: [
                         new EmbedBuilder({
                             title: "Error",
@@ -47,7 +47,7 @@ export default class RoleRemoveCommand extends KaikiCommand {
                 });
             }
         } else {
-            return message.channel.send({
+            return message.reply({
                 embeds: [
                     await KaikiEmbeds.errorMessage(
                         message,

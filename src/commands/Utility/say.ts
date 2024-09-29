@@ -45,7 +45,7 @@ export default class SayCommand extends KaikiCommand {
                 .permissionsIn(targetChannel)
                 .has(PermissionsBitField.Flags.ManageMessages)
         ) {
-            return message.channel.send({
+            return message.reply({
                 embeds: [
                     await KaikiEmbeds.errorMessage(
                         message,

@@ -66,7 +66,7 @@ import Config from "../../lib/ServerConfig/Config";
     ],
 })
 export default class ConfigCommand extends Subcommand {
-    public async defaultMessageRun(message: Message<true>): Promise<Message> {
+    public async defaultMessageRun(message: Message<true>): Promise<void> {
         return Config.messageRun(message);
     }
 

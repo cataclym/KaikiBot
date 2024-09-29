@@ -23,7 +23,7 @@ export default class ChannelNsfwCommand extends KaikiCommand {
             `${message.author.username} toggled NSFW.`
         );
 
-        return message.channel.send({
+        return message.reply({
             embeds: [
                 new EmbedBuilder({
                     description: result,

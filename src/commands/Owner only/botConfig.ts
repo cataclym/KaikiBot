@@ -51,7 +51,7 @@ export default class BotConfigCommand extends Subcommand {
     private client = container.client;
 
     public async showRun(message: Message) {
-        return message.channel.send({
+        return message.reply({
             embeds: [
                 new EmbedBuilder()
                     .addFields([
@@ -180,7 +180,7 @@ export default class BotConfigCommand extends Subcommand {
         oldValue: string,
         newValue: string
     ) => {
-        return message.channel.send({
+        return message.reply({
             embeds: [
                 new EmbedBuilder()
                     .setTitle("Changed bot configuration")

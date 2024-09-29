@@ -39,6 +39,6 @@ export default class HentaiBombCommand extends KaikiCommand {
             )
         ).splice(0, 5);
 
-        return message.channel.send({ content: megaResponse.join("\n") });
+        return message.reply({ content: megaResponse.join("\n") });
     }
 }

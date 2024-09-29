@@ -5,7 +5,6 @@ import {
     ButtonBuilder,
     ComponentType,
     EmbedBuilder,
-    GuildMember,
     Message,
 } from "discord.js";
 
@@ -23,13 +22,13 @@ import KaikiEmbeds from "../../lib/Kaiki/KaikiEmbeds";
     preconditions: ["GuildOnly"],
 })
 export default class TicTacToeCommand extends KaikiCommand {
-    public async messageRun(message: Message, args: Args) {
+    public async messageRun(message: Message<true>, args: Args) {
         const playerTwo = await args.rest("member");
 
         if (!message.member) return;
 
         if (playerTwo.id === message.member.id || playerTwo.user.bot) {
-            return message.channel.send({
+            return message.reply({
                 embeds: [
                     await KaikiEmbeds.errorMessage(
                         message,
@@ -39,7 +38,7 @@ export default class TicTacToeCommand extends KaikiCommand {
             });
         }
 
-        const acceptMessage = await message.channel.send({
+        const acceptMessage = await message.reply({
             embeds: [
                 new EmbedBuilder()
                     .setDescription(
@@ -65,7 +64,7 @@ export default class TicTacToeCommand extends KaikiCommand {
             ],
         });
 
-        acceptMessage
+        const interaction = await acceptMessage
             .awaitMessageComponent({
                 filter: (m) => {
                     m.deferUpdate();
@@ -73,31 +72,7 @@ export default class TicTacToeCommand extends KaikiCommand {
                 },
                 componentType: ComponentType.Button,
                 time: 20000,
-            })
-            .then(async (interaction) => {
-                if (interaction.customId === "1") {
-                    new TicTacToe(
-						message.member as GuildMember,
-						playerTwo,
-						message
-                    );
-                    await acceptMessage.delete();
-                } else {
-                    await Promise.all([
-                        message.reply({
-                            embeds: [
-                                new EmbedBuilder()
-                                    .setDescription(
-                                        `${playerTwo.user.username} has declined your Tic-Tac-Toe challenge`
-                                    )
-                                    .withErrorColor(message),
-                            ],
-                        }),
-                        acceptMessage.delete(),
-                    ]);
-                }
-            })
-            .catch(() => {
+            }).catch(() => {
                 const emb = acceptMessage.embeds[0];
                 acceptMessage.edit({
                     embeds: [
@@ -109,5 +84,27 @@ export default class TicTacToeCommand extends KaikiCommand {
                     components: [],
                 });
             });
+
+        if (interaction && interaction.customId === "1") {
+
+            new TicTacToe(message.member,
+                playerTwo,
+                message
+            );
+            await acceptMessage.delete();
+        } else {
+            await Promise.all([
+                message.reply({
+                    embeds: [
+                        new EmbedBuilder()
+                            .setDescription(
+                                `${playerTwo.user.username} has declined your Tic-Tac-Toe challenge`
+                            )
+                            .withErrorColor(message),
+                    ],
+                }),
+                acceptMessage.delete(),
+            ]);
+        }
     }
 }

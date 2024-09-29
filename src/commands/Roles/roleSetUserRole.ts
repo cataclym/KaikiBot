@@ -36,7 +36,7 @@ export default class SetUserRoleCommand extends KaikiCommand {
             isPosition = botRole?.comparePositionTo(role);
 
         if (!isPosition || isPosition <= 0) {
-            return message.channel.send({
+            return message.reply({
                 embeds: [
                     await this.embedFail(
                         message,
@@ -49,7 +49,7 @@ export default class SetUserRoleCommand extends KaikiCommand {
 			(message.member as GuildMember).roles.highest.position <
 				role.position
         ) {
-            return message.channel.send({
+            return message.reply({
                 embeds: [
                     await this.embedFail(
                         message,
@@ -85,7 +85,7 @@ export default class SetUserRoleCommand extends KaikiCommand {
                 throw new Error("Failed to remove user role.\n" + err);
             }
 
-            return message.channel.send({
+            return message.reply({
                 embeds: [
                     await this.embedSuccess(
                         message,
@@ -107,7 +107,7 @@ export default class SetUserRoleCommand extends KaikiCommand {
             });
 
             await member.roles.add(role);
-            return message.channel.send({
+            return message.reply({
                 embeds: [
                     await this.embedSuccess(
                         message,

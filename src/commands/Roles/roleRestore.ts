@@ -28,7 +28,7 @@ export default class RestoreUserRoles extends KaikiCommand {
         if (!result) {
             return;
         } else if (result.success) {
-            return message.channel.send({
+            return message.reply({
                 embeds: [
                     new EmbedBuilder()
                         .setDescription(
@@ -45,7 +45,7 @@ export default class RestoreUserRoles extends KaikiCommand {
                 ],
             });
         } else if (result.roles) {
-            return message.channel.send({
+            return message.reply({
                 embeds: [
                     new EmbedBuilder()
                         .setDescription(
@@ -55,7 +55,7 @@ export default class RestoreUserRoles extends KaikiCommand {
                 ],
             });
         } else {
-            return message.channel.send({
+            return message.reply({
                 embeds: [
                     new EmbedBuilder()
                         .setDescription(

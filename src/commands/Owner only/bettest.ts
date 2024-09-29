@@ -58,7 +58,7 @@ export default class BetTest extends KaikiCommand {
             break;
         }
 
-        return message.channel.send({
+        return message.reply({
             embeds: [
                 new EmbedBuilder()
                     .setTitle(`Bettest ${BetTest.bettestNames[gambling]}`)

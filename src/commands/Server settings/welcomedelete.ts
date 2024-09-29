@@ -30,7 +30,7 @@ export default class WelcomeDeleteCommand extends KaikiCommand {
             },
         });
 
-        return message.channel.send({
+        return message.reply({
             embeds: [
                 new EmbedBuilder()
                     .setDescription(

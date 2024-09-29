@@ -25,7 +25,7 @@ export default class RoleHoistCommand extends KaikiCommand {
         if (await Roles.rolePermissionCheck(message, role)) {
             await role.setHoist(!role.hoist);
 
-            return message.channel.send({
+            return message.reply({
                 embeds: [
                     new EmbedBuilder({
                         description: `Toggled ${role.name}'s hoist status to ${!role.hoist}.`,
@@ -33,7 +33,7 @@ export default class RoleHoistCommand extends KaikiCommand {
                 ],
             });
         } else {
-            return message.channel.send({
+            return message.reply({
                 embeds: [
                     await KaikiEmbeds.errorMessage(
                         message,

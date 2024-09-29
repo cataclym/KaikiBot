@@ -14,7 +14,7 @@ export default class Cash extends KaikiCommand {
         if (!process.env.DBL_PAGE_URL) return;
         const amount = this.client.botSettings.get("1", "DailyAmount", 250);
 
-        return msg.channel.send({
+        return msg.reply({
             embeds: [
                 new EmbedBuilder()
                     .setTitle("Vote here")

@@ -47,7 +47,7 @@ export default class SlotsCommand extends KaikiCommand {
         const amount = await args.rest("kaikiMoney");
 
         if (amount < 2) {
-            await message.channel.send({
+            await message.reply({
                 embeds: [
                     new EmbedBuilder()
                         .setDescription(
@@ -66,7 +66,7 @@ export default class SlotsCommand extends KaikiCommand {
         );
 
         if (!success) {
-            await message.channel.send({
+            await message.reply({
                 embeds: [
                     new EmbedBuilder()
                         .setDescription(
@@ -102,7 +102,7 @@ export default class SlotsCommand extends KaikiCommand {
             break;
         }
 
-        await message.channel.send((await Gambling.playSlots(this.client.money.currencySymbol)).string)
+        await message.reply((await Gambling.playSlots(this.client.money.currencySymbol)).string)
             .then(async (m) => {
                 setTimeout(async () => m.edit((await Gambling.playSlots(this.client.money.currencySymbol)).string),
                     Constants.MAGIC_NUMBERS.CMDS.GAMBLING.SLOTS.EDIT_AFTER_1_SEC

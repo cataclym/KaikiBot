@@ -41,7 +41,7 @@ export default class TodoCommand extends KaikiCommand {
 
         if (!todoArray.length) {
             row.components[1].setDisabled();
-            sentMsg = await message.channel.send({
+            sentMsg = await message.reply({
                 embeds: [emb.setDescription("Your list is empty.")],
                 components: [row],
             });
@@ -62,7 +62,7 @@ export default class TodoCommand extends KaikiCommand {
 
             if (page >= pages.length) page = 0;
 
-            sentMsg = await message.channel.send({
+            sentMsg = await message.reply({
                 embeds: [pages[page]],
                 // Only show arrows if necessary
                 components: todoArray.length > 10 ? [row, rowTwo] : [row],

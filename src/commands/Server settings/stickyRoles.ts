@@ -24,7 +24,7 @@ export default class ToggleStickyRolesCommand extends KaikiCommand {
             !db.StickyRoles
         );
 
-        return message.channel.send({
+        return message.reply({
             embeds: [
                 new EmbedBuilder()
                     .setDescription(

@@ -20,7 +20,7 @@ export default class ExecCommand extends KaikiCommand {
 
         return exec(command, async (e, stdout) => {
             if (e) {
-                return message.channel.send({
+                return message.reply({
                     embeds: [
                         new EmbedBuilder()
                             .setAuthor({
@@ -42,7 +42,7 @@ export default class ExecCommand extends KaikiCommand {
                 });
             }
 
-            return message.channel.send({
+            return message.reply({
                 embeds: [
                     new EmbedBuilder()
                         .setAuthor({

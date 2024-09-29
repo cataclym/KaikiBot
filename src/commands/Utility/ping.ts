@@ -19,7 +19,7 @@ import { ApplicationCommandRegistry } from "@sapphire/framework";
 })
 export default class PingCommand extends KaikiCommand {
     public async messageRun(message: Message) {
-        const initialMsg = await message.channel.send("Pinging...!");
+        const initialMsg = await message.reply("Pinging...!");
 
         return initialMsg.edit(this.createEmbedMessage(message, initialMsg));
     }

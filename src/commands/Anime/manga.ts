@@ -57,7 +57,7 @@ export default class MangaCommand extends KaikiCommand {
                 const started = Common.formatDate(startDate);
                 const airedText = Object.values(endDate).some(Boolean) ? started : Common.formatDate(endDate);
 
-                return message.channel.send({
+                return message.reply({
                     embeds: [
                         Common.createEmbed(
                             coverImage,

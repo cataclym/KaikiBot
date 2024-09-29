@@ -23,7 +23,7 @@ export default class UnbanCommand extends KaikiCommand {
 
         if (bans?.find((u) => u.user.id === user.id)) {
             await message.guild?.members.unban(user);
-            return message.channel.send({
+            return message.reply({
                 embeds: [
                     new EmbedBuilder({
                         description: `Unbanned ${user.username}.`,
@@ -31,7 +31,7 @@ export default class UnbanCommand extends KaikiCommand {
                 ],
             });
         } else {
-            return message.channel.send({
+            return message.reply({
                 embeds: [
                     new EmbedBuilder({
                         description: `\`${user.username}\` is not banned.`,

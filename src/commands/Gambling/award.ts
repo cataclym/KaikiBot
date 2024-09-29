@@ -26,7 +26,7 @@ export default class Award extends KaikiCommand {
             amount,
             "Awarded by bot owner"
         );
-        await msg.channel.send({
+        await msg.reply({
             embeds: [
                 new EmbedBuilder()
                     .setDescription(

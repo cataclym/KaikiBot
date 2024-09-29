@@ -66,7 +66,7 @@ export default class GoodbyeConfigCommand extends KaikiCommand {
             embed.setDescription(`Set goodbye message to ${channel.name}`);
         }
 
-        return message.channel.send({
+        return message.reply({
             embeds: [embed],
         });
     }

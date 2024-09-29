@@ -31,17 +31,18 @@ export default class DeleteEmoteCommand extends KaikiCommand {
                 const emoji = message.guild?.emojis.cache.get(emote.id);
 
                 if (emoji) {
-                    i > 0
-                        ? (await timer(
+                    if (i > 0) {
+                        await timer(
                             Constants.MAGIC_NUMBERS.CMDS.EMOTES.DELETE_EMOTE
-                                .DELETE_DELAY
-                        )) && i++
-                        : i++;
+                                .DELETE_DELAY);
+                    }
+
+                    i++;
 
                     const deleted = await emoji.delete();
 
                     if (!deleted) {
-                        return message.channel.send({
+                        return message.reply({
                             embeds: [
                                 new EmbedBuilder({
                                     title: "Error occurred",
@@ -52,7 +53,7 @@ export default class DeleteEmoteCommand extends KaikiCommand {
                         });
                     }
                 } else {
-                    return message.channel.send({
+                    return message.reply({
                         embeds: [
                             new EmbedBuilder({
                                 title: "Error occurred",
@@ -63,7 +64,7 @@ export default class DeleteEmoteCommand extends KaikiCommand {
                 }
             }
 
-            return message.channel.send({
+            return message.reply({
                 embeds: [
                     new EmbedBuilder()
                         .setTitle("Success!")

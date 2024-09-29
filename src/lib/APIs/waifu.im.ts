@@ -17,7 +17,7 @@ export default class WaifuIm extends ImageAPI<EndPointSignatures> {
         mention?: GuildMember | null,
         nsfw = false
     ) {
-        return message.channel.send({
+        return message.reply({
             embeds: [
                 await APIProcessor.processImageAPIRequest(
                     message,

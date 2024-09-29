@@ -11,6 +11,7 @@ import {
     Message,
     Role,
     Sticker,
+    StickerType,
     TextChannel,
     ThreadChannel,
     User,
@@ -69,7 +70,7 @@ export default class InfoCommand extends KaikiCommand {
             throw this.NoArgumentFoundError;
         }
 
-        return message.channel.send({ embeds: emb });
+        return message.reply({ embeds: emb });
     }
 
     private async gMember(message: Message<true>, obj: GuildMember | User) {
@@ -493,9 +494,9 @@ export default class InfoCommand extends KaikiCommand {
                         {
                             name: "Type",
                             value:
-								sticker.type === 1
+								sticker.type === StickerType.Standard
 								    ? "Official"
-								    : "Guild" || "N/A",
+								    : "Guild",
                             inline: true,
                         }
                     )

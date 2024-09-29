@@ -56,7 +56,7 @@ export default class AnimeCommand extends KaikiCommand {
                 const started = Common.formatDate(startDate);
                 const airedText = Object.values(endDate).some(Boolean) ? `${started} to ${Common.formatDate(endDate)}` : started;
 
-                return message.channel.send({
+                return message.reply({
                     embeds: [
                         Common.createEmbed(
                             coverImage,

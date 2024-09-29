@@ -66,7 +66,7 @@ export default class WelcomeToggleCommand extends KaikiCommand {
             embed.setDescription(`Set welcome message to ${channel.name}`);
         }
 
-        return message.channel.send({
+        return message.reply({
             embeds: [embed],
         });
     }

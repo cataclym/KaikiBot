@@ -16,7 +16,7 @@ export default class RoleInRoleCommand extends KaikiCommand {
     public async messageRun(
         message: Message<true>,
         args: Args
-    ): Promise<Message> {
+    ): Promise<void> {
         if (!message.member) throw new Error();
 
         const role = args.finished

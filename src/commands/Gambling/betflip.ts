@@ -48,7 +48,7 @@ export default class BetflipCommand extends KaikiCommand {
         );
 
         if (!success) {
-            return await message.channel.send({
+            return await message.reply({
                 embeds: [
                     new EmbedBuilder()
                         .setDescription(
@@ -72,7 +72,7 @@ export default class BetflipCommand extends KaikiCommand {
                 "Betflip won x1.95"
             );
 
-            return message.channel.send({
+            return message.reply({
                 embeds: [
                     emb
                         .setDescription(
@@ -82,7 +82,7 @@ export default class BetflipCommand extends KaikiCommand {
                 ],
             });
         } else {
-            return message.channel.send({
+            return message.reply({
                 embeds: [
                     emb
                         .setDescription("You lost, better luck next time")

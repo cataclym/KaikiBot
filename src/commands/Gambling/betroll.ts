@@ -53,7 +53,7 @@ export default class BetRollCommand extends KaikiCommand {
         );
 
         if (!success) {
-            return await message.channel.send({
+            return await message.reply({
                 embeds: [
                     new EmbedBuilder()
                         .setDescription(
@@ -113,7 +113,7 @@ export default class BetRollCommand extends KaikiCommand {
             break;
         }
 
-        return message.channel.send({ embeds: [msg] });
+        return message.reply({ embeds: [msg] });
     }
 }
 

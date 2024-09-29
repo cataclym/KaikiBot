@@ -67,7 +67,7 @@ export class DadBot {
         message: CustomMessageType,
         nick: string
     ) {
-        await message.channel.send({
+        await message.reply({
             content: `Hi, ${nick}`,
             allowedMentions: {},
         });

@@ -66,7 +66,7 @@ export default class AddEmoteCommand extends KaikiCommand {
 
     static sendMessage(result: GuildEmoji | undefined, message: Message) {
         if (result) {
-            return message.channel.send(`Successfully uploaded **${result.name}** ${result}.`)
+            return message.reply(`Successfully uploaded **${result.name}** ${result}.`)
         }
         throw new UserError({
             identifier: "UnableUploadGuildEmoji",

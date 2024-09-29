@@ -28,7 +28,7 @@ export default class RoleAssignCommand extends KaikiCommand {
             if (!member.roles.cache.has(role.id)) {
                 await member.roles.add(role);
 
-                return message.channel.send({
+                return message.reply({
                     embeds: [
                         new EmbedBuilder({
                             title: "Success!",
@@ -37,7 +37,7 @@ export default class RoleAssignCommand extends KaikiCommand {
                     ],
                 });
             } else {
-                return message.channel.send({
+                return message.reply({
                     embeds: [
                         new EmbedBuilder({
                             title: "Error",
@@ -47,7 +47,7 @@ export default class RoleAssignCommand extends KaikiCommand {
                 });
             }
         } else {
-            return message.channel.send({
+            return message.reply({
                 embeds: [
                     await KaikiEmbeds.errorMessage(
                         message,

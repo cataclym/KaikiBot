@@ -16,7 +16,7 @@ export default class ClaimDailyCommand extends KaikiCommand {
         const enabled = this.client.botSettings.get("1", "DailyEnabled", false);
 
         if (!enabled) {
-            return message.channel.send({
+            return message.reply({
                 embeds: [
                     await KaikiEmbeds.errorMessage(
                         message,
@@ -58,7 +58,7 @@ export default class ClaimDailyCommand extends KaikiCommand {
                 "Claimed daily"
             );
 
-            return message.channel.send({
+            return message.reply({
                 components: actionRow,
                 embeds: [
                     new EmbedBuilder()
@@ -69,7 +69,7 @@ export default class ClaimDailyCommand extends KaikiCommand {
                 ],
             }).then(msg => gambling.handleReminder(msg));
         } else {
-            return message.channel.send({
+            return message.reply({
                 components: actionRow,
                 embeds: [
                     new EmbedBuilder()

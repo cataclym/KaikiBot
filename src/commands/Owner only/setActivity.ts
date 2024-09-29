@@ -32,7 +32,7 @@ export default class SetActivityCommand extends KaikiCommand {
             }),
             this.client.botSettings.set("1", "Activity", name),
             this.client.botSettings.set("1", "ActivityType", type),
-            message.channel.send({
+            message.reply({
                 embeds: [
                     new EmbedBuilder()
                         .addFields({

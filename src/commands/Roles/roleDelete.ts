@@ -34,7 +34,7 @@ export default class RoleDeleteCommand extends KaikiCommand {
         }
 
         if (otherRoles.length) {
-            return message.channel.send({
+            return message.reply({
                 embeds: [
                     new EmbedBuilder()
                         .setDescription(
@@ -44,7 +44,7 @@ export default class RoleDeleteCommand extends KaikiCommand {
                 ],
             });
         } else if (deletedRoles.length) {
-            return message.channel.send({
+            return message.reply({
                 embeds: [
                     new EmbedBuilder()
                         .setDescription(
@@ -54,7 +54,7 @@ export default class RoleDeleteCommand extends KaikiCommand {
                 ],
             });
         } else {
-            return message.channel.send({
+            return message.reply({
                 embeds: [
                     new EmbedBuilder()
                         .setDescription("Couldn't delete roles!")

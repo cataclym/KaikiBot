@@ -42,6 +42,6 @@ export default class EconomyCommand extends KaikiCommand {
                 .withOkColor(message),
         ];
 
-        return message.channel.send({ embeds });
+        return message.reply({ embeds });
     }
 }

@@ -20,7 +20,7 @@ export default class KawaiiAPI extends ImageAPI<EndPointSignatures> {
     ) {
         if (!KawaiiAPI.token) return
 
-        return message.channel.send({
+        return message.reply({
             embeds: [
                 await APIProcessor.processImageAPIRequest(
                     message,

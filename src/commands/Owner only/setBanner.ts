@@ -45,7 +45,7 @@ export default class SetAvatarCommand extends KaikiCommand {
 				url.pathname.substring(url.pathname.lastIndexOf(".")),
         });
 
-        return message.channel.send({
+        return message.reply({
             content: "New banner set.",
             embeds: [
                 new EmbedBuilder()

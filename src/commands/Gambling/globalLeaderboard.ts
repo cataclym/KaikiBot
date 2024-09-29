@@ -11,7 +11,7 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
     description: "Shows global currency leaderboard for the current server.",
 })
 export default class GlobalLeaderboard extends KaikiCommand {
-    public async messageRun(message: Message): Promise<Message> {
+    public async messageRun(message: Message): Promise<void> {
         const { currencySymbol } = this.client.money;
 
         const allEntries = (await this.client.orm.discordUsers.findMany({}))

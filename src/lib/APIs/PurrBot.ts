@@ -16,7 +16,7 @@ export default class PurrBot extends ImageAPI<EndpointSignatures> {
         endPoint: T,
         mention?: GuildMember | null
     ) {
-        return message.channel.send({
+        return message.reply({
             embeds: [
                 await APIProcessor.processImageAPIRequest(
                     message,

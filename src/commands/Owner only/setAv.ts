@@ -29,7 +29,7 @@ export default class SetAvatarCommand extends KaikiCommand {
 
         await this.client.user?.setAvatar(buffer.Buffer.from(img));
 
-        return message.channel.send({
+        return message.reply({
             content: "Avatar set.",
             files: [new AttachmentBuilder(buffer.Buffer.from(img))],
         });

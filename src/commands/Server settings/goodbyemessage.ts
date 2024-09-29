@@ -46,7 +46,7 @@ export default class ByeMessageCommand extends KaikiCommand {
             );
         }
 
-        return message.channel.send({
+        return message.reply({
             embeds: embed,
         });
     }

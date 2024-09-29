@@ -13,7 +13,7 @@ import Constants from "../../struct/Constants";
     preconditions: ["GuildOnly"],
 })
 export default class RoleListCommand extends KaikiCommand {
-    public async messageRun(message: Message<true>): Promise<Message> {
+    public async messageRun(message: Message<true>): Promise<void> {
         const roleArray = [...(message.guild as Guild).roles.cache.values()];
         const pages: EmbedBuilder[] = [];
         const { ROLES_PR_PAGE } = Constants.MAGIC_NUMBERS.CMDS.ROLES.ROLE_LIST;

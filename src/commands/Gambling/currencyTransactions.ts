@@ -80,7 +80,7 @@ export default class CurrencyTransactionsCommand extends KaikiCommand {
         ).sort((a, b) => b.DateAdded.getTime() - a.DateAdded.getTime());
 
         if (!db || !db.length) {
-            return message.channel.send({
+            return message.reply({
                 embeds: [
                     await KaikiEmbeds.embedFail(
                         message,

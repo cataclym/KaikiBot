@@ -30,7 +30,7 @@ export default class EvalCommand extends KaikiCommand {
             let evaled = await eval("(async () => " + code + ")()");
 
             evaled = (await import("util")).inspect(evaled);
-            return message.channel.send({
+            return message.reply({
                 content: await KaikiUtil.codeblock(
                     KaikiUtil.trim(
                         this.clean(evaled.toString()),
@@ -40,7 +40,7 @@ export default class EvalCommand extends KaikiCommand {
                 ),
             });
         } catch (err) {
-            return message.channel.send(
+            return message.reply(
                 `\`ERROR\` ${await KaikiUtil.codeblock(KaikiUtil.trim(this.clean(err.toString()), Constants.MAGIC_NUMBERS.CMDS.OWNER_ONLY.EVAL.MAX_ERROR_STRING), "xl")}`
             );
         }

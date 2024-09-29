@@ -13,7 +13,7 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 export default class DailyResetCommand extends KaikiCommand {
     public async messageRun(message: Message): Promise<Message> {
         await this.client.resetDailyClaims();
-        return message.channel.send({
+        return message.reply({
             embeds: [
                 new EmbedBuilder()
                     .setDescription("Daily claims have been reset!")
