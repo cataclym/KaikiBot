@@ -136,11 +136,9 @@ export default class KaikiSapphireClient<Ready extends true>
 			    ? client.application.owner.owner?.user
 			    : client.application.owner;
 
-        if (!owner) {
-            return KaikiSapphireClient.noBotOwner();
-        } else {
-            client.owner = owner;
-        }
+        if (!owner) return KaikiSapphireClient.noBotOwner();
+
+        client.owner = owner;
 
         client.logger.info(
             `Bot account: ${colorette.greenBright(client.user.username)}`
