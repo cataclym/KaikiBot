@@ -82,24 +82,27 @@ export class Webserver {
         Webserver.checkValidParam(req, res);
         Webserver.verifyToken(req, res);
 
-        const userId = req.query.userId;
-
-        const dbGuildUser = await container.client.orm.guildUsers.findUnique({
-            where: {
-                UserId_GuildId: {
-                    UserId: BigInt(userId as string),
-                    GuildId: BigInt(req.params.id),
-                }
-            }
-        });
-
         const guild = container.client.guilds.cache.get(req.params.id);
         if (!guild) return res.sendStatus(404);
 
-        const userRole = guild.roles.cache.get(String(dbGuildUser?.UserRole))
+        const userId = req.query.userId;
+
         let userRoleData = null;
-        if (userRole) {
-            userRoleData = { id: userRole.id, name: userRole.name, color: userRole.color, icon: userRole.icon } = userRole;
+        if (userId) {
+            const dbGuildUser = await container.client.orm.guildUsers.findUnique({
+                where: {
+                    UserId_GuildId: {
+                        UserId: BigInt(userId as string),
+                        GuildId: BigInt(req.params.id),
+                    }
+                }
+            });
+
+            const userRole = guild.roles.cache.get(String(dbGuildUser?.UserRole))
+
+            if (userRole) {
+                userRoleData = { id: userRole.id, name: userRole.name, color: userRole.color, icon: userRole.icon };
+            }
         }
 
         const guildChannels = guild.channels.cache
