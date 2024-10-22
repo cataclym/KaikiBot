@@ -9,12 +9,10 @@ import { Guild } from "discord.js";
 // A class managing the Bot's webserver.
 // It is intended to interact with a kaikibot.xyz dashboard
 //
-// It needs to send a POST req, with a specified token in the body as JSON "{ token: secret_token_here }"
+// It needs to send a POST req, with a specified token in the header under authorization
 export class Webserver {
     private app: Express;
     private client: KaikiSapphireClient<true>;
-    private guild: Guild;
-    private endPoints: EndPoints;
 
     // Creates an express webserver and server user-data on the specified URL path
     public constructor(client: KaikiSapphireClient<true>) {
@@ -32,158 +30,171 @@ export class Webserver {
         // Hacky way to wait for guilds to load
         await new Promise(resolve => setTimeout(resolve, 5000));
 
-        this.endPoints = this.createEndPoints();
-
-        for (const ep in this.endPoints) {
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-expect-error
-            this.app.post(ep, this.endPoints[ep]);
-        }
+        this.app.post("/API/User/:id", this.POSTUserGuilds)
+        this.app.get("/API/Guild/:id", this.GETGuild)
+        // Patch potentially?
+        this.app.post("/API/Guild/:id", this.POSTGuildUpdate)
     }
 
-    private createEndPoints(): EndPoints {
-        return  {
-            "/API/POSTUser/:id": async (req: express.Request, res: express.Response) => {
-                Webserver.checkValidParam(req, res);
-                Webserver.verifyToken(req, res);
+    private async POSTUserGuilds(req: express.Request, res: express.Response) {
+        Webserver.checkValidParam(req, res);
+        Webserver.verifyToken(req, res);
 
-                const requestedUser = container.client.users.cache.get(req.params.id);
+        const guilds: bigint[] = req.body;
 
-                // Send 404 not found
-                if (!requestedUser) {
-                    container.logger.warn(`Webserver | Requested user was not found: [${Colorette.greenBright(req.params.id)}]`);
-                    return res.sendStatus(404);
+        const [guildsData, userData] = await Promise.all([container.client.orm.guilds.findMany({
+            where: {
+                Id: {
+                    in: guilds
                 }
-
-                const [guildsData, userData] = await Promise.all([container.client.orm.guildUsers.findMany({
-                    where: {
-                        UserId: BigInt(req.params.id)
-                    },
-                    include: {
-                        Guilds: true
-                    }
-                }), container.client.orm.discordUsers.findUnique({
-                    where: {
-                        UserId: BigInt(req.params.id)
-                    }
-                })]);
-
-                const responseObject = {
-                    user: requestedUser,
-                    userData: userData,
-                    data: guildsData,
-                };
-
-                /*                responseObject.guilds = container.client.guilds.cache
-                    .filter(guild => guild.members.cache.has(requestedUser.id))
-                    .map(guild => {
-                        const maybeUserRole = String(responseObject.data.find(gs => String(gs?.Guilds.Id) === guild.id)?.UserRole);
-                        return {
-                            guildChannels: guild.channels.cache.filter(channel => channel.isTextBased),
-                            id: guild.id,
-                            icon: guild.icon,
-                            name: guild.name,
-                            userPerms: guild.members.cache.get(requestedUser.id)?.permissions,
-                            userRole: guild.roles.cache.has(maybeUserRole) ? guild.roles.cache.get(maybeUserRole) : null
-                        };
-                    });
-                */
-
-                container.logger.info(`Webserver | Request successful: ${requestedUser.username} [${Colorette.greenBright(requestedUser.id)}]`);
-                return res.send(JSON.stringify(responseObject, (key, value) =>
-                    typeof value === "bigint" ? value.toString() : value
-                ));
             },
-            "/API/Guild/:id": async (req: express.Request, res: express.Response) => {
-                Webserver.checkValidParam(req, res);
-                const body = Webserver.verifyToken(req, res);
-
-                const { data }: { data: StupidType } = body;
-                const guild = this.client.guilds.cache.get(String(data.GuildId));
-                const userRole = String(data.UserRole);
-
-                // Guild not found
-                if (!guild) return res.sendStatus(404);
-
-                this.guild = guild;
-
-                for (const key of Object.keys(data)) {
-                    const typedKey: keyof StupidType = key as keyof StupidType;
-                    switch (typedKey) {
-                    case "icon":
-                        await this.guild.setIcon(data[typedKey]);
-                        break;
-                    case "ExcludeRoleName":
-                        await this.SetExcludeRoleName(data[typedKey]);
-                        break;
-                    case "name": {
-                        await this.guild.setName(data[typedKey]);
-                        break;
-                    }
-                    case "UserRoleColor":
-                        await this.SetUserRoleColor(userRole, data[typedKey]);
-                        break;
-                    case "UserRoleName":
-                        await this.SetUserRoleName(userRole, data[typedKey]);
-                        break;
-                    case "UserRoleIcon":
-                        await this.SetUserRoleIcon(userRole, data[typedKey]);
-                        break;
-
-                        // This will handle all non-special and non-guildDB parameters
-                    default:
-                        await this.client.guildsDb.set(this.guild.id, typedKey, data[typedKey]);
-                        break;
+            include: {
+                GuildUsers: {
+                    where: {
+                        UserId: BigInt(req.params.id)
                     }
                 }
-                return res.sendStatus(200);
+            }
+        }), container.client.orm.discordUsers.findUnique({
+            where: {
+                UserId: BigInt(req.params.id)
+            }
+        })]);
+
+        // Send 404 not found
+        if (!userData) {
+            container.logger.warn(`Webserver | Requested user was not found: [${Colorette.greenBright(req.params.id)}]`);
+            return res.sendStatus(404);
+        }
+
+        const responseObject = {
+            userData: userData,
+            guildDb: guildsData,
+        };
+
+        container.logger.info(`Webserver | Request successful: [${Colorette.greenBright(req.params.id)}]`);
+        return res.send(JSON.stringify(responseObject, (_, value) =>
+            typeof value === "bigint" ? value.toString() : value
+        ));
+    }
+
+    private async GETGuild(req: express.Request, res: express.Response) {
+        Webserver.checkValidParam(req, res);
+        Webserver.verifyToken(req, res);
+
+        const userId = req.query.userId;
+
+        const dbGuildUser = await container.client.orm.guildUsers.findUnique({
+            where: {
+                UserId_GuildId: {
+                    UserId: BigInt(userId as string),
+                    GuildId: BigInt(req.params.id),
+                }
+            }
+        });
+
+        const guild = container.client.guilds.cache.get(req.params.id);
+        if (!guild) return res.sendStatus(404);
+
+        const userRole = guild.roles.cache.get(String(dbGuildUser?.UserRole))
+        let userRoleData = null;
+        if (userRole) {
+            userRoleData = { id: userRole.id, name: userRole.name, color: userRole.color, icon: userRole.icon } = userRole;
+        }
+
+        const guildChannels = guild.channels.cache
+            .filter(channel => channel.isTextBased())
+            .map(channel => ({ id: channel.id, name: channel.name }));
+
+        return res.send({ guildChannels, userRole: userRoleData });
+    }
+
+    private async POSTGuildUpdate(req: express.Request, res: express.Response) {
+        Webserver.checkValidParam(req, res);
+        Webserver.verifyToken(req, res);
+        if (!req.body) return res.sendStatus(400);
+
+        const { body }: { body: Partial<DashboardResponse>} = req;
+        const guild = this.client.guilds.cache.get(String(body.GuildId));
+        const userRole = String(body.UserRole);
+
+        // Guild not found
+        if (!guild) return res.sendStatus(404)
+        for (const key of Object.keys(body)) {
+            const value = body[key as keyof DashboardResponse];
+
+            switch (value) {
+            case "icon":
+                await guild.setIcon(value);
+                break;
+            case "ExcludeRoleName":
+                await this.SetExcludeRoleName(value, guild);
+                break;
+            case "name": {
+                await guild.setName(value);
+                break;
+            }
+            case "UserRoleColor":
+                await this.SetUserRoleColor(userRole, value, guild);
+                break;
+            case "UserRoleName":
+                await this.SetUserRoleName(userRole, value, guild);
+                break;
+            case "UserRoleIcon":
+                await this.SetUserRoleIcon(userRole, value, guild);
+                break;
+            // This will handle all non-special and non-guildDB parameters
+            default:
+                await this.client.guildsDb.set(guild.id, key, value);
+                break;
             }
         }
+        return res.sendStatus(200);
     }
+
 
     static checkValidParam(req: express.Request, res: express.Response) {
         if (Number.isNaN(Number(req.params.id))) return res.sendStatus(400);
     }
 
-    static verifyToken(req: express.Request, res: express.Response) {
-        const { body } = req;
-        // Verify token
-        if (!body.token || body.token !== process.env.SELF_API_TOKEN) {
-            return res.sendStatus(401);
+    // Throws 401 unauthorized if token is wrong
+    static verifyToken(req: express.Request, res: express.Response): void {
+        if (req.headers.authorization !== process.env.SELF_API_TOKEN) {
+            res.sendStatus(401);
+            return;
         }
-        return body;
     }
 
-    private async SetExcludeRoleName(data: string | null) {
+    private async SetExcludeRoleName(data: string | null, guild: Guild) {
         if (!data) return;
-        return this.guild.roles.cache
-            .get(this.client.guildsDb.get(this.guild.id, "ExcludeRole", null))
+        return guild.roles.cache
+            .get(this.client.guildsDb.get(guild.id, "ExcludeRole", null))
             ?.setName(data);
     }
 
-    private async SetUserRoleIcon(userRole: string, icon: string | null) {
-        if (!this.guild.features.includes("ROLE_ICONS")) return;
-        return this.guild.roles.cache.get(userRole)
+    private async SetUserRoleIcon(userRoleId: string, icon: string | null, guild: Guild) {
+        if (!guild.features.includes("ROLE_ICONS")) return;
+        return guild.roles.cache.get(userRoleId)
             ?.setIcon(icon);
     }
 
-    private async SetUserRoleName(userRole: string, name: string | null) {
+    private async SetUserRoleName(userRoleId: string, name: string | null, guild: Guild) {
         if (!name) return;
-        return this.guild.roles.cache.get(userRole)
+        return guild.roles.cache.get(userRoleId)
             ?.setName(name);
     }
 
-    private async SetUserRoleColor(userRole: string, color: bigint | null) {
+    private async SetUserRoleColor(userRoleId: string, color: bigint | string | null, guild: Guild) {
         if (!color) return;
 
-        return this.guild.roles.cache.get(userRole)
+        return guild.roles.cache.get(userRoleId)
         //  This bigint is small enough to be accurate when converted
             ?.setColor(Number(color));
     }
 }
 
 // Custom type for data coming from the Webserver
-type StupidType = Omit<Guilds, "Id" | "CreatedAt"> & GuildUsers & {
+type DashboardResponse = Omit<Guilds, "Id" | "CreatedAt"> & GuildUsers & {
   ExcludeRole: string;
   name: string;
   icon: string
@@ -191,9 +202,4 @@ type StupidType = Omit<Guilds, "Id" | "CreatedAt"> & GuildUsers & {
   UserRoleIcon: string | null;
   UserRoleColor: bigint | null;
   ExcludeRoleName: string | null;
-}
-
-type EndPoints = {
-    "/API/POSTUser/:id": (req: express.Request, res: express.Response) => Promise<express.Response>;
-    "/API/Guild/:id": (req: express.Request, res: express.Response) => Promise<express.Response>
 }
