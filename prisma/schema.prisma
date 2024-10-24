@@ -33,11 +33,12 @@ model CommandStats {
 }
 
 model CurrencyTransactions {
-  Id        BigInt   @id @default(autoincrement())
-  Amount    BigInt
-  Reason    String   @db.Text
-  UserId    BigInt
-  DateAdded DateTime @default(now()) @db.Timestamp(0)
+  Id           BigInt       @id @default(autoincrement())
+  Amount       BigInt
+  Reason       String       @db.Text
+  UserId       BigInt
+  DateAdded    DateTime     @default(now()) @db.Timestamp(0)
+  DiscordUsers DiscordUsers @relation(fields: [UserId], references: [UserId], onDelete: Cascade)
 }
 
 model DadBotChannels {
@@ -57,12 +58,14 @@ model ExcludedStickyRoles {
 }
 
 model DiscordUsers {
-  UserId        BigInt   @id @unique(map: "UserId")
-  Amount        BigInt   @default(0)
-  ClaimedDaily  Boolean  @default(false)
-  DailyReminder DateTime?
-  CreatedAt     DateTime @default(now()) @db.Timestamp(0)
-  Todos         Todos[]
+  UserId               BigInt                 @id @unique(map: "UserId")
+  Amount               BigInt                 @default(0)
+  ClaimedDaily         Boolean                @default(false)
+  DailyReminder        DateTime?
+  CreatedAt            DateTime               @default(now()) @db.Timestamp(0)
+  GuildUsers           GuildUsers[]
+  Todos                Todos[]
+  CurrencyTransactions CurrencyTransactions[]
 }
 
 model EmojiReactions {
@@ -92,6 +95,7 @@ model GuildUsers {
   Guilds        Guilds          @relation(fields: [GuildId], references: [Id], onDelete: Cascade, map: "GuildUsers_ibfk_1")
   LeaveRoles    LeaveRoles[]
   UserNicknames UserNicknames[]
+  DiscordUsers  DiscordUsers    @relation(fields: [UserId], references: [UserId], onDelete: Cascade)
 
   @@id([UserId, GuildId])
   @@index([GuildId], map: "GuildId")
@@ -99,7 +103,7 @@ model GuildUsers {
 
 model Guilds {
   Id                  BigInt                @id
-  Prefix              String                @default(";") @db.VarChar(50)
+  Prefix              String                @default(";") @db.VarChar(10)
   Anniversary         Boolean               @default(false)
   DadBot              Boolean               @default(false)
   ErrorColor          BigInt                @default(16711680)
