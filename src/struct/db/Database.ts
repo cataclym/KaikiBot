@@ -89,7 +89,11 @@ export default class Database {
         if (!guildUser) {
             return this.orm.guildUsers.create({
                 data: {
-                    UserId: BigInt(userId),
+                    DiscordUsers: {
+                        connect: {
+                            UserId: BigInt(userId),
+                        }
+                    },
                     Guilds: {
                         connect: {
                             Id: BigInt(guildId),
