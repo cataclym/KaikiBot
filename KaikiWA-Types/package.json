@@ -1,0 +1,12 @@
+{
+  "name": "kaikiwa-types",
+  "version": "1.0.0",
+  "description": "Types for Kaiki WA application",
+  "main": "index.d.ts",
+  "types": "index.d.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Catadev",
+  "license": "ISC"
+}

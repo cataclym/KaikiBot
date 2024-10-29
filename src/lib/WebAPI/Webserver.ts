@@ -2,9 +2,9 @@ import process from "process";
 import express, { Express } from "express";
 import { container } from "@sapphire/pieces";
 import * as Colorette from "colorette";
-import { GuildUsers, Guilds } from "@prisma/client";
 import KaikiSapphireClient from "../Kaiki/KaikiSapphireClient";
 import { Guild } from "discord.js";
+import { GETGuildBody, PUTDashboardResponse, POSTUserGuildsBody } from "kaikiwa-types";
 
 // A class managing the Bot's webserver.
 // It is intended to interact with a kaikibot.xyz dashboard
@@ -33,29 +33,31 @@ export class Webserver {
         this.app.post("/API/User/:id", this.POSTUserGuilds)
         this.app.get("/API/Guild/:id", this.GETGuild)
         // Patch potentially?
-        this.app.post("/API/Guild/:id", this.POSTGuildUpdate)
+        this.app.post("/API/Guild/:id", this.PUTGuildUpdate)
     }
 
-    private async POSTUserGuilds(req: express.Request, res: express.Response) {
+    private async POSTUserGuilds(req: express.Request, res: express.Response): Promise<express.Response<POSTUserGuildsBody>> {
         Webserver.checkValidParam(req, res);
         Webserver.verifyToken(req, res);
 
         const guilds: bigint[] = req.body;
 
         const [guildsData, userData] = await Promise.all([container.client.orm.guilds.findMany({
+            select: {
+                Id: true,
+            },
             where: {
                 Id: {
                     in: guilds
                 }
             },
-            include: {
-                GuildUsers: {
-                    where: {
-                        UserId: BigInt(req.params.id)
-                    }
-                }
-            }
         }), container.client.orm.discordUsers.findUnique({
+            select: {
+                UserId: true,
+                Amount: true,
+                ClaimedDaily: true,
+                DailyReminder: true
+            },
             where: {
                 UserId: BigInt(req.params.id)
             }
@@ -73,12 +75,12 @@ export class Webserver {
         };
 
         container.logger.info(`Webserver | Request successful: [${Colorette.greenBright(req.params.id)}]`);
-        return res.send(JSON.stringify(responseObject, (_, value) =>
+        return res.send(JSON.stringify(responseObject as POSTUserGuildsBody, (_, value) =>
             typeof value === "bigint" ? value.toString() : value
         ));
     }
 
-    private async GETGuild(req: express.Request, res: express.Response) {
+    private async GETGuild(req: express.Request, res: express.Response): Promise<express.Response<GETGuildBody>> {
         Webserver.checkValidParam(req, res);
         Webserver.verifyToken(req, res);
 
@@ -86,45 +88,73 @@ export class Webserver {
         if (!guild) return res.sendStatus(404);
 
         const userId = req.query.userId;
+        const guildId = BigInt(req.params.id);
 
-        let userRoleData = null;
+        let dbGuild, userRoleData;
         if (userId) {
-            const dbGuildUser = await container.client.orm.guildUsers.findUnique({
+            dbGuild = await container.client.orm.guilds.findUnique({
                 where: {
-                    UserId_GuildId: {
-                        UserId: BigInt(userId as string),
-                        GuildId: BigInt(req.params.id),
+                    Id: guildId
+                },
+                include: {
+                    GuildUsers: {
+                        where: {
+                            UserId: BigInt(userId as string)
+                        }
                     }
                 }
             });
-
-            const userRole = guild.roles.cache.get(String(dbGuildUser?.UserRole))
+            const userRole = guild.roles.cache.get(String(dbGuild?.GuildUsers.shift()))
 
             if (userRole) {
                 userRoleData = { id: userRole.id, name: userRole.name, color: userRole.color, icon: userRole.icon };
             }
         }
+        else {
+            dbGuild = await container.client.orm.guilds.findUnique({
+                where: {
+                    Id: guildId
+                }
+            });
+        }
+
+        if (!dbGuild) return res.sendStatus(404);
 
         const guildChannels = guild.channels.cache
             .filter(channel => channel.isTextBased())
             .map(channel => ({ id: channel.id, name: channel.name }));
 
-        return res.send({ guildChannels, userRole: userRoleData });
+        const guildBody = {
+            guild: {
+                channels: guildChannels,
+                ...dbGuild
+            },
+            user: {
+                userRole: userRoleData
+            },
+        };
+
+        return res.send(guildBody as GETGuildBody);
     }
 
-    private async POSTGuildUpdate(req: express.Request, res: express.Response) {
+    private async PUTGuildUpdate(req: express.Request, res: express.Response) {
         Webserver.checkValidParam(req, res);
         Webserver.verifyToken(req, res);
-        if (!req.body) return res.sendStatus(400);
+        if (!req.body) return res
+            .sendStatus(400)
+            .send("Missing request body");
 
-        const { body }: { body: Partial<DashboardResponse>} = req;
+        const { body }: { body: Partial<PUTDashboardResponse>} = req;
         const guild = this.client.guilds.cache.get(String(body.GuildId));
-        const userRole = String(body.UserRole);
+        const userRole = body.UserRole ? String(body.UserRole) : null;
 
         // Guild not found
-        if (!guild) return res.sendStatus(404)
+        if (!guild) return res
+            .sendStatus(404)
+            .send("Guild not found");
+
         for (const key of Object.keys(body)) {
-            const value = body[key as keyof DashboardResponse];
+            const value = body[key as keyof PUTDashboardResponse];
 
             switch (value) {
             case "icon":
@@ -138,12 +168,15 @@ export class Webserver {
                 break;
             }
             case "UserRoleColor":
+                if (!userRole) break;
                 await this.SetUserRoleColor(userRole, value, guild);
                 break;
             case "UserRoleName":
+                if (!userRole) break;
                 await this.SetUserRoleName(userRole, value, guild);
                 break;
             case "UserRoleIcon":
+                if (!userRole) break;
                 await this.SetUserRoleIcon(userRole, value, guild);
                 break;
             // This will handle all non-special and non-guildDB parameters
@@ -194,15 +227,4 @@ export class Webserver {
         //  This bigint is small enough to be accurate when converted
             ?.setColor(Number(color));
     }
-}
-
-// Custom type for data coming from the Webserver
-type DashboardResponse = Omit<Guilds, "Id" | "CreatedAt"> & GuildUsers & {
-  ExcludeRole: string;
-  name: string;
-  icon: string
-  UserRoleName: string | null;
-  UserRoleIcon: string | null;
-  UserRoleColor: bigint | null;
-  ExcludeRoleName: string | null;
 }

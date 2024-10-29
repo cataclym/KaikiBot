@@ -50,7 +50,8 @@
 		"eslint": "^8.57.1",
 		"eslint-import-resolver-typescript": "^3.6.3",
 		"eslint-plugin-import": "^2.30.0",
-		"typescript": "~5.4.5"
+		"typescript": "~5.4.5",
+		"kaikiwa-types": "./KaikiWA-Types/"
 	},
 	"description": "Discord bot built with Sapphire, Prisma and MySQL2",
 	"repository": {
