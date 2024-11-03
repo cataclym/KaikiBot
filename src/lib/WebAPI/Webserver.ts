@@ -69,13 +69,13 @@ export class Webserver {
             return res.sendStatus(404);
         }
 
-        const responseObject = {
+        const responseObject: POSTUserGuildsBody = {
             userData: userData,
             guildDb: guildsData,
         };
 
         container.logger.info(`Webserver | Request successful: [${Colorette.greenBright(req.params.id)}]`);
-        return res.send(JSON.stringify(responseObject as POSTUserGuildsBody, (_, value) =>
+        return res.send(JSON.stringify(responseObject, (_, value) =>
             typeof value === "bigint" ? value.toString() : value
         ));
     }
@@ -90,7 +90,7 @@ export class Webserver {
         const userId = req.query.userId;
         const guildId = BigInt(req.params.id);
 
-        let dbGuild, userRoleData;
+        let dbGuild, userRoleData = null;
         if (userId) {
             dbGuild = await container.client.orm.guilds.findUnique({
                 where: {
@@ -104,7 +104,8 @@ export class Webserver {
                     }
                 }
             });
-            const userRole = guild.roles.cache.get(String(dbGuild?.GuildUsers.shift()))
+
+            const userRole = guild.roles.cache.get(String(dbGuild?.GuildUsers.shift()));
 
             if (userRole) {
                 userRoleData = { id: userRole.id, name: userRole.name, color: userRole.color, icon: userRole.icon };
@@ -125,22 +126,27 @@ export class Webserver {
             ExcludeRole = guild.roles.cache.get(String(dbGuild.ExcludeRole)) || null;
         }
 
-        const guildChannels = guild.channels.cache
+        const roles = guild.roles.cache.map(({ color, id, name }) => ({ id, name, color }));
+        const emojis = guild.emojis.cache.map(({ animated, id, name, url }) => ({ id, name, url, animated }));
+
+        const channels = guild.channels.cache
             .filter(channel => channel.isTextBased())
             .map(channel => ({ id: channel.id, name: channel.name }));
 
-        const guildBody = {
+        const guildBody: GETGuildBody = {
             guild: {
-                channels: guildChannels,
                 ...dbGuild,
-                ExcludeRole
+                ExcludeRole,
+                channels,
+                emojis,
+                roles
             },
             user: {
                 userRole: userRoleData
             },
         };
 
-        return res.send(guildBody as GETGuildBody);
+        return res.send(guildBody);
     }
 
     private async PUTGuildUpdate(req: express.Request, res: express.Response) {

@@ -1,8 +1,11 @@
+// Data sent when requested for each guild
 export type GETGuildBody = {
     guild: Omit<Guild, "ExcludeRole"> & {
         // Overwrites Guild ExcludedRole with data from bot cache
         ExcludeRole: { color: number; id: string; name: string } | null;
         channels: { id: string; name: string }[];
+        roles: { id: string; name: string; color: number }[];
+        emojis: { id: string; name: string | null; url: string; animated: boolean | null }[];
     },
     user: {
         userRole: { color: number; icon: string | null; id: string; name: string } | null;
@@ -20,7 +23,9 @@ export type PUTDashboardResponse = Omit<Guild, "Id" | "CreatedAt"> & GuildUsers 
     ExcludeRoleName: string | null;
 }
 
+// Initial data sent to the dashboard
 export type POSTUserGuildsBody = {
+    // Used to filter out guilds to show
     guildDb: { Id: bigint }[];
     userData: {
         UserId: bigint,
@@ -39,12 +44,12 @@ type Guild = {
     ErrorColor: bigint,
     OkColor: bigint,
     ExcludeRole: bigint,
-    WelcomeChannel: bigint
-    WelcomeMessage: string,
-    WelcomeTimeout: number,
-    ByeChannel: bigint,
-    ByeMessage: string,
-    ByeTimeout: number,
+    WelcomeChannel: bigint | null,
+    WelcomeMessage: string | null,
+    WelcomeTimeout: number | null,
+    ByeChannel: bigint | null,
+    ByeMessage: string | null,
+    ByeTimeout: number | null,
     CreatedAt: Date
 }
 
