@@ -120,6 +120,11 @@ export class Webserver {
 
         if (!dbGuild) return res.sendStatus(404);
 
+        let ExcludeRole: { color: number; id: string; name: string } | null = null;
+        if (dbGuild.ExcludeRole) {
+            ExcludeRole = guild.roles.cache.get(String(dbGuild.ExcludeRole)) || null;
+        }
+
         const guildChannels = guild.channels.cache
             .filter(channel => channel.isTextBased())
             .map(channel => ({ id: channel.id, name: channel.name }));
@@ -127,7 +132,8 @@ export class Webserver {
         const guildBody = {
             guild: {
                 channels: guildChannels,
-                ...dbGuild
+                ...dbGuild,
+                ExcludeRole
             },
             user: {
                 userRole: userRoleData

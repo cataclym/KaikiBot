@@ -1,5 +1,7 @@
 export type GETGuildBody = {
-    guild: Guild & {
+    guild: Omit<Guild, "ExcludeRole"> & {
+        // Overwrites Guild ExcludedRole with data from bot cache
+        ExcludeRole: { color: number; id: string; name: string } | null;
         channels: { id: string; name: string }[];
     },
     user: {
