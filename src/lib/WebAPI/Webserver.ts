@@ -69,15 +69,13 @@ export class Webserver {
             return res.sendStatus(404);
         }
 
-        const responseObject: POSTUserGuildsBody = {
+        const responseObject = JSON.stringify(<POSTUserGuildsBody>{
             userData: userData,
             guildDb: guildsData,
-        };
+        }, (_, value) => typeof value === "bigint" ? value.toString() : value);
 
         container.logger.info(`Webserver | Request successful: [${Colorette.greenBright(req.params.id)}]`);
-        return res.send(JSON.stringify(responseObject, (_, value) =>
-            typeof value === "bigint" ? value.toString() : value
-        ));
+        return res.status(200).send(responseObject);
     }
 
     private async GETGuild(req: express.Request, res: express.Response): Promise<express.Response<GETGuildBody>> {
@@ -133,7 +131,7 @@ export class Webserver {
             .filter(channel => channel.isTextBased())
             .map(channel => ({ id: channel.id, name: channel.name }));
 
-        const guildBody: GETGuildBody = {
+        const guildBody = JSON.stringify(<GETGuildBody> {
             guild: {
                 ...dbGuild,
                 ExcludeRole,
@@ -144,7 +142,7 @@ export class Webserver {
             user: {
                 userRole: userRoleData
             },
-        };
+        }, (_, value) => typeof value === "bigint" ? value.toString() : value);
 
         return res.send(guildBody);
     }
@@ -152,6 +150,7 @@ export class Webserver {
     private async PUTGuildUpdate(req: express.Request, res: express.Response) {
         Webserver.checkValidParam(req, res);
         Webserver.verifyToken(req, res);
+
         if (!req.body) return res
             .sendStatus(400)
             .send("Missing request body");
@@ -202,14 +201,17 @@ export class Webserver {
 
 
     static checkValidParam(req: express.Request, res: express.Response) {
-        if (Number.isNaN(Number(req.params.id))) return res.sendStatus(400);
+        if (Number.isNaN(Number(req.params.id))) {
+            res.sendStatus(400);
+            throw new Error("Missing request body");
+        }
     }
 
     // Throws 401 unauthorized if token is wrong
     static verifyToken(req: express.Request, res: express.Response): void {
         if (req.headers.authorization !== process.env.SELF_API_TOKEN) {
             res.sendStatus(401);
-            return;
+            throw new Error("Unauthorized");
         }
     }
 
