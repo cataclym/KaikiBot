@@ -34,20 +34,20 @@ export default class CommandsList extends KaikiCommand {
             const timestamp = Date.now().toString();
 
             const component =
-                new ActionRowBuilder<SelectMenuBuilder>().setComponents(
-                    new StringSelectMenuBuilder()
-                        .setCustomId(timestamp)
-                        .setOptions(
-                            filteredCategories.sort().map(
-                                (cat) =>
-                                    new StringSelectMenuOptionBuilder({
-                                        value: cat,
-                                        label: cat,
-                                        description: cat,
-                                    })
-                            )
-                        )
-                );
+				new ActionRowBuilder<SelectMenuBuilder>().setComponents(
+				    new StringSelectMenuBuilder()
+				        .setCustomId(timestamp)
+				        .setOptions(
+				            filteredCategories.sort().map(
+				                (cat) =>
+				                    new StringSelectMenuOptionBuilder({
+				                        value: cat,
+				                        label: cat,
+				                        description: cat,
+				                    })
+				            )
+				        )
+				);
 
             const embed = await this.categoriesEmbed(
                 message,
@@ -65,7 +65,7 @@ export default class CommandsList extends KaikiCommand {
                 ]);
             }
 
-            const interactionMessage = await message.channel.send({
+            const interactionMessage = await message.reply({
                 embeds: [embed],
                 components: [component],
             });
@@ -96,11 +96,11 @@ export default class CommandsList extends KaikiCommand {
                 return arr.length === 1
                     ? `[\`${arr.join()}\`]`
                     : `[\`${arr
-                          .sort(
-                              (a, b) =>
-                                  b.length - a.length || a.localeCompare(b)
-                          )
-                          .join("`, `")}\`]`;
+                        .sort(
+                            (a, b) =>
+                                b.length - a.length || a.localeCompare(b)
+                        )
+                        .join("`, `")}\`]`;
             })
             .join("\n");
 
@@ -128,18 +128,18 @@ export default class CommandsList extends KaikiCommand {
                     {
                         name: cmd,
                         value:
-                            this.mapCommands(
-                                filtered
-                                    .filter((c) => c.minorCategory === cmd)
-                                    .sort()
-                            ) || "Empty",
+							this.mapCommands(
+							    filtered
+							        .filter((c) => c.minorCategory === cmd)
+							        .sort()
+							) || "Empty",
                         inline: true,
                     },
                 ]);
             }
         );
 
-        return message.channel.send({
+        return message.reply({
             embeds: [emb],
         });
     }
@@ -218,14 +218,14 @@ export default class CommandsList extends KaikiCommand {
                     {
                         name: cmd,
                         value:
-                            this.mapCommands(
-                                filtered
-                                    .filter(
-                                        (c: KaikiCommand) =>
-                                            c.minorCategory === cmd
-                                    )
-                                    .sort()
-                            ) || "Empty",
+							this.mapCommands(
+							    filtered
+							        .filter(
+							            (c: KaikiCommand) =>
+							                c.minorCategory === cmd
+							        )
+							        .sort()
+							) || "Empty",
                         inline: true,
                     },
                 ]);

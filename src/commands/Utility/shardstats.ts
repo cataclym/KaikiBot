@@ -5,12 +5,12 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiUtil from "../../lib/KaikiUtil";
 
 enum ShardStats {
-    "READY",
-    "CONNECTING",
-    "RECONNECTING",
-    "IDLE",
-    "NEARLY",
-    "DISCONNECTED",
+	"READY",
+	"CONNECTING",
+	"RECONNECTING",
+	"IDLE",
+	"NEARLY",
+	"DISCONNECTED",
 }
 
 @ApplyOptions<KaikiCommandOptions>({
@@ -25,7 +25,7 @@ export default class ShardStatisticsCommand extends KaikiCommand {
     public async messageRun(message: Message<true>) {
         const { ws } = message.client;
 
-        return message.channel.send({
+        return message.reply({
             content: `${await KaikiUtil.codeblock(`This guild is managed by shard: [${message.guild.shardId}]`, "xl")}
     ${await KaikiUtil.codeblock(
         Array.from(ws.shards.entries())

@@ -1,28 +1,31 @@
 import { PrismaClient } from "@prisma/client";
 import { ActivityType } from "discord.js";
 import {
-    ConnectionOptions,
     createPool,
     FieldPacket,
-    Pool,
+    Pool, PoolOptions
 } from "mysql2/promise";
 import KaikiSapphireClient from "../../lib/Kaiki/KaikiSapphireClient";
 import process from "process";
+import DatabaseProvider from "./DatabaseProvider";
+import { green } from "colorette";
+import KaikiCache from "../../lib/Cache/KaikiCache";
+import { MoneyService } from "../../lib/Money/MoneyService";
 
 export default class Database {
     private _client: KaikiSapphireClient<true>;
     public orm: PrismaClient;
     private _mySQLConnection: Pool;
 
-    constructor(client: KaikiSapphireClient<true>) {
+    public constructor(client: KaikiSapphireClient<true>) {
         this._client = client;
     }
 
-    get mySQLConnection(): Pool {
+    public get mySQLConnection(): Pool {
         return this._mySQLConnection;
     }
 
-    private createConfig(): ConnectionOptions {
+    private createConfig(): PoolOptions {
         return {
             user: process.env.DB_USER,
             password: process.env.DB_PASSWORD,
@@ -33,7 +36,6 @@ export default class Database {
             waitForConnections: true,
         };
     }
-
     public async init(): Promise<Database> {
         try {
             this._mySQLConnection = createPool(this.createConfig());
@@ -97,6 +99,60 @@ export default class Database {
             });
         }
         return guildUser;
+    }
+
+    public async initializeDatabase() {
+        const database = await this.init();
+
+        this._client.orm = database.orm;
+        this._client.connection = database.mySQLConnection;
+
+        this._client.botSettings = new DatabaseProvider(
+            this._client.connection,
+            "BotSettings",
+            { idColumn: "Id" },
+            false
+        );
+        this._client.botSettings
+            .init()
+            .then(() =>
+                this._client.logger.info(
+                    `${green("READY")} - Bot settings provider`
+                )
+            )
+            .catch((e) => this.dbRejected(e));
+
+        this._client.guildsDb = new DatabaseProvider(this._client.connection, "Guilds", {
+            idColumn: "Id",
+        });
+        this._client.guildsDb
+            .init()
+            .then(() =>
+                this._client.logger.info(`${green("READY")} - Guild provider`)
+            )
+            .catch((e) => this.dbRejected(e));
+
+        this._client.dadBotChannels = new DatabaseProvider(
+            this._client.connection,
+            "DadBotChannels",
+            { idColumn: "ChannelId" }
+        );
+        this._client.dadBotChannels
+            .init()
+            .then(() =>
+                this._client.logger.info(
+                    `${green("READY")} - DadBot channel provider`
+                )
+            )
+            .catch((e) => this.dbRejected(e));
+
+        this._client.cache = new KaikiCache(this.orm, this._client.connection, this._client.imageAPIs);
+        this._client.money = new MoneyService(this.orm);
+    }
+
+    private dbRejected(e: unknown) {
+        this._client.logger.fatal("Failed to connect to database using MySQL2.", e);
+        process.exit(1);
     }
 }
 

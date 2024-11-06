@@ -1,5 +1,4 @@
 import {
-    ColorResolvable,
     EmbedBuilder,
     Guild,
     GuildMember,
@@ -10,39 +9,39 @@ import KaikiSapphireClient from "../lib/Kaiki/KaikiSapphireClient";
 import Constants from "../struct/Constants";
 
 declare module "discord.js" {
-    interface Client extends KaikiClientInterface {
-        id: string | null;
-    }
+	interface Client extends KaikiClientInterface {
+		id: string | null;
+	}
 
-    export interface Guild {
-        isDadBotEnabledInGuildOnly(): boolean;
+	export interface Guild {
+		isDadBotEnabledInGuildOnly(): boolean;
 
-        client: KaikiSapphireClient<true>;
-    }
+		client: KaikiSapphireClient<true>;
+	}
 
-    export interface GuildMember {
-        hasExcludedRole(): boolean;
+	export interface GuildMember {
+		hasExcludedRole(): boolean;
 
-        client: KaikiSapphireClient<true>;
-    }
+		client: KaikiSapphireClient<true>;
+	}
 
-    export interface Message {
-        getMemberColorAsync(member?: GuildMember): Promise<ColorResolvable>;
+	export interface Message {
+		getMemberColorAsync(member?: GuildMember): Promise<ColorResolvable>;
 
-        isDadBotEnabledInGuildAndChannel(): boolean;
+		isDadBotEnabledInGuildAndChannel(): boolean;
 
-        client: KaikiSapphireClient<true>;
-    }
+		client: KaikiSapphireClient<true>;
+	}
 
-    export interface EmbedBuilder {
-        withOkColor(m?: Message | Guild): this;
+	export interface EmbedBuilder {
+		withOkColor(m?: Message | Guild): this;
 
-        withErrorColor(m?: Message | Guild): this;
-    }
+		withErrorColor(m?: Message | Guild): this;
+	}
 
-    export interface ButtonInteraction {
-        client: KaikiSapphireClient<true>;
-    }
+	export interface ButtonInteraction {
+		client: KaikiSapphireClient<true>;
+	}
 }
 
 GuildMember.prototype.hasExcludedRole = function () {

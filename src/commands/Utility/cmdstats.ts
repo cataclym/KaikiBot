@@ -17,7 +17,7 @@ export default class Cmdstats extends KaikiCommand {
 
         const sorted = db.sort((a, b) => b.Count - a.Count);
 
-        return message.channel.send({
+        return message.reply({
             embeds: [
                 new EmbedBuilder()
                     .setTitle("Command-stats")

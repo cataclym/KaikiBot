@@ -26,7 +26,7 @@ export default class KaikiEmbeds {
         new EmbedBuilder({
             title: "Error",
             description:
-                "No data received. Double check the subreddit's name and try again.",
+				"No data received. Double check the subreddit's name and try again.",
         }).withErrorColor(m);
 
     static embedFail = async (

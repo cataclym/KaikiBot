@@ -10,24 +10,24 @@ export class KaikiMoneyArgument extends Argument<bigint> {
 
         if (!int) {
             switch (input) {
-                case "ALL":
-                    return this.ok(
-                        await KaikiArgumentsTypes.getCurrency(context.message)
-                    );
+            case "ALL":
+                return this.ok(
+                    await KaikiArgumentsTypes.getCurrency(context.message)
+                );
 
-                case "HALF":
-                    return this.ok(
-                        (await KaikiArgumentsTypes.getCurrency(
-                            context.message
-                        )) / BigInt(2)
-                    );
+            case "HALF":
+                return this.ok(
+                    (await KaikiArgumentsTypes.getCurrency(
+                        context.message
+                    )) / BigInt(2)
+                );
 
-                case "MAX":
-                    return this.ok(
-                        BigInt(
-                            Constants.MAGIC_NUMBERS.LIB.KAIKI.KAIKI_ARGS.MAX_INT
-                        )
-                    );
+            case "MAX":
+                return this.ok(
+                    BigInt(
+                        Constants.MAGIC_NUMBERS.LIB.KAIKI.KAIKI_ARGS.MAX_INT
+                    )
+                );
             }
             return this.error({
                 context,

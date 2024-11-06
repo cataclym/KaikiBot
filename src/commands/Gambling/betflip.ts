@@ -5,16 +5,38 @@ import images from "../../data/images.json";
 import KaikiCommandOptions from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
-type Sides = "tails" | "heads";
+export enum Sides {
+	tails = "tails",
+	heads = "heads",
+}
 
 @ApplyOptions<KaikiCommandOptions>({
     name: "betflip",
     aliases: ["bf"],
     description:
-        "Bet on tails or heads. Guessing correct awards you 1.95x the currency you've bet.",
+		"Bet on tails or heads. Guessing correct awards you 1.95x the currency you've bet.",
     usage: ["5 heads", "10 t"],
 })
-export default class BetflipCommands extends KaikiCommand {
+export default class BetflipCommand extends KaikiCommand {
+    static RandomFlip = (): Sides =>
+        Math.random() < 0.5 ? Sides.tails : Sides.heads;
+
+    static async flip(
+        side = BetflipCommand.RandomFlip(),
+        amount = 100n
+    ): Promise<[Sides, bigint]> {
+        const coinFlipped: Sides = BetflipCommand.RandomFlip();
+
+        if (side === coinFlipped) {
+            return [
+                coinFlipped,
+                BigInt(Math.round(parseInt(amount.toString()) * 1.95)),
+            ];
+        }
+
+        return [coinFlipped, 0n];
+    }
+
     public async messageRun(message: Message, args: Args): Promise<Message> {
         const number = await args.pick("kaikiMoney");
         const coin = await args.rest("kaikiCoin");
@@ -26,7 +48,7 @@ export default class BetflipCommands extends KaikiCommand {
         );
 
         if (!success) {
-            return await message.channel.send({
+            return await message.reply({
                 embeds: [
                     new EmbedBuilder()
                         .setDescription(
@@ -37,33 +59,30 @@ export default class BetflipCommands extends KaikiCommand {
             });
         }
 
-        const coinFlipped: Sides = Math.random() < 0.5 ? "tails" : "heads";
+        const [coinFlipped, winnings] = await BetflipCommand.flip(coin, number);
 
         const emb = new EmbedBuilder({
             image: { url: images.gambling.coin[coinFlipped] },
         }).setTitle(`Flipped ${coinFlipped}!`);
 
         if (coin === coinFlipped) {
-            const amountWon = BigInt(
-                Math.round(parseInt(number.toString()) * 1.95)
-            );
             await this.client.money.add(
                 message.author.id,
-                amountWon,
+                winnings,
                 "Betflip won x1.95"
             );
 
-            return message.channel.send({
+            return message.reply({
                 embeds: [
                     emb
                         .setDescription(
-                            `You won **${amountWon}** ${this.client.money.currencySymbol}!!`
+                            `You won **${winnings}** ${this.client.money.currencySymbol}!!`
                         )
                         .withOkColor(message),
                 ],
             });
         } else {
-            return message.channel.send({
+            return message.reply({
                 embeds: [
                     emb
                         .setDescription("You lost, better luck next time")

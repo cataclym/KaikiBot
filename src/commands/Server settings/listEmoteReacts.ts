@@ -13,14 +13,14 @@ import Constants from "../../struct/Constants";
     preconditions: ["GuildOnly"],
 })
 export default class RemoveEmoteReactCommand extends KaikiCommand {
-    public async messageRun(message: Message<true>): Promise<Message> {
+    public async messageRun(message: Message<true>) {
         const db = await this.client.orm.emojiReactions.findMany({
                 where: { GuildId: BigInt(message.guildId) },
             }),
             pages: EmbedBuilder[] = [];
 
         if (!db.length) {
-            return message.channel.send({
+            return message.reply({
                 embeds: [
                     new EmbedBuilder()
                         .setTitle("No triggers")
@@ -34,16 +34,16 @@ export default class RemoveEmoteReactCommand extends KaikiCommand {
 
         for (
             let index =
-                    Constants.MAGIC_NUMBERS.CMDS.SERVER_SETTINGS.EMOTES
-                        .EMOTE_TRIGGERS_PR_PAGE,
+					Constants.MAGIC_NUMBERS.CMDS.SERVER_SETTINGS.EMOTES
+					    .EMOTE_TRIGGERS_PR_PAGE,
                 p = 0;
             p < db.length;
             index +=
-                Constants.MAGIC_NUMBERS.CMDS.SERVER_SETTINGS.EMOTES
-                    .EMOTE_TRIGGERS_PR_PAGE,
-                p +=
-                    Constants.MAGIC_NUMBERS.CMDS.SERVER_SETTINGS.EMOTES
-                        .EMOTE_TRIGGERS_PR_PAGE
+				Constants.MAGIC_NUMBERS.CMDS.SERVER_SETTINGS.EMOTES
+				    .EMOTE_TRIGGERS_PR_PAGE,
+            p +=
+					Constants.MAGIC_NUMBERS.CMDS.SERVER_SETTINGS.EMOTES
+					    .EMOTE_TRIGGERS_PR_PAGE
         ) {
             pages.push(
                 new EmbedBuilder()

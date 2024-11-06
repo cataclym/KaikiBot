@@ -79,7 +79,7 @@ export default class SimpCommand extends KaikiCommand {
         ]);
 
         const attachment = new AttachmentBuilder(picture, { name: "simp.jpg" });
-        await message.channel.send({
+        await message.reply({
             content: `Haha, you're a simp!! ${member}!`,
             files: [attachment],
             allowedMentions: {

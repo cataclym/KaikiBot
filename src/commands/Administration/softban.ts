@@ -9,7 +9,7 @@ import Constants from "../../struct/Constants";
     name: "softban",
     aliases: ["sb"],
     description:
-        "Bans and unbans a user by ID or name, with an optional message. Also removes all the users messages.",
+		"Bans and unbans a user by ID or name, with an optional message. Also removes all the users messages.",
     usage: "@notdreb Your behaviour is harmful",
     requiredUserPermissions: ["KickMembers", "ManageMessages"],
     requiredClientPermissions: ["BanMembers", "ManageMessages"],
@@ -31,7 +31,7 @@ export default class BanCommand extends KaikiCommand {
             );
 
         const username =
-            user instanceof User ? user.username : user.user.username;
+			user instanceof User ? user.username : user.user.username;
 
         const guild = message.guild,
             guildClientMember = guild.members.me;
@@ -50,16 +50,16 @@ export default class BanCommand extends KaikiCommand {
 
         if (!guildMember) {
             await message.guild?.members.ban(user, { reason: reason });
-            return message.channel.send({ embeds: [successBanEmbed] });
+            return message.reply({ embeds: [successBanEmbed] });
         }
 
         // Check if member is ban-able
         if (
             message.author.id !== message.guild?.ownerId &&
-            (message.member as GuildMember).roles.highest.position <=
-                guildMember.roles.highest.position
+			(message.member as GuildMember).roles.highest.position <=
+				guildMember.roles.highest.position
         ) {
-            return message.channel.send({
+            return message.reply({
                 embeds: [
                     new EmbedBuilder({
                         description: `${message.author}, You can't use this command on users with a role higher or equal to yours in the role hierarchy.`,
@@ -71,14 +71,14 @@ export default class BanCommand extends KaikiCommand {
         // x2
         else if (
             guildClientMember &&
-            guildClientMember.roles.highest.position <=
-                guildMember.roles.highest.position
+			guildClientMember.roles.highest.position <=
+				guildMember.roles.highest.position
         ) {
-            return message.channel.send({
+            return message.reply({
                 embeds: [
                     new EmbedBuilder({
                         description:
-                            "Sorry, I don't have permissions to ban this member.",
+							"Sorry, I don't have permissions to ban this member.",
                     }).withErrorColor(message),
                 ],
             });
@@ -88,7 +88,7 @@ export default class BanCommand extends KaikiCommand {
         const m = await message.guild?.members.ban(user, {
             reason: reason,
             deleteMessageSeconds:
-                Constants.MAGIC_NUMBERS.CMDS.ADMIN.SB_MSG_DEL_SECONDS,
+				Constants.MAGIC_NUMBERS.CMDS.ADMIN.SB_MSG_DEL_SECONDS,
         });
 
         try {
@@ -110,6 +110,6 @@ export default class BanCommand extends KaikiCommand {
             await message.guild.members.unban(user.id);
         }
 
-        return message.channel.send({ embeds: [successBanEmbed] });
+        return message.reply({ embeds: [successBanEmbed] });
     }
 }

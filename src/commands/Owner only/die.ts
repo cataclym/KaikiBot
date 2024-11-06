@@ -2,9 +2,7 @@ import process from "process";
 import { ApplyOptions } from "@sapphire/decorators";
 import {
     ActionRowBuilder,
-    ButtonBuilder,
-    EmbedBuilder,
-    InteractionCollector,
+    ButtonBuilder, EmbedBuilder, InteractionCollector,
     Message,
 } from "discord.js";
 import KaikiCommandOptions from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
@@ -25,7 +23,7 @@ export default class KillBotProcess extends KaikiCommand {
             return this.shutdown(message);
         }
 
-        const deleteMsg = await message.channel.send({
+        const deleteMsg = await message.reply({
             embeds: [
                 new EmbedBuilder()
                     .setDescription("Do you *really* want to shut me down?")
@@ -59,7 +57,7 @@ export default class KillBotProcess extends KaikiCommand {
                             .setAuthor({
                                 name: "Dying",
                                 iconURL:
-                                    message.client.user?.displayAvatarURL(),
+									message.client.user?.displayAvatarURL(),
                             })
                             .addFields([
                                 {
@@ -85,7 +83,11 @@ export default class KillBotProcess extends KaikiCommand {
     }
 
     private async shutdown(message: Message): Promise<void> {
-        await message.react("✅");
+
+        await Promise.all([
+            message.react("✅"),
+        ]);
+
         this.container.logger.warn("Shutting down");
         // Disconnects the client connection
         this.client.destroy().then(() => process.exit(0));

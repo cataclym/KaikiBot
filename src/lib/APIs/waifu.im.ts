@@ -17,7 +17,7 @@ export default class WaifuIm extends ImageAPI<EndPointSignatures> {
         mention?: GuildMember | null,
         nsfw = false
     ) {
-        return message.channel.send({
+        return message.reply({
             embeds: [
                 await APIProcessor.processImageAPIRequest(
                     message,
@@ -59,9 +59,10 @@ export default class WaifuIm extends ImageAPI<EndPointSignatures> {
     };
 }
 
-type EndPointSignatures =
-    | "uniform"
-    | "maid"
-    | "selfies"
-    | "marin-kitagawa"
-    | "ero";
+export enum EndPointSignatures {
+    uniform = "uniform",
+    maid = "maid",
+    selfies = "selfies",
+    marinKitagawa = "marin-kitagawa",
+    ero = "ero"
+}

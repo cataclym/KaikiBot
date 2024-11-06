@@ -9,7 +9,7 @@ import KaikiEmbeds from "../../lib/Kaiki/KaikiEmbeds";
 @ApplyOptions<KaikiCommandOptions>({
     name: "say",
     description:
-        "Bot will send the message you typed in the specified channel. It also takes embeds",
+		"Bot will send the message you typed in the specified channel. It also takes embeds",
     usage: ["#general hello from another channel", "<embed code>"],
     requiredUserPermissions: ["ManageMessages"],
     preconditions: ["GuildOnly"],
@@ -45,7 +45,7 @@ export default class SayCommand extends KaikiCommand {
                 .permissionsIn(targetChannel)
                 .has(PermissionsBitField.Flags.ManageMessages)
         ) {
-            return message.channel.send({
+            return message.reply({
                 embeds: [
                     await KaikiEmbeds.errorMessage(
                         message,

@@ -1,9 +1,10 @@
 import { ApplyOptions } from "@sapphire/decorators";
-import { EmbedBuilder, Message, time } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, EmbedBuilder, Message, time } from "discord.js";
 import KaikiCommandOptions from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 import KaikiEmbeds from "../../lib/Kaiki/KaikiEmbeds";
 import KaikiUtil from "../../lib/KaikiUtil";
+import Gambling from "../../lib/Gambling/Gambling";
 
 @ApplyOptions<KaikiCommandOptions>({
     name: "daily",
@@ -15,7 +16,7 @@ export default class ClaimDailyCommand extends KaikiCommand {
         const enabled = this.client.botSettings.get("1", "DailyEnabled", false);
 
         if (!enabled) {
-            return message.channel.send({
+            return message.reply({
                 embeds: [
                     await KaikiEmbeds.errorMessage(
                         message,
@@ -41,6 +42,10 @@ export default class ClaimDailyCommand extends KaikiCommand {
             });
         }
 
+        const gambling = new Gambling(message.author);
+        const button = gambling.createDailyReminder();
+        const actionRow = [new ActionRowBuilder<ButtonBuilder>().setComponents(button)];
+
         if (
             !(await this.client.cache.dailyProvider.hasClaimedDaily(
                 message.author.id
@@ -53,25 +58,27 @@ export default class ClaimDailyCommand extends KaikiCommand {
                 "Claimed daily"
             );
 
-            return message.channel.send({
+            return message.reply({
+                components: actionRow,
                 embeds: [
                     new EmbedBuilder()
                         .setDescription(
-                            `**${message.author.username}**, You've just claimed your daily allowance!\n+**${amount}** ${this.client.money.currencyName} ${this.client.money.currencySymbol}\n\nClaim again in ${time(new Date(new Date().getTime() + KaikiUtil.timeToMidnightOrNoon()), "R")}`
+                            `**${message.author.username}**, You've just claimed your daily allowance!\n+**${amount}** ${this.client.money.currencyName} ${this.client.money.currencySymbol}\n\nClaim again ${time(new Date(new Date().getTime() + KaikiUtil.timeToMidnightOrNoon()), "R")}`
                         )
                         .withOkColor(message),
                 ],
-            });
+            }).then(msg => gambling.handleReminder(msg));
         } else {
-            return message.channel.send({
+            return message.reply({
+                components: actionRow,
                 embeds: [
                     new EmbedBuilder()
                         .setDescription(
-                            `**${message.author.username}**, You've already claimed your daily allowance!!\n\nClaim again in ${time(new Date(new Date().getTime() + KaikiUtil.timeToMidnightOrNoon()), "R")}`
+                            `**${message.author.username}**, You've already claimed your daily allowance!!\n\nClaim again ${time(new Date(new Date().getTime() + KaikiUtil.timeToMidnightOrNoon()), "R")}`
                         )
                         .withErrorColor(message),
                 ],
-            });
+            }).then(msg => gambling.handleReminder(msg));
         }
     }
 }

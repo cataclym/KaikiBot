@@ -27,14 +27,14 @@ export default class HentaiCommand extends KaikiCommand {
             });
         });
 
-        return message.channel.send(
+        return message.reply(
             await this.client.hentaiService.grabHentai(
                 category ||
-                    HentaiService.hentaiArray[
-                        Math.floor(
-                            Math.random() * HentaiService.hentaiArray.length
-                        )
-                    ],
+					HentaiService.hentaiArray[
+					    Math.floor(
+					        Math.random() * HentaiService.hentaiArray.length
+					    )
+					],
                 "single"
             )
         );

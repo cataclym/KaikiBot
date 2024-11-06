@@ -50,7 +50,7 @@ export default class DeadbeatCommand extends KaikiCommand {
         const attachment = new AttachmentBuilder(image, {
             name: "deadBeats.jpg",
         });
-        await message.channel.send({
+        await message.reply({
             content: cleanContent(`Deadbeat 👉 ${member}!`, message.channel),
             files: [attachment],
         });

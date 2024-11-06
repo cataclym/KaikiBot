@@ -12,7 +12,7 @@ const timer = (ms: number) => new Promise((res) => setTimeout(res, ms));
     name: "deleteemote",
     aliases: ["de"],
     description:
-        "Deletes one or multiple emotes/emoji. Multiple emotes take longer, to avoid ratelimits. Keep a space between all emotes you wish to delete.",
+		"Deletes one or multiple emotes/emoji. Multiple emotes take longer, to avoid ratelimits. Keep a space between all emotes you wish to delete.",
     usage: ":NadekoSip:",
     requiredUserPermissions: ["ManageEmojisAndStickers"],
     requiredClientPermissions: ["ManageEmojisAndStickers"],
@@ -31,28 +31,29 @@ export default class DeleteEmoteCommand extends KaikiCommand {
                 const emoji = message.guild?.emojis.cache.get(emote.id);
 
                 if (emoji) {
-                    i > 0
-                        ? (await timer(
-                              Constants.MAGIC_NUMBERS.CMDS.EMOTES.DELETE_EMOTE
-                                  .DELETE_DELAY
-                          )) && i++
-                        : i++;
+                    if (i > 0) {
+                        await timer(
+                            Constants.MAGIC_NUMBERS.CMDS.EMOTES.DELETE_EMOTE
+                                .DELETE_DELAY);
+                    }
+
+                    i++;
 
                     const deleted = await emoji.delete();
 
                     if (!deleted) {
-                        return message.channel.send({
+                        return message.reply({
                             embeds: [
                                 new EmbedBuilder({
                                     title: "Error occurred",
                                     description:
-                                        "Some or all emotes could not be deleted.",
+										"Some or all emotes could not be deleted.",
                                 }).withErrorColor(message),
                             ],
                         });
                     }
                 } else {
-                    return message.channel.send({
+                    return message.reply({
                         embeds: [
                             new EmbedBuilder({
                                 title: "Error occurred",
@@ -63,7 +64,7 @@ export default class DeleteEmoteCommand extends KaikiCommand {
                 }
             }
 
-            return message.channel.send({
+            return message.reply({
                 embeds: [
                     new EmbedBuilder()
                         .setTitle("Success!")

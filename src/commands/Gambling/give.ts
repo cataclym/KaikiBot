@@ -21,7 +21,7 @@ export default class Give extends KaikiCommand {
         );
 
         if (user.id === msg.author.id) {
-            await msg.channel.send(
+            await msg.reply(
                 `You can't give yourself ${this.client.money.currencySymbol}`
             );
             return;
@@ -34,7 +34,7 @@ export default class Give extends KaikiCommand {
         );
 
         if (!success) {
-            await msg.channel.send({
+            await msg.reply({
                 embeds: [
                     new EmbedBuilder()
                         .setDescription(
@@ -51,7 +51,7 @@ export default class Give extends KaikiCommand {
             amount,
             `Gift from ${msg.author.username} [${msg.author.id}]`
         );
-        await msg.channel.send({
+        await msg.reply({
             embeds: [
                 new EmbedBuilder()
                     .setDescription(

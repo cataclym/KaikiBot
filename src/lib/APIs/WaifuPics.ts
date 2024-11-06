@@ -14,7 +14,7 @@ export default class WaifuPics extends ImageAPI<APIs> {
         endPoint: T,
         mention?: GuildMember | null
     ) {
-        return message.channel.send({
+        return message.reply({
             embeds: [
                 await APIProcessor.processImageAPIRequest(
                     message,
@@ -97,18 +97,19 @@ export default class WaifuPics extends ImageAPI<APIs> {
     };
 }
 
-type APIs =
-    | "bonk"
-    | "cry"
-    | "cuddle"
-    | "hug"
-    | "kiss"
-    | "pat"
-    | "waifu"
-    | "yeet"
-    | "bully"
-    | "megumin"
-    | "neko"
-    | "shinobu"
-    | "nom"
-    | "slap";
+export enum APIs {
+    bonk = "bonk",
+    cry = "cry",
+    cuddle = "cuddle",
+    hug = "hug",
+    kiss = "kiss",
+    pat = "pat",
+    waifu = "waifu",
+    yeet = "yeet",
+    bully = "bully",
+    megumin = "megumin",
+    neko = "neko",
+    shinobu = "shinobu",
+    nom = "nom",
+    slap = "slap"
+}

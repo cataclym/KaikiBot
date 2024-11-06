@@ -10,7 +10,7 @@ import Roles from "../../lib/Roles";
     name: "setrole",
     aliases: ["sr"],
     description:
-        "Gives a role to a user. The role you specify has to be lower in the role hierarchy than your highest role.",
+		"Gives a role to a user. The role you specify has to be lower in the role hierarchy than your highest role.",
     usage: ["@Dreb Gamer"],
     requiredUserPermissions: ["ManageRoles"],
     requiredClientPermissions: ["ManageRoles"],
@@ -28,7 +28,7 @@ export default class RoleAssignCommand extends KaikiCommand {
             if (!member.roles.cache.has(role.id)) {
                 await member.roles.add(role);
 
-                return message.channel.send({
+                return message.reply({
                     embeds: [
                         new EmbedBuilder({
                             title: "Success!",
@@ -37,7 +37,7 @@ export default class RoleAssignCommand extends KaikiCommand {
                     ],
                 });
             } else {
-                return message.channel.send({
+                return message.reply({
                     embeds: [
                         new EmbedBuilder({
                             title: "Error",
@@ -47,7 +47,7 @@ export default class RoleAssignCommand extends KaikiCommand {
                 });
             }
         } else {
-            return message.channel.send({
+            return message.reply({
                 embeds: [
                     await KaikiEmbeds.errorMessage(
                         message,

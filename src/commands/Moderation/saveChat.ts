@@ -1,7 +1,6 @@
-import fs from "fs";
 import { ApplyOptions } from "@sapphire/decorators";
 import { Args } from "@sapphire/framework";
-import { Collection, Message, MessageReaction } from "discord.js";
+import { AttachmentBuilder, Collection, Message } from "discord.js";
 import KaikiCommandOptions from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
@@ -16,7 +15,7 @@ export default class SaveChatCommand extends KaikiCommand {
     public async messageRun(
         message: Message,
         args: Args
-    ): Promise<MessageReaction> {
+    ) {
         const amount = await args.pick("number", { maximum: 100, minimum: 1 });
 
         const collection = await message.channel.messages.fetch({
@@ -33,16 +32,10 @@ export default class SaveChatCommand extends KaikiCommand {
                 .join("\n")
         );
 
-        const filename = `${Date.now()}.txt`;
+        const name = (date = new Date()) => `${date.toLocaleDateString()}-${date.toLocaleTimeString()}.txt`
 
-        fs.writeFileSync(filename, attachment);
-
-        await message.member?.send({
-            files: [filename],
-        });
-
-        fs.rmSync(filename);
-
-        return message.react("✅");
+        return Promise.all([message.member?.send({
+            files: [new AttachmentBuilder(attachment, { name: name() })],
+        }), message.react("✅")]);
     }
 }

@@ -4,7 +4,7 @@ import APIProcessor from "./APIProcessor";
 import ImageAPI from "./Common/ImageAPI";
 import { ImageAPIOptions } from "./Common/Types";
 
-type APIs = "spank";
+export enum APIs { spank = "spank" }
 
 export default class NekosLife extends ImageAPI<APIs> {
     constructor(data: ImageAPIOptions<"spank"> = NekosLife.data) {
@@ -16,7 +16,7 @@ export default class NekosLife extends ImageAPI<APIs> {
         endPoint: T,
         mention?: GuildMember | null
     ) {
-        return message.channel.send({
+        return message.reply({
             embeds: [
                 await APIProcessor.processImageAPIRequest(
                     message,

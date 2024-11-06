@@ -2,6 +2,7 @@ import { ApplyOptions } from "@sapphire/decorators";
 import { Message } from "discord.js";
 import KaikiCommandOptions from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+import { EndPointSignatures } from "../../lib/APIs/KawaiiAPI";
 
 @ApplyOptions<KaikiCommandOptions>({
     name: "run",
@@ -13,7 +14,7 @@ export default class RunCommand extends KaikiCommand {
     public async messageRun(message: Message): Promise<Message | void> {
         return this.client.imageAPIs.KawaiiAPI.sendImageAPIRequest(
             message,
-            "run"
+            EndPointSignatures.run
         );
     }
 }

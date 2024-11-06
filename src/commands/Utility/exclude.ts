@@ -10,7 +10,7 @@ import SlashCommandsLib from "../../lib/SlashCommands/SlashCommandsLib";
     aliases: ["excl", "e"],
     usage: "",
     description:
-        "Excludes you from being targeted by dad-bot. Execute command again to reverse this action.",
+		"Excludes you from being targeted by dad-bot. Execute command again to reverse this action.",
     requiredClientPermissions: ["ManageRoles"],
     preconditions: ["GuildOnly"],
 })

@@ -35,7 +35,7 @@ export default class UrbanDictCommand extends KaikiCommand {
         );
 
         if (!list.length) {
-            return message.channel.send({
+            return message.reply({
                 embeds: [
                     new EmbedBuilder({
                         description: `No results found for **${query}**.`,

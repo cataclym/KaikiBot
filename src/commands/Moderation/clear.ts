@@ -50,8 +50,8 @@ export default class ClearCommand extends KaikiCommand {
                 setTimeout(
                     () => m.delete(),
                     manualDelete.size *
-                        Constants.MAGIC_NUMBERS.CMDS.MODERATION.CLEAR
-                            .DELETE_TIMEOUT
+						Constants.MAGIC_NUMBERS.CMDS.MODERATION.CLEAR
+						    .DELETE_TIMEOUT
                 )
             );
 

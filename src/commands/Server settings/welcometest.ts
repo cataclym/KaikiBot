@@ -29,15 +29,15 @@ export default class WelcomeTestCommand extends KaikiCommand {
         const greetHandler = new GreetHandler(message.member);
         const result = await greetHandler.sendWelcomeLeaveMessage(welcomeData);
 
-        return message.channel.send({
+        return message.reply({
             embeds: [
                 result
                     ? new EmbedBuilder()
-                          .setTitle("Message sent successfully!")
-                          .withOkColor(message)
+                        .setTitle("Message sent successfully!")
+                        .withOkColor(message)
                     : new EmbedBuilder()
-                          .setTitle("Message was not sent successfully!")
-                          .withErrorColor(message),
+                        .setTitle("Message was not sent successfully!")
+                        .withErrorColor(message),
             ],
         });
     }

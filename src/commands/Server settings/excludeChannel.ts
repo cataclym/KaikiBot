@@ -9,7 +9,7 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
     name: "excludechannel",
     aliases: ["excludechnl", "echnl"],
     description:
-        "Exclude or include, one or more, channels from dadbot. Provide no parameter to show a list of excluded channels. ",
+		"Exclude or include, one or more, channels from dadbot. Provide no parameter to show a list of excluded channels. ",
     usage: ["", "#channel"],
     requiredUserPermissions: ["ManageChannels"],
     preconditions: ["GuildOnly"],
@@ -37,8 +37,8 @@ export default class ExcludeDadbotChannelCommand extends KaikiCommand {
             guildDb = (await this.client.db.getOrCreateGuild(
                 bigIntGuildId
             )) as Guilds & {
-                DadBotChannels: DadBotChannels[];
-            };
+				DadBotChannels: DadBotChannels[];
+			};
             guildDb["DadBotChannels"] = [];
         }
 
@@ -47,24 +47,24 @@ export default class ExcludeDadbotChannelCommand extends KaikiCommand {
             .withOkColor(message);
 
         if (!channels) {
-            return message.channel.send({
+            return message.reply({
                 embeds: [
                     embed
                         .setDescription(
                             guildDb.DadBotChannels.length
                                 ? guildDb.DadBotChannels.map((k) => {
-                                      const channel =
-                                          message.guild.channels.cache.get(
-                                              String(k.ChannelId)
-                                          );
+                                    const channel =
+											message.guild.channels.cache.get(
+											    String(k.ChannelId)
+											);
 
-                                      return channel
-                                          ? `${channel.name} [${channel.id}]`
-                                          : String(k.ChannelId);
-                                  })
-                                      .sort((a, b) => (a < b ? -1 : 1))
-                                      .join("\n")
-                                      .trim()
+                                    return channel
+                                        ? `${channel.name} [${channel.id}]`
+                                        : String(k.ChannelId);
+                                })
+                                    .sort((a, b) => (a < b ? -1 : 1))
+                                    .join("\n")
+                                    .trim()
                                 : "No channels excluded"
                         )
                         .withOkColor(message),
@@ -152,7 +152,7 @@ export default class ExcludeDadbotChannelCommand extends KaikiCommand {
             ]);
         }
 
-        return message.channel.send({
+        return message.reply({
             embeds: [embed],
         });
     }

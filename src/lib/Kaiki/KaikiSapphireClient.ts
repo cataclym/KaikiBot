@@ -18,7 +18,7 @@ import Database from "../../struct/db/Database";
 import DatabaseProvider from "../../struct/db/DatabaseProvider";
 import AnniversaryRolesService from "../AnniversaryRolesService";
 import type { ClientImageAPIs } from "../APIs/Common/Types";
-import KawaiiAPI from "../APIs/KawaiiAPI";
+import KawaiiAPI, { EndPointSignatures } from "../APIs/KawaiiAPI";
 import NekosLife from "../APIs/nekos.life";
 import NekosAPI from "../APIs/NekosAPI";
 import PurrBot from "../APIs/PurrBot";
@@ -31,7 +31,9 @@ import { MoneyService } from "../Money/MoneyService";
 import KaikiClientInterface from "./KaikiClientInterface";
 import fs from "fs/promises";
 import { container } from "@sapphire/pieces";
-import { createDjsClient } from "discordbotlist-djs";
+import NeofetchCommand from "../../commands/Fun/neofetch";
+import DiscordBotListService from "../DiscordBotList/DiscordBotListService";
+import { Webserver } from "../WebAPI/Webserver";
 
 export default class KaikiSapphireClient<Ready extends true>
     extends SapphireClient<Ready>
@@ -49,13 +51,13 @@ export default class KaikiSapphireClient<Ready extends true>
     public owner: User;
     public package: PackageJSON;
     public hentaiService: HentaiService;
+    private webListener: Webserver;
 
     constructor() {
         super({
             allowedMentions: { parse: ["users"], repliedUser: true },
             intents: [
                 GatewayIntentBits.DirectMessageReactions,
-                GatewayIntentBits.DirectMessageTyping,
                 GatewayIntentBits.DirectMessages,
                 GatewayIntentBits.GuildModeration,
                 GatewayIntentBits.GuildEmojisAndStickers,
@@ -64,10 +66,9 @@ export default class KaikiSapphireClient<Ready extends true>
                 GatewayIntentBits.GuildMembers,
                 GatewayIntentBits.GuildMessageReactions,
                 GatewayIntentBits.GuildMessages,
-                GatewayIntentBits.GuildPresences,
                 GatewayIntentBits.GuildWebhooks,
                 GatewayIntentBits.Guilds,
-                GatewayIntentBits.MessageContent,
+                GatewayIntentBits.MessageContent
             ],
             partials: [
                 Partials.Reaction,
@@ -88,7 +89,8 @@ export default class KaikiSapphireClient<Ready extends true>
             typing: true,
         });
 
-        (async () => await this.initializeDatabase())().catch((e) => {
+        this.db = new Database(this);
+        (async () => await this.db.initializeDatabase())().catch((e) => {
             throw new Error(e);
         });
 
@@ -119,12 +121,10 @@ export default class KaikiSapphireClient<Ready extends true>
             throw new Error("Missing bot client user!");
         }
 
-        if (
-            process.env.DBL_API_TOKEN &&
-            process.env.NODE_ENV === "production"
-        ) {
-            this.dblService();
+        if (process.env.DBL_API_TOKEN && process.env.NODE_ENV === "production") {
+            new DiscordBotListService(this);
         }
+
         await client.application?.fetch();
 
         if (!client.application?.owner) {
@@ -132,9 +132,9 @@ export default class KaikiSapphireClient<Ready extends true>
         }
 
         const owner =
-            client.application.owner instanceof Team
-                ? client.application.owner.owner?.user
-                : client.application.owner;
+			client.application.owner instanceof Team
+			    ? client.application.owner.owner?.user
+			    : client.application.owner;
 
         if (!owner) {
             return KaikiSapphireClient.noBotOwner();
@@ -145,30 +145,39 @@ export default class KaikiSapphireClient<Ready extends true>
         client.logger.info(
             `Bot account: ${colorette.greenBright(client.user.username)}`
         );
+
         client.logger.info(
             `Bot owner: ${colorette.greenBright(client.owner.username)}`
         );
 
+        this.webListener = new Webserver(this);
+
+        await Promise.all([
+            client.filterOptionalCommands(),
+            client.sendOnlineMsg(),
+        ]);
+    }
+
+    private async sendOnlineMsg() {
         // Let bot owner know when bot goes online.
-        if (client.user && client.owner.id === process.env.OWNER) {
+        if (this.user && this.owner.id === process.env.OWNER) {
             // Inconspicuous emotes haha
             const emoji = ["✨", "♥️", "✅", "🇹🇼"][
                 Math.floor(Math.random() * 4)
             ];
-            await client.owner.send({
+
+            await this.owner.send({
                 embeds: [
                     new EmbedBuilder()
                         .setTitle(emoji)
                         .setDescription("Bot is online!")
                         .setFooter({
-                            text: `${client.package.name} - v${client.package.version}`,
+                            text: `${this.package.name} - v${this.package.version}`,
                         })
                         .withOkColor(),
                 ],
             });
         }
-
-        await client.filterOptionalCommands();
     }
 
     private static noBotOwner(): never {
@@ -220,76 +229,61 @@ export default class KaikiSapphireClient<Ready extends true>
 
     private async resetTimer(): Promise<void> {
         setTimeout(async () => {
-            // Loop this
-            await this.resetTimer();
-
-            // Reset daily currency claims
-            await this.resetDailyClaims();
+            await Promise.all([
+                // Loop this
+                this.resetTimer(),
+                // Reset daily currency claims
+                this.resetDailyClaims(),
+                this.sendDailyReminders()
+            ])
         }, KaikiUtil.timeToMidnightOrNoon());
+    }
+
+    private async sendDailyReminders() {
+        const users = await this.orm.discordUsers.findMany({
+            where: {
+                DailyReminder: {
+                    not: null
+                }
+            }
+        })
+
+        await Promise.all(users.map(async (user) => this.users.cache.get(String(user.UserId))
+            ?.send({
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle("Reminder")
+                        .setDescription("Your currency claim is ready!")
+                        .withOkColor()
+                ]
+            })));
+
+        await this.orm.discordUsers.updateMany({
+            where: {
+                DailyReminder: {
+                    not: null
+                }
+            },
+            data: {
+                DailyReminder: null
+            }
+        })
     }
 
     public async initializeServices() {
         this.anniversaryService = new AnniversaryRolesService(this);
 
         // This will execute at midnight
-        await Promise.all([this.dailyResetTimer(), this.resetTimer()]);
-        this.logger.info("AnniversaryRolesService | Service initiated");
+        await Promise.all([
+            this.dailyResetTimer(),
+            this.resetTimer(),
+            this.fetchMembersLoop(),
+            this.presenceLoop()
+        ]);
+        this.logger.info("Timers and loops started");
 
         this.hentaiService = new HentaiService();
         this.logger.info("HentaiService | Service initiated");
-
-        void this.presenceLoop();
-    }
-
-    private async initializeDatabase() {
-        this.db = new Database(this);
-
-        const database = await this.db.init();
-
-        this.orm = database.orm;
-        this.connection = database.mySQLConnection;
-
-        this.botSettings = new DatabaseProvider(
-            this.connection,
-            "BotSettings",
-            { idColumn: "Id" },
-            false
-        );
-        this.botSettings
-            .init()
-            .then(() =>
-                this.logger.info(
-                    `${colorette.green("READY")} - Bot settings provider`
-                )
-            )
-            .catch((e) => this.dbRejected(e));
-
-        this.guildsDb = new DatabaseProvider(this.connection, "Guilds", {
-            idColumn: "Id",
-        });
-        this.guildsDb
-            .init()
-            .then(() =>
-                this.logger.info(`${colorette.green("READY")} - Guild provider`)
-            )
-            .catch((e) => this.dbRejected(e));
-
-        this.dadBotChannels = new DatabaseProvider(
-            this.connection,
-            "DadBotChannels",
-            { idColumn: "ChannelId" }
-        );
-        this.dadBotChannels
-            .init()
-            .then(() =>
-                this.logger.info(
-                    `${colorette.green("READY")} - DadBot channel provider`
-                )
-            )
-            .catch((e) => this.dbRejected(e));
-
-        this.cache = new KaikiCache(this.orm, this.connection, this.imageAPIs);
-        this.money = new MoneyService(this.orm);
     }
 
     private async presenceLoop(): Promise<NodeJS.Timer> {
@@ -322,6 +316,23 @@ export default class KaikiSapphireClient<Ready extends true>
         }
     }
 
+    private async fetchMembersLoop() {
+        const guilds = this.guilds.cache;
+        const iterator = guilds.values();
+        const interval = setInterval(async () => {
+            // Get next guild from iterator
+            const guild = iterator.next().value as Guild | undefined
+            // Stop looping interval when there are no more guilds in iterator
+            if (!guild) {
+                clearInterval(interval);
+                return;
+            }
+            // Fetch guild members
+            await guild.members.fetch();
+            // Half a minute
+        }, 30000);
+    }
+
     public async resetDailyClaims(): Promise<void> {
         const updated = await this.orm.discordUsers.updateMany({
             where: {
@@ -339,11 +350,8 @@ export default class KaikiSapphireClient<Ready extends true>
     async filterOptionalCommands() {
         const commandStore = this.stores.get("commands");
 
-        if (
-            !process.env.KAWAIIKEY ||
-            process.env.KAWAIIKEY === "[YOUR_OPTIONAL_KAWAII_KEY]"
-        ) {
-            for (const entry of ["run", "peek", "pout", "lick"]) {
+        if (!process.env.KAWAIIKEY || process.env.KAWAIIKEY === "[YOUR_OPTIONAL_KAWAII_KEY]") {
+            for (const entry in EndPointSignatures) {
                 await commandStore.unload(entry);
             }
             this.logger.warn(
@@ -351,54 +359,17 @@ export default class KaikiSapphireClient<Ready extends true>
             );
         }
 
-        // Check if 'neofetch' is available
+        // Check if 'neofetch/fastfetch' is available
         try {
-            execSync("command -v neofetch >/dev/null 2>&1");
+            execSync("command -v fastfetch >/dev/null 2>&1");
         } catch {
-            await commandStore.unload("neofetch");
-            this.logger.warn(
-                "Neofetch wasn't detected! Neofetch command will be disabled."
-            );
+            try {
+                execSync("command -v neofetch >/dev/null 2>&1");
+            } catch {
+                await commandStore.unload("neofetch");
+                this.logger.warn("Neofetch or fastfetch wasn't detected! Neofetch command will be disabled.");
+            }
+            NeofetchCommand.usingFastFetch = false;
         }
-    }
-
-    private dbRejected(e: unknown) {
-        this.logger.fatal("Failed to connect to database using MySQL2.", e);
-        process.exit(1);
-    }
-
-    private dblService() {
-        const client = createDjsClient(process.env.DBL_API_TOKEN!, this);
-
-        client.startPosting();
-        client.startPolling();
-
-        client.on("vote", async (vote) => {
-            const amount = this.botSettings.get("1", "DailyAmount", 250);
-            await Promise.all([
-                this.users.cache
-                    .get(vote.id)
-                    ?.send({
-                        embeds: [
-                            new EmbedBuilder()
-                                .setTitle("Thank you for your support! 🎉")
-                                .setDescription(
-                                    `You received ${amount} ${this.money.currencyName} ${this.money.currencySymbol}`
-                                )
-                                .setFooter({
-                                    text: "🧡",
-                                })
-                                .setColor(Constants.kaikiOrange),
-                        ],
-                    })
-                    // Ignore failed DMs
-                    .catch(() => undefined),
-                this.money.add(
-                    vote.id,
-                    BigInt(amount),
-                    "Voted - DiscordBotList"
-                ),
-            ]);
-        });
     }
 }

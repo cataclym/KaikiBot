@@ -6,7 +6,7 @@ export class GuildArgument extends Argument<Guild> {
         const guild = context.message.client.guilds.cache.find(
             (g) =>
                 g.name.toLowerCase() === parameter.toLowerCase() ||
-                g.id === parameter
+				g.id === parameter
         );
 
         if (guild) return this.ok(guild);

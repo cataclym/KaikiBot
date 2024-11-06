@@ -25,9 +25,9 @@ export default class HentaiNukeCommand extends KaikiCommand {
         });
         const megaResponse = await this.client.hentaiService.grabHentai(
             category ??
-                HentaiService.hentaiArray[
-                    Math.floor(Math.random() * HentaiService.hentaiArray.length)
-                ],
+				HentaiService.hentaiArray[
+				    Math.floor(Math.random() * HentaiService.hentaiArray.length)
+				],
             "bomb"
         );
 
@@ -36,7 +36,7 @@ export default class HentaiNukeCommand extends KaikiCommand {
             p < megaResponse.length;
             index += 10, p += 10
         ) {
-            await message.channel.send({
+            await message.reply({
                 embeds: megaResponse
                     .slice(p, index)
                     .map((link) =>

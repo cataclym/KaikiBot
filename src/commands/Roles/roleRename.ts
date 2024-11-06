@@ -12,7 +12,7 @@ import Constants from "../../struct/Constants";
     name: "rolerename",
     aliases: ["rolename", "rn"],
     description:
-        "Renames a given role. The role you specify has to be lower in the role hierarchy than your highest role. Use 'quotes around rolename with spaces'.",
+		"Renames a given role. The role you specify has to be lower in the role hierarchy than your highest role. Use 'quotes around rolename with spaces'.",
     usage: ["@Gamer weeb"],
     requiredUserPermissions: ["ManageRoles"],
     requiredClientPermissions: ["ManageRoles"],
@@ -37,7 +37,7 @@ export default class RoleRenameCommand extends KaikiCommand {
             }).catch((e) => {
                 throw new Error("Error: Failed to edit role.\n" + e);
             });
-            return message.channel.send({
+            return message.reply({
                 embeds: [
                     new EmbedBuilder()
                         .setTitle("Success!")
@@ -46,7 +46,7 @@ export default class RoleRenameCommand extends KaikiCommand {
                 ],
             });
         } else {
-            return message.channel.send({
+            return message.reply({
                 embeds: [
                     await KaikiEmbeds.errorMessage(
                         message,

@@ -19,7 +19,7 @@ export default class ReloadCommand extends KaikiCommand {
 
         await unloaded.reload();
 
-        return message.channel.send({
+        return message.reply({
             embeds: [
                 new EmbedBuilder({
                     title: "Command reloaded",

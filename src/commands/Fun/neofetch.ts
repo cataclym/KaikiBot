@@ -14,13 +14,16 @@ import Constants from "../../struct/Constants";
     name: "neofetch",
     aliases: ["neo", "fastfetch"],
     description:
-        "Displays neofetch/fastfetch ascii art. Provide argument '--list' to get a list of all supported distros.",
+		"Displays neofetch/fastfetch ascii art. Provide argument '--list' to get a list of all supported distros.",
     usage: ["", "opensuse", "--list"],
     cooldownDelay: 2000,
     typing: true,
     flags: ["list"],
 })
 export default class NeofetchCommand extends KaikiCommand {
+
+    public static usingFastFetch = true;
+
     private static neofetchArgument = Args.make<string>((parameter) => {
         const success = distros.find((str) => {
             const k = str.toLowerCase();
@@ -48,17 +51,17 @@ export default class NeofetchCommand extends KaikiCommand {
             const pages: EmbedBuilder[] = [];
             for (
                 let i =
-                        Constants.MAGIC_NUMBERS.CMDS.FUN.NEOFETCH
-                            .DISTROS_PR_PAGE,
+						Constants.MAGIC_NUMBERS.CMDS.FUN.NEOFETCH
+						    .DISTROS_PR_PAGE,
                     p = 0;
                 p < distros.length;
                 i =
-                    i +
-                    Constants.MAGIC_NUMBERS.CMDS.FUN.NEOFETCH.DISTROS_PR_PAGE,
-                    p =
-                        p +
-                        Constants.MAGIC_NUMBERS.CMDS.FUN.NEOFETCH
-                            .DISTROS_PR_PAGE
+					i +
+					Constants.MAGIC_NUMBERS.CMDS.FUN.NEOFETCH.DISTROS_PR_PAGE,
+                p =
+						p +
+						Constants.MAGIC_NUMBERS.CMDS.FUN.NEOFETCH
+						    .DISTROS_PR_PAGE
             ) {
                 pages.push(
                     new EmbedBuilder()
@@ -75,24 +78,29 @@ export default class NeofetchCommand extends KaikiCommand {
             }
             return sendPaginatedMessage(message, pages, {});
         } else {
-            let cmd = `neofetch -L --ascii_distro ${os}|sed 's/\x1B\\[[0-9;?]*[a-zA-Z]//g'`;
 
+            let cmd = `neofetch -L --ascii_distro ${os}|sed 's/\x1B\\[[0-9;?]*[a-zA-Z]//g'`;
             const { platform } = process;
 
             if (!os && platform !== "win32")
                 cmd = "neofetch -L | sed 's/\x1B\\[[0-9;\\?]*[a-zA-Z]//g'";
 
+            if (NeofetchCommand.usingFastFetch) cmd = `fastfetch --config external/fastfetch.jsonc -l ${os}`;
+
             exec(cmd, async (error, stdout, stderr) => {
                 if (error || stderr) {
                     return this.container.logger.error(error);
                 }
-                return message.channel.send(
+                return message.reply(
                     await KaikiUtil.codeblock(
                         "\u00AD" +
-                            stdout.replace(
-                                /```/g,
-                                "\u0300`\u0300`\u0300`\u0300"
-                            )
+                        stdout.replace(
+							    /```/g,
+							    "\u0300`\u0300`\u0300`\u0300"
+                        ).replace(
+                            Constants.NeoFetchRegExp,
+                            ""
+                        )
                     )
                 );
             });

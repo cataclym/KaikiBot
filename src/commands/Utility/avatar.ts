@@ -67,6 +67,6 @@ export default class AvatarCommand extends KaikiCommand {
             }
         }
 
-        return message.channel.send({ embeds });
+        return message.reply({ embeds });
     }
 }

@@ -8,7 +8,7 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
     aliases: ["sticky"],
     usage: "",
     description:
-        "Toggles whether bot will give all roles back when someone re-joins the server",
+		"Toggles whether bot will give all roles back when someone re-joins the server",
     requiredUserPermissions: ["Administrator"],
     preconditions: ["GuildOnly"],
 })
@@ -24,7 +24,7 @@ export default class ToggleStickyRolesCommand extends KaikiCommand {
             !db.StickyRoles
         );
 
-        return message.channel.send({
+        return message.reply({
             embeds: [
                 new EmbedBuilder()
                     .setDescription(

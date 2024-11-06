@@ -49,8 +49,8 @@ export default class AnniversaryRolesService {
                     )
                 ) {
                     const [anniversaryRoleCreated, anniversaryRoleJoin] = <
-                        Role[]
-                    >await this.handleGuildRoles(guild);
+						Role[]
+					>await this.handleGuildRoles(guild);
                     // Get roles from the result of checking if guild has the roles at all / after creating them.
                     await Promise.all(
                         guild.members.cache.map(async (member) => {
@@ -136,8 +136,8 @@ export default class AnniversaryRolesService {
                     )
                 ) {
                     const [anniversaryRoleCreated, anniversaryRoleJoin] = <
-                        Role[]
-                    >await this.handleGuildRoles(guild);
+						Role[]
+					>await this.handleGuildRoles(guild);
                     // Get roles from the result of checking if guild has the roles at all / after creating them.
                     await this.memberCheckAnniversary(
                         member,
@@ -174,7 +174,7 @@ export default class AnniversaryRolesService {
         }
         if (
             member.joinedAt?.getMonth() === month &&
-            member.joinedAt.getFullYear() !== new Date().getFullYear()
+			member.joinedAt.getFullYear() !== new Date().getFullYear()
         ) {
             if (member.joinedAt.getDate() === day) {
                 this.listUserJoinedAt.push(member.user.username);
@@ -225,8 +225,8 @@ export default class AnniversaryRolesService {
                 ) {
                     // Check if perms.
                     const [anniversaryRoleCreated, anniversaryRoleJoin] = <
-                        Role[]
-                    >await this.handleGuildRoles(guild);
+						Role[]
+					>await this.handleGuildRoles(guild);
                     // Get roles from the result of checking if guild has the roles at all / after creating them.
                     await Promise.all(
                         guild.members.cache.map(async (member) => {

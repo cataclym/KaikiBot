@@ -16,7 +16,7 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 })
 export default class ForgetMeCommand extends KaikiCommand {
     public async messageRun(message: Message): Promise<void> {
-        const deleteMsg = await message.channel.send({
+        const deleteMsg = await message.reply({
             embeds: [
                 new EmbedBuilder()
                     .setDescription(
@@ -64,13 +64,13 @@ export default class ForgetMeCommand extends KaikiCommand {
                     });
 
                     const guildData =
-                        await this.client.orm.guildUsers.deleteMany({
-                            where: {
-                                UserId: BigInt(message.author.id),
-                            },
-                        });
+						await this.client.orm.guildUsers.deleteMany({
+						    where: {
+						        UserId: BigInt(message.author.id),
+						    },
+						});
 
-                    message.channel.send({
+                    message.reply({
                         embeds: [
                             new EmbedBuilder()
                                 .setTitle("Deleted data")

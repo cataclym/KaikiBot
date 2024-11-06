@@ -11,7 +11,7 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 })
 export default class InviteCommand extends KaikiCommand {
     public async messageRun(message: Message): Promise<Message> {
-        return message.channel.send({
+        return message.reply({
             embeds: [
                 new EmbedBuilder({
                     title: "Invite me to your server",

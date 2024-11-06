@@ -12,7 +12,7 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
     name: "setuserrole",
     aliases: ["sur"],
     description:
-        "Assigns a role to a user. Provide the command again to remove the role.",
+		"Assigns a role to a user. Provide the command again to remove the role.",
     usage: ["@Platinum [role]"],
     requiredUserPermissions: ["ManageRoles"],
     requiredClientPermissions: ["ManageRoles"],
@@ -36,7 +36,7 @@ export default class SetUserRoleCommand extends KaikiCommand {
             isPosition = botRole?.comparePositionTo(role);
 
         if (!isPosition || isPosition <= 0) {
-            return message.channel.send({
+            return message.reply({
                 embeds: [
                     await this.embedFail(
                         message,
@@ -46,10 +46,10 @@ export default class SetUserRoleCommand extends KaikiCommand {
             });
         } else if (
             message.author.id !== message.guild?.ownerId &&
-            (message.member as GuildMember).roles.highest.position <
-                role.position
+			(message.member as GuildMember).roles.highest.position <
+				role.position
         ) {
-            return message.channel.send({
+            return message.reply({
                 embeds: [
                     await this.embedFail(
                         message,
@@ -85,7 +85,7 @@ export default class SetUserRoleCommand extends KaikiCommand {
                 throw new Error("Failed to remove user role.\n" + err);
             }
 
-            return message.channel.send({
+            return message.reply({
                 embeds: [
                     await this.embedSuccess(
                         message,
@@ -107,7 +107,7 @@ export default class SetUserRoleCommand extends KaikiCommand {
             });
 
             await member.roles.add(role);
-            return message.channel.send({
+            return message.reply({
                 embeds: [
                     await this.embedSuccess(
                         message,

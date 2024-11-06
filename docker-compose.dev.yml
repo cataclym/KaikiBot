@@ -1,33 +1,23 @@
-version: "3.8"
+include:
+    - db.yml
 
 services:
-    db:
-        image: mariadb:latest
-        restart: unless-stopped
-        env_file: ./.env
-        command: --wait-timeout=28800
-        ports:
-            - "3307:3306"
-        environment:
-            - MYSQL_ROOT_PASSWORD=$DB_ROOT_PASSWORD
-            - MYSQL_DATABASE=$DB_NAME
-            - MYSQL_USER=$DB_USER
-            - MYSQL_PASSWORD=$DB_PASSWORD
-        volumes:
-            - db:/var/lib/mysql
     kaikibot:
         depends_on:
             - db
+        links:
+            - db
+        ports:
+            - "6363:6363"
         build:
             context: .
             dockerfile: Dockerfile.dev
+            network: host
             args:
-                - DATABASE_URL=$DATABASE_URL
+                - DATABASE_URL=$DATABASE_URL_DOCKER_BUILD
         restart: unless-stopped
         env_file: ./.env
         stdin_open: true
         tty: true
         volumes:
             - ./src:/usr/app/src
-volumes:
-    db:

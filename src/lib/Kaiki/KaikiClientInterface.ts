@@ -10,16 +10,16 @@ import PackageJSON from "../Interfaces/Common/PackageJSON";
 import { MoneyService } from "../Money/MoneyService";
 
 export default interface KaikiClientInterface {
-    anniversaryService: AnniversaryRolesService;
-    botSettings: DatabaseProvider;
-    cache: KaikiCache;
-    connection: Pool;
-    dadBotChannels: DatabaseProvider;
-    guildsDb: DatabaseProvider;
-    money: MoneyService;
-    orm: PrismaClient;
-    db: Database;
-    owner: User;
-    package: PackageJSON;
-    hentaiService: HentaiService;
+	anniversaryService: AnniversaryRolesService;
+	botSettings: DatabaseProvider;
+	cache: KaikiCache;
+	connection: Pool;
+	dadBotChannels: DatabaseProvider;
+	guildsDb: DatabaseProvider;
+	money: MoneyService;
+	orm: PrismaClient;
+	db: Database;
+	owner: User;
+	package: PackageJSON;
+	hentaiService: HentaiService;
 }

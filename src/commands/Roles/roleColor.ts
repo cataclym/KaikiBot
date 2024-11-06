@@ -18,7 +18,7 @@ import Roles from "../../lib/Roles";
     name: "rolecolor",
     aliases: ["roleclr", "rclr"],
     description:
-        "Sets or displays the color of a given role, or your highest role.",
+		"Sets or displays the color of a given role, or your highest role.",
     usage: ["@Gamer ff00ff"],
     preconditions: ["GuildOnly"],
 })
@@ -39,7 +39,7 @@ export default class RoleColorCommand extends KaikiCommand {
                 await imgFromColor(KaikiUtil.convertHexToRGB(role.hexColor)),
                 { name: "color.png" }
             );
-            return message.channel.send({
+            return message.reply({
                 files: [attachment],
                 embeds: [
                     new EmbedBuilder({
@@ -61,7 +61,7 @@ export default class RoleColorCommand extends KaikiCommand {
             if (
                 !member?.permissions.has(PermissionsBitField.Flags.ManageRoles)
             ) {
-                return message.channel.send({
+                return message.reply({
                     embeds: [
                         await KaikiEmbeds.errorMessage(
                             message,
@@ -74,7 +74,7 @@ export default class RoleColorCommand extends KaikiCommand {
                     PermissionsBitField.Flags.ManageRoles
                 )
             ) {
-                return message.channel.send({
+                return message.reply({
                     embeds: [
                         await KaikiEmbeds.errorMessage(
                             message,
@@ -85,7 +85,7 @@ export default class RoleColorCommand extends KaikiCommand {
             }
 
             return role.edit({ color: [clr.r, clr.g, clr.b] }).then((r) => {
-                return message.channel.send({
+                return message.reply({
                     files: [attachment],
                     embeds: [
                         new EmbedBuilder({
@@ -96,7 +96,7 @@ export default class RoleColorCommand extends KaikiCommand {
                 });
             });
         } else {
-            return message.channel.send({
+            return message.reply({
                 embeds: [
                     await KaikiEmbeds.errorMessage(
                         message,

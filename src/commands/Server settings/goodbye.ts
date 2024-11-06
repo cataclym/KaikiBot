@@ -8,7 +8,7 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
     name: "goodbye",
     aliases: ["goodbyetoggle", "byetoggle", "bye"],
     description:
-        "Toggles leave messages. Bot defaults to current channel if no channel is provided.",
+		"Toggles leave messages. Bot defaults to current channel if no channel is provided.",
     usage: ["", "#leave-channel"],
     requiredUserPermissions: ["ManageGuild"],
     preconditions: ["GuildOnly"],
@@ -33,7 +33,7 @@ export default class GoodbyeConfigCommand extends KaikiCommand {
 
         if (
             guildTable.ByeChannel === undefined ||
-            guildTable.ByeChannel === null
+			guildTable.ByeChannel === null
         ) {
             await this.client.orm.guilds.update({
                 where: {
@@ -66,7 +66,7 @@ export default class GoodbyeConfigCommand extends KaikiCommand {
             embed.setDescription(`Set goodbye message to ${channel.name}`);
         }
 
-        return message.channel.send({
+        return message.reply({
             embeds: [embed],
         });
     }

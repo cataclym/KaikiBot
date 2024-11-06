@@ -10,7 +10,6 @@ import {
     PermissionsBitField,
     resolveColor,
 } from "discord.js";
-import SlashCommandsLib from "../../lib/SlashCommands/SlashCommandsLib";
 import { imgFromColor } from "../Color";
 import { CategoriesEnum } from "../Enums/categoriesEnum";
 import GreetHandler from "../GreetHandler";
@@ -47,9 +46,6 @@ export default class Config {
                     "DadBot",
                     true
                 );
-                await message.guild?.commands.create(
-                    SlashCommandsLib.excludeData
-                );
 
                 embed
                     .setTitle(
@@ -81,7 +77,7 @@ export default class Config {
                 )
                 .withErrorColor(message);
         }
-        return message.channel.send({
+        return message.reply({
             embeds: [embed],
         });
     }
@@ -117,7 +113,7 @@ export default class Config {
         if (booleanArgument) {
             if (!anniversaryEnabled) {
                 await message.client.anniversaryService.checkBirthdayOnAdd(
-                    message.guild as Guild
+					message.guild as Guild
                 );
                 await message.client.guildsDb.set(
                     message.guildId,
@@ -147,7 +143,7 @@ export default class Config {
             );
         }
 
-        return message.channel.send({
+        return message.reply({
             embeds: [embed],
         });
     }
@@ -169,7 +165,7 @@ export default class Config {
 
         await message.client.guildsDb.set(guildID, "Prefix", value);
 
-        return message.channel.send({
+        return message.reply({
             embeds: [
                 new EmbedBuilder({
                     title: "Prefix changed!",
@@ -189,7 +185,7 @@ export default class Config {
 
         await message.client.guildsDb.set(message.guildId, "OkColor", intValue);
 
-        return message.channel.send({
+        return message.reply({
             embeds: [
                 new EmbedBuilder()
                     .setTitle("Success!")
@@ -214,7 +210,7 @@ export default class Config {
             intValue
         );
 
-        return message.channel.send({
+        return message.reply({
             embeds: [
                 new EmbedBuilder()
                     .setTitle("Success!")
@@ -239,8 +235,8 @@ export default class Config {
                 BigInt(message.guildId)
             );
             const blockedCategoriesObj: {
-                BlockedCategories: BlockedCategories[];
-            } = { BlockedCategories: [] };
+				BlockedCategories: BlockedCategories[];
+			} = { BlockedCategories: [] };
             Object.assign(g, blockedCategoriesObj);
             db = g as Guilds & { BlockedCategories: BlockedCategories[] };
         }
@@ -298,9 +294,9 @@ export default class Config {
                     {
                         name: "Guild prefix",
                         value:
-                            Prefix === process.env.PREFIX
-                                ? `\`${process.env.PREFIX}\` (Default)`
-                                : `\`${Prefix}\``,
+							Prefix === process.env.PREFIX
+							    ? `\`${process.env.PREFIX}\` (Default)`
+							    : `\`${Prefix}\``,
                         inline: true,
                     },
                     {

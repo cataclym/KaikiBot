@@ -7,9 +7,9 @@ export class KaikiHentaiArgument extends Argument<string> {
         return KaikiHentaiArgument.hentaiArray.includes(parameter.toLowerCase())
             ? this.ok(parameter)
             : this.error({
-                  parameter,
-                  message:
-                      "The provided argument could not be resolved to a hentai category.",
-              });
+                parameter,
+                message:
+						"The provided argument could not be resolved to a hentai category.",
+            });
     }
 }

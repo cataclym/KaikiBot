@@ -29,8 +29,8 @@ export default class ServerInfoCommand extends KaikiCommand {
                 {
                     name: "Owner",
                     value:
-                        message.client.users.cache.get(guild.ownerId)
-                            ?.username ?? guild.ownerId,
+						message.client.users.cache.get(guild.ownerId)
+						    ?.username ?? guild.ownerId,
                     inline: true,
                 },
                 {
@@ -74,18 +74,18 @@ News: **${guild.channels.cache.filter((channel) => channel.type === ChannelType.
                     name: "Features",
                     value: guild.features.length
                         ? guild.features
-                              .map(
-                                  (f: GuildFeature & UndocumentedFeatures) =>
-                                      `* ${Constants.guildFeatures[f] || f}`
-                              )
-                              .sort()
-                              .join("\n")
+                            .map(
+                                (f: GuildFeature & UndocumentedFeatures) =>
+                                    `* ${Constants.guildFeatures[f] || f}`
+                            )
+                            .sort()
+                            .join("\n")
                         : "None",
                     inline: false,
                 },
             ],
         });
 
-        return message.channel.send({ embeds: [emb.withOkColor(message)] });
+        return message.reply({ embeds: [emb.withOkColor(message)] });
     }
 }

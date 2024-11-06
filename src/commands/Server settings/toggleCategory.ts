@@ -10,7 +10,7 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
     name: "togglecategory",
     aliases: ["tc"],
     description:
-        "Toggles a category. Provide no parameter to see a list of disabled categories.",
+		"Toggles a category. Provide no parameter to see a list of disabled categories.",
     usage: ["Anime", ""],
     requiredUserPermissions: ["Administrator"],
     preconditions: ["GuildOnly"],
@@ -22,9 +22,9 @@ export default class ToggleCategoryCommand extends KaikiCommand {
     ): Promise<Message> {
         if (args.finished) {
             const blockedCategories =
-                await message.client.orm.blockedCategories.findMany({
-                    where: { GuildId: BigInt(message.guildId) },
-                });
+				await message.client.orm.blockedCategories.findMany({
+				    where: { GuildId: BigInt(message.guildId) },
+				});
 
             if (!blockedCategories.length) {
                 throw new UserError({
@@ -38,7 +38,7 @@ export default class ToggleCategoryCommand extends KaikiCommand {
                 .filter(Boolean)
                 .join("\n");
 
-            return message.channel.send({
+            return message.reply({
                 embeds: [
                     new EmbedBuilder()
                         .setTitle("Disabled categories")
@@ -102,7 +102,7 @@ export default class ToggleCategoryCommand extends KaikiCommand {
             `${categoryStr} has been ${exists ? "enabled" : "disabled"}.`
         );
 
-        return message.channel.send({
+        return message.reply({
             embeds: [
                 exists
                     ? embed.withOkColor(message)

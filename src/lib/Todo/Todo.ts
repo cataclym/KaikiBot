@@ -75,66 +75,66 @@ export class Todo {
         react: () => Promise<MessageReaction>
     ) {
         const buttonIdentityStrings =
-            Todo.createButtonIdentityStrings(currentTime);
+			Todo.createButtonIdentityStrings(currentTime);
 
         const messageComponentCollector =
-            sentMsg.createMessageComponentCollector({
-                filter: (i) =>
-                    Object.values(buttonIdentityStrings).includes(i.customId) &&
-                    author.id === i.user.id,
-                time: 120000,
-            });
+			sentMsg.createMessageComponentCollector({
+			    filter: (i) =>
+			        Object.values(buttonIdentityStrings).includes(i.customId) &&
+					author.id === i.user.id,
+			    time: 120000,
+			});
 
         messageComponentCollector.on(
             "collect",
             async (buttonInteraction: ButtonInteraction) => {
                 switch (buttonInteraction.customId) {
-                    case buttonIdentityStrings.add:
-                        messageComponentCollector.stop();
-                        await Promise.all([
-                            ButtonAdd.add(
-                                buttonInteraction,
-                                currentTime,
-                                todoArray,
-                                sentMsg
-                            ),
-                            react(),
-                        ]);
-                        break;
+                case buttonIdentityStrings.add:
+                    messageComponentCollector.stop();
+                    await Promise.all([
+                        ButtonAdd.add(
+                            buttonInteraction,
+                            currentTime,
+                            todoArray,
+                            sentMsg
+                        ),
+                        react(),
+                    ]);
+                    break;
 
-                    case buttonIdentityStrings.remove:
-                        messageComponentCollector.stop();
-                        await Promise.all([
-                            ButtonRemove.Remove(
-                                buttonInteraction,
-                                currentTime,
-                                todoArray
-                            ),
-                            react(),
-                        ]);
-                        break;
+                case buttonIdentityStrings.remove:
+                    messageComponentCollector.stop();
+                    await Promise.all([
+                        ButtonRemove.Remove(
+                            buttonInteraction,
+                            currentTime,
+                            todoArray
+                        ),
+                        react(),
+                    ]);
+                    break;
 
-                    case buttonIdentityStrings.forward:
-                        await buttonInteraction.deferUpdate();
-                        page = page + 1 < pages.length ? ++page : 0;
-                        await updateMsg();
-                        break;
+                case buttonIdentityStrings.forward:
+                    await buttonInteraction.deferUpdate();
+                    page = page + 1 < pages.length ? ++page : 0;
+                    await updateMsg();
+                    break;
 
-                    case buttonIdentityStrings.backward:
-                        await buttonInteraction.deferUpdate();
-                        page = page > 0 ? --page : pages.length - 1;
-                        await updateMsg();
-                        break;
+                case buttonIdentityStrings.backward:
+                    await buttonInteraction.deferUpdate();
+                    page = page > 0 ? --page : pages.length - 1;
+                    await updateMsg();
+                    break;
 
-                    case buttonIdentityStrings.clear:
-                        await sentMsg.edit({
-                            components: [],
-                        });
-                        messageComponentCollector.stop();
-                        break;
+                case buttonIdentityStrings.clear:
+                    await sentMsg.edit({
+                        components: [],
+                    });
+                    messageComponentCollector.stop();
+                    break;
 
-                    default:
-                        break;
+                default:
+                    break;
                 }
             }
         );
@@ -162,59 +162,59 @@ export class Todo {
         todoArray: Todos[]
     ) {
         const buttonIdentityStrings =
-            Todo.createButtonIdentityStrings(currentTime);
+			Todo.createButtonIdentityStrings(currentTime);
 
         const messageComponentCollector =
-            message.createMessageComponentCollector({
-                filter: (i) =>
-                    Object.values(buttonIdentityStrings).includes(i.customId) &&
-                    interaction.user.id === i.user.id,
-                time: 120000,
-            });
+			message.createMessageComponentCollector({
+			    filter: (i) =>
+			        Object.values(buttonIdentityStrings).includes(i.customId) &&
+					interaction.user.id === i.user.id,
+			    time: 120000,
+			});
 
         messageComponentCollector.on(
             "collect",
             async (buttonInteraction: ButtonInteraction) => {
                 switch (buttonInteraction.customId) {
-                    case buttonIdentityStrings.add:
-                        messageComponentCollector.stop();
-                        await ButtonAdd.furtherAdd(
-                            buttonInteraction,
-                            currentTime,
-                            todoArray
-                        );
-                        break;
+                case buttonIdentityStrings.add:
+                    messageComponentCollector.stop();
+                    await ButtonAdd.furtherAdd(
+                        buttonInteraction,
+                        currentTime,
+                        todoArray
+                    );
+                    break;
 
-                    case buttonIdentityStrings.remove:
-                        messageComponentCollector.stop();
-                        await ButtonRemove.Remove(
-                            buttonInteraction,
-                            currentTime,
-                            todoArray
-                        );
-                        break;
+                case buttonIdentityStrings.remove:
+                    messageComponentCollector.stop();
+                    await ButtonRemove.Remove(
+                        buttonInteraction,
+                        currentTime,
+                        todoArray
+                    );
+                    break;
 
-                    case buttonIdentityStrings.forward:
-                        await buttonInteraction.deferUpdate();
-                        page = page + 1 < pages.length ? ++page : 0;
-                        await updateMsg();
-                        break;
+                case buttonIdentityStrings.forward:
+                    await buttonInteraction.deferUpdate();
+                    page = page + 1 < pages.length ? ++page : 0;
+                    await updateMsg();
+                    break;
 
-                    case buttonIdentityStrings.backward:
-                        await buttonInteraction.deferUpdate();
-                        page = page > 0 ? --page : pages.length - 1;
-                        await updateMsg();
-                        break;
+                case buttonIdentityStrings.backward:
+                    await buttonInteraction.deferUpdate();
+                    page = page > 0 ? --page : pages.length - 1;
+                    await updateMsg();
+                    break;
 
-                    case buttonIdentityStrings.clear:
-                        await interaction.editReply({
-                            components: [],
-                        });
-                        messageComponentCollector.stop();
-                        break;
+                case buttonIdentityStrings.clear:
+                    await interaction.editReply({
+                        components: [],
+                    });
+                    messageComponentCollector.stop();
+                    break;
 
-                    default:
-                        break;
+                default:
+                    break;
                 }
             }
         );

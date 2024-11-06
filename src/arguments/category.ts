@@ -18,7 +18,7 @@ export class CategoryArgument extends Argument<string> {
                 parameter,
                 context,
                 message:
-                    "The provided argument could not be resolved to a category.",
+					"The provided argument could not be resolved to a category.",
             });
         }
 

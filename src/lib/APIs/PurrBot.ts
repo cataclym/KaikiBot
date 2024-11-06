@@ -4,7 +4,7 @@ import APIProcessor from "./APIProcessor";
 import ImageAPI from "./Common/ImageAPI";
 import { ImageAPIOptions } from "./Common/Types";
 
-type EndpointSignatures = "bite" | "blush" | "feed";
+export enum EndpointSignatures { bite = "bite", blush = "blush", feed = "feed" }
 
 export default class PurrBot extends ImageAPI<EndpointSignatures> {
     constructor(data: ImageAPIOptions<EndpointSignatures> = PurrBot.data) {
@@ -16,7 +16,7 @@ export default class PurrBot extends ImageAPI<EndpointSignatures> {
         endPoint: T,
         mention?: GuildMember | null
     ) {
-        return message.channel.send({
+        return message.reply({
             embeds: [
                 await APIProcessor.processImageAPIRequest(
                     message,

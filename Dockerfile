@@ -1,8 +1,8 @@
-FROM node:18
+FROM node:20
 LABEL authors="Ole"
 
 WORKDIR /kaikibot
-RUN apt update && apt install neofetch -y
+RUN apt update && curl -sLO https://github.com/fastfetch-cli/fastfetch/releases/latest/download/fastfetch-linux-amd64.deb && dpkg -i fastfetch-linux-amd64.deb
 COPY package*.json .
 RUN npm install
 COPY prisma .

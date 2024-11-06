@@ -49,6 +49,6 @@ export default class SquishCommand extends KaikiCommand {
             image: { url: "attachment://Stretched.jpg" },
         }).withOkColor(message);
 
-        return message.channel.send({ files: [attachment], embeds: [embed] });
+        return message.reply({ files: [attachment], embeds: [embed] });
     }
 }

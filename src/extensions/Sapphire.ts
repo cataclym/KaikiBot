@@ -5,25 +5,28 @@ import { HentaiTypes } from "../lib/Hentai/HentaiService";
 import KaikiCommand from "../lib/Kaiki/KaikiCommand";
 import { KaikiColor } from "../lib/Types/KaikiColor";
 import { Categories } from "../lib/Types/Miscellaneous";
+import { Sides } from "../commands/Gambling/betflip";
+import { Emote } from "../arguments/kaikiEmote";
 
 declare module "@sapphire/framework" {
-    interface Preconditions {
-        OwnerOnly: never;
-    }
+	interface Preconditions {
+		OwnerOnly: never;
+	}
 
-    interface ArgType {
-        activityType: ValidActivities;
-        category: Categories;
-        command: KaikiCommand;
-        guild: Guild;
-        kaikiCoin: string;
-        kaikiColor: KaikiColor;
-        kaikiHentai: HentaiTypes;
-        kaikiMoney: bigint;
-        welcomeGoodbyeMessage: JSONToMessageOptions;
-    }
+	interface ArgType {
+		activityType: ValidActivities;
+		category: Categories;
+		command: KaikiCommand;
+		guild: Guild;
+		kaikiCoin: Sides;
+		kaikiColor: KaikiColor;
+		kaikiHentai: HentaiTypes;
+		kaikiMoney: bigint;
+		kaikiEmote: Emote | string;
+		welcomeGoodbyeMessage: JSONToMessageOptions;
+	}
 
-    interface SapphireClient {
-        initializeServices(): Promise<void>;
-    }
+	interface SapphireClient {
+		initializeServices(): Promise<void>;
+	}
 }

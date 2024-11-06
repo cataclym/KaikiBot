@@ -3,6 +3,7 @@
 -   [Readme](../README.md)
 -   Docs
     -   [Guide](GUIDE.md)
+    -   [Placeholders](PLACEHOLDERS.md)
 
 # .env setup guide
 
@@ -34,16 +35,6 @@ Example
 
 Prefix is `+`
 
-## KAWAIIKEY
-
--   Login to https://kawaii.red/dashboard/ with your Discord account
--   Reveal and copy the token
--   Paste the token in the .env file. Make sure it looks like the example below.
-
-Example
-
-    KAWAIIKEY=142788173885276162.DspDpD0isjuXAKD73vWs
-
 ## MySQL
 
 Replace `yourUsername` and `yourPassword` with your MySQL user and password credentials
@@ -58,6 +49,16 @@ Example
     DB_PASSWORD=yourPassword
     DB_ROOT_PASSWORD=yourRootPassword
     DB_NAME=kaikidb
+
+## KAWAIIKEY (Optional)
+
+-   Login to https://kawaii.red/dashboard/ with your Discord account
+-   Reveal and copy the token
+-   Paste the token in the .env file. Make sure it looks like the example below.
+
+Example
+
+    KAWAIIKEY=142788173885276162.DspDpD0isjuXAKD73vWs
 
 ## The rest of the file
 

@@ -20,13 +20,13 @@ export default class ExecCommand extends KaikiCommand {
 
         return exec(command, async (e, stdout) => {
             if (e) {
-                return message.channel.send({
+                return message.reply({
                     embeds: [
                         new EmbedBuilder()
                             .setAuthor({
                                 name: "Command errored",
                                 iconURL:
-                                    message.client.user?.displayAvatarURL(),
+									message.client.user?.displayAvatarURL(),
                             })
                             .setDescription(
                                 await KaikiUtil.codeblock(
@@ -42,7 +42,7 @@ export default class ExecCommand extends KaikiCommand {
                 });
             }
 
-            return message.channel.send({
+            return message.reply({
                 embeds: [
                     new EmbedBuilder()
                         .setAuthor({

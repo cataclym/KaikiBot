@@ -12,10 +12,14 @@ import {
 import KaikiCommand from "../Kaiki/KaikiCommand";
 
 type ErrorContext = {
-    message: Message;
-    command: KaikiCommand;
-    commandContext: Record<string, unknown>;
+	message: Message;
+	command: KaikiCommand;
+	commandContext: Record<string, unknown>;
 };
+
+function isArgsMissingError(identifier: string): identifier is Identifiers.ArgsMissing {
+    return identifier === Identifiers.ArgsMissing;
+}
 
 export default async (
     error: UserError,
@@ -25,7 +29,7 @@ export default async (
         title: "Argument error",
     };
 
-    if (error.identifier === Identifiers.ArgsMissing) {
+    if (isArgsMissingError(error.identifier)) {
         const errorContext = error.context as ErrorContext;
         const prefix = errorContext.commandContext.prefix;
 

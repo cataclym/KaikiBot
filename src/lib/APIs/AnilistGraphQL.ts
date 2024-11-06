@@ -120,14 +120,12 @@ query ($page: Int, $perPage: Int, $search: String, $type: MediaType) {
 `;
 
     static async handleResponse(response: {
-        json: () => Promise<any>;
-        ok: any;
-    }) {
+		json: () => Promise<any>;
+		ok: any;
+	}) {
         const json = await response.json();
         return await (response.ok ? json : Promise.reject(json));
     }
 
-    static handleError(error: never) {
-        container.logger.error(error);
-    }
+    static handleError = (error: never) => container.logger.error(error);
 }

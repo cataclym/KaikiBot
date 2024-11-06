@@ -9,10 +9,9 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
     aliases: ["glb"],
     usage: "",
     description: "Shows global currency leaderboard for the current server.",
-    preconditions: ["GuildOnly"],
 })
 export default class GlobalLeaderboard extends KaikiCommand {
-    public async messageRun(message: Message): Promise<Message> {
+    public async messageRun(message: Message): Promise<void> {
         const { currencySymbol } = this.client.money;
 
         const allEntries = (await this.client.orm.discordUsers.findMany({}))

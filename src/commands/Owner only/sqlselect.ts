@@ -10,7 +10,7 @@ import Constants from "../../struct/Constants";
 @ApplyOptions<KaikiCommandOptions>({
     name: "sqlselect",
     description:
-        "Executes sql queries and returns the number of affected rows. Dangerous.",
+		"Executes sql queries and returns the number of affected rows. Dangerous.",
     usage: ["SELECT * FROM DiscordUsers LIMIT 5"],
     preconditions: ["OwnerOnly"],
 })
@@ -20,7 +20,7 @@ export default class SetNameCommand extends KaikiCommand {
 
         const res = await this.client.connection.query<RowDataPacket[]>(str);
 
-        return message.channel.send(
+        return message.reply(
             await KaikiUtil.codeblock(
                 KaikiUtil.trim(
                     JSON.stringify(res[0], null, 4),

@@ -8,7 +8,7 @@ import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
     name: "roleinfo",
     aliases: ["role", "rinfo"],
     description:
-        "Shows info about a given role. If no role is supplied, it defaults to current one.",
+		"Shows info about a given role. If no role is supplied, it defaults to current one.",
     usage: ["@Gamers"],
     preconditions: ["GuildOnly"],
 })
@@ -23,7 +23,7 @@ export default class RoleInfoCommand extends KaikiCommand {
             ? message.member.roles.highest
             : await args.rest("role");
 
-        return message.channel.send({
+        return message.reply({
             embeds: [
                 new EmbedBuilder({
                     title: `Info for ${role.name}`,

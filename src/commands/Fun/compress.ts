@@ -51,6 +51,6 @@ export default class CompressCommand extends KaikiCommand {
             image: { url: "attachment://compressed.jpg" },
         }).withOkColor(message);
 
-        return message.channel.send({ files: [attachment], embeds: [embed] });
+        return message.reply({ files: [attachment], embeds: [embed] });
     }
 }

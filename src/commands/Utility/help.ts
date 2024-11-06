@@ -4,6 +4,7 @@ import { EmbedBuilder, Message } from "discord.js";
 import { Subcommand } from "@sapphire/plugin-subcommands";
 import KaikiCommandOptions from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+import Constants from "../../struct/Constants";
 
 @ApplyOptions<KaikiCommandOptions>({
     name: "help",
@@ -40,6 +41,11 @@ export default class HelpCommand extends KaikiCommand {
                         value: `\`${prefix}help [command]\` to get more help. Example: \`${prefix}help ping\``,
                         inline: false,
                     },
+                    {
+                        name: "Policies",
+                        value: `[Privacy policy](${Constants.LINKS.PRIVACY_POLICY}) | [Terms of Use](${Constants.LINKS.TERMS_OF_USE})`
+
+                    }
                 ])
                 .setAuthor({
                     name: `${name} v${version}`,
@@ -51,7 +57,7 @@ export default class HelpCommand extends KaikiCommand {
                     iconURL: avatarURL,
                 });
 
-            return message.channel.send({ embeds: [embed] });
+            return message.reply({ embeds: [embed] });
         }
 
         const command = await args.pick("command").catch(() => undefined);
@@ -62,26 +68,26 @@ export default class HelpCommand extends KaikiCommand {
                 .join("`, `");
 
             const extractedCommandUsage =
-                command instanceof Subcommand
-                    ? command.options.usage
-                    : command.usage;
+				command instanceof Subcommand
+				    ? command.options.usage
+				    : command.usage;
 
             const commandUsage = extractedCommandUsage
                 ? Array.isArray(extractedCommandUsage)
                     ? extractedCommandUsage
-                          .sort(
-                              (a, b) =>
-                                  b.length - a.length || a.localeCompare(b)
-                          )
-                          .map((u) => `${prefix}${command.name} ${u}`)
-                          .join("\n")
+                        .sort(
+                            (a, b) =>
+                                b.length - a.length || a.localeCompare(b)
+                        )
+                        .map((u) => `${prefix}${command.name} ${u}`)
+                        .join("\n")
                     : `${prefix}${command.name} ${command.usage}`
                 : `${prefix}${command.name}`;
 
             const cooldown =
-                command.options.cooldownDelay ||
-                this.client.options.defaultCooldown?.delay ||
-                0;
+				command.options.cooldownDelay ||
+				this.client.options.defaultCooldown?.delay ||
+				0;
 
             if (aliases.length) {
                 embed.addFields([
@@ -129,9 +135,9 @@ export default class HelpCommand extends KaikiCommand {
                 ]);
             }
 
-            return message.channel.send({ embeds: [embed] });
+            return message.reply({ embeds: [embed] });
         } else {
-            return message.channel.send({
+            return message.reply({
                 embeds: [
                     new EmbedBuilder({
                         description: `**${message.author.username}** Command \`${args.next()}\` not found.`,

@@ -1,72 +1,72 @@
 export default interface AnimeData {
-    data: Data;
+	data: Data;
 }
 
 export interface Data {
-    Page: Page;
+	Page: Page;
 }
 
 export interface Page {
-    media: Media[];
+	media: Media[];
 }
 
 export interface Media {
-    idMal: number;
-    title: Title;
-    coverImage: CoverImage;
-    description: string;
-    bannerImage: string;
-    format: string;
-    status: string;
-    type: string;
-    meanScore: number;
-    startDate: EndDateClass;
-    endDate: EndDateClass;
-    duration: number;
-    source: string;
-    episodes: number;
-    chapters: null;
-    volumes: null;
-    studios: Studios;
-    synonyms: string[];
-    genres: string[];
-    trailer: Trailer;
-    externalLinks: ExternalLink[];
-    siteUrl: string;
-    isAdult: boolean;
-    nextAiringEpisode: null;
+	idMal: number;
+	title: Title;
+	coverImage: CoverImage;
+	description: string;
+	bannerImage: string;
+	format: string;
+	status: string;
+	type: string;
+	meanScore: number;
+	startDate: EndDateClass;
+	endDate: EndDateClass;
+	duration: number;
+	source: string;
+	episodes: number;
+	chapters: null;
+	volumes: null;
+	studios: Studios;
+	synonyms: string[];
+	genres: string[];
+	trailer: Trailer;
+	externalLinks: ExternalLink[];
+	siteUrl: string;
+	isAdult: boolean;
+	nextAiringEpisode: null;
 }
 
 export interface CoverImage {
-    large: string;
-    color: null | string;
+	large: string;
+	color: null | string;
 }
 
 export interface EndDateClass {
-    year: number;
-    month: number;
-    day: number;
+	year: number | null;
+	month: number | null;
+	day: number | null;
 }
 
 export interface ExternalLink {
-    site: string;
-    url: string;
+	site: string;
+	url: string;
 }
 
 export interface Studios {
-    nodes: Node[];
+	nodes: Node[];
 }
 
 export interface Node {
-    name: string;
+	name: string;
 }
 
 export interface Title {
-    romaji: string;
-    english: null | string;
+	romaji: string;
+	english: null | string;
 }
 
 export interface Trailer {
-    id: string;
-    site: string;
+	id: string;
+	site: string;
 }

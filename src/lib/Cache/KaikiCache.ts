@@ -1,12 +1,10 @@
 import pkg from "@prisma/client";
-import { Collection, Message, Snowflake } from "discord.js";
+import { Message, Snowflake } from "discord.js";
 import { Pool, ResultSetHeader, RowDataPacket } from "mysql2/promise";
 import { APIs, ClientImageAPIs } from "../APIs/Common/Types";
 import KaikiUtil from "../KaikiUtil";
-import { AnimeQuoteResponse } from "../Types/Miscellaneous";
 import Constants from "../../struct/Constants";
 import {
-    EmoteReactCache,
     EmoteTrigger,
     GuildString,
     PartitionResult,
@@ -14,16 +12,15 @@ import {
 } from "../Interfaces/Kaiki/KaikiCache";
 
 export enum ERCacheType {
-    HAS_SPACE,
-    NO_SPACE,
+	HAS_SPACE,
+	NO_SPACE,
 }
 
 export default class KaikiCache {
-    public animeQuoteCache: Collection<string, AnimeQuoteResponse>;
-    public cmdStatsCache: Map<string, number>;
-    public emoteReactCache: EmoteReactCache;
+    public cmdStatsCache = new Map<string, number>();
+    public emoteReactCache = new Map<GuildString, Map<ERCacheType, Map<EmoteTrigger, TriggerString>>>();
     public dailyProvider: MySQLDailyProvider;
-    public imageAPICache: Map<APIs, Map<string, Record<string, unknown>>>;
+    public imageAPICache = new Map<APIs, Map<string, Record<string, unknown>>>();
     private imageAPIs: ClientImageAPIs;
 
     constructor(
@@ -31,20 +28,8 @@ export default class KaikiCache {
         connection: Pool,
         imageAPIs: ClientImageAPIs
     ) {
-        this.animeQuoteCache = new Collection<string, AnimeQuoteResponse>();
-        this.cmdStatsCache = new Map<string, number>();
         this.dailyProvider = new MySQLDailyProvider(connection);
-        this.emoteReactCache = new Map<
-            GuildString,
-            Map<ERCacheType, Map<EmoteTrigger, TriggerString>>
-        >();
-
-        // API cache
         this.imageAPIs = imageAPIs;
-        this.imageAPICache = new Map<
-            APIs,
-            Map<string, Record<string, unknown>>
-        >();
 
         void this.init(orm);
         this.populateImageAPICache();
@@ -166,8 +151,8 @@ export default class KaikiCache {
     ) {
         for (const word of matches) {
             const emote =
-                wordObj.get(ERCacheType.NO_SPACE)?.get(word) ||
-                wordObj.get(ERCacheType.HAS_SPACE)?.get(word);
+				wordObj.get(ERCacheType.NO_SPACE)?.get(word) ||
+				wordObj.get(ERCacheType.HAS_SPACE)?.get(word);
             if (!message.guild?.emojis.cache.has(emote as Snowflake) || !emote)
                 continue;
             await message.react(emote);
@@ -181,8 +166,7 @@ export default class KaikiCache {
                 new Map<string, Record<string, unknown>>()
             );
         });
-    }
-}
+    }}
 
 class MySQLDailyProvider {
     private connection: Pool;

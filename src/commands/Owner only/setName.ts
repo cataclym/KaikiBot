@@ -18,6 +18,6 @@ export default class SetNameCommand extends KaikiCommand {
 
         await this.client.user?.setUsername(fullName);
 
-        return message.channel.send(`Name set to \`${fullName}\``);
+        return message.reply(`Name set to \`${fullName}\``);
     }
 }

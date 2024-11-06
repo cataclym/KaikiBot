@@ -62,9 +62,9 @@ export default class RemoveEmoteReactCommand extends KaikiCommand {
 
             if (emoji) embed.setThumbnail(emoji.url);
 
-            return message.channel.send({ embeds: [embed] });
+            return message.reply({ embeds: [embed] });
         } else {
-            return message.channel.send({
+            return message.reply({
                 embeds: [
                     new EmbedBuilder()
                         .setTitle("Not found")

@@ -2,6 +2,7 @@ import { ApplyOptions } from "@sapphire/decorators";
 import { Message } from "discord.js";
 import KaikiCommandOptions from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
+import { APIs } from "../../lib/APIs/WaifuPics";
 
 @ApplyOptions<KaikiCommandOptions>({
     name: "neko",
@@ -13,7 +14,7 @@ export default class Neko extends KaikiCommand {
     public async messageRun(message: Message): Promise<Message> {
         return this.client.imageAPIs.WaifuPics.sendImageAPIRequest(
             message,
-            "neko"
+            APIs.neko
         );
     }
 }
