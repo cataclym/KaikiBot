@@ -1,6 +1,6 @@
 import { ApplyOptions } from "@sapphire/decorators";
 import { Args } from "@sapphire/framework";
-import { EmbedBuilder, GuildMember, Message, User } from "discord.js";
+import { DiscordAPIError, EmbedBuilder, GuildMember, Message, User } from "discord.js";
 import KaikiCommandOptions from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
@@ -20,9 +20,10 @@ export default class BanCommand extends KaikiCommand {
             args.pick("user").catch(async () => args.pick("member"))
         );
 
-        // Default ban string
+        // Pick up ban reason
         const reason = await args
             .rest("string")
+        // Default ban string
             .catch(
                 () =>
                     `Banned by ${message.author.username} [${message.author.id}]`
@@ -89,15 +90,16 @@ export default class BanCommand extends KaikiCommand {
                     (m as GuildMember | User).send({
                         embeds: [
                             new EmbedBuilder({
-                                description: `You have been banned from ${message.guild?.name}.\nReason: ${reason}`,
-                            }).withOkColor(message),
-                        ],
+                                description: `You have been banned from ${message.guild?.name}.\nReason: ${reason}`
+                            }).withOkColor(message)
+                        ]
                     });
-                } catch {
-                    // ignored
+                } catch (err) {
+                    if (err instanceof DiscordAPIError) return;
+
+                    this.client.logger.error(err);
                 }
-            })
-            .catch((err) => this.client.logger.error(err));
+            });
 
         return message.reply({ embeds: [successBan] });
     }

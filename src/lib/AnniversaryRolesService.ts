@@ -14,7 +14,7 @@ export default class AnniversaryRolesService {
         this.client = client;
         this.orm = client.orm;
 
-        (async () => await this.birthdayService())();
+        void this.birthdayService();
     }
 
     async birthdayService(): Promise<void> {
@@ -26,16 +26,15 @@ export default class AnniversaryRolesService {
         return this.resetArrays();
     }
 
-    private static async dateObject() {
+    private static getCurrentDate() {
         const date = new Date();
         const month = date.getMonth();
         const day = date.getDate();
-        return { month: month, day: day };
+        return { month, day };
     }
 
     async checkBirthdayOnAdd(guild: Guild): Promise<void> {
-        const guildDb = await this.client.db.getOrCreateGuild(BigInt(guild.id)),
-            { day, month } = await AnniversaryRolesService.dateObject();
+        const guildDb = await this.client.db.getOrCreateGuild(BigInt(guild.id));
 
         this.client.logger.info(
             `AnniversaryRolesService | Checking newly added guild ${guild.name} [${guild.id}]`
@@ -48,9 +47,7 @@ export default class AnniversaryRolesService {
                         PermissionsBitField.Flags.ManageRoles
                     )
                 ) {
-                    const [anniversaryRoleCreated, anniversaryRoleJoin] = <
-						Role[]
-					>await this.handleGuildRoles(guild);
+                    const [anniversaryRoleCreated, anniversaryRoleJoin] = <Role[]>await this.handleGuildRoles(guild);
                     // Get roles from the result of checking if guild has the roles at all / after creating them.
                     await Promise.all(
                         guild.members.cache.map(async (member) => {
@@ -59,9 +56,7 @@ export default class AnniversaryRolesService {
                                 await this.memberCheckAnniversary(
                                     member,
                                     anniversaryRoleCreated,
-                                    anniversaryRoleJoin,
-                                    day,
-                                    month
+                                    anniversaryRoleJoin
                                 );
                             }
                         })
@@ -85,37 +80,23 @@ export default class AnniversaryRolesService {
         }
     }
 
-    async handleGuildRoles(guild: Guild): Promise<Role[] | unknown[]> {
-        if (
-            !guild.roles.cache.some(
-                (r) => r.name === Constants.anniversaryStrings.ROLE_JOIN
-            )
-        ) {
-            guild.roles
-                .create({
-                    name: Constants.anniversaryStrings.ROLE_JOIN,
-                    reason: "Role didn't exist yet",
-                })
-                .catch((err) => this.client.logger.error(err));
-        }
-        if (
-            !guild.roles.cache.some(
-                (r) => r.name === Constants.anniversaryStrings.ROLE_CREATED
-            )
-        ) {
-            guild.roles
-                .create({
-                    name: Constants.anniversaryStrings.ROLE_CREATED,
-                    reason: "Role didn't exist yet",
-                })
-                .catch((err) => this.client.logger.error(err));
-        }
-        const anniversaryRoleJoin = guild.roles.cache.find(
-            (r) => r.name === Constants.anniversaryStrings.ROLE_JOIN
-        );
-        const anniversaryRoleCreated = guild.roles.cache.find(
-            (r) => r.name === Constants.anniversaryStrings.ROLE_CREATED
-        );
+    private async ensureRoleExists(guild: Guild, roleName: string): Promise<Role> {
+        const role: Role | undefined = guild.roles.cache.find((r) => r.name === roleName)
+        if (role) return role;
+
+        return guild.roles.create({
+            name: roleName,
+            reason: "Role didn't exist yet"
+        });
+    }
+
+    async handleGuildRoles(guild: Guild): Promise<Role[]> {
+
+        // Ensure both required roles exist
+        const [anniversaryRoleJoin, anniversaryRoleCreated] = await Promise.all([
+            this.ensureRoleExists(guild, Constants.anniversaryStrings.ROLE_JOIN),
+            this.ensureRoleExists(guild, Constants.anniversaryStrings.ROLE_CREATED)
+        ]);
 
         return [anniversaryRoleCreated, anniversaryRoleJoin];
     }
@@ -126,75 +107,73 @@ export default class AnniversaryRolesService {
         const { guild } = member,
             guildDb = await this.client.db.getOrCreateGuild(BigInt(guild.id));
 
-        if (guildDb.Anniversary) {
-            const { day, month } = await AnniversaryRolesService.dateObject();
+        if (!guildDb.Anniversary) return;
 
-            try {
-                if (
-                    guild.members.me?.permissions.has(
-                        PermissionsBitField.Flags.ManageRoles
-                    )
-                ) {
-                    const [anniversaryRoleCreated, anniversaryRoleJoin] = <
-						Role[]
-					>await this.handleGuildRoles(guild);
-                    // Get roles from the result of checking if guild has the roles at all / after creating them.
-                    await this.memberCheckAnniversary(
-                        member,
-                        anniversaryRoleCreated,
-                        anniversaryRoleJoin,
-                        day,
-                        month
-                    );
-                }
-            } catch (err) {
-                this.client.logger.error(err);
-            } finally {
-                this.client.logger.info(
-                    `AnniversaryRolesService | Checked user ${member.user.username} in ${guild.name} [${guild.id}]`
+        try {
+            if (guild.members.me?.permissions.has(PermissionsBitField.Flags.ManageRoles)) {
+                // Get roles from the result of checking if guild has the roles at all / after creating them.
+                const [anniversaryRoleCreated, anniversaryRoleJoin] = await this.handleGuildRoles(guild);
+
+                await this.memberCheckAnniversary(
+                    member,
+                    anniversaryRoleCreated,
+                    anniversaryRoleJoin
                 );
             }
+        } catch (err) {
+            this.client.logger.error(err);
+        } finally {
+            this.client.logger.info(
+                `AnniversaryRolesService | Checked user ${member.user.username} in ${guild.name} [${guild.id}]`
+            );
         }
     }
 
     private async memberCheckAnniversary(
         member: GuildMember,
-        anniversaryRoleCreated: Role,
-        anniversaryRoleJoin: Role,
-        day: number,
-        month: number
+        anniversaryRoleCreated: Role | undefined,
+        anniversaryRoleJoin: Role | undefined
     ) {
-        if (member.user.createdAt.getMonth() === month) {
-            if (member.user.createdAt.getDate() === day) {
-                this.listUsersCakeDay.push(member.user.username);
-                if (!member.roles.cache.has(anniversaryRoleCreated.id)) {
-                    await member.roles.add(anniversaryRoleCreated);
-                }
+        // Don't add/remove roles if roles weren't properly fetched.
+        if (!anniversaryRoleCreated || !anniversaryRoleJoin) return;
+
+        if (this.checkCakeDay(member)) {
+            this.listUsersCakeDay.push(member.user.id);
+            if (!member.roles.cache.has(anniversaryRoleCreated.id)) {
+                await member.roles.add(anniversaryRoleCreated);
             }
         }
-        if (
-            member.joinedAt?.getMonth() === month &&
-			member.joinedAt.getFullYear() !== new Date().getFullYear()
-        ) {
-            if (member.joinedAt.getDate() === day) {
-                this.listUserJoinedAt.push(member.user.username);
-                if (!member.roles.cache.has(anniversaryRoleJoin.id)) {
-                    return member.roles.add(anniversaryRoleJoin);
-                }
+
+        if (this.checkJoinedAt(member)) {
+            this.listUserJoinedAt.push(member.user.id);
+            if (!member.roles.cache.has(anniversaryRoleJoin.id)) {
+                return member.roles.add(anniversaryRoleJoin);
             }
         }
-        if (!this.listUsersCakeDay.includes(member.user.username)) {
+
+        if (!this.listUsersCakeDay.includes(member.user.id)) {
+
             if (member.roles.cache.has(anniversaryRoleCreated.id)) {
                 await member.roles.remove(
                     anniversaryRoleCreated.id,
                     anniversaryRoleJoin.id
                 );
             }
+
             if (member.roles.cache.has(anniversaryRoleJoin.id)) {
                 await member.roles.remove(anniversaryRoleJoin.id);
             }
         }
-        return member;
+    }
+
+    private checkCakeDay(member: GuildMember) {
+        const { day, month } = AnniversaryRolesService.getCurrentDate();
+        return member.user.createdAt.getMonth() === month && member.user.createdAt.getDate() === day;
+    }
+
+    private checkJoinedAt(member: GuildMember) {
+        const { day, month } = AnniversaryRolesService.getCurrentDate();
+        return member.joinedAt?.getMonth() === month && member.joinedAt.getFullYear() !== new Date().getFullYear() && member.joinedAt?.getDate() === day;
     }
 
     private async getEnabledGuilds() {
@@ -214,36 +193,25 @@ export default class AnniversaryRolesService {
     }
 
     private async handleAnniversaryGuilds(enabledGuilds: Guild[]) {
-        const { day, month } = await AnniversaryRolesService.dateObject();
-        await Promise.all(
-            enabledGuilds.map(async (guild) => {
-                // Check if guild is enabled.
-                if (
-                    guild.members.me?.permissions.has(
-                        PermissionsBitField.Flags.ManageRoles
-                    )
-                ) {
-                    // Check if perms.
-                    const [anniversaryRoleCreated, anniversaryRoleJoin] = <
-						Role[]
-					>await this.handleGuildRoles(guild);
-                    // Get roles from the result of checking if guild has the roles at all / after creating them.
-                    await Promise.all(
-                        guild.members.cache.map(async (member) => {
-                            if (!member.user.bot) {
-                                // Don't assign special roles to bots.
-                                await this.memberCheckAnniversary(
-                                    member,
-                                    anniversaryRoleCreated,
-                                    anniversaryRoleJoin,
-                                    day,
-                                    month
-                                );
-                            }
-                        })
+        await Promise.all(enabledGuilds.map(async (guild) => {
+
+            // Check if perms.
+            if (!guild.members.me?.permissions.has(PermissionsBitField.Flags.ManageRoles)) return;
+
+            const [anniversaryRoleCreated, anniversaryRoleJoin] = await this.handleGuildRoles(guild);
+
+            await Promise.all(
+                guild.members.cache.map(async (member) => {
+                    // Don't assign special roles to bots.
+                    if (member.user.bot) return;
+
+                    await this.memberCheckAnniversary(
+                        member,
+                        anniversaryRoleCreated,
+                        anniversaryRoleJoin
                     );
-                }
-            })
-        );
+                })
+            );
+        }));
     }
 }
