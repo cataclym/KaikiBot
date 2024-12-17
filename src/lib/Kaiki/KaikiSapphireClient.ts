@@ -28,7 +28,7 @@ import HentaiService from "../Hentai/HentaiService";
 import type PackageJSON from "../Interfaces/Common/PackageJSON";
 import KaikiUtil from "../KaikiUtil";
 import { MoneyService } from "../Money/MoneyService";
-import KaikiClientInterface from "./KaikiClientInterface";
+import IKaikiClient from "./IKaikiClient";
 import fs from "fs/promises";
 import { container } from "@sapphire/pieces";
 import NeofetchCommand from "../../commands/Fun/neofetch";
@@ -37,7 +37,7 @@ import { Webserver } from "../WebAPI/Webserver";
 
 export default class KaikiSapphireClient<Ready extends true>
     extends SapphireClient<Ready>
-    implements KaikiClientInterface
+    implements IKaikiClient
 {
     public anniversaryService: AnniversaryRolesService;
     public botSettings: DatabaseProvider;
@@ -77,7 +77,7 @@ export default class KaikiSapphireClient<Ready extends true>
             ],
             shards: "auto",
             loadMessageCommandListeners: true,
-            loadDefaultErrorListeners: true,
+            loadDefaultErrorListeners: false,
             defaultCooldown: {
                 delay: 1000,
             },

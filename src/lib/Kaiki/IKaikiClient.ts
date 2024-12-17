@@ -9,7 +9,7 @@ import HentaiService from "../Hentai/HentaiService";
 import PackageJSON from "../Interfaces/Common/PackageJSON";
 import { MoneyService } from "../Money/MoneyService";
 
-export default interface KaikiClientInterface {
+export default interface IKaikiClient {
 	anniversaryService: AnniversaryRolesService;
 	botSettings: DatabaseProvider;
 	cache: KaikiCache;

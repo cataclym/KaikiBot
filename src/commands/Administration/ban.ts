@@ -1,6 +1,6 @@
 import { ApplyOptions } from "@sapphire/decorators";
 import { Args } from "@sapphire/framework";
-import { DiscordAPIError, EmbedBuilder, GuildMember, Message, User } from "discord.js";
+import { EmbedBuilder, GuildMember, Message, User } from "discord.js";
 import KaikiCommandOptions from "../../lib/Interfaces/Kaiki/KaikiCommandOptions";
 import KaikiCommand from "../../lib/Kaiki/KaikiCommand";
 
@@ -83,23 +83,19 @@ export default class BanCommand extends KaikiCommand {
             });
         }
 
-        await message.guild?.members
-            .ban(user, { reason: reason })
-            .then((m) => {
-                try {
-                    (m as GuildMember | User).send({
-                        embeds: [
-                            new EmbedBuilder({
-                                description: `You have been banned from ${message.guild?.name}.\nReason: ${reason}`
-                            }).withOkColor(message)
-                        ]
-                    });
-                } catch (err) {
-                    if (err instanceof DiscordAPIError) return;
+        const m = await message.guild?.members.ban(user, { reason: reason });
 
-                    this.client.logger.error(err);
-                }
+        try {
+            await (m as GuildMember | User).send({
+                embeds: [
+                    new EmbedBuilder({
+                        description: `You have been banned from \`${message.guild?.name}\` [\`${message.guildId}\`].\n\n**Reason**: ${reason}`,
+                    }).withOkColor(message)
+                ]
             });
+        } catch {
+            successBan.setFooter({ text: "Couldn't send a DM to the user." });
+        }
 
         return message.reply({ embeds: [successBan] });
     }
