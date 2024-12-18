@@ -2,7 +2,7 @@ import { PrismaClient } from "@prisma/client";
 import * as colorette from "colorette";
 import { Guild, GuildMember, PermissionsBitField, Role } from "discord.js";
 import Constants from "../struct/Constants";
-import KaikiSapphireClient from "./Kaiki/KaikiSapphireClient";
+import KaikiSapphireClient from "../lib/Kaiki/KaikiSapphireClient";
 
 export default class AnniversaryRolesService {
     readonly client: KaikiSapphireClient<true>;

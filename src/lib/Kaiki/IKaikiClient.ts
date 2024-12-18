@@ -4,10 +4,10 @@ import { Pool } from "mysql2/promise";
 import KaikiCache from "../Cache/KaikiCache";
 import Database from "../../struct/db/Database";
 import DatabaseProvider from "../../struct/db/DatabaseProvider";
-import AnniversaryRolesService from "../AnniversaryRolesService";
-import HentaiService from "../Hentai/HentaiService";
+import AnniversaryRolesService from "../../services/AnniversaryRolesService";
+import HentaiService from "../../services/HentaiService";
 import PackageJSON from "../Interfaces/Common/PackageJSON";
-import { MoneyService } from "../Money/MoneyService";
+import { MoneyService } from "../../services/MoneyService";
 
 export default interface IKaikiClient {
 	anniversaryService: AnniversaryRolesService;

@@ -16,7 +16,7 @@ import KaikiCache from "../Cache/KaikiCache";
 import Constants from "../../struct/Constants";
 import Database from "../../struct/db/Database";
 import DatabaseProvider from "../../struct/db/DatabaseProvider";
-import AnniversaryRolesService from "../AnniversaryRolesService";
+import AnniversaryRolesService from "../../services/AnniversaryRolesService";
 import type { ClientImageAPIs } from "../APIs/Common/Types";
 import KawaiiAPI, { EndPointSignatures } from "../APIs/KawaiiAPI";
 import NekosLife from "../APIs/nekos.life";
@@ -24,15 +24,15 @@ import NekosAPI from "../APIs/NekosAPI";
 import PurrBot from "../APIs/PurrBot";
 import WaifuIm from "../APIs/waifu.im";
 import WaifuPics from "../APIs/WaifuPics";
-import HentaiService from "../Hentai/HentaiService";
+import HentaiService from "../../services/HentaiService";
 import type PackageJSON from "../Interfaces/Common/PackageJSON";
 import KaikiUtil from "../KaikiUtil";
-import { MoneyService } from "../Money/MoneyService";
+import { MoneyService } from "../../services/MoneyService";
 import IKaikiClient from "./IKaikiClient";
 import fs from "fs/promises";
 import { container } from "@sapphire/pieces";
 import NeofetchCommand from "../../commands/Fun/neofetch";
-import DiscordBotListService from "../DiscordBotList/DiscordBotListService";
+import DiscordBotListService from "../../services/DiscordBotListService";
 import { Webserver } from "../WebAPI/Webserver";
 
 export default class KaikiSapphireClient<Ready extends true>
