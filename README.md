@@ -43,6 +43,7 @@
 - [Self-hosting Guide](docs/GUIDE.md)  
 - [Placeholders](docs/PLACEHOLDERS.md) for greet/bye messages  
 - [.env Setup](docs/ENV.md)  
+- [Discord intents](docs/INTENTS.md)  
 
 ## Contributing
 
