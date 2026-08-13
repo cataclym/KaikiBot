@@ -16,7 +16,10 @@ export default class ShipCommand extends KaikiCommand {
         let user2 = await args.pick("user").catch(() => null);
 
         if (!user2) {
-            user2 = message.guild.members.cache.random()?.user || null;
+            // Member cache may have been swept - fall back to the bot itself
+            user2 = message.guild.members.cache.random()?.user
+                ?? message.guild.members.me?.user
+                ?? message.author;
         } else {
             // Check for a second user
             const possibleUser3 = await args.pick("user").catch(() => null);
